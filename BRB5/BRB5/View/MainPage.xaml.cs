@@ -84,28 +84,44 @@ namespace BRB5
             {
                 Password = db.GetConfig<string>("Password");
             }
-            _ = GetCurrentLocation();
+             var Wh = GetCurrentLocation().Result;
+            var FWh = Wh.First();
+            if (FWh.Distance>0 && FWh.Distance<0.032)
+            {
+                //Знайшли текучий магазин
+            }
+            else //вибір вручну магазина.
+            { }
+
         }
 
         CancellationTokenSource cts;
 
-        async Task GetCurrentLocation()
+        async Task<IEnumerable<Warehouse>> GetCurrentLocation()
         {
+            var Wh = db.GetWarehouse();
             try
             {
                 var request = new GeolocationRequest(GeolocationAccuracy.Medium, TimeSpan.FromSeconds(10));
                 cts = new CancellationTokenSource();
                 var location = await Geolocation.GetLocationAsync(request, cts.Token);
-
+                
                 if (location != null)
                 {
+                    foreach(var el in Wh)
+                    {
+                        el.Distance = location.CalculateDistance(el.GPSX, el.GPSY, DistanceUnits.Kilometers);
+                    }
                     Console.WriteLine($"Latitude: {location.Latitude}, Longitude: {location.Longitude}, Altitude: {location.Altitude}");
-                }
+                    return Wh.OrderBy(o => o.Distance);
+                    
+                }                
             }
             catch (FeatureNotSupportedException fnsEx)
             {
                 // Handle not supported on device exception
             }
+
             catch (FeatureNotEnabledException fneEx)
             {
                 // Handle not enabled on device exception
@@ -118,6 +134,7 @@ namespace BRB5
             {
                 // Unable to get location
             }
+            return Wh;
         }
 
         protected override void OnDisappearing()

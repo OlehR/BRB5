@@ -9,7 +9,7 @@ namespace BRB5.Connector
     public class Connector
     {
         protected static string TAG = "BRB5/Connector";
-        //public  Warehouse[] LoadWarehouse();
+        
         private static Connector Instance = null;
 
         protected DB db = DB.GetDB();
@@ -66,5 +66,8 @@ namespace BRB5.Connector
         /// <returns></returns>
         public virtual IEnumerable< TypeDoc> GetTypeDoc(eRole pRole) { throw new NotImplementedException(); }
 
+        public virtual IEnumerable<Warehouse> LoadWarehouse() { throw new NotImplementedException(); }
+
+        
     }
 }

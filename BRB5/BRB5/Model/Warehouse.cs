@@ -25,10 +25,14 @@ namespace BRB5.Model
         /// <summary>
         /// gps координати магазину 23.3451,45.2344
         /// </summary>
-        public string GPS {get;set;}
+        public string Location { get;set;}
+
+        public double GPSX { get { return Convert.ToDouble(Location.Split(',')[0]); } }
+        public double GPSY { get { return Convert.ToDouble(Location.Split(',')[1]); } }
         /// <summary>
         /// Дистанція
         /// </summary>
         public double Distance { get; set; }
+
     }
 }

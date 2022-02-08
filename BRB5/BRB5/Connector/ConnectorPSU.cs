@@ -43,6 +43,17 @@ namespace BRB5.Connector
         public int Article { get; set; }
     }
 
+    public class ApiDoc : Api
+    {
+        public ApiDoc() : base() { }
+        public ApiDoc(int pCodeData, int pTypeDoc) : base(pCodeData)
+        {
+            TypeDoc = pTypeDoc;
+        }
+        public int TypeDoc { get; set; }
+        
+    }
+
     public class ConnectorPSU : Connector
     {
         public override Result Login(string pLogin, string pPassWord, bool pIsLoginCO=false)
@@ -98,6 +109,20 @@ namespace BRB5.Connector
                                          new TypeDoc() { CodeDoc = 11, KindDoc = eKindDoc.Raiting, NameDoc = "Опитування" }, };
 
             return Res;
+        }
+
+        public override bool LoadGuidData(bool IsFull, ObservableInt pProgress) 
+        {
+            string data = JsonConvert.SerializeObject(new ApiDoc() { CodeData = 150,TypeDoc=-1}); 
+            HttpResult result = Http.HTTPRequest(0, "", data, "application/json");//
+
+            if (result.HttpState != eStateHTTP.HTTP_OK)
+            {
+
+            }
+
+            return true;
+
         }
     }
 }

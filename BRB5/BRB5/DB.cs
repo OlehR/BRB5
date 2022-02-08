@@ -271,6 +271,18 @@ CREATE UNIQUE INDEX RaitingId ON Raiting (TypeDoc,Id);";
             return db.ExecuteNonQuery<DocWares>(Sql, pDW) >= 0;
         }
 
+        public IEnumerable<Warehouse> GetWarehouse()
+        {
+            string Sql = "select * from Warehouse";
+            return db.Execute<Warehouse>(Sql);
+        }
 
+        public bool ReplaceWarehouse(IEnumerable<Warehouse> pWh)
+        {
+            string Sql = @"replace into Warehouse ( Code, Number, Name, Url, InternalIP, ExternalIP, Location ) values 
+                                                  (@Code,@Number,@Name,@Url,@InternalIP,@ExternalIP,@Location )";
+            return db.BulkExecuteNonQuery<Warehouse>(Sql, pWh) >= 0;
+        }
+    
     }
 }
