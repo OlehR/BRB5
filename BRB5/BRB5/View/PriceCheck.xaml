@@ -1,0 +1,23 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" xmlns:forms="clr-namespace:ZXing.Net.Mobile.Forms;assembly=ZXing.Net.Mobile.Forms"
+             x:Class="BRB5.PriceCheck">
+    <ContentPage.Content>
+
+        <AbsoluteLayout>
+             
+                <forms:ZXingScannerView x:Name="zxing" HorizontalOptions="StartAndExpand" VerticalOptions="FillAndExpand" ScaleY="1.5"  
+                    AbsoluteLayout.LayoutBounds="0, -0.2, 1, .4"  AbsoluteLayout.LayoutFlags="All"   >
+                    
+                </forms:ZXingScannerView>            
+
+            <StackLayout  AbsoluteLayout.LayoutBounds="1, 1, 1, .6"  AbsoluteLayout.LayoutFlags="All" >
+                <ProgressBar Progress="0.8" ProgressColor="Black" />
+                <Label Text="Welcome to Xamarin.Forms!"
+                VerticalOptions="CenterAndExpand" 
+                HorizontalOptions="CenterAndExpand" />
+            </StackLayout >
+
+        </AbsoluteLayout>
+    </ContentPage.Content>
+</ContentPage>

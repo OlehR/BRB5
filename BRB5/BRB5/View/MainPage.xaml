@@ -1,0 +1,44 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="BRB5.MainPage"
+             NavigationPage.HasNavigationBar="False"
+             >
+
+    <StackLayout>
+        <StackLayout x:Name="SLLogin">
+            <Label Text="BRB5"
+                VerticalOptions="CenterAndExpand" 
+                HorizontalOptions="CenterAndExpand" />
+            <Entry x:Name="loginEntry" Text="{Binding Login}" />
+            <!--TextChanged="loginEntry_TextChanged"-->
+            <Entry x:Name="passwordEntry" Text="{Binding Password}"  Placeholder = "Password" IsPassword ="True" />
+            <Button Text = "Залогінитись" FontSize="Large" BorderWidth="1"
+        HorizontalOptions="Center" VerticalOptions="CenterAndExpand"
+        Clicked="OnButtonLogin" />
+        </StackLayout>
+        <ListView x:Name="ListDocs" IsVisible="false"
+              HasUnevenRows="True"
+              ItemsSource="{Binding OCTypeDoc}"                  
+              >
+            <ListView.Header>
+                <StackLayout Orientation="Horizontal">
+                    <Label Text="Список    Запитань2" FontSize="25"
+                           BackgroundColor="#c5cae9" HorizontalOptions="FillAndExpand" />
+                </StackLayout>
+            </ListView.Header>
+            <!-- ItemTapped="OnItemTapped"-->
+            <ListView.ItemTemplate>
+                <DataTemplate xmlns:brb5="clr-namespace:BRB5">
+                    <ViewCell>
+                        <ViewCell.View  >
+                            <Button Text = "{Binding NameDoc}" FontSize="Large" BorderWidth="1"
+            HorizontalOptions="Center" VerticalOptions="CenterAndExpand"   Clicked="OnButtonClicked" />
+                        </ViewCell.View>
+                    </ViewCell>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+    </StackLayout>
+
+</ContentPage>

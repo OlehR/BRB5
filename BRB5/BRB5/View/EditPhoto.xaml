@@ -1,0 +1,55 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="BRB5.View.EditPhoto"
+                      
+             >
+    <ContentPage.Content>
+        <StackLayout>
+            <Button Text = "Добавити" FontSize="Large" BorderWidth="1"
+        HorizontalOptions="Center" VerticalOptions="CenterAndExpand"
+        Clicked="OnButtonAdd" />
+            <ListView x:Name="Files"
+              HasUnevenRows="True"
+              ItemsSource="{Binding MyFiles}" >
+                <ListView.Header>
+                    <StackLayout Orientation="Horizontal">
+                        <Label Text="Список    Запитань2" FontSize="25"
+                           BackgroundColor="#c5cae9" HorizontalOptions="FillAndExpand" />
+                    </StackLayout>
+                </ListView.Header>
+                <!-- ItemTapped="OnItemTapped"-->
+                <ListView.ItemTemplate>
+                    <DataTemplate xmlns:brb5="clr-namespace:BRB5" >
+                        <ViewCell>
+                            <ViewCell.View  >
+                                <StackLayout>                                    
+                                    <Grid   >
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="4*" />
+                                            <ColumnDefinition Width="1*" />                                            
+                                        </Grid.ColumnDefinitions>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="*" />                                           
+                                        </Grid.RowDefinitions>
+                                        <ImageButton  Source="{Binding FileName}" ClassId="Ok" Grid.Column="0" Grid.Row="0" 
+            BackgroundColor="Transparent" WidthRequest="40" HeightRequest="40"
+            FlexLayout.AlignSelf="Center"  FlexLayout.Grow="1" Aspect="AspectFit"
+            Clicked="OnButtonClicked" ></ImageButton>
+
+                                        <ImageButton Source="Delete.png" ClassId="NotKnow" Grid.Column="1" Grid.Row="0" 
+            BackgroundColor="Transparent" WidthRequest="40" HeightRequest="40"
+            FlexLayout.AlignSelf="Center"  FlexLayout.Grow="1" Aspect="AspectFit" Opacity="{Binding OpacityNotKnow}"
+            Clicked="OnButtonDel" ></ImageButton>
+                                    </Grid>
+
+                                </StackLayout>
+                            </ViewCell.View>
+                        </ViewCell>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>

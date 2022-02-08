@@ -1,0 +1,52 @@
+﻿//using BRB5.Model;
+using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+using Xamarin.Forms;
+using Xamarin.Forms.Xaml;
+
+namespace BRB5
+{
+    [XamlCompilation(XamlCompilationOptions.Compile)]
+    public partial class Docs : ContentPage
+    {
+        public ObservableCollection<Doc> MyDoc { get; set; }
+        //public string Help { get; set; } = "ERHHHHHHH54";
+        public Docs(int TypeDoc=-1)
+        {
+            DB db = new DB();
+            InitializeComponent();
+            Routing.RegisterRoute(nameof(Item), typeof(Item));
+
+            MyDoc =/* new ObservableCollection<Doc>() { 
+                 new Doc() { TypeDoc = 11, NumberDoc = "1", DateDoc = DateTime.Now.Date.ToString("yyyy-MM-dd"), NameUser = "Рутковський О", Description = "ТЗ 1001" } 
+                ,new Doc() { TypeDoc = 11, NumberDoc = "2", DateDoc = DateTime.Now.Date.ToString("yyyy-MM-dd"), NameUser = "Рутковський О", Description = "ТЗ 1004" }
+                ,new Doc() { TypeDoc = 11, NumberDoc = "3", DateDoc = DateTime.Now.Date.ToString("yyyy-MM-dd"), NameUser = "Рутковський О", Description = "ТЗ 1104" }
+            };*/
+            new ObservableCollection<Doc> ( db.GetDoc(11));
+            this.BindingContext = this;
+        }
+
+        private async void OnButtonClicked(object sender, System.EventArgs e)
+        {
+            Button button = sender as Button;
+            Grid cc = button.Parent as Grid;
+            var vDoc = cc.BindingContext as Doc;
+            await Navigation.PushAsync(new Item(vDoc));
+            /*var p = $"{nameof(Item)}?{nameof(Item.NumberDoc)}=\"{vDoc.NumberDoc}\"&TypeDoc={vDoc.TypeDoc}";
+             Shell.Current.GoToAsync(p);*/
+        }
+
+        private async void Grid_Focused(object sender, FocusEventArgs e)
+        {
+            Grid cc = sender as Grid;
+            var vDoc = cc.BindingContext as Doc;
+            await Navigation.PushAsync(new Item(vDoc));
+           // await Shell.Current.GoToAsync($"{nameof(Item)}?{nameof(Item.NumberDoc)}={vDoc.NumberDoc}");//&TypeDoc={vDoc.TypeDoc}
+        }
+    }
+}
