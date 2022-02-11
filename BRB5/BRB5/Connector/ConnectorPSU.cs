@@ -15,9 +15,9 @@ namespace BRB5.Connector
         public string NameDCT { get; set; }
         public int Ver { get; set; }
         public int CodeWarehouse { get; set; }
-        public Api(int pCodeData):this()
+        public Api(int pCodeData) : this()
         {
-            CodeData = pCodeData;            
+            CodeData = pCodeData;
         }
         public Api()
         {
@@ -31,15 +31,15 @@ namespace BRB5.Connector
 
     public class ApiPrice : Api
     {
-        public ApiPrice():base(){}
-        public ApiPrice(int pCodeData, ParseBarCode pPBC) : base(pCodeData) 
+        public ApiPrice() : base() { }
+        public ApiPrice(int pCodeData, ParseBarCode pPBC) : base(pCodeData)
         {
             BarCode = pPBC.BarCode;
             CodeWares = pPBC.CodeWares;
             Article = pPBC.Article;
         }
         public string BarCode { get; set; }
-        public int CodeWares { get; set; }        
+        public int CodeWares { get; set; }
         public int Article { get; set; }
     }
 
@@ -51,12 +51,12 @@ namespace BRB5.Connector
             TypeDoc = pTypeDoc;
         }
         public int TypeDoc { get; set; }
-        
+
     }
 
     public class ConnectorPSU : Connector
     {
-        public override Result Login(string pLogin, string pPassWord, bool pIsLoginCO=false)
+        public override Result Login(string pLogin, string pPassWord, bool pIsLoginCO = false)
         {
             string data = JsonConvert.SerializeObject(new Api() { CodeData = 1, Login = pLogin, PassWord = pPassWord }); //"{\"CodeData\": \"1\"" + ", \"Login\": \"" + pLogin + "\"" + ", \"PassWord\": \"" + pPassWord + "\"}";
             HttpResult result = Http.HTTPRequest(0, "", data, "application/json");//
@@ -78,9 +78,9 @@ namespace BRB5.Connector
 
         }
 
-        public override WaresPrice GetPrice(ParseBarCode pBC) 
+        public override WaresPrice GetPrice(ParseBarCode pBC)
         {
-            string data = JsonConvert.SerializeObject(new ApiPrice(154, pBC));             
+            string data = JsonConvert.SerializeObject(new ApiPrice(154, pBC));
             HttpResult result = Http.HTTPRequest(0, "", data, "application/json");
 
             if (result.HttpState != eStateHTTP.HTTP_OK)
@@ -88,7 +88,7 @@ namespace BRB5.Connector
             else
                 try
                 {
-                    var r = JsonConvert.DeserializeObject<WaresPrice>(result.Result);                    
+                    var r = JsonConvert.DeserializeObject<WaresPrice>(result.Result);
                     return r;
                 }
                 catch (Exception e)
@@ -102,7 +102,7 @@ namespace BRB5.Connector
         /// </summary>
         /// <param name="pRole"></param>
         /// <returns></returns>
-        public override IEnumerable<TypeDoc> GetTypeDoc(eRole pRole) 
+        public override IEnumerable<TypeDoc> GetTypeDoc(eRole pRole)
         {
             var Res = new List<TypeDoc>()
             { new TypeDoc() { CodeDoc = 0, KindDoc = eKindDoc.PriceCheck, NameDoc = "Прайсчекер" },
@@ -111,9 +111,9 @@ namespace BRB5.Connector
             return Res;
         }
 
-        public override bool LoadGuidData(bool IsFull, ObservableInt pProgress) 
+        public override bool LoadGuidData(bool IsFull, ObservableInt pProgress)
         {
-            string data = JsonConvert.SerializeObject(new ApiDoc() { CodeData = 150,TypeDoc=-1}); 
+            string data = JsonConvert.SerializeObject(new ApiDoc() { CodeData = 150, TypeDoc = -1 });
             HttpResult result = Http.HTTPRequest(0, "", data, "application/json");//
 
             if (result.HttpState != eStateHTTP.HTTP_OK)
@@ -124,5 +124,27 @@ namespace BRB5.Connector
             return true;
 
         }
+
+        class WarehouseIn
+        {
+            public IEnumerable<Warehouse> Warehouse { get; set; }
+        }
+
+        public override IEnumerable<Warehouse> LoadWarehouse()
+        {
+            string data = JsonConvert.SerializeObject(new Api() { CodeData = 210 });
+            HttpResult result = Http.HTTPRequest(0, "", data, "application/json");//
+
+            if (result.HttpState != eStateHTTP.HTTP_OK)
+            {
+                var r = JsonConvert.DeserializeObject<WarehouseIn>(result.Result);
+                db.ReplaceWarehouse(r.Warehouse);
+                return r.Warehouse;
+            }
+            return null;
+        }
+
     }
+
 }
+
