@@ -27,7 +27,7 @@ namespace BRB5
         /// <summary>
         /// Дата документа
         /// </summary>
-        public string DateDoc { get; set; } 
+        public DateTime DateDoc { get; set; } 
         /// <summary>
         /// 1- Якщо треба контролювати асортимент та кількість, для замовлень та можливо інших документів.
         /// </summary>

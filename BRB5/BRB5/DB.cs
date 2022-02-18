@@ -156,7 +156,7 @@ CREATE TABLE Raiting(
     Note TEXT);
 CREATE UNIQUE INDEX RaitingId ON Raiting (TypeDoc,Id);";
 
-        SQLite db;
+        public SQLite db;
         public DB()
         {
             string basedir = Path.GetTempPath();

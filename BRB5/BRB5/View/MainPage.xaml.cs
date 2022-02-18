@@ -84,14 +84,14 @@ namespace BRB5
             {
                 Password = db.GetConfig<string>("Password");
             }
-             var Wh = GetCurrentLocation().Result;
+             /*var Wh = GetCurrentLocation().Result;
             var FWh = Wh.First();
             if (FWh.Distance>0 && FWh.Distance<0.032)
             {
                 //Знайшли текучий магазин
             }
             else //вибір вручну магазина.
-            { }
+            { }*/
 
         }
 

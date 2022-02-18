@@ -107,23 +107,36 @@ namespace BRB5.Connector
             var Res = new List<TypeDoc>()
             { new TypeDoc() { CodeDoc = 0, KindDoc = eKindDoc.PriceCheck, NameDoc = "Прайсчекер" },
                                          new TypeDoc() { CodeDoc = 11, KindDoc = eKindDoc.Raiting, NameDoc = "Опитування" }, };
-
             return Res;
         }
 
-        public override bool LoadGuidData(bool IsFull, ObservableInt pProgress)
+        public override Result LoadGuidData(bool IsFull, ObservableInt pProgress)
+        {
+            return LoadDocsData(-1, null, null, true);
+        }
+
+        /// <summary>
+        /// Завантаження документів в ТЗД (HTTP)
+        /// </summary>
+        /// <param name="pTypeDoc">0-всі документи</param>
+        /// <param name="pNumberDoc"></param>
+        /// <param name="pProgress"></param>
+        /// <param name="pIsClear"></param>
+        /// <returns></returns>
+        public override Result LoadDocsData(int pTypeDoc, string pNumberDoc, ObservableInt pProgress, bool pIsClear) 
         {
             string data = JsonConvert.SerializeObject(new ApiDoc() { CodeData = 150, TypeDoc = -1 });
             HttpResult result = Http.HTTPRequest(0, "", data, "application/json");//
 
             if (result.HttpState != eStateHTTP.HTTP_OK)
             {
-
+                string[] lines = result.Result.Split(new String[] { ";;;" }, StringSplitOptions.None);
+                foreach (var el in lines)
+                    db.db.ExecuteNonQuery(el);
             }
-
-            return true;
-
+            return null;
         }
+
 
         class WarehouseIn
         {
@@ -133,7 +146,7 @@ namespace BRB5.Connector
         public override IEnumerable<Warehouse> LoadWarehouse()
         {
             string data = JsonConvert.SerializeObject(new Api() { CodeData = 210 });
-            HttpResult result = Http.HTTPRequest(0, "", data, "application/json");//
+            HttpResult result = Http.HTTPRequest(1001, "", data, "application/json");//
 
             if (result.HttpState != eStateHTTP.HTTP_OK)
             {

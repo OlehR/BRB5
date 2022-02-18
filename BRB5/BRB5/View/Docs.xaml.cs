@@ -14,13 +14,16 @@ namespace BRB5
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class Docs : ContentPage
     {
+        Connector.Connector c;
         public ObservableCollection<Doc> MyDoc { get; set; }
         //public string Help { get; set; } = "ERHHHHHHH54";
         public Docs(int TypeDoc=-1)
         {
             DB db = new DB();
+            c = BRB5.Connector.Connector.GetInstance();
             InitializeComponent();
             Routing.RegisterRoute(nameof(Item), typeof(Item));
+            c.LoadDocsData(11, null, null, false);
 
             MyDoc =/* new ObservableCollection<Doc>() { 
                  new Doc() { TypeDoc = 11, NumberDoc = "1", DateDoc = DateTime.Now.Date.ToString("yyyy-MM-dd"), NameUser = "Рутковський О", Description = "ТЗ 1001" } 

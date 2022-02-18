@@ -24,6 +24,9 @@ namespace BRB5.Model
         public static string Login { get; set; } = "LOX";
         public static string Password { get; set; } = "321";
         public static eRole Role = eRole.NotDefined;
+        public static int CodeUser { get; set; } = 233;
+        public static string NameUser { get; set; }
+
         public static int GetCodeUnitWeight() { return Company == eCompany.Sim23 ? 166 : 7; }
 
         public static int GetCodeUnitPiece() { return Company == eCompany.Sim23 ? 796 : 19; }

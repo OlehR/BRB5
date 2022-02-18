@@ -54,13 +54,16 @@ namespace BRB5.Connector
         {
             try
             {
+                var handler = new HttpClientHandler();
+                handler.ServerCertificateCustomValidationCallback = (sender, cert, chain, sslPolicyErrors) => { return true; };
+
                 HttpClient client;
                 if (string.IsNullOrEmpty(pLogin))
                     client = new HttpClient();
                 else
                 {
                     var credentials = new NetworkCredential(pLogin, pPassWord);
-                    var handler = new HttpClientHandler { Credentials = credentials };
+                    handler.Credentials = credentials;
                     client = new HttpClient(handler);
                 }
 

@@ -14,13 +14,13 @@ namespace BRB5
             InitializeComponent();
             //TMP!!!!
             DB db = new DB();
-            db.SetConfig<eCompany>("Company", eCompany.SparPSU);
+            db.SetConfig<eCompany>("Company", eCompany.Sim23);
             db.SetConfig<string>("ApiUrl1", "http://api.spar.uz.ua/znp/");
             db.SetConfig<string>("ApiUrl2", "http://api.spar.uz.ua/print/");
-            
-            var D = new List<Doc>() { 
-                new Doc() { TypeDoc =11,NumberDoc="1", DateDoc = DateTime.Now.Date.ToString("yyyy-MM-dd"), NameUser ="Рутковський О", ExtInfo="1001", Description="ТЗ 1001"},
-                new Doc() { TypeDoc =11,NumberDoc="SE00002", DateDoc = DateTime.Now.Date.ToString("yyyy-MM-dd"), NameUser ="Пупкін О", ExtInfo="1104" ,Description="ТЗ 1104"},
+            db.SetConfig<string>("ApiUrl3", "https://bitrix.sim23.ua/rest/233/ax02yr7l9hia35vj/");
+            /*var D = new List<Doc>() { 
+                new Doc() { TypeDoc =11,NumberDoc="1", DateDoc = DateTime.Now.Date, NameUser ="Рутковський О", ExtInfo="1001", Description="ТЗ 1001"},
+                new Doc() { TypeDoc =11,NumberDoc="SE00002", DateDoc = DateTime.Now.Date, NameUser ="Пупкін О", ExtInfo="1104" ,Description="ТЗ 1104"},
             };
             db.ReplaceDoc(D);
             var R = new List<Raiting>() {  
@@ -39,7 +39,7 @@ namespace BRB5
                      new Raiting() { TypeDoc = 11, NumberDoc = "1", Id = 15, Parent=10, IsHead = false, RatingTemplate=1+2+4+8 ,Text = "Планограма Бакалія" } ,
             };            
             db.ReplaceRaitingSample(R);
-
+            */
 
             MainPage = new NavigationPage(new MainPage());//new Docs()); //new Item2(); // 
         }

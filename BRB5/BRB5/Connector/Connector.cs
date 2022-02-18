@@ -30,16 +30,41 @@ namespace BRB5.Connector
         //Логін
         public virtual Result Login(string pLogin, string pPassWord, bool pIsLoginCO=false) { throw new NotImplementedException(); }
         //Завантаження довідників.
-        public virtual bool LoadGuidData(bool IsFull, ObservableInt pProgress) { throw new NotImplementedException(); }
+        public virtual Result LoadGuidData(bool IsFull, ObservableInt pProgress) { throw new NotImplementedException(); }
 
         //Робота з документами.
-        //Завантаження документів в ТЗД (HTTP)
-        public virtual bool LoadDocsData(int pTypeDoc, string pNumberDoc, ObservableInt pProgress, bool pIsClear) { throw new NotImplementedException(); }
-        //Вивантаження документів з ТЗД (HTTP)
+        /// <summary>
+        /// Завантаження документів в ТЗД (HTTP)
+        /// </summary>
+        /// <param name="pTypeDoc">0-всі документи</param>
+        /// <param name="pNumberDoc"></param>
+        /// <param name="pProgress"></param>
+        /// <param name="pIsClear"></param>
+        /// <returns></returns>
+        public virtual Result LoadDocsData(int pTypeDoc, string pNumberDoc, ObservableInt pProgress, bool pIsClear) { throw new NotImplementedException(); }
+
+
+        /// <summary>
+        /// Вивантаження документів з ТЗД (HTTP)
+        /// </summary>
+        /// <param name="pDoc"></param>
+        /// <param name="pWares"></param>
+        /// <param name="pIsClose"></param>
+        /// <returns></returns>
         public virtual Result SendDocsData(Doc pDoc, IEnumerable<DocWares> pWares, int pIsClose) { throw new NotImplementedException(); }
 
         //Збереження ПРосканованих товарів в 1С
         public virtual Result SendLogPrice(List<LogPrice> pList) { throw new NotImplementedException(); }
+
+        /// <summary>
+        /// Вивантаження Рейтингів
+        /// </summary>
+        /// <param name="pR"></param>
+        /// <returns></returns>
+        public virtual Result SendRaiting(IEnumerable< Raiting> pR)  { throw new NotImplementedException(); }
+
+
+
 
         // Друк на стаціонарному термопринтері
         public virtual string printHTTP(List<string> codeWares) { throw new NotImplementedException(); }
