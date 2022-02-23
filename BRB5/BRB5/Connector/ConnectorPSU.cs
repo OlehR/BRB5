@@ -56,7 +56,7 @@ namespace BRB5.Connector
 
     public class ConnectorPSU : Connector
     {
-        public override Result Login(string pLogin, string pPassWord, bool pIsLoginCO = false)
+        public override Result Login(string pLogin, string pPassWord, eLoginServer pLoginServer)
         {
             string data = JsonConvert.SerializeObject(new Api() { CodeData = 1, Login = pLogin, PassWord = pPassWord }); //"{\"CodeData\": \"1\"" + ", \"Login\": \"" + pLogin + "\"" + ", \"PassWord\": \"" + pPassWord + "\"}";
             HttpResult result = Http.HTTPRequest(0, "", data, "application/json");//

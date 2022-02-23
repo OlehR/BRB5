@@ -1,7 +1,9 @@
-﻿using BRB5.View;
+﻿using BRB5.Model;
+using BRB5.View;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -15,17 +17,28 @@ namespace BRB5
     //[QueryProperty(nameof(NumberDoc), nameof(NumberDoc))]
     //[QueryProperty(nameof(TypeDoc), nameof(TypeDoc))]
     //[XamlCompilation(XamlCompilationOptions.Compile)]
-    public partial class Item : ContentPage
+    public partial class Item : ContentPage, INotifyPropertyChanged
     {
 
         DB db = DB.GetDB();
         DocId cDocId;
         public ObservableCollection<Raiting> Questions { get; set; }
-        // = new DB();
+
+        int CountAll,CountChoice;
+        public bool  IsSave { get { return CountAll == CountChoice; } }
+        bool IsAll = true;
+        public string TextAllNoChoice { get {return IsAll?"Без відповіді":"Всі"; }  }
+        public string QuantityAllChoice { get { return $"{CountChoice}/{CountAll}"; } }
+
+        /*public event PropertyChangedEventHandler PropertyChanged;
+        protected virtual void OnPropertyChanged(string propertyName)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }*/
         public Item(DocId pDocId)
         {
             cDocId = pDocId;
-
+            
             InitializeComponent();
 
              var Q = db.GetRating(cDocId);
@@ -35,9 +48,11 @@ namespace BRB5
             foreach (var el in Q.Where(d => d.Parent == e.Id))
             {
                 el.IsVisible = e.Rating != 4;
-            }            
+            }
+            CountAll = Q.Count(el => !el.IsHead);
 
-            Questions = new ObservableCollection<Raiting>( Q);
+            Questions = new ObservableCollection<Raiting>(Q);
+            RefreshHead();
             this.BindingContext = this;
         }
 
@@ -74,15 +89,45 @@ namespace BRB5
                 foreach (var el in Questions.Where(d => d.Parent == vQuestion.Id))
                 {
                     el.IsVisible = vQuestion.Rating != 4;
+                    if (el.Rating == 0 && vQuestion.Rating == 4)
+                        el.Rating = 4;
                 }
             }
             db.ReplaceRaiting(vQuestion);
+            RefreshHead();
+        }
+
+        void RefreshHead()
+        {
+            CountChoice = Questions.Count(el => !el.IsHead && el.Rating > 0);
+            OnPropertyChanged("QuantityAllChoice");
+            OnPropertyChanged("IsSave");
+        }
+
+        private void OnSetView(object sender, System.EventArgs e)
+        {
+            IsAll = !IsAll;
+            if (IsAll)
+                foreach (var el in Questions.Where(d => !d.IsVisible))
+                    el.IsVisible = true;
+            else
+                foreach (var el in Questions.Where(d => !d.IsHead && d.Rating > 0))
+                    el.IsVisible = false;
+
+            OnPropertyChanged("TextAllNoChoice");
+        }
+        
+        private void OnButtonSave(object sender, System.EventArgs e)
+        {
+            var r=db.GetRating(cDocId);
+            var c = Connector.Connector.GetInstance();
+            c.SendRaiting(r);
         }
 
         private void EditPhoto(object sender, System.EventArgs e)
         {
             var vQuestion = GetRaiting(sender);
-             Navigation.PushAsync(new EditPhoto(cDocId.NumberDoc, vQuestion));
+             Navigation.PushAsync(new EditPhoto( vQuestion));
         }
 
             async void TakePhotoAsync(object sender, EventArgs e)
@@ -91,19 +136,23 @@ namespace BRB5
           
             var vQuestion = button.BindingContext as Raiting;
  
-            var FileName = $"{cDocId.NumberDoc}_{vQuestion.Id}_{DateTime.Now.ToString("yyyyMMdd_hhmmss")}";
+            var FileName = $"{vQuestion.Id}_{DateTime.Now.ToString("yyyyMMdd_hhmmssfff")}";
      
             try
             {
-                var photo = await MediaPicker.CapturePhotoAsync(new MediaPickerOptions
+                var dir = Path.Combine(Config.GetPathFiles, vQuestion.NumberDoc);
+                if (!Directory.Exists(dir))
                 {
-                    Title = FileName
-                });
+                    Directory.CreateDirectory(dir);
+                    Directory.CreateDirectory(Path.Combine(dir, "Send"));
+                }
+                
+                var photo = await MediaPicker.CapturePhotoAsync(new MediaPickerOptions{Title = FileName});
                 if (photo!=null && File.Exists(photo.FullPath))
                 {
                     // для примера сохраняем файл в локальном хранилище
                     var ext=Path.GetExtension(photo.FileName);
-                    var newFile = Path.Combine(FileSystem.AppDataDirectory, FileName+ext);
+                    var newFile = Path.Combine(dir, FileName+ext);
                     using (var stream = await photo.OpenReadAsync())
                     using (var newStream = File.OpenWrite(newFile))
                         await stream.CopyToAsync(newStream);

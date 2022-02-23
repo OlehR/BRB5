@@ -19,16 +19,21 @@ namespace BRB5.Model
             Info = pInfo;
         }
 
-        public Result(HttpResult httpResult, string pInfo="")
+        public Result(HttpResult httpResult, string pInfo = "")
         {
             if (httpResult.HttpState == eStateHTTP.HTTP_OK)
-                Info = httpResult.Result;            
+                Info = httpResult.Result;
             else
             {
                 State = -1;
                 TextError = httpResult.HttpState.ToString();
             }
             Info = pInfo;
+        }
+        public Result(Exception e)
+        {
+            State = -1;
+            TextError = e.Message + "\n" + e.StackTrace;
         }
 
     }

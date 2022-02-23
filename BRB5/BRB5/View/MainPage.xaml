@@ -23,8 +23,8 @@
               >
             <ListView.Header>
                 <StackLayout Orientation="Horizontal">
-                    <Label Text="Список    Запитань2" FontSize="25"
-                           BackgroundColor="#c5cae9" HorizontalOptions="FillAndExpand" />
+                   <!-- <Label Text="Список    Запитань2" FontSize="25"
+                           BackgroundColor="#c5cae9" HorizontalOptions="FillAndExpand" />-->
                 </StackLayout>
             </ListView.Header>
             <!-- ItemTapped="OnItemTapped"-->

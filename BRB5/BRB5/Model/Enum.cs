@@ -8,6 +8,14 @@
         Sim23
     }
 
+    public enum eLoginServer
+    {
+        Local=0,
+        Central=1,
+        Bitrix=2,
+        Offline=3
+    }
+
     public enum eRole
     {
         NotDefined,

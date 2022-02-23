@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Linq;
 using Newtonsoft.Json.Converters;
+using System.IO;
 
 namespace BRB5.Connector
 {
@@ -33,37 +34,58 @@ namespace BRB5.Connector
         }
 
         //DB db = DB.GetDB();
-        public override Result Login(String pLogin, String pPassWord, bool pIsLoginCO = false)
+        public override Result Login(string pLogin, string pPassWord, eLoginServer pLoginServer)
         {
-            HttpResult res = Http.HTTPRequest(pIsLoginCO ? 1 : 0, "login", "{\"login\" : \"" + pLogin + "\"}", "application/json", pLogin, pPassWord);
-            if (res.HttpState == eStateHTTP.HTTP_UNAUTHORIZED || res.HttpState == eStateHTTP.HTTP_Not_Define_Error)
+            if (pLoginServer == eLoginServer.Bitrix)
             {
-                //Utils.WriteLog("e", TAG, "Login >>" + res.HttpState.toString());
-                return new Result(-1, res.HttpState.ToString(), "Неправильний логін або пароль");
-            }
-            else if (res.HttpState != eStateHTTP.HTTP_OK)
-                return new Result(res, "Ви не підключені до мережі " + Config.Company.ToString());
-            else
-            {
-                try
+                string data = JsonConvert.SerializeObject(new RequestLogin() { action = "auth", login = pLogin, password = pPassWord });
+                HttpResult result = Http.HTTPRequest(2, "", data, "application/json");
+                if (result.HttpState != eStateHTTP.HTTP_OK)
+                    return new Result(result);
+                else
                 {
-                    var r = JsonConvert.DeserializeObject<ResultLogin>(res.Result);
-
-                    if (r.State == 0)
+                    try
                     {
-                        Config.Role = (eRole)r.Profile;
-                        Config.CodeUser = r.data.userId;
-                        Config.NameUser = r.data.userName;
+                        var t = JsonConvert.DeserializeObject<AnswerLogin>(result.Result);
+                        if (!t.success || t.data.userId <= 0)
+                            return new Result(-1, "Не успішна авторизація. Можливо невірний логін чи пароль");
+                        Config.CodeUser = t.data.userId;
                         return new Result();
                     }
-                    else
-                        return new Result(r.State, r.TextError, "Неправильний логін або пароль");
-
+                    catch (Exception e) { return new Result(e); }
                 }
-                catch (Exception e)
+            }
+            else
+            {
+                HttpResult res = Http.HTTPRequest(pLoginServer == eLoginServer.Central ? 1 : 0, "login", "{\"login\" : \"" + pLogin + "\"}", "application/json", pLogin, pPassWord);
+                if (res.HttpState == eStateHTTP.HTTP_UNAUTHORIZED || res.HttpState == eStateHTTP.HTTP_Not_Define_Error)
                 {
-                    //Utils.WriteLog("e", TAG, "Login=>", e);
-                    return new Result(-1, e.Message);
+                    //Utils.WriteLog("e", TAG, "Login >>" + res.HttpState.toString());
+                    return new Result(-1, res.HttpState.ToString(), "Неправильний логін або пароль");
+                }
+                else if (res.HttpState != eStateHTTP.HTTP_OK)
+                    return new Result(res, "Ви не підключені до мережі " + Config.Company.ToString());
+                else
+                {
+                    try
+                    {
+                        var r = JsonConvert.DeserializeObject<ResultLogin>(res.Result);
+
+                        if (r.State == 0)
+                        {
+                            Config.Role = (eRole)r.Profile;
+                            Config.CodeUser = r.data.userId;
+                            Config.NameUser = r.data.userName;
+                            return new Result();
+                        }
+                        else
+                            return new Result(r.State, r.TextError, "Неправильний логін або пароль");
+                    }
+                    catch (Exception e)
+                    {
+                        //Utils.WriteLog("e", TAG, "Login=>", e);
+                        return new Result(-1, e.Message);
+                    }
                 }
             }
         }
@@ -96,18 +118,15 @@ namespace BRB5.Connector
 
                             foreach (var elt in t.data.Where(el => el.templateId == elp.templateId))
                             {
-                                if (elt.section != null)
-                                    foreach (var el in elt.section)
-                                        r.Add(new Raiting() { TypeDoc = pTypeDoc, NumberDoc = DocNumber, Id = el.sectionId, Parent = el.parentId, Text = el.text, IsHead = true, RatingTemplate = 1 + 2 + 4 + 8 });
+                                if (elt.sections != null)
+                                    foreach (var el in elt.sections)
+                                        r.Add(new Raiting() { TypeDoc = pTypeDoc, NumberDoc = DocNumber, Id = -el.sectionId, Parent = -el.parentId, Text = el.text, IsHead = true, RatingTemplate = 1 + 2 + 4 + 8 });
                                 if (elt.questions != null)
                                     foreach (var el in elt.questions)
-                                        r.Add(new Raiting() { TypeDoc = pTypeDoc, NumberDoc = DocNumber, Id = el.questionId, Parent = el.sectionId, Text = el.text, IsHead = false, RatingTemplate = el.RatingTemplate });
-                                /*
-      Id INTEGER  NOT NULL,
-      Parent INTEGER  NOT NULL,
-      IsHead INTEGER  NOT NULL DEFAULT(0),
-      Text TEXT,
-      RatingTemplate INTEGER         NOT NULL DEFAULT (0)*/
+                                        r.Add(new Raiting() { TypeDoc = pTypeDoc, NumberDoc = DocNumber, Id = el.questionId, Parent = -el.sectionId, Text = el.text, IsHead = false, RatingTemplate = el.RatingTemplate });
+
+                                r.Add(new Raiting() { TypeDoc = pTypeDoc, NumberDoc = DocNumber, Id = -1, Parent = 9999999, Text = "Всього", IsHead = false, RatingTemplate = 0 });
+
                             }
                         }
                         db.ReplaceDoc(d);
@@ -139,36 +158,62 @@ namespace BRB5.Connector
         /// <returns></returns>
         public override Result SendRaiting(IEnumerable<Raiting> pR)
         {
-            var RD = new List<Raitings>();
-            foreach (var el in pR)
-            {
-                RD.Add(new Raitings() { questionId = el.Id, value = el.Rating, comment = el.Text });
-            }
-
-            var e = pR.First(d => d.Id == -1);
-            if (e == null)
-                e = pR.First();
-            var r = new RequestSendRaiting() { userId = Config.CodeUser, action = "results",  answers = RD,planId=int.Parse(e.NumberDoc), text=e.Note};
-            string data2 = JsonConvert.SerializeObject(new Request() { userId = Config.CodeUser, action = "plans" });
-            HttpResult result = Http.HTTPRequest(2, "", data2, "application/json");//
-
-            if (result.HttpState != eStateHTTP.HTTP_OK )
-                return new Result( result);
             try
             {
-
-            }
-            catch(Exception ex)
+                var RD = new List<Raitings>();
+            foreach (var el in pR)
             {
-
+                RD.Add(new Raitings() { questionId = el.Id, value = el.Rating, comment = el.Note });
             }
-                    return null;
+
+            Raiting e = pR.FirstOrDefault(d => d.Id == -1);
+            if (e == null || e.Id==0)
+                e = pR.FirstOrDefault();
+            var r = new RequestSendRaiting() { userId = Config.CodeUser, action = "results", answers = RD, planId = int.Parse(e.NumberDoc), text = e.Note };
+            string data = JsonConvert.SerializeObject(r);
+            HttpResult result = Http.HTTPRequest(2, "", data, "application/json");//
+
+            if (result.HttpState != eStateHTTP.HTTP_OK)
+                return new Result(result);
+            
+                var res = JsonConvert.DeserializeObject<AnswerSendRaiting>(result.Result);
+                if (res.success)
+                {
+                    SendRaitingFiles(e.NumberDoc);
+                }
+                return null;
+            }
+            catch (Exception ex)
+            {
+                return new Result(ex);
+            }
         }
 
+        /// <summary>
+        /// Вивантажеємо на сервер файли Рейтингів
+        /// </summary>
+        /// <returns></returns>
+        public override Result SendRaitingFiles(string NumberDoc)
+        {
+            var R = new RequestSendRaitingFile() { planId = int.Parse(NumberDoc), action = "file",userId=Config.CodeUser};
+            foreach (var f in Directory.GetFiles(Path.Combine(Config.GetPathFiles, NumberDoc)))
+            {
+                R.file = Convert.ToBase64String(File.ReadAllBytes(Path.Combine(Config.GetPathFiles, f)));
+                R.fileExt = Path.GetExtension(f).Substring(1);
+                R.questionId = int.Parse(Path.GetFileName(f).Split('_')[0]);
+
+                string data = JsonConvert.SerializeObject(R);
+                HttpResult result = Http.HTTPRequest(2, "", data, "application/json");
+
+                if (result.HttpState == eStateHTTP.HTTP_OK)
+                {
+                    var res = JsonConvert.DeserializeObject<Answer>(result.Result);
+                }
+                
+            }
+            return new Result();
+        }
     }
-
-
-
 
 
     /*
@@ -176,6 +221,11 @@ namespace BRB5.Connector
   Formatting.Indented,
   new JsonSerializerSettings { DefaultValueHandling = DefaultValueHandling.Ignore });
       */
+
+    class Answer
+    {
+        public bool success { get; set; }
+    }
 
     class Request
     {
@@ -190,6 +240,17 @@ namespace BRB5.Connector
         public string password { get; set; }
     }
 
+    class DataLogin
+    {
+        public int userId { get; set; }
+        public string userName { get; set; }
+    }
+
+
+    class AnswerLogin : Answer
+    {
+      public DataLogin data { get; set; }
+    }
 
     class Section
     {
@@ -213,13 +274,12 @@ namespace BRB5.Connector
         public int templateId { get; set; }
         public string templateName { get; set; }
         //public DateTime updated { get; set; }
-        public IEnumerable<Section> section { get; set; }
+        public IEnumerable<Section> sections { get; set; }
         public IEnumerable<Questions> questions { get; set; }
     }
 
-    class Template
-    {
-        public bool success { get; set; }
+    class Template: Answer
+    {        
         public IEnumerable<DataTemplate> data { get; set; }
     }
 
@@ -231,9 +291,8 @@ namespace BRB5.Connector
         public DateTime date { get; set; }
     }
 
-    class Data
+    class Data: Answer
     {
-        public bool success { get; set; }
         public IEnumerable<DataData> data { get; set; }
     }
 
@@ -252,4 +311,23 @@ namespace BRB5.Connector
     }
 
 
+    class AnswerDataRaiting 
+    {
+        public int questionId { get; set; }
+        public int answerId { get; set; }
+    }
+
+    class AnswerSendRaiting : Answer
+    {
+        public IEnumerable<AnswerDataRaiting> data { get; set; }
+        public IEnumerable<string> errors { get; set; }
+    }
+
+    class RequestSendRaitingFile : Request
+    {
+        public int planId { get; set; }        
+        public int questionId { get; set; }
+        public string file { get; set; }
+        public string fileExt { get; set; }
+    }
 }

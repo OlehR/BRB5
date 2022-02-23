@@ -34,7 +34,7 @@ namespace BRB5
 
         private  void OnButtonLogin(object sender, System.EventArgs e)
         {
-            var r = new Result() { State = 0 };// c.Login(Login, Password);
+            var r = c.Login(Login, Password,Config.LoginServer);
             if (r.State == 0)
             {
 

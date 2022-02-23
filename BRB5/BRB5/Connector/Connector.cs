@@ -28,7 +28,7 @@ namespace BRB5.Connector
         }
 
         //Логін
-        public virtual Result Login(string pLogin, string pPassWord, bool pIsLoginCO=false) { throw new NotImplementedException(); }
+        public virtual Result Login(string pLogin, string pPassWord, eLoginServer pLoginServer) { throw new NotImplementedException(); }
         //Завантаження довідників.
         public virtual Result LoadGuidData(bool IsFull, ObservableInt pProgress) { throw new NotImplementedException(); }
 
@@ -63,7 +63,11 @@ namespace BRB5.Connector
         /// <returns></returns>
         public virtual Result SendRaiting(IEnumerable< Raiting> pR)  { throw new NotImplementedException(); }
 
-
+        /// <summary>
+        /// Вивантажеємо на сервер файли Рейтингів
+        /// </summary>
+        /// <returns></returns>
+        public virtual Result SendRaitingFiles(string NumberDoc) { throw new NotImplementedException(); }
 
 
         // Друк на стаціонарному термопринтері

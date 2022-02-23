@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BRB5.Model;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
@@ -28,12 +29,18 @@ namespace BRB5.View
         public ObservableCollection<Pictures> MyFiles { get; set; }
         string Mask;
         Raiting Raiting;
-        string NumberDoc;
-        public EditPhoto(string pNumberDoc,Raiting pRaiting)
+        string dir;
+        public EditPhoto(Raiting pRaiting)
         {
-            NumberDoc = pNumberDoc;
+            dir = Path.Combine(Config.GetPathFiles, pRaiting.NumberDoc);
+            if (!Directory.Exists(dir))
+            {
+                Directory.CreateDirectory(dir);
+                Directory.CreateDirectory(Path.Combine(dir, "Send"));
+            }
+
             Raiting = pRaiting;
-            Mask = $"{pNumberDoc}_{pRaiting.Id}_*.*";
+            Mask = $"{pRaiting.Id}_*.*";
             InitializeComponent();
             var d = Directory.GetFiles(FileSystem.AppDataDirectory, Mask);
             IEnumerable<Pictures> r = d.Select(e => new Pictures(e));
@@ -47,8 +54,8 @@ namespace BRB5.View
             {
                 // для примера сохраняем файл в локальном хранилище
                 var ext = Path.GetExtension(photo.FileName);
-                var FileName = $"{NumberDoc}_{Raiting.Id}_{DateTime.Now.ToString("yyyyMMdd_hhmmss")}";
-                var newFile = Path.Combine(FileSystem.AppDataDirectory, FileName + ext);
+                var FileName = $"{Raiting.Id}_{DateTime.Now:yyyyMMdd_hhmmssfff}";
+                var newFile = Path.Combine(dir, FileName + ext);
                 using (var stream = await photo.OpenReadAsync())
                 using (var newStream = File.OpenWrite(newFile))
                     await stream.CopyToAsync(newStream);
@@ -57,6 +64,7 @@ namespace BRB5.View
                 MyFiles.Add(new Pictures(newFile));
             }
         }
+
         private void OnButtonDel(object sender, System.EventArgs e)
         {
             Xamarin.Forms.View V = (Xamarin.Forms.View)sender;
@@ -65,6 +73,7 @@ namespace BRB5.View
             MyFiles.Remove(el);
             Raiting.QuantityPhoto--;
         }
+
         private void OnButtonClicked(object sender, System.EventArgs e)
         {
         }

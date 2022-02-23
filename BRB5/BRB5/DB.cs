@@ -3,6 +3,7 @@ using BRB5.Model;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text;
 using Xamarin.Essentials;
 using Xamarin.Forms;
@@ -236,11 +237,20 @@ CREATE UNIQUE INDEX RaitingId ON Raiting (TypeDoc,Id);";
 
         public IEnumerable<Raiting> GetRating(DocId pDoc)
         {
-            string sql = @"select Rs.TypeDoc,Rs.NumberDoc,Rs.Id,Rs.Parent,Rs.IsHead,Rs.Text,Rs.RatingTemplate,R.Rating,R.QuantityPhoto,R.Note
+            string sql = @"select Rs.TypeDoc,Rs.NumberDoc,Rs.Id,Rs.Parent as Parent,Rs.IsHead,Rs.Text,Rs.RatingTemplate,R.Rating,R.QuantityPhoto,R.Note
         from RaitingSample as Rs
         left join Raiting R on Rs.TypeDoc=R.TypeDoc and  Rs.NumberDoc=R.NumberDoc and Rs.Id=R.id
-        where Rs.TypeDoc=@TypeDoc and  Rs.NumberDoc=@NumberDoc";
+        where Rs.TypeDoc=@TypeDoc and  Rs.NumberDoc=@NumberDoc order by case when Rs.Id<0 then Rs.Id else Rs.Parent end ,  case when Rs.Id<0 then 0 else Rs.Id end";
             return db.Execute<DocId, Raiting>(sql, pDoc);
+            /*var l = db.Execute<DocId, Raiting>(sql, pDoc). ToList(); ///.OrderBy(x=>(-x.Parent)*1000000+x.Id)
+            var r = l.Where(el => el.Parent != 0);
+            foreach(var el in l.Where(el=>el.Parent==0))
+            {
+                var index = l.FindIndex(x => x.Parent == el.Id);
+                if (index > 0) index--;
+                l.Insert(index, el);
+            }
+            return r;*/
         }
 
         public bool ReplaceRaiting(Raiting pR)

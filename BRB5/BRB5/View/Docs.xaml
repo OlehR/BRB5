@@ -2,13 +2,14 @@
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" 
              xmlns:brb5="clr-namespace:BRB5" x:DataType="brb5:Docs"
+             NavigationPage.HasNavigationBar="False"
              x:Class="BRB5.Docs">
 
     <ContentPage.Content>
         <StackLayout>
-            <Label Text="dddd"
+           <!-- <Label Text="Список документів"
                 VerticalOptions="CenterAndExpand" 
-                HorizontalOptions="CenterAndExpand" />
+                HorizontalOptions="CenterAndExpand" />-->
 
             <ListView x:Name="ListQuestions"
               HasUnevenRows="True"
@@ -17,7 +18,7 @@
               >
                 <ListView.Header>
                     <StackLayout Orientation="Horizontal">
-                        <Label Text="Список    Запитань2" FontSize="25"
+                        <Label Text="Документи" FontSize="25"
                            BackgroundColor="#c5cae9" HorizontalOptions="FillAndExpand" />
                     </StackLayout>
                 </ListView.Header>

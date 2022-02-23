@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Drawing;
 using System.Runtime.CompilerServices;
 using System.Text;
 
@@ -14,8 +15,9 @@ namespace BRB5
         public int Id { get; set; }
         public int Parent { get; set; }
         public bool IsHead { get; set; }
+        public bool IsItem { get { return !IsHead; } }
         public string Text { get; set; }
-
+        public Color BackgroundColor { get { return IsHead ? Color.FromArgb(200, 200, 200)  : Color.FromArgb(230, 230, 230); } }
         public int RatingTemplate { get; set; }
 
         int _Rating;
@@ -41,6 +43,7 @@ namespace BRB5
         public double OpacityBad { get { return Rating == 3 ? 1d : 0.4d; } }
         public double OpacityNotKnow { get { return Rating == 4 ? 1d : 0.4d; } }
 
+        public bool IsEnableNotKnow { get { return (RatingTemplate & 8) ==8; } }
         public event PropertyChangedEventHandler PropertyChanged;
         protected virtual void OnPropertyChanged(string propertyName)
         {
