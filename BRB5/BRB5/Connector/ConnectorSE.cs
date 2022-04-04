@@ -6,6 +6,7 @@ using System.Text;
 using System.Linq;
 using Newtonsoft.Json.Converters;
 using System.IO;
+using Utils;
 
 namespace BRB5.Connector
 {
@@ -36,23 +37,39 @@ namespace BRB5.Connector
         //DB db = DB.GetDB();
         public override Result Login(string pLogin, string pPassWord, eLoginServer pLoginServer)
         {
+            Result Res = new Result();
             if (pLoginServer == eLoginServer.Bitrix)
             {
                 string data = JsonConvert.SerializeObject(new RequestLogin() { action = "auth", login = pLogin, password = pPassWord });
                 HttpResult result = Http.HTTPRequest(2, "", data, "application/json");
                 if (result.HttpState != eStateHTTP.HTTP_OK)
-                    return new Result(result);
+                {
+                    Res = new Result(result);
+                    FileLogger.WriteLogMessage($"ConnectorPSU.Login=>(pLogin=>{pLogin}, pPassWord=>{pPassWord},pLoginServer=>{pLoginServer}) Res=>({Res.State},{Res.Info},{Res.TextError})", eTypeLog.Full);
+                    return Res;
+                }
                 else
                 {
                     try
                     {
                         var t = JsonConvert.DeserializeObject<AnswerLogin>(result.Result);
                         if (!t.success || t.data.userId <= 0)
-                            return new Result(-1, "Не успішна авторизація. Можливо невірний логін чи пароль");
+                        {
+                            Res = new Result(-1, "Не успішна авторизація. Можливо невірний логін чи пароль");
+                            FileLogger.WriteLogMessage($"ConnectorPSU.Login=>(pLogin=>{pLogin}, pPassWord=>{pPassWord},pLoginServer=>{pLoginServer}) Res=>({Res.State},{Res.Info},{Res.TextError})", eTypeLog.Expanded);
+                            return Res;
+                        }                            
                         Config.CodeUser = t.data.userId;
-                        return new Result();
+                        Res= new Result();
+                        FileLogger.WriteLogMessage($"ConnectorPSU.Login=>(pLogin=>{pLogin}, pPassWord=>{pPassWord},pLoginServer=>{pLoginServer}) Res=>({Res.State},{Res.Info},{Res.TextError})", eTypeLog.Expanded);
+                        return Res;                        
                     }
-                    catch (Exception e) { return new Result(e); }
+                    catch (Exception e)
+                    {
+                        Res = new Result(e);
+                        FileLogger.WriteLogMessage($"ConnectorPSU.Login=>(pLogin=>{pLogin}, pPassWord=>{pPassWord},pLoginServer=>{pLoginServer}) Res=>({Res.State},{Res.Info},{Res.TextError})", eTypeLog.Error);
+                        return Res;
+                    }
                 }
             }
             else
@@ -64,7 +81,11 @@ namespace BRB5.Connector
                     return new Result(-1, res.HttpState.ToString(), "Неправильний логін або пароль");
                 }
                 else if (res.HttpState != eStateHTTP.HTTP_OK)
-                    return new Result(res, "Ви не підключені до мережі " + Config.Company.ToString());
+                {
+                    Res = new Result(res, "Ви не підключені до мережі " + Config.Company.ToString());
+                    FileLogger.WriteLogMessage($"ConnectorPSU.Login=>(pLogin=>{pLogin}, pPassWord=>{pPassWord},pLoginServer=>{pLoginServer}) Res=>({Res.State},{Res.Info},{Res.TextError})", eTypeLog.Expanded);
+                    return Res;
+                }
                 else
                 {
                     try
@@ -76,15 +97,21 @@ namespace BRB5.Connector
                             Config.Role = (eRole)r.Profile;
                             Config.CodeUser = r.data.userId;
                             Config.NameUser = r.data.userName;
-                            return new Result();
+                            FileLogger.WriteLogMessage($"ConnectorPSU.Login=>(pLogin=>{pLogin}, pPassWord=>{pPassWord},pLoginServer=>{pLoginServer}) Res=>({Res.State},{Res.Info},{Res.TextError})", eTypeLog.Full);
+                            return Res;
                         }
                         else
-                            return new Result(r.State, r.TextError, "Неправильний логін або пароль");
+                        {
+                            Res = new Result(r.State, r.TextError, "Неправильний логін або пароль");
+                            FileLogger.WriteLogMessage($"ConnectorPSU.Login=>(pLogin=>{pLogin}, pPassWord=>{pPassWord},pLoginServer=>{pLoginServer}) Res=>({Res.State},{Res.Info},{Res.TextError})", eTypeLog.Expanded);
+                            return Res;
+                        }           
                     }
                     catch (Exception e)
                     {
-                        //Utils.WriteLog("e", TAG, "Login=>", e);
-                        return new Result(-1, e.Message);
+                        Res = new Result(-1, e.Message);
+                        FileLogger.WriteLogMessage($"ConnectorPSU.Login=>(pLogin=>{pLogin}, pPassWord=>{pPassWord},pLoginServer=>{pLoginServer}) Res=>({Res.State},{Res.Info},{Res.TextError})", eTypeLog.Error);
+                        return Res;
                     }
                 }
             }
@@ -92,6 +119,7 @@ namespace BRB5.Connector
 
         public override Result LoadDocsData(int pTypeDoc, string pNumberDoc, ObservableInt pProgress, bool pIsClear)
         {
+            var Res = new Result();
             if (pTypeDoc == 11)
             {
                 string data = JsonConvert.SerializeObject(new Request() { userId = Config.CodeUser, action = "templates" });
@@ -134,10 +162,14 @@ namespace BRB5.Connector
                     }
                     catch (Exception e)
                     {
-                        return new Result(-1, e.Message);
+                        Res = new Result(-1, e.Message);
+                        FileLogger.WriteLogMessage($"ConnectorPSU.LoadDocsData=>(pTypeDoc=>{pTypeDoc}, pNumberDoc=>{pNumberDoc},pIsClear=>{pIsClear}) Res=>({Res.State},{Res.Info},{Res.TextError})", eTypeLog.Error);
+                        return Res;
                     }
             }
-            return null;
+            FileLogger.WriteLogMessage($"ConnectorPSU.LoadDocsData=>(pTypeDoc=>{pTypeDoc}, pNumberDoc=>{pNumberDoc},pIsClear=>{pIsClear}) Res=>({Res.State},{Res.Info},{Res.TextError})", eTypeLog.Error);
+
+            return Res;
         }
 
         /// <summary>
@@ -158,60 +190,94 @@ namespace BRB5.Connector
         /// <returns></returns>
         public override Result SendRaiting(IEnumerable<Raiting> pR)
         {
+            var Res = new Result();
             try
             {
                 var RD = new List<Raitings>();
-            foreach (var el in pR)
-            {
-                RD.Add(new Raitings() { questionId = el.Id, value = el.Rating, comment = el.Note });
-            }
-
-            Raiting e = pR.FirstOrDefault(d => d.Id == -1);
-            if (e == null || e.Id==0)
-                e = pR.FirstOrDefault();
-            var r = new RequestSendRaiting() { userId = Config.CodeUser, action = "results", answers = RD, planId = int.Parse(e.NumberDoc), text = e.Note };
-            string data = JsonConvert.SerializeObject(r);
-            HttpResult result = Http.HTTPRequest(2, "", data, "application/json");//
-
-            if (result.HttpState != eStateHTTP.HTTP_OK)
-                return new Result(result);
-            
-                var res = JsonConvert.DeserializeObject<AnswerSendRaiting>(result.Result);
-                if (res.success)
+                foreach (var el in pR)
                 {
-                    SendRaitingFiles(e.NumberDoc);
+                    RD.Add(new Raitings() { questionId = el.Id, value = el.Rating, comment = el.Note });
                 }
-                return null;
+
+                Raiting e = pR.FirstOrDefault(d => d.Id == -1);
+                if (e == null || e.Id == 0)
+                    e = pR.FirstOrDefault();
+                var r = new RequestSendRaiting() { userId = Config.CodeUser, action = "results", answers = RD, planId = int.Parse(e.NumberDoc), text = e.Note };
+                string data = JsonConvert.SerializeObject(r);
+                HttpResult result = Http.HTTPRequest(2, "", data, "application/json");//
+
+                if (result.HttpState != eStateHTTP.HTTP_OK)
+                    Res= new Result(result);
+                else
+                {
+                    var res = JsonConvert.DeserializeObject<AnswerSendRaiting>(result.Result);
+                    if (res.success)
+                    {
+                        SendRaitingFiles(e.NumberDoc);
+                    }
+                }
             }
             catch (Exception ex)
             {
-                return new Result(ex);
+                Res = new Result(ex);
             }
+            FileLogger.WriteLogMessage($"ConnectorPSU.SendRaiting=>() Res=>({Res.State},{Res.Info},{Res.TextError})", eTypeLog.Error);
+            return Res;
         }
 
         /// <summary>
         /// Вивантажеємо на сервер файли Рейтингів
         /// </summary>
         /// <returns></returns>
-        public override Result SendRaitingFiles(string NumberDoc)
+        public override Result SendRaitingFiles(string pNumberDoc)
         {
-            var R = new RequestSendRaitingFile() { planId = int.Parse(NumberDoc), action = "file",userId=Config.CodeUser};
-            foreach (var f in Directory.GetFiles(Path.Combine(Config.GetPathFiles, NumberDoc)))
+            var Res = new Result();
+            var DirArx = Path.Combine(Config.GetPathFiles, "arx");
+            if (!Directory.Exists(DirArx))
             {
-                R.file = Convert.ToBase64String(File.ReadAllBytes(Path.Combine(Config.GetPathFiles, f)));
-                R.fileExt = Path.GetExtension(f).Substring(1);
-                R.questionId = int.Parse(Path.GetFileName(f).Split('_')[0]);
-
-                string data = JsonConvert.SerializeObject(R);
-                HttpResult result = Http.HTTPRequest(2, "", data, "application/json");
-
-                if (result.HttpState == eStateHTTP.HTTP_OK)
-                {
-                    var res = JsonConvert.DeserializeObject<Answer>(result.Result);
-                }
-                
+                Directory.CreateDirectory(DirArx);
             }
-            return new Result();
+            
+            var R = new RequestSendRaitingFile() { planId = int.Parse(pNumberDoc), action = "file", userId = Config.CodeUser };
+            foreach (var f in Directory.GetFiles(Path.Combine(Config.GetPathFiles, pNumberDoc)))
+            {
+                try
+                {
+                    R.file = Convert.ToBase64String(File.ReadAllBytes(Path.Combine(Config.GetPathFiles, f)));
+                    R.fileExt = Path.GetExtension(f).Substring(1);
+                    R.questionId = int.Parse(Path.GetFileName(f).Split('_')[0]);
+
+                    string data = JsonConvert.SerializeObject(R);
+                    HttpResult result = Http.HTTPRequest(2, "", data, "application/json");
+
+                    if (result.HttpState == eStateHTTP.HTTP_OK)
+                    {
+                        var res = JsonConvert.DeserializeObject<Answer>(result.Result);
+                        if (res.success)
+                        {
+                            var FileFrom = Path.Combine(Config.GetPathFiles, f);
+                            File.Move(FileFrom, Path.Combine(DirArx, f));
+                        }
+                        else
+                        {
+                            Res = new Result(-1,"Не передався файл", f);
+                        }
+
+                        FileLogger.WriteLogMessage($"ConnectorPSU.SendRaitingFiles Send=>(File={f}) Res=>(res.success)", res.success ? eTypeLog.Full : eTypeLog.Expanded);
+                    }
+                    else
+                    {
+                        FileLogger.WriteLogMessage($"ConnectorPSU.SendRaitingFiles=>(File={f}) Res=>({Res.State},{Res.Info},{Res.TextError})", eTypeLog.Expanded);
+                    }
+                }
+                catch (Exception e)
+                {
+                    Res = new Result(e);
+                    FileLogger.WriteLogMessage($"ConnectorPSU.SendRaitingFiles=>(File={f}) Res=>({Res.State},{Res.Info},{Res.TextError})", eTypeLog.Error);
+                }
+            }
+
+            return Res;
         }
     }
 

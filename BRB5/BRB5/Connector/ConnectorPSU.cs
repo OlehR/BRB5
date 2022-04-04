@@ -3,6 +3,7 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using Utils;
 
 namespace BRB5.Connector
 {
@@ -62,18 +63,25 @@ namespace BRB5.Connector
             HttpResult result = Http.HTTPRequest(0, "", data, "application/json");//
 
             if (result.HttpState != eStateHTTP.HTTP_OK)
+            {
+                FileLogger.WriteLogMessage($"ConnectorPSU.Login=>(pLogin=>{pLogin}, pPassWord=>{pPassWord},pLoginServer=>{pLoginServer}) Res=>{result.HttpState}",eTypeLog.Error);
                 return new Result(result, $"Ви не підключені до мережі {Config.Company}\n{result.Result}");
+            }
             else
                 try
                 {
                     var r = JsonConvert.DeserializeObject<Result>(result.Result);
                     if (r.State == 0)
                         Config.Role = eRole.Admin;
+                    FileLogger.WriteLogMessage($"ConnectorPSU.Login=>(pLogin=>{pLogin}, pPassWord=>{pPassWord},pLoginServer=>{pLoginServer}) Res=>({r.State},{r.Info},{r.TextError})", eTypeLog.Error);
+
                     return r;
                 }
                 catch (Exception e)
                 {
-                    return new Result(-1, e.Message);
+                    var r = new Result(-1, e.Message);
+                    FileLogger.WriteLogMessage($"ConnectorPSU.Login=>(pLogin=>{pLogin}, pPassWord=>{pPassWord},pLoginServer=>{pLoginServer}) Res=>({r.State},{r.Info},{r.TextError})", eTypeLog.Error);
+                    return r;
                 }
 
         }

@@ -5,6 +5,7 @@ using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
+using Utils;
 
 namespace BRB5.Connector
 {
@@ -92,36 +93,47 @@ namespace BRB5.Connector
             }
         }
 
-        public HttpResult HTTPRequest(int pUrlApi, String pApi, String pData, String pContentType, String pLogin=null, String pPassWord=null)
+        public HttpResult HTTPRequest(int pUrlApi, string pApi, string pData, string pContentType, string pLogin=null, string pPassWord=null)
         { //!!!!TMP
-            if (pUrlApi == 2)
+            try
             {
-                pLogin = "TSD";
-                pPassWord = "321123Sd";
-            }
-            if (pLogin != null && pLogin.Equals("Admin"))
-            {
-                pLogin = (Config.Company == eCompany.Sim23 ? "brb" : "c");
-                pPassWord = (Config.Company == eCompany.Sim23 ? "brb" : "c");
-            }
-            HttpResult res = new HttpResult();
-            if (Url != null && Url.Length >= pUrlApi && Url[pUrlApi] != null)
-            {
-                res = HTTPRequestAsync(Url[pUrlApi][DefaultApi[pUrlApi]] + pApi, pData, pContentType, pLogin, pPassWord).Result;
-                if (res.HttpState != eStateHTTP.HTTP_OK && res.HttpState != eStateHTTP.HTTP_UNAUTHORIZED)
+                if (pUrlApi == 2)
                 {
-                    for (int i = 0; i < Url[pUrlApi].Length; i++)
+                    pLogin = "TSD";
+                    pPassWord = "321123Sd";
+                }
+                if (pLogin != null && pLogin.Equals("Admin"))
+                {
+                    pLogin = (Config.Company == eCompany.Sim23 ? "brb" : "c");
+                    pPassWord = (Config.Company == eCompany.Sim23 ? "brb" : "c");
+                }
+                HttpResult res = new HttpResult();
+                if (Url != null && Url.Length >= pUrlApi && Url[pUrlApi] != null)
+                {
+                    res = HTTPRequestAsync(Url[pUrlApi][DefaultApi[pUrlApi]] + pApi, pData, pContentType, pLogin, pPassWord).Result;
+                    if (res.HttpState != eStateHTTP.HTTP_OK && res.HttpState != eStateHTTP.HTTP_UNAUTHORIZED)
                     {
-                        if (i != DefaultApi[pUrlApi] && !string.IsNullOrEmpty( Url[pUrlApi][i]))
+                        for (int i = 0; i < Url[pUrlApi].Length; i++)
                         {
-                            res = HTTPRequestAsync(Url[pUrlApi][i] + pApi, pData, pContentType, pLogin, pPassWord).Result;
-                            if (res.HttpState == eStateHTTP.HTTP_OK)
-                                DefaultApi[pUrlApi] = i;
+                            if (i != DefaultApi[pUrlApi] && !string.IsNullOrEmpty(Url[pUrlApi][i]))
+                            {
+                                res = HTTPRequestAsync(Url[pUrlApi][i] + pApi, pData, pContentType, pLogin, pPassWord).Result;
+                                if (res.HttpState == eStateHTTP.HTTP_OK)
+                                    DefaultApi[pUrlApi] = i;
+                            }
                         }
                     }
                 }
+                FileLogger.WriteLogMessage($"GetDataHTTP.HTTPRequest=>(pUrlApi=>({pUrlApi},{Url[pUrlApi][DefaultApi[pUrlApi]]}), pApi=>{pApi},  pData=>{pData},  pContentType=>{pContentType},  pLogin=>{pLogin},  pPassWord=>{pPassWord}) Res=>({res.HttpState},{res.Result})" );
+                return res;
             }
-            return res;
+            catch(Exception e)
+            {
+                FileLogger.WriteLogMessage($"GetDataHTTP.HTTPRequest=>{e.Message}/nStackTrace=> {e.StackTrace}", eTypeLog.Error);
+                return new HttpResult() { Result = $"{e.Message}{Environment.NewLine} {e.StackTrace}" };
+            }
+           
+           
         }
     }
 }
