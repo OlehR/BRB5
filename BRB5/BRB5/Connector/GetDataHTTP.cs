@@ -68,7 +68,7 @@ namespace BRB5.Connector
                     client = new HttpClient(handler);
                 }
 
-                client.Timeout = TimeSpan.FromSeconds(5);
+                client.Timeout = TimeSpan.FromSeconds(15);
                 
                 //client.BaseAddress = new Uri(pURL);
                 //var byteArray = Encoding.ASCII.GetBytes("admin:Xa38dF79");

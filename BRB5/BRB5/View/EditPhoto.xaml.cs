@@ -36,13 +36,13 @@ namespace BRB5.View
             if (!Directory.Exists(dir))
             {
                 Directory.CreateDirectory(dir);
-                Directory.CreateDirectory(Path.Combine(dir, "Send"));
+               // Directory.CreateDirectory(Path.Combine(dir, "Send"));
             }
 
             Raiting = pRaiting;
             Mask = $"{pRaiting.Id}_*.*";
             InitializeComponent();
-            var d = Directory.GetFiles(FileSystem.AppDataDirectory, Mask);
+            var d = Directory.GetFiles(dir, Mask);
             IEnumerable<Pictures> r = d.Select(e => new Pictures(e));
             MyFiles = new ObservableCollection<Pictures>(r);
             BindingContext = this;

@@ -31,13 +31,11 @@ namespace BRB5
             BindingContext = this;
         }
 
-
         private  void OnButtonLogin(object sender, System.EventArgs e)
         {
             var r = c.Login(Login, Password,Config.LoginServer);
             if (r.State == 0)
             {
-
                 db.SetConfig<string>("Login", Login);
                 db.SetConfig<bool>("IsAutoLogin", true);
                 db.SetConfig<string>("Password", Password);
@@ -68,7 +66,7 @@ namespace BRB5
                 case eKindDoc.Simple:
                     await Navigation.PushAsync(new DocItem(vTypeDoc.CodeDoc));
                     break;
-                case eKindDoc.Raiting:                   
+                case eKindDoc.Raiting:
                     await Navigation.PushAsync(new Docs(vTypeDoc.CodeDoc));
                     break;
                 default:                  

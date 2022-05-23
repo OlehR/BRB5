@@ -21,7 +21,7 @@ namespace BRB5
     {
 
         DB db = DB.GetDB();
-        DocId cDocId;
+        Doc cDoc;
         public ObservableCollection<Raiting> Questions { get; set; }
 
         int CountAll,CountChoice;
@@ -35,23 +35,35 @@ namespace BRB5
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }*/
-        public Item(DocId pDocId)
+        public Item(Doc pDoc)
         {
-            cDocId = pDocId;
+            cDoc = pDoc;
             
             InitializeComponent();
-
-             var Q = db.GetRating(cDocId);
+            var Q = db.GetRating(cDoc);
+            var R = new List<Raiting>();
+            foreach (var e in Q.Where(d => d.IsHead).OrderBy(d => d.OrderRS))
+            {
+                R.Add(e);
+                foreach (var el in Q.Where(d => d.Parent == e.Id).OrderBy(d => d.OrderRS))
+                {
+                    if (e.Rating == 4)
+                        el.IsVisible = false;
+                    R.Add(el);
+                }
+            }
 
             //Ховаємо непотрібні питання
-            foreach (var e in Q.Where(d => d.IsHead && d.Rating==4) )
+            /*foreach (var e in Q.Where(d => d.IsHead && d.Rating==4) )
             foreach (var el in Q.Where(d => d.Parent == e.Id))
             {
                 el.IsVisible = e.Rating != 4;
             }
-            CountAll = Q.Count(el => !el.IsHead);
 
-            Questions = new ObservableCollection<Raiting>(Q);
+            */
+            CountAll = R.Count(el => !el.IsHead);
+
+            Questions = new ObservableCollection<Raiting>(R);
             RefreshHead();
             this.BindingContext = this;
         }
@@ -90,7 +102,10 @@ namespace BRB5
                 {
                     el.IsVisible = vQuestion.Rating != 4;
                     if (el.Rating == 0 && vQuestion.Rating == 4)
+                    {
                         el.Rating = 4;
+                        db.ReplaceRaiting(el);
+                    }
                 }
             }
             db.ReplaceRaiting(vQuestion);
@@ -119,9 +134,16 @@ namespace BRB5
         
         private void OnButtonSave(object sender, System.EventArgs e)
         {
-            var r=db.GetRating(cDocId);
+            var r=db.GetRating(cDoc);
             var c = Connector.Connector.GetInstance();
-            c.SendRaiting(r);
+            var res=c.SendRaiting(r,cDoc);
+            if (res.State == 0)
+            {
+                cDoc.State = 1;
+                db.SetStateDoc(cDoc);
+            }
+            DisplayAlert("Збереження", res.TextError, "OK");//.Wait();
+            Navigation.PopAsync();
         }
 
         private void EditPhoto(object sender, System.EventArgs e)

@@ -133,6 +133,7 @@ namespace BRB5.Connector
                 else
                     try
                     {
+                        bool AddDoc;
                         var t = JsonConvert.DeserializeObject<Template>(result.Result);
                         var p = JsonConvert.DeserializeObject<Data>(result2.Result, new IsoDateTimeConverter { DateTimeFormat = "dd.MM.yyyy HH:mm:ss" });
                         var d = new List<Doc>();
@@ -140,18 +141,23 @@ namespace BRB5.Connector
                         foreach (var elp in p.data)
                         {
                             var DocNumber = elp.planId.ToString();
-                            d.Add(new Doc()
-                            { TypeDoc = pTypeDoc, NumberDoc = DocNumber, DateDoc = elp.date, ExtInfo = elp.shopId.ToString() });
+                            AddDoc = false;
+                           
 
 
                             foreach (var elt in t.data.Where(el => el.templateId == elp.templateId))
                             {
+                                if (!AddDoc)
+                                {
+                                    d.Add(new Doc()
+                                    { TypeDoc = pTypeDoc, NumberDoc = DocNumber, DateDoc = elp.date, CodeWarehouse = elp.shopId, Description = elt.templateName });
+                                }
                                 if (elt.sections != null)
                                     foreach (var el in elt.sections)
-                                        r.Add(new Raiting() { TypeDoc = pTypeDoc, NumberDoc = DocNumber, Id = -el.sectionId, Parent = -el.parentId, Text = el.text, IsHead = true, RatingTemplate = 1 + 2 + 4 + 8 });
+                                        r.Add(new Raiting() { TypeDoc = pTypeDoc, NumberDoc = DocNumber, Id = -el.sectionId, Parent = -el.parentId, Text = el.text, IsHead = true, RatingTemplate = 1 + 2 + 4 + 8 ,OrderRS= el.sectionId });
                                 if (elt.questions != null)
                                     foreach (var el in elt.questions)
-                                        r.Add(new Raiting() { TypeDoc = pTypeDoc, NumberDoc = DocNumber, Id = el.questionId, Parent = -el.sectionId, Text = el.text, IsHead = false, RatingTemplate = el.RatingTemplate });
+                                        r.Add(new Raiting() { TypeDoc = pTypeDoc, NumberDoc = DocNumber, Id = el.questionId, Parent = -el.sectionId, Text = el.text, IsHead = false, RatingTemplate = el.RatingTemplate,OrderRS=el.questionId });
 
                                 r.Add(new Raiting() { TypeDoc = pTypeDoc, NumberDoc = DocNumber, Id = -1, Parent = 9999999, Text = "Всього", IsHead = false, RatingTemplate = 0 });
 
@@ -188,7 +194,7 @@ namespace BRB5.Connector
         /// </summary>
         /// <param name="pR"></param>
         /// <returns></returns>
-        public override Result SendRaiting(IEnumerable<Raiting> pR)
+        public override Result SendRaiting(IEnumerable<Raiting> pR, Doc pDoc)
         {
             var Res = new Result();
             try
@@ -213,7 +219,7 @@ namespace BRB5.Connector
                     var res = JsonConvert.DeserializeObject<AnswerSendRaiting>(result.Result);
                     if (res.success)
                     {
-                        SendRaitingFiles(e.NumberDoc);
+                        Res=SendRaitingFiles(e.NumberDoc);
                     }
                 }
             }
@@ -231,19 +237,25 @@ namespace BRB5.Connector
         /// <returns></returns>
         public override Result SendRaitingFiles(string pNumberDoc)
         {
+            int Sucsses = 0;
+            Result LastError = null;
             var Res = new Result();
             var DirArx = Path.Combine(Config.GetPathFiles, "arx");
             if (!Directory.Exists(DirArx))
             {
                 Directory.CreateDirectory(DirArx);
             }
-            
+            if (!Directory.Exists(Path.Combine( DirArx, pNumberDoc)))
+            {
+                Directory.CreateDirectory(Path.Combine(DirArx, pNumberDoc));
+            }
+
             var R = new RequestSendRaitingFile() { planId = int.Parse(pNumberDoc), action = "file", userId = Config.CodeUser };
             foreach (var f in Directory.GetFiles(Path.Combine(Config.GetPathFiles, pNumberDoc)))
             {
                 try
                 {
-                    R.file = Convert.ToBase64String(File.ReadAllBytes(Path.Combine(Config.GetPathFiles, f)));
+                    R.file = Convert.ToBase64String(File.ReadAllBytes(f));
                     R.fileExt = Path.GetExtension(f).Substring(1);
                     R.questionId = int.Parse(Path.GetFileName(f).Split('_')[0]);
 
@@ -255,8 +267,11 @@ namespace BRB5.Connector
                         var res = JsonConvert.DeserializeObject<Answer>(result.Result);
                         if (res.success)
                         {
-                            var FileFrom = Path.Combine(Config.GetPathFiles, f);
-                            File.Move(FileFrom, Path.Combine(DirArx, f));
+                            var FileTo = Path.Combine(DirArx, pNumberDoc, Path.GetFileName(f));
+                            File.Copy(f, FileTo, true);
+                            File.Delete(f);
+                            //File.Move(f, FileTo);
+                            Sucsses++;
                         }
                         else
                         {
@@ -268,6 +283,7 @@ namespace BRB5.Connector
                     else
                     {
                         FileLogger.WriteLogMessage($"ConnectorPSU.SendRaitingFiles=>(File={f}) Res=>({Res.State},{Res.Info},{Res.TextError})", eTypeLog.Expanded);
+                        LastError = Res;
                     }
                 }
                 catch (Exception e)
@@ -276,7 +292,8 @@ namespace BRB5.Connector
                     FileLogger.WriteLogMessage($"ConnectorPSU.SendRaitingFiles=>(File={f}) Res=>({Res.State},{Res.Info},{Res.TextError})", eTypeLog.Error);
                 }
             }
-
+            Res = LastError ?? Res;
+            Res.TextError = $"Успішно відправлено  {Sucsses} файлів {Res.TextError}";
             return Res;
         }
     }
@@ -323,6 +340,7 @@ namespace BRB5.Connector
         public int sectionId { get; set; }
         public string text { get; set; }
         public int parentId { get; set; }
+        public int Order { get; set; }
     }
 
     class Questions
@@ -333,6 +351,7 @@ namespace BRB5.Connector
         public int value { get; set; }
         public int[] answers { get; set; }
         public int RatingTemplate { get { int r = 0; for (int i = 0; i < answers.Length; i++) r += (1 >> answers[i]); return r; } }
+        public int Order { get; set; }
     }
 
     class DataTemplate
@@ -375,7 +394,6 @@ namespace BRB5.Connector
         public string text { get; set; }
         public IEnumerable<Raitings> answers { get; set; }
     }
-
 
     class AnswerDataRaiting 
     {

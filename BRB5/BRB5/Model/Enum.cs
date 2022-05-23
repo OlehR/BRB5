@@ -5,7 +5,8 @@
         NotDefined = 0,
         VPSU,
         SparPSU,
-        Sim23
+        Sim23,
+        Sim23FTP
     }
 
     public enum eLoginServer

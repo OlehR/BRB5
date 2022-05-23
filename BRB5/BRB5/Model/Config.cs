@@ -29,11 +29,11 @@ namespace BRB5.Model
         public static int CodeUser { get; set; } = 233;
         public static string NameUser { get; set; }
 
-        public static int GetCodeUnitWeight() { return Company == eCompany.Sim23 ? 166 : 7; }
+        public static int GetCodeUnitWeight() { return Company == eCompany.Sim23 || Company == eCompany.Sim23FTP ? 166 : 7; }
 
-        public static int GetCodeUnitPiece() { return Company == eCompany.Sim23 ? 796 : 19; }
+        public static int GetCodeUnitPiece()  { return Company == eCompany.Sim23 || Company == eCompany.Sim23FTP ? 796 : 19; }
 
-        public static string GetPathFiles { get { return FileSystem.AppDataDirectory; } }
+        public static string GetPathFiles { get { string res=@"D:\temp"; try { res = FileSystem.AppDataDirectory; } catch (Exception e) { } return res; } }
         // public static string GenRaitingFileName(Raiting r);
     }
 }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
@@ -14,11 +15,22 @@ namespace BRB5
         /// </summary>
         public int Id { get; set; }
         public int Parent { get; set; }
+        [JsonIgnore]
         public bool IsHead { get; set; }
+        [JsonIgnore]
         public bool IsItem { get { return !IsHead; } }
         public string Text { get; set; }
+        [JsonIgnore]
         public Color BackgroundColor { get { return IsHead ? Color.FromArgb(200, 200, 200)  : Color.FromArgb(230, 230, 230); } }
-        public int RatingTemplate { get; set; }
+        /// <summary>
+        /// Доступні варіанти відповіді 1 -погано + 2-так собі + 4 - добре + 8 - відсутня відповідь
+        /// </summary>
+        public int RatingTemplate { get; set; }  
+        /// <summary>
+        /// Порядок сортування
+        /// </summary>
+        public int OrderRS { get; set; }
+
 
         int _Rating;
         public int Rating { get { return _Rating; } set 
@@ -33,16 +45,23 @@ namespace BRB5
             } } 
         public string Note { get; set; }
         int _QuantityPhoto;
+       
         public int QuantityPhoto { get { return _QuantityPhoto; } set { _QuantityPhoto = value; OnPropertyChanged("QuantityPhoto"); } }
 
         bool _IsVisible = true;
+        [JsonIgnore]
         public bool IsVisible { get { return _IsVisible; } set { _IsVisible = value; OnPropertyChanged("IsVisible"); OnPropertyChanged("HeightRequest"); } }
+        [JsonIgnore]
         public double HeightRequest { get { return _IsVisible ? -1d : 0d; } }
+        [JsonIgnore]
         public double OpacityOk { get { return Rating == 1 ? 1d : 0.4d; } }
+        [JsonIgnore]
         public double OpacitySoSo { get { return Rating == 2 ? 1d : 0.4d; } }
+        [JsonIgnore]
         public double OpacityBad { get { return Rating == 3 ? 1d : 0.4d; } }
+        [JsonIgnore]
         public double OpacityNotKnow { get { return Rating == 4 ? 1d : 0.4d; } }
-
+        [JsonIgnore]
         public bool IsEnableNotKnow { get { return (RatingTemplate & 8) ==8; } }
         public event PropertyChangedEventHandler PropertyChanged;
         protected virtual void OnPropertyChanged(string propertyName)

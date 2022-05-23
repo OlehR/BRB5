@@ -51,13 +51,17 @@
             FlexLayout.AlignSelf="Center"  FlexLayout.Grow="1"  HorizontalOptions="FillAndExpand"
             Clicked="OnButtonClicked" ></Button>
 
-                                        <Button  Text="{Binding NameUser}" ClassId="Ok" Grid.Column="2" Grid.Row="0" 
+                                        <Button  Text="{Binding CodeWarehouse}" ClassId="Ok" Grid.Column="2" Grid.Row="0" 
             BackgroundColor="Yellow" 
             FlexLayout.AlignSelf="End"  FlexLayout.Grow="1"  HorizontalOptions="FillAndExpand"
             Clicked="OnButtonClicked" ></Button>
-                                        <Button  Text="{Binding Description}" ClassId="Ok" Grid.Column="0" Grid.Row="1"  Grid.ColumnSpan="3"
+                                        <Button  Text="{Binding Description}" ClassId="Ok" Grid.Column="0" Grid.Row="1"  Grid.ColumnSpan="2"
             BackgroundColor="LightYellow" 
             FlexLayout.AlignSelf="Center"  FlexLayout.Grow="1"  HorizontalOptions="FillAndExpand"
+            Clicked="OnButtonClicked" ></Button>
+                                        <Button  Text="{Binding NameUser}" ClassId="Ok" Grid.Column="2" Grid.Row="1" 
+            BackgroundColor="Yellow" 
+            FlexLayout.AlignSelf="End"  FlexLayout.Grow="1"  HorizontalOptions="FillAndExpand"
             Clicked="OnButtonClicked" ></Button>
 
                                     </Grid> 

@@ -19,10 +19,19 @@ namespace BRB5.Connector
         {
             if (Instance == null)
             {
-                if (Config.Company == eCompany.Sim23)
-                    Instance = new ConnectorSE();
-                else
-                    Instance = new ConnectorPSU();
+                switch (Config.Company)
+                {
+                    case eCompany.Sim23:
+                        Instance = new ConnectorSE();
+                        break;
+                    case eCompany.Sim23FTP:
+                        Instance = new ConnectorSE_FTP();
+                        break;
+                    case eCompany.SparPSU:
+                    case eCompany.VPSU:
+                        Instance = new ConnectorPSU();
+                        break;
+                }
             }
             return Instance;
         }
@@ -61,7 +70,7 @@ namespace BRB5.Connector
         /// </summary>
         /// <param name="pR"></param>
         /// <returns></returns>
-        public virtual Result SendRaiting(IEnumerable< Raiting> pR)  { throw new NotImplementedException(); }
+        public virtual Result SendRaiting(IEnumerable< Raiting> pR, Doc pDoc)  { throw new NotImplementedException(); }
 
         /// <summary>
         /// Вивантажеємо на сервер файли Рейтингів

@@ -49,6 +49,7 @@ CREATE TABLE DOC (
     DateDoc           DATE      NOT NULL,
     TypeDoc           INTEGER   NOT NULL DEFAULT (0),
     NumberDoc         TEXT      NOT NULL,
+    CodeWarehouse     INTEGER   NOT NULL DEFAULT (0),
     ExtInfo           TEXT,
     NameUser          TEXT,
     BarCode           TEXT,
@@ -145,8 +146,9 @@ CREATE TABLE RaitingSample(
     Parent INTEGER  NOT NULL,
     IsHead INTEGER  NOT NULL DEFAULT(0),
     Text TEXT,
-    RatingTemplate INTEGER         NOT NULL DEFAULT (0));
-CREATE UNIQUE INDEX RaitingSampleId ON RaitingSample (TypeDoc,Id);
+    RatingTemplate INTEGER         NOT NULL DEFAULT (0),
+    OrderRS INTEGER);
+CREATE UNIQUE INDEX RaitingSampleId ON RaitingSample (TypeDoc,NumberDoc,Id);
 
 CREATE TABLE Raiting(
     TypeDoc     INTEGER         NOT NULL DEFAULT (0),
@@ -155,7 +157,19 @@ CREATE TABLE Raiting(
     Rating       INTEGER NOT NULL DEFAULT (0),   
     QuantityPhoto INTEGER NOT NULL DEFAULT (0),
     Note TEXT);
-CREATE UNIQUE INDEX RaitingId ON Raiting (TypeDoc,Id);";
+CREATE UNIQUE INDEX RaitingId ON Raiting (TypeDoc,Id);
+
+CREATE TABLE User (
+    CodeUser   INTEGER NOT NULL,
+    NameUser   TEXT NOT NULL,
+    BarCode    TEXT NOT NULL,
+    TypeUser  INTEGER NOT NULL,
+    Login       TEXT NOT NULL,
+    PassWord    TEXT NOT NULL
+);
+CREATE UNIQUE INDEX UserId ON User (CodeUser);
+CREATE UNIQUE INDEX UserLogin ON User (Login);
+";
 
         public SQLite db;
         public DB()
@@ -223,24 +237,24 @@ CREATE UNIQUE INDEX RaitingId ON Raiting (TypeDoc,Id);";
 
         public bool ReplaceDoc(IEnumerable<Doc> pDoc)
         {
-            string Sql = @"replace into Doc ( DateDoc, TypeDoc, NumberDoc, ExtInfo, NameUser, BarCode, Description, State, IsControl, NumberDoc1C, DateOutInvoice, NumberOutInvoice, Color) values 
-                                            (@DateDoc,@TypeDoc,@NumberDoc,@ExtInfo,@NameUser,@BarCode,@Description,@State,@IsControl,@NumberDoc1C,@DateOutInvoice,@NumberOutInvoice,@Color)";
-           
-                return db.BulkExecuteNonQuery<Doc>(Sql,pDoc) >= 0;
+            string Sql = @"replace into Doc ( DateDoc, TypeDoc, NumberDoc, CodeWarehouse, ExtInfo, NameUser, BarCode, Description, State, IsControl, NumberDoc1C, DateOutInvoice, NumberOutInvoice, Color) values 
+                                            (@DateDoc,@TypeDoc,@NumberDoc,@CodeWarehouse,@ExtInfo,@NameUser,@BarCode,@Description,@State,@IsControl,@NumberDoc1C,@DateOutInvoice,@NumberOutInvoice,@Color)";
+            return db.BulkExecuteNonQuery<Doc>(Sql, pDoc) >= 0;
         }
 
         public IEnumerable<Doc> GetDoc(int pTypeDoc)
         {
-            string Sql = "select * from Doc where TypeDoc= @TypeDoc ";
+            string Sql = "select * from Doc where TypeDoc= @TypeDoc and DateDoc >= date(datetime(CURRENT_TIMESTAMP,'-5 day')) order by DateDoc DESC";
             return db.Execute<object, Doc>(Sql, new  { TypeDoc = pTypeDoc });
         }
 
         public IEnumerable<Raiting> GetRating(DocId pDoc)
         {
-            string sql = @"select Rs.TypeDoc,Rs.NumberDoc,Rs.Id,Rs.Parent as Parent,Rs.IsHead,Rs.Text,Rs.RatingTemplate,R.Rating,R.QuantityPhoto,R.Note
+            string sql = @"select Rs.TypeDoc,Rs.NumberDoc,Rs.Id,Rs.Parent as Parent,Rs.IsHead,Rs.Text,Rs.RatingTemplate,R.Rating,R.QuantityPhoto,R.Note,Rs.OrderRS
         from RaitingSample as Rs
         left join Raiting R on Rs.TypeDoc=R.TypeDoc and  Rs.NumberDoc=R.NumberDoc and Rs.Id=R.id
-        where Rs.TypeDoc=@TypeDoc and  Rs.NumberDoc=@NumberDoc order by case when Rs.Id<0 then Rs.Id else Rs.Parent end ,  case when Rs.Id<0 then 0 else Rs.Id end";
+        where Rs.TypeDoc=@TypeDoc and  Rs.NumberDoc=@NumberDoc order by case when Rs.Id<0 then Rs.Id else Rs.Parent end ,  case when Rs.Id<0 then 0 else Rs.Id end
+        --order by Rs.OrderRS,Rs.Id";
             return db.Execute<DocId, Raiting>(sql, pDoc);
             /*var l = db.Execute<DocId, Raiting>(sql, pDoc). ToList(); ///.OrderBy(x=>(-x.Parent)*1000000+x.Id)
             var r = l.Where(el => el.Parent != 0);
@@ -262,8 +276,8 @@ CREATE UNIQUE INDEX RaitingId ON Raiting (TypeDoc,Id);";
 
         public bool ReplaceRaitingSample(IEnumerable<Raiting> pR)
         {
-            string Sql = @"replace into RaitingSample ( TypeDoc, NumberDoc, Id, Parent, IsHead, Text, RatingTemplate ) values 
-                                                      (@TypeDoc,@NumberDoc,@Id,@Parent,@IsHead,@Text,@RatingTemplate )";
+            string Sql = @"replace into RaitingSample ( TypeDoc, NumberDoc, Id, Parent, IsHead, Text, RatingTemplate, OrderRS ) values 
+                                                      (@TypeDoc,@NumberDoc,@Id,@Parent,@IsHead,@Text,@RatingTemplate,@OrderRS )";
             return db.BulkExecuteNonQuery<Raiting>(Sql, pR) >= 0;
         }
 
@@ -287,12 +301,30 @@ CREATE UNIQUE INDEX RaitingId ON Raiting (TypeDoc,Id);";
             return db.Execute<Warehouse>(Sql);
         }
 
+        public bool SetStateDoc(Doc pDoc)
+        {
+            string Sql = @"Update Doc set State=@State  where NumberDoc= @NumberDoc";
+            return db.ExecuteNonQuery<Doc>(Sql, pDoc) >= 0;
+        }
+
         public bool ReplaceWarehouse(IEnumerable<Warehouse> pWh)
         {
             string Sql = @"replace into Warehouse ( Code, Number, Name, Url, InternalIP, ExternalIP, Location ) values 
                                                   (@Code,@Number,@Name,@Url,@InternalIP,@ExternalIP,@Location )";
             return db.BulkExecuteNonQuery<Warehouse>(Sql, pWh) >= 0;
         }
-    
+
+        public bool ReplaceUser(IEnumerable<User> pUser)
+        {
+            string Sql = @"replace into User ( CodeUser, NameUser, BarCode, Login, PassWord, TypeUser) values 
+                                             (@CodeUser,@NameUser,@BarCode,@Login,@PassWord,@TypeUser)";
+            return db.BulkExecuteNonQuery<User>(Sql, pUser) >= 0;
+        }
+
+        public User GetUserLogin(User pUser)
+        {
+            string sql = @"select CodeUser, NameUser, BarCode, Login, PassWord, TypeUser from User where Login=@Login and PassWord=@PassWord";
+            return db.Execute<User, User>(sql, pUser)?.First();
+        }
     }
 }
