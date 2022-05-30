@@ -7,6 +7,7 @@ using System.Linq;
 using Newtonsoft.Json.Converters;
 using System.IO;
 using Utils;
+using System.Diagnostics;
 
 namespace BRB5.Connector
 {
@@ -142,8 +143,6 @@ namespace BRB5.Connector
                         {
                             var DocNumber = elp.planId.ToString();
                             AddDoc = false;
-                           
-
 
                             foreach (var elt in t.data.Where(el => el.templateId == elp.templateId))
                             {
@@ -154,17 +153,20 @@ namespace BRB5.Connector
                                 }
                                 if (elt.sections != null)
                                     foreach (var el in elt.sections)
-                                        r.Add(new Raiting() { TypeDoc = pTypeDoc, NumberDoc = DocNumber, Id = -el.sectionId, Parent = -el.parentId, Text = el.text, IsHead = true, RatingTemplate = 1 + 2 + 4 + 8 ,OrderRS= el.sectionId });
+                                        r.Add(new Raiting() { TypeDoc = pTypeDoc, NumberDoc = DocNumber, Id = -el.sectionId, Parent = -el.parentId, Text = el.text, IsHead = true, RatingTemplate =  8 ,OrderRS= el.sectionId });
                                 if (elt.questions != null)
                                     foreach (var el in elt.questions)
                                         r.Add(new Raiting() { TypeDoc = pTypeDoc, NumberDoc = DocNumber, Id = el.questionId, Parent = -el.sectionId, Text = el.text, IsHead = false, RatingTemplate = el.RatingTemplate,OrderRS=el.questionId });
 
-                                r.Add(new Raiting() { TypeDoc = pTypeDoc, NumberDoc = DocNumber, Id = -1, Parent = 9999999, Text = "Всього", IsHead = false, RatingTemplate = 0 });
+                                r.Add(new Raiting() { TypeDoc = pTypeDoc, NumberDoc = DocNumber, Id = -1, Parent = 9999999, Text = "Всього", IsHead = false, RatingTemplate = 0, OrderRS = 9999999 });
 
                             }
                         }
                         db.ReplaceDoc(d);
                         db.ReplaceRaitingSample(r);
+                        FileLogger.WriteLogMessage($"ConnectorPSU.LoadDocsData=>(pTypeDoc=>{pTypeDoc}, pNumberDoc=>{pNumberDoc},pIsClear=>{pIsClear}) Res=>(Doc=>{d.Count()},RS=>{r.Count()},{Res.State},{Res.Info},{Res.TextError})", eTypeLog.Full);
+
+                        return Res;
                     }
                     catch (Exception e)
                     {
@@ -173,7 +175,7 @@ namespace BRB5.Connector
                         return Res;
                     }
             }
-            FileLogger.WriteLogMessage($"ConnectorPSU.LoadDocsData=>(pTypeDoc=>{pTypeDoc}, pNumberDoc=>{pNumberDoc},pIsClear=>{pIsClear}) Res=>({Res.State},{Res.Info},{Res.TextError})", eTypeLog.Error);
+            FileLogger.WriteLogMessage($"ConnectorPSU.LoadDocsData=>(pTypeDoc=>{pTypeDoc}, pNumberDoc=>{pNumberDoc},pIsClear=>{pIsClear}) Res=>({Res.State},{Res.Info},{Res.TextError})", eTypeLog.Full);
 
             return Res;
         }
@@ -196,6 +198,7 @@ namespace BRB5.Connector
         /// <returns></returns>
         public override Result SendRaiting(IEnumerable<Raiting> pR, Doc pDoc)
         {
+            OnSave?.Invoke("StartSave");
             var Res = new Result();
             try
             {
@@ -217,6 +220,7 @@ namespace BRB5.Connector
                 else
                 {
                     var res = JsonConvert.DeserializeObject<AnswerSendRaiting>(result.Result);
+                    OnSave?.Invoke($"SendRaiting=> (res.success={res.success})");
                     if (res.success)
                     {
                         Res=SendRaitingFiles(e.NumberDoc);
@@ -228,6 +232,7 @@ namespace BRB5.Connector
                 Res = new Result(ex);
             }
             FileLogger.WriteLogMessage($"ConnectorPSU.SendRaiting=>() Res=>({Res.State},{Res.Info},{Res.TextError})", eTypeLog.Error);
+            OnSave?.Invoke("StartSave");
             return Res;
         }
 
@@ -251,16 +256,28 @@ namespace BRB5.Connector
             }
 
             var R = new RequestSendRaitingFile() { planId = int.Parse(pNumberDoc), action = "file", userId = Config.CodeUser };
-            foreach (var f in Directory.GetFiles(Path.Combine(Config.GetPathFiles, pNumberDoc)))
+
+            var Files = Directory.GetFiles(Path.Combine(Config.GetPathFiles, pNumberDoc));
+            int i = 0;
+            foreach (var f in Files)
             {
+                i++;
+                if (StopSave)
+                {
+                    StopSave = false;
+                    return new Result(-1, "StopSave", "Збереження зупинено користувачем");
+                }
                 try
                 {
+                    var sw = Stopwatch.StartNew();
                     R.file = Convert.ToBase64String(File.ReadAllBytes(f));
                     R.fileExt = Path.GetExtension(f).Substring(1);
                     R.questionId = int.Parse(Path.GetFileName(f).Split('_')[0]);
-
+                    sw.Stop();
+                    TimeSpan TimeLoad = sw.Elapsed;
+                    sw.Start();
                     string data = JsonConvert.SerializeObject(R);
-                    HttpResult result = Http.HTTPRequest(2, "", data, "application/json");
+                    HttpResult result = Http.HTTPRequest(2, "", data, "application/json",null,null,60);
 
                     if (result.HttpState == eStateHTTP.HTTP_OK)
                     {
@@ -277,8 +294,11 @@ namespace BRB5.Connector
                         {
                             Res = new Result(-1,"Не передався файл", f);
                         }
-
-                        FileLogger.WriteLogMessage($"ConnectorPSU.SendRaitingFiles Send=>(File={f}) Res=>(res.success)", res.success ? eTypeLog.Full : eTypeLog.Expanded);
+                        sw.Stop();
+                        TimeSpan TimeSend = sw.Elapsed;
+                        string text = $"ConnectorPSU.SendRaitingFiles [{i}/{Files.Length}] Send=>(File={f}, Speed=>{data.Length / (1024 * 1024 * TimeSend.TotalSeconds):n2}Mb, Size={((double)data.Length) / (1024d * 1024d):n2}Mb,Load={TimeLoad.TotalSeconds:n1},Send={TimeSend.TotalSeconds:n1}) Res=>({res})";
+                        OnSave?.Invoke(text);
+                        FileLogger.WriteLogMessage(text,  eTypeLog.Full );
                     }
                     else
                     {
@@ -350,7 +370,7 @@ namespace BRB5.Connector
         public string text { get; set; }
         public int value { get; set; }
         public int[] answers { get; set; }
-        public int RatingTemplate { get { int r = 0; for (int i = 0; i < answers.Length; i++) r += (1 >> answers[i]); return r; } }
+        public int RatingTemplate { get { int r = 0; for (int i = 0; i < answers.Length; i++) r += 1 << (answers[i] - 1); return r; } }
         public int Order { get; set; }
     }
 

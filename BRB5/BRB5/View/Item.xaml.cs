@@ -22,6 +22,7 @@ namespace BRB5
 
         DB db = DB.GetDB();
         Doc cDoc;
+        Connector.Connector c = Connector.Connector.GetInstance();
         public ObservableCollection<Raiting> Questions { get; set; }
 
         int CountAll,CountChoice;
@@ -29,6 +30,10 @@ namespace BRB5
         bool IsAll = true;
         public string TextAllNoChoice { get {return IsAll?"Без відповіді":"Всі"; }  }
         public string QuantityAllChoice { get { return $"{CountChoice}/{CountAll}"; } }
+
+        public string TextSave { get; set; } = "";
+        public bool IsSaving { get; set; } = false;
+        public string TextButtonSave { get { return IsSaving ? "Зупинити" : "Зберегти"; } }
 
         /*public event PropertyChangedEventHandler PropertyChanged;
         protected virtual void OnPropertyChanged(string propertyName)
@@ -52,16 +57,21 @@ namespace BRB5
                     R.Add(el);
                 }
             }
+            //Костиль заради Всього
+            var Total= Q.Where(d => d.Id == -1);
+            if (Total.Count() == 1)
+                R.Add(Total.FirstOrDefault());
 
-            //Ховаємо непотрібні питання
-            /*foreach (var e in Q.Where(d => d.IsHead && d.Rating==4) )
-            foreach (var el in Q.Where(d => d.Parent == e.Id))
-            {
-                el.IsVisible = e.Rating != 4;
-            }
+            c.OnSave += (Res) => Device.BeginInvokeOnMainThread(()=>{ TextSave = Res; OnPropertyChanged("TextSave"); });
+             //Ховаємо непотрібні питання
+             /*foreach (var e in Q.Where(d => d.IsHead && d.Rating==4) )
+             foreach (var el in Q.Where(d => d.Parent == e.Id))
+             {
+                 el.IsVisible = e.Rating != 4;
+             }
 
-            */
-            CountAll = R.Count(el => !el.IsHead);
+             */
+             CountAll = R.Count(el => !el.IsHead);
 
             Questions = new ObservableCollection<Raiting>(R);
             RefreshHead();
@@ -131,19 +141,31 @@ namespace BRB5
 
             OnPropertyChanged("TextAllNoChoice");
         }
-        
+
         private void OnButtonSave(object sender, System.EventArgs e)
         {
-            var r=db.GetRating(cDoc);
-            var c = Connector.Connector.GetInstance();
-            var res=c.SendRaiting(r,cDoc);
-            if (res.State == 0)
+            Task.Run(() =>
             {
-                cDoc.State = 1;
-                db.SetStateDoc(cDoc);
+                TextSave = "";
+                IsSaving = true;
+                OnPropertyChanged("IsSaving");
+                OnPropertyChanged("TextButtonSave");
+                var r = db.GetRating(cDoc);
+                var res = c.SendRaiting(r, cDoc);
+                if (res.State == 0)
+                {
+                    cDoc.State = 1;
+                    db.SetStateDoc(cDoc);
+                }
+
+                IsSaving = false;
+                OnPropertyChanged("IsSaving");
+                OnPropertyChanged("TextButtonSave");
+
+                DisplayAlert("Збереження", res.TextError, "OK");//.Wait();
+                Navigation.PopAsync();
             }
-            DisplayAlert("Збереження", res.TextError, "OK");//.Wait();
-            Navigation.PopAsync();
+            );
         }
 
         private void EditPhoto(object sender, System.EventArgs e)

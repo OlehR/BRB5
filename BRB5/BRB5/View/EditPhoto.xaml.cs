@@ -14,13 +14,15 @@ namespace BRB5.View
 {
     public class Pictures
     {
-        public Pictures(string pFileName)
+        public Pictures(string pFileName, bool pIsNotSend=true)
         {
             FileName = pFileName;
+            IsNotSend = pIsNotSend;
         }
         public string FileName { get; set; }
         public Image image { get; set; }
-    }
+        public bool IsNotSend { get; set; }
+}
 
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class EditPhoto : ContentPage
@@ -36,20 +38,37 @@ namespace BRB5.View
             if (!Directory.Exists(dir))
             {
                 Directory.CreateDirectory(dir);
-               // Directory.CreateDirectory(Path.Combine(dir, "Send"));
+                // Directory.CreateDirectory(Path.Combine(dir, "Send"));
             }
 
             Raiting = pRaiting;
             Mask = $"{pRaiting.Id}_*.*";
             InitializeComponent();
             var d = Directory.GetFiles(dir, Mask);
-            IEnumerable<Pictures> r = d.Select(e => new Pictures(e));
+            IEnumerable<Pictures> r = d.Select(e => new Pictures(e)).OrderByDescending(el => el.FileName);
+            
             MyFiles = new ObservableCollection<Pictures>(r);
+
+
+            var arx = Path.Combine(Config.GetPathFiles, "arx", pRaiting.NumberDoc);
+            if (Directory.Exists(dir))
+            {
+                d = Directory.GetFiles(dir, Mask);
+                 r = d.Select(e => new Pictures(e,false)).OrderByDescending(el => el.FileName);
+                foreach (var el in r)
+                    MyFiles.Add(el);
+            }
+
             BindingContext = this;
         }
         private async void OnButtonAdd(object sender, System.EventArgs e)
         {
-            var photo = await MediaPicker.PickPhotoAsync();
+            Button b = sender as Button;
+            if (b == null)
+                return;
+            
+                var photo =  b.Text.Equals("Додати відео") ? await MediaPicker.PickVideoAsync(): await MediaPicker.PickPhotoAsync();
+            //await MediaPicker.PickVideoAsync();
             if (photo != null && File.Exists(photo.FullPath))
             {
                 // для примера сохраняем файл в локальном хранилище
@@ -61,17 +80,23 @@ namespace BRB5.View
                     await stream.CopyToAsync(newStream);
                 Raiting.QuantityPhoto++;
                 db.ReplaceRaiting(Raiting);
-                MyFiles.Add(new Pictures(newFile));
+                MyFiles.Insert(0, new Pictures(newFile));
             }
         }
 
-        private void OnButtonDel(object sender, System.EventArgs e)
+        async  private void OnButtonDel(object sender, System.EventArgs e)
         {
-            Xamarin.Forms.View V = (Xamarin.Forms.View)sender;
+             Xamarin.Forms.View V = (Xamarin.Forms.View)sender;
             var el= V.BindingContext as Pictures;
-            File.Delete(el.FileName);
-            MyFiles.Remove(el);
-            Raiting.QuantityPhoto--;
+
+            bool res= await DisplayAlert("Ви хочете видалити файл", el.FileName, "OK", "Cancel");
+            if (res)
+            {
+                File.Delete(el.FileName);
+                MyFiles.Remove(el);
+                Raiting.QuantityPhoto--;
+                db.ReplaceRaiting(Raiting);
+            }
         }
 
         private void OnButtonClicked(object sender, System.EventArgs e)

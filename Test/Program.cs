@@ -12,9 +12,19 @@ namespace Test
 {
     class Program
     {
+        static public int[] answers { get; set; } = { 1, 2, 4 };
+        static public int RatingTemplate { get 
+            { int r = 0; 
+                for (int i = 0; i < answers.Length; i++) 
+                    r += 1 << (answers[i]-1); 
+                
+                return r; } 
+        }
+
         static void Main(string[] args)
         {
-
+            var a= RatingTemplate;
+            return;
           /*
             var ftp = new FTP();
             string ss = $"{DateTime.Now:yyyy.MM.dd}";

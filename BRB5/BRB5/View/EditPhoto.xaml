@@ -4,9 +4,27 @@
              x:Class="BRB5.View.EditPhoto">
     <ContentPage.Content>
         <StackLayout>
-            <Button Text = "Добавити" FontSize="Large" BorderWidth="1"
+
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="1*" />
+                    <ColumnDefinition Width="1*" />                    
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+
+                <Button Grid.Column="0" Grid.Row="0" x:Name="AddFoto"  Text = "Додати фото" FontSize="Large" BorderWidth="1"
         HorizontalOptions="Center" VerticalOptions="CenterAndExpand"
         Clicked="OnButtonAdd" />
+                <Button Grid.Column="1" Grid.Row="0" x:Name="AddVideo" Text = "Додати відео" FontSize="Large" BorderWidth="1"
+        HorizontalOptions="Center" VerticalOptions="CenterAndExpand"
+        Clicked="OnButtonAdd" />
+
+            </Grid>
+
+            
+            
             <ListView x:Name="Files"
               HasUnevenRows="True"
               ItemsSource="{Binding MyFiles}" >
@@ -37,7 +55,7 @@
 
                                         <ImageButton Source="Delete.png" ClassId="NotKnow" Grid.Column="1" Grid.Row="0" 
             BackgroundColor="Transparent" WidthRequest="40" HeightRequest="40"
-            FlexLayout.AlignSelf="Center"  FlexLayout.Grow="1" Aspect="AspectFit" Opacity="{Binding OpacityNotKnow}"
+            FlexLayout.AlignSelf="Center"  FlexLayout.Grow="1" Aspect="AspectFit" Opacity="{Binding OpacityNotKnow}" IsVisible="{Binding IsNotSend}"
             Clicked="OnButtonDel" ></ImageButton>
                                     </Grid>
 

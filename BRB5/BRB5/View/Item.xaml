@@ -15,7 +15,7 @@
                 <Grid.RowDefinitions>
                     <RowDefinition Height="*" />
                 </Grid.RowDefinitions>
-                <Button Grid.Column="0" Grid.Row="0"  IsEnabled="{Binding IsSave}" Text = "Записати" FontSize="Large" BorderWidth="1"
+                <Button Grid.Column="0" Grid.Row="0"  IsEnabled="{Binding IsSave}" Text = "{Binding TextButtonSave}" FontSize="Large" BorderWidth="1"
         HorizontalOptions="FillAndExpand" VerticalOptions="CenterAndExpand"  Clicked="OnButtonSave" />
 
                 <Button Grid.Column="1" Grid.Row="0"  Text = "{Binding TextAllNoChoice}" FontSize="Large" BorderWidth="1"
@@ -23,8 +23,10 @@
 
                 <Label Grid.Column="2" Grid.Row="0"  IsVisible="{Binding QuantityAllChoice}" TextColor="Red" Text="{Binding QuantityAllChoice}" ClassId="CountFoto" FontSize="22" FontAttributes="Bold"  VerticalOptions="Start"  HorizontalOptions="End"/>
             </Grid>
-            
-            
+
+            <Editor Text="{Binding TextSave}" IsVisible="{Binding IsSaving}" HeightRequest="250" />
+
+
             <ListView x:Name="ListQuestions"
               HasUnevenRows="True"
               ItemsSource="{Binding Questions}" >
@@ -54,22 +56,22 @@
                                             <RowDefinition Height="*" />                                           
                                         </Grid.RowDefinitions>
 
-                                        <ImageButton  IsVisible="{Binding IsItem}"  Source="Ok.png" ClassId="Ok" Grid.Column="0" Grid.Row="0" 
+                                        <ImageButton  IsVisible="{Binding IsEnableOk}"  Source="Ok.png" ClassId="Ok" Grid.Column="0" Grid.Row="0" 
             BackgroundColor="Transparent" WidthRequest="40" HeightRequest="40"
             FlexLayout.AlignSelf="Center"  FlexLayout.Grow="1" Aspect="AspectFit" Opacity="{Binding OpacityOk}"
             Clicked="OnButtonClicked" ></ImageButton>
 
-                                        <ImageButton IsVisible="{Binding IsItem}"  Source="So_so.png" ClassId="SoSo" Grid.Column="1" Grid.Row="0" 
+                                        <ImageButton IsVisible="{Binding IsEnableSoSo}"  Source="So_so.png" ClassId="SoSo" Grid.Column="1" Grid.Row="0" 
             BackgroundColor="Transparent" WidthRequest="40" HeightRequest="40"
             FlexLayout.AlignSelf="Center"  FlexLayout.Grow="1" Aspect="AspectFit" Opacity="{Binding OpacitySoSo}"
             Clicked="OnButtonClicked" ></ImageButton>
-                                        
-                                        <ImageButton IsVisible="{Binding IsItem}"  Source="Bad.png" ClassId="Bad" Grid.Column="2" Grid.Row="0" 
+
+                                        <ImageButton IsVisible="{Binding IsEnableBad}"  Source="Bad.png" ClassId="Bad" Grid.Column="2" Grid.Row="0" 
             BackgroundColor="Transparent" WidthRequest="40" HeightRequest="40"
             FlexLayout.AlignSelf="Center"  FlexLayout.Grow="1" Aspect="AspectFit" Opacity="{Binding OpacityBad}"
             Clicked="OnButtonClicked" ></ImageButton>
 
-                                        <ImageButton  Source="NotKnow.png" ClassId="NotKnow" Grid.Column="3" Grid.Row="0" 
+                                        <ImageButton IsVisible="{Binding IsEnableNotKnow}" Source="NotKnow.png" ClassId="NotKnow" Grid.Column="3" Grid.Row="0" 
             BackgroundColor="Transparent" WidthRequest="40" HeightRequest="40"
             FlexLayout.AlignSelf="Center"  FlexLayout.Grow="1" Aspect="AspectFit" Opacity="{Binding OpacityNotKnow}"
             Clicked="OnButtonClicked" ></ImageButton>

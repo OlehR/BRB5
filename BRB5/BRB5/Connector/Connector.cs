@@ -11,7 +11,8 @@ namespace BRB5.Connector
         protected static string TAG = "BRB5/Connector";
         
         private static Connector Instance = null;
-
+        public Action<string> OnSave { get; set; }
+        public bool StopSave { get; set; } = false;
         protected DB db = DB.GetDB();
         protected GetDataHTTP Http = GetDataHTTP.GetInstance();
 

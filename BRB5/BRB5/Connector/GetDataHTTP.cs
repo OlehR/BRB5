@@ -51,7 +51,7 @@ namespace BRB5.Connector
             return Instance;
         }
 
-        public async Task<HttpResult> HTTPRequestAsync(String pURL, String pData, String pContentType, String pLogin, String pPassWord)
+        public async Task<HttpResult> HTTPRequestAsync(String pURL, String pData, String pContentType, String pLogin, String pPassWord,double pTimeOut=15 )
         {
             try
             {
@@ -68,7 +68,7 @@ namespace BRB5.Connector
                     client = new HttpClient(handler);
                 }
 
-                client.Timeout = TimeSpan.FromSeconds(15);
+                client.Timeout = TimeSpan.FromSeconds(pTimeOut);
                 
                 //client.BaseAddress = new Uri(pURL);
                 //var byteArray = Encoding.ASCII.GetBytes("admin:Xa38dF79");
@@ -93,7 +93,7 @@ namespace BRB5.Connector
             }
         }
 
-        public HttpResult HTTPRequest(int pUrlApi, string pApi, string pData, string pContentType, string pLogin=null, string pPassWord=null)
+        public HttpResult HTTPRequest(int pUrlApi, string pApi, string pData, string pContentType, string pLogin=null, string pPassWord=null, double pTimeOut = 15)
         { //!!!!TMP
             try
             {
@@ -110,14 +110,14 @@ namespace BRB5.Connector
                 HttpResult res = new HttpResult();
                 if (Url != null && Url.Length >= pUrlApi && Url[pUrlApi] != null)
                 {
-                    res = HTTPRequestAsync(Url[pUrlApi][DefaultApi[pUrlApi]] + pApi, pData, pContentType, pLogin, pPassWord).Result;
+                    res = HTTPRequestAsync(Url[pUrlApi][DefaultApi[pUrlApi]] + pApi, pData, pContentType, pLogin, pPassWord,pTimeOut).Result;
                     if (res.HttpState != eStateHTTP.HTTP_OK && res.HttpState != eStateHTTP.HTTP_UNAUTHORIZED)
                     {
                         for (int i = 0; i < Url[pUrlApi].Length; i++)
                         {
                             if (i != DefaultApi[pUrlApi] && !string.IsNullOrEmpty(Url[pUrlApi][i]))
                             {
-                                res = HTTPRequestAsync(Url[pUrlApi][i] + pApi, pData, pContentType, pLogin, pPassWord).Result;
+                                res = HTTPRequestAsync(Url[pUrlApi][i] + pApi, pData, pContentType, pLogin, pPassWord, pTimeOut).Result;
                                 if (res.HttpState == eStateHTTP.HTTP_OK)
                                     DefaultApi[pUrlApi] = i;
                             }

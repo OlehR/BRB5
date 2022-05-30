@@ -25,7 +25,7 @@ namespace BRB5
         /// <summary>
         /// Доступні варіанти відповіді 1 -погано + 2-так собі + 4 - добре + 8 - відсутня відповідь
         /// </summary>
-        public int RatingTemplate { get; set; }  
+        public int RatingTemplate { get; set; }
         /// <summary>
         /// Порядок сортування
         /// </summary>
@@ -61,13 +61,23 @@ namespace BRB5
         public double OpacityBad { get { return Rating == 3 ? 1d : 0.4d; } }
         [JsonIgnore]
         public double OpacityNotKnow { get { return Rating == 4 ? 1d : 0.4d; } }
+
+        [JsonIgnore]
+        public bool IsEnableOk { get { return (RatingTemplate & 1) == 1; } }
+        [JsonIgnore]
+        public bool IsEnableSoSo { get { return (RatingTemplate & 2) == 2; } }
+        [JsonIgnore]
+        public bool IsEnableBad { get { return (RatingTemplate & 4) == 4; } }
         [JsonIgnore]
         public bool IsEnableNotKnow { get { return (RatingTemplate & 8) ==8; } }
+
         public event PropertyChangedEventHandler PropertyChanged;
         protected virtual void OnPropertyChanged(string propertyName)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
+
+
 
     }
 }
