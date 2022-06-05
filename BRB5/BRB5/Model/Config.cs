@@ -18,6 +18,7 @@ namespace BRB5.Model
                 return  _Company; }
             set { _Company = value; }
         }
+        public static string PathDownloads = null;
 
         public static string SN;
         public static int Ver;

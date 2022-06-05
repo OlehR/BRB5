@@ -16,8 +16,10 @@ namespace Utils
     {
         //AppDomain.CurrentDomain.BaseDirectory
         //public static string PathLog = Path.Combine(Android.OS.Environment.ExternalStorageDirectory.AbsolutePath, Android.OS.Environment.DirectoryDownloads);
-        public static string _PathLog = null;
-        private static string PathLog { get { return _PathLog ?? Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "Log"); } }
+        private static string _PathLog = null;
+        public static string PathLog { 
+            set { _PathLog = value; FileLogger.CreateDir();}
+            get { return _PathLog ?? Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "Log"); } }
         private static eTypeLog TypeLog = eTypeLog.Full;
 
         private static Dictionary<int, Type> _types = new Dictionary<int, Type>();

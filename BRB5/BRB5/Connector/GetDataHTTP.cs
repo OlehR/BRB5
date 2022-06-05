@@ -135,5 +135,14 @@ namespace BRB5.Connector
            
            
         }
+
+        public HttpResult GetFile(string pURL,string pDir)
+        {
+            WebClient webClient = new WebClient();
+
+            webClient.DownloadFileAsync(new Uri(pURL), pDir);
+
+            return new HttpResult();
+        }
     }
 }
