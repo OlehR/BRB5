@@ -17,7 +17,7 @@ namespace BRB5
 
         public bool LoadAPK(string pPath, string pNameAPK, Action<int> pProgress, int pVersionCode)
         {
-            var Http = GetDataHTTP.GetInstance();
+            GetDataHTTP Http = GetDataHTTP.GetInstance();
             try
             {
                 pProgress?.Invoke(0);

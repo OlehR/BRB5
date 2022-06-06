@@ -8,6 +8,8 @@ using Utils;
 using Android.Content;
 using AndroidX.Core.Content;
 using BRB5.Model;
+using BRB5.Connector;
+using System.Net;
 
 namespace BRB5.Droid
 {
@@ -18,12 +20,14 @@ namespace BRB5.Droid
         protected override void OnCreate(Bundle savedInstanceState)
         {
             base.OnCreate(savedInstanceState);
-
-            Config.PathDownloads  = Path.Combine(Android.App.Application.Context.GetExternalFilesDir("").AbsolutePath, Android.OS.Environment.DirectoryDownloads);= Path.Combine(Android.App.Application.Context.GetExternalFilesDir("").AbsolutePath, Android.OS.Environment.DirectoryDownloads);
+            
+            Config.PathDownloads = Path.Combine(Android.App.Application.Context.GetExternalFilesDir("").AbsolutePath, Android.OS.Environment.DirectoryDownloads);
             FileLogger.PathLog = Path.Combine(Config.PathDownloads, "Log");
+            //FileLogger.
+            FileLogger.WriteLogMessage("Start", eTypeLog.Expanded);
 
-            Utils Util = Utils.GetInstance();
-            if (Util.LoadAPK(Config.PathDownloads, "ua.UniCS.TM.brb5.apk", null, VerCode))
+            //Utils Util = Utils.GetInstance();
+            if (LoadAPK("https://github.com/OlehR/BRB5/raw/master/Apk/Sim23/", "ua.UniCS.TM.brb5.apk", null, VerCode))
                 InstallAPK(Path.Combine(Config.PathDownloads, "ua.UniCS.TM.brb5.apk"));
 
             Xamarin.Essentials.Platform.Init(this, savedInstanceState);
@@ -60,20 +64,85 @@ namespace BRB5.Droid
         }
         public int VerCode
         {
-            get {
-            int VerCode;
-            var pInfo = Android.App.Application.Context.ApplicationContext.PackageManager.GetPackageInfo(Android.App.Application.Context.ApplicationContext.PackageName, 0);
-            if (Build.VERSION.SdkInt >= BuildVersionCodes.P)
+            get
             {
-                VerCode = (int)pInfo.LongVersionCode; // avoid huge version numbers and you will be ok
+                int VerCode;
+                var pInfo = Android.App.Application.Context.ApplicationContext.PackageManager.GetPackageInfo(Android.App.Application.Context.ApplicationContext.PackageName, 0);
+                if (Build.VERSION.SdkInt >= BuildVersionCodes.P)
+                {
+                    VerCode = (int)pInfo.LongVersionCode; // avoid huge version numbers and you will be ok
+                }
+                else
+                {
+                    //noinspection deprecation
+                    VerCode = pInfo.VersionCode;
+                }
+                return VerCode;
             }
-            else
-            {
-                //noinspection deprecation
-                VerCode = pInfo.VersionCode;
-            }
-            return VerCode;
         }
-}
+        public bool LoadAPK(string pPath, string pNameAPK, Action<int> pProgress, int pVersionCode)
+        {
+            GetDataHTTP Http = GetDataHTTP.GetInstance();
+            try
+            {
+                pProgress?.Invoke(0);
+                string FileNameVer = Path.Combine(Config.PathDownloads, "Ver.txt");
+                GetFile(pPath + "Ver.txt", Config.PathDownloads);
+                string Ver = File.ReadAllText(FileNameVer);
+
+                pProgress?.Invoke(10);
+                if (Ver != null && Ver.Length > 0)
+                {
+                    int ver = 0;
+                    try
+                    {
+                        ver = int.Parse(Ver);
+                    }
+                    catch (Exception)
+                    {
+                    }
+                    if (ver > pVersionCode)
+                    {
+                        string FileName = Path.Combine(Config.PathDownloads, pNameAPK);
+                        GetFile(pPath + pNameAPK, Config.PathDownloads);
+
+                        pProgress?.Invoke(60);
+
+                        return true;
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                FileLogger.WriteLogMessage(e.Message, eTypeLog.Error);
+                //e.printStackTrace();
+            }
+
+            pProgress?.Invoke(100);
+            return false;
+        }
+
+
+        public HttpResult GetFile(string pURL, string pDir)
+        {
+            pDir = Config.GetPathFiles;
+            try
+            {
+                WebClient webClient = new WebClient();
+
+                var b=webClient.DownloadData(new Uri(pURL));
+                File.WriteAllBytes(pDir, b);
+
+                //var Res = webClient.DownloadData String(new Uri(pURL));///, pDir);
+
+            }
+            catch (Exception e)
+            {
+
+                FileLogger.WriteLogMessage(e.Message, eTypeLog.Error);
+                e = e.InnerException;
+            }
+            return new HttpResult();
+        }
     }
 }

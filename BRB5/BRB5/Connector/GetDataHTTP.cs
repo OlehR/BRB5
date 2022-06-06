@@ -138,10 +138,17 @@ namespace BRB5.Connector
 
         public HttpResult GetFile(string pURL,string pDir)
         {
-            WebClient webClient = new WebClient();
+            pDir = Config.GetPathFiles;
+            try
+            {
+                WebClient webClient = new WebClient();
 
-            webClient.DownloadFileAsync(new Uri(pURL), pDir);
-
+                webClient.DownloadFile(new Uri(pURL), pDir);
+            }
+            catch(Exception e)
+            {
+                FileLogger.WriteLogMessage(e.Message, eTypeLog.Error); 
+            }
             return new HttpResult();
         }
     }
