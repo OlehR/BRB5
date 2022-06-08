@@ -10,6 +10,7 @@ using AndroidX.Core.Content;
 using BRB5.Model;
 using BRB5.Connector;
 using System.Net;
+using System.Runtime.Serialization;
 
 namespace BRB5.Droid
 {
@@ -20,14 +21,15 @@ namespace BRB5.Droid
         protected override void OnCreate(Bundle savedInstanceState)
         {
             base.OnCreate(savedInstanceState);
-            
+
             Config.PathDownloads = Path.Combine(Android.App.Application.Context.GetExternalFilesDir("").AbsolutePath, Android.OS.Environment.DirectoryDownloads);
             FileLogger.PathLog = Path.Combine(Config.PathDownloads, "Log");
             //FileLogger.
             FileLogger.WriteLogMessage("Start", eTypeLog.Expanded);
 
             //Utils Util = Utils.GetInstance();
-            if (LoadAPK("https://github.com/OlehR/BRB5/raw/master/Apk/Sim23/", "ua.UniCS.TM.brb5.apk", null, VerCode))
+            Config.Company = eCompany.Sim23;
+             if ( LoadAPK($"https://github.com/OlehR/BRB5/raw/master/Apk/{Config.Company}/", "ua.UniCS.TM.brb5.apk", null, VerCode))
                 InstallAPK(Path.Combine(Config.PathDownloads, "ua.UniCS.TM.brb5.apk"));
 
             Xamarin.Essentials.Platform.Init(this, savedInstanceState);
@@ -44,22 +46,30 @@ namespace BRB5.Droid
         }
         void InstallAPK(string filepath)
         {
-            Java.IO.File file = new Java.IO.File(filepath);
-            if (Build.VERSION.SdkInt >= BuildVersionCodes.N)
+            try
             {
-                Android.Net.Uri URIAPK = FileProvider.GetUriForFile(Android.App.Application.Context, Android.App.Application.Context.ApplicationContext.PackageName + ".provider", file);
-                Intent intS = new Intent(Intent.ActionInstallPackage);
-                intS.SetData(URIAPK);
-                intS.SetFlags(ActivityFlags.GrantReadUriPermission);
-                Android.App.Application.Context.StartActivity(intS);
-            }
-            else
+                Java.IO.File file = new Java.IO.File(filepath);
+                if (Build.VERSION.SdkInt >= BuildVersionCodes.N)
+                {
+                    Android.Net.Uri URIAPK = FileProvider.GetUriForFile(Android.App.Application.Context, Android.App.Application.Context.ApplicationContext.PackageName + ".provider", file);
+                    Intent intS = new Intent(Intent.ActionInstallPackage);
+                    intS.SetData(URIAPK);
+                    intS.SetFlags(ActivityFlags.GrantReadUriPermission);
+                    intS.SetFlags(ActivityFlags.NewTask );
+                    Android.App.Application.Context.StartActivity(intS);
+                }
+                else
+                {
+                    Android.Net.Uri URIAPK = Android.Net.Uri.FromFile(file);
+                    Intent intS = new Intent(Intent.ActionView);
+                    intS.SetDataAndType(URIAPK, "application/vnd.android.package-archive");
+                    intS.SetFlags(ActivityFlags.NewTask);
+                    Android.App.Application.Context.StartActivity(intS);
+                }
+            }catch(Exception e )
             {
-                Android.Net.Uri URIAPK = Android.Net.Uri.FromFile(file);
-                Intent intS = new Intent(Intent.ActionView);
-                intS.SetDataAndType(URIAPK, "application/vnd.android.package-archive");
-                intS.SetFlags(ActivityFlags.NewTask);
-                Android.App.Application.Context.StartActivity(intS);
+                FileLogger.WriteLogMessage(e.Message, eTypeLog.Error);
+                e = e.InnerException;
             }
         }
         public int VerCode
@@ -86,9 +96,8 @@ namespace BRB5.Droid
             try
             {
                 pProgress?.Invoke(0);
-                string FileNameVer = Path.Combine(Config.PathDownloads, "Ver.txt");
-                GetFile(pPath + "Ver.txt", Config.PathDownloads);
-                string Ver = File.ReadAllText(FileNameVer);
+               // string FileNameVer = Path.Combine(Config.PathDownloads, "Ver.txt");
+                string Ver = GetHttpString(pPath + "Ver.txt");
 
                 pProgress?.Invoke(10);
                 if (Ver != null && Ver.Length > 0)
@@ -101,13 +110,12 @@ namespace BRB5.Droid
                     catch (Exception)
                     {
                     }
-                    if (ver > pVersionCode)
+                    if ( ver > pVersionCode)
                     {
                         string FileName = Path.Combine(Config.PathDownloads, pNameAPK);
-                        GetFile(pPath + pNameAPK, Config.PathDownloads);
+                        GetHttpFile(pPath + pNameAPK, Path.Combine(Config.PathDownloads, pNameAPK));
 
                         pProgress?.Invoke(60);
-
                         return true;
                     }
                 }
@@ -122,19 +130,19 @@ namespace BRB5.Droid
             return false;
         }
 
-
-        public HttpResult GetFile(string pURL, string pDir)
+        public HttpResult GetHttpFile(string pURL, string pFile)
         {
-            pDir = Config.GetPathFiles;
+            //pDir = Config.GetPathFiles+"";
             try
             {
+                if(File.Exists(pFile))
+                    File.Delete(pFile);
+
                 WebClient webClient = new WebClient();
 
-                var b=webClient.DownloadData(new Uri(pURL));
-                File.WriteAllBytes(pDir, b);
-
-                //var Res = webClient.DownloadData String(new Uri(pURL));///, pDir);
-
+                webClient.DownloadFile(pURL, pFile);
+               // var b = webClient.DownloadData(new Uri(pURL));
+                //File.WriteAllBytes(pFile, b);    
             }
             catch (Exception e)
             {
@@ -144,5 +152,23 @@ namespace BRB5.Droid
             }
             return new HttpResult();
         }
+
+        public string GetHttpString(string pURL)
+        {
+            try
+            {
+                WebClient webClient = new WebClient();
+                return webClient.DownloadString(new Uri(pURL));
+            }
+            catch (Exception e)
+            {
+                FileLogger.WriteLogMessage(e.Message, eTypeLog.Error);
+                e = e.InnerException;
+                return null;
+            }
+
+        }
     }
+
+    
 }

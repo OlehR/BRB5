@@ -8,18 +8,20 @@ namespace Utils
 {
     public enum eTypeLog
     {
-        Full=0,
-        Expanded=1,
-        Error=2
+        Full = 0,
+        Expanded = 1,
+        Error = 2
     }
     public static class FileLogger
     {
         //AppDomain.CurrentDomain.BaseDirectory
         //public static string PathLog = Path.Combine(Android.OS.Environment.ExternalStorageDirectory.AbsolutePath, Android.OS.Environment.DirectoryDownloads);
         private static string _PathLog = null;
-        public static string PathLog { 
-            set { _PathLog = value; FileLogger.CreateDir();}
-            get { return _PathLog ?? Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "Log"); } }
+        public static string PathLog
+        {
+            set { _PathLog = value; FileLogger.CreateDir(); }
+            get { return _PathLog ?? Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "Log"); }
+        }
         private static eTypeLog TypeLog = eTypeLog.Full;
 
         private static Dictionary<int, Type> _types = new Dictionary<int, Type>();
@@ -95,7 +97,7 @@ namespace Utils
                         File.AppendAllText(FileName, Message);
                     }
                     catch (Exception e)
-                    {e.Message.WriteConsoleDebug(); }
+                    { e.Message.WriteConsoleDebug(); }
                 }
             });
         }
@@ -105,5 +107,7 @@ namespace Utils
             Console.WriteLine($@"[{DateTime.Now:dd-MM-yyyy HH:mm:ss}] {message}");
             // Console.ReadKey();
         }
+
+
     }
 }
