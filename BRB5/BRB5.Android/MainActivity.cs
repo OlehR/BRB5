@@ -90,16 +90,16 @@ namespace BRB5.Droid
                 return VerCode;
             }
         }
-        public bool LoadAPK(string pPath, string pNameAPK, Action<int> pProgress, int pVersionCode)
+        public bool LoadAPK(string pPath, string pNameAPK, Action<int,string> pProgress, int pVersionCode)
         {
             GetDataHTTP Http = GetDataHTTP.GetInstance();
             try
             {
-                pProgress?.Invoke(0);
+                pProgress?.Invoke(0,"Start");
                // string FileNameVer = Path.Combine(Config.PathDownloads, "Ver.txt");
                 string Ver = GetHttpString(pPath + "Ver.txt");
 
-                pProgress?.Invoke(10);
+                pProgress?.Invoke(10,"");
                 if (Ver != null && Ver.Length > 0)
                 {
                     int ver = 0;
@@ -112,21 +112,23 @@ namespace BRB5.Droid
                     }
                     if ( ver > pVersionCode)
                     {
+                        pProgress?.Invoke(15,$"Завантажуємо нову версію={ver} Текуча={pVersionCode}");
                         string FileName = Path.Combine(Config.PathDownloads, pNameAPK);
                         GetHttpFile(pPath + pNameAPK, Path.Combine(Config.PathDownloads, pNameAPK));
 
-                        pProgress?.Invoke(60);
+                        pProgress?.Invoke(60,"Завантаження завершено") ;
                         return true;
                     }
                 }
             }
             catch (Exception e)
             {
+                pProgress?.Invoke(65, $"LoadAPK Помилка=> {e.Message}");
                 FileLogger.WriteLogMessage(e.Message, eTypeLog.Error);
                 //e.printStackTrace();
             }
 
-            pProgress?.Invoke(100);
+            pProgress?.Invoke(100,"");
             return false;
         }
 
