@@ -22,7 +22,8 @@ namespace BRB5.Droid
         {
             base.OnCreate(savedInstanceState);
 
-            Config.PathDownloads = Path.Combine(Android.App.Application.Context.GetExternalFilesDir("").AbsolutePath, Android.OS.Environment.DirectoryDownloads);
+            Config.PathDownloads = //Path.Combine(Android.App.Application.Context.GetExternalFilesDir("").AbsolutePath, Android.OS.Environment.DirectoryDownloads);
+            Path.Combine(Android.OS.Environment.ExternalStorageDirectory.AbsolutePath, Android.OS.Environment.DirectoryDownloads);
             FileLogger.PathLog = Path.Combine(Config.PathDownloads, "Log");
             //FileLogger.
             FileLogger.WriteLogMessage("Start", eTypeLog.Expanded);
