@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "BRB5": {
+      "commandName": "Project",
+      "nativeDebugging": false
+    }
+  }
+}

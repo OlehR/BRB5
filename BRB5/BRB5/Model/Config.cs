@@ -7,14 +7,17 @@ namespace BRB5.Model
 {
     public class Config
     {
-        static DB db = DB.GetDB();
+        //static DB db = DB.GetDB();
         public static int CodeWarehouse = 0;
         static eCompany _Company = eCompany.NotDefined;
         public static eCompany Company
         {
             get {
-                if(_Company == eCompany.NotDefined)
+                if (_Company == eCompany.NotDefined)
+                {
+                    DB db = DB.GetDB();
                     _Company = db.GetConfig<eCompany>("Company");
+                }
                 return  _Company; }
             set { _Company = value; }
         }

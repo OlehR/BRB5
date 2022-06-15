@@ -1,11 +1,13 @@
 ﻿//using BRB5.Model;
+using BRB5.Model;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
+using Utils;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
@@ -19,7 +21,7 @@ namespace BRB5
         //public string Help { get; set; } = "ERHHHHHHH54";
         public Docs(int TypeDoc=-1)
         {
-            DB db = new DB();
+            DB db =  DB.GetDB();
             c = BRB5.Connector.Connector.GetInstance();
             InitializeComponent();
             Routing.RegisterRoute(nameof(Item), typeof(Item));
@@ -31,7 +33,8 @@ namespace BRB5
                 ,new Doc() { TypeDoc = 11, NumberDoc = "3", DateDoc = DateTime.Now.Date.ToString("yyyy-MM-dd"), NameUser = "Рутковський О", Description = "ТЗ 1104" }
             };*/
             new ObservableCollection<Doc> ( db.GetDoc(11));
-            this.BindingContext = this;
+            this.BindingContext = this;            
+
         }
 
         private async void OnButtonClicked(object sender, System.EventArgs e)

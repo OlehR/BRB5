@@ -34,7 +34,7 @@ namespace Test
             {
                 Console.WriteLine("Hello World!");
 
-                DB db = new DB();
+                DB db = DB.GetDB();
                 db.SetConfig<eCompany>("Company", eCompany.Sim23FTP);
                 //Config.GetPathFiles = @"d:\Temp";
                 var c = Connector.GetInstance();
@@ -90,7 +90,7 @@ namespace Test
             Result Res;
 
             var Ftp = new FTP();
-            DB db = new DB();
+            DB db =  DB.GetDB();
 
             string ss = $"{DateTime.Now:yyyy.MM.dd}";
             //Ftp.CreateDir($"Data/{ss}");

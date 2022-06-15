@@ -37,9 +37,14 @@
     <EnableLLVM>false</EnableLLVM>
     <AndroidEnableProfiledAot>false</AndroidEnableProfiledAot>
     <BundleAssemblies>false</BundleAssemblies>
-    <EmbedAssembliesIntoApk>true</EmbedAssembliesIntoApk>
+    <EmbedAssembliesIntoApk>false</EmbedAssembliesIntoApk>
     <AndroidCreatePackagePerAbi>true</AndroidCreatePackagePerAbi>
     <MandroidI18n />
+    <AndroidKeyStore>false</AndroidKeyStore>
+    <AndroidSigningKeyStore>D:\Users\O.Rutkovskyj\AppData\Local\Xamarin\Mono for Android\Keystore\Unics.TM\Unics.TM.keystore</AndroidSigningKeyStore>
+    <AndroidSigningStorePass>Nataly75</AndroidSigningStorePass>
+    <AndroidSigningKeyAlias>Unics.TM</AndroidSigningKeyAlias>
+    <AndroidSigningKeyPass>Nataly75</AndroidSigningKeyPass>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>

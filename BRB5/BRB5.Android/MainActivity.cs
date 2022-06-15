@@ -22,16 +22,41 @@ namespace BRB5.Droid
         {
             base.OnCreate(savedInstanceState);
 
-            Config.PathDownloads = //Path.Combine(Android.App.Application.Context.GetExternalFilesDir("").AbsolutePath, Android.OS.Environment.DirectoryDownloads);
-            Path.Combine(Android.OS.Environment.ExternalStorageDirectory.AbsolutePath, Android.OS.Environment.DirectoryDownloads);
+            Config.PathDownloads = Path.Combine(Android.App.Application.Context.GetExternalFilesDir("").AbsolutePath, Android.OS.Environment.DirectoryDownloads);
+           // Path.Combine(Android.OS.Environment.ExternalStorageDirectory.AbsolutePath, Android.OS.Environment.DirectoryDownloads);
             FileLogger.PathLog = Path.Combine(Config.PathDownloads, "Log");
             //FileLogger.
             FileLogger.WriteLogMessage("Start", eTypeLog.Expanded);
 
+            //TMP!!!!
+            DB db =  DB.GetDB();
+            db.SetConfig<eCompany>("Company", eCompany.Sim23);
+            db.SetConfig<string>("ApiUrl1", "http://api.spar.uz.ua/znp/");
+            db.SetConfig<string>("ApiUrl2", "http://api.spar.uz.ua/print/");
+            db.SetConfig<string>("ApiUrl3", "https://bitrix.sim23.ua/rest/233/ax02yr7l9hia35vj/");
+
+
+            //!!!TMP
+            try
+            {
+
+                string CopyTo = Path.Combine(Config.PathDownloads, "brb.db");
+                if (File.Exists(CopyTo))
+                    File.Delete(CopyTo);
+                File.Copy(db.PathNameDB, CopyTo, true);
+                //File.Create(CopyTo);
+                // File.WriteAllBytes(CopyTo, b);
+            }
+            catch (Exception e)
+            {
+                FileLogger.WriteLogMessage(e.Message);
+            }
+          
+
             //Utils Util = Utils.GetInstance();
             Config.Company = eCompany.Sim23;
-             if ( LoadAPK($"https://github.com/OlehR/BRB5/raw/master/Apk/{Config.Company}/", "ua.UniCS.TM.brb5.apk", null, VerCode))
-                InstallAPK(Path.Combine(Config.PathDownloads, "ua.UniCS.TM.brb5.apk"));
+    //         if ( LoadAPK($"https://github.com/OlehR/BRB5/raw/master/Apk/{Config.Company}/", "ua.UniCS.TM.brb5.apk", null, VerCode))
+   //             InstallAPK(Path.Combine(Config.PathDownloads, "ua.UniCS.TM.brb5.apk"));
 
             Xamarin.Essentials.Platform.Init(this, savedInstanceState);
             ZXing.Net.Mobile.Forms.Android.Platform.Init();

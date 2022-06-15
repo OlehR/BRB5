@@ -19,7 +19,7 @@ namespace BRB5
     {
         public ObservableCollection<TypeDoc> OCTypeDoc { get; set; }
         BRB5.Connector.Connector c;
-        DB db = new DB();
+        DB db = DB.GetDB();
         public string Login { get; set; }
         public string Password { get; set; }        
         public MainPage()

@@ -172,6 +172,7 @@ CREATE UNIQUE INDEX UserLogin ON User (Login);
 ";
 
         public SQLite db;
+        public string PathNameDB;
         public DB()
         {
             string basedir = Path.GetTempPath();
@@ -185,8 +186,9 @@ CREATE UNIQUE INDEX UserLogin ON User (Login);
             if (!Directory.Exists(Dir))
                 Directory.CreateDirectory(Dir);
             
-            var PathNameDB=Path.Combine(Dir, NameDB);
+            PathNameDB=Path.Combine(Dir, NameDB);
 
+       
             if (!File.Exists(PathNameDB))
             {
                 //var receiptFilePath = Path.GetDirectoryName(ReceiptFile);
@@ -195,8 +197,8 @@ CREATE UNIQUE INDEX UserLogin ON User (Login);
                 //Створюємо щоденну табличку з чеками.
                 db = new SQLite(PathNameDB);
                 db.ExecuteNonQuery(SqlCreateDB);
-                //db.Close();
-                //db = null;
+               // db.Close();
+               // db = null;
             }
             else
             {
