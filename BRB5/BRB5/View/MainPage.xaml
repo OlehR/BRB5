@@ -5,8 +5,8 @@
              NavigationPage.HasNavigationBar="False"
              >
 
-    <StackLayout>
-        <StackLayout x:Name="SLLogin">
+    <StackLayout VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand">
+        <StackLayout x:Name="SLLogin" >
             <Label Text="BRB5"
                 VerticalOptions="CenterAndExpand" 
                 HorizontalOptions="CenterAndExpand" />
@@ -17,15 +17,20 @@
         HorizontalOptions="Center" VerticalOptions="CenterAndExpand"
         Clicked="OnButtonLogin" />
         </StackLayout>
-        <ListView x:Name="ListDocs" IsVisible="false"
+        <StackLayout VerticalOptions="CenterAndExpand">
+            <!-- middle controls -->
+            <Button Text="Reveal Code" x:Name="RevealCode" HorizontalOptions="Start" />
+        </StackLayout>
+        <StackLayout Orientation="Horizontal" VerticalOptions="End">
+        <ListView x:Name="ListDocs" IsVisible="false" 
               HasUnevenRows="True"
               ItemsSource="{Binding OCTypeDoc}"                  
               >
             <ListView.Header>
                 <StackLayout Orientation="Horizontal">
-                   <!-- <Label Text="Список    Запитань2" FontSize="25"
-                           BackgroundColor="#c5cae9" HorizontalOptions="FillAndExpand" />-->
-                </StackLayout>
+                        <!--  <Label Text="Вид документа" FontSize="25"
+                           BackgroundColor="#c5cae9" HorizontalOptions="FillAndExpand" /> -->
+                    </StackLayout>
             </ListView.Header>
             <!-- ItemTapped="OnItemTapped"-->
             <ListView.ItemTemplate>
@@ -39,6 +44,7 @@
                 </DataTemplate>
             </ListView.ItemTemplate>
         </ListView>
+        </StackLayout>
     </StackLayout>
 
 </ContentPage>
