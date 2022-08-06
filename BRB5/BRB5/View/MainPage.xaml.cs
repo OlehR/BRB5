@@ -74,6 +74,15 @@ namespace BRB5
             }
         }
 
+
+        private async void OnButtonPriceCheck(object sender, System.EventArgs e)
+        {
+
+            await Navigation.PushAsync(new PriceCheck());//new CustomScanPage()); // 
+
+        }
+
+
         void Init()
         {
             Config.IsAutoLogin = db.GetConfig<bool>("IsAutoLogin");

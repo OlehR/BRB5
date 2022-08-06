@@ -3,13 +3,194 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" xmlns:forms="clr-namespace:ZXing.Net.Mobile.Forms;assembly=ZXing.Net.Mobile.Forms"
              x:Class="BRB5.PriceCheck">
     <ContentPage.Content>
+        <AbsoluteLayout>
 
+            <forms:ZXingScannerView x:Name="zxing" HorizontalOptions="StartAndExpand" VerticalOptions="FillAndExpand" ScaleY="1.5"  
+                    AbsoluteLayout.LayoutBounds="0, -0.2, 1, .4"  AbsoluteLayout.LayoutFlags="All"   >
+
+            </forms:ZXingScannerView>
+
+            <StackLayout  AbsoluteLayout.LayoutBounds="1, 1, 1, .6"  AbsoluteLayout.LayoutFlags="All" >
+
+
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition />
+                        <ColumnDefinition />
+                    </Grid.ColumnDefinitions>
+
+                    <Button Text=""
+                        VerticalOptions="Center"
+                        HorizontalOptions="Center"
+                        Clicked="OnClickChangePrintType" />
+
+                    <Button Text=""
+                        Grid.Column="1" 
+                        VerticalOptions="Center"
+                        HorizontalOptions="Center"
+                        Clicked="OnClickAddPrintBlock" />
+                </Grid>
+
+                <Grid>
+                    <ProgressBar Progress="0.8" ProgressColor="Black" />
+                </Grid>
+
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition />
+                        <ColumnDefinition />
+                        <ColumnDefinition />
+                        <ColumnDefinition />
+                        <ColumnDefinition />
+                        <ColumnDefinition />
+                    </Grid.ColumnDefinitions>
+
+                    <Label Text="" />
+                    <Label Text=""
+                       Grid.Column="1"  />
+                    <Label Text="Зал:"
+                       Grid.Column="2"  />
+                    <Label Text=""
+                       Grid.Column="3"  />
+                    <Label Text="Од:"
+                       Grid.Column="4"  />
+                    <Label Text=""
+                       Grid.Column="5"  />
+                </Grid>
+
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition />
+                        <ColumnDefinition />
+                        <ColumnDefinition />
+                        <ColumnDefinition />
+                    </Grid.ColumnDefinitions>
+
+                    <Label Text="Ціна с:" />
+                    <Label Text=""
+                       Grid.Column="1"  />
+                    <Label Text="Ціна н:"
+                       Grid.Column="2"  />
+                    <Label Text=""
+                       Grid.Column="3"  />
+                </Grid>
+
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition />
+                        <ColumnDefinition />
+                        <ColumnDefinition />
+                        <ColumnDefinition />
+                    </Grid.ColumnDefinitions>
+
+                    <Label Text="Ц.с.опт." />
+                    <Label Text=""
+                       Grid.Column="1"  />
+                    <Label Text="Ц.н.опт."
+                       Grid.Column="2"  />
+                    <Label Text=""
+                       Grid.Column="3"  />
+                </Grid>
+
+                <Grid>
+                    <Label Text="Назва" />
+                </Grid>
+
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="1*" />
+                        <ColumnDefinition Width="2*"  />
+                    </Grid.ColumnDefinitions>
+
+                    <Label Text="Штрих код:" />
+                    <Editor Text=""
+                       Grid.Column="1"  />
+                </Grid>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="1*" />
+                        <ColumnDefinition Width="2*"  />
+                    </Grid.ColumnDefinitions>
+
+                    <Label Text="Поповнення:" />
+                    <Editor Text=""
+                       Grid.Column="1"  />
+                </Grid>
+
+                <Grid VerticalOptions="EndAndExpand">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition />
+                        <ColumnDefinition />
+                        <ColumnDefinition />
+                    </Grid.ColumnDefinitions>
+
+                    <Button Text=""
+                        VerticalOptions="Center"
+                        HorizontalOptions="Center"
+                        Clicked="OnClickChangePrintColorType" />
+                    <Picker Title=""                        
+                        Grid.Column="1"
+                        ItemsSource="{Binding }"
+                        ItemDisplayBinding="{Binding }" />
+
+                    <Button Text="Друк"
+                        Grid.Column="2" 
+                        VerticalOptions="Center"
+                        HorizontalOptions="Center"
+                        Clicked="OnClickPrintBlock" />
+                </Grid>
+
+                <Grid VerticalOptions="End">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition />
+                        <ColumnDefinition />
+                        <ColumnDefinition />
+                    </Grid.ColumnDefinitions>
+
+                    <Label Text="http" />
+                    <Label Text=""
+                       Grid.Column="1"  />
+                    <Label Text=""
+                       Grid.Column="2"  />
+                </Grid>
+                <Grid VerticalOptions="End">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition />
+                        <ColumnDefinition />
+                        <ColumnDefinition />
+                        <ColumnDefinition />
+                        <ColumnDefinition />
+                        <ColumnDefinition />
+                        <ColumnDefinition />
+                        <ColumnDefinition />
+                    </Grid.ColumnDefinitions>
+
+                    <Label Text="f1-" />
+                    <Label Text=""
+                       Grid.Column="1"  />
+                    <Label Text="f2-"
+                       Grid.Column="2"  />
+                    <Label Text=""
+                       Grid.Column="3"  />
+                    <Label Text="f4-"
+                       Grid.Column="4"  />
+                    <Label Text=""
+                       Grid.Column="5"  />
+                    <Label Text="f5-"
+                       Grid.Column="6"  />
+                    <Label Text=""
+                       Grid.Column="7"  />
+                </Grid>
+
+            </StackLayout >
+        </AbsoluteLayout>
+        <!--
         <AbsoluteLayout>
              
                 <forms:ZXingScannerView x:Name="zxing" HorizontalOptions="StartAndExpand" VerticalOptions="FillAndExpand" ScaleY="1.5"  
                     AbsoluteLayout.LayoutBounds="0, -0.2, 1, .4"  AbsoluteLayout.LayoutFlags="All"   >
                     
-                </forms:ZXingScannerView>            
+                </forms:ZXingScannerView>
 
             <StackLayout  AbsoluteLayout.LayoutBounds="1, 1, 1, .6"  AbsoluteLayout.LayoutFlags="All" >
                 <ProgressBar Progress="0.8" ProgressColor="Black" />
@@ -17,7 +198,8 @@
                 VerticalOptions="CenterAndExpand" 
                 HorizontalOptions="CenterAndExpand" />
             </StackLayout >
-
+           
         </AbsoluteLayout>
+             -->
     </ContentPage.Content>
 </ContentPage>
