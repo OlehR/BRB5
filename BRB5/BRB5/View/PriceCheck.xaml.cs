@@ -77,5 +77,25 @@ namespace BRB5
 
             base.OnDisappearing();
         }
+
+        private void OnClickChangePrintType(object sender, EventArgs e)
+        {
+
+        }
+
+        private void OnClickAddPrintBlock(object sender, EventArgs e)
+        {
+
+        }
+
+        private void OnClickChangePrintColorType(object sender, EventArgs e)
+        {
+
+        }
+
+        private void OnClickPrintBlock(object sender, EventArgs e)
+        {
+
+        }
     }
 }
