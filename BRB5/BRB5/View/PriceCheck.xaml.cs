@@ -1,5 +1,7 @@
-﻿using System;
+﻿using BRB5.Model;
+using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -7,17 +9,22 @@ using System.Threading.Tasks;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 using ZXing.Net.Mobile.Forms;
-
+//using BRB5.Connector;
 namespace BRB5
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
-    public partial class PriceCheck : ContentPage
+    public partial class PriceCheck : ContentPage, INotifyPropertyChanged
     {
+        Connector.Connector c;
+        WaresPrice _WP;
+        public WaresPrice WP { get { return _WP; } set { _WP = value; OnPropertyChanged("WP"); } }
         //ZXingScannerView zxing;
         //ZXingDefaultOverlay overlay;
         public PriceCheck()
         {
             InitializeComponent();
+
+            c = Connector.Connector.GetInstance();
             
             zxing.OnScanResult += (result) =>
                 Device.BeginInvokeOnMainThread(async () =>
@@ -27,15 +34,17 @@ namespace BRB5
                     zxing.IsAnalyzing = false;
                     //zxing.IsScanning = false;
                     // Show an alert
-                    await DisplayAlert("Scanned Barcode", result.Text, "OK");
-
+                    WP = c.GetPrice(c.ParsedBarCode(result.Text,true));
+                    
+                    //await DisplayAlert("Scanned Barcode", WP.Price+" " + WP.Name, "OK");
+                    
                     zxing.IsAnalyzing = true;
                     //zxing.IsScanning = true;
                     // Navigate away
                     //await Navigation.PopAsync();
                 });
 
-            
+
             //MainSL.Children.Add(zxing);
 
             /*overlay = new ZXingDefaultOverlay
@@ -63,6 +72,8 @@ namespace BRB5
              };
              scanPage.OnScanResult += scanResultDelegate;
             await Navigation.PushAsync(scanPage);*/
+            this.BindingContext = this;
+           
         }
         protected override void OnAppearing()
         {

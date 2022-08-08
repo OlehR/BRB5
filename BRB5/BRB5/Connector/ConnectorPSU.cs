@@ -86,6 +86,13 @@ namespace BRB5.Connector
 
         }
 
+        public override ParseBarCode ParsedBarCode(string ParseBarCode, bool pIsOnlyBarCode) 
+        {
+            ParseBarCode Res = new ParseBarCode() { BarCode= ParseBarCode };
+            return Res;
+        }
+
+
         public override WaresPrice GetPrice(ParseBarCode pBC)
         {
             string data = JsonConvert.SerializeObject(new ApiPrice(154, pBC));

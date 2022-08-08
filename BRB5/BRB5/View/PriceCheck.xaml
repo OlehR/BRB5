@@ -1,6 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" xmlns:forms="clr-namespace:ZXing.Net.Mobile.Forms;assembly=ZXing.Net.Mobile.Forms"
+             NavigationPage.HasNavigationBar="False"
              x:Class="BRB5.PriceCheck">
     <ContentPage.Content>
         <AbsoluteLayout>
@@ -93,7 +94,7 @@
                 </Grid>
 
                 <Grid>
-                    <Label Text="Назва" />
+                    <Label Text="{Binding WP.Name}" />
                 </Grid>
 
                 <Grid>

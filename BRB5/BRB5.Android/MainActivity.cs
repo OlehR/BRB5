@@ -30,11 +30,15 @@ namespace BRB5.Droid
 
             //TMP!!!!
             DB db =  DB.GetDB();
-            db.SetConfig<eCompany>("Company", eCompany.Sim23);
+
+            //db.SetConfig<eCompany>("Company", eCompany.Sim23);
+            db.SetConfig<eCompany>("Company", eCompany.VPSU);
             db.SetConfig<string>("ApiUrl1", "http://api.spar.uz.ua/znp/");
             db.SetConfig<string>("ApiUrl2", "http://api.spar.uz.ua/print/");
             db.SetConfig<string>("ApiUrl3", "https://bitrix.sim23.ua/rest/233/ax02yr7l9hia35vj/");
-
+            
+            //db.SetConfig<string>("ApiUrl1", "http://znp.vopak.local/api/api_v1_utf8.php");
+            db.SetConfig<string>("CodeWarehouse", "9");
 
             //!!!TMP
             try
@@ -51,12 +55,13 @@ namespace BRB5.Droid
             {
                 FileLogger.WriteLogMessage(e.Message);
             }
-          
+
 
             //Utils Util = Utils.GetInstance();
-            Config.Company = eCompany.Sim23;
-    //         if ( LoadAPK($"https://github.com/OlehR/BRB5/raw/master/Apk/{Config.Company}/", "ua.UniCS.TM.brb5.apk", null, VerCode))
-   //             InstallAPK(Path.Combine(Config.PathDownloads, "ua.UniCS.TM.brb5.apk"));
+            Config.Company = db.GetConfig<eCompany>("Company");
+            Config.CodeWarehouse = db.GetConfig<int>("CodeWarehouse");
+            //         if ( LoadAPK($"https://github.com/OlehR/BRB5/raw/master/Apk/{Config.Company}/", "ua.UniCS.TM.brb5.apk", null, VerCode))
+            //             InstallAPK(Path.Combine(Config.PathDownloads, "ua.UniCS.TM.brb5.apk"));
 
             Xamarin.Essentials.Platform.Init(this, savedInstanceState);
             ZXing.Net.Mobile.Forms.Android.Platform.Init();
