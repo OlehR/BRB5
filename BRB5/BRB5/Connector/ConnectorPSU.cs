@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using Utils;
+using System.Linq;
 
 namespace BRB5.Connector
 {
@@ -55,6 +56,18 @@ namespace BRB5.Connector
 
     }
 
+    public class ApiLogPrice : Api
+    {
+        public ApiLogPrice() : base() { }
+        public ApiLogPrice(IEnumerable<object[]> pLogPrice) : base(141)
+        {
+            LogPrice = pLogPrice;
+        }
+        public IEnumerable<object[]> LogPrice { get; set; }
+    }
+
+
+    
     public class ConnectorPSU : Connector
     {
         public override Result Login(string pLogin, string pPassWord, eLoginServer pLoginServer)
@@ -111,6 +124,19 @@ namespace BRB5.Connector
                     return new WaresPrice(-1, e.Message);
                 }
         }
+
+        //Збереження Просканованих товарів в 1С
+        public override Result SendLogPrice(IEnumerable<LogPrice> pLogPrice)
+        {
+            if (pLogPrice != null && pLogPrice.Count() < 1)
+                return new Result(-1, "Відсутні дані на відправку");
+            var Data = pLogPrice.Select(el => el.GetPSU());
+            string data = JsonConvert.SerializeObject(new ApiLogPrice(Data));
+            HttpResult result = Http.HTTPRequest(0, "", data, "application/json");
+            return new Result(result);
+        }
+
+
 
         /// <summary>
         /// Список Документів доступних по ролі

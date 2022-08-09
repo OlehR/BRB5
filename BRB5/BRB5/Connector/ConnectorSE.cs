@@ -59,11 +59,11 @@ namespace BRB5.Connector
                             Res = new Result(-1, "Не успішна авторизація. Можливо невірний логін чи пароль");
                             FileLogger.WriteLogMessage($"ConnectorPSU.Login=>(pLogin=>{pLogin}, pPassWord=>{pPassWord},pLoginServer=>{pLoginServer}) Res=>({Res.State},{Res.Info},{Res.TextError})", eTypeLog.Expanded);
                             return Res;
-                        }                            
+                        }
                         Config.CodeUser = t.data.userId;
-                        Res= new Result();
+                        Res = new Result();
                         FileLogger.WriteLogMessage($"ConnectorPSU.Login=>(pLogin=>{pLogin}, pPassWord=>{pPassWord},pLoginServer=>{pLoginServer}) Res=>({Res.State},{Res.Info},{Res.TextError})", eTypeLog.Expanded);
-                        return Res;                        
+                        return Res;
                     }
                     catch (Exception e)
                     {
@@ -106,7 +106,7 @@ namespace BRB5.Connector
                             Res = new Result(r.State, r.TextError, "Неправильний логін або пароль");
                             FileLogger.WriteLogMessage($"ConnectorPSU.Login=>(pLogin=>{pLogin}, pPassWord=>{pPassWord},pLoginServer=>{pLoginServer}) Res=>({Res.State},{Res.Info},{Res.TextError})", eTypeLog.Expanded);
                             return Res;
-                        }           
+                        }
                     }
                     catch (Exception e)
                     {
@@ -116,6 +116,39 @@ namespace BRB5.Connector
                     }
                 }
             }
+        }
+
+        public override ParseBarCode ParsedBarCode(string pBarCode, bool pIsOnlyBarCode)
+        {
+            pBarCode = pBarCode.Trim();
+            ParseBarCode Res = new ParseBarCode() { BarCode = pBarCode };
+            if (pBarCode.Length > 2 && pBarCode.Substring(0, 2).Equals("29") && pBarCode.Length == 13)
+            {
+                Res.CodeWares = Convert.ToInt32(pBarCode.Substring(2, 8));
+                Res.Price = Convert.ToDouble(pBarCode.Substring(8, 13));
+            }
+            return Res;
+        }
+
+        public override WaresPrice GetPrice(ParseBarCode pBC)
+        {
+            string vCode = pBC.CodeWares > 0 ? $"code={pBC.CodeWares}" : $"BarCode = {pBC.BarCode}";
+            HttpResult res = Http.HTTPRequest(0, $"PriceTagInfo?{vCode}", null, null, null, null);
+            LI.resHttp = res.Result;
+            LI.HttpState = res.HttpState;
+            return LI;
+
+            return null;
+        }
+
+        public override Result SendLogPrice(IEnumerable<LogPrice> pLogPrice)
+        {
+            if (pLogPrice == null)
+                return new Result();
+            StringBuilder sb = new StringBuilder();
+            var Data = pLogPrice.Where(el => el.IsGoodBarCode).Select(el => new LogPriceSE(el));
+            HttpResult res = Http.HTTPRequest(0, "pricetag", Data.ToJSON(), "application/json;charset=utf-8", Config.Login, Config.Password);
+            return new Result(res);
         }
 
         public override Result LoadDocsData(int pTypeDoc, string pNumberDoc, ObservableInt pProgress, bool pIsClear)
@@ -153,10 +186,10 @@ namespace BRB5.Connector
                                 }
                                 if (elt.sections != null)
                                     foreach (var el in elt.sections)
-                                        r.Add(new Raiting() { TypeDoc = pTypeDoc, NumberDoc = DocNumber, Id = -el.sectionId, Parent = -el.parentId, Text = el.text, IsHead = true, RatingTemplate =  8 ,OrderRS= el.sectionId });
+                                        r.Add(new Raiting() { TypeDoc = pTypeDoc, NumberDoc = DocNumber, Id = -el.sectionId, Parent = -el.parentId, Text = el.text, IsHead = true, RatingTemplate = 8, OrderRS = el.sectionId });
                                 if (elt.questions != null)
                                     foreach (var el in elt.questions)
-                                        r.Add(new Raiting() { TypeDoc = pTypeDoc, NumberDoc = DocNumber, Id = el.questionId, Parent = -el.sectionId, Text = el.text, IsHead = false, RatingTemplate = el.RatingTemplate,OrderRS=el.questionId });
+                                        r.Add(new Raiting() { TypeDoc = pTypeDoc, NumberDoc = DocNumber, Id = el.questionId, Parent = -el.sectionId, Text = el.text, IsHead = false, RatingTemplate = el.RatingTemplate, OrderRS = el.questionId });
 
                                 r.Add(new Raiting() { TypeDoc = pTypeDoc, NumberDoc = DocNumber, Id = -1, Parent = 9999999, Text = "Всього", IsHead = false, RatingTemplate = 8, OrderRS = 9999999 });
 
@@ -216,14 +249,14 @@ namespace BRB5.Connector
                 HttpResult result = Http.HTTPRequest(2, "", data, "application/json");//
 
                 if (result.HttpState != eStateHTTP.HTTP_OK)
-                    Res= new Result(result);
+                    Res = new Result(result);
                 else
                 {
                     var res = JsonConvert.DeserializeObject<AnswerSendRaiting>(result.Result);
                     OnSave?.Invoke($"SendRaiting=> (res.success={res.success})");
                     if (res.success)
                     {
-                        Res=SendRaitingFiles(e.NumberDoc);
+                        Res = SendRaitingFiles(e.NumberDoc);
                     }
                 }
             }
@@ -250,7 +283,7 @@ namespace BRB5.Connector
             {
                 Directory.CreateDirectory(DirArx);
             }
-            if (!Directory.Exists(Path.Combine( DirArx, pNumberDoc)))
+            if (!Directory.Exists(Path.Combine(DirArx, pNumberDoc)))
             {
                 Directory.CreateDirectory(Path.Combine(DirArx, pNumberDoc));
             }
@@ -277,7 +310,7 @@ namespace BRB5.Connector
                     TimeSpan TimeLoad = sw.Elapsed;
                     sw.Start();
                     string data = JsonConvert.SerializeObject(R);
-                    HttpResult result = Http.HTTPRequest(2, "", data, "application/json",null,null,60);
+                    HttpResult result = Http.HTTPRequest(2, "", data, "application/json", null, null, 60);
 
                     if (result.HttpState == eStateHTTP.HTTP_OK)
                     {
@@ -292,13 +325,13 @@ namespace BRB5.Connector
                         }
                         else
                         {
-                            Res = new Result(-1,"Не передався файл", f);
+                            Res = new Result(-1, "Не передався файл", f);
                         }
                         sw.Stop();
                         TimeSpan TimeSend = sw.Elapsed;
                         string text = $"ConnectorPSU.SendRaitingFiles [{i}/{Files.Length}] Send=>(File={f}, Speed=>{data.Length / (1024 * 1024 * TimeSend.TotalSeconds):n2}Mb, Size={((double)data.Length) / (1024d * 1024d):n2}Mb,Load={TimeLoad.TotalSeconds:n1},Send={TimeSend.TotalSeconds:n1}) Res=>({res})";
                         OnSave?.Invoke(text);
-                        FileLogger.WriteLogMessage(text,  eTypeLog.Full );
+                        FileLogger.WriteLogMessage(text, eTypeLog.Full);
                     }
                     else
                     {
@@ -352,7 +385,7 @@ namespace BRB5.Connector
 
     class AnswerLogin : Answer
     {
-      public DataLogin data { get; set; }
+        public DataLogin data { get; set; }
     }
 
     class Section
@@ -383,8 +416,8 @@ namespace BRB5.Connector
         public IEnumerable<Questions> questions { get; set; }
     }
 
-    class Template: Answer
-    {        
+    class Template : Answer
+    {
         public IEnumerable<DataTemplate> data { get; set; }
     }
 
@@ -396,7 +429,7 @@ namespace BRB5.Connector
         public DateTime date { get; set; }
     }
 
-    class Data: Answer
+    class Data : Answer
     {
         public IEnumerable<DataData> data { get; set; }
     }
@@ -415,7 +448,7 @@ namespace BRB5.Connector
         public IEnumerable<Raitings> answers { get; set; }
     }
 
-    class AnswerDataRaiting 
+    class AnswerDataRaiting
     {
         public int questionId { get; set; }
         public int answerId { get; set; }
@@ -429,9 +462,43 @@ namespace BRB5.Connector
 
     class RequestSendRaitingFile : Request
     {
-        public int planId { get; set; }        
+        public int planId { get; set; }
         public int questionId { get; set; }
         public string file { get; set; }
         public string fileExt { get; set; }
+    }
+    public class LogPriceSE
+    {
+        //public string GetJsonSE() { return "{\"Barcode\":\"" + BarCode + "\",\"Code\":\"" + CodeWares + "\",\"Status\":" + Status + ",\"LineNumber\":" + LineNumber + ",\"NumberOfReplenishment\":" + Double.tostring(NumberOfReplenishment) + "}"; }
+        public LogPriceSE(LogPrice pLP)
+        {
+            BarCode = pLP.BarCode;
+            Code = pLP.CodeWares;
+            Status = pLP.Status;
+            LineNumber = pLP.LineNumber;
+            NumberOfReplenishment = pLP.NumberOfReplenishment;
+        }
+        public string BarCode { get; set; }
+        public int Code { get; set; }
+        public int Status { get; set; }
+        public int LineNumber { get; set; }
+        public double NumberOfReplenishment { get; set; }
+    }
+
+    public class WaresPriceSE
+    {
+        public int Code { get; set; }
+        public string Name { get; set; }
+        public decimal Price { get; set; }
+        public string BarCodes { get; set; }
+        public string Unit { get; set; }
+        public string Article { get; set; }
+        public int ActionType { get; set; }
+        public decimal PromotionPrice { get; set; }
+        public WaresPrice GetWaresPrice
+        {
+            get { return new WaresPrice() { Code = Code, Name = Name, Price = Price, BarCodes = BarCodes, Unit = Unit, Article = Article, ActionType = ActionType, PriceOpt = PromotionPrice }; }
+        }
+
     }
 }
