@@ -20,6 +20,9 @@ namespace BRB5
         bool _IsVisPriceOpt = false;
         public bool IsVisPriceOpt { get { return _IsVisPriceOpt; } set { _IsVisPriceOpt = value; OnPropertyChanged("IsVisPriceOpt"); } }
 
+        bool _IsVisF4 = false;
+        public bool IsVisF4 { get { return _IsVisF4; } set { _IsVisF4 = value; OnPropertyChanged("IsVisF4"); } }
+
         bool _IsVisRepl = false;
         public bool IsVisRepl { get { return _IsVisRepl; } set { _IsVisRepl = value; OnPropertyChanged("IsVisRepl"); } }
 
@@ -32,12 +35,12 @@ namespace BRB5
         //ZXingDefaultOverlay overlay;
 
         int _PrintType = 0;//Колір чека 0-звичайний 1-жовтий, -1 не розділяти.        
-        public int PrintType { get { return _PrintType; } set { _PrintType = value; OnPropertyChanged("PrintType"); OnPropertyChanged("NamePrintColorType"); } }
+        public int PrintType { get { return _PrintType; } set { _PrintType = value; OnPropertyChanged("PrintType"); OnPropertyChanged("NamePrintColorType"); OnPropertyChanged("ColorPrintColorType"); } }
 
 
         //public int ColorPrintColorType() { return Color.parseColor(HttpState != eStateHTTP.HTTP_OK ? "#ffb3b3" : (PrintType == 0 ? "#ffffff" : "#3fffff00")); }
         public string NamePrintColorType { get { return PrintType == 0 ? "Звичайний" : PrintType == 1 ? "Жовтий" : "Авто"; } }
-
+        public string ColorPrintColorType { get { return PrintType == 0 ? "#ffffff" : PrintType == 1 ? "#ffffa8" : "#ffffff"; } }
 
 
         public PriceCheck()
@@ -114,7 +117,7 @@ namespace BRB5
 
         private void OnClickChangePrintType(object sender, EventArgs e)
         {
-            if (PrintType == 0) PrintType = 1; else if (PrintType == 1) PrintType = 0;
+            
         }
 
         int count = 1;
@@ -126,7 +129,7 @@ namespace BRB5
 
         private void OnClickChangePrintColorType(object sender, EventArgs e)
         {
-
+            if (PrintType == 0) PrintType = 1; else if (PrintType == 1) PrintType = 0;
         }
 
         private void OnClickPrintBlock(object sender, EventArgs e)
