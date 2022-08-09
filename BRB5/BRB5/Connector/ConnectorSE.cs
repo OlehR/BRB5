@@ -134,9 +134,9 @@ namespace BRB5.Connector
         {
             string vCode = pBC.CodeWares > 0 ? $"code={pBC.CodeWares}" : $"BarCode = {pBC.BarCode}";
             HttpResult res = Http.HTTPRequest(0, $"PriceTagInfo?{vCode}", null, null, null, null);
-            LI.resHttp = res.Result;
-            LI.HttpState = res.HttpState;
-            return LI;
+            //LI.resHttp = res.Result;
+            //LI.HttpState = res.HttpState;
+            //return LI;
 
             return null;
         }

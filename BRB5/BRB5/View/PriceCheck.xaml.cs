@@ -32,9 +32,11 @@ namespace BRB5
         //ZXingDefaultOverlay overlay;
 
         int _PrintType = 0;//Колір чека 0-звичайний 1-жовтий, -1 не розділяти.        
-        public int PrintType { get { return _PrintType; } set { _PrintType = value; OnPropertyChanged("PrintType"); } }
+        public int PrintType { get { return _PrintType; } set { _PrintType = value; OnPropertyChanged("PrintType"); OnPropertyChanged("NamePrintColorType"); } }
+
+
         //public int ColorPrintColorType() { return Color.parseColor(HttpState != eStateHTTP.HTTP_OK ? "#ffb3b3" : (PrintType == 0 ? "#ffffff" : "#3fffff00")); }
-        public string NamePrintColorType() { if (PrintType == 0) return "Звичайний"; if (PrintType == 1) return "Жовтий"; return ""; }
+        public string NamePrintColorType { get { return PrintType == 0 ? "Звичайний" : PrintType == 1 ? "Жовтий" : "Авто"; } }
 
 
 
