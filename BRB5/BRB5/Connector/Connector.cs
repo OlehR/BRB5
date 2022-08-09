@@ -64,7 +64,7 @@ namespace BRB5.Connector
         public virtual Result SendDocsData(Doc pDoc, IEnumerable<DocWares> pWares, int pIsClose) { throw new NotImplementedException(); }
 
         //Збереження ПРосканованих товарів в 1С
-        public virtual Result SendLogPrice(List<LogPrice> pList) { throw new NotImplementedException(); }
+        public virtual Result SendLogPrice(IEnumerable<LogPrice> pList) { throw new NotImplementedException(); }
 
         /// <summary>
         /// Вивантаження Рейтингів

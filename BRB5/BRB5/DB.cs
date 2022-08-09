@@ -328,5 +328,47 @@ CREATE UNIQUE INDEX UserLogin ON User (Login);
             string sql = @"select CodeUser, NameUser, BarCode, Login, PassWord, TypeUser from User where Login=@Login and PassWord=@PassWord";
             return db.Execute<User, User>(sql, pUser)?.First();
         }
+        public IEnumerable<LogPrice> GetSendData(int pLimit)
+        {
+            int varN;
+            try
+            {
+                string sql = "select count(*) from   LogPrice where is_send=-1";
+                varN = db.ExecuteScalar<int>(sql);
+
+                if (varN < pLimit)
+                {
+                    sql = $"Update LogPrice set is_send=-1 where rowid  IN (SELECT rowid FROM LogPrice WHERE is_send=0 LIMIT {pLimit - varN})";
+                    db.ExecuteNonQuery(sql);
+                }
+
+                sql = "select bar_code,Status,DT_insert,package_number,is_send,action_type,code_wares,article,Line_Number,Number_Of_Replenishment from LogPrice where is_send=-1";
+                return db.Execute<LogPrice>(sql);
+            }
+            catch (Exception e) { }
+            return null;
+        }
+        public void AfterSendData()
+        {
+            db.ExecuteNonQuery("Update LogPrice set is_send=1 where is_send=-1");            
+        }
+
+        public int[] GetCountScanCode()
+        {
+            int[] varRes = { 0, 0 };
+            try
+            {
+                string sql = "select count(*),sum(case when Status=0 then 1 else 0 end) from LogPrice where is_send=0";
+
+                db.ExecuteScalar<int[]>(sql);              
+
+            }
+            catch (Exception e)
+            {
+               // Utils.WriteLog("e", TAG, "GetCountScanCode >>" + e.toString());
+                //throw mSQLException;
+            }
+            return varRes;
+        }
     }
 }
