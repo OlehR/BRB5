@@ -17,8 +17,8 @@ namespace BRB5.Model
         //public String strPrice() { return String.format("%.2f", (double)Price / 100d){get;set;} }
         public decimal PriceOld { get; set; }
         public decimal QuantityOpt { get; set; }
-        public int PriceOpt { get; set; }
-        public int PriceOptOld { get; set; }
+        public decimal PriceOpt { get; set; }
+        public decimal PriceOptOld { get; set; }
 
         public string BarCodes { get; set; }
         //public int ColorPriceOpt() { return Color.parseColor(OldPriceOpt != PriceOpt ? "#ee4343" : "#3bb46e"){get;set;} }

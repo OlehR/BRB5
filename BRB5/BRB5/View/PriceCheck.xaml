@@ -13,7 +13,6 @@
 
             <StackLayout  AbsoluteLayout.LayoutBounds="1, 1, 1, .67"  AbsoluteLayout.LayoutFlags="All" >
 
-
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition />
@@ -29,8 +28,6 @@
                         HorizontalOptions="Fill"
                         Clicked="OnClickAddPrintBlock" />
                 </Grid>
-
-                
 
                 <Grid >
                     <Grid.ColumnDefinitions>
@@ -75,7 +72,7 @@
                            Grid.Column="3"  />
                 </Grid>
 
-                <Grid>
+                <Grid IsVisible="{Binding IsVisPriceOpt}">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="2*"/>
                         <ColumnDefinition Width="3*"/>
@@ -113,7 +110,8 @@
                     <Entry Text="{Binding WP.BarCodes}"
                        Grid.Column="1"  />
                 </Grid>
-                <Grid>
+
+                <Grid IsVisible="{Binding IsVisRepl}">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="1*" />
                         <ColumnDefinition Width="2*"  />
@@ -131,7 +129,7 @@
                         <ColumnDefinition />
                     </Grid.ColumnDefinitions>
 
-                    <Button Text=""
+                    <Button Text="{Binding NamePrintColorType}"
                         HorizontalOptions="Fill"
                         Clicked="OnClickChangePrintColorType" />
                     <Picker Title=""                        
@@ -158,6 +156,7 @@
                     <Label Text=""
                        Grid.Column="2"  />
                 </Grid>
+                
                 <Grid VerticalOptions="End">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition />
@@ -186,6 +185,7 @@
                     <Label Text=""
                        Grid.Column="7"  />
                 </Grid>
+               
                 <Grid VerticalOptions="End">
                     <ProgressBar x:Name="pb"  ScaleY="2" Progress="{Binding PB}" ProgressColor="Black" />
                 </Grid>

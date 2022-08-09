@@ -38,7 +38,7 @@ namespace BRB5.Droid
             db.SetConfig<string>("ApiUrl3", "https://bitrix.sim23.ua/rest/233/ax02yr7l9hia35vj/");
             
             //db.SetConfig<string>("ApiUrl1", "http://znp.vopak.local/api/api_v1_utf8.php");
-            db.SetConfig<string>("CodeWarehouse", "9");
+            db.SetConfig<string>("CodeWarehouse", "89");
 
             //!!!TMP
             try
