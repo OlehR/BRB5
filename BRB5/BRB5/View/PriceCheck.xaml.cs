@@ -17,6 +17,8 @@ namespace BRB5
     {
         Connector.Connector c;
         WaresPrice _WP;
+        double _PB = 0.3;
+        public double PB { get { return _PB; } set { _PB = value; OnPropertyChanged("PB"); } } 
         public WaresPrice WP { get { return _WP; } set { _WP = value; OnPropertyChanged("WP"); } }
         //ZXingScannerView zxing;
         //ZXingDefaultOverlay overlay;
@@ -25,11 +27,12 @@ namespace BRB5
             InitializeComponent();
 
             c = Connector.Connector.GetInstance();
-            
+
+
             zxing.OnScanResult += (result) =>
                 Device.BeginInvokeOnMainThread(async () =>
                 {
-
+                    PB = 0.2;
                     // Stop analysis until we navigate away so we don't keep reading barcodes
                     zxing.IsAnalyzing = false;
                     //zxing.IsScanning = false;
@@ -42,6 +45,7 @@ namespace BRB5
                     //zxing.IsScanning = true;
                     // Navigate away
                     //await Navigation.PopAsync();
+                    PB = 1;
                 });
 
 
@@ -94,9 +98,11 @@ namespace BRB5
 
         }
 
+        int count = 1;
         private void OnClickAddPrintBlock(object sender, EventArgs e)
         {
-
+            count++;
+            ((Button)sender).Text = $"{count}";
         }
 
         private void OnClickChangePrintColorType(object sender, EventArgs e)

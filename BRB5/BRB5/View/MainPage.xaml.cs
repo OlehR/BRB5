@@ -72,15 +72,7 @@ namespace BRB5
                 default:                  
                     break;
             }
-        }
-
-
-        private async void OnButtonPriceCheck(object sender, System.EventArgs e)
-        {
-
-            await Navigation.PushAsync(new PriceCheck());//new CustomScanPage()); // 
-
-        }
+        }      
 
 
         void Init()

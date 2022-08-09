@@ -17,10 +17,6 @@
         HorizontalOptions="Center" VerticalOptions="CenterAndExpand"
         Clicked="OnButtonLogin" />
         </StackLayout>
-
-        <Button Text="PriceCheck" FontSize="Large" BorderWidth="1"
-            HorizontalOptions="Center" VerticalOptions="CenterAndExpand"   Clicked="OnButtonPriceCheck" />
-
         <ListView x:Name="ListDocs" IsVisible="false"
               HasUnevenRows="True"
               ItemsSource="{Binding OCTypeDoc}"                  

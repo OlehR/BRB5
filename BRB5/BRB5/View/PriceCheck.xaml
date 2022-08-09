@@ -6,12 +6,12 @@
     <ContentPage.Content>
         <AbsoluteLayout>
 
-            <forms:ZXingScannerView x:Name="zxing" HorizontalOptions="StartAndExpand" VerticalOptions="FillAndExpand" ScaleY="1.5"  
+            <forms:ZXingScannerView x:Name="zxing" HorizontalOptions="StartAndExpand" VerticalOptions="FillAndExpand" ScaleY="1.2"  
                     AbsoluteLayout.LayoutBounds="0, -0.2, 1, .4"  AbsoluteLayout.LayoutFlags="All"   >
 
             </forms:ZXingScannerView>
 
-            <StackLayout  AbsoluteLayout.LayoutBounds="1, 1, 1, .6"  AbsoluteLayout.LayoutFlags="All" >
+            <StackLayout  AbsoluteLayout.LayoutBounds="1, 1, 1, .67"  AbsoluteLayout.LayoutFlags="All" >
 
 
                 <Grid>
@@ -20,81 +20,87 @@
                         <ColumnDefinition />
                     </Grid.ColumnDefinitions>
 
-                    <Button Text=""
-                        VerticalOptions="Center"
-                        HorizontalOptions="Center"
+                    <Button Text="Стандартна?"
+                        HorizontalOptions="Fill"
                         Clicked="OnClickChangePrintType" />
 
-                    <Button Text=""
+                    <Button Text="1"
                         Grid.Column="1" 
-                        VerticalOptions="Center"
-                        HorizontalOptions="Center"
+                        HorizontalOptions="Fill"
                         Clicked="OnClickAddPrintBlock" />
                 </Grid>
 
-                <Grid>
-                    <ProgressBar Progress="0.8" ProgressColor="Black" />
-                </Grid>
+                
 
-                <Grid>
+                <Grid >
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition />
-                        <ColumnDefinition />
-                        <ColumnDefinition />
-                        <ColumnDefinition />
-                        <ColumnDefinition />
-                        <ColumnDefinition />
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="2*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="2*"/>
+                        <ColumnDefinition Width="2*"/>
                     </Grid.ColumnDefinitions>
 
-                    <Label Text="" />
-                    <Label Text=""
+                    <Label Text="Арт:" />
+                    <Label Text="{Binding WP.Article}"
                        Grid.Column="1"  />
                     <Label Text="Зал:"
                        Grid.Column="2"  />
-                    <Label Text=""
+                    <Label Text="{Binding WP.Rest}"
                        Grid.Column="3"  />
-                    <Label Text="Од:"
+                    <Label Text="{Binding WP.Unit}"
                        Grid.Column="4"  />
-                    <Label Text=""
-                       Grid.Column="5"  />
                 </Grid>
 
                 <Grid>
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition />
-                        <ColumnDefinition />
-                        <ColumnDefinition />
-                        <ColumnDefinition />
+                        <ColumnDefinition Width="2*"/>
+                        <ColumnDefinition Width="3*"/>
+                        <ColumnDefinition Width="2*"/>
+                        <ColumnDefinition Width="3*"/>
                     </Grid.ColumnDefinitions>
 
-                    <Label Text="Ціна с:" />
-                    <Label Text=""
-                       Grid.Column="1"  />
+                    <Label Text="Ціна с:"  
+                           VerticalOptions="Center"
+                           FontSize="16"/>
+                    <Label Text="{Binding WP.PriceOld}"
+                           Grid.Column="1"
+                           FontSize="24"/>
                     <Label Text="Ціна н:"
-                       Grid.Column="2"  />
-                    <Label Text=""
-                       Grid.Column="3"  />
+                           VerticalOptions="Center"
+                           FontSize="16"
+                           Grid.Column="2"  />
+                    <Label Text="{Binding WP.Price}"
+                           FontSize="24"                       
+                           Grid.Column="3"  />
                 </Grid>
 
                 <Grid>
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition />
-                        <ColumnDefinition />
-                        <ColumnDefinition />
-                        <ColumnDefinition />
+                        <ColumnDefinition Width="2*"/>
+                        <ColumnDefinition Width="3*"/>
+                        <ColumnDefinition Width="2*"/>
+                        <ColumnDefinition Width="3*"/>
                     </Grid.ColumnDefinitions>
 
-                    <Label Text="Ц.с.опт." />
-                    <Label Text=""
-                       Grid.Column="1"  />
+                    <Label Text="Ц.с.опт."
+                           VerticalOptions="Center"
+                           FontSize="16"  />
+                    <Label Text="{Binding WP.PriceOptOld}"
+                           FontSize="24" 
+                           Grid.Column="1"  />
                     <Label Text="Ц.н.опт."
-                       Grid.Column="2"  />
-                    <Label Text=""
-                       Grid.Column="3"  />
+                           VerticalOptions="Center"
+                           FontSize="16" 
+                           Grid.Column="2"  />
+                    <Label Text="{Binding WP.PriceOpt}"
+                           FontSize="24" 
+                           Grid.Column="3"  />
                 </Grid>
 
                 <Grid>
-                    <Label Text="{Binding WP.Name}" />
+                    <Label Text="{Binding WP.Name}"
+                           FontSize="28"  />
                 </Grid>
 
                 <Grid>
@@ -104,7 +110,7 @@
                     </Grid.ColumnDefinitions>
 
                     <Label Text="Штрих код:" />
-                    <Editor Text=""
+                    <Entry Text="{Binding WP.BarCodes}"
                        Grid.Column="1"  />
                 </Grid>
                 <Grid>
@@ -114,7 +120,7 @@
                     </Grid.ColumnDefinitions>
 
                     <Label Text="Поповнення:" />
-                    <Editor Text=""
+                    <Entry Text=""
                        Grid.Column="1"  />
                 </Grid>
 
@@ -126,8 +132,7 @@
                     </Grid.ColumnDefinitions>
 
                     <Button Text=""
-                        VerticalOptions="Center"
-                        HorizontalOptions="Center"
+                        HorizontalOptions="Fill"
                         Clicked="OnClickChangePrintColorType" />
                     <Picker Title=""                        
                         Grid.Column="1"
@@ -136,8 +141,7 @@
 
                     <Button Text="Друк"
                         Grid.Column="2" 
-                        VerticalOptions="Center"
-                        HorizontalOptions="Center"
+                        HorizontalOptions="Fill"
                         Clicked="OnClickPrintBlock" />
                 </Grid>
 
@@ -181,6 +185,9 @@
                        Grid.Column="6"  />
                     <Label Text=""
                        Grid.Column="7"  />
+                </Grid>
+                <Grid VerticalOptions="End">
+                    <ProgressBar x:Name="pb"  ScaleY="2" Progress="{Binding PB}" ProgressColor="Black" />
                 </Grid>
 
             </StackLayout >
