@@ -167,21 +167,38 @@
                 
                 <StackLayout VerticalOptions="End" Orientation="Horizontal">
 
-                    <Label Text="f1-" FontSize="16" />
+                    <Label Text="f1-" 
+                           FontSize="16" />
                     <Label Text="Друк" FontSize="16"
-                       Grid.Column="1"  />
+                       Grid.Column="1">
+                        <Label.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding F1Command}" />
+                        </Label.GestureRecognizers>
+                    </Label>
                     <Label Text="f2-" FontSize="16"
                        Grid.Column="2"  />
                     <Label Text="Підбір" FontSize="16"
-                       Grid.Column="3"  />
+                       Grid.Column="3"  >
+                        <Label.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding F2Command}" />
+                        </Label.GestureRecognizers>
+                    </Label>
                     <Label Text="f4-" FontSize="16" IsVisible="{Binding IsVisF4}"
                        Grid.Column="4"  />
                     <Label Text="" FontSize="16" IsVisible="{Binding IsVisF4}"
-                       Grid.Column="5"  />
+                       Grid.Column="5"  >
+                        <Label.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding F4Command}" />
+                        </Label.GestureRecognizers>
+                    </Label>
                     <Label Text="f5-" FontSize="16"
                        Grid.Column="6"  />
                     <Label Text="{Binding F5Text}" FontSize="16"
-                       Grid.Column="7"  />
+                       Grid.Column="7"  >
+                        <Label.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding F5Command}" />
+                        </Label.GestureRecognizers>
+                    </Label>
                 </StackLayout>
                
                 <Grid VerticalOptions="End">

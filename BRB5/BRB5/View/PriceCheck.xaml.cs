@@ -49,7 +49,7 @@ namespace BRB5
         string _TextColorPriceOpt = "#90EE90";
         public string TextColorPriceOpt { get { return _TextColorPriceOpt; } set { _TextColorPriceOpt = value; OnPropertyChanged("TextColorPriceOpt"); } }
 
-
+        //public ICommand d => new Command(d);
         public PriceCheck()
         {
             InitializeComponent();
@@ -75,7 +75,7 @@ namespace BRB5
                     }
                     //await DisplayAlert("Scanned Barcode", WP.Price+" " + WP.Name, "OK");
 
-                    if (WP.Price != WP.PriceOld) TextColorPrice = "#ff5c5c";
+                    if (WP.Price != WP.PriceOld|| WP.Price==0) TextColorPrice = "#ff5c5c";
 
                     zxing.IsAnalyzing = true;
                     //zxing.IsScanning = true;
@@ -150,5 +150,23 @@ namespace BRB5
         {
 
         }
+
+        private async void OnF1()
+        { 
+        
+        }
+        private async void OnF2()
+        {
+        
+        }
+        private async void OnF4()
+        {
+        
+        }
+        private async void OnF5()
+        {
+        
+        }
+
     }
 }

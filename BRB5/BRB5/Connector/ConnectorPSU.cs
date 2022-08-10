@@ -216,6 +216,8 @@ namespace BRB5.Connector
                 try
                 {
                     var r = JsonConvert.DeserializeObject<WaresPrice>(result.Result);
+                    r.PriceOld=pBC.Price;
+                    r.PriceOptOld = pBC.PriceOpt;
                     return r;
                 }
                 catch (Exception e)
