@@ -8,16 +8,24 @@ namespace BRB5
 {
     public class BL
     {
+        static BL Bl = null;
+        public static BL GetBL()
+        {
+            if (Bl == null)
+                Bl = new BL();
+            return Bl;
+        }
+
         protected DB db = DB.GetDB();
         Connector.Connector c = Connector.Connector.GetInstance();
         public void SendLogPrice()
         {
             for (int i = 0; i < 20; i++)
-            {  
-                var List = db.GetSendData(100);              
+            {
+                var List = db.GetSendData(100);
                 if (List == null && List.Count() == 0)
                     break;
-               
+
                 Result res = c.SendLogPrice(List);
                 if (res.State == 0)
                 {
@@ -38,24 +46,84 @@ namespace BRB5
                 else
                     break;
             }
-            
+
         }
 
         // Зміна стану документа і відправляємо в 1С
-       /* public Result UpdateDocState(int pState, int pTypeDoc, String pNumberDoc, DateTime pDateOutInvoice, String pNumberOutInvoice, int pIsClose)
+        /* public Result UpdateDocState(int pState, int pTypeDoc, String pNumberDoc, DateTime pDateOutInvoice, String pNumberOutInvoice, int pIsClose)
+         {
+             DocSetting DS = Config.GetDocSetting(pTypeDoc);
+             if (DS != null && !DS.IsMultipleSave)
+             {
+                 int State = db.GetStateDoc(pTypeDoc, pNumberDoc);
+                 if (State >= 1)
+                     return new Result(-2, "Даний документ не можна повторно зберігати!");
+             }
+
+             db.UpdateDocState(pState, pTypeDoc, pNumberDoc);
+             List<WaresItemModel> wares = db.GetDocWares(pTypeDoc, pNumberDoc, (DS == null || DS.IsSaveOnlyScan ? 2 : 1), eTypeOrder.Scan);
+             return c.SyncDocsData(pTypeDoc, pNumberDoc, wares, pDateOutInvoice, pNumberOutInvoice, pIsClose);
+
+         }*/
+        public void PrintPackage(int actionType, int packageNumber, bool IsMultyLabel)
         {
-            DocSetting DS = Config.GetDocSetting(pTypeDoc);
-            if (DS != null && !DS.IsMultipleSave)
+            var codeWares = db.GetPrintPackageCodeWares(Config.TypeUsePrinter == eTypeUsePrinter.StationaryWithCutAuto ? -1 : actionType, packageNumber, IsMultyLabel);
+            //    SetProgress(5);//priceCheckerActivity.loader.setVisibility(View.VISIBLE);
+            if (Config.TypeUsePrinter == eTypeUsePrinter.StationaryWithCut || Config.TypeUsePrinter == eTypeUsePrinter.StationaryWithCutAuto)
+                c.PrintHTTP(codeWares);
+            else
+                foreach (int CodeWares in codeWares) {
+                    PrintLabel(CodeWares);
+                }
+
+            //SetProgress(100);
+           
+        }
+
+        public void PrintLabel(int pCodeWares)
+        {
+         /*   boolean isError = false;
+            if (codeWares == null)
+                return;
+            String CodeWares = codeWares.trim();
+
+            try
             {
-                int State = db.GetStateDoc(pTypeDoc, pNumberDoc);
-                if (State >= 1)
-                    return new Result(-2, "Даний документ не можна повторно зберігати!");
+                LI = new PricecheckerHelper().getPriceCheckerData(LI, CodeWares, false, config);
+                if (LI.resHttp != null && !LI.resHttp.isEmpty())
+                {
+                    LI.Init(new JSONObject(LI.resHttp));
+                    if (LI.OldPrice != LI.Price || LI.OldPriceOpt != LI.PriceOpt)
+                    {
+                        LI.BadScan++;
+                        byte[] b = new byte[0];
+                        try
+                        {
+                            b = LI.LevelForPrinter(Printer.GetTypeLanguagePrinter());
+                        }
+                        catch (UnsupportedEncodingException e)
+                        {
+                            //e.printStackTrace();
+                        }
+                        try
+                        {
+                            Printer.sendData(b);
+                        }
+                        catch (IOException e)
+                        {
+                            //LI.InfoPrinter="Lost Connect";
+                            //e.printStackTrace();
+                        }
+                        if (Printer.varPrinterError != ePrinterError.None)
+                            LI.PrinterError = Printer.varPrinterError;
+                    }
+                }
             }
-
-            db.UpdateDocState(pState, pTypeDoc, pNumberDoc);
-            List<WaresItemModel> wares = db.GetDocWares(pTypeDoc, pNumberDoc, (DS == null || DS.IsSaveOnlyScan ? 2 : 1), eTypeOrder.Scan);
-            return c.SyncDocsData(pTypeDoc, pNumberDoc, wares, pDateOutInvoice, pNumberOutInvoice, pIsClose);
-
-        }*/
+            catch (Exception ex)
+            {
+                isError = true;
+            }
+            return;*/
+        }
     }
 }

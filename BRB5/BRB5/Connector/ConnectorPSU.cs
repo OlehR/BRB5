@@ -77,8 +77,18 @@ namespace BRB5.Connector
         public IEnumerable<object[]> LogPrice { get; set; }
     }
 
+    public class ApiPrintHTTP : Api
+    {
+        public ApiPrintHTTP() : base() { }
+        public ApiPrintHTTP( string pWares = null) : base(999)
+        {
+            CodeWares = pWares;
+        }
+        public string CodeWares { get; set; }
 
-    
+    }
+
+
     public class ConnectorPSU : Connector
     {
         public override Result Login(string pLogin, string pPassWord, eLoginServer pLoginServer)
@@ -313,6 +323,35 @@ namespace BRB5.Connector
             }
             return null;
         }
+
+        /// <summary>
+        /// Друк на стаціонарному термопринтері
+        /// </summary>
+        /// <param name="codeWares">Список товарів</param>
+        /// <returns></returns>        
+        public override string PrintHTTP(IEnumerable<int> pCodeWares) 
+        {
+            string Data = string.Join(",", pCodeWares);
+
+            try
+            {
+                string json = new ApiPrintHTTP(Data).ToJSON(); //Config.GetApiJson(999, BuildConfig.VERSION_CODE, "\"CodeWares\":\"" + sb.toString() + "\"");
+                HttpResult res = Http.HTTPRequest(1, "", json, "application/json;charset=UTF-8", null, null);//"http://znp.vopak.local:8088/Print"
+                if (res.HttpState == eStateHTTP.HTTP_OK)
+                {
+                    return res.Result;
+                    //JSONObject jObject = new JSONObject(result.Result);
+                }
+                return res.HttpState.ToString();
+            }
+            catch (Exception e)
+            {
+                //Utils.WriteLog("e", TAG, "printHTTP  >>", e);
+                return e.Message;
+            }
+        }
+
+        
 
     }
 

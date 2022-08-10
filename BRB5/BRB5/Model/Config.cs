@@ -32,6 +32,7 @@ namespace BRB5.Model
         public static eRole Role = eRole.NotDefined;
         public static int CodeUser { get; set; } = 233;
         public static string NameUser { get; set; }
+        public static eTypeUsePrinter TypeUsePrinter { get; set; } = eTypeUsePrinter.NotDefined;
 
         public static int GetCodeUnitWeight() { return Company == eCompany.Sim23 || Company == eCompany.Sim23FTP ? 166 : 7; }
 

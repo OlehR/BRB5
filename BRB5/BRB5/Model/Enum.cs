@@ -11,10 +11,10 @@
 
     public enum eLoginServer
     {
-        Local=0,
-        Central=1,
-        Bitrix=2,
-        Offline=3
+        Local = 0,
+        Central = 1,
+        Bitrix = 2,
+        Offline = 3
     }
 
     public enum eRole
@@ -39,9 +39,38 @@
         Scan,
         Name
     }
+
+    public enum eTypeUsePrinter
+    {
+        NotDefined = 0,
+        OnlyStart = 1,
+        AutoConnect = 2,
+        StationaryWithCut = 3,
+        StationaryWithCutAuto = 4
+    }
+
+    static class EnumMethods
+    {
+
+        public static string GetString(this eTypeUsePrinter pThis)
+        {
+            switch (pThis)
+            {
+                case eTypeUsePrinter.NotDefined: return "Без Принтера";
+                case eTypeUsePrinter.OnlyStart: return "Тільки при вході";
+                case eTypeUsePrinter.AutoConnect: return "Авто підключення";
+                case eTypeUsePrinter.StationaryWithCut: return "Стаціонарний з обрізжчиком";
+                case eTypeUsePrinter.StationaryWithCutAuto: return "Стаціонарний з обрізжчиком (автовибір)";
+                default: return "Невідоме значення";
+            }
+        }
+    }
+
+
+
     public enum eStateHTTP
     {
-        Exeption =-1,
+        Exeption = -1,
         HTTP_Not_Define_Error = 0,
         HTTP_OK = 200,
 
@@ -195,8 +224,8 @@
          * HTTP Status-Code 500: Internal Server Error.
          * @deprecated   it is misplaced and shouldn't have existed.
          */
-        
-     HTTP_SERVER_ERROR = 500,
+
+        HTTP_SERVER_ERROR = 500,
 
         /**
          * HTTP Status-Code 500: Internal Server Error.
@@ -226,6 +255,6 @@
         /**
          * HTTP Status-Code 505: HTTP Version Not Supported.
          */
-        HTTP_VERSION = 505        
+        HTTP_VERSION = 505
     }
 }

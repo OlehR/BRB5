@@ -80,8 +80,12 @@ namespace BRB5.Connector
         public virtual Result SendRaitingFiles(string NumberDoc) { throw new NotImplementedException(); }
 
 
-        // Друк на стаціонарному термопринтері
-        public virtual string printHTTP(List<string> codeWares) { throw new NotImplementedException(); }
+        /// <summary>
+        /// Друк на стаціонарному термопринтері
+        /// </summary>
+        /// <param name="codeWares">Список товарів</param>
+        /// <returns></returns>        
+        public virtual string PrintHTTP(IEnumerable<int> pCodeWares) { throw new NotImplementedException(); }
 
         /// <summary>
         /// Розбір штрихкоду по правилам компанії
@@ -103,7 +107,7 @@ namespace BRB5.Connector
         /// </summary>
         /// <param name="pRole"></param>
         /// <returns></returns>
-        public virtual IEnumerable< TypeDoc> GetTypeDoc(eRole pRole) { throw new NotImplementedException(); }
+        public virtual IEnumerable<TypeDoc> GetTypeDoc(eRole pRole) { throw new NotImplementedException(); }
 
         public virtual IEnumerable<Warehouse> LoadWarehouse() { throw new NotImplementedException(); }
 
