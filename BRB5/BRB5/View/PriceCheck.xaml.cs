@@ -43,6 +43,13 @@ namespace BRB5
         public string ColorPrintColorType { get { return PrintType == 0 ? "#ffffff" : PrintType == 1 ? "#ffffa8" : "#ffffff"; } }
 
 
+        string _TextColorPrice = "#90EE90";
+        public string TextColorPrice { get { return _TextColorPrice; } set { _TextColorPrice = value; OnPropertyChanged("TextColorPrice"); } }
+
+        string _TextColorPriceOpt = "#90EE90";
+        public string TextColorPriceOpt { get { return _TextColorPriceOpt; } set { _TextColorPriceOpt = value; OnPropertyChanged("TextColorPriceOpt"); } }
+
+
         public PriceCheck()
         {
             InitializeComponent();
@@ -55,14 +62,21 @@ namespace BRB5
                 {
                     PB = 0.2;
                     IsVisPriceOpt = false;
+                    TextColorPrice = "#90EE90";
+                    TextColorPriceOpt = "#90EE90";
                     // Stop analysis until we navigate away so we don't keep reading barcodes
                     zxing.IsAnalyzing = false;
                     //zxing.IsScanning = false;
                     // Show an alert
                     WP = c.GetPrice(c.ParsedBarCode(result.Text,true));
-                    if(WP.PriceOpt!=0|| WP.PriceOptOld != 0) IsVisPriceOpt = true;
+                    if (WP.PriceOpt != 0 || WP.PriceOptOld != 0) {
+                        IsVisPriceOpt = true;
+                        if (WP.PriceOpt != WP.PriceOptOld) TextColorPriceOpt = "#ff5c5c";
+                    }
                     //await DisplayAlert("Scanned Barcode", WP.Price+" " + WP.Name, "OK");
-                    
+
+                    if (WP.Price != WP.PriceOld) TextColorPrice = "#ff5c5c";
+
                     zxing.IsAnalyzing = true;
                     //zxing.IsScanning = true;
                     // Navigate away
@@ -70,7 +84,7 @@ namespace BRB5
                     PB = 1;
                 });
 
-
+            
             //MainSL.Children.Add(zxing);
 
             /*overlay = new ZXingDefaultOverlay
