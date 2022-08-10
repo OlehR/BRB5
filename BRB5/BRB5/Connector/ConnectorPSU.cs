@@ -167,7 +167,7 @@ namespace BRB5.Connector
                     //  Log.e("XXX",number+' ' +number.Substring(0,1));
                     if (pBarCode.Substring(0, 2).Equals("22"))
                     {
-                        res.Article = Convert.ToInt32(pBarCode.Substring(2, 8);
+                        res.Article = Convert.ToInt32(pBarCode.Substring(2, 8));
                         String Quantity = pBarCode.Substring(8, 12);
                         res.Quantity = Convert.ToDecimal(Quantity) / 1000m;
                         // Log.e("XXX",Article+" "+ Quantity );
