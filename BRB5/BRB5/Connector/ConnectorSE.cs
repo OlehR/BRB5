@@ -125,7 +125,7 @@ namespace BRB5.Connector
             if (pBarCode.Length > 2 && pBarCode.Substring(0, 2).Equals("29") && pBarCode.Length == 13)
             {
                 Res.CodeWares = Convert.ToInt32(pBarCode.Substring(2, 8));
-                Res.Price = Convert.ToDouble(pBarCode.Substring(8, 13));
+                Res.Price = Convert.ToDecimal(pBarCode.Substring(8, 13));
             }
             return Res;
         }
