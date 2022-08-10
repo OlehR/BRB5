@@ -59,17 +59,21 @@
 
                     <Label Text="Ціна с:"  
                            VerticalOptions="Center"
-                           FontSize="16"/>
+                           FontSize="16"
+                           TextColor="{Binding TextColorPrice}"/>
                     <Label Text="{Binding WP.PriceOld}"
                            Grid.Column="1"
-                           FontSize="24"/>
+                           FontSize="24"
+                           TextColor="{Binding TextColorPrice}"/>
                     <Label Text="Ціна н:"
                            VerticalOptions="Center"
                            FontSize="16"
-                           Grid.Column="2"  />
+                           Grid.Column="2"  
+                           TextColor="{Binding TextColorPrice}"/>
                     <Label Text="{Binding WP.Price}"
                            FontSize="24"                       
-                           Grid.Column="3"  />
+                           Grid.Column="3"  
+                           TextColor="{Binding TextColorPrice}"/>
                 </Grid>
 
                 <Grid IsVisible="{Binding IsVisPriceOpt}">
@@ -82,17 +86,21 @@
 
                     <Label Text="Ц.с.опт."
                            VerticalOptions="Center"
-                           FontSize="16"  />
+                           FontSize="16" 
+                           TextColor="{Binding TextColorPriceOpt}" />
                     <Label Text="{Binding WP.PriceOptOld}"
                            FontSize="24" 
-                           Grid.Column="1"  />
+                           Grid.Column="1"  
+                           TextColor="{Binding TextColorPriceOpt}"/>
                     <Label Text="Ц.н.опт."
                            VerticalOptions="Center"
                            FontSize="16" 
-                           Grid.Column="2"  />
+                           Grid.Column="2" 
+                           TextColor="{Binding TextColorPriceOpt}" />
                     <Label Text="{Binding WP.PriceOpt}"
                            FontSize="24" 
-                           Grid.Column="3"  />
+                           Grid.Column="3" 
+                           TextColor="{Binding TextColorPriceOpt}" />
                 </Grid>
 
                 <Grid>
