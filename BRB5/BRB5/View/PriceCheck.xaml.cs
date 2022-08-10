@@ -5,7 +5,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
+using System.Windows.Input;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 using ZXing.Net.Mobile.Forms;
@@ -43,13 +43,21 @@ namespace BRB5
         public string ColorPrintColorType { get { return PrintType == 0 ? "#ffffff" : PrintType == 1 ? "#ffffa8" : "#ffffff"; } }
 
 
-        string _TextColorPrice = "#90EE90";
+        string _TextColorPrice = "#009800";
         public string TextColorPrice { get { return _TextColorPrice; } set { _TextColorPrice = value; OnPropertyChanged("TextColorPrice"); } }
 
-        string _TextColorPriceOpt = "#90EE90";
+        string _TextColorPriceOpt = "#009800";
         public string TextColorPriceOpt { get { return _TextColorPriceOpt; } set { _TextColorPriceOpt = value; OnPropertyChanged("TextColorPriceOpt"); } }
 
-        //public ICommand d => new Command(d);
+        public bool _IsMultyLabel = false;
+        public bool IsMultyLabel { get { return _IsMultyLabel; } set { _IsMultyLabel = value; OnPropertyChanged("IsMultyLabel"); OnPropertyChanged("F5Text"); } }
+
+        public string F5Text { get { return IsMultyLabel  ? "Дублювати" : "Унікальні"; } }
+
+        public ICommand F1Command => new Command(OnF1);
+        public ICommand F2Command => new Command(OnF2);
+        public ICommand F4Command => new Command(OnF4);
+        public ICommand F5Command => new Command(OnF5);
         public PriceCheck()
         {
             InitializeComponent();
@@ -62,8 +70,8 @@ namespace BRB5
                 {
                     PB = 0.2;
                     IsVisPriceOpt = false;
-                    TextColorPrice = "#90EE90";
-                    TextColorPriceOpt = "#90EE90";
+                    TextColorPrice = "#009800";
+                    TextColorPriceOpt = "#009800";
                     // Stop analysis until we navigate away so we don't keep reading barcodes
                     zxing.IsAnalyzing = false;
                     //zxing.IsScanning = false;
@@ -157,15 +165,14 @@ namespace BRB5
         }
         private async void OnF2()
         {
-        
+            IsVisRepl = !IsVisRepl;
         }
         private async void OnF4()
         {
-        
         }
         private async void OnF5()
         {
-        
+            IsMultyLabel = !IsMultyLabel;
         }
 
     }

@@ -145,7 +145,7 @@
                         ItemsSource="{Binding }"
                         ItemDisplayBinding="{Binding }" />
 
-                    <Button Text="Друк"
+                    <Button Text="f1-Друк"
                         Grid.Column="2" 
                         HorizontalOptions="Fill"
                         Clicked="OnClickPrintBlock" />
@@ -167,34 +167,56 @@
                 
                 <StackLayout VerticalOptions="End" Orientation="Horizontal">
 
-                    <Label Text="f1-" 
-                           FontSize="16" />
-                    <Label Text="Друк" FontSize="16"
-                       Grid.Column="1">
+                    <!--<Label Text="f1-" 
+                           VerticalOptions="Center"
+                           FontSize="16" 
+                           TextColor = "#ff5c5c"/>
+                    <Label Text="Друк"
+                           FontSize="18"
+                           Grid.Column="1"
+                           TextColor="#816f20">
                         <Label.GestureRecognizers>
                             <TapGestureRecognizer Command="{Binding F1Command}" />
                         </Label.GestureRecognizers>
                     </Label>
-                    <Label Text="f2-" FontSize="16"
-                       Grid.Column="2"  />
-                    <Label Text="Підбір" FontSize="16"
-                       Grid.Column="3"  >
+                    
+                     -->
+                    <Label Text="f2-" 
+                           VerticalOptions="Center"
+                           FontSize="16"
+                           Grid.Column="2" 
+                           TextColor = "#ff5c5c" />
+                    <Label Text="Підбір"
+                           FontSize="18"
+                           Grid.Column="3" 
+                           TextColor="#816f20" >
                         <Label.GestureRecognizers>
                             <TapGestureRecognizer Command="{Binding F2Command}" />
                         </Label.GestureRecognizers>
                     </Label>
-                    <Label Text="f4-" FontSize="16" IsVisible="{Binding IsVisF4}"
-                       Grid.Column="4"  />
-                    <Label Text="" FontSize="16" IsVisible="{Binding IsVisF4}"
-                       Grid.Column="5"  >
+                    <Label Text="f4-" FontSize="16" 
+                           IsVisible="{Binding IsVisF4}"
+                           TextColor = "#ff5c5c"
+                           Grid.Column="4"
+                           VerticalOptions="Center"  />
+                    <Label Text="" 
+                           FontSize="18" 
+                           IsVisible="{Binding IsVisF4}"
+                           Grid.Column="5"
+                           TextColor="#816f20"  >
                         <Label.GestureRecognizers>
                             <TapGestureRecognizer Command="{Binding F4Command}" />
                         </Label.GestureRecognizers>
                     </Label>
-                    <Label Text="f5-" FontSize="16"
-                       Grid.Column="6"  />
-                    <Label Text="{Binding F5Text}" FontSize="16"
-                       Grid.Column="7"  >
+                    <Label Text="f5-" 
+                           FontSize="16"
+                           Grid.Column="6" 
+                           TextColor = "#ff5c5c"
+                           VerticalOptions="Center" />
+                    <Label Text="{Binding F5Text}" 
+                           FontSize="18"
+                           Grid.Column="7"
+                           TextColor="#816f20"  >
                         <Label.GestureRecognizers>
                             <TapGestureRecognizer Command="{Binding F5Command}" />
                         </Label.GestureRecognizers>
