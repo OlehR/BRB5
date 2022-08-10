@@ -110,10 +110,88 @@ namespace BRB5.Connector
 
         }
 
-        public override ParseBarCode ParsedBarCode(string ParseBarCode, bool pIsOnlyBarCode) 
+        public override ParseBarCode ParsedBarCode(string pBarCode, bool pIsOnlyBarCode) 
         {
-            ParseBarCode Res = new ParseBarCode() { BarCode= ParseBarCode };
-            return Res;
+            ParseBarCode res = new ParseBarCode();
+            if (string.IsNullOrEmpty( pBarCode))
+                return res;
+            pBarCode = pBarCode.Trim();
+            res.BarCode = pBarCode;
+            res.IsOnlyBarCode = pIsOnlyBarCode;           
+
+            if (!pIsOnlyBarCode && pBarCode.Length <= 8 && !pBarCode.Equals(""))
+            {
+                try
+                {
+                    res.Article = Convert.ToInt32( pBarCode);
+                    res.BarCode = null;
+                    return res;
+                }
+                catch (Exception e)
+                {
+                    //Utils.WriteLog("e", TAG, "ParsedBarCode=> " + pBarCode, e);
+                }
+            }
+
+            if (pBarCode != null)
+            {
+                //Utils.WriteLog("e", TAG, "ParsedBarCode=> " + pBarCode.charAt(0) + " " + pBarCode.Contains("|"));
+                if (pBarCode.Contains("|") && pBarCode[0] == 'Б')
+                {
+                    res.CodeWares = 200000000 + Convert.ToInt32(pBarCode.Substring(1, 9));
+                    res.Quantity = 1;
+                    res.BarCode = null;
+                }
+                else
+                if (pBarCode.Contains("-"))
+                {
+                    try
+                    {
+                        String[] str = pBarCode.Split('-');
+                        if (str.Length == 3)
+                            res.PriceOpt = Convert.ToInt32(str[2]) / 100m;
+                        if (str.Length >= 2) {
+                            res.Price = Convert.ToInt32(str[1]) / 100m;
+                            res.CodeWares = Convert.ToInt32(str[0]);
+                            res.BarCode = null;
+                        }                                
+                    }
+                    catch (Exception e)
+                    {
+                        //Utils.WriteLog("e", TAG, "PriceBarCode", e);
+                    }
+                }
+                else
+                if (pBarCode.Length == 13)
+                {
+                    //  Log.e("XXX",number+' ' +number.Substring(0,1));
+                    if (pBarCode.Substring(0, 2).Equals("22"))
+                    {
+                        res.Article = Convert.ToInt32(pBarCode.Substring(2, 8);
+                        String Quantity = pBarCode.Substring(8, 12);
+                        res.Quantity = Convert.ToDecimal(Quantity) / 1000m;
+                        // Log.e("XXX",Article+" "+ Quantity );
+                    }
+
+                    if (pBarCode.Substring(0, 3).Equals("111"))
+                    {
+
+                        //isBarCode=false;
+                        res.Article = Convert.ToInt32(pBarCode.Substring(3, 9));
+                        String Quantity = pBarCode.Substring(9, 12);
+                        res.Quantity = Convert.ToDecimal(Quantity);
+                        //Log.e("XXX",Article+" "+ Quantity );
+                    }
+
+                    if (res.Article >0)
+                    {
+                        //res.Article = "00" + res.Article;
+                        res.BarCode = null;
+                    }
+                }
+
+            }
+            return res;
         }
 
 

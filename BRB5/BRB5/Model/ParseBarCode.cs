@@ -12,11 +12,11 @@ namespace BRB5.Model
         public string BarCode { get; set; } = null;
         public int CodeWares { get; set; } = 0;
         [JsonIgnore]
-        public double Price { get; set; } = 0d;
+        public decimal Price { get; set; } = 0m;
         [JsonIgnore]
-        public double PriceOpt { get; set; } = 0d;
+        public decimal PriceOpt { get; set; } = 0m;
         public int Article { get; set; }
         [JsonIgnore]
-        public double Quantity { get; set; } = 0d;
+        public decimal Quantity { get; set; } = 0m;
     }
 }
