@@ -48,14 +48,25 @@ namespace BRB5.Connector
     public class ApiDoc : Api
     {
         public ApiDoc() : base() { }
-        public ApiDoc(int pCodeData, int pTypeDoc) : base(pCodeData)
+        public ApiDoc(int pCodeData, int pTypeDoc,string pNumberDoc=null) : base(pCodeData)
         {
             TypeDoc = pTypeDoc;
+            NumberDoc = pNumberDoc;
         }
         public int TypeDoc { get; set; }
-
+        public string NumberDoc { get; set; }
     }
 
+    public class ApiSaveDoc : ApiDoc
+    {
+        public ApiSaveDoc() : base() { }
+        public ApiSaveDoc(int pCodeData, int pTypeDoc, string pNumberDoc = null,IEnumerable<object> pWares=null) : base(pCodeData, pTypeDoc,  pNumberDoc)
+        {
+            Wares = pWares;
+        }
+        public IEnumerable<object> Wares { get; set; }
+       
+    }
     public class ApiLogPrice : Api
     {
         public ApiLogPrice() : base() { }
@@ -136,8 +147,6 @@ namespace BRB5.Connector
             return new Result(result);
         }
 
-
-
         /// <summary>
         /// Список Документів доступних по ролі
         /// </summary>
@@ -166,10 +175,10 @@ namespace BRB5.Connector
         /// <returns></returns>
         public override Result LoadDocsData(int pTypeDoc, string pNumberDoc, ObservableInt pProgress, bool pIsClear) 
         {
-            string data = JsonConvert.SerializeObject(new ApiDoc() { CodeData = 150, TypeDoc = -1 });
+            string data = JsonConvert.SerializeObject(new ApiDoc() { CodeData = 150, TypeDoc = pTypeDoc });
             HttpResult result = Http.HTTPRequest(0, "", data, "application/json");//
 
-            if (result.HttpState != eStateHTTP.HTTP_OK)
+            if (result.HttpState == eStateHTTP.HTTP_OK)
             {
                 string[] lines = result.Result.Split(new String[] { ";;;" }, StringSplitOptions.None);
                 foreach (var el in lines)
@@ -178,6 +187,35 @@ namespace BRB5.Connector
             return null;
         }
 
+
+        /// <summary>
+        /// Вивантаження документів з ТЗД (HTTP)
+        /// </summary>
+        /// <param name="pDoc"></param>
+        /// <param name="pWares"></param>
+        /// <param name="pIsClose"></param>
+        /// <returns></returns>
+        public override Result SendDocsData(Doc pDoc, IEnumerable<DocWares> pWares, int pIsClose)
+        {
+            var r = pWares.Select(el => new Object[] { el.OrderDoc, el.CodeWares, el.InputQuantity });
+            var res = new ApiSaveDoc(153, pDoc.TypeDoc, pDoc.NumberDoc, r);
+            String data = res.ToJSON();
+            try
+            {
+                HttpResult result = Http.HTTPRequest(0, "", data, "application/json; charset=utf-8", null, null);
+                if (result.HttpState != eStateHTTP.HTTP_OK)
+                {
+                    return new Result(result);
+                }
+                Result Res = JsonConvert.DeserializeObject<Result>(result.Result);
+                return Res;
+            }
+            catch (Exception e)
+            {
+                //Utils.WriteLog("e",TAG, "SyncDocsData=>" +data,e);
+                return new Result(-1, e.Message + data);
+            }
+        }
 
         class WarehouseIn
         {
@@ -189,7 +227,7 @@ namespace BRB5.Connector
             string data = JsonConvert.SerializeObject(new Api() { CodeData = 210 });
             HttpResult result = Http.HTTPRequest(1001, "", data, "application/json");//
 
-            if (result.HttpState != eStateHTTP.HTTP_OK)
+            if (result.HttpState == eStateHTTP.HTTP_OK)
             {
                 var r = JsonConvert.DeserializeObject<WarehouseIn>(result.Result);
                 db.ReplaceWarehouse(r.Warehouse);

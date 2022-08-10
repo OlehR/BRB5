@@ -26,6 +26,19 @@
         Client
     }
 
+    public enum eTypeControlDoc
+    {
+        Control,
+        Ask,
+        NoControl
+    }
+
+    public enum eTypeOrder
+    {
+        NoOrder,
+        Scan,
+        Name
+    }
     public enum eStateHTTP
     {
         Exeption =-1,

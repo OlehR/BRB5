@@ -38,6 +38,8 @@ namespace BRB5.Model
         public static int GetCodeUnitPiece()  { return Company == eCompany.Sim23 || Company == eCompany.Sim23FTP ? 796 : 19; }
 
         public static string GetPathFiles { get { string res=@"D:\temp"; try { res = FileSystem.AppDataDirectory; } catch (Exception e) { } return res; } }
+
+        public static DocSetting GetDocSetting(int pTypeDoc) { return null; }
         // public static string GenRaitingFileName(Raiting r);
     }
 }

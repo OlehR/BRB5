@@ -133,7 +133,12 @@ namespace BRB5.Connector
         public override WaresPrice GetPrice(ParseBarCode pBC)
         {
             string vCode = pBC.CodeWares > 0 ? $"code={pBC.CodeWares}" : $"BarCode = {pBC.BarCode}";
-            HttpResult res = Http.HTTPRequest(0, $"PriceTagInfo?{vCode}", null, null, null, null);
+            HttpResult result = Http.HTTPRequest(0, $"PriceTagInfo?{vCode}", null, null, null, null);
+            if (result.HttpState == eStateHTTP.HTTP_OK)
+            {
+               var res= JsonConvert.DeserializeObject<WaresPriceSE>(result.Result);
+                return res.GetWaresPrice;
+            }
             //LI.resHttp = res.Result;
             //LI.HttpState = res.HttpState;
             //return LI;

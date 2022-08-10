@@ -16,6 +16,7 @@ namespace BRB5.Model
     public class DocWares: DocWaresId
     {
         public decimal QuantityOld { get; set; }
+        public decimal InputQuantity { get; set; }
         public int CodeReason { get; set; }
         public DateTime DTInsert { get; set; }
     }
