@@ -48,14 +48,25 @@ namespace BRB5.Connector
     public class ApiDoc : Api
     {
         public ApiDoc() : base() { }
-        public ApiDoc(int pCodeData, int pTypeDoc) : base(pCodeData)
+        public ApiDoc(int pCodeData, int pTypeDoc,string pNumberDoc=null) : base(pCodeData)
         {
             TypeDoc = pTypeDoc;
+            NumberDoc = pNumberDoc;
         }
         public int TypeDoc { get; set; }
-
+        public string NumberDoc { get; set; }
     }
 
+    public class ApiSaveDoc : ApiDoc
+    {
+        public ApiSaveDoc() : base() { }
+        public ApiSaveDoc(int pCodeData, int pTypeDoc, string pNumberDoc = null,IEnumerable<object> pWares=null) : base(pCodeData, pTypeDoc,  pNumberDoc)
+        {
+            Wares = pWares;
+        }
+        public IEnumerable<object> Wares { get; set; }
+       
+    }
     public class ApiLogPrice : Api
     {
         public ApiLogPrice() : base() { }
@@ -99,10 +110,88 @@ namespace BRB5.Connector
 
         }
 
-        public override ParseBarCode ParsedBarCode(string ParseBarCode, bool pIsOnlyBarCode) 
+        public override ParseBarCode ParsedBarCode(string pBarCode, bool pIsOnlyBarCode) 
         {
-            ParseBarCode Res = new ParseBarCode() { BarCode= ParseBarCode };
-            return Res;
+            ParseBarCode res = new ParseBarCode();
+            if (string.IsNullOrEmpty( pBarCode))
+                return res;
+            pBarCode = pBarCode.Trim();
+            res.BarCode = pBarCode;
+            res.IsOnlyBarCode = pIsOnlyBarCode;           
+
+            if (!pIsOnlyBarCode && pBarCode.Length <= 8 && !pBarCode.Equals(""))
+            {
+                try
+                {
+                    res.Article = Convert.ToInt32( pBarCode);
+                    res.BarCode = null;
+                    return res;
+                }
+                catch (Exception e)
+                {
+                    //Utils.WriteLog("e", TAG, "ParsedBarCode=> " + pBarCode, e);
+                }
+            }
+
+            if (pBarCode != null)
+            {
+                //Utils.WriteLog("e", TAG, "ParsedBarCode=> " + pBarCode.charAt(0) + " " + pBarCode.Contains("|"));
+                if (pBarCode.Contains("|") && pBarCode[0] == 'Б')
+                {
+                    res.CodeWares = 200000000 + Convert.ToInt32(pBarCode.Substring(1, 9));
+                    res.Quantity = 1;
+                    res.BarCode = null;
+                }
+                else
+                if (pBarCode.Contains("-"))
+                {
+                    try
+                    {
+                        String[] str = pBarCode.Split('-');
+                        if (str.Length == 3)
+                            res.PriceOpt = Convert.ToInt32(str[2]) / 100m;
+                        if (str.Length >= 2) {
+                            res.Price = Convert.ToInt32(str[1]) / 100m;
+                            res.CodeWares = Convert.ToInt32(str[0]);
+                            res.BarCode = null;
+                        }                                
+                    }
+                    catch (Exception e)
+                    {
+                        //Utils.WriteLog("e", TAG, "PriceBarCode", e);
+                    }
+                }
+                else
+                if (pBarCode.Length == 13)
+                {
+                    //  Log.e("XXX",number+' ' +number.Substring(0,1));
+                    if (pBarCode.Substring(0, 2).Equals("22"))
+                    {
+                        res.Article = Convert.ToInt32(pBarCode.Substring(2, 8);
+                        String Quantity = pBarCode.Substring(8, 12);
+                        res.Quantity = Convert.ToDecimal(Quantity) / 1000m;
+                        // Log.e("XXX",Article+" "+ Quantity );
+                    }
+
+                    if (pBarCode.Substring(0, 3).Equals("111"))
+                    {
+
+                        //isBarCode=false;
+                        res.Article = Convert.ToInt32(pBarCode.Substring(3, 9));
+                        String Quantity = pBarCode.Substring(9, 12);
+                        res.Quantity = Convert.ToDecimal(Quantity);
+                        //Log.e("XXX",Article+" "+ Quantity );
+                    }
+
+                    if (res.Article >0)
+                    {
+                        //res.Article = "00" + res.Article;
+                        res.BarCode = null;
+                    }
+                }
+
+            }
+            return res;
         }
 
 
@@ -136,8 +225,6 @@ namespace BRB5.Connector
             return new Result(result);
         }
 
-
-
         /// <summary>
         /// Список Документів доступних по ролі
         /// </summary>
@@ -166,10 +253,10 @@ namespace BRB5.Connector
         /// <returns></returns>
         public override Result LoadDocsData(int pTypeDoc, string pNumberDoc, ObservableInt pProgress, bool pIsClear) 
         {
-            string data = JsonConvert.SerializeObject(new ApiDoc() { CodeData = 150, TypeDoc = -1 });
+            string data = JsonConvert.SerializeObject(new ApiDoc() { CodeData = 150, TypeDoc = pTypeDoc });
             HttpResult result = Http.HTTPRequest(0, "", data, "application/json");//
 
-            if (result.HttpState != eStateHTTP.HTTP_OK)
+            if (result.HttpState == eStateHTTP.HTTP_OK)
             {
                 string[] lines = result.Result.Split(new String[] { ";;;" }, StringSplitOptions.None);
                 foreach (var el in lines)
@@ -178,6 +265,35 @@ namespace BRB5.Connector
             return null;
         }
 
+
+        /// <summary>
+        /// Вивантаження документів з ТЗД (HTTP)
+        /// </summary>
+        /// <param name="pDoc"></param>
+        /// <param name="pWares"></param>
+        /// <param name="pIsClose"></param>
+        /// <returns></returns>
+        public override Result SendDocsData(Doc pDoc, IEnumerable<DocWares> pWares, int pIsClose)
+        {
+            var r = pWares.Select(el => new Object[] { el.OrderDoc, el.CodeWares, el.InputQuantity });
+            var res = new ApiSaveDoc(153, pDoc.TypeDoc, pDoc.NumberDoc, r);
+            String data = res.ToJSON();
+            try
+            {
+                HttpResult result = Http.HTTPRequest(0, "", data, "application/json; charset=utf-8", null, null);
+                if (result.HttpState != eStateHTTP.HTTP_OK)
+                {
+                    return new Result(result);
+                }
+                Result Res = JsonConvert.DeserializeObject<Result>(result.Result);
+                return Res;
+            }
+            catch (Exception e)
+            {
+                //Utils.WriteLog("e",TAG, "SyncDocsData=>" +data,e);
+                return new Result(-1, e.Message + data);
+            }
+        }
 
         class WarehouseIn
         {
@@ -189,7 +305,7 @@ namespace BRB5.Connector
             string data = JsonConvert.SerializeObject(new Api() { CodeData = 210 });
             HttpResult result = Http.HTTPRequest(1001, "", data, "application/json");//
 
-            if (result.HttpState != eStateHTTP.HTTP_OK)
+            if (result.HttpState == eStateHTTP.HTTP_OK)
             {
                 var r = JsonConvert.DeserializeObject<WarehouseIn>(result.Result);
                 db.ReplaceWarehouse(r.Warehouse);

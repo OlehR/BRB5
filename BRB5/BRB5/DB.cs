@@ -40,7 +40,7 @@ CREATE UNIQUE INDEX BarCodeBC ON BarCode (BarCode);
 CREATE TABLE Config (
     NameVar    TEXT      NOT NULL,
     DATAVar    TEXT      NOT NULL,
-    TYPEVar    TEXT      NOT NULL DEFAULT 'String',
+    TYPEVar    TEXT      NOT NULL DEFAULT 'string',
     DESCRIPTION TEXT,
     UserCreate TIMESTAMP NOT NULL  DEFAULT CURRENT_TIMESTAMP);
 CREATE UNIQUE INDEX ConfigId ON Config ( NameVar);
@@ -194,7 +194,7 @@ CREATE UNIQUE INDEX UserLogin ON User (Login);
                 //var receiptFilePath = Path.GetDirectoryName(ReceiptFile);
                 //if (!Directory.Exists(receiptFilePath))
                 //    Directory.CreateDirectory(receiptFilePath);
-                //Створюємо щоденну табличку з чеками.
+                //Створюємо базу
                 db = new SQLite(PathNameDB);
                 db.ExecuteNonQuery(SqlCreateDB);
                // db.Close();
@@ -236,6 +236,44 @@ CREATE UNIQUE INDEX UserLogin ON User (Login);
             return Res ;
         }
 
+        public IEnumerable<DocWaresEx> GetDocWares(DocId pDocId, int pTypeResult, eTypeOrder pTypeOrder)
+        {
+            DocSetting DS = Config.GetDocSetting(pDocId.TypeDoc);
+            string Sql = "";
+            string OrderQuery = pTypeOrder == eTypeOrder.Name? "13 desc,3" :"11 desc,1";            
+
+            string Color = " ,0 as Ord";
+            if (DS.TypeColor == 1)
+            {
+                Color = ", case when dws.code_wares is null then 2 else 0 end as Ord\n";
+            }
+            else
+            if (DS.TypeColor == 2)
+            {
+                Color = @", case when coalesce(dws.quantity,0) - coalesce(dw1.quantity_input,0) <0 then 3                                 when coalesce(dws.quantity,0) - coalesce(dw1.quantity_input,0) >0 then 2                                when coalesce(dws.quantity,0) - coalesce(dw1.quantity_input,0)=0 and quantity_reason>0 then 1                           else 0 end as Ord\n";            }            if (pTypeResult == 1)                Sql = $@"select d.Type_Doc as TypeDoc, d.number_doc as NumberDoc, dw1.order_doc as OrderDoc, dw1.CODE_WARES as CodeWares,coalesce(dws.name,w.NAME_WARES) as NameWares,                         coalesce(dws.quantity,0) as QuantityOrder,coalesce(dw1.quantity_input,0) as InputQuantity, coalesce(dws.quantity_min,0) as QuantityMin,                         coalesce(dws.quantity_max,0) as QuantityMax ,coalesce(d.Is_Control,0) as IsControl, coalesce(dw1.quantity_old,0) as QuantityOld                      ,dw1.quantity_reason as QuantityReason                        {Color}                        ,w.code_unit as CodeUnit                            from Doc d                            join (select dw.type_doc ,dw.number_doc, dw.code_wares, sum(dw.quantity) as quantity_input,max(dw.order_doc) as order_doc,sum(quantity_old) as quantity_old,  sum(case when dw.CODE_Reason>0 then  dw.quantity else 0 end) as quantity_reason  from doc_wares dw group by dw.type_doc ,dw.number_doc,code_wares) dw1 on (dw1.number_doc = d.number_doc and d.type_doc=dw1.type_doc)                          Left join wares w on dw1.code_wares = w.code_wares                           left join (                            select  dws.type_doc ,dws.number_doc, dws.code_wares,dws.name, sum(dws.quantity) as quantity,  min(dws.quantity_min) as quantity_min, max(dws.quantity_max) as quantity_max  from   DOC_WARES_sample dws   group by dws.type_doc ,dws.number_doc,dws.code_wares,dws.name                            ) as dws on d.number_doc = dws.number_doc and d.type_doc=dws.type_doc and dws.code_wares = dw1.code_wares                          where d.type_doc=@TypeDoc and  d.number_doc = @NumberDoc                       union all                       select d.Type_Doc as TypeDoc, d.number_doc as NumberDoc, dws.order_doc+100000, dws.CODE_WARES,coalesce(dws.name,w.NAME_WARES) as NAME_WARES,coalesce(dws.quantity,0) as quantity_order,coalesce(dw1.quantity_input,0) as quantity_input, coalesce(dws.quantity_min,0) as quantity_min, coalesce(dws.quantity_max,0) as quantity_max ,coalesce(d.Is_Control,0) as Is_Control, coalesce(dw1.quantity_old,0) as quantity_old                           ,0 as  quantity_reason                      , 3 as Ord                      ,w.code_unit                          from Doc d                            join DOC_WARES_sample dws on d.number_doc = dws.number_doc and d.type_doc=dws.type_doc --and dws.code_wares = w.code_wares                          left join wares w on dws.code_wares = w.code_wares                           left join (select dw.type_doc ,dw.number_doc, dw.code_wares, sum(dw.quantity) as quantity_input,sum(dw.quantity_old) as quantity_old from doc_wares dw group by dw.type_doc ,dw.number_doc,code_wares) dw1 on (dw1.number_doc = d.number_doc and d.type_doc=dw1.type_doc and dw1.code_wares = dws.code_wares)                          where dw1.type_doc is null and d.type_doc=@TypeDoc and  d.number_doc = @NumberDoc                       order by {OrderQuery}"  ;            if (pTypeResult == 2)                Sql = $@"select d.Type_Doc as TypeDoc, d.number_doc as NumberDoc, dw1.order_doc as OrderDoc, dw1.CODE_WARES as CodeWares,coalesce(dws.name,w.NAME_WARES) as NameWares,                        coalesce(dws.quantity,0) as QuantityOrder,                        coalesce(dw1.quantity,0) as QuantityInput, coalesce(dws.quantity_min,0) as QuantityMin, coalesce(dws.quantity_max,0) as QuantityMax ,                        coalesce(d.Is_Control,0) as IsControl, coalesce(dw1.quantity_old,0) as QuantityOld,dw1.CODE_Reason as  CodeReason                        ,0 as Ord,w.code_unit                            from Doc d                             join doc_wares dw1 on (dw1.number_doc = d.number_doc and d.type_doc=dw1.type_doc)                            left join wares w on dw1.code_wares = w.code_wares                             left join (                            select  dws.type_doc ,dws.number_doc, dws.code_wares,dws.name, sum(dws.quantity) as quantity,  min(dws.quantity_min) as quantity_min, max(dws.quantity_max) as quantity_max  from   DOC_WARES_sample dws   group by dws.type_doc ,dws.number_doc,dws.code_wares,dws.name                            ) as dws on d.number_doc = dws.number_doc and d.type_doc=dws.type_doc and dws.code_wares = dw1.code_wares                            where d.type_doc=@TypeDoc and  d.number_doc = @NumberDoc@                         order by 1,2";            try
+            {
+                return db.Execute<DocId,DocWaresEx>(Sql, pDocId);
+            }
+            catch (Exception e)
+            {
+                //Utils.WriteLog("e", TAG, "GetDocWares >>", e);
+            }
+            return null;
+        }
+
+        public bool UpdateDocState(int pState, int pTypeDoc, string pNumberDoc)
+        {
+            try
+            {
+                string Sql = "Update DOC state =@State  where Type_doc = @TypeDoc  and number_doc = @NumberDoc";
+                return db.ExecuteNonQuery(Sql,new Doc(){TypeDoc=pTypeDoc,NumberDoc=pNumberDoc,State=pState } )>0;
+            }
+            catch (Exception e)
+            {
+               // Utils.WriteLog("e", TAG, "UpdateDocState >>", e);
+            }
+            return false;
+        }
 
         public bool ReplaceDoc(IEnumerable<Doc> pDoc)
         {
@@ -365,7 +403,7 @@ CREATE UNIQUE INDEX UserLogin ON User (Login);
             }
             catch (Exception e)
             {
-               // Utils.WriteLog("e", TAG, "GetCountScanCode >>" + e.toString());
+               // Utils.WriteLog("e", TAG, "GetCountScanCode >>" + e.tostring());
                 //throw mSQLException;
             }
             return varRes;

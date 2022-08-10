@@ -40,5 +40,22 @@ namespace BRB5
             }
             
         }
+
+        // Зміна стану документа і відправляємо в 1С
+       /* public Result UpdateDocState(int pState, int pTypeDoc, String pNumberDoc, DateTime pDateOutInvoice, String pNumberOutInvoice, int pIsClose)
+        {
+            DocSetting DS = Config.GetDocSetting(pTypeDoc);
+            if (DS != null && !DS.IsMultipleSave)
+            {
+                int State = db.GetStateDoc(pTypeDoc, pNumberDoc);
+                if (State >= 1)
+                    return new Result(-2, "Даний документ не можна повторно зберігати!");
+            }
+
+            db.UpdateDocState(pState, pTypeDoc, pNumberDoc);
+            List<WaresItemModel> wares = db.GetDocWares(pTypeDoc, pNumberDoc, (DS == null || DS.IsSaveOnlyScan ? 2 : 1), eTypeOrder.Scan);
+            return c.SyncDocsData(pTypeDoc, pNumberDoc, wares, pDateOutInvoice, pNumberOutInvoice, pIsClose);
+
+        }*/
     }
 }
