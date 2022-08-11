@@ -120,16 +120,17 @@ namespace BRB5.Connector
 
         }
 
-        public override ParseBarCode ParsedBarCode(string pBarCode, bool pIsOnlyBarCode) 
+        public override ParseBarCode ParsedBarCode(string pBarCode, bool pIsHandInput) 
         {
             ParseBarCode res = new ParseBarCode();
             if (string.IsNullOrEmpty( pBarCode))
                 return res;
             pBarCode = pBarCode.Trim();
+            res.StartString = pBarCode;
             res.BarCode = pBarCode;
-            res.IsOnlyBarCode = pIsOnlyBarCode;           
+            res.IsHandInput = pIsHandInput;           
 
-            if (!pIsOnlyBarCode && pBarCode.Length <= 8 && !pBarCode.Equals(""))
+            if (pIsHandInput && pBarCode.Length <= 8 && !pBarCode.Equals(""))
             {
                 try
                 {
@@ -216,8 +217,7 @@ namespace BRB5.Connector
                 try
                 {
                     var r = JsonConvert.DeserializeObject<WaresPrice>(result.Result);
-                    r.PriceOld=pBC.Price;
-                    r.PriceOptOld = pBC.PriceOpt;
+                    r.ParseBarCode = pBC;
                     return r;
                 }
                 catch (Exception e)

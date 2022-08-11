@@ -15,10 +15,12 @@ namespace BRB5.Model
         //зберігаємо в копійках із за відсутності Decimal
         public decimal Price { get; set; }
         //public String strPrice() { return String.format("%.2f", (double)Price / 100d){get;set;} }
-        public decimal PriceOld { get; set; }
+        public decimal PriceOld { get { return ParseBarCode?.Price ?? 0; } }
         public decimal QuantityOpt { get; set; }
         public decimal PriceOpt { get; set; }
-        public decimal PriceOptOld { get; set; }
+        public decimal PriceOptOld { get { return ParseBarCode?.PriceOpt ?? 0; } }
+
+        public string StartString { get; set; }
 
         public string BarCodes { get; set; }
         //public int ColorPriceOpt() { return Color.parseColor(OldPriceOpt != PriceOpt ? "#ee4343" : "#3bb46e"){get;set;} }
@@ -40,5 +42,7 @@ namespace BRB5.Model
         public DateTime PromotionEnd { get; set; }
 
         public bool Is100g { get; set; }
+
+        public ParseBarCode ParseBarCode { get; set; }
     }
 }

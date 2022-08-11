@@ -17,8 +17,8 @@ namespace BRB5
     {
         Connector.Connector c;        
 
-        bool _IsVisPriceOpt = false;
-        public bool IsVisPriceOpt { get { return _IsVisPriceOpt; } set { _IsVisPriceOpt = value; OnPropertyChanged("IsVisPriceOpt"); } }
+        
+        public bool IsVisPriceOpt { get { return WP != null && (WP.PriceOpt != 0 || WP.PriceOptOld != 0); }  }
 
         bool _IsVisF4 = false;
         public bool IsVisF4 { get { return _IsVisF4; } set { _IsVisF4 = value; OnPropertyChanged("IsVisF4"); } }
@@ -30,25 +30,27 @@ namespace BRB5
         public double PB { get { return _PB; } set { _PB = value; OnPropertyChanged("PB"); } }
 
         WaresPrice _WP;
-        public WaresPrice WP { get { return _WP; } set { _WP = value; OnPropertyChanged("WP"); } }
+        public WaresPrice WP { get { return _WP; } set { _WP = value; OnPropertyChanged("WP"); OnPropertyChanged("TextColorPrice"); OnPropertyChanged("IsVisPriceOpt"); } }
         //ZXingScannerView zxing;
         //ZXingDefaultOverlay overlay;
 
         int _PrintType = 0;//Колір чека 0-звичайний 1-жовтий, -1 не розділяти.        
         public int PrintType { get { return _PrintType; } set { _PrintType = value; OnPropertyChanged("PrintType"); OnPropertyChanged("NamePrintColorType"); OnPropertyChanged("ColorPrintColorType"); } }
 
+        public bool IsOnline { get; set; } = true;
+
+        /// <summary>
+        /// Номер сканування цінників за день !!!TMP Треба зберігати в базі.
+        /// </summary>
+        public static int LineNumber = 0;
 
         //public int ColorPrintColorType() { return Color.parseColor(HttpState != eStateHTTP.HTTP_OK ? "#ffb3b3" : (PrintType == 0 ? "#ffffff" : "#3fffff00")); }
         public string NamePrintColorType { get { return PrintType == 0 ? "Звичайний" : PrintType == 1 ? "Жовтий" : "Авто"; } }
         public string ColorPrintColorType { get { return PrintType == 0 ? "#ffffff" : PrintType == 1 ? "#ffffa8" : "#ffffff"; } }
 
+        public string TextColorPrice { get { return (WP!=null && (WP.Price != WP.PriceOld || WP.Price == 0) && WP.PriceOpt != WP.PriceOptOld) ? "#009800" : "#ff5c5c";  } }
 
-        string _TextColorPrice = "#009800";
-        public string TextColorPrice { get { return _TextColorPrice; } set { _TextColorPrice = value; OnPropertyChanged("TextColorPrice"); } }
-
-        string _TextColorPriceOpt = "#009800";
-        public string TextColorPriceOpt { get { return _TextColorPriceOpt; } set { _TextColorPriceOpt = value; OnPropertyChanged("TextColorPriceOpt"); } }
-
+ 
         public bool _IsMultyLabel = false;
         public bool IsMultyLabel { get { return _IsMultyLabel; } set { _IsMultyLabel = value; OnPropertyChanged("IsMultyLabel"); OnPropertyChanged("F5Text"); } }
 
@@ -64,31 +66,22 @@ namespace BRB5
 
             c = Connector.Connector.GetInstance();
 
-
             zxing.OnScanResult += (result) =>
                 Device.BeginInvokeOnMainThread(async () =>
                 {
-                    PB = 0.2;
-                    IsVisPriceOpt = false;
-                    TextColorPrice = "#009800";
-                    TextColorPriceOpt = "#009800";
+                    PB = 0.2;                  
+                    
                     // Stop analysis until we navigate away so we don't keep reading barcodes
                     zxing.IsAnalyzing = false;
-                    //zxing.IsScanning = false;
-                    // Show an alert
+                    
                     WP = c.GetPrice(c.ParsedBarCode(result.Text,true));
-                    if (WP.PriceOpt != 0 || WP.PriceOptOld != 0) {
-                        IsVisPriceOpt = true;
-                        if (WP.PriceOpt != WP.PriceOptOld) TextColorPriceOpt = "#ff5c5c";
-                    }
+                    
                     //await DisplayAlert("Scanned Barcode", WP.Price+" " + WP.Name, "OK");
 
-                    if (WP.Price != WP.PriceOld|| WP.Price==0) TextColorPrice = "#ff5c5c";
-
+                    
                     zxing.IsAnalyzing = true;
                     //zxing.IsScanning = true;
-                    // Navigate away
-                    //await Navigation.PopAsync();
+                    
                     PB = 1;
                 });
 

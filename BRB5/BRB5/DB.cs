@@ -416,7 +416,6 @@ CREATE UNIQUE INDEX UserLogin ON User (Login);
 
         public void InsLogPrice(LogPrice pLP)// String pBarCode, Integer pStatus, Integer pActionType, Integer pPackageNumber, Integer pCodeWarees, String pArticle, Integer pLineNumber)
         {
-
             string Sql = @" insert into LogPrice (bar_code, Status, action_type,package_number,code_wares,Line_Number, Article) 
                                       values (@BarCode,@Status, @ActionType,@PackageNumber,@CodeWares,@LineNumber,@Article)";
             try

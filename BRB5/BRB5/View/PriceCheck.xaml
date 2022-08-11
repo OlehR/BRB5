@@ -87,20 +87,20 @@
                     <Label Text="Ц.с.опт."
                            VerticalOptions="Center"
                            FontSize="16" 
-                           TextColor="{Binding TextColorPriceOpt}" />
+                           TextColor="{Binding TextColorPrice}" />
                     <Label Text="{Binding WP.PriceOptOld}"
                            FontSize="24" 
                            Grid.Column="1"  
-                           TextColor="{Binding TextColorPriceOpt}"/>
+                           TextColor="{Binding TextColorPrice}"/>
                     <Label Text="Ц.н.опт."
                            VerticalOptions="Center"
                            FontSize="16" 
                            Grid.Column="2" 
-                           TextColor="{Binding TextColorPriceOpt}" />
+                           TextColor="{Binding TextColorPrice}" />
                     <Label Text="{Binding WP.PriceOpt}"
                            FontSize="24" 
                            Grid.Column="3" 
-                           TextColor="{Binding TextColorPriceOpt}" />
+                           TextColor="{Binding TextColorPrice}" />
                 </Grid>
 
                 <Grid>
