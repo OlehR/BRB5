@@ -125,5 +125,44 @@ namespace BRB5
             }
             return;*/
         }
+
+        /// <summary>
+        /// Отримати Товар по штрихкоду
+        /// </summary>
+        /// <param name="pTypeDoc"></param>
+        /// <param name="pNumberDoc"></param>
+        /// <param name="pBarCode"></param>
+        /// <param name="pIsOnlyBarCode"></param>
+        /// <returns></returns>
+        public DocWaresEx GetWaresFromBarcode(int pTypeDoc, String pNumberDoc, String pBarCode, bool pIsHandInput)
+        {            
+            bool IsSimpleDoc = false;
+            if (pTypeDoc > 0)
+                IsSimpleDoc = Config.GetDocSetting(pTypeDoc).IsSimpleDoc;
+            ParseBarCode PBarcode = c.ParsedBarCode(pBarCode, !pIsHandInput && !IsSimpleDoc);
+            DocWaresEx res = db.GetScanData( new DocId() { TypeDoc = pTypeDoc, NumberDoc = pNumberDoc }, PBarcode);// pBarCode, pIsOnlyBarCode,false);
+            //String outLog = "Null";
+            if (res != null) ;
+            //  outLog = res.CodeWares + "," + res.QuantityBarCode + "," + res.NameWares;
+            else
+              if (Config.Company == eCompany.Sim23 && pTypeDoc == 7 && PBarcode.CodeWares != 0)
+            { //Якщо ревізія а товар не знайдено
+
+                DocWaresSample DWS = new DocWaresSample() { TypeDoc = pTypeDoc, NumberDoc = pNumberDoc, OrderDoc = 100000 + PBarcode.CodeWares,
+                    Quantity = 1m, QuantityMax = 1d, Name = pBarCode };
+                
+                db.ReplaceDocWaresSample(new DocWaresSample[] { DWS});
+                res = new DocWaresEx();//(DWS);
+                res.Coefficient = 1;
+                res.CodeUnit = Config.GetCodeUnitPiece;
+                res.BaseCodeUnit = res.CodeUnit;
+                res.NameUnit = "Шт";
+            }
+
+           // Utils.WriteLog("i", TAG, "SaveDocWares=>" + String.valueOf(pTypeDoc) + "," + pNumberDoc + "," + gson.toJson(PBarcode) +
+            //        ",\nres=>" + outLog);
+            return res;
+        }
+
     }
 }

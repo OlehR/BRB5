@@ -159,7 +159,10 @@
                         <ColumnDefinition />
                     </Grid.ColumnDefinitions>
 
-                    <Label Text="http" />
+                    <Label 
+                        Text="{Binding WP.StrHttpResult}" 
+                        TextColor="{Binding TextColorHttp}" 
+                           />
                     <Label Text=""
                        Grid.Column="1"  />
                     <Label Text=""

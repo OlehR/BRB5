@@ -15,8 +15,9 @@ namespace BRB5
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class PriceCheck : ContentPage, INotifyPropertyChanged
     {
-        Connector.Connector c;        
-
+        Connector.Connector c;    
+        DB db = DB.GetDB();
+        BL bl = BL.GetBL();
         
         public bool IsVisPriceOpt { get { return WP != null && (WP.PriceOpt != 0 || WP.PriceOptOld != 0); }  }
 
@@ -30,7 +31,7 @@ namespace BRB5
         public double PB { get { return _PB; } set { _PB = value; OnPropertyChanged("PB"); } }
 
         WaresPrice _WP;
-        public WaresPrice WP { get { return _WP; } set { _WP = value; OnPropertyChanged("WP"); OnPropertyChanged("TextColorPrice"); OnPropertyChanged("IsVisPriceOpt"); } }
+        public WaresPrice WP { get { return _WP; } set { _WP = value; OnPropertyChanged("WP"); OnPropertyChanged("TextColorPrice"); OnPropertyChanged("IsVisPriceOpt"); OnPropertyChanged("TextColorHttp"); } }
         //ZXingScannerView zxing;
         //ZXingDefaultOverlay overlay;
 
@@ -45,6 +46,9 @@ namespace BRB5
         int LineNumber = 0;
 
         int _PackageNumber = 0;
+
+        public int AllScan { get; set; } = 0;
+        public int BadScan { get; set; } = 0;
         /// <summary>
         /// Номер пакета цінників за день !!!TMP Треба зберігати в базі.
         /// </summary>
@@ -57,7 +61,8 @@ namespace BRB5
 
         public string TextColorPrice { get { return (WP!=null && (WP.Price != WP.PriceOld || WP.Price == 0) && WP.PriceOpt != WP.PriceOptOld) ? "#009800" : "#ff5c5c";  } }
 
- 
+        public string TextColorHttp { get { return (WP != null && WP.StateHTTP==eStateHTTP.HTTP_OK) ? "#009800" : "#ff5c5c"; } }
+
         public bool _IsMultyLabel = false;
         public bool IsMultyLabel { get { return _IsMultyLabel; } set { _IsMultyLabel = value; OnPropertyChanged("IsMultyLabel"); OnPropertyChanged("F5Text"); } }
 
@@ -70,27 +75,11 @@ namespace BRB5
         public PriceCheck()
         {
             InitializeComponent();
-
             c = Connector.Connector.GetInstance();
-
             zxing.OnScanResult += (result) =>
                 Device.BeginInvokeOnMainThread(async () =>
-                {
-                    PB = 0.2;                  
-                    
-                    // Stop analysis until we navigate away so we don't keep reading barcodes
-                    zxing.IsAnalyzing = false;
-                    
-                    WP = c.GetPrice(c.ParsedBarCode(result.Text,true));
-                    
-                    //await DisplayAlert("Scanned Barcode", WP.Price+" " + WP.Name, "OK");
-
-                    
-                    zxing.IsAnalyzing = true;
-                    //zxing.IsScanning = true;
-                    
-                    PB = 1;
-                });
+                FoundWares(result.Text, false)
+                ); 
 
             
             //MainSL.Children.Add(zxing);
@@ -120,20 +109,52 @@ namespace BRB5
              };
              scanPage.OnScanResult += scanResultDelegate;
             await Navigation.PushAsync(scanPage);*/
-            this.BindingContext = this;
-           
+            this.BindingContext = this;           
         }
+
+        void FoundWares(string pBarCode, bool pIsHandInput = false)
+        {
+            LineNumber++;
+            PB = 0.2;
+            // Stop analysis until we navigate away so we don't keep reading barcodes
+            zxing.IsAnalyzing = false;
+            if (IsOnline)
+            {
+                WP = c.GetPrice(c.ParsedBarCode(pBarCode, true));
+                //if(WP.State>0)
+            }
+            else
+            {
+                var data = bl.GetWaresFromBarcode(0, null, pBarCode, pIsHandInput);
+                WP = new WaresPrice(data);                                
+
+            }
+            if (WP != null)
+            {
+                AllScan++;
+                if (!WP.IsPriceOk)
+                    BadScan++;
+            }
+            
+            var l = new LogPrice(WP, IsOnline, PackageNumber, LineNumber);
+            db.InsLogPrice(l);
+
+            zxing.IsAnalyzing = true;
+            //zxing.IsScanning = true;
+
+            PB = 1;
+
+        }
+
         protected override void OnAppearing()
         {
             base.OnAppearing();
-
             zxing.IsScanning = true;
         }
 
         protected override void OnDisappearing()
         {
             zxing.IsScanning = false;
-
             base.OnDisappearing();
         }
 

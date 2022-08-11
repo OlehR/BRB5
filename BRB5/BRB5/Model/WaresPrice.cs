@@ -7,9 +7,19 @@ namespace BRB5.Model
     public class WaresPrice:Result
     {
         public WaresPrice() { }
+        public WaresPrice(DocWaresEx pW) 
+        { 
+            CodeWares=pW.CodeWares;
+            Name = pW.NameWares;
+            BarCodes = pW.BarCode;
+            Unit = pW.NameUnit;
+            ParseBarCode=pW.ParseBarCode;
+
+
+        }
         public WaresPrice(HttpResult pHttp, string pInfo=null) : base(pHttp, pInfo) { }
         public WaresPrice(int pState = 0, string pTextError = "Ok", string pInfo = "") : base(pState, pTextError, pInfo) { }
-        public int Code { get; set; }
+        public int CodeWares { get; set; }
         public string Name { get; set; }
 
         //зберігаємо в копійках із за відсутності Decimal
@@ -44,5 +54,7 @@ namespace BRB5.Model
         public bool Is100g { get; set; }
 
         public ParseBarCode ParseBarCode { get; set; }
+        public string StrHttpResult { get { return StateHTTP.ToString(); } }
+        public bool IsPriceOk { get { return PriceOld == Price && PriceOptOld == PriceOpt; } }
     }
 }

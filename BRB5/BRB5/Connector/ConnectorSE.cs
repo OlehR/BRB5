@@ -502,7 +502,7 @@ namespace BRB5.Connector
         public decimal PromotionPrice { get; set; }
         public WaresPrice GetWaresPrice
         {
-            get { return new WaresPrice() { Code = Code, Name = Name, Price = Price, BarCodes = BarCodes, Unit = Unit, Article = Article, ActionType = ActionType, PriceOpt = PromotionPrice }; }
+            get { return new WaresPrice() { CodeWares = Code, Name = Name, Price = Price, BarCodes = BarCodes, Unit = Unit, Article = Article, ActionType = ActionType, PriceOpt = PromotionPrice }; }
         }
 
     }

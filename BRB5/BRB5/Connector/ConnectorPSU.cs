@@ -205,7 +205,6 @@ namespace BRB5.Connector
             return res;
         }
 
-
         public override WaresPrice GetPrice(ParseBarCode pBC)
         {
             string data = JsonConvert.SerializeObject(new ApiPrice(154, pBC));
@@ -218,6 +217,7 @@ namespace BRB5.Connector
                 {
                     var r = JsonConvert.DeserializeObject<WaresPrice>(result.Result);
                     r.ParseBarCode = pBC;
+                    r.StateHTTP = result.HttpState;
                     return r;
                 }
                 catch (Exception e)

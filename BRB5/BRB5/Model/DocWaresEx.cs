@@ -15,17 +15,23 @@ namespace BRB5.Model
         public string BarCode{ get; set; }
         public int BaseCodeUnit{ get; set; }
 
-        public double BeforeQuantity{ get; set; }
-        public double QuantityMin{ get; set; }
-        public double QuantityMax{ get; set; }
+        public decimal BeforeQuantity { get; set; }
+        public decimal QuantityMin { get; set; }
+        public decimal QuantityMax { get; set; }
         //public double QuantityOld{ get; set; }
-        public double QuantityOrder{ get; set; }
-        public double QuantityReason{ get; set; }
-        public double QuantityBarCode{ get; set; }
+        public decimal QuantityOrder { get; set; }
+        public decimal QuantityReason { get; set; }
+        public decimal QuantityBarCode { get { return ParseBarCode?.Quantity ?? 0m; } }
+        /// <summary>
+        /// Чи є даний товар в документі
+        /// </summary>
+        public bool IsRecord { get; set; }
 
         // Лоти  3- недостача. //2 - надлишок, // 1 - є з причиною // 0 - все ОК.
         // Ревізія. // 0- Зеленим кольором пораховані, 2- оранжевим додані вручну, 0- жовтим непораховані.
         public int Ord{ get; set; }
+
+        public ParseBarCode ParseBarCode { get; set; }
 
         //public boolean IsRecord = false;
         // 3 - червоний, 2- оранжевий, 1 - жовтий, 0 - зелений, інше грязно жовтий-ранжевий.

@@ -335,6 +335,111 @@ CREATE UNIQUE INDEX UserLogin ON User (Login);
             return db.Execute<object, Doc>(Sql, new  { TypeDoc = pTypeDoc });
         }
 
+        public DocWaresEx GetScanData(DocId pDocId, ParseBarCode pParseBarCode)
+        {
+            DocWaresEx res = null;
+            //Cursor mCur = null;
+            string sql;
+            
+            if (pParseBarCode == null)
+                return null;
+            try
+            {
+                bool IsSimpleDoc = false;
+                if (pDocId.TypeDoc > 0)
+                    IsSimpleDoc = Config.GetDocSetting(pDocId.TypeDoc).IsSimpleDoc;
+                if (IsSimpleDoc)
+                {
+                    sql = $@"select dws.CODE_WARES as CodeWares,dws.NAME as NameWares,1 as Coefficient,{Config.GetCodeUnitPiece} as CodeUnit, 'шт' as NameUnit ,
+                             dws.BarCode as BarCode  ,{Config.GetCodeUnitPiece} as BaseCodeUnit  
+                            from DOC_WARES_sample dws
+                         where  dws.Type_doc=@TypeDoc  and dws.number_doc=@DocNumber and " + (pParseBarCode.CodeWares > 0 ? $"dws.CODE_WARES={pParseBarCode.CodeWares}" : $"dws.BarCode= {pParseBarCode.BarCode}");
+                    var r = db.Execute<DocId, DocWaresEx>(sql, pDocId);
+                    if (r != null && r.Count() == 1)
+                        res = r.First();
+                }
+                else
+                {
+
+                    if (pParseBarCode.BarCode != null)
+                    {
+                        sql = $@"select w.CODE_WARES as CodeWares,w.NAME_WARES as NameWares,au.COEFFICIENT as Coefficient,bc.CODE_UNIT as CodeUnit, ud.ABR_UNIT as NameUnit,
+                                 bc.BAR_CODE as BarCode ,w.CODE_UNIT as BaseCodeUnit 
+                                from BAR_CODE bc 
+                                join ADDITION_UNIT au on bc.CODE_WARES=au.CODE_WARES and au.CODE_UNIT=bc.CODE_UNIT 
+                                join wares w on w.CODE_WARES=bc.CODE_WARES 
+                                join UNIT_DIMENSION ud on bc.CODE_UNIT=ud.CODE_UNIT 
+                                where bc.BAR_CODE=@BarCode";
+                        var r = db.Execute<object, DocWaresEx>(sql, new { BarCode = pParseBarCode.BarCode });
+                        if (r != null && r.Count() == 1)
+                            res = r.First();
+                        // Пошук по штрихкоду виробника
+                        if (pParseBarCode.BarCode.Length == 13 && res == null)
+                        {
+                            sql = $@"select bc.code_wares as CodeWares,bc.BAR_CODE as BarCode from BAR_CODE bc 
+                                     join wares w on bc.code_wares=w.code_wares and w.code_unit={Config.GetCodeUnitWeight}
+                                     where substr(bc.BAR_CODE,1,6)=@BarCode";
+                            var rr = db.Execute<object, DocWaresEx>(sql, new { BarCode = pParseBarCode.BarCode.Substring(0, 6) });
+
+                            foreach (var el in rr)
+                            {
+                                if (pParseBarCode.BarCode.Substring(0, el.BarCode.Length).Equals(el.BarCode))
+                                {
+                                    pParseBarCode.CodeWares = el.CodeWares;
+                                    decimal Quantity = 0m;
+                                    Decimal.TryParse(pParseBarCode.BarCode.Substring(8, 12), out Quantity);
+                                    pParseBarCode.Quantity = Quantity;
+                                    res = GetScanData(pDocId, pParseBarCode);//CodeWares, pIsOnlyBarCode,false);                                                                  
+                                }
+                            }
+                        }
+                        res.ParseBarCode = pParseBarCode;
+                        return res;
+                    }
+                }
+                // Пошук по коду
+                if (res == null && (pParseBarCode.CodeWares > 0 || pParseBarCode.Article != null))
+                {
+                    String Find = pParseBarCode.CodeWares > 0 ? $"w.code_wares={pParseBarCode.CodeWares}" : @"w.ARTICL='{pParseBarCode.Article}'";
+                    sql = @"select w.CODE_WARES,w.NAME_WARES as NameWares, au.COEFFICIENT as Coefficient,w.CODE_UNIT as CodeUnit, ud.ABR_UNIT as NameUnit,
+                            '' as BAR_CODE  ,w.CODE_UNIT as BaseCodeUnit 
+                                from WARES w 
+                                join ADDITION_UNIT au on w.CODE_WARES=au.CODE_WARES and au.CODE_UNIT=w.CODE_UNIT 
+                                join UNIT_DIMENSION ud on w.CODE_UNIT=ud.CODE_UNIT 
+                                where " + Find;
+                    var r = db.Execute<DocWaresEx>(sql);
+                    if (r != null && r.Count() == 1)
+                        res = r.First();
+                }
+
+            }
+            catch (Exception e)
+            {
+                //Utils.WriteLog("e", TAG, "GetScanData >>", e);
+            }
+            if (res != null && pDocId.NumberDoc != null)
+            {
+                res.ParseBarCode=pParseBarCode;
+                //res.QuantityBarCode = pParseBarCode.Quantity;
+                sql = @"select coalesce(d.IsControl,0) as IsControl, coalesce(QuantityMax,0) as QuantityMax, coalesce(quantity,0) as QuantityOrder, 
+                        case when dws.Type_doc is null then 0 else 1 end as IsRecord from DOC d
+                         left join DOC_WARES_sample dws on d.Type_doc=dws.Type_doc and d.number_doc=dws.number_doc and dws.code_wares=@CodeWares
+                         where  d.Type_doc=@TypeDoc and d.number_doc=@DocNumber";
+                var r = db.Execute<DocWaresId, DocWaresEx>(sql, new DocWaresId() { TypeDoc=pDocId.TypeDoc,NumberDoc=pDocId.NumberDoc,CodeWares=res.CodeWares});
+                if (r != null && r.Count() == 1)
+                {
+                    var el= r.First();
+                    res.QuantityMax = el.QuantityMax;
+                    res.IsControl=el.IsControl;
+                    res.QuantityOrder = el.QuantityOrder;
+                    res.IsRecord =el.IsRecord;
+                }                    
+
+            }
+            //Log.d(TAG, "Found in DB  >>" + (model == null ? "Not Found" : model.NameWares));
+            return res;
+        }        
+
         public IEnumerable<Raiting> GetRating(DocId pDoc)
         {
             string sql = @"select Rs.TypeDoc,Rs.NumberDoc,Rs.Id,Rs.Parent as Parent,Rs.IsHead,Rs.Text,Rs.RatingTemplate,R.Rating,R.QuantityPhoto,R.Note,Rs.OrderRS

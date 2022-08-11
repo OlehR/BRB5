@@ -6,9 +6,10 @@ namespace BRB5.Model
 {
     public class Result
     {
-        public int State { get; set; }
+        public int State { get; set; } = 0;
         public string TextError { get; set; }
         public string Info { get; set; }
+        public eStateHTTP StateHTTP { get; set; }
 
         public Result() { }
 
@@ -21,6 +22,8 @@ namespace BRB5.Model
 
         public Result(HttpResult httpResult, string pInfo = "")
         {
+            StateHTTP = httpResult.HttpState;
+
             if (httpResult.HttpState == eStateHTTP.HTTP_OK)
                 Info = httpResult.Result;
             else
@@ -28,6 +31,7 @@ namespace BRB5.Model
                 State = -1;
                 TextError = httpResult.HttpState.ToString();
             }
+            
             Info = pInfo;
         }
         public Result(Exception e)

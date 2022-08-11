@@ -34,9 +34,9 @@ namespace BRB5.Model
         public static string NameUser { get; set; }
         public static eTypeUsePrinter TypeUsePrinter { get; set; } = eTypeUsePrinter.NotDefined;
         
-        public static int GetCodeUnitWeight() { return Company == eCompany.Sim23 || Company == eCompany.Sim23FTP ? 166 : 7; }
+        public static int GetCodeUnitWeight { get { return Company == eCompany.Sim23 || Company == eCompany.Sim23FTP ? 166 : 7; } }
 
-        public static int GetCodeUnitPiece()  { return Company == eCompany.Sim23 || Company == eCompany.Sim23FTP ? 796 : 19; }
+        public static int GetCodeUnitPiece { get { return Company == eCompany.Sim23 || Company == eCompany.Sim23FTP ? 796 : 19; } }
 
         public static string GetPathFiles { get { string res=@"D:\temp"; try { res = FileSystem.AppDataDirectory; } catch (Exception e) { } return res; } }
 
