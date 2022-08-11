@@ -23,8 +23,9 @@
                         HorizontalOptions="Fill"
                         Clicked="OnClickChangePrintType" />
 
-                    <Button Text="1"
+                    <Button 
                         Grid.Column="1" 
+                        Text="{Binding PackageNumber}"
                         HorizontalOptions="Fill"
                         Clicked="OnClickAddPrintBlock" />
                 </Grid>

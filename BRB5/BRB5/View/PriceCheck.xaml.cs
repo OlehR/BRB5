@@ -42,7 +42,14 @@ namespace BRB5
         /// <summary>
         /// Номер сканування цінників за день !!!TMP Треба зберігати в базі.
         /// </summary>
-        public static int LineNumber = 0;
+        int LineNumber = 0;
+
+        int _PackageNumber = 0;
+        /// <summary>
+        /// Номер пакета цінників за день !!!TMP Треба зберігати в базі.
+        /// </summary>
+        public int PackageNumber { get { return _PackageNumber; } set { _PackageNumber = value; OnPropertyChanged("PackageNumber"); } } 
+
 
         //public int ColorPrintColorType() { return Color.parseColor(HttpState != eStateHTTP.HTTP_OK ? "#ffb3b3" : (PrintType == 0 ? "#ffffff" : "#3fffff00")); }
         public string NamePrintColorType { get { return PrintType == 0 ? "Звичайний" : PrintType == 1 ? "Жовтий" : "Авто"; } }
@@ -134,12 +141,10 @@ namespace BRB5
         {
             
         }
-
-        int count = 1;
+       
         private void OnClickAddPrintBlock(object sender, EventArgs e)
         {
-            count++;
-            ((Button)sender).Text = $"{count}";
+            PackageNumber++;            
         }
 
         private void OnClickChangePrintColorType(object sender, EventArgs e)
