@@ -17,6 +17,7 @@ namespace BRB5
 {
     public partial class MainPage : ContentPage
     {
+
         public ObservableCollection<TypeDoc> OCTypeDoc { get; set; }
         BRB5.Connector.Connector c;
         DB db = DB.GetDB();
@@ -143,5 +144,9 @@ namespace BRB5
             base.OnDisappearing();
         }
 
+        private async void OnSettingsClicked(object sender, EventArgs e)
+        {
+            await Navigation.PushAsync(new Settings());
+        }
     }
 }
