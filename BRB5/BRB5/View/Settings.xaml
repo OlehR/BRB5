@@ -6,6 +6,58 @@
     <ContentPage Title="Налаштування">
         <ContentPage.Content>
             <StackLayout>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="3*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <Label Text="{Binding Ver}" />
+                    <Label Text="{Binding SN}"
+                       Grid.Column="1"  />
+                </Grid>
+
+                <Picker Title=""        
+                        ItemsSource="{Binding }"
+                        ItemDisplayBinding="{Binding }" 
+                        HorizontalOptions="Fill"/>
+
+                <Picker Title=""           
+                        ItemsSource="{Binding }"
+                        ItemDisplayBinding="{Binding }"
+                        HorizontalOptions="Fill" />
+
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <Button Text="З.Довідники"
+                        HorizontalOptions="Fill"
+                        Clicked="OnClickLoad" />
+                    
+                    <Button Text="З.Документи"
+                        Grid.Column="1" 
+                        HorizontalOptions="Fill"
+                        Clicked="OnClickLoadDoc" />
+                </Grid>
+                
+                <Picker Title=""           
+                        ItemsSource="{Binding }"
+                        ItemDisplayBinding="{Binding }"
+                        HorizontalOptions="Fill" />
+                
+                <ProgressBar ScaleY="2" 
+                             Progress="1" 
+                             VerticalOptions="EndAndExpand"
+                             ProgressColor="Black" />
+                
+                <Button Text="Зберегти"
+                        Grid.Column="1" 
+                        HorizontalOptions="Fill"
+                        VerticalOptions="End"
+                        Clicked="OnClickLoadDoc" />
                 
             </StackLayout>
         </ContentPage.Content>
@@ -13,7 +65,86 @@
     <ContentPage Title="Адмін" >
         <ContentPage.Content>
             <StackLayout>
-                
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="3*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <Label Text="{Binding Ver}" />
+                    <Label Text="{Binding SN}"
+                       Grid.Column="1"  />
+                </Grid>
+
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="3*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="3*"/>
+                    </Grid.ColumnDefinitions>
+                    
+                    <CheckBox CheckedChanged="OnTestCheckedChanged" />
+                    <Label Text="Тестова" Grid.Column="1"/>
+
+                    <CheckBox CheckedChanged="OnAutoCheckedChanged"
+                              Grid.Column="2"/>
+                    <Label Text="Автологін"
+                           Grid.Column="3"  />
+                </Grid>
+
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="2*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <Picker Title=""           
+                        ItemsSource="{Binding }"
+                        ItemDisplayBinding="{Binding }"
+                        HorizontalOptions="Fill" />
+
+                    <Button Text="Зген."
+                        Grid.Column="1" 
+                        HorizontalOptions="Fill"
+                        Clicked="OnClickGen" />
+
+                    <Button Text="IP"
+                        Grid.Column="2" 
+                        HorizontalOptions="Fill"
+                        Clicked="OnClickIP" />
+
+                </Grid>
+
+                <Entry Text="{Binding }" />
+
+                <Entry Text="{Binding }" />
+
+                <Entry Text="{Binding }" />
+
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <Button Text="Коп.Бази"
+                        HorizontalOptions="Fill"
+                        Clicked="OnClickLoad" />
+
+                    <Button Text="Від.Бази"
+                        Grid.Column="1" 
+                        HorizontalOptions="Fill"
+                        Clicked="OnCopyDB" />
+                </Grid>
+
+                <Button Text="Зберегти"
+                        Grid.Column="1" 
+                        HorizontalOptions="Fill"
+                        VerticalOptions="EndAndExpand"
+                        Clicked="OnRestoreDB" />
+
             </StackLayout>
         </ContentPage.Content>
     </ContentPage>
