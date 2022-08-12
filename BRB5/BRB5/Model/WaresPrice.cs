@@ -30,7 +30,7 @@ namespace BRB5.Model
         public decimal PriceOpt { get; set; }
         public decimal PriceOptOld { get { return ParseBarCode?.PriceOpt ?? 0; } }
 
-        public string StartString { get; set; }
+        //public string StartString { get; set; }
 
         public string BarCodes { get; set; }
         //public int ColorPriceOpt() { return Color.parseColor(OldPriceOpt != PriceOpt ? "#ee4343" : "#3bb46e"){get;set;} }

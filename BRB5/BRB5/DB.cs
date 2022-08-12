@@ -245,56 +245,56 @@ CREATE UNIQUE INDEX UserLogin ON User (Login);
             string Color = " ,0 as Ord";
             if (DS.TypeColor == 1)
             {
-                Color = ", case when dws.code_wares is null then 2 else 0 end as Ord\n";
+                Color = ", case when dws.codewares is null then 2 else 0 end as Ord\n";
             }
             else
             if (DS.TypeColor == 2)
             {
-                Color = @", case when coalesce(dws.quantity,0) - coalesce(dw1.quantity_input,0) <0 then 3 
-                                when coalesce(dws.quantity,0) - coalesce(dw1.quantity_input,0) >0 then 2
-                                when coalesce(dws.quantity,0) - coalesce(dw1.quantity_input,0)=0 and quantity_reason>0 then 1
+                Color = @", case when coalesce(dws.quantity,0) - coalesce(dw1.quantityinput,0) <0 then 3 
+                                when coalesce(dws.quantity,0) - coalesce(dw1.quantityinput,0) >0 then 2
+                                when coalesce(dws.quantity,0) - coalesce(dw1.quantityinput,0)=0 and quantityreason>0 then 1
                            else 0 end as Ord\n";
             }
 
             if (pTypeResult == 1)
-                Sql = $@"select d.Type_Doc as TypeDoc, d.number_doc as NumberDoc, dw1.order_doc as OrderDoc, dw1.CODE_WARES as CodeWares,coalesce(dws.name,w.NAME_WARES) as NameWares,
-                         coalesce(dws.quantity,0) as QuantityOrder,coalesce(dw1.quantity_input,0) as InputQuantity, coalesce(dws.quantity_min,0) as QuantityMin, 
-                        coalesce(dws.quantity_max,0) as QuantityMax ,coalesce(d.Is_Control,0) as IsControl, coalesce(dw1.quantity_old,0) as QuantityOld
-                      ,dw1.quantity_reason as QuantityReason
+                Sql = $@"select d.TypeDoc as TypeDoc, d.numberdoc as NumberDoc, dw1.orderdoc as OrderDoc, dw1.CODEWARES as CodeWares,coalesce(dws.name,w.NAMEWARES) as NameWares,
+                         coalesce(dws.quantity,0) as QuantityOrder,coalesce(dw1.quantityinput,0) as InputQuantity, coalesce(dws.quantitymin,0) as QuantityMin, 
+                        coalesce(dws.quantitymax,0) as QuantityMax ,coalesce(d.IsControl,0) as IsControl, coalesce(dw1.quantityold,0) as QuantityOld
+                      ,dw1.quantityreason as QuantityReason
                         {Color}
-                        ,w.code_unit as CodeUnit
+                        ,w.codeunit as CodeUnit
                             from Doc d  
-                          join (select dw.type_doc ,dw.number_doc, dw.code_wares, sum(dw.quantity) as quantity_input,max(dw.order_doc) as order_doc,sum(quantity_old) as quantity_old,  sum(case when dw.CODE_Reason>0 then  dw.quantity else 0 end) as quantity_reason  from doc_wares dw group by dw.type_doc ,dw.number_doc,code_wares) dw1 on (dw1.number_doc = d.number_doc and d.type_doc=dw1.type_doc)
-                          Left join wares w on dw1.code_wares = w.code_wares 
+                          join (select dw.typedoc ,dw.numberdoc, dw.codewares, sum(dw.quantity) as quantityinput,max(dw.orderdoc) as orderdoc,sum(quantityold) as quantityold,  sum(case when dw.CODEReason>0 then  dw.quantity else 0 end) as quantityreason  from docwares dw group by dw.typedoc ,dw.numberdoc,codewares) dw1 on (dw1.numberdoc = d.numberdoc and d.typedoc=dw1.typedoc)
+                          Left join wares w on dw1.codewares = w.codewares 
                           left join (
-                            select  dws.type_doc ,dws.number_doc, dws.code_wares,dws.name, sum(dws.quantity) as quantity,  min(dws.quantity_min) as quantity_min, max(dws.quantity_max) as quantity_max  from   DOC_WARES_sample dws   group by dws.type_doc ,dws.number_doc,dws.code_wares,dws.name
-                            ) as dws on d.number_doc = dws.number_doc and d.type_doc=dws.type_doc and dws.code_wares = dw1.code_wares
-                          where d.type_doc=@TypeDoc and  d.number_doc = @NumberDoc
+                            select  dws.typedoc ,dws.numberdoc, dws.codewares,dws.name, sum(dws.quantity) as quantity,  min(dws.quantitymin) as quantitymin, max(dws.quantitymax) as quantitymax  from   DOCWARESsample dws   group by dws.typedoc ,dws.numberdoc,dws.codewares,dws.name
+                            ) as dws on d.numberdoc = dws.numberdoc and d.typedoc=dws.typedoc and dws.codewares = dw1.codewares
+                          where d.typedoc=@TypeDoc and  d.numberdoc = @NumberDoc
                        union all
-                       select d.Type_Doc as TypeDoc, d.number_doc as NumberDoc, dws.order_doc+100000, dws.CODE_WARES,coalesce(dws.name,w.NAME_WARES) as NAME_WARES,coalesce(dws.quantity,0) as quantity_order,coalesce(dw1.quantity_input,0) as quantity_input, coalesce(dws.quantity_min,0) as quantity_min, coalesce(dws.quantity_max,0) as quantity_max ,coalesce(d.Is_Control,0) as Is_Control, coalesce(dw1.quantity_old,0) as quantity_old
-                           ,0 as  quantity_reason
+                       select d.TypeDoc as TypeDoc, d.numberdoc as NumberDoc, dws.orderdoc+100000, dws.CODEWARES,coalesce(dws.name,w.NAMEWARES) as NAMEWARES,coalesce(dws.quantity,0) as quantityorder,coalesce(dw1.quantityinput,0) as quantityinput, coalesce(dws.quantitymin,0) as quantitymin, coalesce(dws.quantitymax,0) as quantitymax ,coalesce(d.IsControl,0) as IsControl, coalesce(dw1.quantityold,0) as quantityold
+                           ,0 as  quantityreason
                       , 3 as Ord
-                      ,w.code_unit
+                      ,w.codeunit
                           from Doc d  
-                          join DOC_WARES_sample dws on d.number_doc = dws.number_doc and d.type_doc=dws.type_doc --and dws.code_wares = w.code_wares
-                          left join wares w on dws.code_wares = w.code_wares 
-                          left join (select dw.type_doc ,dw.number_doc, dw.code_wares, sum(dw.quantity) as quantity_input,sum(dw.quantity_old) as quantity_old from doc_wares dw group by dw.type_doc ,dw.number_doc,code_wares) dw1 on (dw1.number_doc = d.number_doc and d.type_doc=dw1.type_doc and dw1.code_wares = dws.code_wares)
-                          where dw1.type_doc is null and d.type_doc=@TypeDoc and  d.number_doc = @NumberDoc
+                          join DOCWARESsample dws on d.numberdoc = dws.numberdoc and d.typedoc=dws.typedoc --and dws.codewares = w.codewares
+                          left join wares w on dws.codewares = w.codewares 
+                          left join (select dw.typedoc ,dw.numberdoc, dw.codewares, sum(dw.quantity) as quantityinput,sum(dw.quantityold) as quantityold from docwares dw group by dw.typedoc ,dw.numberdoc,codewares) dw1 on (dw1.numberdoc = d.numberdoc and d.typedoc=dw1.typedoc and dw1.codewares = dws.codewares)
+                          where dw1.typedoc is null and d.typedoc=@TypeDoc and  d.numberdoc = @NumberDoc
                        order by {OrderQuery}"  ;
 
             if (pTypeResult == 2)
-                Sql = $@"select d.Type_Doc as TypeDoc, d.number_doc as NumberDoc, dw1.order_doc as OrderDoc, dw1.CODE_WARES as CodeWares,coalesce(dws.name,w.NAME_WARES) as NameWares,
+                Sql = $@"select d.TypeDoc as TypeDoc, d.numberdoc as NumberDoc, dw1.orderdoc as OrderDoc, dw1.CODEWARES as CodeWares,coalesce(dws.name,w.NAMEWARES) as NameWares,
                         coalesce(dws.quantity,0) as QuantityOrder,
-                        coalesce(dw1.quantity,0) as QuantityInput, coalesce(dws.quantity_min,0) as QuantityMin, coalesce(dws.quantity_max,0) as QuantityMax ,
-                        coalesce(d.Is_Control,0) as IsControl, coalesce(dw1.quantity_old,0) as QuantityOld,dw1.CODE_Reason as  CodeReason
-                        ,0 as Ord,w.code_unit
+                        coalesce(dw1.quantity,0) as QuantityInput, coalesce(dws.quantitymin,0) as QuantityMin, coalesce(dws.quantitymax,0) as QuantityMax ,
+                        coalesce(d.IsControl,0) as IsControl, coalesce(dw1.quantityold,0) as QuantityOld,dw1.CODEReason as  CodeReason
+                        ,0 as Ord,w.codeunit
                             from Doc d 
-                            join doc_wares dw1 on (dw1.number_doc = d.number_doc and d.type_doc=dw1.type_doc)
-                            left join wares w on dw1.code_wares = w.code_wares 
+                            join docwares dw1 on (dw1.numberdoc = d.numberdoc and d.typedoc=dw1.typedoc)
+                            left join wares w on dw1.codewares = w.codewares 
                             left join (
-                            select  dws.type_doc ,dws.number_doc, dws.code_wares,dws.name, sum(dws.quantity) as quantity,  min(dws.quantity_min) as quantity_min, max(dws.quantity_max) as quantity_max  from   DOC_WARES_sample dws   group by dws.type_doc ,dws.number_doc,dws.code_wares,dws.name
-                            ) as dws on d.number_doc = dws.number_doc and d.type_doc=dws.type_doc and dws.code_wares = dw1.code_wares
-                            where d.type_doc=@TypeDoc and  d.number_doc = @NumberDoc@
+                            select  dws.typedoc ,dws.numberdoc, dws.codewares,dws.name, sum(dws.quantity) as quantity,  min(dws.quantitymin) as quantitymin, max(dws.quantitymax) as quantitymax  from   DOCWARESsample dws   group by dws.typedoc ,dws.numberdoc,dws.codewares,dws.name
+                            ) as dws on d.numberdoc = dws.numberdoc and d.typedoc=dws.typedoc and dws.codewares = dw1.codewares
+                            where d.typedoc=@TypeDoc and  d.numberdoc = @NumberDoc@
                          order by 1,2";
 
             try
@@ -350,10 +350,10 @@ CREATE UNIQUE INDEX UserLogin ON User (Login);
                     IsSimpleDoc = Config.GetDocSetting(pDocId.TypeDoc).IsSimpleDoc;
                 if (IsSimpleDoc)
                 {
-                    sql = $@"select dws.CODE_WARES as CodeWares,dws.NAME as NameWares,1 as Coefficient,{Config.GetCodeUnitPiece} as CodeUnit, 'шт' as NameUnit ,
+                    sql = $@"select dws.CODEWARES as CodeWares,dws.NAME as NameWares,1 as Coefficient,{Config.GetCodeUnitPiece} as CodeUnit, 'шт' as NameUnit ,
                              dws.BarCode as BarCode  ,{Config.GetCodeUnitPiece} as BaseCodeUnit  
                             from DOC_WARES_sample dws
-                         where  dws.Type_doc=@TypeDoc  and dws.number_doc=@DocNumber and " + (pParseBarCode.CodeWares > 0 ? $"dws.CODE_WARES={pParseBarCode.CodeWares}" : $"dws.BarCode= {pParseBarCode.BarCode}");
+                         where  dws.Typedoc=@TypeDoc  and dws.numberdoc=@DocNumber and " + (pParseBarCode.CodeWares > 0 ? $"dws.CODEWARES={pParseBarCode.CodeWares}" : $"dws.BarCode= {pParseBarCode.BarCode}");
                     var r = db.Execute<DocId, DocWaresEx>(sql, pDocId);
                     if (r != null && r.Count() == 1)
                         res = r.First();
@@ -363,22 +363,22 @@ CREATE UNIQUE INDEX UserLogin ON User (Login);
 
                     if (pParseBarCode.BarCode != null)
                     {
-                        sql = $@"select w.CODE_WARES as CodeWares,w.NAME_WARES as NameWares,au.COEFFICIENT as Coefficient,bc.CODE_UNIT as CodeUnit, ud.ABR_UNIT as NameUnit,
-                                 bc.BAR_CODE as BarCode ,w.CODE_UNIT as BaseCodeUnit 
-                                from BAR_CODE bc 
-                                join ADDITION_UNIT au on bc.CODE_WARES=au.CODE_WARES and au.CODE_UNIT=bc.CODE_UNIT 
-                                join wares w on w.CODE_WARES=bc.CODE_WARES 
-                                join UNIT_DIMENSION ud on bc.CODE_UNIT=ud.CODE_UNIT 
-                                where bc.BAR_CODE=@BarCode";
+                        sql = $@"select w.CODEWARES as CodeWares,w.NAMEWARES as NameWares,au.COEFFICIENT as Coefficient,bc.CODEUNIT as CodeUnit, ud.ABRUNIT as NameUnit,
+                                 bc.BARCODE as BarCode ,w.CODEUNIT as BaseCodeUnit 
+                                from BARCODE bc 
+                                join ADDITIONUNIT au on bc.CODEWARES=au.CODEWARES and au.CODEUNIT=bc.CODEUNIT 
+                                join wares w on w.CODEWARES=bc.CODEWARES 
+                                join UNITDIMENSION ud on bc.CODEUNIT=ud.CODEUNIT 
+                                where bc.BARCODE=@BarCode";
                         var r = db.Execute<object, DocWaresEx>(sql, new { BarCode = pParseBarCode.BarCode });
                         if (r != null && r.Count() == 1)
                             res = r.First();
                         // Пошук по штрихкоду виробника
                         if (pParseBarCode.BarCode.Length == 13 && res == null)
                         {
-                            sql = $@"select bc.code_wares as CodeWares,bc.BAR_CODE as BarCode from BAR_CODE bc 
-                                     join wares w on bc.code_wares=w.code_wares and w.code_unit={Config.GetCodeUnitWeight}
-                                     where substr(bc.BAR_CODE,1,6)=@BarCode";
+                            sql = $@"select bc.codewares as CodeWares,bc.BARCODE as BarCode from BARCODE bc 
+                                     join wares w on bc.codewares=w.codewares and w.codeunit={Config.GetCodeUnitWeight}
+                                     where substr(bc.BARCODE,1,6)=@BarCode";
                             var rr = db.Execute<object, DocWaresEx>(sql, new { BarCode = pParseBarCode.BarCode.Substring(0, 6) });
 
                             foreach (var el in rr)
@@ -401,11 +401,11 @@ CREATE UNIQUE INDEX UserLogin ON User (Login);
                 if (res == null && (pParseBarCode.CodeWares > 0 || pParseBarCode.Article != null))
                 {
                     String Find = pParseBarCode.CodeWares > 0 ? $"w.code_wares={pParseBarCode.CodeWares}" : @"w.ARTICL='{pParseBarCode.Article}'";
-                    sql = @"select w.CODE_WARES,w.NAME_WARES as NameWares, au.COEFFICIENT as Coefficient,w.CODE_UNIT as CodeUnit, ud.ABR_UNIT as NameUnit,
-                            '' as BAR_CODE  ,w.CODE_UNIT as BaseCodeUnit 
+                    sql = @"select w.CODEWARES,w.NAMEWARES as NameWares, au.COEFFICIENT as Coefficient,w.CODEUNIT as CodeUnit, ud.ABRUNIT as NameUnit,
+                            '' as BARCODE  ,w.CODEUNIT as BaseCodeUnit 
                                 from WARES w 
-                                join ADDITION_UNIT au on w.CODE_WARES=au.CODE_WARES and au.CODE_UNIT=w.CODE_UNIT 
-                                join UNIT_DIMENSION ud on w.CODE_UNIT=ud.CODE_UNIT 
+                                join ADDITIONUNIT au on w.CODEWARES=au.CODEWARES and au.CODEUNIT=w.CODEUNIT 
+                                join UNITDIMENSION ud on w.CODEUNIT=ud.CODEUNIT 
                                 where " + Find;
                     var r = db.Execute<DocWaresEx>(sql);
                     if (r != null && r.Count() == 1)
@@ -422,9 +422,9 @@ CREATE UNIQUE INDEX UserLogin ON User (Login);
                 res.ParseBarCode=pParseBarCode;
                 //res.QuantityBarCode = pParseBarCode.Quantity;
                 sql = @"select coalesce(d.IsControl,0) as IsControl, coalesce(QuantityMax,0) as QuantityMax, coalesce(quantity,0) as QuantityOrder, 
-                        case when dws.Type_doc is null then 0 else 1 end as IsRecord from DOC d
-                         left join DOC_WARES_sample dws on d.Type_doc=dws.Type_doc and d.number_doc=dws.number_doc and dws.code_wares=@CodeWares
-                         where  d.Type_doc=@TypeDoc and d.number_doc=@DocNumber";
+                        case when dws.Typedoc is null then 0 else 1 end as IsRecord from DOC d
+                         left join DOCWARESsample dws on d.Typedoc=dws.Typedoc and d.numberdoc=dws.numberdoc and dws.codewares=@CodeWares
+                         where  d.Typedoc=@TypeDoc and d.numberdoc=@DocNumber";
                 var r = db.Execute<DocWaresId, DocWaresEx>(sql, new DocWaresId() { TypeDoc=pDocId.TypeDoc,NumberDoc=pDocId.NumberDoc,CodeWares=res.CodeWares});
                 if (r != null && r.Count() == 1)
                 {
@@ -521,8 +521,8 @@ CREATE UNIQUE INDEX UserLogin ON User (Login);
 
         public void InsLogPrice(LogPrice pLP)// String pBarCode, Integer pStatus, Integer pActionType, Integer pPackageNumber, Integer pCodeWarees, String pArticle, Integer pLineNumber)
         {
-            string Sql = @" insert into LogPrice (bar_code, Status, action_type,package_number,code_wares,Line_Number, Article) 
-                                      values (@BarCode,@Status, @ActionType,@PackageNumber,@CodeWares,@LineNumber,@Article)";
+            string Sql = @" insert into LogPrice ( BarCode, Status,  ActionType, PackageNumber, CodeWares, LineNumber, Article) 
+                                          values (@BarCode,@Status, @ActionType,@PackageNumber,@CodeWares,@LineNumber,@Article)";
             try
             {
                 db.ExecuteNonQuery(Sql, pLP);
@@ -533,22 +533,39 @@ CREATE UNIQUE INDEX UserLogin ON User (Login);
             }
         }
 
+        /// <summary>
+        /// Пповнення стелажу СКЮ
+        /// </summary>
+        /// <param name="pLineNumber"></param>
+        /// <param name="pNumberOfReplenishment"></param>
+        public void UpdateReplenishment(int pLineNumber, decimal pNumberOfReplenishment)
+        {
+            try
+            {
+                string Sql = "Update LogPrice set NumberOfReplenishment=@NumberOfReplenishment where  date('now', '-1 day') and is_send = 0 and LineNumber =@LineNumber";
+                db.ExecuteNonQuery<object>(Sql, new { NumberOfReplenishment = pNumberOfReplenishment, LineNumber = pLineNumber });
+            }
+            catch (Exception e)
+            {
+                //Utils.WriteLog("e", TAG, "UpdateReplenishment >>" + e.toString());
+            }
+
+        }
 
         public IEnumerable<LogPrice> GetSendData(int pLimit)
         {
             int varN;
             try
             {
-                string sql = "select count(*) from   LogPrice where is_send=-1";
+                string sql = "select count(*) from   LogPrice where IsSend=-1";
                 varN = db.ExecuteScalar<int>(sql);
 
                 if (varN < pLimit)
                 {
-                    sql = $"Update LogPrice set is_send=-1 where rowid  IN (SELECT rowid FROM LogPrice WHERE is_send=0 LIMIT {pLimit - varN})";
+                    sql = $"Update LogPrice set IsSend=-1 where rowid  IN (SELECT rowid FROM LogPrice WHERE IsSend=0 LIMIT {pLimit - varN})";
                     db.ExecuteNonQuery(sql);
                 }
-
-                sql = "select bar_code,Status,DT_insert,package_number,is_send,action_type,code_wares,article,Line_Number,Number_Of_Replenishment from LogPrice where is_send=-1";
+                sql = "select * from LogPrice where IsSend=-1";
                 return db.Execute<LogPrice>(sql);
             }
             catch (Exception e) { }
@@ -559,18 +576,18 @@ CREATE UNIQUE INDEX UserLogin ON User (Login);
         {            
             string ActionType = "";
             if (pActionType == 0)
-                ActionType = " AND action_type NOT IN(1,2)";
+                ActionType = " AND ActionType NOT IN (1,2)";
             else
                 if (pActionType == 1)
-                ActionType = " AND action_type IN(1,2)";
+                ActionType = " AND ActionType IN (1,2)";
 
-            string Sql = $"SELECT {(pIsMultyLabel ? "" : "DISTINCT")} code_wares FROM LogPrice WHERE code_wares>0 and package_number = {pPackageNumber } AND Status < 0 AND date(DT_insert) > date('now','-1 day') {ActionType}";
+            string Sql = $"SELECT {(pIsMultyLabel ? "" : "DISTINCT")} CodeWares FROM LogPrice WHERE CodeWares>0 and PackageNumber = {pPackageNumber } AND Status < 0 AND date(DTInsert) > date('now','-1 day') {ActionType}";
             return db.Execute<int>(Sql);            
         }
 
         public void AfterSendData()
         {
-            db.ExecuteNonQuery("Update LogPrice set is_send=1 where is_send=-1");            
+            db.ExecuteNonQuery("Update LogPrice set IsSend=1 where IsSend=-1");            
         }
 
         public int[] GetCountScanCode()
@@ -578,10 +595,8 @@ CREATE UNIQUE INDEX UserLogin ON User (Login);
             int[] varRes = { 0, 0 };
             try
             {
-                string sql = "select count(*),sum(case when Status=0 then 1 else 0 end) from LogPrice where is_send=0";
-
-                db.ExecuteScalar<int[]>(sql);              
-
+                string sql = "select count(*),sum(case when Status=0 then 1 else 0 end) from LogPrice where IsSend=0";
+                db.ExecuteScalar<int[]>(sql);
             }
             catch (Exception e)
             {

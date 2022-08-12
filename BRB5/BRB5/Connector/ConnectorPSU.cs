@@ -186,7 +186,6 @@ namespace BRB5.Connector
 
                     if (pBarCode.Substring(0, 3).Equals("111"))
                     {
-
                         //isBarCode=false;
                         res.Article = Convert.ToInt32(pBarCode.Substring(3, 9));
                         String Quantity = pBarCode.Substring(9, 12);
@@ -207,26 +206,31 @@ namespace BRB5.Connector
 
         public override WaresPrice GetPrice(ParseBarCode pBC)
         {
+            WaresPrice res;
             string data = JsonConvert.SerializeObject(new ApiPrice(154, pBC));
             HttpResult result = Http.HTTPRequest(0, "", data, "application/json");
 
             if (result.HttpState != eStateHTTP.HTTP_OK)
-                return new WaresPrice(result);
+                res = new WaresPrice(result);
             else
                 try
                 {
-                    var r = JsonConvert.DeserializeObject<WaresPrice>(result.Result);
-                    r.ParseBarCode = pBC;
-                    r.StateHTTP = result.HttpState;
-                    return r;
+                    res = JsonConvert.DeserializeObject<WaresPrice>(result.Result);                   
+                    res.StateHTTP = result.HttpState;                    
                 }
                 catch (Exception e)
                 {
                     return new WaresPrice(-1, e.Message);
                 }
+            res.ParseBarCode = pBC;
+            return res;
         }
 
-        //Збереження Просканованих товарів в 1С
+        /// <summary>
+        /// Збереження Просканованих товарів в 1С
+        /// </summary>
+        /// <param name="pLogPrice"></param>
+        /// <returns></returns>
         public override Result SendLogPrice(IEnumerable<LogPrice> pLogPrice)
         {
             if (pLogPrice != null && pLogPrice.Count() < 1)

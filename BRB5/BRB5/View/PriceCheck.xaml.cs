@@ -9,6 +9,7 @@ using System.Windows.Input;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 using ZXing.Net.Mobile.Forms;
+using Xamarin.Essentials;
 //using BRB5.Connector;
 namespace BRB5
 {
@@ -78,7 +79,13 @@ namespace BRB5
             c = Connector.Connector.GetInstance();
             zxing.OnScanResult += (result) =>
                 Device.BeginInvokeOnMainThread(async () =>
-                FoundWares(result.Text, false)
+                // Stop analysis until we navigate away so we don't keep reading barcodes
+                { zxing.IsAnalyzing = false;
+                    FoundWares(result.Text, false);
+                 zxing.IsAnalyzing = true;
+                }
+            //zxing.IsScanning = true;
+
                 ); 
 
             
@@ -115,9 +122,8 @@ namespace BRB5
         void FoundWares(string pBarCode, bool pIsHandInput = false)
         {
             LineNumber++;
-            PB = 0.2;
-            // Stop analysis until we navigate away so we don't keep reading barcodes
-            zxing.IsAnalyzing = false;
+            PB = 0.2;          
+            
             if (IsOnline)
             {
                 WP = c.GetPrice(c.ParsedBarCode(pBarCode, true));
@@ -126,8 +132,7 @@ namespace BRB5
             else
             {
                 var data = bl.GetWaresFromBarcode(0, null, pBarCode, pIsHandInput);
-                WP = new WaresPrice(data);                                
-
+                WP = new WaresPrice(data);  
             }
             if (WP != null)
             {
@@ -135,13 +140,13 @@ namespace BRB5
                 if (!WP.IsPriceOk)
                     BadScan++;
             }
-            
+            var duration = TimeSpan.FromMilliseconds(WP?.IsPriceOk==true?50:250);
+            Vibration.Vibrate(duration);
+            //if (Config.Company == eCompany.Sim23)
+             //   utils.PlaySound();
             var l = new LogPrice(WP, IsOnline, PackageNumber, LineNumber);
             db.InsLogPrice(l);
-
-            zxing.IsAnalyzing = true;
-            //zxing.IsScanning = true;
-
+           
             PB = 1;
 
         }
