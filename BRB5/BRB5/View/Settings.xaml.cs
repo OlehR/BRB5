@@ -62,5 +62,15 @@ namespace BRB5.View
         {
 
         }
+
+        private void OnVibrationCheckedChanged(object sender, CheckedChangedEventArgs e)
+        {
+
+        }
+
+        private void OnSoundCheckedChanged(object sender, CheckedChangedEventArgs e)
+        {
+
+        }
     }
 }
