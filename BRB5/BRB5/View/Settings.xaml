@@ -48,6 +48,24 @@
                         ItemDisplayBinding="{Binding }"
                         HorizontalOptions="Fill" />
                 
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="3*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="3*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <CheckBox CheckedChanged="OnVibrationCheckedChanged" />
+                    <Label Text="Вібрація" Grid.Column="1"/>
+
+                    <CheckBox CheckedChanged="OnSoundCheckedChanged"
+                              Grid.Column="2"/>
+                    <Label Text="Звук"
+                           Grid.Column="3"  />
+                </Grid>
+
+
                 <ProgressBar ScaleY="2" 
                              Progress="1" 
                              VerticalOptions="EndAndExpand"
