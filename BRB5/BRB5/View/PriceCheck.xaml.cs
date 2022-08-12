@@ -88,8 +88,9 @@ namespace BRB5
 
                 );
             NumberOfReplenishment.Unfocused += (object sender, FocusEventArgs e) =>
-            { 
-                db.UpdateReplenishment(LineNumber, 222222);
+            {
+                var d = Convert.ToDecimal(((Entry)sender).Text);
+                db.UpdateReplenishment(LineNumber, d);
                // if (!e.IsFocused)                
                //    ((Entry)sender).Focus();
             };
