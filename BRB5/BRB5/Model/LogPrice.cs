@@ -7,30 +7,31 @@ namespace BRB5.Model
 {
     public class LogPrice
     {
-        public string BarCode;
-        public int Status;
-        public DateTime DTInsert;
-        public int IsSend;
-        //public int ActionType;
-        public int PackageNumber;
-        public int CodeWares;
-        //public string Article;
-        public int LineNumber;
-        public double NumberOfReplenishment;
+        public string BarCode { get; set; }
+        public int Status { get; set; }
+        public DateTime DTInsert { get; set; }
+        public int IsSend { get; set; }
+        public int ActionType { get; set; }
+        public int PackageNumber { get; set; }
+        public int CodeWares { get; set; }
+        public string Article { get; set; }
+        public int LineNumber { get; set; }
+        public double NumberOfReplenishment { get; set; }
         //DateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         //public string GetJsonPSU() { return "[\"" + BarCode + "\"," + Status + ",\"" + format.format(DTInsert) + "\"," + PackageNumber + "," + CodeWares + "]"; }
-     
         public LogPrice() { }
 
-        public LogPrice(WaresPrice pWP, bool pIsOnline = true,int pPackageNumber=0,int pLineNumber = 0)
+        public LogPrice(WaresPrice pWP, bool pIsOnline = true, int pPackageNumber = 0, int pLineNumber = 0)
         {
             BarCode = pWP?.ParseBarCode?.StartString;
             Status = Config.Company == eCompany.Sim23 ?
                     (pIsOnline ? -999 : (pWP.CodeWares == 0 ? 1 : (BarCode.Substring(0, 2).Equals("29") ? (pWP.PriceOld == pWP.Price && pWP.PriceOpt == pWP.PriceOptOld ? -1 : 0) : (pWP?.ParseBarCode.IsHandInput ?? false ? 3 : 2)))) :
                     (/*isError*/false ? -9 : (pWP.Price > 0 && pWP.PriceOld == pWP.Price && pWP.PriceOpt == pWP.PriceOptOld ? 1 : (/*this.Printer.varPrinterError != ePrinterError.None */false ? -1 : 0)));
             PackageNumber = pPackageNumber;
-            CodeWares =pWP.CodeWares;
+            CodeWares = pWP.CodeWares;
             LineNumber = pLineNumber;
+            Article=pWP.Article;
+            ActionType=pWP.ActionType;
         }
 
         public object[] GetPSU()

@@ -595,7 +595,11 @@ CREATE UNIQUE INDEX UserLogin ON User (Login);
             int[] varRes = { 0, 0 };
             try
             {
-                string sql = "select count(*),sum(case when Status=0 then 1 else 0 end) from LogPrice where IsSend=0";
+                string sql = @"select sum(case when IsSend=0 then 1 else 0 end) as AllScan,
+                                      sum(case when Status=0 and IsSend=0 then 1 else 0 end) BadScan, 
+                                      max(case when date(DTInsert) > date('now','-1 day') then PackageNumber else 0 end) as PackageNumber,
+                                      max(case when date(DTInsert) > date('now','-1 day') then LineNumber else 0 end) as LineNumber,
+                                from LogPrice";
                 db.ExecuteScalar<int[]>(sql);
             }
             catch (Exception e)

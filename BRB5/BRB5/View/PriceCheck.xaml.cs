@@ -86,37 +86,41 @@ namespace BRB5
                 }
             //zxing.IsScanning = true;
 
-                ); 
-
-            
-            //MainSL.Children.Add(zxing);
-
-            /*overlay = new ZXingDefaultOverlay
-            {
-                TopText = "Hold your phone up to the barcode",
-                BottomText = "Scanning will happen automatically",
-                ShowFlashButton = zxing.HasTorch,
-                AutomationId = "zxingDefaultOverlay",
+                );
+            NumberOfReplenishment.Unfocused += (object sender, FocusEventArgs e) =>
+            { 
+                db.UpdateReplenishment(LineNumber, 222222);
+               // if (!e.IsFocused)                
+               //    ((Entry)sender).Focus();
             };
-            overlay.FlashButtonClicked += (sender, e) =>
-            {
-                zxing.IsTorchOn = !zxing.IsTorchOn;
-            };*/
+                //MainSL.Children.Add(zxing);
+
+                /*overlay = new ZXingDefaultOverlay
+                {
+                    TopText = "Hold your phone up to the barcode",
+                    BottomText = "Scanning will happen automatically",
+                    ShowFlashButton = zxing.HasTorch,
+                    AutomationId = "zxingDefaultOverlay",
+                };
+                overlay.FlashButtonClicked += (sender, e) =>
+                {
+                    zxing.IsTorchOn = !zxing.IsTorchOn;
+                };*/
 
 
-            /* ZXingScannerPage scanPage = new ZXingScannerPage();
-             ZXingScannerPage.ScanResultDelegate scanResultDelegate = (Result) =>
-             {
-                 scanPage.IsScanning = false;
-                 Device.BeginInvokeOnMainThread(() =>
+                /* ZXingScannerPage scanPage = new ZXingScannerPage();
+                 ZXingScannerPage.ScanResultDelegate scanResultDelegate = (Result) =>
                  {
-                     Navigation.PopAsync();
+                     scanPage.IsScanning = false;
+                     Device.BeginInvokeOnMainThread(() =>
+                     {
+                         Navigation.PopAsync();
 
-                 });
-             };
-             scanPage.OnScanResult += scanResultDelegate;
-            await Navigation.PushAsync(scanPage);*/
-            this.BindingContext = this;           
+                     });
+                 };
+                 scanPage.OnScanResult += scanResultDelegate;
+                await Navigation.PushAsync(scanPage);*/
+                this.BindingContext = this;           
         }
 
         void FoundWares(string pBarCode, bool pIsHandInput = false)
