@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -13,7 +14,7 @@ namespace BRB5.View
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class Settings : TabbedPage, INotifyPropertyChanged
     {
-        public string Ver { get { return "Ver:"; } }
+        public string Ver { get { return "Ver:"+ Assembly.GetExecutingAssembly().GetName().Version; } }
 
         public string SN { get { return "SN:"; } }
         public Settings()
