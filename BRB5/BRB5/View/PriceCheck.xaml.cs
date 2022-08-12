@@ -69,7 +69,7 @@ namespace BRB5
 
         public string F5Text { get { return IsMultyLabel  ? "Дублювати" : "Унікальні"; } }
 
-        public ICommand F1Command => new Command(OnF1);
+        //public ICommand F1Command => new Command(OnF1);
         public ICommand F2Command => new Command(OnF2);
         public ICommand F4Command => new Command(OnF4);
         public ICommand F5Command => new Command(OnF5);
@@ -183,10 +183,10 @@ namespace BRB5
 
         }
 
-        private async void OnF1()
-        { 
+        //private async void OnF1()
+        //{ 
         
-        }
+        //}
         private async void OnF2()
         {
             IsVisRepl = !IsVisRepl;
