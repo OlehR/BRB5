@@ -129,13 +129,9 @@
                     </Grid.ColumnDefinitions>
 
                     <Label Text="Поповнення:" />
-                    <Entry Text=""
-                       Grid.Column="1"  >
-                        <Entry.Behaviors>
-                            <!--<behaviors:EventToCommandBehavior 
-                                EventName="Unfocused" 
-                                Command="{Binding EntryUnfocused}" />--> 
-                        </Entry.Behaviors>
+                    <Entry Text="" x:Name="NumberOfReplenishment"
+                       Grid.Column="1"  >                        
+                        
                     </Entry>
                 </Grid>
 
