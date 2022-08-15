@@ -1,14 +1,16 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using BRB5.Connector;
 using BRB5.Model;
+using System.Linq;
 
 namespace BRB5
 {
     public class Utils
     {
         static Utils utils = null;
-        public static Utils GetInstance()
+        public static Utils GetUtils()
         {
             if (utils == null)
                 utils = new Utils();
@@ -31,30 +33,70 @@ namespace BRB5
                     int ver = 0;
                     try
                     {
-                        ver =int.Parse(Ver);
+                        ver = int.Parse(Ver);
                     }
-                    catch (Exception )
+                    catch (Exception)
                     {
                     }
                     if (ver > pVersionCode)
                     {
-                        string FileName = Path.Combine(Config.PathDownloads, pNameAPK) ;
+                        string FileName = Path.Combine(Config.PathDownloads, pNameAPK);
                         Http.GetFile(pPath + pNameAPK, Config.PathDownloads);
 
-                        pProgress?.Invoke(60);                        
-                        
+                        pProgress?.Invoke(60);
+
                         return true;
                     }
                 }
             }
             catch (Exception e)
-            { 
+            {
                 //e.printStackTrace();
             }
 
             pProgress?.Invoke(100);
             return false;
         }
-     
+
+
+        public (long,long) DelDir(string pDir, IEnumerable<string> pNotDelDir)
+        {
+            return(0,0);
+            long SizeDel = 0,SizeUse=0;
+            var dirs = Directory.GetDirectories(Config.PathFiles, "*", SearchOption.TopDirectoryOnly);
+            foreach (var el in dirs)
+            {
+                var dir = new DirectoryInfo(el);
+                var LD= pNotDelDir.Where(e => e.Equals(el));
+                if (LD.Count() > 0)
+                    SizeUse += DirSize(dir);
+                else
+                {
+                    SizeDel += DirSize(dir);
+                    //dir.Delete(true);
+                }
+
+            }
+            return (SizeDel , SizeUse);
+
+        }
+
+        public static long DirSize(DirectoryInfo d)
+        {
+            long size = 0;
+            // Add file sizes.
+            FileInfo[] fis = d.GetFiles();
+            foreach (FileInfo fi in fis)
+            {
+                size += fi.Length;
+            }
+            // Add subdirectory sizes.
+            DirectoryInfo[] dis = d.GetDirectories();
+            foreach (DirectoryInfo di in dis)
+            {
+                size += DirSize(di);
+            }
+            return size;
+        }
     }
 }

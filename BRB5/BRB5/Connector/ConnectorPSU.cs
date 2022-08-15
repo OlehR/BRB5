@@ -206,10 +206,11 @@ namespace BRB5.Connector
 
         public override WaresPrice GetPrice(ParseBarCode pBC)
         {
+            Config.OnProgress?.Invoke(0.3d);
             WaresPrice res;
             string data = JsonConvert.SerializeObject(new ApiPrice(154, pBC));
             HttpResult result = Http.HTTPRequest(0, "", data, "application/json");
-
+            Config.OnProgress?.Invoke(0.8d);
             if (result.HttpState != eStateHTTP.HTTP_OK)
                 res = new WaresPrice(result);
             else
@@ -223,6 +224,7 @@ namespace BRB5.Connector
                     return new WaresPrice(-1, e.Message);
                 }
             res.ParseBarCode = pBC;
+            Config.OnProgress?.Invoke(0.9d);
             return res;
         }
 
@@ -311,21 +313,24 @@ namespace BRB5.Connector
             }
         }
 
-        class WarehouseIn
+
+        class WarehouseIn:Result
         {
-            public IEnumerable<Warehouse> Warehouse { get; set; }
+            public IEnumerable<object[]> Warehouse  { get; set; }
         }
 
         public override IEnumerable<Warehouse> LoadWarehouse()
         {
             string data = JsonConvert.SerializeObject(new Api() { CodeData = 210 });
-            HttpResult result = Http.HTTPRequest(1001, "", data, "application/json");//
+            HttpResult result = Http.HTTPRequest(0, "", data, "application/json");//
 
             if (result.HttpState == eStateHTTP.HTTP_OK)
             {
-                var r = JsonConvert.DeserializeObject<WarehouseIn>(result.Result);
-                db.ReplaceWarehouse(r.Warehouse);
-                return r.Warehouse;
+                var r = JsonConvert.DeserializeObject<WarehouseIn>(result.Result);               
+                   
+                var res = r.Warehouse.Select(el => new Warehouse() { Code = Convert.ToInt32(el[0]), Name = el[1].ToString() });
+                db.ReplaceWarehouse(res);
+                return res;
             }
             return null;
         }

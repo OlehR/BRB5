@@ -138,7 +138,7 @@ namespace BRB5.Connector
 
         public HttpResult GetFile(string pURL,string pDir)
         {
-            pDir = Config.GetPathFiles;
+            pDir = Config.PathFiles;
             try
             {
                 WebClient webClient = new WebClient();

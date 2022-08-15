@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Text;
 using Xamarin.Essentials;
 
@@ -7,6 +8,7 @@ namespace BRB5.Model
 {
     public class Config
     {
+        public static Action<double> OnProgress;
         //static DB db = DB.GetDB();
         public static int CodeWarehouse = 0;
         static eCompany _Company = eCompany.NotDefined;
@@ -26,6 +28,7 @@ namespace BRB5.Model
         public static string SN;
         public static int Ver;
         public static bool IsAutoLogin = false;
+        public static bool IsLoginCO = true;
         public static eLoginServer LoginServer = eLoginServer.Bitrix;
         public static string Login { get; set; } = "LOX";
         public static string Password { get; set; } = "321";
@@ -38,9 +41,11 @@ namespace BRB5.Model
 
         public static int GetCodeUnitPiece { get { return Company == eCompany.Sim23 || Company == eCompany.Sim23FTP ? 796 : 19; } }
 
-        public static string GetPathFiles { get { string res=@"D:\temp"; try { res = FileSystem.AppDataDirectory; } catch (Exception e) { } return res; } }
+        public static string PathFiles { get { string res=@"D:\temp"; try { res = Path.Combine(FileSystem.AppDataDirectory,"BRBFiles"); } catch (Exception e) { } return res; } }
 
         public static DocSetting GetDocSetting(int pTypeDoc) { return null; }
+        
+        
         // public static string GenRaitingFileName(Raiting r);
     }
 }

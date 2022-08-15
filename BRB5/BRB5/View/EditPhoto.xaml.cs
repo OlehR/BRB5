@@ -34,7 +34,7 @@ namespace BRB5.View
         string dir;
         public EditPhoto(Raiting pRaiting)
         {
-            dir = Path.Combine(Config.GetPathFiles, pRaiting.NumberDoc);
+            dir = Path.Combine(Config.PathFiles, pRaiting.NumberDoc);
             if (!Directory.Exists(dir))
             {
                 Directory.CreateDirectory(dir);
@@ -50,7 +50,7 @@ namespace BRB5.View
             MyFiles = new ObservableCollection<Pictures>(r);
 
 
-            var arx = Path.Combine(Config.GetPathFiles, "arx", pRaiting.NumberDoc);
+            var arx = Path.Combine(Config.PathFiles, "arx", pRaiting.NumberDoc);
             if (Directory.Exists(dir))
             {
                 d = Directory.GetFiles(dir, Mask);

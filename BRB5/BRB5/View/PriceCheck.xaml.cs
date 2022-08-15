@@ -14,8 +14,9 @@ using Xamarin.Essentials;
 namespace BRB5
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
-    public partial class PriceCheck : ContentPage, INotifyPropertyChanged
-    {
+    public partial class PriceCheck : ContentPage, INotifyPropertyChanged, IDisposable
+{
+    
         Connector.Connector c;    
         DB db = DB.GetDB();
         BL bl = BL.GetBL();
@@ -77,6 +78,15 @@ namespace BRB5
         {
             InitializeComponent();
             c = Connector.Connector.GetInstance();
+            var r = db.GetCountScanCode();
+            if(r!=null)
+            {
+                AllScan = r.AllScan;
+                BadScan = r.BadScan;
+                LineNumber = r.LineNumber;
+                PackageNumber = r.PackageNumber;
+            }
+
             zxing.OnScanResult += (result) =>
                 Device.BeginInvokeOnMainThread(async () =>
                 // Stop analysis until we navigate away so we don't keep reading barcodes
@@ -94,6 +104,8 @@ namespace BRB5
                // if (!e.IsFocused)                
                //    ((Entry)sender).Focus();
             };
+
+            Config.OnProgress += (pProgress)=>{ PB = pProgress; };
                 //MainSL.Children.Add(zxing);
 
                 /*overlay = new ZXingDefaultOverlay
@@ -123,11 +135,12 @@ namespace BRB5
                 await Navigation.PushAsync(scanPage);*/
                 this.BindingContext = this;           
         }
+        
 
         void FoundWares(string pBarCode, bool pIsHandInput = false)
         {
             LineNumber++;
-            PB = 0.2;          
+            PB = 0.2d;          
             
             if (IsOnline)
             {
@@ -153,7 +166,6 @@ namespace BRB5
             db.InsLogPrice(l);
            
             PB = 1;
-
         }
 
         protected override void OnAppearing()
@@ -166,6 +178,11 @@ namespace BRB5
         {
             zxing.IsScanning = false;
             base.OnDisappearing();
+        }
+
+        public void Dispose()
+        {
+            bl.SendLogPrice();
         }
 
         private void OnClickChangePrintType(object sender, EventArgs e)

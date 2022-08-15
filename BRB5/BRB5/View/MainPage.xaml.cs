@@ -21,6 +21,7 @@ namespace BRB5
         public ObservableCollection<TypeDoc> OCTypeDoc { get; set; }
         BRB5.Connector.Connector c;
         DB db = DB.GetDB();
+        Utils u = Utils.GetUtils();
         public string Login { get; set; }
         public string Password { get; set; }        
         public MainPage()
@@ -47,9 +48,17 @@ namespace BRB5
 
                 OCTypeDoc.Clear();
                 foreach (var i in c.GetTypeDoc(Config.Role)) OCTypeDoc.Add(i);
+
+                var Wh=c.LoadWarehouse();
+                long SizeDel = 0, SizeUse = 0;
+                //if (Config.Company == eCompany.Sim23)
+                {
+                    var a = db.GetDoc(11);
+                     (SizeDel, SizeUse) = u.DelDir(Config.PathFiles, a.Select(el=>el.NumberDoc));
+                }
             }
             else
-                _ = DisplayAlert("Проблеми з автоизацією", r.TextError + r.Info, "OK");
+                _ = DisplayAlert("Проблеми з авторизацією", r.TextError + r.Info, "OK");
         }
 
         private async void OnButtonClicked(object sender, System.EventArgs e)

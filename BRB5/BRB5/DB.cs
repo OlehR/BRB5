@@ -352,7 +352,7 @@ CREATE UNIQUE INDEX UserLogin ON User (Login);
                 {
                     sql = $@"select dws.CODEWARES as CodeWares,dws.NAME as NameWares,1 as Coefficient,{Config.GetCodeUnitPiece} as CodeUnit, 'шт' as NameUnit ,
                              dws.BarCode as BarCode  ,{Config.GetCodeUnitPiece} as BaseCodeUnit  
-                            from DOC_WARES_sample dws
+                            from DocWaresSample dws
                          where  dws.Typedoc=@TypeDoc  and dws.numberdoc=@DocNumber and " + (pParseBarCode.CodeWares > 0 ? $"dws.CODEWARES={pParseBarCode.CodeWares}" : $"dws.BarCode= {pParseBarCode.BarCode}");
                     var r = db.Execute<DocId, DocWaresEx>(sql, pDocId);
                     if (r != null && r.Count() == 1)
@@ -501,6 +501,7 @@ CREATE UNIQUE INDEX UserLogin ON User (Login);
 
         public bool ReplaceWarehouse(IEnumerable<Warehouse> pWh)
         {
+            db.ExecuteNonQuery("delete from warehouse");
             string Sql = @"replace into Warehouse ( Code, Number, Name, Url, InternalIP, ExternalIP, Location ) values 
                                                   (@Code,@Number,@Name,@Url,@InternalIP,@ExternalIP,@Location )";
             return db.BulkExecuteNonQuery<Warehouse>(Sql, pWh) >= 0;
@@ -590,24 +591,35 @@ CREATE UNIQUE INDEX UserLogin ON User (Login);
             db.ExecuteNonQuery("Update LogPrice set IsSend=1 where IsSend=-1");            
         }
 
-        public int[] GetCountScanCode()
-        {
-            int[] varRes = { 0, 0 };
+        public InitDataPriceCheck GetCountScanCode()
+        {            
             try
             {
                 string sql = @"select sum(case when IsSend=0 then 1 else 0 end) as AllScan,
                                       sum(case when Status=0 and IsSend=0 then 1 else 0 end) BadScan, 
                                       max(case when date(DTInsert) > date('now','-1 day') then PackageNumber else 0 end) as PackageNumber,
-                                      max(case when date(DTInsert) > date('now','-1 day') then LineNumber else 0 end) as LineNumber,
+                                      max(case when date(DTInsert) > date('now','-1 day') then LineNumber else 0 end) as LineNumber
                                 from LogPrice";
-                db.ExecuteScalar<int[]>(sql);
+                var res=db.Execute<InitDataPriceCheck>(sql);
+                //return res;
+                if (res != null && res.Count() > 0)
+                    return res.First();
             }
             catch (Exception e)
             {
                // Utils.WriteLog("e", TAG, "GetCountScanCode >>" + e.tostring());
                 //throw mSQLException;
             }
-            return varRes;
+            return null;
+        }
+
+        public IEnumerable<PrintBlockItems> GetPrintBlockItemsCount()
+        { 
+            string Sql = @"select PackageNumber,count(DISTINCT case when ActionType in (1,2) then null else CodeWares end) as Normal,
+                                  count(DISTINCT case when ActionType in (1,2) then CodeWares end) as Yellow 
+                    from LogPrice WHERE  Status< 0 AND date(DTInsert) > date('now','-1 day') 
+                    GROUP BY PackageNumber";            
+            return db.Execute<PrintBlockItems>(Sql);
         }
     }
 }

@@ -97,13 +97,13 @@ namespace Test
             try
             {
 
-                if (Ftp.DownLoad("Template/User.json", Config.GetPathFiles))
+                if (Ftp.DownLoad("Template/User.json", Config.PathFiles))
                 {
-                    var strU = File.ReadAllText(Path.Combine(Config.GetPathFiles, "User.json"));
+                    var strU = File.ReadAllText(Path.Combine(Config.PathFiles, "User.json"));
                     var U = JsonConvert.DeserializeObject<List<User>>(strU);
                     db.ReplaceUser(U);
 
-                    var strWh = File.ReadAllText(Path.Combine(Config.GetPathFiles, "Warehouse.json"));
+                    var strWh = File.ReadAllText(Path.Combine(Config.PathFiles, "Warehouse.json"));
                     var Wh = JsonConvert.DeserializeObject<List<Warehouse>>(strWh);
                     db.ReplaceWarehouse(Wh);
                 }

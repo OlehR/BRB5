@@ -184,7 +184,7 @@ namespace BRB5
      
             try
             {
-                var dir = Path.Combine(Config.GetPathFiles, vQuestion.NumberDoc);
+                var dir = Path.Combine(Config.PathFiles, vQuestion.NumberDoc);
                 if (!Directory.Exists(dir))
                 {
                     Directory.CreateDirectory(dir);

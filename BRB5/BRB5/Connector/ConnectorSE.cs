@@ -8,6 +8,7 @@ using Newtonsoft.Json.Converters;
 using System.IO;
 using Utils;
 using System.Diagnostics;
+using BRB5;
 
 namespace BRB5.Connector
 {
@@ -35,7 +36,7 @@ namespace BRB5.Connector
             return Res;
         }
 
-        //DB db = DB.GetDB();
+        BL bl = BL.GetBL();
         public override Result Login(string pLogin, string pPassWord, eLoginServer pLoginServer)
         {
             Result Res = new Result();
@@ -136,7 +137,7 @@ namespace BRB5.Connector
             HttpResult result = Http.HTTPRequest(0, $"PriceTagInfo?{vCode}", null, null, null, null);
             if (result.HttpState == eStateHTTP.HTTP_OK)
             {
-               var res= JsonConvert.DeserializeObject<WaresPriceSE>(result.Result);
+                var res = JsonConvert.DeserializeObject<WaresPriceSE>(result.Result);
                 return res.GetWaresPrice;
             }
             //LI.resHttp = res.Result;
@@ -197,7 +198,6 @@ namespace BRB5.Connector
                                         r.Add(new Raiting() { TypeDoc = pTypeDoc, NumberDoc = DocNumber, Id = el.questionId, Parent = -el.sectionId, Text = el.text, IsHead = false, RatingTemplate = el.RatingTemplate, OrderRS = el.questionId });
 
                                 r.Add(new Raiting() { TypeDoc = pTypeDoc, NumberDoc = DocNumber, Id = -1, Parent = 9999999, Text = "Всього", IsHead = false, RatingTemplate = 8, OrderRS = 9999999 });
-
                             }
                         }
                         db.ReplaceDoc(d);
@@ -213,10 +213,90 @@ namespace BRB5.Connector
                         return Res;
                     }
             }
-            FileLogger.WriteLogMessage($"ConnectorPSU.LoadDocsData=>(pTypeDoc=>{pTypeDoc}, pNumberDoc=>{pNumberDoc},pIsClear=>{pIsClear}) Res=>({Res.State},{Res.Info},{Res.TextError})", eTypeLog.Full);
+            else
+            {
+                DocSetting ds = Config.GetDocSetting(pTypeDoc);
+                String CodeWarehouse = Config.CodeWarehouse.ToString();
 
+                int CodeApi = 0;
+                if (ds != null)
+                    CodeApi = ds.CodeApi;
+                else
+                    if (pTypeDoc <= 0 && Config.IsLoginCO) CodeApi = 1;
+
+                if (pTypeDoc >= 7 && pTypeDoc <= 9)
+                {
+                    Warehouse Wh = bl.GetWarehouse(Config.CodeWarehouse);
+                    if (Wh != null)
+                        CodeWarehouse = Wh.Number;
+                }
+
+                String NameApi = "documents";
+                String AddPar = "";
+                if (pTypeDoc >= 8 && pTypeDoc <= 9)
+                {
+                    NameApi = "docmoveoz";
+                    AddPar = "&TypeMove=" + (pTypeDoc == 8 ? "0" : "1");
+                }
+
+                if (pTypeDoc == -1)
+                    LoadGuidData((pTypeDoc == -1), pProgress);
+
+                Config.OnProgress?.Invoke(5);
+                HttpResult result;
+                try
+                {
+                    if ((pTypeDoc >= 5 && pTypeDoc <= 9) || (pTypeDoc <= 0 && Config.IsLoginCO))
+                        result = Http.HTTPRequest(CodeApi, NameApi + (pTypeDoc == 5 ? "\\" + pNumberDoc : "?StoreSetting=" + CodeWarehouse) + AddPar, null, "application/json;charset=utf-8", Config.Login, Config.Password);
+                    else
+                        result = Http.HTTPRequest(CodeApi, "documents", null, "application/json;charset=utf-8", Config.Login, Config.Password);
+
+                    if (result.HttpState == eStateHTTP.HTTP_OK)
+                    {
+                        Config.OnProgress?.Invoke(40);
+                        var data = JsonConvert.DeserializeObject<InputDocs>(result.Result);
+
+
+                        if (pIsClear)
+                        {
+                            // String sql = "DELETE FROM DOC; DELETE FROM DOC_WARES_sample; DELETE FROM DOC_WARES;";
+                            db.db.ExecuteNonQuery("DELETE FROM DOC");
+                            db.db.ExecuteNonQuery("DELETE FROM DOC_WARES_sample");
+                            db.db.ExecuteNonQuery("DELETE FROM DOC_WARES");
+
+                        }
+                        else
+                            db.db.ExecuteNonQuery("update doc set state=-1 where type_doc not in (5,6)" + (pTypeDoc > 0 ? " and type_doc=" + pTypeDoc : ""));
+
+                        foreach (Doc v in data.Doc)
+                        {
+                            //v.TypeDoc = ConvertTypeDoc(v.TypeDoc);
+                            //v.DateDoc = v.DateDoc.Substring(0, 10);
+                            v.TypeDoc += (pTypeDoc == 9 ? 1 : 0);                           
+                        }
+                        db.ReplaceDoc(data.Doc);
+
+                        Config.OnProgress?.Invoke(60);
+                        foreach (var v in data.DocWaresSample)                        
+                            v.TypeDoc += (pTypeDoc == 9 ? 1 : 0);
+                        
+                        db.ReplaceDocWaresSample(data.DocWaresSample);
+
+                        Config.OnProgress?.Invoke(100);
+                        return Res;
+                    }
+
+                }
+                catch (Exception e)
+                {
+                    //Utils.WriteLog("e", TAG, "LoadDocsData=>", e);
+                }
+                return Res;
+            }
+            FileLogger.WriteLogMessage($"ConnectorPSU.LoadDocsData=>(pTypeDoc=>{pTypeDoc}, pNumberDoc=>{pNumberDoc},pIsClear=>{pIsClear}) Res=>({Res.State},{Res.Info},{Res.TextError})", eTypeLog.Full);
             return Res;
         }
+
 
         /// <summary>
         /// Вивантаження документів з ТЗД (HTTP)
@@ -283,7 +363,7 @@ namespace BRB5.Connector
             int Sucsses = 0;
             Result LastError = null;
             var Res = new Result();
-            var DirArx = Path.Combine(Config.GetPathFiles, "arx");
+            var DirArx = Path.Combine(Config.PathFiles, "arx");
             if (!Directory.Exists(DirArx))
             {
                 Directory.CreateDirectory(DirArx);
@@ -295,7 +375,7 @@ namespace BRB5.Connector
 
             var R = new RequestSendRaitingFile() { planId = int.Parse(pNumberDoc), action = "file", userId = Config.CodeUser };
 
-            var Files = Directory.GetFiles(Path.Combine(Config.GetPathFiles, pNumberDoc));
+            var Files = Directory.GetFiles(Path.Combine(Config.PathFiles, pNumberDoc));
             int i = 0;
             foreach (var f in Files)
             {
@@ -354,156 +434,193 @@ namespace BRB5.Connector
             Res.TextError = $"Успішно відправлено  {Sucsses} файлів {Res.TextError}";
             return Res;
         }
-    }
-
-
-    /*
-     JsonConvert.SerializeObject(invoice,
-  Formatting.Indented,
-  new JsonSerializerSettings { DefaultValueHandling = DefaultValueHandling.Ignore });
-      */
-
-    class Answer
-    {
-        public bool success { get; set; }
-    }
-
-    class Request
-    {
-        public string token { get; set; } = "jO0qyQ6PqBXr4HGqCu7T";
-        public string action { get; set; }
-        public int? userId { get; set; }
-    }
-
-    class RequestLogin : Request
-    {
-        public string login { get; set; }
-        public string password { get; set; }
-    }
-
-    class DataLogin
-    {
-        public int userId { get; set; }
-        public string userName { get; set; }
-    }
-
-
-    class AnswerLogin : Answer
-    {
-        public DataLogin data { get; set; }
-    }
-
-    class Section
-    {
-        public int sectionId { get; set; }
-        public string text { get; set; }
-        public int parentId { get; set; }
-        public int Order { get; set; }
-    }
-
-    class Questions
-    {
-        public int questionId { get; set; }
-        public int sectionId { get; set; }
-        public string text { get; set; }
-        public int value { get; set; }
-        public int[] answers { get; set; }
-        public int RatingTemplate { get { int r = 0; for (int i = 0; i < answers.Length; i++) r += 1 << (answers[i] - 1); return r; } }
-        public int Order { get; set; }
-    }
-
-    class DataTemplate
-    {
-        public int templateId { get; set; }
-        public string templateName { get; set; }
-        //public DateTime updated { get; set; }
-        public IEnumerable<Section> sections { get; set; }
-        public IEnumerable<Questions> questions { get; set; }
-    }
-
-    class Template : Answer
-    {
-        public IEnumerable<DataTemplate> data { get; set; }
-    }
-
-    class DataData
-    {
-        public int planId { get; set; }
-        public int templateId { get; set; }
-        public int shopId { get; set; }
-        public DateTime date { get; set; }
-    }
-
-    class Data : Answer
-    {
-        public IEnumerable<DataData> data { get; set; }
-    }
-
-    class Raitings
-    {
-        public int questionId { get; set; }
-        public int value { get; set; }
-        public string comment { get; set; }
-    }
-
-    class RequestSendRaiting : Request
-    {
-        public int planId { get; set; }
-        public string text { get; set; }
-        public IEnumerable<Raitings> answers { get; set; }
-    }
-
-    class AnswerDataRaiting
-    {
-        public int questionId { get; set; }
-        public int answerId { get; set; }
-    }
-
-    class AnswerSendRaiting : Answer
-    {
-        public IEnumerable<AnswerDataRaiting> data { get; set; }
-        public IEnumerable<string> errors { get; set; }
-    }
-
-    class RequestSendRaitingFile : Request
-    {
-        public int planId { get; set; }
-        public int questionId { get; set; }
-        public string file { get; set; }
-        public string fileExt { get; set; }
-    }
-    public class LogPriceSE
-    {
-        //public string GetJsonSE() { return "{\"Barcode\":\"" + BarCode + "\",\"Code\":\"" + CodeWares + "\",\"Status\":" + Status + ",\"LineNumber\":" + LineNumber + ",\"NumberOfReplenishment\":" + Double.tostring(NumberOfReplenishment) + "}"; }
-        public LogPriceSE(LogPrice pLP)
+        /// <summary>
+        /// Завантаження Списку складів (HTTP)
+        /// </summary>
+        /// <returns></returns>
+        public override IEnumerable<Warehouse> LoadWarehouse()
         {
-            BarCode = pLP.BarCode;
-            Code = pLP.CodeWares;
-            Status = pLP.Status;
-            LineNumber = pLP.LineNumber;
-            NumberOfReplenishment = pLP.NumberOfReplenishment;
-        }
-        public string BarCode { get; set; }
-        public int Code { get; set; }
-        public int Status { get; set; }
-        public int LineNumber { get; set; }
-        public double NumberOfReplenishment { get; set; }
-    }
+            HttpResult result;
+            try
+            {
+                result = Http.HTTPRequest(1, "StoreSettings", null, "application/json;charset=utf-8", Config.Login, Config.Password);
 
-    public class WaresPriceSE
-    {
-        public int Code { get; set; }
-        public string Name { get; set; }
-        public decimal Price { get; set; }
-        public string BarCodes { get; set; }
-        public string Unit { get; set; }
-        public string Article { get; set; }
-        public int ActionType { get; set; }
-        public decimal PromotionPrice { get; set; }
-        public WaresPrice GetWaresPrice
-        {
-            get { return new WaresPrice() { CodeWares = Code, Name = Name, Price = Price, BarCodes = BarCodes, Unit = Unit, Article = Article, ActionType = ActionType, PriceOpt = PromotionPrice }; }
+                if (result.HttpState == eStateHTTP.HTTP_OK)
+                {
+                    var res = JsonConvert.DeserializeObject<IEnumerable<InputWarehouse>>(result.Result);
+                    return res.Select(el => el.GetWarehouse());
+                }
+            }
+            catch (Exception e)
+            {
+                //Utils.WriteLog("e", TAG, "LoadWarehouse=>", e);
+            }
+            return null;
         }
+
+        class Answer
+        {
+            public bool success { get; set; }
+        }
+
+        class Request
+        {
+            public string token { get; set; } = "jO0qyQ6PqBXr4HGqCu7T";
+            public string action { get; set; }
+            public int? userId { get; set; }
+        }
+
+        class RequestLogin : Request
+        {
+            public string login { get; set; }
+            public string password { get; set; }
+        }
+
+        class DataLogin
+        {
+            public int userId { get; set; }
+            public string userName { get; set; }
+        }
+
+
+        class AnswerLogin : Answer
+        {
+            public DataLogin data { get; set; }
+        }
+
+        class Section
+        {
+            public int sectionId { get; set; }
+            public string text { get; set; }
+            public int parentId { get; set; }
+            public int Order { get; set; }
+        }
+
+        class Questions
+        {
+            public int questionId { get; set; }
+            public int sectionId { get; set; }
+            public string text { get; set; }
+            public int value { get; set; }
+            public int[] answers { get; set; }
+            public int RatingTemplate { get { int r = 0; for (int i = 0; i < answers.Length; i++) r += 1 << (answers[i] - 1); return r; } }
+            public int Order { get; set; }
+        }
+
+        class DataTemplate
+        {
+            public int templateId { get; set; }
+            public string templateName { get; set; }
+            //public DateTime updated { get; set; }
+            public IEnumerable<Section> sections { get; set; }
+            public IEnumerable<Questions> questions { get; set; }
+        }
+
+        class Template : Answer
+        {
+            public IEnumerable<DataTemplate> data { get; set; }
+        }
+
+        class DataData
+        {
+            public int planId { get; set; }
+            public int templateId { get; set; }
+            public int shopId { get; set; }
+            public DateTime date { get; set; }
+        }
+
+        class Data : Answer
+        {
+            public IEnumerable<DataData> data { get; set; }
+        }
+
+        class Raitings
+        {
+            public int questionId { get; set; }
+            public int value { get; set; }
+            public string comment { get; set; }
+        }
+
+        class RequestSendRaiting : Request
+        {
+            public int planId { get; set; }
+            public string text { get; set; }
+            public IEnumerable<Raitings> answers { get; set; }
+        }
+
+        class AnswerDataRaiting
+        {
+            public int questionId { get; set; }
+            public int answerId { get; set; }
+        }
+
+        class AnswerSendRaiting : Answer
+        {
+            public IEnumerable<AnswerDataRaiting> data { get; set; }
+            public IEnumerable<string> errors { get; set; }
+        }
+
+        class RequestSendRaitingFile : Request
+        {
+            public int planId { get; set; }
+            public int questionId { get; set; }
+            public string file { get; set; }
+            public string fileExt { get; set; }
+        }
+        public class LogPriceSE
+        {
+            //public string GetJsonSE() { return "{\"Barcode\":\"" + BarCode + "\",\"Code\":\"" + CodeWares + "\",\"Status\":" + Status + ",\"LineNumber\":" + LineNumber + ",\"NumberOfReplenishment\":" + Double.tostring(NumberOfReplenishment) + "}"; }
+            public LogPriceSE(LogPrice pLP)
+            {
+                BarCode = pLP.BarCode;
+                Code = pLP.CodeWares;
+                Status = pLP.Status;
+                LineNumber = pLP.LineNumber;
+                NumberOfReplenishment = pLP.NumberOfReplenishment;
+            }
+            public string BarCode { get; set; }
+            public int Code { get; set; }
+            public int Status { get; set; }
+            public int LineNumber { get; set; }
+            public double NumberOfReplenishment { get; set; }
+        }
+
+        public class WaresPriceSE
+        {
+            public int Code { get; set; }
+            public string Name { get; set; }
+            public decimal Price { get; set; }
+            public string BarCodes { get; set; }
+            public string Unit { get; set; }
+            public string Article { get; set; }
+            public int ActionType { get; set; }
+            public decimal PromotionPrice { get; set; }
+            public WaresPrice GetWaresPrice
+            {
+                get { return new WaresPrice() { CodeWares = Code, Name = Name, Price = Price, BarCodes = BarCodes, Unit = Unit, Article = Article, ActionType = ActionType, PriceOpt = PromotionPrice }; }
+            }
+        }
+        class InputWarehouse
+        {
+            public int Code { get; set; }
+            public String StoreCode { get; set; } //Number
+            public String Name { get; set; } //Url
+            public String Unit { get; set; } //Name
+            public String InternalIP { get; set; }
+            public String ExternalIP { get; set; }
+            public Warehouse GetWarehouse()
+            {
+                return new Warehouse() { Code = Code, Number = StoreCode, Name = Unit, Url = Name, InternalIP = InternalIP, ExternalIP = ExternalIP };
+            }
+
+        }
+        class InputDocs
+        {
+            public Doc[] Doc { get; set; }
+            public DocWaresSample[] DocWaresSample { get; set; }
+
+        }
+
 
     }
 }

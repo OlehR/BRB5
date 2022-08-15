@@ -40,15 +40,15 @@ namespace BRB5.Connector
             Result Res;
             try
             {
-                if (Ftp.DownLoad("Template/User.json", Config.GetPathFiles))
+                if (Ftp.DownLoad("Template/User.json", Config.PathFiles))
                 {
-                    var strU = File.ReadAllText(Path.Combine(Config.GetPathFiles, "User.json"));
+                    var strU = File.ReadAllText(Path.Combine(Config.PathFiles, "User.json"));
                     var U = JsonConvert.DeserializeObject<List<User>>(strU);
                     db.ReplaceUser(U);             
                 }
-                if (Ftp.DownLoad("Template/Warehouse.json", Config.GetPathFiles))
+                if (Ftp.DownLoad("Template/Warehouse.json", Config.PathFiles))
                 {
-                    var strWh = File.ReadAllText(Path.Combine(Config.GetPathFiles, "Warehouse.json"));
+                    var strWh = File.ReadAllText(Path.Combine(Config.PathFiles, "Warehouse.json"));
                     var Wh = JsonConvert.DeserializeObject<List<Warehouse>>(strWh);
                     db.ReplaceWarehouse(Wh);
                 }
@@ -75,13 +75,13 @@ namespace BRB5.Connector
             {
                 try
                 {
-                    if (Ftp.DownLoad("Template/Doc.json", Config.GetPathFiles) && Ftp.DownLoad("Template/RaitingTemplate.json", Config.GetPathFiles))
+                    if (Ftp.DownLoad("Template/Doc.json", Config.PathFiles) && Ftp.DownLoad("Template/RaitingTemplate.json", Config.PathFiles))
                     {
-                        var strDoc = File.ReadAllText(Path.Combine(Config.GetPathFiles, "Doc.json"));
+                        var strDoc = File.ReadAllText(Path.Combine(Config.PathFiles, "Doc.json"));
                         var Doc = JsonConvert.DeserializeObject<List<Doc>>(strDoc, proto.JsonSettings);
                         db.ReplaceDoc(Doc);
 
-                        var strRS = File.ReadAllText(Path.Combine(Config.GetPathFiles, "RaitingTemplate.json"));
+                        var strRS = File.ReadAllText(Path.Combine(Config.PathFiles, "RaitingTemplate.json"));
                         var R = JsonConvert.DeserializeObject<List<RaitingTemplate>>(strRS);
 
                         foreach(var el in Doc)
@@ -148,7 +148,7 @@ namespace BRB5.Connector
         public override Result SendRaitingFiles(string pNumberDoc)
         {
             var Res = new Result();
-            var DirArx = Path.Combine(Config.GetPathFiles, "arx");
+            var DirArx = Path.Combine(Config.PathFiles, "arx");
             if (!Directory.Exists(DirArx))
             {
                 Directory.CreateDirectory(DirArx);
@@ -156,13 +156,13 @@ namespace BRB5.Connector
 
             var R = new RequestSendRaitingFile() { planId = int.Parse(pNumberDoc), action = "file", userId = Config.CodeUser };
             string Dir = $"Data/{DateTime.Now:yyyy.MM.dd}";
-            foreach (var f in Directory.GetFiles(Path.Combine(Config.GetPathFiles, pNumberDoc)))
+            foreach (var f in Directory.GetFiles(Path.Combine(Config.PathFiles, pNumberDoc)))
             {
                 try
                 {
-                    if (Ftp.UpLoad(Path.Combine(Config.GetPathFiles, f), Dir))
+                    if (Ftp.UpLoad(Path.Combine(Config.PathFiles, f), Dir))
                     {
-                        string FileFrom = Path.Combine(Config.GetPathFiles, f);
+                        string FileFrom = Path.Combine(Config.PathFiles, f);
                         File.Move(FileFrom, Path.Combine(DirArx, f));
                         FileLogger.WriteLogMessage($"ConnectorPSU.SendRaitingFiles Send=>(File={f})", eTypeLog.Expanded);
                     }
