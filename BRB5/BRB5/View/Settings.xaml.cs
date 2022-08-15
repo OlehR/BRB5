@@ -17,9 +17,32 @@ namespace BRB5.View
         public string Ver { get { return "Ver:"+ Assembly.GetExecutingAssembly().GetName().Version; } }
 
         public string SN { get { return "SN:"; } }
+
+        //public List TypeUsePrinter { get { return Enum.GetValues(typeof(eTypeUsePrinter)).Cast<eTypeUsePrinter>(); } }
+        //private eTypeUsePrinter _TypeUsePrinter = eTypeUsePrinter.NotDefined;
+        //public eTypeUsePrinter TypeUsePrinter { get { return _TypeUsePrinter; } set { _TypeUsePrinter = value; OnPropertyChanged("TypeUsePrinter"); } }
+
+        public List<string> ListTypeUsePrinter
+        {
+            get
+            {
+                List<string> list = new List<string>();
+                foreach (eTypeUsePrinter type in Enum.GetValues(typeof(eTypeUsePrinter)))
+                {
+                    list.Add(EnumMethods.GetDescription(type));
+                }
+                return list;
+            }
+        }
+
+        public List<string> ListCompany { get { return Enum.GetNames(typeof(eCompany)).ToList(); } }
+
+
         public Settings()
         {
             InitializeComponent();
+
+            
 
             this.BindingContext = this;
         }

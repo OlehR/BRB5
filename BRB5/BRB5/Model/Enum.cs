@@ -1,4 +1,9 @@
-﻿namespace BRB5
+﻿using System;
+using System.ComponentModel;
+using System.Linq;
+using System.Reflection;
+
+namespace BRB5
 {
     public enum eCompany
     {
@@ -42,10 +47,15 @@
 
     public enum eTypeUsePrinter
     {
+        [Description("Без Принтера")]
         NotDefined = 0,
+        [Description("Тільки при вході")]
         OnlyStart = 1,
+        [Description("Авто підключення")]
         AutoConnect = 2,
+        [Description("Стаціонарний з обрізжчиком")]
         StationaryWithCut = 3,
+        [Description("Стаціонарний з обрізжчиком (автовибір)")]
         StationaryWithCutAuto = 4
     }
 
@@ -64,6 +74,18 @@
                 default: return "Невідоме значення";
             }
         }
+        public static string GetDescription(Enum value)
+        {
+            var enumMember = value.GetType().GetMember(value.ToString()).FirstOrDefault();
+            var descriptionAttribute =
+                enumMember == null
+                    ? default(DescriptionAttribute)
+                    : enumMember.GetCustomAttribute(typeof(DescriptionAttribute)) as DescriptionAttribute;
+            return
+                descriptionAttribute == null
+                    ? value.ToString()
+                    : descriptionAttribute.Description;
+        }        
     }
 
 

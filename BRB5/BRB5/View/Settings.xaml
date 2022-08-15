@@ -17,15 +17,15 @@
                        Grid.Column="1"  />
                 </Grid>
 
-                <Picker Title=""        
+                <Picker Title="Торговий зал"        
                         ItemsSource="{Binding }"
-                        ItemDisplayBinding="{Binding }" 
                         HorizontalOptions="Fill"/>
 
-                <Picker Title=""           
-                        ItemsSource="{Binding }"
-                        ItemDisplayBinding="{Binding }"
+                <Picker Title="Принтер"           
+                        ItemsSource="{Binding ListTypeUsePrinter}"
+                        
                         HorizontalOptions="Fill" />
+                        <!--ItemDisplayBinding="{Binding TypeUsePrinter}"-->
 
                 <Grid>
                     <Grid.ColumnDefinitions>
@@ -118,9 +118,8 @@
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
 
-                    <Picker Title=""           
-                        ItemsSource="{Binding }"
-                        ItemDisplayBinding="{Binding }"
+                    <Picker Title="Компанія"           
+                        ItemsSource="{Binding ListCompany}"
                         HorizontalOptions="Fill" />
 
                     <Button Text="Зген."
