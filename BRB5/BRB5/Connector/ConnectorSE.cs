@@ -272,14 +272,14 @@ namespace BRB5.Connector
                         {
                             //v.TypeDoc = ConvertTypeDoc(v.TypeDoc);
                             //v.DateDoc = v.DateDoc.Substring(0, 10);
-                            v.TypeDoc += (pTypeDoc == 9 ? 1 : 0);                           
+                            v.TypeDoc += (pTypeDoc == 9 ? 1 : 0);
                         }
                         db.ReplaceDoc(data.Doc);
 
                         Config.OnProgress?.Invoke(60);
-                        foreach (var v in data.DocWaresSample)                        
+                        foreach (var v in data.DocWaresSample)
                             v.TypeDoc += (pTypeDoc == 9 ? 1 : 0);
-                        
+
                         db.ReplaceDocWaresSample(data.DocWaresSample);
 
                         Config.OnProgress?.Invoke(100);
@@ -457,170 +457,170 @@ namespace BRB5.Connector
             }
             return null;
         }
+    }
+    class Answer
+    {
+        public bool success { get; set; }
+    }
 
-        class Answer
+    class Request
+    {
+        public string token { get; set; } = "jO0qyQ6PqBXr4HGqCu7T";
+        public string action { get; set; }
+        public int? userId { get; set; }
+    }
+
+    class RequestLogin : Request
+    {
+        public string login { get; set; }
+        public string password { get; set; }
+    }
+
+    class DataLogin
+    {
+        public int userId { get; set; }
+        public string userName { get; set; }
+    }
+
+
+    class AnswerLogin : Answer
+    {
+        public DataLogin data { get; set; }
+    }
+
+    class Section
+    {
+        public int sectionId { get; set; }
+        public string text { get; set; }
+        public int parentId { get; set; }
+        public int Order { get; set; }
+    }
+
+    class Questions
+    {
+        public int questionId { get; set; }
+        public int sectionId { get; set; }
+        public string text { get; set; }
+        public int value { get; set; }
+        public int[] answers { get; set; }
+        public int RatingTemplate { get { int r = 0; for (int i = 0; i < answers.Length; i++) r += 1 << (answers[i] - 1); return r; } }
+        public int Order { get; set; }
+    }
+
+    class DataTemplate
+    {
+        public int templateId { get; set; }
+        public string templateName { get; set; }
+        //public DateTime updated { get; set; }
+        public IEnumerable<Section> sections { get; set; }
+        public IEnumerable<Questions> questions { get; set; }
+    }
+
+    class Template : Answer
+    {
+        public IEnumerable<DataTemplate> data { get; set; }
+    }
+
+    class DataData
+    {
+        public int planId { get; set; }
+        public int templateId { get; set; }
+        public int shopId { get; set; }
+        public DateTime date { get; set; }
+    }
+
+    class Data : Answer
+    {
+        public IEnumerable<DataData> data { get; set; }
+    }
+
+    class Raitings
+    {
+        public int questionId { get; set; }
+        public int value { get; set; }
+        public string comment { get; set; }
+    }
+
+    class RequestSendRaiting : Request
+    {
+        public int planId { get; set; }
+        public string text { get; set; }
+        public IEnumerable<Raitings> answers { get; set; }
+    }
+
+    class AnswerDataRaiting
+    {
+        public int questionId { get; set; }
+        public int answerId { get; set; }
+    }
+
+    class AnswerSendRaiting : Answer
+    {
+        public IEnumerable<AnswerDataRaiting> data { get; set; }
+        public IEnumerable<string> errors { get; set; }
+    }
+
+    class RequestSendRaitingFile : Request
+    {
+        public int planId { get; set; }
+        public int questionId { get; set; }
+        public string file { get; set; }
+        public string fileExt { get; set; }
+    }
+    public class LogPriceSE
+    {
+        //public string GetJsonSE() { return "{\"Barcode\":\"" + BarCode + "\",\"Code\":\"" + CodeWares + "\",\"Status\":" + Status + ",\"LineNumber\":" + LineNumber + ",\"NumberOfReplenishment\":" + Double.tostring(NumberOfReplenishment) + "}"; }
+        public LogPriceSE(LogPrice pLP)
         {
-            public bool success { get; set; }
+            BarCode = pLP.BarCode;
+            Code = pLP.CodeWares;
+            Status = pLP.Status;
+            LineNumber = pLP.LineNumber;
+            NumberOfReplenishment = pLP.NumberOfReplenishment;
         }
+        public string BarCode { get; set; }
+        public int Code { get; set; }
+        public int Status { get; set; }
+        public int LineNumber { get; set; }
+        public double NumberOfReplenishment { get; set; }
+    }
 
-        class Request
+    public class WaresPriceSE
+    {
+        public int Code { get; set; }
+        public string Name { get; set; }
+        public decimal Price { get; set; }
+        public string BarCodes { get; set; }
+        public string Unit { get; set; }
+        public string Article { get; set; }
+        public int ActionType { get; set; }
+        public decimal PromotionPrice { get; set; }
+        public WaresPrice GetWaresPrice
         {
-            public string token { get; set; } = "jO0qyQ6PqBXr4HGqCu7T";
-            public string action { get; set; }
-            public int? userId { get; set; }
+            get { return new WaresPrice() { CodeWares = Code, Name = Name, Price = Price, BarCodes = BarCodes, Unit = Unit, Article = Article, ActionType = ActionType, PriceOpt = PromotionPrice }; }
         }
-
-        class RequestLogin : Request
+    }
+    class InputWarehouse
+    {
+        public int Code { get; set; }
+        public String StoreCode { get; set; } //Number
+        public String Name { get; set; } //Url
+        public String Unit { get; set; } //Name
+        public String InternalIP { get; set; }
+        public String ExternalIP { get; set; }
+        public Warehouse GetWarehouse()
         {
-            public string login { get; set; }
-            public string password { get; set; }
+            return new Warehouse() { Code = Code, Number = StoreCode, Name = Unit, Url = Name, InternalIP = InternalIP, ExternalIP = ExternalIP };
         }
-
-        class DataLogin
-        {
-            public int userId { get; set; }
-            public string userName { get; set; }
-        }
-
-
-        class AnswerLogin : Answer
-        {
-            public DataLogin data { get; set; }
-        }
-
-        class Section
-        {
-            public int sectionId { get; set; }
-            public string text { get; set; }
-            public int parentId { get; set; }
-            public int Order { get; set; }
-        }
-
-        class Questions
-        {
-            public int questionId { get; set; }
-            public int sectionId { get; set; }
-            public string text { get; set; }
-            public int value { get; set; }
-            public int[] answers { get; set; }
-            public int RatingTemplate { get { int r = 0; for (int i = 0; i < answers.Length; i++) r += 1 << (answers[i] - 1); return r; } }
-            public int Order { get; set; }
-        }
-
-        class DataTemplate
-        {
-            public int templateId { get; set; }
-            public string templateName { get; set; }
-            //public DateTime updated { get; set; }
-            public IEnumerable<Section> sections { get; set; }
-            public IEnumerable<Questions> questions { get; set; }
-        }
-
-        class Template : Answer
-        {
-            public IEnumerable<DataTemplate> data { get; set; }
-        }
-
-        class DataData
-        {
-            public int planId { get; set; }
-            public int templateId { get; set; }
-            public int shopId { get; set; }
-            public DateTime date { get; set; }
-        }
-
-        class Data : Answer
-        {
-            public IEnumerable<DataData> data { get; set; }
-        }
-
-        class Raitings
-        {
-            public int questionId { get; set; }
-            public int value { get; set; }
-            public string comment { get; set; }
-        }
-
-        class RequestSendRaiting : Request
-        {
-            public int planId { get; set; }
-            public string text { get; set; }
-            public IEnumerable<Raitings> answers { get; set; }
-        }
-
-        class AnswerDataRaiting
-        {
-            public int questionId { get; set; }
-            public int answerId { get; set; }
-        }
-
-        class AnswerSendRaiting : Answer
-        {
-            public IEnumerable<AnswerDataRaiting> data { get; set; }
-            public IEnumerable<string> errors { get; set; }
-        }
-
-        class RequestSendRaitingFile : Request
-        {
-            public int planId { get; set; }
-            public int questionId { get; set; }
-            public string file { get; set; }
-            public string fileExt { get; set; }
-        }
-        public class LogPriceSE
-        {
-            //public string GetJsonSE() { return "{\"Barcode\":\"" + BarCode + "\",\"Code\":\"" + CodeWares + "\",\"Status\":" + Status + ",\"LineNumber\":" + LineNumber + ",\"NumberOfReplenishment\":" + Double.tostring(NumberOfReplenishment) + "}"; }
-            public LogPriceSE(LogPrice pLP)
-            {
-                BarCode = pLP.BarCode;
-                Code = pLP.CodeWares;
-                Status = pLP.Status;
-                LineNumber = pLP.LineNumber;
-                NumberOfReplenishment = pLP.NumberOfReplenishment;
-            }
-            public string BarCode { get; set; }
-            public int Code { get; set; }
-            public int Status { get; set; }
-            public int LineNumber { get; set; }
-            public double NumberOfReplenishment { get; set; }
-        }
-
-        public class WaresPriceSE
-        {
-            public int Code { get; set; }
-            public string Name { get; set; }
-            public decimal Price { get; set; }
-            public string BarCodes { get; set; }
-            public string Unit { get; set; }
-            public string Article { get; set; }
-            public int ActionType { get; set; }
-            public decimal PromotionPrice { get; set; }
-            public WaresPrice GetWaresPrice
-            {
-                get { return new WaresPrice() { CodeWares = Code, Name = Name, Price = Price, BarCodes = BarCodes, Unit = Unit, Article = Article, ActionType = ActionType, PriceOpt = PromotionPrice }; }
-            }
-        }
-        class InputWarehouse
-        {
-            public int Code { get; set; }
-            public String StoreCode { get; set; } //Number
-            public String Name { get; set; } //Url
-            public String Unit { get; set; } //Name
-            public String InternalIP { get; set; }
-            public String ExternalIP { get; set; }
-            public Warehouse GetWarehouse()
-            {
-                return new Warehouse() { Code = Code, Number = StoreCode, Name = Unit, Url = Name, InternalIP = InternalIP, ExternalIP = ExternalIP };
-            }
-
-        }
-        class InputDocs
-        {
-            public Doc[] Doc { get; set; }
-            public DocWaresSample[] DocWaresSample { get; set; }
-
-        }
-
 
     }
+    class InputDocs
+    {
+        public Doc[] Doc { get; set; }
+        public DocWaresSample[] DocWaresSample { get; set; }
+
+    }
+
+
+
 }
