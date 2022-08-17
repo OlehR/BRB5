@@ -22,7 +22,7 @@ namespace Utils
             set { _PathLog = value; FileLogger.CreateDir(); }
             get { return _PathLog ?? Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "Log"); }
         }
-        private static eTypeLog TypeLog = eTypeLog.Full;
+        public static eTypeLog TypeLog = eTypeLog.Full;
 
         private static Dictionary<int, Type> _types = new Dictionary<int, Type>();
 

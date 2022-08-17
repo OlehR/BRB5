@@ -15,6 +15,8 @@ namespace BRB5.View
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class Settings : TabbedPage, INotifyPropertyChanged
     {
+
+        DB db = DB.GetDB();
         public string Ver { get { return "Ver:"+ Assembly.GetExecutingAssembly().GetName().Version; } }
 
         public string SN { get { return "SN:"; } }
@@ -39,12 +41,22 @@ namespace BRB5.View
         public List<string> ListCompany { get { return Enum.GetNames(typeof(eCompany)).ToList(); } }
         public List<string> ListTypeLog { get { return Enum.GetNames(typeof(eTypeLog)).ToList(); } }
 
-        DB db = DB.GetDB();
         public List<Warehouse> ListWarehouse { get { return db.GetWarehouse().ToList(); } }        
 
         public int CodeWarehouse { get { return ListWarehouse.FindIndex(x => x.Code == Config.CodeWarehouse) ; } }
 
         public int SelectedCompany { get { return ListCompany.FindIndex(x => x == Enum.GetName(typeof(eCompany),Config.Company)); } }
+        public int SelectedTypePrinter { get { return Enum.GetNames(typeof(eTypeUsePrinter)).ToList().FindIndex(x => x == Enum.GetName(typeof(eTypeUsePrinter), Config.TypeUsePrinter)); } }
+        public int SelectedTypeLog { get { return ListTypeLog.FindIndex(x => x == Enum.GetName(typeof(eTypeLog), FileLogger.TypeLog)); } }
+
+        public bool IsAutoLogin { get { return Config.IsAutoLogin; } }
+        public bool IsVibration { get { return Config.IsVibration; } }
+        public bool IsSound { get { return Config.IsSound; } }
+        public bool IsTest { get { return Config.IsTest; } }
+
+        public string ApiUrl1 { get { return Config.ApiUrl1; } }
+        public string ApiUrl2 { get { return Config.ApiUrl2; } }
+        public string ApiUrl3 { get { return Config.ApiUrl3; } }
 
         public Settings()
         {
@@ -61,16 +73,6 @@ namespace BRB5.View
         }
 
         private void OnClickLoadDoc(object sender, EventArgs e)
-        {
-
-        }
-
-        private void OnTestCheckedChanged(object sender, CheckedChangedEventArgs e)
-        {
-
-        }
-
-        private void OnAutoCheckedChanged(object sender, CheckedChangedEventArgs e)
         {
 
         }
@@ -93,16 +95,6 @@ namespace BRB5.View
         private void OnClickIP(object sender, EventArgs e)
         {
 
-        }
-
-        private void OnVibrationCheckedChanged(object sender, CheckedChangedEventArgs e)
-        {
-
-        }
-
-        private void OnSoundCheckedChanged(object sender, CheckedChangedEventArgs e)
-        {
-
-        }
+        }     
     }
 }

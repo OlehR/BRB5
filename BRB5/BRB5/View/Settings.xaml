@@ -25,7 +25,7 @@
 
                 <Picker Title="Принтер"           
                         ItemsSource="{Binding ListTypeUsePrinter}"
-                        
+                        SelectedIndex="{Binding SelectedTypePrinter}"
                         HorizontalOptions="Fill" />
                         <!--ItemDisplayBinding="{Binding TypeUsePrinter}"-->
 
@@ -47,6 +47,7 @@
 
                 <Picker Title="Рівень логування"             
                         ItemsSource="{Binding ListTypeLog}"
+                        SelectedIndex="{Binding SelectedTypeLog}"
                         HorizontalOptions="Fill" />
                 
                 <Grid>
@@ -57,10 +58,10 @@
                         <ColumnDefinition Width="3*"/>
                     </Grid.ColumnDefinitions>
 
-                    <CheckBox CheckedChanged="OnVibrationCheckedChanged" />
+                    <CheckBox IsChecked="{Binding IsVibration}" />
                     <Label Text="Вібрація" Grid.Column="1"/>
 
-                    <CheckBox CheckedChanged="OnSoundCheckedChanged" 
+                    <CheckBox IsChecked="{Binding IsSound}"  
                               Grid.Column="2"/>
                     <Label Text="Звук"
                            Grid.Column="3"  />
@@ -102,11 +103,11 @@
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="3*"/>
                     </Grid.ColumnDefinitions>
-                    
-                    <CheckBox CheckedChanged="OnTestCheckedChanged" />
+
+                    <CheckBox IsChecked="{Binding IsTest}" />
                     <Label Text="Тестова" Grid.Column="1"/>
 
-                    <CheckBox CheckedChanged="OnAutoCheckedChanged"
+                    <CheckBox IsChecked="{Binding IsAutoLogin}"
                               Grid.Column="2"/>
                     <Label Text="Автологін"
                            Grid.Column="3"  />
@@ -136,11 +137,11 @@
 
                 </Grid>
 
-                <Entry Text="{Binding }" />
+                <Entry Text="{Binding ApiUrl1}" />
 
-                <Entry Text="{Binding }" />
+                <Entry Text="{Binding ApiUrl2}" />
 
-                <Entry Text="{Binding }" />
+                <Entry Text="{Binding ApiUrl3}" />
 
                 <Grid>
                     <Grid.ColumnDefinitions>

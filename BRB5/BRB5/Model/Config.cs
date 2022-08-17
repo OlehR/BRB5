@@ -25,6 +25,84 @@ namespace BRB5.Model
         }
         public static string PathDownloads = null;
 
+        static string _ApiUrl1 = "";
+        public static string ApiUrl1
+        {
+            get
+            {
+                if (Company == eCompany.NotDefined)
+                {
+                    _ApiUrl1 = "";
+                }
+                if (Company == eCompany.Sim23)
+                {
+                    _ApiUrl1 = "http://93.183.216.37:80/dev1/hs/TSD/";
+                }
+                if (Company == eCompany.Sim23FTP)
+                {
+                    _ApiUrl1 = "";
+                }
+                if (Company == eCompany.VPSU|| Company == eCompany.SparPSU)
+                {
+                    _ApiUrl1 = "http://api.spar.uz.ua/znp/";
+                }
+                return _ApiUrl1;
+            }
+            set { _ApiUrl1 = value; }
+        }
+
+        static string _ApiUrl2 = "";
+        public static string ApiUrl2
+        {
+            get
+            {
+                if (Company == eCompany.NotDefined)
+                {
+                    _ApiUrl2 = "";
+                }
+                if (Company == eCompany.Sim23)
+                {
+                    _ApiUrl2 = "http://93.183.216.37/TK/hs/TSD/;http://37.53.84.148/TK/hs/TSD/";
+                }
+                if (Company == eCompany.Sim23FTP)
+                {
+                    _ApiUrl2 = "";
+                }
+                if (Company == eCompany.VPSU || Company == eCompany.SparPSU)
+                {
+                    _ApiUrl2 = "http://api.spar.uz.ua/print/";
+                }
+                return _ApiUrl2;
+            }
+            set { _ApiUrl2 = value; }
+        }
+
+        static string _ApiUrl3 = "";
+        public static string ApiUrl3
+        {
+            get
+            {
+                if (Company == eCompany.NotDefined)
+                {
+                    _ApiUrl3 = "";
+                }
+                if (Company == eCompany.Sim23)
+                {
+                    _ApiUrl3 = "https://bitrix.sim23.ua/rest/233/ax02yr7l9hia35vj/";
+                }
+                if (Company == eCompany.Sim23FTP)
+                {
+                    _ApiUrl3 = "";
+                }
+                if (Company == eCompany.VPSU || Company == eCompany.SparPSU)
+                {
+                    _ApiUrl3 = "";
+                }
+                return _ApiUrl3;
+            }
+            set { _ApiUrl3 = value; }
+        }
+
         public static string SN;
         public static int Ver;
         public static bool IsAutoLogin = false;
