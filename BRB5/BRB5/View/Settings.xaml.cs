@@ -44,6 +44,7 @@ namespace BRB5.View
 
         public int CodeWarehouse { get { return ListWarehouse.FindIndex(x => x.Code == Config.CodeWarehouse) ; } }
 
+        public int SelectedCompany { get { return ListCompany.FindIndex(x => x == Enum.GetName(typeof(eCompany),Config.Company)); } }
 
         public Settings()
         {

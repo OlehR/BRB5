@@ -121,6 +121,7 @@
 
                     <Picker Title="Компанія"           
                         ItemsSource="{Binding ListCompany}"
+                        SelectedIndex="{Binding SelectedCompany}"
                         HorizontalOptions="Fill" />
 
                     <Button Text="Зген."
