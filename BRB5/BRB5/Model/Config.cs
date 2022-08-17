@@ -28,6 +28,9 @@ namespace BRB5.Model
         public static string SN;
         public static int Ver;
         public static bool IsAutoLogin = false;
+        public static bool IsVibration = false;
+        public static bool IsSound = false;
+        public static bool IsTest = true;
         public static bool IsLoginCO = true;
         public static eLoginServer LoginServer = eLoginServer.Bitrix;
         public static string Login { get; set; } = "LOX";

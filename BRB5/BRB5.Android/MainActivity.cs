@@ -33,8 +33,8 @@ namespace BRB5.Droid
 
             //db.SetConfig<eCompany>("Company", eCompany.Sim23);
             db.SetConfig<eCompany>("Company", eCompany.VPSU);
-            db.SetConfig<string>("ApiUrl1", "http://api.spar.uz.ua/znp/");
-            db.SetConfig<string>("ApiUrl2", "http://api.spar.uz.ua/print/");
+            db.SetConfig<string>("ApiUrl1", "http://api.spar.uz.ua/znp/"); //723 http://93.183.216.37:80/dev1/hs/TSD/
+            db.SetConfig<string>("ApiUrl2", "http://api.spar.uz.ua/print/"); //723 "http://93.183.216.37/TK/hs/TSD/;http://37.53.84.148/TK/hs/TSD/"
             db.SetConfig<string>("ApiUrl3", "https://bitrix.sim23.ua/rest/233/ax02yr7l9hia35vj/");
             
             //db.SetConfig<string>("ApiUrl1", "http://znp.vopak.local/api/api_v1_utf8.php");
