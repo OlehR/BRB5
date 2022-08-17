@@ -95,6 +95,11 @@ namespace BRB5.View
         private void OnClickIP(object sender, EventArgs e)
         {
 
-        }     
+        }
+
+        private void OnClickSave(object sender, EventArgs e)
+        {
+
+        }
     }
 }
