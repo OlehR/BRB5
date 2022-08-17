@@ -18,7 +18,9 @@
                 </Grid>
 
                 <Picker Title="Торговий зал"        
-                        ItemsSource="{Binding }"
+                        ItemsSource="{Binding ListWarehouse}"
+                        ItemDisplayBinding="{Binding Name}"
+                        SelectedIndex="{Binding CodeWarehouse}"
                         HorizontalOptions="Fill"/>
 
                 <Picker Title="Принтер"           
@@ -42,10 +44,9 @@
                         HorizontalOptions="Fill"
                         Clicked="OnClickLoadDoc" />
                 </Grid>
-                
-                <Picker Title=""           
-                        ItemsSource="{Binding }"
-                        ItemDisplayBinding="{Binding }"
+
+                <Picker Title="Рівень логування"             
+                        ItemsSource="{Binding ListTypeLog}"
                         HorizontalOptions="Fill" />
                 
                 <Grid>

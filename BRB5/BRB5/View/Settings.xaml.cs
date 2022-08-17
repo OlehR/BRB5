@@ -1,11 +1,12 @@
-﻿using System;
+﻿using BRB5.Model;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
-
+using Utils;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
@@ -36,6 +37,12 @@ namespace BRB5.View
         }
 
         public List<string> ListCompany { get { return Enum.GetNames(typeof(eCompany)).ToList(); } }
+        public List<string> ListTypeLog { get { return Enum.GetNames(typeof(eTypeLog)).ToList(); } }
+
+        DB db = DB.GetDB();
+        public List<Warehouse> ListWarehouse { get { return db.GetWarehouse().ToList(); } }        
+
+        public int CodeWarehouse { get { return ListWarehouse.FindIndex(x => x.Code == Config.CodeWarehouse) ; } }
 
 
         public Settings()
