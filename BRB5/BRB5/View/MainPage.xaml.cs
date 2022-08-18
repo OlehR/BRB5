@@ -12,6 +12,7 @@ using BRB5.Model;
 using BRB5.View;
 using Xamarin.Essentials;
 using System.Threading;
+using Utils;
 
 namespace BRB5
 {
@@ -88,25 +89,30 @@ namespace BRB5
         void Init()
         {
             Config.IsAutoLogin = db.GetConfig<bool>("IsAutoLogin");
+            Login = db.GetConfig<string>("Login");
+            if (Config.IsAutoLogin)
+            {
+                Password = db.GetConfig<string>("Password");
+            }
+
             Config.IsVibration = db.GetConfig<bool>("IsVibration");
             Config.IsSound = db.GetConfig<bool>("IsSound");
             Config.IsTest = db.GetConfig<bool>("IsTest");
             Config.ApiUrl1 = db.GetConfig<string>("ApiUrl1");
             Config.ApiUrl2 = db.GetConfig<string>("ApiUrl2");
             Config.ApiUrl3 = db.GetConfig<string>("ApiUrl3");
-            Login = db.GetConfig<string>("Login");
-            if (Config.IsAutoLogin)
-            {
-                Password = db.GetConfig<string>("Password");
-            }
-             /*var Wh = GetCurrentLocation().Result;
-            var FWh = Wh.First();
-            if (FWh.Distance>0 && FWh.Distance<0.032)
-            {
-                //Знайшли текучий магазин
-            }
-            else //вибір вручну магазина.
-            { }*/
+            Config.CodeWarehouse = db.GetConfig<int>("CodeWarehouse");
+            Config.Company = db.GetConfig<eCompany>("Company");
+            Config.TypeUsePrinter = db.GetConfig<eTypeUsePrinter>("TypeUsePrinter");
+            FileLogger.TypeLog = db.GetConfig<eTypeLog>("TypeLog");
+            /*var Wh = GetCurrentLocation().Result;
+           var FWh = Wh.First();
+           if (FWh.Distance>0 && FWh.Distance<0.032)
+           {
+               //Знайшли текучий магазин
+           }
+           else //вибір вручну магазина.
+           { }*/
 
         }
 

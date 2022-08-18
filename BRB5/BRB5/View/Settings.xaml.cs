@@ -43,20 +43,20 @@ namespace BRB5.View
 
         public List<Warehouse> ListWarehouse { get { return db.GetWarehouse().ToList(); } }        
 
-        public int CodeWarehouse { get { return ListWarehouse.FindIndex(x => x.Code == Config.CodeWarehouse) ; } }
+        public int SelectedWarehouse { get { return ListWarehouse.FindIndex(x => x.Code == Config.CodeWarehouse) ; } set { Config.CodeWarehouse = ListWarehouse[value].Code; } }
 
-        public int SelectedCompany { get { return ListCompany.FindIndex(x => x == Enum.GetName(typeof(eCompany),Config.Company)); } }
-        public int SelectedTypePrinter { get { return Enum.GetNames(typeof(eTypeUsePrinter)).ToList().FindIndex(x => x == Enum.GetName(typeof(eTypeUsePrinter), Config.TypeUsePrinter)); } }
-        public int SelectedTypeLog { get { return ListTypeLog.FindIndex(x => x == Enum.GetName(typeof(eTypeLog), FileLogger.TypeLog)); } }
+        public int SelectedCompany { get { return ListCompany.FindIndex(x => x == Enum.GetName(typeof(eCompany),Config.Company)); } set { Config.Company = (eCompany)value; } }
+        public int SelectedTypePrinter { get { return Enum.GetNames(typeof(eTypeUsePrinter)).ToList().FindIndex(x => x == Enum.GetName(typeof(eTypeUsePrinter), Config.TypeUsePrinter)); } set { Config.TypeUsePrinter = (eTypeUsePrinter)value; } }
+        public int SelectedTypeLog { get { return ListTypeLog.FindIndex(x => x == Enum.GetName(typeof(eTypeLog), FileLogger.TypeLog)); } set { FileLogger.TypeLog = (eTypeLog)value; } }
 
-        public bool IsAutoLogin { get { return Config.IsAutoLogin; } }
-        public bool IsVibration { get { return Config.IsVibration; } }
-        public bool IsSound { get { return Config.IsSound; } }
-        public bool IsTest { get { return Config.IsTest; } }
+        public bool IsAutoLogin { get { return Config.IsAutoLogin; } set { Config.IsAutoLogin = value; } }
+        public bool IsVibration { get { return Config.IsVibration; } set { Config.IsVibration = value; } }
+        public bool IsSound { get { return Config.IsSound; } set { Config.IsSound = value; } }
+        public bool IsTest { get { return Config.IsTest; } set { Config.IsTest = value; } }
 
-        public string ApiUrl1 { get { return Config.ApiUrl1; } }
-        public string ApiUrl2 { get { return Config.ApiUrl2; } }
-        public string ApiUrl3 { get { return Config.ApiUrl3; } }
+        public string ApiUrl1 { get { return Config.ApiUrl1; } set { Config.ApiUrl1 = value; } }
+        public string ApiUrl2 { get { return Config.ApiUrl2; } set { Config.ApiUrl2 = value; } }
+        public string ApiUrl3 { get { return Config.ApiUrl3; } set { Config.ApiUrl3 = value; } }
 
         public Settings()
         {
@@ -100,6 +100,20 @@ namespace BRB5.View
         private void OnClickSave(object sender, EventArgs e)
         {
 
+            db.SetConfig<bool>("IsAutoLogin", IsAutoLogin);
+            db.SetConfig<bool>("IsVibration", IsVibration);
+            db.SetConfig<bool>("IsSound", Config.IsSound);
+            db.SetConfig<bool>("IsTest", IsTest);
+
+            db.SetConfig<string>("ApiUrl1", ApiUrl1);
+            db.SetConfig<string>("ApiUrl2", ApiUrl2);
+            db.SetConfig<string>("ApiUrl3", ApiUrl3);
+
+            db.SetConfig<eCompany>("Company", (eCompany)SelectedCompany);
+            db.SetConfig<eTypeLog>("TypeLog", (eTypeLog)SelectedTypeLog);
+            db.SetConfig<eTypeUsePrinter>("TypeUsePrinter", (eTypeUsePrinter)SelectedTypePrinter);
+
+            db.SetConfig<int>("CodeWarehouse", ListWarehouse[SelectedWarehouse].Code);
         }
     }
 }

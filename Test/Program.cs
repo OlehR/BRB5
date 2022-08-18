@@ -70,7 +70,7 @@ namespace Test
 
 
                 Config.Ver = 5000;
-                Config.CodeWarehouse = 9;
+                //Config.CodeWarehouse = 9;
                 Config.SN = "xxxx";
                 Config.Login = "nov";
                 Config.Password = "123";

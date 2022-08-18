@@ -20,7 +20,7 @@
                 <Picker Title="Торговий зал"        
                         ItemsSource="{Binding ListWarehouse}"
                         ItemDisplayBinding="{Binding Name}"
-                        SelectedIndex="{Binding CodeWarehouse}"
+                        SelectedIndex="{Binding SelectedWarehouse}"
                         HorizontalOptions="Fill"/>
 
                 <Picker Title="Принтер"           
