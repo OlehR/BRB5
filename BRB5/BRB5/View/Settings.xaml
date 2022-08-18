@@ -141,7 +141,7 @@
 
                 <Entry Text="{Binding ApiUrl2}" />
 
-                <Entry Text="{Binding ApiUrl3}" />
+                <Entry Text="{Binding ApiUrl3}" IsVisible="{Binding IsVisApi3}"/>
 
                 <Grid>
                     <Grid.ColumnDefinitions>
