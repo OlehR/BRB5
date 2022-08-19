@@ -17,7 +17,7 @@ namespace BRB5.Droid
     [Activity(Label = "BRB5", Icon = "@mipmap/icon", Theme = "@style/MainTheme", MainLauncher = true, ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation | ConfigChanges.UiMode | ConfigChanges.ScreenLayout | ConfigChanges.SmallestScreenSize)]
     public class MainActivity : global::Xamarin.Forms.Platform.Android.FormsAppCompatActivity
     {
-
+        //public static string SerialNumber = "None";
         protected override void OnCreate(Bundle savedInstanceState)
         {
             base.OnCreate(savedInstanceState);
@@ -58,8 +58,8 @@ namespace BRB5.Droid
 
 
             //Utils Util = Utils.GetInstance();
-            Config.Company = db.GetConfig<eCompany>("Company");
-            Config.CodeWarehouse = db.GetConfig<int>("CodeWarehouse");
+            //Config.Company = db.GetConfig<eCompany>("Company");
+            //Config.CodeWarehouse = db.GetConfig<int>("CodeWarehouse");
             //         if ( LoadAPK($"https://github.com/OlehR/BRB5/raw/master/Apk/{Config.Company}/", "ua.UniCS.TM.brb5.apk", null, VerCode))
             //             InstallAPK(Path.Combine(Config.PathDownloads, "ua.UniCS.TM.brb5.apk"));
 
@@ -67,6 +67,7 @@ namespace BRB5.Droid
             ZXing.Net.Mobile.Forms.Android.Platform.Init();
             global::Xamarin.Forms.Forms.Init(this, savedInstanceState);
             global::ZXing.Net.Mobile.Forms.Android.Platform.Init();
+            Config.SN = GetDeviceId();
             LoadApplication(new App());
         }
         public override void OnRequestPermissionsResult(int requestCode, string[] permissions, [GeneratedEnum] Android.Content.PM.Permission[] grantResults)
@@ -103,6 +104,27 @@ namespace BRB5.Droid
                 e = e.InnerException;
             }
         }
+
+
+        public string GetDeviceId()
+        {
+
+            string deviceID = Android.OS.Build.Serial?.ToString();
+
+            if (string.IsNullOrEmpty(deviceID) || deviceID.ToUpper() == "UNKNOWN") // Android 9 returns "Unknown"
+            {
+
+                //ContentResolver myContentResolver = MainActivity.myContentResolver;
+
+                deviceID = Android.Provider.Settings.Secure.GetString(ContentResolver, Android.Provider.Settings.Secure.AndroidId);
+
+            }
+
+
+            return deviceID;
+
+        }
+
         public int VerCode
         {
             get

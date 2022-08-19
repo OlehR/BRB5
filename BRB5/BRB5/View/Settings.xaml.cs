@@ -18,9 +18,9 @@ namespace BRB5.View
     {
 
         DB db = DB.GetDB();
-        public string Ver { get { return "Ver:"+ Assembly.GetExecutingAssembly().GetName().Version; } }
-
-        public string SN { get { return "SN:"; } }
+        //public string Ver { get { return "Ver:"+ Assembly.GetExecutingAssembly().GetName().Version; } }
+        public string Ver { get { return "Ver:" + AppInfo.VersionString; } }
+        public string SN { get { return "SN:"+ Config.SN; } }
 
         public List<string> ListTypeUsePrinter
         {
