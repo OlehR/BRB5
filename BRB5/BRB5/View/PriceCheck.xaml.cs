@@ -99,10 +99,9 @@ namespace BRB5
                 );
             NumberOfReplenishment.Unfocused += (object sender, FocusEventArgs e) =>
             {
-                var d = Convert.ToDecimal(((Entry)sender).Text);
-                db.UpdateReplenishment(LineNumber, d);
-               // if (!e.IsFocused)                
-               //    ((Entry)sender).Focus();
+                decimal d;
+                if (decimal.TryParse(((Entry)sender).Text, out d))
+                    db.UpdateReplenishment(LineNumber, d);
             };
 
             Config.OnProgress += (pProgress)=>{ PB = pProgress; };
