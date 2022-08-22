@@ -40,7 +40,7 @@ namespace BRB5.Connector
         //Логін
         public virtual Result Login(string pLogin, string pPassWord, eLoginServer pLoginServer) { throw new NotImplementedException(); }
         //Завантаження довідників.
-        public virtual Result LoadGuidData(bool IsFull, ObservableInt pProgress) { throw new NotImplementedException(); }
+        public virtual Result LoadGuidData(bool IsFull) { throw new NotImplementedException(); }
 
         //Робота з документами.
         /// <summary>
@@ -51,7 +51,7 @@ namespace BRB5.Connector
         /// <param name="pProgress"></param>
         /// <param name="pIsClear"></param>
         /// <returns></returns>
-        public virtual Result LoadDocsData(int pTypeDoc, string pNumberDoc, ObservableInt pProgress, bool pIsClear) { throw new NotImplementedException(); }
+        public virtual Result LoadDocsData(int pTypeDoc, string pNumberDoc, bool pIsClear) { throw new NotImplementedException(); }
 
 
         /// <summary>

@@ -157,7 +157,7 @@ namespace BRB5.Connector
             return new Result(res);
         }
 
-        public override Result LoadDocsData(int pTypeDoc, string pNumberDoc, ObservableInt pProgress, bool pIsClear)
+        public override Result LoadDocsData(int pTypeDoc, string pNumberDoc,  bool pIsClear)
         {
             var Res = new Result();
             if (pTypeDoc == 11)
@@ -240,7 +240,7 @@ namespace BRB5.Connector
                 }
 
                 if (pTypeDoc == -1)
-                    LoadGuidData((pTypeDoc == -1), pProgress);
+                    LoadGuidData((pTypeDoc == -1));
 
                 Config.OnProgress?.Invoke(5);
                 HttpResult result;

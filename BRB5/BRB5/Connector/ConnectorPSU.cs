@@ -250,15 +250,17 @@ namespace BRB5.Connector
         /// <returns></returns>
         public override IEnumerable<TypeDoc> GetTypeDoc(eRole pRole)
         {
-            var Res = new List<TypeDoc>()
-            { new TypeDoc() { CodeDoc = 0, KindDoc = eKindDoc.PriceCheck, NameDoc = "Прайсчекер" },
-                                         new TypeDoc() { CodeDoc = 11, KindDoc = eKindDoc.Raiting, NameDoc = "Опитування" }, };
+            var Res = new List<TypeDoc>(){ 
+                                        new TypeDoc() { CodeDoc = 0, KindDoc = eKindDoc.PriceCheck, NameDoc = "Прайсчекер" },
+                                        new TypeDoc() { CodeDoc = 11, KindDoc = eKindDoc.Raiting, NameDoc = "Опитування" },
+                                        new TypeDoc() { CodeDoc = 1, KindDoc = eKindDoc.Normal, NameDoc = "Ревізія" },
+            };
             return Res;
         }
 
-        public override Result LoadGuidData(bool IsFull, ObservableInt pProgress)
+        public override Result LoadGuidData(bool IsFull)
         {
-            return LoadDocsData(-1, null, null, true);
+            return LoadDocsData(-1, null,  true);
         }
 
         /// <summary>
@@ -269,7 +271,7 @@ namespace BRB5.Connector
         /// <param name="pProgress"></param>
         /// <param name="pIsClear"></param>
         /// <returns></returns>
-        public override Result LoadDocsData(int pTypeDoc, string pNumberDoc, ObservableInt pProgress, bool pIsClear) 
+        public override Result LoadDocsData(int pTypeDoc, string pNumberDoc, bool pIsClear) 
         {
             string data = JsonConvert.SerializeObject(new ApiDoc() { CodeData = 150, TypeDoc = pTypeDoc });
             HttpResult result = Http.HTTPRequest(0, "", data, "application/json");//
