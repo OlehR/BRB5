@@ -26,7 +26,19 @@
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Update="View\DocItem.xaml">
+    <Compile Update="View\DocStandart.xaml.cs">
+      <DependentUpon>DocStandart.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="View\DocsStandart.xaml.cs">
+      <DependentUpon>DocsStandart.xaml</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="View\DocStandart.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="View\DocsStandart.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
     <EmbeddedResource Update="View\Docs.xaml">

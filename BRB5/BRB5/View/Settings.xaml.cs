@@ -126,15 +126,14 @@ namespace BRB5.View
             db.SetConfig<bool>("IsSound", IsSound);
             db.SetConfig<bool>("IsTest", IsTest);
 
-            db.SetConfig<string>("ApiUrl1", ApiUrl1);
-            db.SetConfig<string>("ApiUrl2", ApiUrl2);
-            db.SetConfig<string>("ApiUrl3", ApiUrl3);
+            db.SetConfig<string>("ApiUrl1", ApiUrl1 ?? "");
+            db.SetConfig<string>("ApiUrl2", ApiUrl2 ?? "");
+            db.SetConfig<string>("ApiUrl3", ApiUrl3 ?? "");
 
             db.SetConfig<eCompany>("Company", (eCompany)SelectedCompany);
             db.SetConfig<eTypeLog>("TypeLog", (eTypeLog)SelectedTypeLog);
             db.SetConfig<eTypeUsePrinter>("TypeUsePrinter", (eTypeUsePrinter)SelectedTypePrinter);
-
-            db.SetConfig<int>("CodeWarehouse", ListWarehouse[SelectedWarehouse].Code);
+            if(SelectedWarehouse>0) db.SetConfig<int>("CodeWarehouse", ListWarehouse[SelectedWarehouse].Code);
         }
     }
 }

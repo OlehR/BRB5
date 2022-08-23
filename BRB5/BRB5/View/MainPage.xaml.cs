@@ -28,7 +28,7 @@ namespace BRB5
         public MainPage()
         {
             OCTypeDoc = new ObservableCollection<TypeDoc>();
-            c = BRB5.Connector.Connector.GetInstance();
+            c = Connector.Connector.GetInstance();
             InitializeComponent();            
             Init();
             BindingContext = this;
@@ -75,7 +75,7 @@ namespace BRB5
                     break;
                 case eKindDoc.Normal:
                 case eKindDoc.Simple:
-                    await Navigation.PushAsync(new DocItem(vTypeDoc.CodeDoc));
+                    await Navigation.PushAsync(new DocsStandart(vTypeDoc.CodeDoc));
                     break;
                 case eKindDoc.Raiting:
                     await Navigation.PushAsync(new Docs(vTypeDoc.CodeDoc));

@@ -1,0 +1,28 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="BRB5.View.DocStandart">
+    <ContentPage.Content>
+        <StackLayout>
+            <ListView ItemsSource="{Binding }" >
+                <ListView.Header>
+                    <StackLayout >
+                    </StackLayout>
+                </ListView.Header>
+                <ListView.ItemTemplate>
+                    <DataTemplate xmlns:brb5="clr-namespace:BRB5" x:DataType="brb5:Doc">
+                        <ViewCell>
+                            <ViewCell.View  >
+                                <StackLayout>
+                                   
+
+                                </StackLayout>
+                            </ViewCell.View>
+                        </ViewCell>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>

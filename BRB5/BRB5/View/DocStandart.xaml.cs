@@ -10,9 +10,9 @@ using Xamarin.Forms.Xaml;
 namespace BRB5.View
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
-    public partial class DocItem : ContentPage
+    public partial class DocStandart : ContentPage
     {
-        public DocItem(int pTypeDoc = -1)
+        public DocStandart()
         {
             InitializeComponent();
         }

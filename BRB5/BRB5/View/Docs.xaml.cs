@@ -25,7 +25,7 @@ namespace BRB5
             c = BRB5.Connector.Connector.GetInstance();
             InitializeComponent();
             Routing.RegisterRoute(nameof(Item), typeof(Item));
-            c.LoadDocsData(11, null, null, false);
+            c.LoadDocsData(11, null, false);
 
             MyDoc =/* new ObservableCollection<Doc>() { 
                  new Doc() { TypeDoc = 11, NumberDoc = "1", DateDoc = DateTime.Now.Date.ToString("yyyy-MM-dd"), NameUser = "Рутковський О", Description = "ТЗ 1001" } 
