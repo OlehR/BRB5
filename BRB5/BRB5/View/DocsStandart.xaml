@@ -58,6 +58,55 @@
                 </ListView.ItemTemplate>
             </ListView>
 
+            <StackLayout VerticalOptions="EndAndExpand" Orientation="Horizontal">
+
+
+                <Label Text="8-" 
+                           VerticalOptions="Center"
+                           FontSize="16"
+                           Grid.Column="2" 
+                           TextColor = "#ff5c5c" />
+                <Label Text="↑"
+                           FontSize="18"
+                           Grid.Column="3" 
+                           TextColor="#816f20" >
+                </Label>
+                <Label Text="2-" FontSize="16" 
+                           TextColor = "#ff5c5c"
+                           Grid.Column="4"
+                           VerticalOptions="Center"  />
+                <Label Text="↓" 
+                           FontSize="18" 
+                       
+                           Grid.Column="5"
+                           TextColor="#816f20"  >
+                </Label>
+                <Label Text="ENT-" 
+                           FontSize="16"
+                           Grid.Column="6" 
+                           TextColor = "#ff5c5c"
+                           VerticalOptions="Center" />
+                <Label Text="вибір" 
+                           FontSize="18"
+                           Grid.Column="7"
+                           TextColor="#816f20"  >                    
+                </Label>
+
+                <Label Text="F3-" 
+                           FontSize="16"
+                           Grid.Column="6" 
+                           TextColor = "#ff5c5c"
+                           VerticalOptions="Center" />
+                <Label Text="Скан" 
+                           FontSize="18"
+                           Grid.Column="7"
+                           TextColor="#816f20"  >
+                    <Label.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding F3Scan}" />
+                    </Label.GestureRecognizers>
+                </Label>
+
+            </StackLayout>
         </StackLayout>
     </ContentPage.Content>
 </ContentPage>

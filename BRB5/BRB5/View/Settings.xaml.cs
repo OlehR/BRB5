@@ -16,7 +16,7 @@ namespace BRB5.View
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class Settings : TabbedPage, INotifyPropertyChanged
     {
-
+        private Connector.Connector c;
         DB db = DB.GetDB();
         //public string Ver { get { return "Ver:"+ Assembly.GetExecutingAssembly().GetName().Version; } }
         public string Ver { get { return "Ver:" + AppInfo.VersionString; } }
@@ -60,7 +60,8 @@ namespace BRB5.View
         {
             InitializeComponent();
 
-            
+
+            c = Connector.Connector.GetInstance();
 
             this.BindingContext = this;
         }
@@ -68,11 +69,13 @@ namespace BRB5.View
         private void OnClickLoad(object sender, EventArgs e)
         {
 
+            c.LoadGuidData(true);
         }
 
         private void OnClickLoadDoc(object sender, EventArgs e)
         {
 
+            c.LoadDocsData(0, null, false);
         }
 
         private void OnCopyDB(object sender, EventArgs e)
