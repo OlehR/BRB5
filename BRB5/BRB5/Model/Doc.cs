@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+//using System.Drawing;
 using System.Text;
+using Xamarin.Forms;
 
 namespace BRB5
 {
@@ -74,6 +76,7 @@ namespace BRB5
         /// Колір відображення документа
         /// </summary>
         public int Color { get; set; }
+        public Color GetColor { get { return new Color(Color); } }
 
         //public int isClose; //0- не закривати, 1 - закривати.
         public Doc() { }

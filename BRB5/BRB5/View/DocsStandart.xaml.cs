@@ -14,7 +14,7 @@ namespace BRB5.View
     public partial class DocsStandart : ContentPage
     {
         private Connector.Connector c;
-        public string col { get; set; } = "#ffffff";
+
         public ObservableCollection<Doc> MyDocsR { get; set; }
 
         public ICommand F3Scan => new Command(OnF3Scan);
