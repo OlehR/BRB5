@@ -24,7 +24,9 @@ namespace BRB5
         DB db = DB.GetDB();
         Utils u = Utils.GetUtils();
         public string Login { get; set; }
-        public string Password { get; set; }        
+        public string Password { get; set; }
+        public IEnumerable<LoginServer> LS { get; set; }
+        
         public MainPage()
         {
             OCTypeDoc = new ObservableCollection<TypeDoc>();
@@ -40,12 +42,14 @@ namespace BRB5
             if (r.State == 0)
             {
                 db.SetConfig<string>("Login", Login);
-                db.SetConfig<bool>("IsAutoLogin", true);
+                //db.SetConfig<bool>("IsAutoLogin", true);
                 db.SetConfig<string>("Password", Password);
+                db.SetConfig<eLoginServer>("LoginServer", Config.LoginServer);
                 Config.Login = Login;
                 Config.Password = Password;
                 SLLogin.IsVisible = false;
                 ListDocs.IsVisible = true;
+                //eLoginServer LoginServer;
 
                 OCTypeDoc.Clear();
                 foreach (var i in c.GetTypeDoc(Config.Role)) OCTypeDoc.Add(i);
@@ -94,6 +98,12 @@ namespace BRB5
             {
                 Password = db.GetConfig<string>("Password");
             }
+            Config.LoginServer=db.GetConfig<eLoginServer>("LoginServer");
+
+            LS = c.LoginServer();
+            if(LS==null && LS.Count()==1)
+                Config.LoginServer= LS.First().Code;
+
 
             Config.IsVibration = db.GetConfig<bool>("IsVibration");
             Config.IsSound = db.GetConfig<bool>("IsSound");

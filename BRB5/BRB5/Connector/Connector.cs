@@ -111,6 +111,12 @@ namespace BRB5.Connector
 
         public virtual IEnumerable<Warehouse> LoadWarehouse() { throw new NotImplementedException(); }
 
-        
+        public virtual IEnumerable<LoginServer> LoginServer() { throw new NotImplementedException(); }
+    }
+
+    public class LoginServer
+    {
+        public eLoginServer Code { get;set;}   
+        public string Name { get;set;}
     }
 }

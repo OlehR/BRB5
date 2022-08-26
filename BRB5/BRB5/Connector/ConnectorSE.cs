@@ -37,6 +37,13 @@ namespace BRB5.Connector
         }
 
         BL bl = BL.GetBL();
+        public override IEnumerable<LoginServer> LoginServer()
+        {
+            return new List<LoginServer>()
+            {new  LoginServer (){Code=eLoginServer.Local,Name = "Магазин"},
+                new  LoginServer (){Code=eLoginServer.Central,Name = "ЦБ"},
+             new  LoginServer (){Code=eLoginServer.Bitrix,Name = "Бітрікс"}};//
+        }
         public override Result Login(string pLogin, string pPassWord, eLoginServer pLoginServer)
         {
             Result Res = new Result();

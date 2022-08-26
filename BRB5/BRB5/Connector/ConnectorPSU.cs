@@ -91,6 +91,8 @@ namespace BRB5.Connector
 
     public class ConnectorPSU : Connector
     {
+        public override IEnumerable<LoginServer> LoginServer() { return new List<LoginServer>()
+            {new  LoginServer (){Code=eLoginServer.Central,Name = "ЦБ"}}; }
         public override Result Login(string pLogin, string pPassWord, eLoginServer pLoginServer)
         {
             string data = JsonConvert.SerializeObject(new Api() { CodeData = 1, Login = pLogin, PassWord = pPassWord }); //"{\"CodeData\": \"1\"" + ", \"Login\": \"" + pLogin + "\"" + ", \"PassWord\": \"" + pPassWord + "\"}";

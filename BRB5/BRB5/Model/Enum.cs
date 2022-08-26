@@ -16,6 +16,7 @@ namespace BRB5
 
     public enum eLoginServer
     {
+        NotDefined = -1,
         Local = 0,
         Central = 1,
         Bitrix = 2,
