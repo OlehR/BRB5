@@ -32,7 +32,7 @@ namespace BRB5.Model
         public static string ApiUrl3 { get; set; }
 
         public static string SN;
-        public static int Ver;
+        public static int Ver { get { return int.Parse(AppInfo.VersionString.Replace(".", "")); } }
         public static bool IsAutoLogin { get; set; } = false;
         public static bool IsVibration { get; set; } = false;
         public static bool IsSound { get; set; } = false;

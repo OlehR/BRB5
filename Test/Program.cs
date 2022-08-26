@@ -69,14 +69,14 @@ namespace Test
                 db.SetConfig<string>("ApiUrl3", "https://bitrix.sim23.ua/rest/233/ax02yr7l9hia35vj/");
 
 
-                Config.Ver = 5000;
+                //Config.Ver = 5000;
                 //Config.CodeWarehouse = 9;
                 Config.SN = "xxxx";
                 Config.Login = "nov";
                 Config.Password = "123";
 
-                var C = Connector.GetInstance();
-                C.LoadDocsData(11, null, null, false);
+                //var C = Connector.GetInstance();
+                //C.LoadDocsData(11, null, null, false);
 
             }
             catch(Exception e)
