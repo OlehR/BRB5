@@ -76,7 +76,7 @@ namespace BRB5
         /// Колір відображення документа
         /// </summary>
         public int Color { get; set; }
-        public Color GetColor { get { return new Color(Color); } }
+        public Color GetColor { get { return Color == 0?new Color(0xdcdcdc) : new Color(Color); } }
 
         //public int isClose; //0- не закривати, 1 - закривати.
         public Doc() { }

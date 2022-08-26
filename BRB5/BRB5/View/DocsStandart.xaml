@@ -9,7 +9,10 @@
                 <ListView.ItemTemplate>
                     <DataTemplate >
                         <ViewCell  >
-                            <StackLayout > 
+                            <StackLayout BackgroundColor="{Binding GetColor}" >
+                                <StackLayout.GestureRecognizers>
+                                    <TapGestureRecognizer Tapped="OpenDoc" />
+                                </StackLayout.GestureRecognizers>
                                 <Grid VerticalOptions="FillAndExpand">
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="1*" />

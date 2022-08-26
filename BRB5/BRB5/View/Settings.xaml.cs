@@ -136,7 +136,7 @@ namespace BRB5.View
             db.SetConfig<eCompany>("Company", (eCompany)SelectedCompany);
             db.SetConfig<eTypeLog>("TypeLog", (eTypeLog)SelectedTypeLog);
             db.SetConfig<eTypeUsePrinter>("TypeUsePrinter", (eTypeUsePrinter)SelectedTypePrinter);
-            if(SelectedWarehouse>0) db.SetConfig<int>("CodeWarehouse", ListWarehouse[SelectedWarehouse].Code);
+            if(SelectedWarehouse>-1) db.SetConfig<int>("CodeWarehouse", ListWarehouse[SelectedWarehouse].Code);
         }
     }
 }

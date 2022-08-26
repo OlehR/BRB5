@@ -34,5 +34,10 @@ namespace BRB5.View
         {
             await Navigation.PushAsync(new Scan());
         }
+
+        private async void OpenDoc(object sender, EventArgs e)
+        {
+            await Navigation.PushAsync(new DocStandart());
+        }
     }
 }
