@@ -18,6 +18,12 @@
             <Label Text="BRB5"
                 VerticalOptions="CenterAndExpand" 
                 HorizontalOptions="CenterAndExpand" />
+            <Picker  Title="сервер"        
+                     ItemsSource="{Binding LS}"
+                     IsVisible="{Binding IsVisLS}"
+                     ItemDisplayBinding="{Binding Name}"
+                     SelectedIndex="{Binding SelectedLS}"
+                     HorizontalOptions="Fill"/>
             <Entry x:Name="loginEntry" Text="{Binding Login}" />
             <!--TextChanged="loginEntry_TextChanged"-->
             <Entry x:Name="passwordEntry" Text="{Binding Password}"  Placeholder = "Password" IsPassword ="True" />

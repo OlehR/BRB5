@@ -26,7 +26,9 @@ namespace BRB5
         public string Login { get; set; }
         public string Password { get; set; }
         public IEnumerable<LoginServer> LS { get; set; }
-        
+
+        public int SelectedLS { get { return LS.Count()==1? 0 : LS.ToList().FindIndex(x => x.Code == Config.LoginServer); } set { Config.LoginServer = LS.ToList()[value].Code; } }
+        public bool IsVisLS { get; set; } = true;
         public MainPage()
         {
             OCTypeDoc = new ObservableCollection<TypeDoc>();
@@ -101,8 +103,11 @@ namespace BRB5
             Config.LoginServer=db.GetConfig<eLoginServer>("LoginServer");
 
             LS = c.LoginServer();
-            if(LS==null && LS.Count()==1)
-                Config.LoginServer= LS.First().Code;
+            if(LS==null || LS.Count() == 1)
+            {
+                IsVisLS = false;
+                Config.LoginServer = LS.First().Code;
+            }
 
 
             Config.IsVibration = db.GetConfig<bool>("IsVibration");
