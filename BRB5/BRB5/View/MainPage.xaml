@@ -6,8 +6,11 @@
              >
     <NavigationPage.TitleView>
         <Grid>
-            <Label Text="{Binding }" />
-            <Label Text="{Binding }" />
+            <Label  Text="{Binding Ver}" 
+                    VerticalOptions="Center"/>
+            <Label HorizontalOptions="Center"
+                Text="{Binding Company}" 
+                FontSize="28" />
         </Grid>
     </NavigationPage.TitleView>
     <ContentPage.ToolbarItems>
@@ -21,9 +24,7 @@
     </ContentPage.ToolbarItems>
     <StackLayout>
         <StackLayout x:Name="SLLogin">
-            <Label Text="BRB5"
-                VerticalOptions="CenterAndExpand" 
-                HorizontalOptions="CenterAndExpand" />
+            
             <Picker  Title="сервер"        
                      ItemsSource="{Binding LS}"
                      IsVisible="{Binding IsVisLS}"
