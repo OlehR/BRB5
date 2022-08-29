@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BRB5.Model;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -13,7 +14,7 @@ namespace BRB5.View
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class DocStandart : ContentPage
     {
-        public ObservableCollection<Doc> MyDoc { get; set; }
+        public ObservableCollection<DocWaresEx> MyDocWares { get; set; }
         public ICommand F2Save => new Command(OnF2Save);
         public ICommand F3Scan => new Command(OnF3Scan);
         public ICommand F4WrOff => new Command(OnF4WrOff);
@@ -23,7 +24,9 @@ namespace BRB5.View
             DB db = DB.GetDB();
             InitializeComponent();
 
-            MyDoc = new ObservableCollection<Doc>((List<Doc>)db.GetDocWares(pDocId, pTypeResult, pTypeOrder));
+            var r = db.GetDocWares(pDocId, pTypeResult, pTypeOrder);
+            if(r != null)
+                MyDocWares = new ObservableCollection<DocWaresEx>(r);
             this.BindingContext = this;
         }
         private async void OnF2Save()

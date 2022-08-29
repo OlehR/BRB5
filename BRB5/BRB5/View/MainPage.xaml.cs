@@ -55,12 +55,14 @@ namespace BRB5
                 ListDocs.IsVisible = true;
                 //eLoginServer LoginServer;
 
-                OCTypeDoc.Clear();
-                foreach (var i in c.GetTypeDoc(Config.Role, Config.LoginServer)) OCTypeDoc.Add(i);
+                OCTypeDoc?.Clear();
+                Config.TypeDoc = c.GetTypeDoc(Config.Role, Config.LoginServer);
+                //OCTypeDoc = new ObservableCollection<TypeDoc>(Config.TypeDoc);
+                foreach (var i in Config.TypeDoc) OCTypeDoc.Add(i);
 
                 var Wh=c.LoadWarehouse();
                 long SizeDel = 0, SizeUse = 0;
-                //if (Config.Company == eCompany.Sim23)
+                if (Config.Company == eCompany.Sim23)
                 {
                     var a = db.GetDoc(11);
                      (SizeDel, SizeUse) = u.DelDir(Config.PathFiles, a.Select(el=>el.NumberDoc));

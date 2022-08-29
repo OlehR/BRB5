@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text;
 using Xamarin.Essentials;
 
@@ -59,7 +60,11 @@ namespace BRB5.Model
                 { 
                 } return res; } }
 
-        public static DocSetting GetDocSetting(int pTypeDoc) { return null; }
+        public static IEnumerable<TypeDoc> TypeDoc;
+        public static TypeDoc GetDocSetting(int pTypeDoc) {
+            var r = TypeDoc.Where(el => el.CodeDoc == pTypeDoc);
+            if (r.Count() == 1) return r.First();
+            return null; }
         
         
         // public static string GenRaitingFileName(Raiting r);

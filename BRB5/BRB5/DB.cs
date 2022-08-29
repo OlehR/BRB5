@@ -238,7 +238,7 @@ CREATE UNIQUE INDEX UserLogin ON User (Login);
 
         public IEnumerable<DocWaresEx> GetDocWares(DocId pDocId, int pTypeResult, eTypeOrder pTypeOrder)
         {
-            DocSetting DS = Config.GetDocSetting(pDocId.TypeDoc);
+            var DS = Config.GetDocSetting(pDocId.TypeDoc);
             string Sql = "";
             string OrderQuery = pTypeOrder == eTypeOrder.Name? "13 desc,3" :"11 desc,1";            
 
@@ -264,10 +264,13 @@ CREATE UNIQUE INDEX UserLogin ON User (Login);
                         {Color}
                         ,w.codeunit as CodeUnit
                             from Doc d  
-                          join (select dw.typedoc ,dw.numberdoc, dw.codewares, sum(dw.quantity) as quantityinput,max(dw.orderdoc) as orderdoc,sum(quantityold) as quantityold,  sum(case when dw.CODEReason>0 then  dw.quantity else 0 end) as quantityreason  from docwares dw group by dw.typedoc ,dw.numberdoc,codewares) dw1 on (dw1.numberdoc = d.numberdoc and d.typedoc=dw1.typedoc)
-                          Left join wares w on dw1.codewares = w.codewares 
+                          join (select dw.typedoc ,dw.numberdoc, dw.codewares, sum(dw.quantity) as quantityinput,max(dw.orderdoc) as orderdoc,sum(quantityold) as quantityold,  sum(case when dw.CODEReason>0 then  dw.quantity else 0 end) as quantityreason  
+                                        from docwares dw group by dw.typedoc ,dw.numberdoc,codewares) dw1 
+                            on (dw1.numberdoc = d.numberdoc and d.typedoc=dw1.typedoc)
+                          Left join Wares w on dw1.codewares = w.codewares 
                           left join (
-                            select  dws.typedoc ,dws.numberdoc, dws.codewares,dws.name, sum(dws.quantity) as quantity,  min(dws.quantitymin) as quantitymin, max(dws.quantitymax) as quantitymax  from   DOCWARESsample dws   group by dws.typedoc ,dws.numberdoc,dws.codewares,dws.name
+                            select  dws.typedoc ,dws.numberdoc, dws.codewares,dws.name, sum(dws.quantity) as quantity,  min(dws.quantitymin) as quantitymin, max(dws.quantitymax) as quantitymax  
+                                    from   DocWaresSample dws   group by dws.typedoc ,dws.numberdoc,dws.codewares,dws.name
                             ) as dws on d.numberdoc = dws.numberdoc and d.typedoc=dws.typedoc and dws.codewares = dw1.codewares
                           where d.typedoc=@TypeDoc and  d.numberdoc = @NumberDoc
                        union all
@@ -276,10 +279,12 @@ CREATE UNIQUE INDEX UserLogin ON User (Login);
                       , 3 as Ord
                       ,w.codeunit
                           from Doc d  
-                          join DOCWARESsample dws on d.numberdoc = dws.numberdoc and d.typedoc=dws.typedoc --and dws.codewares = w.codewares
-                          left join wares w on dws.codewares = w.codewares 
-                          left join (select dw.typedoc ,dw.numberdoc, dw.codewares, sum(dw.quantity) as quantityinput,sum(dw.quantityold) as quantityold from docwares dw group by dw.typedoc ,dw.numberdoc,codewares) dw1 on (dw1.numberdoc = d.numberdoc and d.typedoc=dw1.typedoc and dw1.codewares = dws.codewares)
-                          where dw1.typedoc is null and d.typedoc=@TypeDoc and  d.numberdoc = @NumberDoc
+                          join DocWaresSample dws on d.numberdoc = dws.numberdoc and d.typedoc=dws.typedoc --and dws.codewares = w.codewares
+                          left join Wares w on dws.codewares = w.codewares 
+                          left join (select dw.typedoc ,dw.numberdoc, dw.codewares, sum(dw.quantity) as quantityinput,sum(dw.quantityold) as quantityold 
+                                        from DocWares dw group by dw.typedoc ,dw.numberdoc,codewares) dw1 
+                                 on (dw1.numberdoc = d.numberdoc and d.typedoc=dw1.typedoc and dw1.codewares = dws.codewares)
+                          where dw1.TypeDoc is null and d.typedoc=@TypeDoc and  d.numberdoc = @NumberDoc
                        order by {OrderQuery}"  ;
 
             if (pTypeResult == 2)
@@ -289,17 +294,19 @@ CREATE UNIQUE INDEX UserLogin ON User (Login);
                         coalesce(d.IsControl,0) as IsControl, coalesce(dw1.quantityold,0) as QuantityOld,dw1.CODEReason as  CodeReason
                         ,0 as Ord,w.codeunit
                             from Doc d 
-                            join docwares dw1 on (dw1.numberdoc = d.numberdoc and d.typedoc=dw1.typedoc)
-                            left join wares w on dw1.codewares = w.codewares 
+                            join DocWares dw1 on (dw1.numberdoc = d.numberdoc and d.typedoc=dw1.typedoc)
+                            left join Wares w on dw1.codewares = w.codewares 
                             left join (
-                            select  dws.typedoc ,dws.numberdoc, dws.codewares,dws.name, sum(dws.quantity) as quantity,  min(dws.quantitymin) as quantitymin, max(dws.quantitymax) as quantitymax  from   DOCWARESsample dws   group by dws.typedoc ,dws.numberdoc,dws.codewares,dws.name
+                            select  dws.typedoc ,dws.numberdoc, dws.codewares,dws.name, sum(dws.quantity) as quantity,  min(dws.quantitymin) as quantitymin, max(dws.quantitymax) as quantitymax  
+                                    from   DocWaresSample dws   group by dws.typedoc ,dws.numberdoc,dws.codewares,dws.name
                             ) as dws on d.numberdoc = dws.numberdoc and d.typedoc=dws.typedoc and dws.codewares = dw1.codewares
                             where d.typedoc=@TypeDoc and  d.numberdoc = @NumberDoc@
                          order by 1,2";
 
             try
             {
-                return db.Execute<DocId,DocWaresEx>(Sql, pDocId);
+                var r= db.Execute<DocId, DocWaresEx>(Sql, pDocId);
+                return r;
             }
             catch (Exception e)
             {

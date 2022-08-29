@@ -224,7 +224,7 @@ namespace BRB5.Connector
             }
             else
             {
-                DocSetting ds = Config.GetDocSetting(pTypeDoc);
+                var ds = Config.GetDocSetting(pTypeDoc);
                 String CodeWarehouse = Config.CodeWarehouse.ToString();
 
                 int CodeApi = 0;
