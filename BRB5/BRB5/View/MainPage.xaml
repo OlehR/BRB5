@@ -4,6 +4,12 @@
              x:Class="BRB5.MainPage"
              NavigationPage.HasNavigationBar="True"
              >
+    <NavigationPage.TitleView>
+        <Grid>
+            <Label Text="{Binding }" />
+            <Label Text="{Binding }" />
+        </Grid>
+    </NavigationPage.TitleView>
     <ContentPage.ToolbarItems>
         <ToolbarItem Text="Налаштування"
                      Order="Secondary"

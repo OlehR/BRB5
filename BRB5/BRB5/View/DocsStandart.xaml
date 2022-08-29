@@ -21,7 +21,7 @@
 
                                     <Label Text="{Binding DateDoc}"/>
 
-                                    <Label Text="{Binding NumberDoc1C}"
+                                    <Label Text="{Binding NumberDoc}"
                                            Grid.Column="1" />
                                 </Grid>
 

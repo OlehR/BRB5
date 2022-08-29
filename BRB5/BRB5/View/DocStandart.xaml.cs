@@ -16,7 +16,7 @@ namespace BRB5.View
         public ICommand F3Scan => new Command(OnF3Scan);
         public ICommand F4WrOff => new Command(OnF4WrOff);
         public ICommand F6Doc => new Command(OnF6Doc);
-        public DocStandart()
+        public DocStandart(string NumberDoc)
         {
             InitializeComponent();
         }
