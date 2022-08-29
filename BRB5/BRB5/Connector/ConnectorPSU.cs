@@ -250,11 +250,11 @@ namespace BRB5.Connector
         /// </summary>
         /// <param name="pRole"></param>
         /// <returns></returns>
-        public override IEnumerable<TypeDoc> GetTypeDoc(eRole pRole)
+        public override IEnumerable<TypeDoc> GetTypeDoc(eRole pRole, eLoginServer pLS)
         {
             var Res = new List<TypeDoc>(){ 
                                         new TypeDoc() { CodeDoc = 0, KindDoc = eKindDoc.PriceCheck, NameDoc = "Прайсчекер" },
-                                        new TypeDoc() { CodeDoc = 11, KindDoc = eKindDoc.Raiting, NameDoc = "Опитування" },
+                                        //new TypeDoc() { CodeDoc = 11, KindDoc = eKindDoc.Raiting, NameDoc = "Опитування" },
                                         new TypeDoc() { CodeDoc = 1, KindDoc = eKindDoc.Normal, NameDoc = "Ревізія" },
             };
             return Res;

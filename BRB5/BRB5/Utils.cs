@@ -61,19 +61,19 @@ namespace BRB5
 
         public (long,long) DelDir(string pDir, IEnumerable<string> pNotDelDir)
         {
-            return(0,0);
+            //return(0,0);
             long SizeDel = 0,SizeUse=0;
             var dirs = Directory.GetDirectories(Config.PathFiles, "*", SearchOption.TopDirectoryOnly);
             foreach (var el in dirs)
             {
                 var dir = new DirectoryInfo(el);
-                var LD= pNotDelDir.Where(e => e.Equals(el));
+                var LD= pNotDelDir.Where(e => el.EndsWith(e));
                 if (LD.Count() > 0)
                     SizeUse += DirSize(dir);
                 else
                 {
                     SizeDel += DirSize(dir);
-                    //dir.Delete(true);
+                    dir.Delete(true);
                 }
 
             }

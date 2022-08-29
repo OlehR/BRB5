@@ -107,7 +107,7 @@ namespace BRB5.Connector
         /// </summary>
         /// <param name="pRole"></param>
         /// <returns></returns>
-        public virtual IEnumerable<TypeDoc> GetTypeDoc(eRole pRole) { throw new NotImplementedException(); }
+        public virtual IEnumerable<TypeDoc> GetTypeDoc(eRole pRole, eLoginServer pLS) { throw new NotImplementedException(); }
 
         public virtual IEnumerable<Warehouse> LoadWarehouse() { throw new NotImplementedException(); }
 

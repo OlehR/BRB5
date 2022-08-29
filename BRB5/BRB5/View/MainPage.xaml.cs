@@ -54,7 +54,7 @@ namespace BRB5
                 //eLoginServer LoginServer;
 
                 OCTypeDoc.Clear();
-                foreach (var i in c.GetTypeDoc(Config.Role)) OCTypeDoc.Add(i);
+                foreach (var i in c.GetTypeDoc(Config.Role, Config.LoginServer)) OCTypeDoc.Add(i);
 
                 var Wh=c.LoadWarehouse();
                 long SizeDel = 0, SizeUse = 0;
