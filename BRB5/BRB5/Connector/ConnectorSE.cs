@@ -36,8 +36,7 @@ namespace BRB5.Connector
             return Res;
         }
 
-        BL bl = BL.GetBL();
-        public override IEnumerable<LoginServer> LoginServer()
+         public override IEnumerable<LoginServer> LoginServer()
         {
             return new List<LoginServer>()
             {new  LoginServer (){Code=eLoginServer.Local,Name = "Магазин"},
@@ -233,6 +232,8 @@ namespace BRB5.Connector
 
                 if (pTypeDoc >= 7 && pTypeDoc <= 9)
                 {
+                    BL bl = BL.GetBL();
+
                     Warehouse Wh = bl.GetWarehouse(Config.CodeWarehouse);
                     if (Wh != null)
                         CodeWarehouse = Wh.Number;
