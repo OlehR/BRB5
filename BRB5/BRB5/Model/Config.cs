@@ -50,7 +50,14 @@ namespace BRB5.Model
 
         public static int GetCodeUnitPiece { get { return Company == eCompany.Sim23 || Company == eCompany.Sim23FTP ? 796 : 19; } }
 
-        public static string PathFiles { get { string res=@"D:\temp"; try { res = Path.Combine(FileSystem.AppDataDirectory,"BRBFiles"); } catch (Exception e) { } return res; } }
+        public static string PathFiles { get { string res=@"D:\temp";
+                try {
+                    res = Path.Combine(FileSystem.AppDataDirectory,"BRBFiles"); 
+                    if(!Directory.Exists(res))
+                        Directory.CreateDirectory(res);
+                } catch (Exception e)
+                { 
+                } return res; } }
 
         public static DocSetting GetDocSetting(int pTypeDoc) { return null; }
         

@@ -29,10 +29,13 @@ namespace BRB5.Connector
         /// </summary>
         /// <param name="pRole"></param>
         /// <returns></returns>
-        public override IEnumerable<TypeDoc> GetTypeDoc(eRole pRole)
+        public override IEnumerable<TypeDoc> GetTypeDoc(eRole pRole, eLoginServer pLS)
         {
-            var Res = new List<TypeDoc>()
-            {    new TypeDoc() { CodeDoc = 11, KindDoc = eKindDoc.Raiting, NameDoc = "Опитування" }, };
+            var Res = new List<TypeDoc>();
+            if (pLS == eLoginServer.Local)
+                Res.Add( new TypeDoc() { CodeDoc = 0, KindDoc = eKindDoc.PriceCheck, NameDoc = "Прайсчекер" });
+            if (pLS == eLoginServer.Bitrix)
+                Res.Add( new TypeDoc() { CodeDoc = 11, KindDoc = eKindDoc.Raiting, NameDoc = "Опитування" } );
             return Res;
         }
 
