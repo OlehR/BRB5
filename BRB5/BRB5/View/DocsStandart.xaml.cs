@@ -14,12 +14,14 @@ namespace BRB5.View
     public partial class DocsStandart : ContentPage
     {
         private Connector.Connector c;
+        private int myTypeDoc;
 
         public ObservableCollection<Doc> MyDocsR { get; set; }
 
         public ICommand F3Scan => new Command(OnF3Scan);
         public DocsStandart(int pTypeDoc = -1)
         {
+            myTypeDoc = pTypeDoc;
             DB db = DB.GetDB();
             c = Connector.Connector.GetInstance();
             InitializeComponent();
@@ -37,7 +39,11 @@ namespace BRB5.View
 
         private async void OpenDoc(object sender, EventArgs e)
         {
-            //await Navigation.PushAsync(new DocStandart());
+            var s = sender as StackLayout;
+;
+            var vDoc = s.BindingContext as Doc;
+            
+            await Navigation.PushAsync(new DocStandart(vDoc, 1, eTypeOrder.Scan));
         }
     }
 }

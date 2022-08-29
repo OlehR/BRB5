@@ -4,7 +4,8 @@
              x:Class="BRB5.View.DocStandart">
     <ContentPage.Content>
         <StackLayout>
-            <ListView ItemsSource="{Binding DocWaresEx}" >
+            <ListView  ItemsSource="{Binding MyDoc}" 
+              HasUnevenRows="True" >
                 <ListView.Header>
                     <StackLayout >
                     </StackLayout>
