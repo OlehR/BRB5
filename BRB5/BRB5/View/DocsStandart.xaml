@@ -13,7 +13,7 @@
                                 <StackLayout.GestureRecognizers>
                                     <TapGestureRecognizer Tapped="OpenDoc" />
                                 </StackLayout.GestureRecognizers>
-                                <Grid VerticalOptions="FillAndExpand">
+                                <Grid VerticalOptions="FillAndExpand" BackgroundColor="{Binding GetColor}">
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="1*" />
                                         <ColumnDefinition Width="1*" />
@@ -69,19 +69,7 @@
                            TextColor="#816f20"  >                    
                 </Label>
 
-                <Label Text="F3-" 
-                           FontSize="16"
-                           Grid.Column="6" 
-                           TextColor = "#ff5c5c"
-                           VerticalOptions="Center" />
-                <Label Text="Скан" 
-                           FontSize="18"
-                           Grid.Column="7"
-                           TextColor="#816f20"  >
-                    <Label.GestureRecognizers>
-                        <TapGestureRecognizer Command="{Binding F3Scan}" />
-                    </Label.GestureRecognizers>
-                </Label>
+                
 
             </StackLayout>
         </StackLayout>

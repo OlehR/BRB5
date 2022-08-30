@@ -22,12 +22,12 @@ namespace BRB5.View
         public DocStandart(DocId pDocId, int pTypeResult, eTypeOrder pTypeOrder)
         {
             DB db = DB.GetDB();
-            InitializeComponent();
 
             var r = db.GetDocWares(pDocId, pTypeResult, pTypeOrder);
             if(r != null)
                 MyDocWares = new ObservableCollection<DocWaresEx>(r);
             this.BindingContext = this;
+            InitializeComponent();
         }
         private async void OnF2Save()
         {

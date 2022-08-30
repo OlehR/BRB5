@@ -35,25 +35,27 @@ namespace BRB5.Model
 
         //public boolean IsRecord = false;
         // 3 - червоний, 2- оранжевий, 1 - жовтий, 0 - зелений, інше грязно жовтий-ранжевий.
-        public string GetBackgroundColor()
+        public string GetBackgroundColor
         {
-            /*  if(!DocSetting.IsViewPlan)
-                  return "fff3cd";*/
-            switch (Ord)
+            get
             {
-                case 3:
-                    return "FFB0B0";
-                case 2:
-                    return "FFC050";
-                case 1:
-                    return "FFFF80";
-                case 0:
-                    return "80FF80";
-                default:
-                    return "fff3cd";
+                /*  if(!DocSetting.IsViewPlan)
+                      return "fff3cd";*/
+                switch (Ord)
+                {
+                    case 3:
+                        return "#FFB0B0";
+                    case 2:
+                        return "#FFC050";
+                    case 1:
+                        return "#FFFF80";
+                    case 0:
+                        return "#80FF80";
+                    default:
+                        return "#fff3cd";
+                }
             }
         }
-
         /*
         public string GetNameUnit() { return NameUnit + "X"; }
         public string GetInputQuantity() { return InputQuantity == 0.0d ? "" : string.format(CodeUnit == config.GetCodeUnitWeight() ? "%.3f" : "%.0f", InputQuantity); }

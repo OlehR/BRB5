@@ -76,7 +76,28 @@ namespace BRB5
         /// Колір відображення документа
         /// </summary>
         public int Color { get; set; }
-        public Color GetColor { get { return Color == 0?new Color(0xdcdcdc) : new Color(Color); } }
+
+        // 9 - червоний, 2- оранжевий, 1 - жовтий, 0 - зелений, інше грязно жовтий-ранжевий.
+        public string GetColor
+        {
+            get
+            {
+                switch (Color)
+                {
+                    case 9:
+                        return "#FFB0B0"; //Червоний
+                    case 2:
+                        return "#FFC050"; //Оранжевий
+                    case 0:
+                        return "#FFFF80"; //Жовтий
+                    case 1:
+                        return "#80FF80"; //Зелений
+                    default:
+                        return "#fff3cd";
+                }
+            }
+        }
+        //public Color GetColor { get { return Color == 0?new Color(0xdcdcdc) : new Color(Color); } }
 
         //public int isClose; //0- не закривати, 1 - закривати.
         public Doc() { }

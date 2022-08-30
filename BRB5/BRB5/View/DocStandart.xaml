@@ -4,52 +4,65 @@
              x:Class="BRB5.View.DocStandart">
     <ContentPage.Content>
         <StackLayout>
-            <ListView  ItemsSource="{Binding MyDoc}" 
-              HasUnevenRows="True" >
+            <ListView  ItemsSource="{Binding MyDocWares}"  >
                 <ListView.Header>
-                    <StackLayout >
-                    </StackLayout>
+                    <Grid  >
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="1*" />
+                            <ColumnDefinition Width="1*" />
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions   >
+                            <RowDefinition/>
+                            <RowDefinition/>
+                        </Grid.RowDefinitions>
+
+                        <Label Text="Назва"                                                
+                               Grid.ColumnSpan="2" />
+
+                        <Label Text="Код"
+                               Grid.Row="1" 
+                               Grid.Column="0" />
+
+                        <Label Text="Факт" 
+                               Grid.Row="1" 
+                               Grid.Column="1"/>
+
+                    </Grid>
                 </ListView.Header>
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <ViewCell>
-                            <ViewCell.View  >
-                                <StackLayout>
-                                    <Grid  BackgroundColor="#5d5d5d">
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="1*" />
-                                            <ColumnDefinition Width="1*" />
-                                        </Grid.ColumnDefinitions>
-                                        <Grid.RowDefinitions   >
-                                            <RowDefinition/>
-                                            <RowDefinition/>
-                                        </Grid.RowDefinitions>
+                            <Grid  BackgroundColor="{Binding GetBackgroundColor}">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="1*" />
+                                    <ColumnDefinition Width="1*" />
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions   >
+                                    <RowDefinition/>
+                                    <RowDefinition/>
+                                </Grid.RowDefinitions>
 
-                                        <BoxView Grid.Row="0"
+                                <BoxView Grid.Row="0"
                                            Grid.ColumnSpan="2"  
                                              BackgroundColor="{Binding GetBackgroundColor}" />
-                                        <Label Text="{Binding NameWares}"                                                
+                                <Label Text="{Binding NameWares}"                                                
                                            Grid.ColumnSpan="2" />
 
-                                        <BoxView Grid.Row="1" 
+                                <BoxView Grid.Row="1" 
                                              Grid.Column="0" 
                                              BackgroundColor="{Binding GetBackgroundColor}" />
-                                        <Label Text="{Binding CodeWares}"
+                                <Label Text="{Binding CodeWares}"
                                                Grid.Row="1" 
                                                Grid.Column="0" />
 
-                                        <BoxView Grid.Row="1" 
+                                <BoxView Grid.Row="1" 
                                              Grid.Column="1"
                                              BackgroundColor="{Binding GetBackgroundColor}" />
-                                        <Label Text="{Binding InputQuantity}" 
+                                <Label Text="{Binding InputQuantity}" 
                                                Grid.Row="1" 
                                                Grid.Column="1"/>
 
-                                    </Grid>
-
-
-                                </StackLayout>
-                            </ViewCell.View>
+                            </Grid>
                         </ViewCell>
                     </DataTemplate>
                 </ListView.ItemTemplate>

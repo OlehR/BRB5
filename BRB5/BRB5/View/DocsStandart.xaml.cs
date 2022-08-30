@@ -18,29 +18,24 @@ namespace BRB5.View
 
         public ObservableCollection<Doc> MyDocsR { get; set; }
 
-        public ICommand F3Scan => new Command(OnF3Scan);
         public DocsStandart(int pTypeDoc = -1)
         {
             myTypeDoc = pTypeDoc;
             DB db = DB.GetDB();
             c = Connector.Connector.GetInstance();
-            InitializeComponent();
-            //Routing.RegisterRoute(nameof(Item), typeof(Item));
             c.LoadDocsData(pTypeDoc, null, false);
 
             MyDocsR = new ObservableCollection<Doc>(db.GetDoc(1));
             this.BindingContext = this;
+
+            InitializeComponent();
         }
 
-        private async void OnF3Scan()
-        {
-            await Navigation.PushAsync(new Scan());
-        }
 
         private async void OpenDoc(object sender, EventArgs e)
         {
             var s = sender as StackLayout;
-;
+
             var vDoc = s.BindingContext as Doc;
             
             await Navigation.PushAsync(new DocStandart(vDoc, 1, eTypeOrder.Scan));
