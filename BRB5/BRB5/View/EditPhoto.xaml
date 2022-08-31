@@ -25,20 +25,28 @@
                                     <Grid   >
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="4*" />
-                                            <ColumnDefinition Width="1*" />                                            
+                                            <ColumnDefinition Width="1*" />
                                         </Grid.ColumnDefinitions>
-                                        <Grid.RowDefinitions>
-                                            <RowDefinition Height="*" />                                           
-                                        </Grid.RowDefinitions>
-                                        <ImageButton  Source="{Binding FileName}" ClassId="Ok" Grid.Column="0" Grid.Row="0" 
-            BackgroundColor="Transparent" WidthRequest="240" HeightRequest="500"
-            FlexLayout.AlignSelf="Center"  FlexLayout.Grow="1" Aspect="AspectFit"
-            Clicked="OnButtonClicked" ></ImageButton>
+                                        <ImageButton Source="{Binding FileName}"
+                                                     ClassId="Ok"
+                                                     BackgroundColor="Transparent" 
+                                                     WidthRequest="240" HeightRequest="500"
+                                                     FlexLayout.AlignSelf="Center"  
+                                                     FlexLayout.Grow="1" Aspect="AspectFit"
+                                                     Clicked="OnButtonClicked" />
 
-                                        <ImageButton Source="Delete.png" ClassId="NotKnow" Grid.Column="1" Grid.Row="0" 
-            BackgroundColor="Transparent" WidthRequest="40" HeightRequest="40"
-            FlexLayout.AlignSelf="Center"  FlexLayout.Grow="1" Aspect="AspectFit" Opacity="{Binding OpacityNotKnow}" IsVisible="{Binding IsNotSend}"
-            Clicked="OnButtonDel" ></ImageButton>
+
+                                        <ImageButton Source="Delete.png" 
+                                                     ClassId="NotKnow" Grid.Column="1"
+                                                     BackgroundColor="Transparent"
+                                                     WidthRequest="40" 
+                                                     HeightRequest="40"
+                                                     FlexLayout.AlignSelf="Center" 
+                                                     FlexLayout.Grow="1" 
+                                                     Aspect="AspectFit" 
+                                                     Opacity="{Binding OpacityNotKnow}" 
+                                                     IsVisible="{Binding IsNotSend}"
+                                                     Clicked="OnButtonDel" />
                                     </Grid>
 
                                 </StackLayout>
@@ -47,9 +55,7 @@
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>
-
-
-
+            
             <Grid AbsoluteLayout.LayoutBounds="0, 1, 1, .1"  AbsoluteLayout.LayoutFlags="All">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="1*" />
