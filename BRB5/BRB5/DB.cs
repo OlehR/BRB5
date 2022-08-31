@@ -210,8 +210,9 @@ CREATE UNIQUE INDEX UserLogin ON User (Login);
         
         public bool SetConfig<T>(string pName, T pValue)
         {
+            string Value = (typeof(T) == typeof(DateTime) ? ((DateTime)(object)pValue).ToString("yyyy-MM-dd HH:mm:ss") : pValue.ToString());
             string SqlReplaceConfig  = "replace into CONFIG(NameVar, DataVar, TypeVar) values(@NameVar, @DataVar, @TypeVar)";            
-            return db.ExecuteNonQuery<object>(SqlReplaceConfig, new { NameVar = pName, DataVar = pValue.ToString(), @TypeVar = pValue.GetType().ToString() })>0;
+            return db.ExecuteNonQuery<object>(SqlReplaceConfig, new { NameVar = pName, DataVar = Value  , @TypeVar = pValue.GetType().ToString() })>0;
         }
 
         public T GetConfig<T>(string pStr)

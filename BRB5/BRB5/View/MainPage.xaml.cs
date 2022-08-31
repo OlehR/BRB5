@@ -67,6 +67,13 @@ namespace BRB5
                     var a = db.GetDoc(11);
                      (SizeDel, SizeUse) = u.DelDir(Config.PathFiles, a.Select(el=>el.NumberDoc));
                 }
+
+                if(Config.DateLastLoadGuid.Date != DateTime.Today.Date)
+                {
+                    c.LoadGuidData(true);
+                    Config.DateLastLoadGuid = DateTime.Now;
+                    db.SetConfig<DateTime>("DateLastLoadGuid", Config.DateLastLoadGuid);
+                }
             }
             else
                 _ = DisplayAlert("Проблеми з авторизацією", r.TextError + r.Info, "OK");
@@ -120,6 +127,7 @@ namespace BRB5
             Config.ApiUrl1 = db.GetConfig<string>("ApiUrl1");
             Config.ApiUrl2 = db.GetConfig<string>("ApiUrl2");
             Config.ApiUrl3 = db.GetConfig<string>("ApiUrl3");
+            Config.DateLastLoadGuid = db.GetConfig<DateTime>("DateLastLoadGuid");
             Config.CodeWarehouse = db.GetConfig<int>("CodeWarehouse");
             Config.Company = db.GetConfig<eCompany>("Company");
             Config.TypeUsePrinter = db.GetConfig<eTypeUsePrinter>("TypeUsePrinter");

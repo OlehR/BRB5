@@ -68,8 +68,9 @@ namespace BRB5.View
 
         private void OnClickLoad(object sender, EventArgs e)
         {
-
             c.LoadGuidData(true);
+            Config.DateLastLoadGuid = DateTime.Now;
+            db.SetConfig<DateTime>("DateLastLoadGuid", Config.DateLastLoadGuid);
         }
 
         private void OnClickLoadDoc(object sender, EventArgs e)
