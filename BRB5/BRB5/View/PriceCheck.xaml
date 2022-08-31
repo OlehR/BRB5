@@ -146,10 +146,11 @@
                     <Button Text="{Binding NamePrintColorType}"
                         HorizontalOptions="Fill"
                         Clicked="OnClickChangePrintColorType" />
-                    <Picker Title=""                        
+                    <Picker Title="пакети"                        
                         Grid.Column="1"
-                        ItemsSource="{Binding }"
-                        ItemDisplayBinding="{Binding }" />
+                        ItemsSource="{Binding ListPrintBlockItems}"
+                        ItemDisplayBinding="{Binding stringPrintBlockItem}"
+                        SelectedIndex="{Binding SelectedPrintBlockItems}"/>
 
                     <Button Text="f1-Друк"
                         Grid.Column="2" 

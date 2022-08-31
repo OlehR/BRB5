@@ -624,7 +624,7 @@ CREATE UNIQUE INDEX UserLogin ON User (Login);
         { 
             string Sql = @"select PackageNumber,count(DISTINCT case when ActionType in (1,2) then null else CodeWares end) as Normal,
                                   count(DISTINCT case when ActionType in (1,2) then CodeWares end) as Yellow 
-                    from LogPrice WHERE  Status< 0 AND date(DTInsert) > date('now','-1 day') 
+                    from LogPrice WHERE  Status>= 0 AND date(DTInsert) > date('now','-1 day') 
                     GROUP BY PackageNumber";            
             return db.Execute<PrintBlockItems>(Sql);
         }

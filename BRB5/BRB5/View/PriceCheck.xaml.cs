@@ -20,7 +20,11 @@ namespace BRB5
         Connector.Connector c;    
         DB db = DB.GetDB();
         BL bl = BL.GetBL();
-        
+
+        public List<PrintBlockItems> ListPrintBlockItems { get { return db.GetPrintBlockItemsCount().ToList(); } }
+
+        public int SelectedPrintBlockItems { get { return ListPrintBlockItems.Count>0? ListPrintBlockItems.Last().PackageNumber:-1; } }
+
         public bool IsVisPriceOpt { get { return WP != null && (WP.PriceOpt != 0 || WP.PriceOptOld != 0); }  }
 
         bool _IsVisF4 = false;
@@ -47,14 +51,14 @@ namespace BRB5
         /// </summary>
         int LineNumber = 0;
 
-        int _PackageNumber = 0;
+        int _PackageNumber = 1;
 
         public int AllScan { get; set; } = 0;
         public int BadScan { get; set; } = 0;
         /// <summary>
         /// Номер пакета цінників за день !!!TMP Треба зберігати в базі.
         /// </summary>
-        public int PackageNumber { get { return _PackageNumber; } set { _PackageNumber = value; OnPropertyChanged("PackageNumber"); } } 
+        public int PackageNumber { get { return _PackageNumber; } set { _PackageNumber = value; OnPropertyChanged("PackageNumber"); OnPropertyChanged("ListPrintBlockItems"); OnPropertyChanged("SelectedPrintBlockItems"); } } 
 
 
         //public int ColorPrintColorType() { return Color.parseColor(HttpState != eStateHTTP.HTTP_OK ? "#ffb3b3" : (PrintType == 0 ? "#ffffff" : "#3fffff00")); }
@@ -191,7 +195,8 @@ namespace BRB5
        
         private void OnClickAddPrintBlock(object sender, EventArgs e)
         {
-            PackageNumber++;            
+            PackageNumber++;
+            ListPrintBlockItems.Add(new PrintBlockItems() { PackageNumber = PackageNumber });
         }
 
         private void OnClickChangePrintColorType(object sender, EventArgs e)
