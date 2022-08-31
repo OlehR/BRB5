@@ -5,97 +5,113 @@
              NavigationPage.HasNavigationBar="False"
              x:Class="BRB5.Item">
     <ContentPage.Content>
-        <StackLayout>
-            <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="1*" />
-                    <ColumnDefinition Width="1*" />
-                    <ColumnDefinition Width="1*" />                    
-                </Grid.ColumnDefinitions>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="*" />
-                </Grid.RowDefinitions>
-                <Button Grid.Column="0" Grid.Row="0"  IsEnabled="{Binding IsSave}" Text = "{Binding TextButtonSave}" FontSize="Large" BorderWidth="1"
-        HorizontalOptions="FillAndExpand" VerticalOptions="CenterAndExpand"  Clicked="OnButtonSave" />
+        <AbsoluteLayout>
+            <StackLayout AbsoluteLayout.LayoutBounds="1, 0, 1, .9"  AbsoluteLayout.LayoutFlags="All">
 
-                <Button Grid.Column="1" Grid.Row="0"  Text = "{Binding TextAllNoChoice}" FontSize="Large" BorderWidth="1"
-        HorizontalOptions="FillAndExpand" VerticalOptions="CenterAndExpand"  Clicked="OnSetView" />
-
-                <Label Grid.Column="2" Grid.Row="0"  IsVisible="{Binding QuantityAllChoice}" TextColor="Red" Text="{Binding QuantityAllChoice}" ClassId="CountFoto" FontSize="22" FontAttributes="Bold"  VerticalOptions="Start"  HorizontalOptions="End"/>
-            </Grid>
-
-            <Editor Text="{Binding TextSave}" IsVisible="{Binding IsSaving}" HeightRequest="250" />
+                <Editor Text="{Binding TextSave}" IsVisible="{Binding IsSaving}" HeightRequest="250" />
 
 
-            <ListView x:Name="ListQuestions"
+                <ListView x:Name="ListQuestions"
               HasUnevenRows="True"
               ItemsSource="{Binding Questions}" >
-                <ListView.Header>
-                    <StackLayout Orientation="Horizontal">
-                        <Label Text="Список Запитань" FontSize="25"
+                    <ListView.Header>
+                        <StackLayout Orientation="Horizontal">
+                            <Label Text="Список Запитань" FontSize="25"
                            BackgroundColor="#c5cae9" HorizontalOptions="FillAndExpand" />
-                    </StackLayout>
-                </ListView.Header>
-                
-                <ListView.ItemTemplate>
-            <DataTemplate xmlns:brb5="clr-namespace:BRB5" x:DataType="brb5:Raiting" >
-                        <ViewCell>
-                            <ViewCell.View>
-                                <StackLayout BackgroundColor="{Binding BackgroundColor}"  IsVisible="{Binding IsVisible}" HeightRequest="{Binding HeightRequest}" >                                   
-                                    <Label Text="{Binding Text}" FontSize="22" />
-                                    <Grid>
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="1*" />
-                                            <ColumnDefinition Width="1*" />
-                                            <ColumnDefinition Width="1*" />
-                                            <ColumnDefinition Width="1*" />
-                                            <ColumnDefinition Width="1*" />
-                                            <ColumnDefinition Width="1*" />
-                                        </Grid.ColumnDefinitions>
-                                        <Grid.RowDefinitions>
-                                            <RowDefinition Height="*" />                                           
-                                        </Grid.RowDefinitions>
+                        </StackLayout>
+                    </ListView.Header>
 
-                                        <ImageButton  IsVisible="{Binding IsEnableOk}"  Source="Ok.png" ClassId="Ok" Grid.Column="0" Grid.Row="0" 
+                    <ListView.ItemTemplate>
+                        <DataTemplate xmlns:brb5="clr-namespace:BRB5" x:DataType="brb5:Raiting" >
+                            <ViewCell>
+                                <ViewCell.View>
+                                    <StackLayout BackgroundColor="{Binding BackgroundColor}"  IsVisible="{Binding IsVisible}" HeightRequest="{Binding HeightRequest}" >
+                                        <Label Text="{Binding Text}" FontSize="22" />
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="1*" />
+                                                <ColumnDefinition Width="1*" />
+                                                <ColumnDefinition Width="1*" />
+                                                <ColumnDefinition Width="1*" />
+                                                <ColumnDefinition Width="1*" />
+                                                <ColumnDefinition Width="1*" />
+                                            </Grid.ColumnDefinitions>
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="*" />
+                                            </Grid.RowDefinitions>
+
+                                            <ImageButton  IsVisible="{Binding IsEnableOk}"  Source="Ok.png" ClassId="Ok" Grid.Column="0" Grid.Row="0" 
             BackgroundColor="Transparent" WidthRequest="40" HeightRequest="40"
             FlexLayout.AlignSelf="Center"  FlexLayout.Grow="1" Aspect="AspectFit" Opacity="{Binding OpacityOk}"
             Clicked="OnButtonClicked" ></ImageButton>
 
-                                        <ImageButton IsVisible="{Binding IsEnableSoSo}"  Source="So_so.png" ClassId="SoSo" Grid.Column="1" Grid.Row="0" 
+                                            <ImageButton IsVisible="{Binding IsEnableSoSo}"  Source="So_so.png" ClassId="SoSo" Grid.Column="1" Grid.Row="0" 
             BackgroundColor="Transparent" WidthRequest="40" HeightRequest="40"
             FlexLayout.AlignSelf="Center"  FlexLayout.Grow="1" Aspect="AspectFit" Opacity="{Binding OpacitySoSo}"
             Clicked="OnButtonClicked" ></ImageButton>
 
-                                        <ImageButton IsVisible="{Binding IsEnableBad}"  Source="Bad.png" ClassId="Bad" Grid.Column="2" Grid.Row="0" 
+                                            <ImageButton IsVisible="{Binding IsEnableBad}"  Source="Bad.png" ClassId="Bad" Grid.Column="2" Grid.Row="0" 
             BackgroundColor="Transparent" WidthRequest="40" HeightRequest="40"
             FlexLayout.AlignSelf="Center"  FlexLayout.Grow="1" Aspect="AspectFit" Opacity="{Binding OpacityBad}"
             Clicked="OnButtonClicked" ></ImageButton>
 
-                                        <ImageButton IsVisible="{Binding IsEnableNotKnow}" Source="NotKnow.png" ClassId="NotKnow" Grid.Column="3" Grid.Row="0" 
+                                            <ImageButton IsVisible="{Binding IsEnableNotKnow}" Source="NotKnow.png" ClassId="NotKnow" Grid.Column="3" Grid.Row="0" 
             BackgroundColor="Transparent" WidthRequest="40" HeightRequest="40"
             FlexLayout.AlignSelf="Center"  FlexLayout.Grow="1" Aspect="AspectFit" Opacity="{Binding OpacityNotKnow}"
             Clicked="OnButtonClicked" ></ImageButton>
 
-                                        <ImageButton IsVisible="{Binding IsItem}" Source="Photo.png" ClassId="{Binding Id}" Grid.Column="4" Grid.Row="0" 
+                                            <ImageButton IsVisible="{Binding IsItem}" Source="Photo.png" ClassId="{Binding Id}" Grid.Column="4" Grid.Row="0" 
             BackgroundColor="Transparent" WidthRequest="40" HeightRequest="40"
             FlexLayout.AlignSelf="Center"  FlexLayout.Grow="1" Aspect="AspectFit"
             Clicked="TakePhotoAsync" ></ImageButton>
 
-                                        <Label IsVisible="{Binding IsItem}" TextColor="Red" Text="{Binding QuantityPhoto}" ClassId="CountFoto" FontSize="22" FontAttributes="Bold" Grid.Column="4" Grid.Row="0"  VerticalOptions="Start"  HorizontalOptions="End"/>
+                                            <Label IsVisible="{Binding IsItem}" TextColor="Red" Text="{Binding QuantityPhoto}" ClassId="CountFoto" FontSize="22" FontAttributes="Bold" Grid.Column="4" Grid.Row="0"  VerticalOptions="Start"  HorizontalOptions="End"/>
 
-                                        <ImageButton IsVisible="{Binding IsItem}" Source="Edit.png" ClassId="{Binding Id}" Grid.Column="5" Grid.Row="0" 
+                                            <ImageButton IsVisible="{Binding IsItem}" Source="Edit.png" ClassId="{Binding Id}" Grid.Column="5" Grid.Row="0" 
             BackgroundColor="Transparent" WidthRequest="40" HeightRequest="40"
             FlexLayout.AlignSelf="Center"  FlexLayout.Grow="1" Aspect="AspectFit"   Clicked="EditPhoto" ></ImageButton>
-                                   
-                                    </Grid>
-                                    <Editor IsVisible="{Binding IsItem}" Text="{Binding Note}" AutoSize="TextChanges" Completed ="Editor_Completed"/>
-                                </StackLayout>
-                            </ViewCell.View>
-                        </ViewCell>
-                    </DataTemplate>
-                </ListView.ItemTemplate>
-            </ListView>
 
-        </StackLayout>
+                                        </Grid>
+                                        <Editor IsVisible="{Binding IsItem}" Text="{Binding Note}" AutoSize="TextChanges" Completed ="Editor_Completed"/>
+                                    </StackLayout>
+                                </ViewCell.View>
+                            </ViewCell>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+
+            </StackLayout>
+
+            <Grid AbsoluteLayout.LayoutBounds="0, 1, 1, .1"  AbsoluteLayout.LayoutFlags="All">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="3*" />
+                    <ColumnDefinition Width="3*" />
+                    <ColumnDefinition Width="1*" />
+                </Grid.ColumnDefinitions>
+                <Button IsEnabled="{Binding IsSave}" 
+                        Text = "{Binding TextButtonSave}" 
+                        FontSize="Large" 
+                        BorderWidth="1"       
+                        HorizontalOptions="FillAndExpand" 
+                        VerticalOptions="CenterAndExpand"  
+                        Clicked="OnButtonSave" />
+
+                <Button Grid.Column="1"
+                        Text = "{Binding TextAllNoChoice}" 
+                        FontSize="Medium" BorderWidth="1"        
+                        HorizontalOptions="FillAndExpand" 
+                        VerticalOptions="CenterAndExpand"  
+                        Clicked="OnSetView" />
+
+                <Label Grid.Column="2"
+                       IsVisible="{Binding QuantityAllChoice}" 
+                       TextColor="Red" Text="{Binding QuantityAllChoice}" 
+                       ClassId="CountFoto" 
+                       FontSize="22" 
+                       FontAttributes="Bold" 
+                       VerticalOptions="Start"  
+                       HorizontalOptions="End"/>
+            </Grid>
+        </AbsoluteLayout>
     </ContentPage.Content>
 </ContentPage>
