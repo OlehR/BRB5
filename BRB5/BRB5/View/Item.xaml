@@ -45,10 +45,7 @@
                                                          ClassId="NotKnow" 
                                                          Grid.Column="1" 
                                                          BackgroundColor="Transparent"
-                                                         WidthRequest="50" 
                                                          HeightRequest="50"
-                                                         FlexLayout.AlignSelf="Center" 
-                                                         FlexLayout.Grow="1"
                                                          Aspect="AspectFit" 
                                                          Opacity="{Binding OpacityNotKnow}"
                                                          Clicked="OnButtonClicked" />
@@ -61,7 +58,7 @@
                                                  HeightRequest="{Binding HeightRequest}" >
 
                                                 <Label Text="{Binding Text}" FontSize="22" />
-                                                <Grid>
+                                                <Grid Margin="0" Padding="0" >
                                                     <Grid.ColumnDefinitions>
                                                         <ColumnDefinition Width="1*" />
                                                         <ColumnDefinition Width="1*" />
@@ -71,66 +68,56 @@
                                                         <ColumnDefinition Width="1*" />
                                                     </Grid.ColumnDefinitions>
 
-                                                    <ImageButton  IsVisible="{Binding IsEnableOk}"  
+                                                    <ImageButton  IsVisible="{Binding IsEnableOk}" 
+                                                                  Margin="0" Padding="0"
                                                           Source="Ok.png" 
                                                           ClassId="Ok"
                                                           BackgroundColor="Transparent"
-                                                          WidthRequest="50" 
-                                                          HeightRequest="50"
-                                                          FlexLayout.AlignSelf="Center" 
-                                                          FlexLayout.Grow="1" 
+                                                          HeightRequest="60"
                                                           Aspect="AspectFit" 
                                                           Opacity="{Binding OpacityOk}"
                                                           Clicked="OnButtonClicked" />
 
                                                     <ImageButton IsVisible="{Binding IsEnableSoSo}" 
+                                                                 Margin="0" Padding="0"
                                                          Source="So_so.png" 
                                                          ClassId="SoSo" 
                                                          Grid.Column="1" 
                                                          BackgroundColor="Transparent" 
-                                                         WidthRequest="50"
-                                                         HeightRequest="50"
-                                                         FlexLayout.AlignSelf="Center"
-                                                         FlexLayout.Grow="1" 
+                                                         HeightRequest="60"
                                                          Aspect="AspectFit" 
                                                          Opacity="{Binding OpacitySoSo}"
                                                          Clicked="OnButtonClicked" />
 
                                                     <ImageButton IsVisible="{Binding IsEnableBad}"  
+                                                                 Margin="0" Padding="0"
                                                          Source="Bad.png"
                                                          ClassId="Bad" 
                                                          Grid.Column="2"
                                                          BackgroundColor="Transparent"
-                                                         WidthRequest="50" 
-                                                         HeightRequest="50"
-                                                         FlexLayout.AlignSelf="Center" 
-                                                         FlexLayout.Grow="1" 
+                                                         HeightRequest="60" 
                                                          Aspect="AspectFit" 
                                                          Opacity="{Binding OpacityBad}"
                                                          Clicked="OnButtonClicked" />
 
                                                     <ImageButton IsVisible="{Binding IsEnableNotKnow}"
+                                                                 Margin="0" Padding="0"
                                                          Source="NotKnow.png" 
                                                          ClassId="NotKnow" 
                                                          Grid.Column="3" 
                                                          BackgroundColor="Transparent"
-                                                         WidthRequest="50" 
-                                                         HeightRequest="50"
-                                                         FlexLayout.AlignSelf="Center" 
-                                                         FlexLayout.Grow="1"
+                                                         HeightRequest="60"
                                                          Aspect="AspectFit" 
                                                          Opacity="{Binding OpacityNotKnow}"
                                                          Clicked="OnButtonClicked" />
 
                                                     <ImageButton IsVisible="{Binding IsItem}" 
+                                                                 Margin="0" Padding="0"
                                                          Source="Photo.png" 
                                                          ClassId="{Binding Id}"
                                                          Grid.Column="4" 
                                                          BackgroundColor="Transparent"
-                                                         WidthRequest="50"
-                                                         HeightRequest="50"
-                                                         FlexLayout.AlignSelf="Center" 
-                                                         FlexLayout.Grow="1" 
+                                                         HeightRequest="60"
                                                          Aspect="AspectFit"
                                                          Clicked="TakePhotoAsync" />
 
@@ -145,14 +132,12 @@
                                                    HorizontalOptions="End"/>
 
                                                     <ImageButton IsVisible="{Binding IsItem}" 
+                                                                 Margin="0" Padding="0"
                                                          Source="Edit.png"
                                                          ClassId="{Binding Id}"
                                                          Grid.Column="5"
                                                          BackgroundColor="Transparent"
-                                                         WidthRequest="50" 
-                                                         HeightRequest="50"
-                                                         FlexLayout.AlignSelf="Center" 
-                                                         FlexLayout.Grow="1" 
+                                                         HeightRequest="60" 
                                                          Aspect="AspectFit"   
                                                          Clicked="EditPhoto" />
 
