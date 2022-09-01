@@ -16,6 +16,8 @@ namespace BRB5
         public int Id { get; set; }
         public int Parent { get; set; }
         [JsonIgnore]
+
+        // заголовок групи
         public bool IsHead { get; set; }
         [JsonIgnore]
         public bool IsItem { get { return !IsHead; } }
