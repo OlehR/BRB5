@@ -14,6 +14,8 @@ namespace BRB5.View
 {
     public class Pictures
     {
+        const string VideoExt =".WEBM ·.MPG, .MP2, .MPEG, .MPE, .MPV ·.OGG ·.MP4, .M4P, .M4V ·.AVI ·.WMV ·.MOV, .QT ·.FLV, .SWF";
+        public Pictures() { }
         public Pictures(string pFileName, bool pIsNotSend=true)
         {
             FileName = pFileName;
@@ -23,8 +25,8 @@ namespace BRB5.View
         public Image image { get; set; }
         public bool IsNotSend { get; set; }
 
-        public bool IsPhoto { get; set; }
-        public bool IsVideo { get; set; }
+        public bool IsPhoto { get { return !VideoExt.Contains(Path.GetExtension(FileName).ToUpper()); } }
+        public bool IsVideo { get { return VideoExt.Contains(Path.GetExtension(FileName).ToUpper()); } }
 
     }
 
@@ -55,9 +57,9 @@ namespace BRB5.View
 
 
             var arx = Path.Combine(Config.PathFiles, "arx", pRaiting.NumberDoc);
-            if (Directory.Exists(dir))
+            if (Directory.Exists(arx))
             {
-                d = Directory.GetFiles(dir, Mask);
+                d = Directory.GetFiles(arx, Mask);
                  r = d.Select(e => new Pictures(e,false)).OrderByDescending(el => el.FileName);
                 foreach (var el in r)
                     MyFiles.Add(el);
@@ -70,8 +72,10 @@ namespace BRB5.View
             Button b = sender as Button;
             if (b == null)
                 return;
+            bool IsVideo = b.Text.Equals("Додати відео");
+            var photo = IsVideo ? await MediaPicker.PickVideoAsync() : await MediaPicker.PickPhotoAsync();
+            
 
-            var photo = b.Text.Equals("Додати відео") ? await MediaPicker.PickVideoAsync() : await MediaPicker.PickPhotoAsync();
             //await MediaPicker.PickVideoAsync();
             if (photo != null && File.Exists(photo.FullPath))
             {

@@ -32,8 +32,14 @@
                                                      WidthRequest="240" HeightRequest="500"
                                                      FlexLayout.AlignSelf="Center"  
                                                      FlexLayout.Grow="1" Aspect="AspectFit"
-                                                      />
-
+                                                     IsVisible="{Binding IsPhoto}" />
+                                    <Image Source="Video.png"
+                                                     ClassId="Ok"
+                                                     BackgroundColor="Transparent" 
+                                                     WidthRequest="240"
+                                                     FlexLayout.AlignSelf="Center"  
+                                                     FlexLayout.Grow="1" Aspect="AspectFit"                                                     
+                                                     IsVisible="{Binding IsVideo}" />
 
                                     <ImageButton Source="Delete.png" 
                                                      ClassId="NotKnow"
