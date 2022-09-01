@@ -175,8 +175,9 @@
 
             <Grid AbsoluteLayout.LayoutBounds="0, 1, 1, .1"  AbsoluteLayout.LayoutFlags="All">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="6*" />
-                    <ColumnDefinition Width="9*" />
+                    <ColumnDefinition Width="3*" />
+                    <ColumnDefinition Width="3*" />
+                    <ColumnDefinition Width="3*" />
                     <ColumnDefinition Width="2*" />
                 </Grid.ColumnDefinitions>
                 <Button IsEnabled="{Binding IsSave}" 
@@ -195,7 +196,15 @@
                         VerticalOptions="CenterAndExpand"  
                         Clicked="OnSetView" />
 
-                <Label Grid.Column="2"
+                <Button Grid.Column="2"
+                        Text = "{Binding TextAllOpen}" 
+                        FontSize="Medium" 
+                        BorderWidth="1"        
+                        HorizontalOptions="FillAndExpand" 
+                        VerticalOptions="CenterAndExpand"  
+                        Clicked="OnAllOpen" />
+                
+                <Label Grid.Column="3"
                        IsVisible="{Binding QuantityAllChoice}" 
                        TextColor="Red" 
                        Text="{Binding QuantityAllChoice}" 

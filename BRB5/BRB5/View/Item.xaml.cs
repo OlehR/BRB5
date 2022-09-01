@@ -35,6 +35,9 @@ namespace BRB5
         public bool IsSaving { get; set; } = false;
         public string TextButtonSave { get { return IsSaving ? "Зупинити" : "Зберегти"; } }
 
+        bool IsAllOpen { get; set; } = true;
+        public string TextAllOpen { get { return IsAllOpen ? "Згорнути" : "Розгорнути"; } set { OnPropertyChanged("IsAllOpen"); } }
+
         /*public event PropertyChangedEventHandler PropertyChanged;
         protected virtual void OnPropertyChanged(string propertyName)
         {
@@ -217,7 +220,29 @@ namespace BRB5
 
         private void OnHeadTapped(object sender, EventArgs e)
         {
+            var s = sender as Grid;
+            var cc = s.Parent as StackLayout;
 
+            var vRait = cc.BindingContext as Raiting;
+            var id = vRait.Id;
+            foreach (var xx in Questions.Where(el => el.Parent == id))
+            {
+                xx.IsVisible = !xx.IsVisible;
+            }
+
+        }
+
+        private void OnAllOpen(object sender, EventArgs e)
+        {
+            IsAllOpen = !IsAllOpen;
+            if (IsAllOpen)
+                foreach (var el in Questions)
+                    el.IsVisible = true;
+            else
+                foreach (var el in Questions)
+                    el.IsVisible = false;
+
+            OnPropertyChanged("TextAllOpen");
         }
 
         private Raiting GetRaiting(object sender)
