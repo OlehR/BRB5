@@ -21,23 +21,23 @@
                     <DataTemplate xmlns:brb5="clr-namespace:BRB5" >
                         <ViewCell>
                             <ViewCell.View  >
-                                <StackLayout>                                    
-                                    <Grid   >
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="4*" />
-                                            <ColumnDefinition Width="1*" />
-                                        </Grid.ColumnDefinitions>
-                                        <ImageButton Source="{Binding FileName}"
+                                <Grid   >
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="4*" />
+                                        <ColumnDefinition Width="1*" />
+                                    </Grid.ColumnDefinitions>
+                                    <Image Source="{Binding FileName}"
                                                      ClassId="Ok"
                                                      BackgroundColor="Transparent" 
                                                      WidthRequest="240" HeightRequest="500"
                                                      FlexLayout.AlignSelf="Center"  
                                                      FlexLayout.Grow="1" Aspect="AspectFit"
-                                                     Clicked="OnButtonClicked" />
+                                                      />
 
 
-                                        <ImageButton Source="Delete.png" 
-                                                     ClassId="NotKnow" Grid.Column="1"
+                                    <ImageButton Source="Delete.png" 
+                                                     ClassId="NotKnow"
+                                                     Grid.Column="1"
                                                      BackgroundColor="Transparent"
                                                      WidthRequest="40" 
                                                      HeightRequest="40"
@@ -47,9 +47,8 @@
                                                      Opacity="{Binding OpacityNotKnow}" 
                                                      IsVisible="{Binding IsNotSend}"
                                                      Clicked="OnButtonDel" />
-                                    </Grid>
+                                </Grid>
 
-                                </StackLayout>
                             </ViewCell.View>
                         </ViewCell>
                     </DataTemplate>

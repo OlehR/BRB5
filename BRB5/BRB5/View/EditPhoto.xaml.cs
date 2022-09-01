@@ -22,7 +22,11 @@ namespace BRB5.View
         public string FileName { get; set; }
         public Image image { get; set; }
         public bool IsNotSend { get; set; }
-}
+
+        public bool IsPhoto { get; set; }
+        public bool IsVideo { get; set; }
+
+    }
 
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class EditPhoto : ContentPage
@@ -66,8 +70,8 @@ namespace BRB5.View
             Button b = sender as Button;
             if (b == null)
                 return;
-            
-                var photo =  b.Text.Equals("Додати відео") ? await MediaPicker.PickVideoAsync(): await MediaPicker.PickPhotoAsync();
+
+            var photo = b.Text.Equals("Додати відео") ? await MediaPicker.PickVideoAsync() : await MediaPicker.PickPhotoAsync();
             //await MediaPicker.PickVideoAsync();
             if (photo != null && File.Exists(photo.FullPath))
             {
