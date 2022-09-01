@@ -30,6 +30,9 @@
                                     <StackLayout>
                                         <Grid BackgroundColor="{Binding BackgroundColor}"  
                                                  IsVisible="{Binding IsHead}">
+                                            <Grid.GestureRecognizers>
+                                                <TapGestureRecognizer Tapped="OnHeadTapped"/>
+                                            </Grid.GestureRecognizers>
                                             <Grid.ColumnDefinitions>
                                                 <ColumnDefinition Width="2*" />
                                                 <ColumnDefinition Width="1*" />
@@ -51,10 +54,10 @@
                                                          Clicked="OnButtonClicked" />
                                         </Grid>
                                         <Grid BackgroundColor="{Binding BackgroundColor}"  
-                                                 IsVisible="{Binding IsItem}">
+                                                 IsVisible="{Binding IsVisible}">
 
                                             <StackLayout BackgroundColor="{Binding BackgroundColor}"  
-                                                 IsVisible="{Binding IsVisible}" 
+                                                 IsVisible="{Binding IsItem}" 
                                                  HeightRequest="{Binding HeightRequest}" >
 
                                                 <Label Text="{Binding Text}" FontSize="22" />
@@ -155,9 +158,9 @@
 
                                                 </Grid>
                                                 <Editor IsVisible="{Binding IsItem}" 
-                                                Text="{Binding Note}" 
-                                                AutoSize="TextChanges" 
-                                                Completed ="Editor_Completed"/>
+                                                        Text="{Binding Note}" 
+                                                        AutoSize="TextChanges" 
+                                                        Completed ="Editor_Completed"/>
                                             </StackLayout>
                                         </Grid>
                                     </StackLayout>

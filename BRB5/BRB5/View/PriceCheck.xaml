@@ -186,7 +186,7 @@
                            Grid.Column="1"
                            TextColor="#816f20">
                         <Label.GestureRecognizers>
-                            <TapGestureRecognizer Command="{Binding F1Command}" />
+                            <TapGestureRecognizer Tapped="OnF1" />
                         </Label.GestureRecognizers>
                     </Label>
                     
@@ -201,7 +201,7 @@
                            Grid.Column="3" 
                            TextColor="#816f20" >
                         <Label.GestureRecognizers>
-                            <TapGestureRecognizer Command="{Binding F2Command}" />
+                            <TapGestureRecognizer Tapped="OnF2" />
                         </Label.GestureRecognizers>
                     </Label>
                     <Label Text="f4-" FontSize="16" 
@@ -215,7 +215,7 @@
                            Grid.Column="5"
                            TextColor="#816f20"  >
                         <Label.GestureRecognizers>
-                            <TapGestureRecognizer Command="{Binding F4Command}" />
+                            <TapGestureRecognizer Tapped="OnF4" />
                         </Label.GestureRecognizers>
                     </Label>
                     <Label Text="f5-" 
@@ -228,7 +228,7 @@
                            Grid.Column="7"
                            TextColor="#816f20"  >
                         <Label.GestureRecognizers>
-                            <TapGestureRecognizer Command="{Binding F5Command}" />
+                            <TapGestureRecognizer Tapped="OnF5" />
                         </Label.GestureRecognizers>
                     </Label>
                 </StackLayout>

@@ -80,7 +80,7 @@
                            Grid.Column="7"
                            TextColor="#816f20"  >
                     <Label.GestureRecognizers>
-                        <TapGestureRecognizer Command="{Binding F2Save}" />
+                        <TapGestureRecognizer Tapped="F2Save" />
                     </Label.GestureRecognizers>
                 </Label>
                 
@@ -94,7 +94,7 @@
                            Grid.Column="7"
                            TextColor="#816f20"  >
                     <Label.GestureRecognizers>
-                        <TapGestureRecognizer Command="{Binding F3Scan}" />
+                        <TapGestureRecognizer Tapped="F3Scan" />
                     </Label.GestureRecognizers>
                 </Label>
                 
@@ -108,7 +108,7 @@
                            Grid.Column="7"
                            TextColor="#816f20"  >
                     <Label.GestureRecognizers>
-                        <TapGestureRecognizer Command="{Binding F4WrOff}" />
+                        <TapGestureRecognizer Tapped="F4WrOff" />
                     </Label.GestureRecognizers>
                 </Label>
                 
@@ -122,7 +122,7 @@
                            Grid.Column="7"
                            TextColor="#816f20"  >
                     <Label.GestureRecognizers>
-                        <TapGestureRecognizer Command="{Binding F6Doc}" />
+                        <TapGestureRecognizer Tapped="F6Doc" />
                     </Label.GestureRecognizers>
                 </Label>
 

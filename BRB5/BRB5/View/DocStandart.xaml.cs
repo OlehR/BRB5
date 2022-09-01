@@ -15,10 +15,6 @@ namespace BRB5.View
     public partial class DocStandart : ContentPage
     {
         public ObservableCollection<DocWaresEx> MyDocWares { get; set; }
-        public ICommand F2Save => new Command(OnF2Save);
-        public ICommand F3Scan => new Command(OnF3Scan);
-        public ICommand F4WrOff => new Command(OnF4WrOff);
-        public ICommand F6Doc => new Command(OnF6Doc);
         public DocStandart(DocId pDocId, int pTypeResult, eTypeOrder pTypeOrder)
         {
             DB db = DB.GetDB();
@@ -29,19 +25,24 @@ namespace BRB5.View
             this.BindingContext = this;
             InitializeComponent();
         }
-        private async void OnF2Save()
+
+        private void F2Save(object sender, EventArgs e)
         {
 
         }
-        private async void OnF3Scan()
+
+        private async void F3Scan(object sender, EventArgs e)
         {
+
             await Navigation.PushAsync(new Scan());
         }
-        private async void OnF4WrOff()
+
+        private void F4WrOff(object sender, EventArgs e)
         {
 
         }
-        private async void OnF6Doc()
+
+        private void F6Doc(object sender, EventArgs e)
         {
 
         }

@@ -215,6 +215,11 @@ namespace BRB5
             db.ReplaceRaiting(GetRaiting(sender));
         }
 
+        private void OnHeadTapped(object sender, EventArgs e)
+        {
+
+        }
+
         private Raiting GetRaiting(object sender)
         {
             Xamarin.Forms.View V = (Xamarin.Forms.View)sender;
