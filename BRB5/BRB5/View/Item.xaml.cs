@@ -108,7 +108,13 @@ namespace BRB5
             }
             if(OldRating == vQuestion.Rating)
                 vQuestion.Rating = 0;
-            
+
+            if (vQuestion.IsItem)
+            {
+                Questions.Single(i => i.Id == vQuestion.Parent).Rating = 0;
+            }
+
+
             if(OldRating != vQuestion.Rating && (vQuestion.Rating == 4  || vQuestion.Rating == 0) && vQuestion.IsHead)
             {
                 foreach (var el in Questions.Where(d => d.Parent == vQuestion.Id))
