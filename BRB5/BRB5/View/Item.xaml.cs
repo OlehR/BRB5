@@ -146,7 +146,8 @@ namespace BRB5
                     el.IsVisible = true;
             else
                 foreach (var el in Questions.Where(d => !d.IsHead && d.Rating > 0))
-                    el.IsVisible = false;
+                    if (el.Rating == 3 && (!String.IsNullOrEmpty(el.Note) || el.QuantityPhoto > 0))
+                        el.IsVisible = false;
 
             OnPropertyChanged("TextAllNoChoice");
         }
