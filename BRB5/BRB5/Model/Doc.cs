@@ -30,6 +30,8 @@ namespace BRB5
         /// Дата документа
         /// </summary>
         public DateTime DateDoc { get; set; } 
+        public string DateString { get { return DateDoc.ToString("dd.MM.yy"); } }
+
         /// <summary>
         /// 1- Якщо треба контролювати асортимент та кількість, для замовлень та можливо інших документів.
         /// </summary>
