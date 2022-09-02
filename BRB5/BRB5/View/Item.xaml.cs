@@ -177,7 +177,7 @@ namespace BRB5
              Navigation.PushAsync(new EditPhoto( vQuestion));
         }
 
-            async void TakePhotoAsync(object sender, EventArgs e)
+        async void TakePhotoAsync(object sender, EventArgs e)
         {
             ImageButton button = (ImageButton)sender;          
           

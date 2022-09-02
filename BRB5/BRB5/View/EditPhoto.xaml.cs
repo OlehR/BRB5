@@ -1,14 +1,18 @@
 ﻿using BRB5.Model;
+using NativeMedia;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Xamarin.Essentials;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
+using static System.Net.WebRequestMethods;
+using File = System.IO.File;
 
 namespace BRB5.View
 {
@@ -67,30 +71,30 @@ namespace BRB5.View
 
             BindingContext = this;
         }
-        private async void OnButtonAdd(object sender, System.EventArgs e)
-        {
-            Button b = sender as Button;
-            if (b == null)
-                return;
-            bool IsVideo = b.Text.Equals("Додати відео");
-            var photo = IsVideo ? await MediaPicker.PickVideoAsync() : await MediaPicker.PickPhotoAsync();
+        //private async void OnButtonAdd(object sender, System.EventArgs e)
+        //{
+        //    Button b = sender as Button;
+        //    if (b == null)
+        //        return;
+        //    bool IsVideo = b.Text.Equals("Додати відео");
+        //    var photo = IsVideo ? await MediaPicker.PickVideoAsync() : await MediaPicker.PickPhotoAsync();
             
 
-            //await MediaPicker.PickVideoAsync();
-            if (photo != null && File.Exists(photo.FullPath))
-            {
-                // для примера сохраняем файл в локальном хранилище
-                var ext = Path.GetExtension(photo.FileName);
-                var FileName = $"{Raiting.Id}_{DateTime.Now:yyyyMMdd_hhmmssfff}";
-                var newFile = Path.Combine(dir, FileName + ext);
-                using (var stream = await photo.OpenReadAsync())
-                using (var newStream = File.OpenWrite(newFile))
-                    await stream.CopyToAsync(newStream);
-                Raiting.QuantityPhoto++;
-                db.ReplaceRaiting(Raiting);
-                MyFiles.Insert(0, new Pictures(newFile));
-            }
-        }
+        //    //await MediaPicker.PickVideoAsync();
+        //    if (photo != null && File.Exists(photo.FullPath))
+        //    {
+        //        // для примера сохраняем файл в локальном хранилище
+        //        var ext = Path.GetExtension(photo.FileName);
+        //        var FileName = $"{Raiting.Id}_{DateTime.Now:yyyyMMdd_hhmmssfff}";
+        //        var newFile = Path.Combine(dir, FileName + ext);
+        //        using (var stream = await photo.OpenReadAsync())
+        //        using (var newStream = File.OpenWrite(newFile))
+        //            await stream.CopyToAsync(newStream);
+        //        Raiting.QuantityPhoto++;
+        //        db.ReplaceRaiting(Raiting);
+        //        MyFiles.Insert(0, new Pictures(newFile));
+        //    }
+        //}
 
         async  private void OnButtonDel(object sender, System.EventArgs e)
         {
@@ -107,8 +111,57 @@ namespace BRB5.View
             }
         }
 
-        private void OnButtonClicked(object sender, System.EventArgs e)
+        private async void OnPhotosAdd(object sender, EventArgs e)
         {
+            var cts = new CancellationTokenSource();
+            IMediaFile[] files = null;
+
+            try
+            {
+                var request = new MediaPickRequest(5, MediaFileType.Image, MediaFileType.Video)
+                {
+                    PresentationSourceBounds = System.Drawing.Rectangle.Empty,
+                    UseCreateChooser = true,
+                    Title = "Select"
+                };
+
+                cts.CancelAfter(TimeSpan.FromMinutes(5));
+
+                var results = await MediaGallery.PickAsync(request, cts.Token);
+                files = results?.Files?.ToArray();
+            }
+            catch (OperationCanceledException)
+            {
+                // handling a cancellation request
+            }
+            catch (Exception)
+            {
+                // handling other exceptions
+            }
+            finally
+            {
+                cts.Dispose();
+            }
+
+
+            if (files == null)
+                return;
+            
+
+            foreach (var file in files)
+            {
+                var ext = "." + file.Extension;
+                var FileName = $"{Raiting.Id}_{DateTime.Now:yyyyMMdd_hhmmssfff}";
+                var newFile = Path.Combine(dir, FileName + ext);
+
+                using (var stream = await file.OpenReadAsync())
+                using (var newStream = File.OpenWrite(newFile))
+                    await stream.CopyToAsync(newStream);
+
+                Raiting.QuantityPhoto++;
+                db.ReplaceRaiting(Raiting);
+                MyFiles.Insert(0, new Pictures(newFile));
+            }
         }
     }
 }
