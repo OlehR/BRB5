@@ -99,6 +99,26 @@ namespace BRB5
                 }
             }
         }
+
+        public string GetLightColor
+        {
+            get
+            {
+                switch (Color)
+                {
+                    case 9:
+                        return "#FFD1D1"; //Червоний
+                    case 2:
+                        return "#ffdd8a"; //Оранжевий
+                    case 0:
+                        return "#ffffb7"; //Жовтий
+                    case 1:
+                        return "#c4ffc4"; //Зелений
+                    default:
+                        return "#fff3cd";
+                }
+            }
+        }
         //public Color GetColor { get { return Color == 0?new Color(0xdcdcdc) : new Color(Color); } }
 
         //public int isClose; //0- не закривати, 1 - закривати.

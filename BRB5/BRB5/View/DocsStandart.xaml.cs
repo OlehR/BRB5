@@ -34,7 +34,7 @@ namespace BRB5.View
 
         private async void OpenDoc(object sender, EventArgs e)
         {
-            var s = sender as StackLayout;
+            var s = sender as Grid;
 
             var vDoc = s.BindingContext as Doc;
             

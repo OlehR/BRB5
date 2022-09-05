@@ -1,12 +1,88 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
-             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" xmlns:local="clr-namespace:BRB5.View"
              x:Class="BRB5.View.DocStandart">
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <DataTemplate x:Key="evenTemplate">
+                <ViewCell>
+                    <Grid RowSpacing="1"
+                                  ColumnSpacing="1"  
+                                  Padding="1" 
+                                  BackgroundColor="#adaea7">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="1*" />
+                            <ColumnDefinition Width="1*" />
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions   >
+                            <RowDefinition/>
+                            <RowDefinition/>
+                        </Grid.RowDefinitions>
+
+                        <Label Text="{Binding NameWares}"                                                
+                                       Grid.ColumnSpan="2" 
+                                       BackgroundColor="{Binding GetBackgroundColor}"/>
+
+                        <Label Text="{Binding CodeWares}"
+                                       Grid.Row="1" 
+                                       Grid.Column="0"
+                                       BackgroundColor="{Binding GetBackgroundColor}" />
+
+                        <Label Text="{Binding InputQuantity}" 
+                                       Grid.Row="1"
+                                       Grid.Column="1"
+                                       BackgroundColor="{Binding GetBackgroundColor}"/>
+
+                    </Grid>
+                </ViewCell>
+            </DataTemplate>
+            <DataTemplate x:Key="unevenTemplate">
+                <ViewCell>
+
+                    <Grid RowSpacing="1"
+                                  ColumnSpacing="1"  
+                                  Padding="1" 
+                                  BackgroundColor="#adaea7">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="1*" />
+                            <ColumnDefinition Width="1*" />
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions   >
+                            <RowDefinition/>
+                            <RowDefinition/>
+                        </Grid.RowDefinitions>
+
+                        <Label Text="{Binding NameWares}"                                                
+                                       Grid.ColumnSpan="2" 
+                                       BackgroundColor="{Binding GetLightBackgroundColor}"/>
+
+                        <Label Text="{Binding CodeWares}"
+                                       Grid.Row="1" 
+                                       Grid.Column="0"
+                                       BackgroundColor="{Binding GetLightBackgroundColor}" />
+
+                        <Label Text="{Binding InputQuantity}" 
+                                       Grid.Row="1"
+                                       Grid.Column="1"
+                                       BackgroundColor="{Binding GetLightBackgroundColor}"/>
+
+                    </Grid>
+                </ViewCell>
+            </DataTemplate>
+            <local:AlternateColorDataTemplateSelector x:Key="alternateColorDataTemplateSelector"
+                EvenTemplate="{StaticResource evenTemplate}"
+                UnevenTemplate="{StaticResource unevenTemplate}" />
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
     <ContentPage.Content>
         <StackLayout>
-            <ListView  ItemsSource="{Binding MyDocWares}"  >
+            <ListView ItemTemplate="{StaticResource alternateColorDataTemplateSelector}"  ItemsSource="{Binding MyDocWares}" SeparatorVisibility="None" >
                 <ListView.Header>
-                    <Grid  >
+                    <Grid  RowSpacing="1"
+                           ColumnSpacing="1"  
+                           Padding="1" 
+                           BackgroundColor="#adaea7">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="1*" />
                             <ColumnDefinition Width="1*" />
@@ -17,55 +93,21 @@
                         </Grid.RowDefinitions>
 
                         <Label Text="Назва"                                                
-                               Grid.ColumnSpan="2" />
+                               Grid.ColumnSpan="2"
+                               BackgroundColor="White" />
 
                         <Label Text="Код"
                                Grid.Row="1" 
-                               Grid.Column="0" />
+                               Grid.Column="0"
+                               BackgroundColor="White" />
 
                         <Label Text="Факт" 
                                Grid.Row="1" 
-                               Grid.Column="1"/>
+                               Grid.Column="1"
+                               BackgroundColor="White"/>
 
                     </Grid>
                 </ListView.Header>
-                <ListView.ItemTemplate>
-                    <DataTemplate>
-                        <ViewCell>
-                            <Grid  BackgroundColor="{Binding GetBackgroundColor}">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="1*" />
-                                    <ColumnDefinition Width="1*" />
-                                </Grid.ColumnDefinitions>
-                                <Grid.RowDefinitions   >
-                                    <RowDefinition/>
-                                    <RowDefinition/>
-                                </Grid.RowDefinitions>
-
-                                <BoxView Grid.Row="0"
-                                           Grid.ColumnSpan="2"  
-                                             BackgroundColor="{Binding GetBackgroundColor}" />
-                                <Label Text="{Binding NameWares}"                                                
-                                           Grid.ColumnSpan="2" />
-
-                                <BoxView Grid.Row="1" 
-                                             Grid.Column="0" 
-                                             BackgroundColor="{Binding GetBackgroundColor}" />
-                                <Label Text="{Binding CodeWares}"
-                                               Grid.Row="1" 
-                                               Grid.Column="0" />
-
-                                <BoxView Grid.Row="1" 
-                                             Grid.Column="1"
-                                             BackgroundColor="{Binding GetBackgroundColor}" />
-                                <Label Text="{Binding InputQuantity}" 
-                                               Grid.Row="1" 
-                                               Grid.Column="1"/>
-
-                            </Grid>
-                        </ViewCell>
-                    </DataTemplate>
-                </ListView.ItemTemplate>
             </ListView>
 
             <StackLayout VerticalOptions="EndAndExpand" Orientation="Horizontal">
