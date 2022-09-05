@@ -89,8 +89,7 @@
             <ListView ItemsSource="{Binding MyDocsR}" 
                       SeparatorVisibility="None"
                       HasUnevenRows="True"
-                      ItemTemplate="{StaticResource alternateColorDataTemplateSelector}">
-               
+                      ItemTemplate="{StaticResource alternateColorDataTemplateSelector}">               
             </ListView>
 
             <StackLayout VerticalOptions="EndAndExpand" Orientation="Horizontal">

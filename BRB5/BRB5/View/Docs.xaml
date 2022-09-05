@@ -6,81 +6,70 @@
              x:Class="BRB5.Docs">
 
     <ContentPage.Content>
-        <StackLayout>
-           <!-- <Label Text="Список документів"
-                VerticalOptions="CenterAndExpand" 
-                HorizontalOptions="CenterAndExpand" />-->
-
-            <ListView x:Name="ListQuestions"
+        <ListView x:Name="ListQuestions"
               HasUnevenRows="True"
-              ItemsSource="{Binding MyDoc}" 
-                      
-              >
-                <ListView.Header>
-                    <StackLayout Orientation="Horizontal">
-                        <Label Text="Документи" FontSize="25"
+              ItemsSource="{Binding MyDoc}" >
+            <ListView.Header>
+                <StackLayout Orientation="Horizontal">
+                    <Label Text="Документи" FontSize="25"
                            BackgroundColor="#c5cae9" HorizontalOptions="FillAndExpand" />
-                    </StackLayout>
-                </ListView.Header>
-                <!-- ItemTapped="OnItemTapped"-->
-                <ListView.ItemTemplate>
-                    <DataTemplate xmlns:brb5="clr-namespace:BRB5" x:DataType="brb5:Doc">
-                        <ViewCell >
-                            <ViewCell.View BackgroundColor="white">
-                                <!--<Label Text="{Binding NameUser}" FontSize="22" />
-                                    <Label Text="{Binding DateDoc}" FontSize="22" />-->
-                                <Grid Padding="5"
-                                      BackgroundColor="#dede7b">
-                                    <Grid Focused="Grid_Focused" 
+                </StackLayout>
+            </ListView.Header>
+            <ListView.ItemTemplate>
+                <DataTemplate xmlns:brb5="clr-namespace:BRB5" x:DataType="brb5:Doc">
+                    <ViewCell >
+                        <ViewCell.View BackgroundColor="white">
+                            
+                            <Grid Padding="5"
+                                  BackgroundColor="#dede7b">
+                                <Grid Focused="Grid_Focused" 
                                       Padding="5"
                                       BackgroundColor="{Binding GetColor}" >
 
-                                        <Grid.GestureRecognizers>
-                                            <TapGestureRecognizer Tapped="OnButtonClicked" />
-                                        </Grid.GestureRecognizers>
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="1*" />
-                                            <ColumnDefinition Width="1*" />
-                                            <ColumnDefinition Width="1*" />
-                                        </Grid.ColumnDefinitions>
-                                        <Grid.RowDefinitions>
-                                            <RowDefinition />
-                                            <RowDefinition  />
-                                        </Grid.RowDefinitions>
+                                    <Grid.GestureRecognizers>
+                                        <TapGestureRecognizer Tapped="OnButtonClicked" />
+                                    </Grid.GestureRecognizers>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="1*" />
+                                        <ColumnDefinition Width="1*" />
+                                        <ColumnDefinition Width="1*" />
+                                    </Grid.ColumnDefinitions>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition />
+                                        <RowDefinition  />
+                                    </Grid.RowDefinitions>
 
 
-                                        <Label Text="{Binding DateString}" 
+                                    <Label Text="{Binding DateString}" 
                                                ClassId="Ok" 
                                                FontSize="Medium"
                                                FontAttributes="Bold"/>
-                                        <Label Grid.Column="1"
+                                    <Label Grid.Column="1"
                                                FontSize="Medium"
                                                HorizontalOptions="Center"
                                                Text="{Binding Description}"/>
-                                        <Label Grid.Column="2"
+                                    <Label Grid.Column="2"
                                                HorizontalOptions="End"
                                                FontSize="Medium"
                                                Text="{Binding NumberDoc}"/>
-                                        <Label Grid.Row="1"  
+                                    <Label Grid.Row="1"  
                                                FontSize="Medium"
                                                FontAttributes="Bold"
                                                Text="{Binding CodeWarehouse}"
                                                Grid.ColumnSpan="2" />
-                                        <Label Grid.Row="1"  
+                                    <Label Grid.Row="1"  
                                                FontSize="Medium"
                                                Text="{Binding NameUser}"
                                                Grid.Column="2" />
 
 
-                                    </Grid>
                                 </Grid>
-                            </ViewCell.View>
-                        </ViewCell>
-                    </DataTemplate>
-                </ListView.ItemTemplate>
-            </ListView>
-
-        </StackLayout>
+                            </Grid>
+                        </ViewCell.View>
+                    </ViewCell>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
     </ContentPage.Content>
     
 </ContentPage>

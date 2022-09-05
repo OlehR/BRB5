@@ -8,11 +8,11 @@
         <AbsoluteLayout>
 
             <forms:ZXingScannerView x:Name="zxing" HorizontalOptions="StartAndExpand" VerticalOptions="FillAndExpand" ScaleY="1.2"  
-                    AbsoluteLayout.LayoutBounds="0, -0.2, 1, .4"  AbsoluteLayout.LayoutFlags="All"   >
+                    AbsoluteLayout.LayoutBounds="0, -0.2, 1, .35"  AbsoluteLayout.LayoutFlags="All"   >
 
             </forms:ZXingScannerView>
 
-            <StackLayout   AbsoluteLayout.LayoutBounds="1, 1, 1, .67"  AbsoluteLayout.LayoutFlags="All" >
+            <StackLayout   AbsoluteLayout.LayoutBounds="1, .95, 1, .8"  AbsoluteLayout.LayoutFlags="All" >
                 <Label Text="{Binding }"
                            FontSize="28"  />
                 <Grid >
@@ -72,7 +72,7 @@
                            FontSize="16"
                            Grid.Column="2" 
                            TextColor = "#ff5c5c" />
-                    <Label Text="обнуити"
+                    <Label Text="обнулити"
                            FontSize="18"
                            Grid.Column="3" 
                            TextColor="#816f20" >
