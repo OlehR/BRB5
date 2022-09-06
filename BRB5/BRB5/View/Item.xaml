@@ -28,85 +28,100 @@
                             <ViewCell>
                                 <ViewCell.View>
                                     <StackLayout>
-                                        <StackLayout BackgroundColor="{Binding BackgroundColor}"  
-                                                 IsVisible="{Binding IsVisible}" 
-                                                 HeightRequest="{Binding HeightRequest}" >
-                                            
-                                            <Label Text="{Binding Text}" FontSize="22" />
-                                            <Grid>
-                                                <Grid.ColumnDefinitions>
-                                                    <ColumnDefinition Width="1*" />
-                                                    <ColumnDefinition Width="1*" />
-                                                    <ColumnDefinition Width="1*" />
-                                                    <ColumnDefinition Width="1*" />
-                                                    <ColumnDefinition Width="1*" />
-                                                    <ColumnDefinition Width="1*" />
-                                                </Grid.ColumnDefinitions>
+                                        <Grid BackgroundColor="{Binding BackgroundColor}"  
+                                                 IsVisible="{Binding IsHead}">
+                                            <Grid.GestureRecognizers>
+                                                <TapGestureRecognizer Tapped="OnHeadTapped"/>
+                                            </Grid.GestureRecognizers>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="2*" />
+                                                <ColumnDefinition Width="1*" />
+                                            </Grid.ColumnDefinitions>
 
-                                                <ImageButton  IsVisible="{Binding IsEnableOk}"  
+                                            <Label Text="{Binding Text}" FontSize="22" />
+
+                                            <ImageButton IsVisible="{Binding IsEnableNotKnow}"
+                                                         Source="NotKnow.png" 
+                                                         ClassId="NotKnow" 
+                                                         Grid.Column="1" 
+                                                         BackgroundColor="Transparent"
+                                                         HeightRequest="50"
+                                                         Aspect="AspectFit" 
+                                                         Opacity="{Binding OpacityNotKnow}"
+                                                         Clicked="OnButtonClicked" />
+                                        </Grid>
+                                        <Grid BackgroundColor="{Binding BackgroundColor}"  
+                                                 IsVisible="{Binding IsVisible}">
+
+                                            <StackLayout BackgroundColor="{Binding BackgroundColor}"  
+                                                 IsVisible="{Binding IsItem}" 
+                                                 HeightRequest="{Binding HeightRequest}" >
+
+                                                <Label Text="{Binding Text}" FontSize="22" />
+                                                <Grid Margin="0" Padding="0" >
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="1*" />
+                                                        <ColumnDefinition Width="1*" />
+                                                        <ColumnDefinition Width="1*" />
+                                                        <ColumnDefinition Width="1*" />
+                                                        <ColumnDefinition Width="1*" />
+                                                        <ColumnDefinition Width="1*" />
+                                                    </Grid.ColumnDefinitions>
+
+                                                    <ImageButton  IsVisible="{Binding IsEnableOk}" 
+                                                                  Margin="0" Padding="0"
                                                           Source="Ok.png" 
                                                           ClassId="Ok"
                                                           BackgroundColor="Transparent"
-                                                          WidthRequest="50" 
-                                                          HeightRequest="50"
-                                                          FlexLayout.AlignSelf="Center" 
-                                                          FlexLayout.Grow="1" 
+                                                          HeightRequest="60"
                                                           Aspect="AspectFit" 
                                                           Opacity="{Binding OpacityOk}"
                                                           Clicked="OnButtonClicked" />
 
-                                                <ImageButton IsVisible="{Binding IsEnableSoSo}" 
+                                                    <ImageButton IsVisible="{Binding IsEnableSoSo}" 
+                                                                 Margin="0" Padding="0"
                                                          Source="So_so.png" 
                                                          ClassId="SoSo" 
                                                          Grid.Column="1" 
                                                          BackgroundColor="Transparent" 
-                                                         WidthRequest="50"
-                                                         HeightRequest="50"
-                                                         FlexLayout.AlignSelf="Center"
-                                                         FlexLayout.Grow="1" 
+                                                         HeightRequest="60"
                                                          Aspect="AspectFit" 
                                                          Opacity="{Binding OpacitySoSo}"
                                                          Clicked="OnButtonClicked" />
 
-                                                <ImageButton IsVisible="{Binding IsEnableBad}"  
+                                                    <ImageButton IsVisible="{Binding IsEnableBad}"  
+                                                                 Margin="0" Padding="0"
                                                          Source="Bad.png"
                                                          ClassId="Bad" 
                                                          Grid.Column="2"
                                                          BackgroundColor="Transparent"
-                                                         WidthRequest="50" 
-                                                         HeightRequest="50"
-                                                         FlexLayout.AlignSelf="Center" 
-                                                         FlexLayout.Grow="1" 
+                                                         HeightRequest="60" 
                                                          Aspect="AspectFit" 
                                                          Opacity="{Binding OpacityBad}"
                                                          Clicked="OnButtonClicked" />
 
-                                                <ImageButton IsVisible="{Binding IsEnableNotKnow}"
+                                                    <ImageButton IsVisible="{Binding IsEnableNotKnow}"
+                                                                 Margin="0" Padding="0"
                                                          Source="NotKnow.png" 
                                                          ClassId="NotKnow" 
                                                          Grid.Column="3" 
                                                          BackgroundColor="Transparent"
-                                                         WidthRequest="50" 
-                                                         HeightRequest="50"
-                                                         FlexLayout.AlignSelf="Center" 
-                                                         FlexLayout.Grow="1"
+                                                         HeightRequest="60"
                                                          Aspect="AspectFit" 
                                                          Opacity="{Binding OpacityNotKnow}"
                                                          Clicked="OnButtonClicked" />
 
-                                                <ImageButton IsVisible="{Binding IsItem}" 
+                                                    <ImageButton IsVisible="{Binding IsItem}" 
+                                                                 Margin="0" Padding="0"
                                                          Source="Photo.png" 
                                                          ClassId="{Binding Id}"
                                                          Grid.Column="4" 
                                                          BackgroundColor="Transparent"
-                                                         WidthRequest="50"
-                                                         HeightRequest="50"
-                                                         FlexLayout.AlignSelf="Center" 
-                                                         FlexLayout.Grow="1" 
+                                                         HeightRequest="60"
                                                          Aspect="AspectFit"
                                                          Clicked="TakePhotoAsync" />
 
-                                                <Label IsVisible="{Binding IsItem}" 
+                                                    <Label IsVisible="{Binding IsItem}" 
                                                    TextColor="Red" 
                                                    Text="{Binding QuantityPhoto}" 
                                                    ClassId="CountFoto" 
@@ -116,24 +131,23 @@
                                                    VerticalOptions="Start"  
                                                    HorizontalOptions="End"/>
 
-                                                <ImageButton IsVisible="{Binding IsItem}" 
+                                                    <ImageButton IsVisible="{Binding IsItem}" 
+                                                                 Margin="0" Padding="0"
                                                          Source="Edit.png"
                                                          ClassId="{Binding Id}"
                                                          Grid.Column="5"
                                                          BackgroundColor="Transparent"
-                                                         WidthRequest="50" 
-                                                         HeightRequest="50"
-                                                         FlexLayout.AlignSelf="Center" 
-                                                         FlexLayout.Grow="1" 
+                                                         HeightRequest="60" 
                                                          Aspect="AspectFit"   
                                                          Clicked="EditPhoto" />
 
-                                            </Grid>
-                                            <Editor IsVisible="{Binding IsItem}" 
-                                                Text="{Binding Note}" 
-                                                AutoSize="TextChanges" 
-                                                Completed ="Editor_Completed"/>
-                                        </StackLayout>
+                                                </Grid>
+                                                <Editor IsVisible="{Binding IsItem}" 
+                                                        Text="{Binding Note}" 
+                                                        AutoSize="TextChanges" 
+                                                        Completed ="Editor_Completed"/>
+                                            </StackLayout>
+                                        </Grid>
                                     </StackLayout>
                                     
                                 </ViewCell.View>
@@ -146,8 +160,9 @@
 
             <Grid AbsoluteLayout.LayoutBounds="0, 1, 1, .1"  AbsoluteLayout.LayoutFlags="All">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="6*" />
-                    <ColumnDefinition Width="9*" />
+                    <ColumnDefinition Width="3*" />
+                    <ColumnDefinition Width="3*" />
+                    <ColumnDefinition Width="3*" />
                     <ColumnDefinition Width="2*" />
                 </Grid.ColumnDefinitions>
                 <Button IsEnabled="{Binding IsSave}" 
@@ -166,7 +181,15 @@
                         VerticalOptions="CenterAndExpand"  
                         Clicked="OnSetView" />
 
-                <Label Grid.Column="2"
+                <Button Grid.Column="2"
+                        Text = "{Binding TextAllOpen}" 
+                        FontSize="Medium" 
+                        BorderWidth="1"        
+                        HorizontalOptions="FillAndExpand" 
+                        VerticalOptions="CenterAndExpand"  
+                        Clicked="OnAllOpen" />
+                
+                <Label Grid.Column="3"
                        IsVisible="{Binding QuantityAllChoice}" 
                        TextColor="Red" 
                        Text="{Binding QuantityAllChoice}" 

@@ -30,6 +30,8 @@ namespace BRB5
         /// Дата документа
         /// </summary>
         public DateTime DateDoc { get; set; } 
+        public string DateString { get { return DateDoc.ToString("dd.MM.yy"); } }
+
         /// <summary>
         /// 1- Якщо треба контролювати асортимент та кількість, для замовлень та можливо інших документів.
         /// </summary>
@@ -92,6 +94,26 @@ namespace BRB5
                         return "#FFFF80"; //Жовтий
                     case 1:
                         return "#80FF80"; //Зелений
+                    default:
+                        return "#fff3cd";
+                }
+            }
+        }
+
+        public string GetLightColor
+        {
+            get
+            {
+                switch (Color)
+                {
+                    case 9:
+                        return "#FFD1D1"; //Червоний
+                    case 2:
+                        return "#ffdd8a"; //Оранжевий
+                    case 0:
+                        return "#ffffb7"; //Жовтий
+                    case 1:
+                        return "#c4ffc4"; //Зелений
                     default:
                         return "#fff3cd";
                 }

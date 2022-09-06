@@ -25,48 +25,55 @@
                 <!-- ItemTapped="OnItemTapped"-->
                 <ListView.ItemTemplate>
                     <DataTemplate xmlns:brb5="clr-namespace:BRB5" x:DataType="brb5:Doc">
-                        <ViewCell>
-                            <ViewCell.View  >
-                                <StackLayout>
-                                    <!--<Label Text="{Binding NameUser}" FontSize="22" />
+                        <ViewCell >
+                            <ViewCell.View BackgroundColor="white">
+                                <!--<Label Text="{Binding NameUser}" FontSize="22" />
                                     <Label Text="{Binding DateDoc}" FontSize="22" />-->
-                                     <Grid Focused="Grid_Focused"  >
+                                <Grid Padding="5"
+                                      BackgroundColor="#dede7b">
+                                    <Grid Focused="Grid_Focused" 
+                                      Padding="5"
+                                      BackgroundColor="{Binding GetColor}" >
+
+                                        <Grid.GestureRecognizers>
+                                            <TapGestureRecognizer Tapped="OnButtonClicked" />
+                                        </Grid.GestureRecognizers>
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="1*" />
                                             <ColumnDefinition Width="1*" />
-                                            <ColumnDefinition Width="1*" />                                            
+                                            <ColumnDefinition Width="1*" />
                                         </Grid.ColumnDefinitions>
                                         <Grid.RowDefinitions>
-                                            <RowDefinition Height="*" />
-                                            <RowDefinition Height="*" />
+                                            <RowDefinition />
+                                            <RowDefinition  />
                                         </Grid.RowDefinitions>
 
-                                        <Button  Text="{Binding NumberDoc}" ClassId="Ok" Grid.Column="0" Grid.Row="0" 
-            BackgroundColor="Yellow" 
-            FlexLayout.AlignSelf="Stretch"   HorizontalOptions="FillAndExpand"
-            Clicked="OnButtonClicked" ></Button>
 
-                                        <Button  Text="{Binding DateDoc}" ClassId="Ok" Grid.Column="1" Grid.Row="0" 
-            BackgroundColor="Yellow" 
-            FlexLayout.AlignSelf="Center"  FlexLayout.Grow="1"  HorizontalOptions="FillAndExpand"
-            Clicked="OnButtonClicked" ></Button>
+                                        <Label Text="{Binding DateString}" 
+                                               ClassId="Ok" 
+                                               FontSize="Medium"
+                                               FontAttributes="Bold"/>
+                                        <Label Grid.Column="1"
+                                               FontSize="Medium"
+                                               HorizontalOptions="Center"
+                                               Text="{Binding Description}"/>
+                                        <Label Grid.Column="2"
+                                               HorizontalOptions="End"
+                                               FontSize="Medium"
+                                               Text="{Binding NumberDoc}"/>
+                                        <Label Grid.Row="1"  
+                                               FontSize="Medium"
+                                               FontAttributes="Bold"
+                                               Text="{Binding CodeWarehouse}"
+                                               Grid.ColumnSpan="2" />
+                                        <Label Grid.Row="1"  
+                                               FontSize="Medium"
+                                               Text="{Binding NameUser}"
+                                               Grid.Column="2" />
 
-                                        <Button  Text="{Binding CodeWarehouse}" ClassId="Ok" Grid.Column="2" Grid.Row="0" 
-            BackgroundColor="Yellow" 
-            FlexLayout.AlignSelf="End"  FlexLayout.Grow="1"  HorizontalOptions="FillAndExpand"
-            Clicked="OnButtonClicked" ></Button>
-                                        <Button  Text="{Binding Description}" ClassId="Ok" Grid.Column="0" Grid.Row="1"  Grid.ColumnSpan="2"
-            BackgroundColor="LightYellow" 
-            FlexLayout.AlignSelf="Center"  FlexLayout.Grow="1"  HorizontalOptions="FillAndExpand"
-            Clicked="OnButtonClicked" ></Button>
-                                        <Button  Text="{Binding NameUser}" ClassId="Ok" Grid.Column="2" Grid.Row="1" 
-            BackgroundColor="Yellow" 
-            FlexLayout.AlignSelf="End"  FlexLayout.Grow="1"  HorizontalOptions="FillAndExpand"
-            Clicked="OnButtonClicked" ></Button>
 
-                                    </Grid> 
-
-                                </StackLayout>
+                                    </Grid>
+                                </Grid>
                             </ViewCell.View>
                         </ViewCell>
                     </DataTemplate>

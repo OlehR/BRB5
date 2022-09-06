@@ -35,6 +35,9 @@ namespace BRB5
         public bool IsSaving { get; set; } = false;
         public string TextButtonSave { get { return IsSaving ? "Зупинити" : "Зберегти"; } }
 
+        bool IsAllOpen { get; set; } = true;
+        public string TextAllOpen { get { return IsAllOpen ? "Згорнути" : "Розгорнути"; } set { OnPropertyChanged("IsAllOpen"); } }
+
         /*public event PropertyChangedEventHandler PropertyChanged;
         protected virtual void OnPropertyChanged(string propertyName)
         {
@@ -105,7 +108,13 @@ namespace BRB5
             }
             if(OldRating == vQuestion.Rating)
                 vQuestion.Rating = 0;
-            
+
+            if (vQuestion.IsItem)
+            {
+                Questions.Single(i => i.Id == vQuestion.Parent).Rating = 0;
+            }
+
+
             if(OldRating != vQuestion.Rating && (vQuestion.Rating == 4  || vQuestion.Rating == 0) && vQuestion.IsHead)
             {
                 foreach (var el in Questions.Where(d => d.Parent == vQuestion.Id))
@@ -137,7 +146,8 @@ namespace BRB5
                     el.IsVisible = true;
             else
                 foreach (var el in Questions.Where(d => !d.IsHead && d.Rating > 0))
-                    el.IsVisible = false;
+                    if (el.Rating == 3 && (!String.IsNullOrEmpty(el.Note) || el.QuantityPhoto > 0))
+                        el.IsVisible = false;
 
             OnPropertyChanged("TextAllNoChoice");
         }
@@ -174,7 +184,7 @@ namespace BRB5
              Navigation.PushAsync(new EditPhoto( vQuestion));
         }
 
-            async void TakePhotoAsync(object sender, EventArgs e)
+        async void TakePhotoAsync(object sender, EventArgs e)
         {
             ImageButton button = (ImageButton)sender;          
           
@@ -213,6 +223,33 @@ namespace BRB5
         private void Editor_Completed(object sender, EventArgs e)
         {
             db.ReplaceRaiting(GetRaiting(sender));
+        }
+
+        private void OnHeadTapped(object sender, EventArgs e)
+        {
+            var s = sender as Grid;
+            var cc = s.Parent as StackLayout;
+
+            var vRait = cc.BindingContext as Raiting;
+            var id = vRait.Id;
+            foreach (var xx in Questions.Where(el => el.Parent == id))
+            {
+                xx.IsVisible = !xx.IsVisible;
+            }
+
+        }
+
+        private void OnAllOpen(object sender, EventArgs e)
+        {
+            IsAllOpen = !IsAllOpen;
+            if (IsAllOpen)
+                foreach (var el in Questions)
+                    el.IsVisible = true;
+            else
+                foreach (var el in Questions)
+                    el.IsVisible = false;
+
+            OnPropertyChanged("TextAllOpen");
         }
 
         private Raiting GetRaiting(object sender)

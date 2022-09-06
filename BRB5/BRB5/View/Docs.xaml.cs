@@ -1,5 +1,6 @@
 ﻿//using BRB5.Model;
 using BRB5.Model;
+using BRB5.View;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -39,12 +40,12 @@ namespace BRB5
 
         private async void OnButtonClicked(object sender, System.EventArgs e)
         {
-            Button button = sender as Button;
-            Grid cc = button.Parent as Grid;
-            var vDoc = cc.BindingContext as Doc;
-            await Navigation.PushAsync(new Item(vDoc));
             /*var p = $"{nameof(Item)}?{nameof(Item.NumberDoc)}=\"{vDoc.NumberDoc}\"&TypeDoc={vDoc.TypeDoc}";
              Shell.Current.GoToAsync(p);*/
+
+            var s = sender as Grid;
+            var vDoc = s.BindingContext as Doc;
+            await Navigation.PushAsync(new Item(vDoc));
         }
 
         private async void Grid_Focused(object sender, FocusEventArgs e)

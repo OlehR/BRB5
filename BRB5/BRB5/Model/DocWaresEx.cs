@@ -56,6 +56,28 @@ namespace BRB5.Model
                 }
             }
         }
+
+        public string GetLightBackgroundColor
+        {
+            get
+            {
+                /*  if(!DocSetting.IsViewPlan)
+                      return "fff3cd";*/
+                switch (Ord)
+                {
+                    case 3:
+                        return "#FFD1D1";
+                    case 2:
+                        return "#ffdd8a";
+                    case 1:
+                        return "#ffffb7";
+                    case 0:
+                        return "#c4ffc4";
+                    default:
+                        return "#fff3cd";
+                }
+            }
+        }
         /*
         public string GetNameUnit() { return NameUnit + "X"; }
         public string GetInputQuantity() { return InputQuantity == 0.0d ? "" : string.format(CodeUnit == config.GetCodeUnitWeight() ? "%.3f" : "%.0f", InputQuantity); }

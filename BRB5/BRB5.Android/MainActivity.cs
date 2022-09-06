@@ -11,6 +11,7 @@ using BRB5.Model;
 using BRB5.Connector;
 using System.Net;
 using System.Runtime.Serialization;
+using Result = Android.App.Result;
 
 namespace BRB5.Droid
 {
@@ -63,12 +64,21 @@ namespace BRB5.Droid
             //         if ( LoadAPK($"https://github.com/OlehR/BRB5/raw/master/Apk/{Config.Company}/", "ua.UniCS.TM.brb5.apk", null, VerCode))
             //             InstallAPK(Path.Combine(Config.PathDownloads, "ua.UniCS.TM.brb5.apk"));
 
+            NativeMedia.Platform.Init(this, savedInstanceState);
             Xamarin.Essentials.Platform.Init(this, savedInstanceState);
             ZXing.Net.Mobile.Forms.Android.Platform.Init();
             global::Xamarin.Forms.Forms.Init(this, savedInstanceState);
             global::ZXing.Net.Mobile.Forms.Android.Platform.Init();
             Config.SN = GetDeviceId();
             LoadApplication(new App());
+        }
+
+        protected override void OnActivityResult(int requestCode, Result resultCode, Intent intent)
+        {
+            if (NativeMedia.Platform.CheckCanProcessResult(requestCode, resultCode, intent))
+                NativeMedia.Platform.OnActivityResult(requestCode, resultCode, intent);
+
+            base.OnActivityResult(requestCode, resultCode, intent);
         }
         public override void OnRequestPermissionsResult(int requestCode, string[] permissions, [GeneratedEnum] Android.Content.PM.Permission[] grantResults)
         {

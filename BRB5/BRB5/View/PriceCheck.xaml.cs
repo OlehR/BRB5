@@ -74,10 +74,6 @@ namespace BRB5
 
         public string F5Text { get { return IsMultyLabel  ? "Дублювати" : "Унікальні"; } }
 
-        //public ICommand F1Command => new Command(OnF1);
-        public ICommand F2Command => new Command(OnF2);
-        public ICommand F4Command => new Command(OnF4);
-        public ICommand F5Command => new Command(OnF5);
         public PriceCheck()
         {
             InitializeComponent();
@@ -208,22 +204,20 @@ namespace BRB5
         {
 
         }
-
-        //private async void OnF1()
-        //{ 
         
-        //}
-        private async void OnF2()
+        private void OnF2(object sender, EventArgs e)
         {
             IsVisRepl = !IsVisRepl;
         }
-        private async void OnF4()
+
+        private void OnF4(object sender, EventArgs e)
         {
-        }
-        private async void OnF5()
-        {
-            IsMultyLabel = !IsMultyLabel;
+
         }
 
+        private void OnF5(object sender, EventArgs e)
+        {
+            IsVisRepl = !IsVisRepl;
+        }
     }
 }

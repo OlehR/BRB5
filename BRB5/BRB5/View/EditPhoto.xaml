@@ -32,8 +32,14 @@
                                                      WidthRequest="240" HeightRequest="500"
                                                      FlexLayout.AlignSelf="Center"  
                                                      FlexLayout.Grow="1" Aspect="AspectFit"
-                                                      />
-
+                                                     IsVisible="{Binding IsPhoto}" />
+                                    <Image Source="Video.png"
+                                                     ClassId="Ok"
+                                                     BackgroundColor="Transparent" 
+                                                     WidthRequest="240"
+                                                     FlexLayout.AlignSelf="Center"  
+                                                     FlexLayout.Grow="1" Aspect="AspectFit"                                                     
+                                                     IsVisible="{Binding IsVideo}" />
 
                                     <ImageButton Source="Delete.png" 
                                                      ClassId="NotKnow"
@@ -56,32 +62,14 @@
             </ListView>
             
             <Grid AbsoluteLayout.LayoutBounds="0, 1, 1, .1"  AbsoluteLayout.LayoutFlags="All">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="1*" />
-                    <ColumnDefinition Width="1*" />
-                </Grid.ColumnDefinitions>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="*" />
-                </Grid.RowDefinitions>
-
-                <Button Grid.Column="0" 
-                        Grid.Row="0" 
-                        x:Name="AddFoto"  
-                        Text = "Додати фото" 
+                
+                <Button x:Name="AddFotos"  
+                        Text = "Додати медіа" 
                         FontSize="Medium" 
                         BorderWidth="1"
                         HorizontalOptions="Center" 
                         VerticalOptions="CenterAndExpand"
-                        Clicked="OnButtonAdd" />
-                <Button Grid.Column="1" 
-                        Grid.Row="0" 
-                        x:Name="AddVideo" 
-                        Text = "Додати відео" 
-                        FontSize="Medium" 
-                        BorderWidth="1"
-                        HorizontalOptions="Center" 
-                        VerticalOptions="CenterAndExpand"
-                        Clicked="OnButtonAdd" />
+                        Clicked="OnPhotosAdd" />
 
             </Grid>
         </AbsoluteLayout>
