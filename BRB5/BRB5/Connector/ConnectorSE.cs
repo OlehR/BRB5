@@ -128,6 +128,10 @@ namespace BRB5.Connector
             }
         }
 
+        //Завантаження довідників.
+        public override Result LoadGuidData(bool IsFull) { return new Result(); }
+
+
         public override ParseBarCode ParsedBarCode(string pBarCode, bool pIsOnlyBarCode)
         {
             pBarCode = pBarCode.Trim();
