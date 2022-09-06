@@ -27,7 +27,7 @@ namespace BRB5
         public string Password { get; set; }
         public IEnumerable<LoginServer> LS { get; set; }
 
-        public int SelectedLS { get { return LS.Count()==1? 0 : LS.ToList().FindIndex(x => x.Code == Config.LoginServer); } set { Config.LoginServer = LS.ToList()[value].Code; } }
+        public int SelectedLS { get {  return LS == null || LS.Count()==1? 0 : LS.ToList().FindIndex(x => x.Code == Config.LoginServer); } set { Config.LoginServer = LS.ToList()[value].Code; } }
         public bool IsVisLS { get; set; } = true;
         public string Ver { get { return "BRB5 (" + AppInfo.VersionString + ")"; } }
         public string Company { get { return Enum.GetName(typeof(eCompany), Config.Company); } }
@@ -112,15 +112,16 @@ namespace BRB5
                 Password = db.GetConfig<string>("Password");
             }
             Config.LoginServer=db.GetConfig<eLoginServer>("LoginServer");
-
-            LS = c.LoginServer();
-            if(LS==null || LS.Count() == 1)
+            if (c != null)
             {
-                IsVisLS = false;
-                Config.LoginServer = LS.First().Code;
+                LS = c.LoginServer();
+                if (LS == null || LS.Count() == 1)
+                {
+                    IsVisLS = false;
+                    Config.LoginServer = LS.First().Code;
+                }
+
             }
-
-
             Config.IsVibration = db.GetConfig<bool>("IsVibration");
             Config.IsSound = db.GetConfig<bool>("IsSound");
             Config.IsTest = db.GetConfig<bool>("IsTest");
