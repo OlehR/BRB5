@@ -22,7 +22,7 @@ namespace BRB5.View
                 {
                     zxing.IsAnalyzing = false;
 
-
+                    //FoundWares(result.Text, false);
 
 
                     zxing.IsAnalyzing = true;
