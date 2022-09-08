@@ -63,7 +63,7 @@ namespace BRB5
     static class EnumMethods
     {
 
-        public static string GetString(this eTypeUsePrinter pThis)
+        /*public static string GetString(this eTypeUsePrinter pThis)
         {
             switch (pThis)
             {
@@ -74,7 +74,7 @@ namespace BRB5
                 case eTypeUsePrinter.StationaryWithCutAuto: return "Стаціонарний з обрізжчиком (автовибір)";
                 default: return "Невідоме значення";
             }
-        }
+        }*/
         public static string GetDescription(Enum value)
         {
             var enumMember = value.GetType().GetMember(value.ToString()).FirstOrDefault();
