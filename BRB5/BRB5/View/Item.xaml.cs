@@ -109,7 +109,7 @@ namespace BRB5
             if(OldRating == vQuestion.Rating)
                 vQuestion.Rating = 0;
 
-            if (vQuestion.IsItem)
+            if (vQuestion.IsItem&& vQuestion.Parent!= 9999999)
             {
                 Questions.Single(i => i.Id == vQuestion.Parent).Rating = 0;
             }
@@ -146,8 +146,8 @@ namespace BRB5
                     el.IsVisible = true;
             else
                 foreach (var el in Questions.Where(d => !d.IsHead && d.Rating > 0))
-                    if (el.Rating == 3 && (!String.IsNullOrEmpty(el.Note) || el.QuantityPhoto > 0))
-                        el.IsVisible = false;
+                    if (el.Rating != 3 )  el.IsVisible = false;
+                    else if (!String.IsNullOrEmpty(el.Note) || el.QuantityPhoto > 0) el.IsVisible = false;
 
             OnPropertyChanged("TextAllNoChoice");
         }
