@@ -14,11 +14,12 @@ namespace BRB5.View
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class DocStandart : ContentPage
     {
+        private int myTypeDoc;
         public ObservableCollection<DocWaresEx> MyDocWares { get; set; }
-        public DocStandart(DocId pDocId, int pTypeResult, eTypeOrder pTypeOrder)
+        public DocStandart(DocId pDocId, int pTypeResult, eTypeOrder pTypeOrder, int pTypeDoc)
         {
             DB db = DB.GetDB();
-
+            myTypeDoc = pTypeDoc;
             var r = db.GetDocWares(pDocId, pTypeResult, pTypeOrder);
             if(r != null)
                 MyDocWares = new ObservableCollection<DocWaresEx>(r);
@@ -34,7 +35,7 @@ namespace BRB5.View
         private async void F3Scan(object sender, EventArgs e)
         {
 
-            await Navigation.PushAsync(new Scan());
+            await Navigation.PushAsync(new Scan(myTypeDoc));
         }
 
         private void F4WrOff(object sender, EventArgs e)

@@ -38,7 +38,7 @@ namespace BRB5.View
 
             var vDoc = s.BindingContext as Doc;
             
-            await Navigation.PushAsync(new DocStandart(vDoc, 1, eTypeOrder.Scan));
+            await Navigation.PushAsync(new DocStandart(vDoc, 1, eTypeOrder.Scan, myTypeDoc));
         }
     }
 }

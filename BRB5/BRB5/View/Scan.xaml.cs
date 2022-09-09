@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BRB5.Model;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -12,9 +13,11 @@ namespace BRB5.View
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class Scan : ContentPage
     {
-        public Scan()
+        public TypeDoc TypeDoc { get; set; }
+        public Scan(int pTypeDoc)
         {
             InitializeComponent();
+            TypeDoc = Config.GetDocSetting(pTypeDoc);
 
             zxing.OnScanResult += (result) =>
                 Device.BeginInvokeOnMainThread(async () =>
