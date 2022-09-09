@@ -109,7 +109,7 @@ namespace BRB5
             if(OldRating == vQuestion.Rating)
                 vQuestion.Rating = 0;
 
-            if (vQuestion.IsItem&& vQuestion.Parent!= 9999999)
+            if (vQuestion.IsItem)
             {
                 var el = Questions.FirstOrDefault(i => i.Id == vQuestion.Parent);
                 if(el!=null) el.Rating = 0;
