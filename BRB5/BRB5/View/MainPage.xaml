@@ -19,8 +19,9 @@
                      Priority="0" 
                      Clicked="OnSettingsClicked"/>
         <ToolbarItem Text="Автризація"
-                 Order="Secondary"
-                 Priority="1" />
+                     Order="Secondary"
+                     Priority="1" 
+                     Clicked="OnAuthorizationClicked"/>
     </ContentPage.ToolbarItems>
     <StackLayout>
         <StackLayout x:Name="SLLogin">
@@ -35,8 +36,8 @@
             <!--TextChanged="loginEntry_TextChanged"-->
             <Entry x:Name="passwordEntry" Text="{Binding Password}"  Placeholder = "Password" IsPassword ="True" />
             <Button Text = "Залогінитись" FontSize="Large" BorderWidth="1"
-        HorizontalOptions="Center" VerticalOptions="CenterAndExpand"
-        Clicked="OnButtonLogin" />
+                    HorizontalOptions="Center" VerticalOptions="CenterAndExpand"
+                    Clicked="OnButtonLogin" />
         </StackLayout>
         <ListView x:Name="ListDocs" IsVisible="false"
               HasUnevenRows="True"

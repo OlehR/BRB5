@@ -197,5 +197,11 @@ namespace BRB5
         {
             await Navigation.PushAsync(new Settings());
         }
+
+        private void OnAuthorizationClicked(object sender, EventArgs e)
+        {
+            ListDocs.IsVisible = false;
+            SLLogin.IsVisible = true;
+        }
     }
 }
