@@ -111,7 +111,8 @@ namespace BRB5
 
             if (vQuestion.IsItem&& vQuestion.Parent!= 9999999)
             {
-                Questions.Single(i => i.Id == vQuestion.Parent).Rating = 0;
+                var el = Questions.FirstOrDefault(i => i.Id == vQuestion.Parent);
+                if(el!=null) el.Rating = 0;
             }
 
 
