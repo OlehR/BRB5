@@ -20,6 +20,7 @@ namespace BRB5.Model
         public decimal QuantityMax { get; set; }
         //public double QuantityOld{ get; set; }
         public decimal QuantityOrder { get; set; }
+        public decimal InputQuantity { get; set; }
         public decimal QuantityReason { get; set; }
         public decimal QuantityBarCode { get { return ParseBarCode?.Quantity ?? 0m; } }
         /// <summary>

@@ -47,8 +47,8 @@
                             <ColumnDefinition Width="*"  />
                             <ColumnDefinition Width="2*"  />
                         </Grid.ColumnDefinitions>
-                        <Entry Text="" 
-                           Grid.Column="0" 
+                        <Entry Text="{Binding ScanData.InputQuantity}" 
+                           Grid.Column="0" x:Name="inputQ"
                            Keyboard="Numeric"/>
 
                         <Label Text="{Binding ScanData.NameUnit}" Grid.Column="1"/>
@@ -65,7 +65,7 @@
                 </Grid>
 
 
-                <ListView Grid.Row="2" ItemsSource="{Binding ScanData}" SeparatorVisibility="None" >
+                <ListView Grid.Row="2" ItemsSource="{Binding ListWares}" SeparatorVisibility="None" >
                     <ListView.Header>
                         <Grid  RowSpacing="1"
                            ColumnSpacing="1"  
@@ -107,15 +107,15 @@
                                         <ColumnDefinition Width="2*" />
                                     </Grid.ColumnDefinitions>
 
-                                    <Label Text="{Binding}"        
+                                    <Label Text="{Binding ListViewItem.Index}"        
                                        BackgroundColor="White" />
-                                    <Label Text="{Binding}" 
+                                    <Label Text="{Binding ListWares.NameWares}" 
                                        Grid.Column="1"
                                        BackgroundColor="White" />
-                                    <Label Text="{Binding}" 
+                                    <Label Text="{Binding ListWares.InputQuantity}" 
                                        Grid.Column="2"
                                        BackgroundColor="White" />
-                                    <Label Text="" 
+                                    <Label Text="{Binding ListWares.BeforeQuantity}" 
                                        Grid.Column="3"
                                        BackgroundColor="White" />
 

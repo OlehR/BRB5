@@ -1,6 +1,7 @@
 ﻿using BRB5.Model;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Runtime.InteropServices.ComTypes;
 using System.Text;
@@ -15,7 +16,7 @@ namespace BRB5.View
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class Scan : ContentPage
     {
-        public List<DocWaresEx> ListWares { get; set; }
+        public ObservableCollection<DocWaresEx> ListWares { get; set; }
         
         DocWaresEx _ScanData;
         public DocWaresEx ScanData { get { return _ScanData; } set { _ScanData = value; OnPropertyChanged("ScanData"); } }
@@ -27,6 +28,7 @@ namespace BRB5.View
             InitializeComponent();
             TypeDoc = Config.GetDocSetting(pTypeDoc);
             c = Connector.Connector.GetInstance();
+            ListWares = new ObservableCollection<DocWaresEx>();
 
             zxing.OnScanResult += (result) =>
                 Device.BeginInvokeOnMainThread(async () =>
@@ -37,10 +39,30 @@ namespace BRB5.View
                     ScanData = db.GetScanData(pDocId, c.ParsedBarCode(result.Text, true/*?*/));
                     _ = FindWareByBarCodeAsync(result.Text);
 
+                    if (ScanData != null)
+                    { 
+                        inputQ.Focus();
+                        AddWare();
+                    }
                     zxing.IsAnalyzing = true;
                 });
 
             this.BindingContext = this;
+        }
+
+        private void AddWare()
+        {
+            inputQ.Unfocused += (object sender, FocusEventArgs e) => {
+                if (!e.IsFocused&&ScanData.InputQuantity==0) 
+                    ((Entry)sender).Focus();
+                else 
+                { 
+                    ListWares.Add(ScanData); 
+                    ScanData = null;
+                }            
+            };
+
+
         }
 
         protected override void OnAppearing()
