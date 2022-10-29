@@ -378,7 +378,7 @@ namespace BRB5.Connector
             int Sucsses = 0;
             Result LastError = null;
             var Res = new Result();
-            var DirArx = Path.Combine(Config.PathFiles, "arx");
+            var DirArx = Path.Combine(Config.PathDownloads, "arx");
             if (!Directory.Exists(DirArx))
             {
                 Directory.CreateDirectory(DirArx);
@@ -410,7 +410,9 @@ namespace BRB5.Connector
                     TimeSpan TimeLoad = sw.Elapsed;
                     sw.Start();
                     string data = JsonConvert.SerializeObject(R);
-                    HttpResult result = Http.HTTPRequest(2, "", data, "application/json", null, null, 60);
+                    HttpResult result = Http.HTTPRequest(2, "", data, "application/json", null, null, 60,false);
+                    R.file = null;
+                    FileLogger.WriteLogMessage($"ConnectorPSU.SendRaitingFiles HTTP=>({R.ToJSON()}) HttpState=>{result.HttpState}");
 
                     if (result.HttpState == eStateHTTP.HTTP_OK)
                     {
@@ -420,7 +422,6 @@ namespace BRB5.Connector
                             var FileTo = Path.Combine(DirArx, pNumberDoc, Path.GetFileName(f));
                             File.Copy(f, FileTo, true);
                             File.Delete(f);
-                            //File.Move(f, FileTo);
                             Sucsses++;
                         }
                         else

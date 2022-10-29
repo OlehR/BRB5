@@ -12,7 +12,7 @@ using Android.App;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("UniCS.TM")]
 [assembly: AssemblyProduct("BRB5")]
-[assembly: AssemblyCopyright("Copyright ©  2022")]
+[assembly: AssemblyCopyright("Copyright © 2022")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 [assembly: ComVisible(false)]
@@ -24,8 +24,8 @@ using Android.App;
 //      Minor Version 
 //      Build Number
 //      Revision
-[assembly: AssemblyVersion("5.0.0.14")]
-[assembly: AssemblyFileVersion("5.0.0.14")]
+[assembly: AssemblyVersion("5.0.0.18")]
+[assembly: AssemblyFileVersion("5.0.0.18")]
 
 // Add some common permissions, these can be removed if not needed
 [assembly: UsesPermission(Android.Manifest.Permission.Internet)]
@@ -40,3 +40,4 @@ using Android.App;
 [assembly: UsesFeature("android.hardware.location.gps", Required = false)]
 [assembly: UsesFeature("android.hardware.location.network", Required = false)]
 
+    

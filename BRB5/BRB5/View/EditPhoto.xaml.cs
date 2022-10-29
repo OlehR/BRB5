@@ -60,7 +60,7 @@ namespace BRB5.View
             MyFiles = new ObservableCollection<Pictures>(r);
 
 
-            var arx = Path.Combine(Config.PathFiles, "arx", pRaiting.NumberDoc);
+            var arx = Path.Combine(Config.PathDownloads, "arx", pRaiting.NumberDoc);
             if (Directory.Exists(arx))
             {
                 d = Directory.GetFiles(arx, Mask);

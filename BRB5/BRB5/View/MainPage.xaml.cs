@@ -106,12 +106,14 @@ namespace BRB5
         void Init()
         {
             Config.IsAutoLogin = db.GetConfig<bool>("IsAutoLogin");
+            Config.LoginServer = db.GetConfig<eLoginServer>("LoginServer");
             Login = db.GetConfig<string>("Login");
             if (Config.IsAutoLogin)
             {
                 Password = db.GetConfig<string>("Password");
+                OnButtonLogin(null,null);
             }
-            Config.LoginServer=db.GetConfig<eLoginServer>("LoginServer");
+            
             if (c != null)
             {
                 LS = c.LoginServer();

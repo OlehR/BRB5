@@ -12,6 +12,7 @@ using Xamarin.Essentials;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
+
 namespace BRB5
 {
     //[QueryProperty(nameof(NumberDoc), nameof(NumberDoc))]

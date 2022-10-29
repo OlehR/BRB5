@@ -62,7 +62,6 @@ namespace BRB5.View
                 }            
             };
 
-
         }
 
         protected override void OnAppearing()

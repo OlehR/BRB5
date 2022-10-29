@@ -93,7 +93,7 @@ namespace BRB5.Connector
             }
         }
 
-        public HttpResult HTTPRequest(int pUrlApi, string pApi, string pData, string pContentType, string pLogin=null, string pPassWord=null, double pTimeOut = 15)
+        public HttpResult HTTPRequest(int pUrlApi, string pApi, string pData, string pContentType, string pLogin=null, string pPassWord=null, double pTimeOut = 15,bool IsSaveData=true)
         { //!!!!TMP
             try
             {
@@ -124,6 +124,8 @@ namespace BRB5.Connector
                         }
                     }
                 }
+                if (!IsSaveData)
+                    pData = null;
                 FileLogger.WriteLogMessage($"GetDataHTTP.HTTPRequest=>(pUrlApi=>({pUrlApi},{Url[pUrlApi][DefaultApi[pUrlApi]]}), pApi=>{pApi},  pData=>{pData},  pContentType=>{pContentType},  pLogin=>{pLogin},  pPassWord=>{pPassWord}) Res=>({res.HttpState},{res.Result})" );
                 return res;
             }
