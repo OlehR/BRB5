@@ -9,6 +9,8 @@ using System.IO;
 using Utils;
 using System.Diagnostics;
 using BRB5;
+using System.Globalization;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace BRB5.Connector
 {
@@ -368,88 +370,118 @@ namespace BRB5.Connector
             OnSave?.Invoke("StartSave");
             return Res;
         }
+        CultureInfo provider = CultureInfo.InvariantCulture;
 
+
+        bool StopSend = false;
+        object Lock=new object();
         /// <summary>
         /// Вивантажеємо на сервер файли Рейтингів
         /// </summary>
         /// <returns></returns>
-        public override Result SendRaitingFiles(string pNumberDoc)
+        public override Result SendRaitingFiles(string pNumberDoc, int pTry = 2, int pMaxSecondSend = 0, int pSecondSkip = 0)
         {
-            int Sucsses = 0;
-            Result LastError = null;
-            var Res = new Result();
-            var DirArx = Path.Combine(Config.PathDownloads, "arx");
-            if (!Directory.Exists(DirArx))
+            StopSend = true;
+            FileLogger.WriteLogMessage("SendRaitingFiles Start", eTypeLog.Full);
+            lock (Lock)
             {
-                Directory.CreateDirectory(DirArx);
-            }
-            if (!Directory.Exists(Path.Combine(DirArx, pNumberDoc)))
-            {
-                Directory.CreateDirectory(Path.Combine(DirArx, pNumberDoc));
-            }
+                FileLogger.WriteLogMessage("SendRaitingFiles Lock", eTypeLog.Full);
+                var StartTime = DateTime.Now;
 
-            var R = new RequestSendRaitingFile() { planId = int.Parse(pNumberDoc), action = "file", userId = Config.CodeUser };
-
-            var Files = Directory.GetFiles(Path.Combine(Config.PathFiles, pNumberDoc));
-            int i = 0;
-            foreach (var f in Files)
-            {
-                i++;
-                if (StopSave)
+                StopSend = false;
+                int Sucsses = 0, Error = 0;
+                Result LastError = null;
+                var Res = new Result();
+                var DirArx = Path.Combine(Config.PathDownloads, "arx");
+                if (!Directory.Exists(DirArx))
                 {
-                    StopSave = false;
-                    return new Result(-1, "StopSave", "Збереження зупинено користувачем");
+                    Directory.CreateDirectory(DirArx);
                 }
-                try
+                if (!Directory.Exists(Path.Combine(DirArx, pNumberDoc)))
                 {
-                    var sw = Stopwatch.StartNew();
-                    R.file = Convert.ToBase64String(File.ReadAllBytes(f));
-                    R.fileExt = Path.GetExtension(f).Substring(1);
-                    R.questionId = int.Parse(Path.GetFileName(f).Split('_')[0]);
-                    sw.Stop();
-                    TimeSpan TimeLoad = sw.Elapsed;
-                    sw.Start();
-                    string data = JsonConvert.SerializeObject(R);
-                    HttpResult result = Http.HTTPRequest(2, "", data, "application/json", null, null, 60,false);
-                    R.file = null;
-                    FileLogger.WriteLogMessage($"ConnectorPSU.SendRaitingFiles HTTP=>({R.ToJSON()}) HttpState=>{result.HttpState}");
+                    Directory.CreateDirectory(Path.Combine(DirArx, pNumberDoc));
+                }
 
-                    if (result.HttpState == eStateHTTP.HTTP_OK)
+                var R = new RequestSendRaitingFile() { planId = int.Parse(pNumberDoc), action = "file", userId = Config.CodeUser };
+
+                var Files = Directory.GetFiles(Path.Combine(Config.PathFiles, pNumberDoc));
+                int i = 0;
+                foreach (var f in Files)
+                {
+                    if (StopSend) break;
+                    if (pMaxSecondSend > 0 && (DateTime.Now - StartTime).TotalSeconds > pMaxSecondSend) break;
+                    string s = Path.GetFileNameWithoutExtension(f).Split('_')[1]+"_"+ Path.GetFileNameWithoutExtension(f).Split('_')[2];
+                    R.DT = DateTime.ParseExact(s, "yyyyMMdd_hhmmssfff", provider);
+                    if(pSecondSkip>0 && (DateTime.Now-R.DT).TotalSeconds< pSecondSkip)
                     {
-                        var res = JsonConvert.DeserializeObject<Answer>(result.Result);
-                        if (res.success)
+                        FileLogger.WriteLogMessage($"SendRaitingFiles Skip DateCreateFile {DateTime.Now} / {R.DT}", eTypeLog.Full);
+                        break;
+                    }
+
+                    i++;
+                    if (StopSave)
+                    {
+                        StopSave = false;
+                        return new Result(-1, "StopSave", "Збереження зупинено користувачем");
+                    }
+                    try
+                    {
+                        var sw = Stopwatch.StartNew();
+                        R.file = Convert.ToBase64String(File.ReadAllBytes(f));
+                        R.fileExt = Path.GetExtension(f).Substring(1);
+                        R.questionId = int.Parse(Path.GetFileName(f).Split('_')[0]);
+                         
+
+                        sw.Stop();
+                        TimeSpan TimeLoad = sw.Elapsed;
+                        sw.Start();
+                        string data = JsonConvert.SerializeObject(R);
+                        HttpResult result = Http.HTTPRequest(2, "", data, "application/json", null, null, 60, false);
+                        R.file = null;
+                        FileLogger.WriteLogMessage($"ConnectorPSU.SendRaitingFiles HTTP=>({R.ToJSON()}) HttpState=>{result.HttpState}");
+
+                        if (result.HttpState == eStateHTTP.HTTP_OK)
                         {
-                            var FileTo = Path.Combine(DirArx, pNumberDoc, Path.GetFileName(f));
-                            File.Copy(f, FileTo, true);
-                            File.Delete(f);
-                            Sucsses++;
+                            var res = JsonConvert.DeserializeObject<Answer>(result.Result);
+                            if (res.success)
+                            {
+                                var FileTo = Path.Combine(DirArx, pNumberDoc, Path.GetFileName(f));
+                                File.Copy(f, FileTo, true);
+                                File.Delete(f);
+                                Sucsses++;
+                            }
+                            else
+                            {
+                                Error++;
+                                Res = new Result(-1, "Не передався файл", f);
+                            }
+                            sw.Stop();
+                            TimeSpan TimeSend = sw.Elapsed;
+                            string text = $"ConnectorPSU.SendRaitingFiles Error={Error} [{i}/{Files.Length}] Send=>(File={f}, Speed=>{data.Length / (1024 * 1024 * TimeSend.TotalSeconds):n2}Mb, Size={((double)data.Length) / (1024d * 1024d):n2}Mb,Load={TimeLoad.TotalSeconds:n1},Send={TimeSend.TotalSeconds:n1}) Res=>({res})";
+                            OnSave?.Invoke(text);
+                            FileLogger.WriteLogMessage(text, eTypeLog.Full);
                         }
                         else
                         {
-                            Res = new Result(-1, "Не передався файл", f);
+                            Error++;
+                            FileLogger.WriteLogMessage($"ConnectorPSU.SendRaitingFiles=>(File={f}) Res=>({Res.State},{Res.Info},{Res.TextError})", eTypeLog.Expanded);
+                            LastError = Res;
                         }
-                        sw.Stop();
-                        TimeSpan TimeSend = sw.Elapsed;
-                        string text = $"ConnectorPSU.SendRaitingFiles [{i}/{Files.Length}] Send=>(File={f}, Speed=>{data.Length / (1024 * 1024 * TimeSend.TotalSeconds):n2}Mb, Size={((double)data.Length) / (1024d * 1024d):n2}Mb,Load={TimeLoad.TotalSeconds:n1},Send={TimeSend.TotalSeconds:n1}) Res=>({res})";
-                        OnSave?.Invoke(text);
-                        FileLogger.WriteLogMessage(text, eTypeLog.Full);
                     }
-                    else
+                    catch (Exception e)
                     {
-                        FileLogger.WriteLogMessage($"ConnectorPSU.SendRaitingFiles=>(File={f}) Res=>({Res.State},{Res.Info},{Res.TextError})", eTypeLog.Expanded);
-                        LastError = Res;
+                        Res = new Result(e);
+                        FileLogger.WriteLogMessage($"ConnectorPSU.SendRaitingFiles=>(File={f}) Res=>({Res.State},{Res.Info},{Res.TextError})", eTypeLog.Error);
                     }
                 }
-                catch (Exception e)
-                {
-                    Res = new Result(e);
-                    FileLogger.WriteLogMessage($"ConnectorPSU.SendRaitingFiles=>(File={f}) Res=>({Res.State},{Res.Info},{Res.TextError})", eTypeLog.Error);
-                }
+                Res = LastError ?? Res;
+                Res.TextError = $"Успішно відправлено  {Sucsses} файлів {Res.TextError}";
+                if (pTry > 1 && Error > 0 && (double)Error / (double)Files.Length < 0.25d)
+                    return SendRaitingFiles(pNumberDoc, --pTry);
+                return Res;
             }
-            Res = LastError ?? Res;
-            Res.TextError = $"Успішно відправлено  {Sucsses} файлів {Res.TextError}";
-            return Res;
         }
+
         /// <summary>
         /// Завантаження Списку складів (HTTP)
         /// </summary>
@@ -582,6 +614,7 @@ namespace BRB5.Connector
         public int questionId { get; set; }
         public string file { get; set; }
         public string fileExt { get; set; }
+        public DateTime DT { get; set; }
     }
     public class LogPriceSE
     {

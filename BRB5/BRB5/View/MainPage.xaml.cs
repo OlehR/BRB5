@@ -1,12 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Xamarin.Forms;
-using ZXing.Net.Mobile.Forms;
 using BRB5.Connector;
 using BRB5.Model;
 using BRB5.View;
@@ -14,8 +11,11 @@ using Xamarin.Essentials;
 using System.Threading;
 using Utils;
 
+//[assembly: Xamarin.Forms.Dependency(typeof(AndroidStorageManager))]
+
 namespace BRB5
 {
+
     public partial class MainPage : ContentPage
     {
 
@@ -37,6 +37,12 @@ namespace BRB5
             c = Connector.Connector.GetInstance();
             InitializeComponent();            
             Init();
+
+            //IStorage storageManager = DependencyService.Get<IStorage>();
+            //double remaining = storageManager.GetRemainingStorage();
+
+
+            //var aaa = u.GetFreeSpace(Config.PathFiles);
             BindingContext = this;
         }
 

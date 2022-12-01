@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using Utils;
 using Xamarin.Essentials;
 using Xamarin.Forms;
 
@@ -188,7 +189,7 @@ CREATE UNIQUE INDEX UserLogin ON User (Login);
             
             PathNameDB=Path.Combine(Dir, NameDB);
 
-       
+            FileLogger.WriteLogMessage($"Platform=>{Device.RuntimePlatform}  PathNameDB=>{PathNameDB}");
             if (!File.Exists(PathNameDB))
             {
                 //var receiptFilePath = Path.GetDirectoryName(ReceiptFile);

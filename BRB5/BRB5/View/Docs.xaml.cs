@@ -33,7 +33,7 @@ namespace BRB5
                 ,new Doc() { TypeDoc = 11, NumberDoc = "2", DateDoc = DateTime.Now.Date.ToString("yyyy-MM-dd"), NameUser = "Рутковський О", Description = "ТЗ 1004" }
                 ,new Doc() { TypeDoc = 11, NumberDoc = "3", DateDoc = DateTime.Now.Date.ToString("yyyy-MM-dd"), NameUser = "Рутковський О", Description = "ТЗ 1104" }
             };*/
-            new ObservableCollection<Doc> ( db.GetDoc(11));
+            new ObservableCollection<Doc> ( db.GetDoc(11).OrderByDescending(el=>el.NumberDoc));
             this.BindingContext = this;            
 
         }

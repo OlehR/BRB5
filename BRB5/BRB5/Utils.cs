@@ -4,6 +4,7 @@ using System.IO;
 using BRB5.Connector;
 using BRB5.Model;
 using System.Linq;
+using Utils;
 
 namespace BRB5
 {
@@ -73,15 +74,15 @@ namespace BRB5
                 else
                 {
                     SizeDel += DirSize(dir);
+                    FileLogger.WriteLogMessage($"DelDir=>{dir.FullName}");
                     dir.Delete(true);
                 }
-
             }
             return (SizeDel , SizeUse);
 
         }
 
-        public static long DirSize(DirectoryInfo d)
+        public long DirSize(DirectoryInfo d)
         {
             long size = 0;
             // Add file sizes.
@@ -97,6 +98,15 @@ namespace BRB5
                 size += DirSize(di);
             }
             return size;
+        }
+
+        public  double GetFreeSpace(string pPath)
+        {
+            DriveInfo[] allDrives = DriveInfo.GetDrives();
+            var r=allDrives.Where(el => pPath.StartsWith(el.Name)).OrderByDescending(el => el.Name.Length);
+            if (r != null && r.Count() > 0)
+                return r.FirstOrDefault().AvailableFreeSpace;
+          return 20d*1024d*1024d;
         }
     }
 }

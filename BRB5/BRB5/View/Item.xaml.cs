@@ -8,6 +8,8 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Timers;
+using Utils;
 using Xamarin.Essentials;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
@@ -20,16 +22,18 @@ namespace BRB5
     //[XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class Item : ContentPage, INotifyPropertyChanged
     {
+        Timer t;
+        Utils u = Utils.GetUtils();
 
         DB db = DB.GetDB();
         Doc cDoc;
         Connector.Connector c = Connector.Connector.GetInstance();
         public ObservableCollection<Raiting> Questions { get; set; }
 
-        int CountAll,CountChoice;
-        public bool  IsSave { get { return CountAll == CountChoice; } }
+        int CountAll, CountChoice;
+        public bool IsSave { get { return CountAll == CountChoice; } }
         bool IsAll = true;
-        public string TextAllNoChoice { get {return IsAll?"Без відповіді":"Всі"; }  }
+        public string TextAllNoChoice { get { return IsAll ? "Без відповіді" : "Всі"; } }
         public string QuantityAllChoice { get { return $"{CountChoice}/{CountAll}"; } }
 
         public string TextSave { get; set; } = "";
@@ -47,7 +51,7 @@ namespace BRB5
         public Item(Doc pDoc)
         {
             cDoc = pDoc;
-            
+
             InitializeComponent();
             var Q = db.GetRating(cDoc);
             var R = new List<Raiting>();
@@ -62,26 +66,38 @@ namespace BRB5
                 }
             }
             //Костиль заради Всього
-            var Total= Q.Where(d => d.Id == -1);
+            var Total = Q.Where(d => d.Id == -1);
             if (Total.Count() == 1)
                 R.Add(Total.FirstOrDefault());
 
-            c.OnSave += (Res) => Device.BeginInvokeOnMainThread(()=>{ TextSave = Res; OnPropertyChanged("TextSave"); });
-             //Ховаємо непотрібні питання
-             /*foreach (var e in Q.Where(d => d.IsHead && d.Rating==4) )
-             foreach (var el in Q.Where(d => d.Parent == e.Id))
-             {
-                 el.IsVisible = e.Rating != 4;
-             }
+            c.OnSave += (Res) => Device.BeginInvokeOnMainThread(() => { TextSave = Res; OnPropertyChanged("TextSave"); });
 
-             */
-             CountAll = R.Count(el => !el.IsHead);
+            CountAll = R.Count(el => !el.IsHead);
 
             Questions = new ObservableCollection<Raiting>(R);
             RefreshHead();
             this.BindingContext = this;
+            StartTimer();
         }
 
+        void StartTimer()
+        {
+            t = new System.Timers.Timer(1 * 30 * 1000);//30 c //3 хв
+            t.AutoReset = true;
+            t.Elapsed += new ElapsedEventHandler(OnTimedEvent);
+            t.Start();
+            
+        }
+
+
+        private void OnTimedEvent(Object source, ElapsedEventArgs e)
+        {
+            var task = Task.Run(() =>
+            {
+                c.SendRaitingFiles(cDoc.NumberDoc, 1, 2 * 60, 3 * 60);
+            });
+          
+        }
         private void OnButtonClicked(object sender, System.EventArgs e)
         {
             Xamarin.Forms.View button = (Xamarin.Forms.View)sender;
@@ -102,22 +118,22 @@ namespace BRB5
                 case "NotKnow":
                     vQuestion.Rating = 4;
                     break;
-                    
+
                 default:
                     vQuestion.Rating = 0;
                     break;
             }
-            if(OldRating == vQuestion.Rating)
+            if (OldRating == vQuestion.Rating)
                 vQuestion.Rating = 0;
 
             if (vQuestion.IsItem)
             {
                 var el = Questions.FirstOrDefault(i => i.Id == vQuestion.Parent);
-                if(el!=null) el.Rating = 0;
+                if (el != null) el.Rating = 0;
             }
 
 
-            if(OldRating != vQuestion.Rating && (vQuestion.Rating == 4  || vQuestion.Rating == 0) && vQuestion.IsHead)
+            if (OldRating != vQuestion.Rating && (vQuestion.Rating == 4 || vQuestion.Rating == 0) && vQuestion.IsHead)
             {
                 foreach (var el in Questions.Where(d => d.Parent == vQuestion.Id))
                 {
@@ -148,7 +164,7 @@ namespace BRB5
                     el.IsVisible = true;
             else
                 foreach (var el in Questions.Where(d => !d.IsHead && d.Rating > 0))
-                    if (el.Rating != 3 )  el.IsVisible = false;
+                    if (el.Rating != 3) el.IsVisible = false;
                     else if (!String.IsNullOrEmpty(el.Note) || el.QuantityPhoto > 0) el.IsVisible = false;
 
             OnPropertyChanged("TextAllNoChoice");
@@ -183,32 +199,35 @@ namespace BRB5
         private void EditPhoto(object sender, System.EventArgs e)
         {
             var vQuestion = GetRaiting(sender);
-             Navigation.PushAsync(new EditPhoto( vQuestion));
+            Navigation.PushAsync(new EditPhoto(vQuestion));
         }
 
         async void TakePhotoAsync(object sender, EventArgs e)
         {
-            ImageButton button = (ImageButton)sender;          
-          
+            ImageButton button = (ImageButton)sender;
             var vQuestion = button.BindingContext as Raiting;
- 
             var FileName = $"{vQuestion.Id}_{DateTime.Now.ToString("yyyyMMdd_hhmmssfff")}";
-     
+
             try
             {
                 var dir = Path.Combine(Config.PathFiles, vQuestion.NumberDoc);
+                double Size = u.GetFreeSpace(dir);
+                if (Size < 10d * 1024d * 1024d)
+                {
+                    await DisplayAlert($"Недостатньо місця", $"Залишок=> {Size / (1024d * 1024):n3} Mb", "OK");
+                    return;
+                }
                 if (!Directory.Exists(dir))
                 {
                     Directory.CreateDirectory(dir);
                     Directory.CreateDirectory(Path.Combine(dir, "Send"));
                 }
-                
-                var photo = await MediaPicker.CapturePhotoAsync(new MediaPickerOptions{Title = FileName});
-                if (photo!=null && File.Exists(photo.FullPath))
+
+                var photo = await MediaPicker.CapturePhotoAsync(new MediaPickerOptions { Title = FileName });
+                if (photo != null && File.Exists(photo.FullPath))
                 {
-                    // для примера сохраняем файл в локальном хранилище
-                    var ext=Path.GetExtension(photo.FileName);
-                    var newFile = Path.Combine(dir, FileName+ext);
+                    var ext = Path.GetExtension(photo.FileName);
+                    var newFile = Path.Combine(dir, FileName + ext);
                     using (var stream = await photo.OpenReadAsync())
                     using (var newStream = File.OpenWrite(newFile))
                         await stream.CopyToAsync(newStream);
@@ -218,6 +237,7 @@ namespace BRB5
             }
             catch (Exception ex)
             {
+                FileLogger.WriteLogMessage($"Item.TakePhotoAsync", eTypeLog.Error);
                 await DisplayAlert("Сообщение об ошибке", ex.Message, "OK");
             }
         }
@@ -248,7 +268,7 @@ namespace BRB5
                 foreach (var el in Questions)
                     el.IsVisible = true;
             else
-                foreach (var el in Questions)
+                foreach (var el in Questions.Where(el => el.Parent != 9999999))
                     el.IsVisible = false;
 
             OnPropertyChanged("TextAllOpen");

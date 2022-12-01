@@ -77,7 +77,7 @@ namespace BRB5.Connector
         /// Вивантажеємо на сервер файли Рейтингів
         /// </summary>
         /// <returns></returns>
-        public virtual Result SendRaitingFiles(string NumberDoc) { throw new NotImplementedException(); }
+        public virtual Result SendRaitingFiles(string pNumberDoc, int pTry =2, int pMaxSecondSend = 0, int pSecondSkip = 0) { throw new NotImplementedException(); }
 
 
         /// <summary>

@@ -145,7 +145,7 @@ namespace BRB5.Connector
         /// Вивантажеємо на сервер файли Рейтингів
         /// </summary>
         /// <returns></returns>
-        public override Result SendRaitingFiles(string pNumberDoc)
+        public override Result SendRaitingFiles(string pNumberDoc,int pTry=2, int pMaxSecondSend = 0, int pSecondSkip = 0)
         {
             var Res = new Result();
             var DirArx = Path.Combine(Config.PathFiles, "arx");
