@@ -37,12 +37,7 @@ namespace BRB5
             c = Connector.Connector.GetInstance();
             InitializeComponent();            
             Init();
-
-            //IStorage storageManager = DependencyService.Get<IStorage>();
-            //double remaining = storageManager.GetRemainingStorage();
-
-
-            //var aaa = u.GetFreeSpace(Config.PathFiles);
+            
             BindingContext = this;
         }
 
@@ -67,6 +62,8 @@ namespace BRB5
                 foreach (var i in Config.TypeDoc) OCTypeDoc.Add(i);
 
                 var Wh=c.LoadWarehouse();
+                db.ReplaceWarehouse(Wh);
+
                 long SizeDel = 0, SizeUse = 0;
                 if (Config.Company == eCompany.Sim23)
                 {
@@ -111,6 +108,7 @@ namespace BRB5
 
         void Init()
         {
+            _ = GetCurrentLocation();
             Config.IsAutoLogin = db.GetConfig<bool>("IsAutoLogin");
             Config.LoginServer = db.GetConfig<eLoginServer>("LoginServer");
             Login = db.GetConfig<string>("Login");
@@ -159,7 +157,7 @@ namespace BRB5
             var Wh = db.GetWarehouse();
             try
             {
-                var request = new GeolocationRequest(GeolocationAccuracy.Medium, TimeSpan.FromSeconds(10));
+                var request = new GeolocationRequest(GeolocationAccuracy.High, TimeSpan.FromSeconds(10));
                 cts = new CancellationTokenSource();
                 var location = await Geolocation.GetLocationAsync(request, cts.Token);
                 

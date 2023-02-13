@@ -13,6 +13,7 @@ using Utils;
 using Xamarin.Essentials;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
+using System.Drawing;
 
 
 namespace BRB5
@@ -35,10 +36,16 @@ namespace BRB5
         bool IsAll = true;
         public string TextAllNoChoice { get { return IsAll ? "Без відповіді" : "Всі"; } }
         public string QuantityAllChoice { get { return $"{CountChoice}/{CountAll}"; } }
+        public string NameWarehouse { get { return cDoc.Address; } }
+        
+        public System.Drawing.Color GetGPSColor { get { return System.Drawing.Color.FromArgb(200, 200, 200);  } }
 
         public string TextSave { get; set; } = "";
         public bool IsSaving { get; set; } = false;
-        public string TextButtonSave { get { return IsSaving ? "Зупинити" : "Зберегти"; } }
+        //public string TextButtonSave { get { return IsSaving ? "Зупинити" : "Зберегти"; } }
+
+        public bool IsSaved { get; set; } = false;
+        public string TextButtonSaved { get { return IsSaved ? "Закрити":"Зупинити"; } }
 
         bool IsAllOpen { get; set; } = true;
         public string TextAllOpen { get { return IsAllOpen ? "Згорнути" : "Розгорнути"; } set { OnPropertyChanged("IsAllOpen"); } }
@@ -70,7 +77,11 @@ namespace BRB5
             if (Total.Count() == 1)
                 R.Add(Total.FirstOrDefault());
 
-            c.OnSave += (Res) => Device.BeginInvokeOnMainThread(() => { TextSave = Res; OnPropertyChanged("TextSave"); });
+            c.OnSave += (Res) => Device.BeginInvokeOnMainThread(() => 
+            {
+                TextSave += Res + Environment.NewLine; 
+                OnPropertyChanged("TextSave"); 
+            });
 
             CountAll = R.Count(el => !el.IsHead);
 
@@ -82,19 +93,18 @@ namespace BRB5
 
         void StartTimer()
         {
-            t = new System.Timers.Timer(1 * 30 * 1000);//30 c //3 хв
+            t = new System.Timers.Timer(3 * 60 * 1000); //3 хв
             t.AutoReset = true;
             t.Elapsed += new ElapsedEventHandler(OnTimedEvent);
             t.Start();
             
         }
 
-
         private void OnTimedEvent(Object source, ElapsedEventArgs e)
         {
             var task = Task.Run(() =>
             {
-                c.SendRaitingFiles(cDoc.NumberDoc, 1, 2 * 60, 3 * 60);
+                c.SendRaitingFiles(cDoc.NumberDoc, 1, 2 * 60, 10 * 60);
             });
           
         }
@@ -170,28 +180,52 @@ namespace BRB5
             OnPropertyChanged("TextAllNoChoice");
         }
 
+        private void OnButtonSaved(object sender, System.EventArgs e)
+        {
+            if (IsSaving && !IsSaved)
+            {
+                IsSaved = true;
+                c.StopSave = true;                            
+            }
+            else
+            {
+                IsSaving = false;
+                OnPropertyChanged("IsSaving");
+            }
+               
+        }
+
         private void OnButtonSave(object sender, System.EventArgs e)
         {
             Task.Run(() =>
             {
-                TextSave = "";
-                IsSaving = true;
-                OnPropertyChanged("IsSaving");
-                OnPropertyChanged("TextButtonSave");
-                var r = db.GetRating(cDoc);
-                var res = c.SendRaiting(r, cDoc);
-                if (res.State == 0)
+                Result res;
+                try
                 {
-                    cDoc.State = 1;
-                    db.SetStateDoc(cDoc);
+                    TextSave = "";
+                    IsSaving = true;
+                    OnPropertyChanged("IsSaving");
+                    IsSaved = false;
+                    OnPropertyChanged("IsSaved");
+                    OnPropertyChanged("TextButtonSaved");
+                    var r = db.GetRating(cDoc);
+                    res = c.SendRaiting(r, cDoc);
+                    if (res.State == 0)
+                    {
+                        cDoc.State = 1;
+                        db.SetStateDoc(cDoc);
+                    }
+                }
+                catch (Exception ex)
+                { res = new Result(ex); }
+                finally
+                {
+                    IsSaved = true;
+                    OnPropertyChanged("IsSaved");
+                    OnPropertyChanged("TextButtonSaved");
                 }
 
-                IsSaving = false;
-                OnPropertyChanged("IsSaving");
-                OnPropertyChanged("TextButtonSave");
-
-                DisplayAlert("Збереження", res.TextError, "OK");//.Wait();
-                Navigation.PopAsync();
+                // Navigation.PopAsync();
             }
             );
         }

@@ -340,7 +340,9 @@ CREATE UNIQUE INDEX UserLogin ON User (Login);
 
         public IEnumerable<Doc> GetDoc(int pTypeDoc)
         {
-            string Sql = "select * from Doc where TypeDoc= @TypeDoc and DateDoc >= date(datetime(CURRENT_TIMESTAMP,'-5 day')) order by DateDoc DESC";
+            string Sql = @"select d.* , Wh.Name as Address from Doc d 
+ left join Warehouse  Wh on d.CodeWarehouse   =wh.number 
+                                where TypeDoc= @TypeDoc and DateDoc >= date(datetime(CURRENT_TIMESTAMP,'-5 day')) order by DateDoc DESC";
             return db.Execute<object, Doc>(Sql, new  { TypeDoc = pTypeDoc });
         }
 

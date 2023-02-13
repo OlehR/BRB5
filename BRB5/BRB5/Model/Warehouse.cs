@@ -19,6 +19,8 @@ namespace BRB5.Model
         /// </summary>
         public string Name {get;set;}
 
+        public string Address { get;set;}
+
         public string Url {get;set;}
         public string InternalIP {get;set;}
         public string ExternalIP {get;set;}

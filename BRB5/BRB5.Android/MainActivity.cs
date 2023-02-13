@@ -52,7 +52,7 @@ namespace BRB5.Droid
                     File.Delete(CopyTo);
                 File.Copy(db.PathNameDB, CopyTo, true);
                 //File.Create(CopyTo);
-                // File.WriteAllBytes(CopyTo, b);
+                //File.WriteAllBytes(CopyTo, b);
             }
             catch (Exception e)
             {

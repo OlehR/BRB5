@@ -50,9 +50,12 @@ namespace BRB5
         /// Для Анкет код складу магазина.
         /// </summary>
         public string ExtInfo { get; set; } // 
+
         /// <summary>
-        /// користувач який створив документ рядок
+        /// Адреса
         /// </summary>
+        public string Address { get; set; } // 
+
         public string NameUser { get; set; } // 
         /// <summary>
         /// штрихкод документа, якщо є для швидкого пошуку

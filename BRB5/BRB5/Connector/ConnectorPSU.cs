@@ -326,7 +326,7 @@ namespace BRB5.Connector
         public override IEnumerable<Warehouse> LoadWarehouse()
         {
             string data = JsonConvert.SerializeObject(new Api() { CodeData = 210 });
-            HttpResult result = Http.HTTPRequest(0, "", data, "application/json");//
+            HttpResult result = Http.HTTPRequest(0, "", data, "application/json","brb","brb");//
 
             if (result.HttpState == eStateHTTP.HTTP_OK)
             {

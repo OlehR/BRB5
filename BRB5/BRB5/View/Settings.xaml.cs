@@ -99,8 +99,9 @@ namespace BRB5.View
                     ApiUrl3 = "";
                     break;
                 case eCompany.Sim23:
+                    
                     ApiUrl1 = "http://93.183.216.37:80/dev1/hs/TSD/";
-                    ApiUrl2 = "http://93.183.216.37/TK/hs/TSD/;http://37.53.84.148/TK/hs/TSD/";
+                    ApiUrl2 = "http://37.53.84.148/TK/hs/TSD/";// "http://93.183.216.37/TK/hs/TSD/;http://37.53.84.148/TK/hs/TSD/";
                     ApiUrl3 = "https://bitrix.sim23.ua/rest/233/ax02yr7l9hia35vj/";
                     break;
                 case eCompany.Sim23FTP:

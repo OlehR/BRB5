@@ -41,13 +41,14 @@ namespace BRB5.Connector
             return Res;
         }
 
-         public override IEnumerable<LoginServer> LoginServer()
+        public override IEnumerable<LoginServer> LoginServer()
         {
             return new List<LoginServer>()
             {new  LoginServer (){Code=eLoginServer.Local,Name = "Магазин"},
                 new  LoginServer (){Code=eLoginServer.Central,Name = "ЦБ"},
              new  LoginServer (){Code=eLoginServer.Bitrix,Name = "Бітрікс"}};//
         }
+        
         public override Result Login(string pLogin, string pPassWord, eLoginServer pLoginServer)
         {
             Result Res = new Result();
@@ -346,8 +347,12 @@ namespace BRB5.Connector
                 Raiting e = pR.FirstOrDefault(d => d.Id == -1);
                 if (e == null || e.Id == 0)
                     e = pR.FirstOrDefault();
-                var r = new RequestSendRaiting() { userId = Config.CodeUser, action = "results", answers = RD, planId = int.Parse(e.NumberDoc), text = e.Note };
-                string data = JsonConvert.SerializeObject(r);
+                var r = new RequestSendRaiting() { userId = Config.CodeUser, action = "results", answers = RD, planId = int.Parse(e.NumberDoc), text = e.Note,
+                    dateStart = DateTime.Now.AddMinutes(-100),
+                    dateEnd = DateTime.Now.AddMinutes(-1)
+                };
+                //var p = JsonConvert.DeserializeObject<Data>(result2.Result);
+                string data = JsonConvert.SerializeObject(r, new IsoDateTimeConverter { DateTimeFormat = "dd.MM.yyyy HH:mm:ss" });
                 HttpResult result = Http.HTTPRequest(2, "", data, "application/json");//
 
                 if (result.HttpState != eStateHTTP.HTTP_OK)
@@ -367,21 +372,20 @@ namespace BRB5.Connector
                 Res = new Result(ex);
             }
             FileLogger.WriteLogMessage($"ConnectorPSU.SendRaiting=>() Res=>({Res.State},{Res.Info},{Res.TextError})", eTypeLog.Error);
-            OnSave?.Invoke("StartSave");
+            OnSave?.Invoke("EndSave");
             return Res;
         }
         CultureInfo provider = CultureInfo.InvariantCulture;
-
-
-        bool StopSend = false;
+       
         object Lock=new object();
         /// <summary>
         /// Вивантажеємо на сервер файли Рейтингів
+        /// pMaxSecondSend - скільки часу відправляти, 0 - без обмежень.
+        /// pSecondSkip - скільки хв не відправляти файл(для фонового відправлення
         /// </summary>
         /// <returns></returns>
         public override Result SendRaitingFiles(string pNumberDoc, int pTry = 2, int pMaxSecondSend = 0, int pSecondSkip = 0)
-        {
-            StopSend = true;
+        {            
             FileLogger.WriteLogMessage("SendRaitingFiles Start", eTypeLog.Full);
             lock (Lock)
             {
@@ -457,7 +461,7 @@ namespace BRB5.Connector
                             }
                             sw.Stop();
                             TimeSpan TimeSend = sw.Elapsed;
-                            string text = $"ConnectorPSU.SendRaitingFiles Error={Error} [{i}/{Files.Length}] Send=>(File={f}, Speed=>{data.Length / (1024 * 1024 * TimeSend.TotalSeconds):n2}Mb, Size={((double)data.Length) / (1024d * 1024d):n2}Mb,Load={TimeLoad.TotalSeconds:n1},Send={TimeSend.TotalSeconds:n1}) Res=>({res})";
+                            string text = $"{Environment.NewLine}ConnectorPSU.SendRaitingFiles Error={Error} [{i}/{Files.Length}] Send=>(File={f}, Speed=>{data.Length / (1024 * 1024 * TimeSend.TotalSeconds):n2}Mb, Size={((double)data.Length) / (1024d * 1024d):n2}Mb,Load={TimeLoad.TotalSeconds:n1},Send={TimeSend.TotalSeconds:n1}) Res=>({res.success})";
                             OnSave?.Invoke(text);
                             FileLogger.WriteLogMessage(text, eTypeLog.Full);
                         }
@@ -475,7 +479,7 @@ namespace BRB5.Connector
                     }
                 }
                 Res = LastError ?? Res;
-                Res.TextError = $"Успішно відправлено  {Sucsses} файлів {Res.TextError}";
+                Res.TextError = (Error>0?$"Не вдалось відправити {Error} файлів{Environment.NewLine}" :"") + $"Успішно відправлено  {Sucsses} файлів {Res.TextError}";
                 if (pTry > 1 && Error > 0 && (double)Error / (double)Files.Length < 0.25d)
                     return SendRaitingFiles(pNumberDoc, --pTry);
                 return Res;
@@ -491,12 +495,12 @@ namespace BRB5.Connector
             HttpResult result;
             try
             {
-                result = Http.HTTPRequest(1, "StoreSettings", null, "application/json;charset=utf-8", Config.Login, Config.Password);
+                result = Http.HTTPRequest(1, "StoreSettings", "{}", "application/json","brb", "brb"); //charset=utf-8;
 
                 if (result.HttpState == eStateHTTP.HTTP_OK)
                 {
                     var res = JsonConvert.DeserializeObject<IEnumerable<InputWarehouse>>(result.Result);
-                    return res.Select(el => el.GetWarehouse());
+                    return res.Select(el => el.GetWarehouse()).ToList();
                 }
             }
             catch (Exception e)
@@ -594,6 +598,8 @@ namespace BRB5.Connector
         public int planId { get; set; }
         public string text { get; set; }
         public IEnumerable<Raitings> answers { get; set; }
+        public DateTime dateStart { get; set; }
+        public DateTime dateEnd { get; set; }
     }
 
     class AnswerDataRaiting

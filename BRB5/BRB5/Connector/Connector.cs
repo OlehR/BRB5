@@ -8,6 +8,7 @@ namespace BRB5.Connector
     public class ObservableInt { }
     public class Connector
     {
+        public bool StopSend = false;
         protected static string TAG = "BRB5/Connector";
         
         private static Connector Instance = null;
