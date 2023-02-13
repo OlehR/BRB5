@@ -52,16 +52,24 @@ namespace BRB5.View
 
         private void AddWare()
         {
-            inputQ.Unfocused += (object sender, FocusEventArgs e) => {
-                if (!e.IsFocused&&ScanData.InputQuantity==0) 
-                    ((Entry)sender).Focus();
-                else 
-                { 
-                    ListWares.Add(ScanData); 
-                    ScanData = null;
-                }            
+            inputQ.Unfocused += (object sender, FocusEventArgs e) =>
+            {
+                if (ScanData != null) {
+                    if (!e.IsFocused && ScanData.InputQuantity == 0)
+                        ((Entry)sender).Focus();
+                    else
+                    {
+                        ListWares.Add(ScanData);
+                        ScanData = null;
+                    }
+                }
             };
 
+            //if (ScanData.InputQuantity > 0)
+            //{
+            //    ListWares.Add(ScanData);
+            //    ScanData = null;
+            //}
         }
 
         protected override void OnAppearing()
