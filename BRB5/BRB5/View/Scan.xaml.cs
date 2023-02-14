@@ -23,6 +23,10 @@ namespace BRB5.View
         protected DB db = DB.GetDB();
         private Connector.Connector c;
         public TypeDoc TypeDoc { get; set; }
+
+        private decimal _BeforeQuantity = 0;
+        public decimal BeforeQuantity { get { return _BeforeQuantity; } set { _BeforeQuantity = value; OnPropertyChanged("ScanData"); } }
+
         public Scan(int pTypeDoc, DocId pDocId)
         {
             InitializeComponent();
@@ -38,6 +42,8 @@ namespace BRB5.View
 
                     ScanData = db.GetScanData(pDocId, c.ParsedBarCode(result.Text, true/*?*/));
                     _ = FindWareByBarCodeAsync(result.Text);
+
+                    BeforeQuantity= CountBeforeQuantity(ScanData.CodeWares);
 
                     if (ScanData != null)
                     { 
@@ -59,19 +65,30 @@ namespace BRB5.View
                         ((Entry)sender).Focus();
                     else
                     {
-                        ListWares.Add(ScanData);
-                        ScanData = null;
+                        if (db.ReplaceDocWares(ScanData))
+                        {
+                            ListWares.Add(ScanData);
+                            ScanData = null;
+                        }
                     }
                 }
             };
 
-            //if (ScanData.InputQuantity > 0)
-            //{
-            //    ListWares.Add(ScanData);
-            //    ScanData = null;
-            //}
         }
 
+        public decimal CountBeforeQuantity(int pCodeWares)
+        {
+            decimal res= 0;
+            if(ListWares.Count() > 0) 
+            { 
+                foreach(var ware in ListWares)
+                {
+                    if (ware.CodeWares == pCodeWares) 
+                        res += ware.InputQuantity;
+                }
+            }
+            return res;
+        }
         protected override void OnAppearing()
         {
             base.OnAppearing();

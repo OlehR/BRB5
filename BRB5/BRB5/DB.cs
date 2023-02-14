@@ -361,7 +361,7 @@ CREATE UNIQUE INDEX UserLogin ON User (Login);
                     IsSimpleDoc = Config.GetDocSetting(pDocId.TypeDoc).IsSimpleDoc;
                 if (IsSimpleDoc)
                 {
-                    sql = $@"select dws.CODEWARES as CodeWares,dws.NAME as NameWares,1 as Coefficient,{Config.GetCodeUnitPiece} as CodeUnit, 'шт' as NameUnit ,
+                    sql = $@"select @TypeDoc as TypeDoc, @NumberDoc as NumberDoc, dws.CODEWARES as CodeWares,dws.NAME as NameWares,1 as Coefficient,{Config.GetCodeUnitPiece} as CodeUnit, 'шт' as NameUnit ,
                              dws.BarCode as BarCode  ,{Config.GetCodeUnitPiece} as BaseCodeUnit  
                             from DocWaresSample dws
                          where  dws.Typedoc=@TypeDoc  and dws.numberdoc=@DocNumber and " + (pParseBarCode.CodeWares > 0 ? $"dws.CODEWARES={pParseBarCode.CodeWares}" : $"dws.BarCode= {pParseBarCode.BarCode}");
@@ -405,7 +405,7 @@ CREATE UNIQUE INDEX UserLogin ON User (Login);
                             }
                         }
                         res.ParseBarCode = pParseBarCode;
-                        return res;
+                       // return res;
                     }
                 }
                 // Пошук по коду
@@ -420,7 +420,12 @@ CREATE UNIQUE INDEX UserLogin ON User (Login);
                                 where " + Find;
                     var r = db.Execute<DocWaresEx>(sql);
                     if (r != null && r.Count() == 1)
+                    {
+                        // @TypeDoc as TypeDoc, @NumberDoc as NumberDoc,
                         res = r.First();
+                       
+                    }
+                    
                 }
 
             }
@@ -435,7 +440,7 @@ CREATE UNIQUE INDEX UserLogin ON User (Login);
                 sql = @"select coalesce(d.IsControl,0) as IsControl, coalesce(QuantityMax,0) as QuantityMax, coalesce(quantity,0) as QuantityOrder, 
                         case when dws.Typedoc is null then 0 else 1 end as IsRecord from DOC d
                          left join DOCWARESsample dws on d.Typedoc=dws.Typedoc and d.numberdoc=dws.numberdoc and dws.codewares=@CodeWares
-                         where  d.Typedoc=@TypeDoc and d.numberdoc=@DocNumber";
+                         where  d.Typedoc=@TypeDoc and d.numberdoc=@NumberDoc";
                 var r = db.Execute<DocWaresId, DocWaresEx>(sql, new DocWaresId() { TypeDoc=pDocId.TypeDoc,NumberDoc=pDocId.NumberDoc,CodeWares=res.CodeWares});
                 if (r != null && r.Count() == 1)
                 {
@@ -448,6 +453,8 @@ CREATE UNIQUE INDEX UserLogin ON User (Login);
 
             }
             //Log.d(TAG, "Found in DB  >>" + (model == null ? "Not Found" : model.NameWares));
+            res.NumberDoc = pDocId.NumberDoc;
+            res.TypeDoc = pDocId.TypeDoc;
             return res;
         }        
 
