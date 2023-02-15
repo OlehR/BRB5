@@ -25,8 +25,7 @@ namespace BRB5.View
         public TypeDoc TypeDoc { get; set; }
         public int OrderDoc { get; set; }
 
-        private decimal _BeforeQuantity = 0;
-        public decimal BeforeQuantity { get { return _BeforeQuantity; } set { _BeforeQuantity = value; OnPropertyChanged("ScanData"); } }
+        public decimal BeforeQuantity { get; set; }
 
         public Scan(int pTypeDoc, DocId pDocId)
         {
@@ -51,6 +50,7 @@ namespace BRB5.View
                     if (ScanData != null)
                     { 
                         inputQ.Focus();
+                        inputQ.Text = "";
                         AddWare();
                     }
                     zxing.IsAnalyzing = true;
