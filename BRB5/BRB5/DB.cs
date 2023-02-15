@@ -292,7 +292,7 @@ CREATE UNIQUE INDEX UserLogin ON User (Login);
             if (pTypeResult == 2)
                 Sql = $@"select d.TypeDoc as TypeDoc, d.numberdoc as NumberDoc, dw1.orderdoc as OrderDoc, dw1.CODEWARES as CodeWares,coalesce(dws.name,w.NAMEWARES) as NameWares,
                         coalesce(dws.quantity,0) as QuantityOrder,
-                        coalesce(dw1.quantity,0) as QuantityInput, coalesce(dws.quantitymin,0) as QuantityMin, coalesce(dws.quantitymax,0) as QuantityMax ,
+                        coalesce(dw1.quantity,0) as InputQuantity, coalesce(dws.quantitymin,0) as QuantityMin, coalesce(dws.quantitymax,0) as QuantityMax ,
                         coalesce(d.IsControl,0) as IsControl, coalesce(dw1.quantityold,0) as QuantityOld,dw1.CODEReason as  CodeReason
                         ,0 as Ord,w.codeunit
                             from Doc d 
@@ -302,8 +302,8 @@ CREATE UNIQUE INDEX UserLogin ON User (Login);
                             select  dws.typedoc ,dws.numberdoc, dws.codewares,dws.name, sum(dws.quantity) as quantity,  min(dws.quantitymin) as quantitymin, max(dws.quantitymax) as quantitymax  
                                     from   DocWaresSample dws   group by dws.typedoc ,dws.numberdoc,dws.codewares,dws.name
                             ) as dws on d.numberdoc = dws.numberdoc and d.typedoc=dws.typedoc and dws.codewares = dw1.codewares
-                            where d.typedoc=@TypeDoc and  d.numberdoc = @NumberDoc@
-                         order by 1,2";
+                            where d.typedoc=@TypeDoc and  d.numberdoc = @NumberDoc
+                         order by dw1.orderdoc desc";
 
             try
             {

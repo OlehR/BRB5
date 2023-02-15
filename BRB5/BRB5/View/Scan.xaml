@@ -72,20 +72,23 @@
                            Padding="1" 
                            BackgroundColor="#adaea7">
                             <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="5*" />
                                 <ColumnDefinition Width="1*" />
-                                <ColumnDefinition Width="1*" />
+                                <ColumnDefinition Width="6*" />
+                                <ColumnDefinition Width="2*" />
+                                <ColumnDefinition Width="2*" />
                             </Grid.ColumnDefinitions>
 
-                            <Label Text="Назва"
+                            <Label Text="№"        
                                BackgroundColor="White" />
-                            <Label Text="к-сть" 
+                            <Label Text="Назва" 
                                Grid.Column="1"
                                BackgroundColor="White" />
-                            <Label Text="ст.к-сть" 
+                            <Label Text="к-сть" 
                                Grid.Column="2"
                                BackgroundColor="White" />
-
+                            <Label Text="ст.к-сть" 
+                               Grid.Column="3"
+                               BackgroundColor="White" />
                         </Grid>
                     </ListView.Header>
 
@@ -97,18 +100,22 @@
                                    Padding="1" 
                                    BackgroundColor="#adaea7">
                                     <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="5*" />
                                         <ColumnDefinition Width="1*" />
-                                        <ColumnDefinition Width="1*" />
+                                        <ColumnDefinition Width="6*" />
+                                        <ColumnDefinition Width="2*" />
+                                        <ColumnDefinition Width="2*" />
                                     </Grid.ColumnDefinitions>
 
-                                    <Label Text="{Binding NameWares}" 
+                                    <Label Text="{Binding OrderDoc}"        
                                        BackgroundColor="White" />
-                                    <Label Text="{Binding InputQuantity}" 
+                                    <Label Text="{Binding NameWares}" 
                                        Grid.Column="1"
                                        BackgroundColor="White" />
-                                    <Label Text="{Binding BeforeQuantity}" 
+                                    <Label Text="{Binding InputQuantity}" 
                                        Grid.Column="2"
+                                       BackgroundColor="White" />
+                                    <Label Text="{Binding BeforeQuantity}" 
+                                       Grid.Column="3"
                                        BackgroundColor="White" />
 
                                 </Grid>
