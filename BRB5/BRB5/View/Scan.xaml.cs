@@ -16,8 +16,9 @@ namespace BRB5.View
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class Scan : ContentPage
     {
-        public ObservableCollection<DocWaresEx> ListWares { get; set; }
-        
+        private ObservableCollection<DocWaresEx> _ListWares;
+        public ObservableCollection<DocWaresEx> ListWares { get { return _ListWares; } set { _ListWares = value; OnPropertyChanged("ListWares"); } }
+
         DocWaresEx _ScanData;
         public DocWaresEx ScanData { get { return _ScanData; } set { _ScanData = value; OnPropertyChanged("ScanData"); } }
         protected DB db = DB.GetDB();
@@ -25,8 +26,11 @@ namespace BRB5.View
         public TypeDoc TypeDoc { get; set; }
         public int OrderDoc { get; set; }
 
-        private decimal _BeforeQuantity;
-        public decimal BeforeQuantity { get { return _BeforeQuantity; } set { _BeforeQuantity = value; OnPropertyChanged("BeforeQuantity"); } }
+        private decimal _pBeforeQuantity;
+        public decimal pBeforeQuantity { get { return _pBeforeQuantity; } set { _pBeforeQuantity = value; OnPropertyChanged("pBeforeQuantity"); } }
+
+        private decimal _QuantityBarCode;
+        public decimal QuantityBarCode { get { return _QuantityBarCode; } set { _QuantityBarCode = value; OnPropertyChanged("QuantityBarCode"); } }
 
         public Scan(int pTypeDoc, DocId pDocId)
         {
@@ -46,11 +50,13 @@ namespace BRB5.View
                     ScanData = db.GetScanData(pDocId, c.ParsedBarCode(result.Text, true/*?*/));
                     _ = FindWareByBarCodeAsync(result.Text);
 
-                    BeforeQuantity= CountBeforeQuantity(ScanData.CodeWares);
+                    QuantityBarCode = ScanData.QuantityBarCode;
+
+                    pBeforeQuantity = CountBeforeQuantity(ScanData.CodeWares);
 
                     if (ScanData != null)
                     { 
-                        inputQ.Focus();
+                        //inputQ.Focus();
                         inputQ.Text = "";
                         AddWare();
                     }
@@ -75,7 +81,7 @@ namespace BRB5.View
                         {
                             ListWares.Insert(0, ScanData);
                             ScanData = null;
-                            BeforeQuantity= 0;
+                            pBeforeQuantity= 0;
                         }
                     }
                 }
@@ -157,6 +163,31 @@ namespace BRB5.View
             //SetAlert(WaresItem.CodeWares);
             //!!!
             return;
+        }
+
+        private void Reset(object sender, EventArgs e)
+        {
+            if (ScanData != null && ListWares.Count() > 0)
+            {
+                foreach (var ware in ListWares)
+                {
+                    if (ware.CodeWares == ScanData.CodeWares)
+                    {
+                        ware.BeforeQuantity = ware.InputQuantity;
+                        ware.InputQuantity = 0;
+                        ware.QuantityOld= ware.BeforeQuantity;
+                        db.ReplaceDocWares(ware);
+                    }
+                }
+
+            }
+        }
+
+        private void CalcQuantity(object sender, TextChangedEventArgs e)
+        {
+            if (ScanData == null) QuantityBarCode = 0;
+            else if (ScanData.QuantityBarCode == 0)
+                QuantityBarCode = ScanData.InputQuantity * ScanData.Coefficient;
         }
     }
 }

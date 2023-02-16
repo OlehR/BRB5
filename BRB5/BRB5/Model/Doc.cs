@@ -6,7 +6,7 @@ using Xamarin.Forms;
 
 namespace BRB5
 {
-    public class DocId
+    public class DocId: Element
     {
         /// <summary>
         /// Тип документа (1-ревізія 2-приходи тощо,11-опитування)

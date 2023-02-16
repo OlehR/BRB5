@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using Xamarin.Forms;
 
 namespace BRB5.Model
 {
@@ -15,12 +16,15 @@ namespace BRB5.Model
         public string BarCode{ get; set; }
         public int BaseCodeUnit{ get; set; }
 
-        public decimal BeforeQuantity { get; set; }
+        private decimal _BeforeQuantity;
+        public decimal BeforeQuantity { get { return _BeforeQuantity; } set { _BeforeQuantity = value; OnPropertyChanged("BeforeQuantity"); } }
         public decimal QuantityMin { get; set; }
         public decimal QuantityMax { get; set; }
         //public double QuantityOld{ get; set; }
         public decimal QuantityOrder { get; set; }
-        public decimal InputQuantity { get; set; }
+
+        private decimal _InputQuantity;
+        public decimal InputQuantity { get { return _InputQuantity; } set { _InputQuantity = value; OnPropertyChanged("InputQuantity"); } }
         public decimal QuantityReason { get; set; }
         public decimal QuantityBarCode { get { return ParseBarCode?.Quantity ?? 0m; } }
         /// <summary>

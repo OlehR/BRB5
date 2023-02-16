@@ -37,7 +37,7 @@
                            IsReadOnly="True"
                            Placeholder="баркод" />
 
-                    <Entry Text="{Binding BeforeQuantity}" 
+                    <Entry Text="{Binding pBeforeQuantity}" 
                            Grid.Column="1"
                            IsReadOnly="True" />
 
@@ -50,6 +50,7 @@
                         </Grid.ColumnDefinitions>
                         <Entry Text="{Binding ScanData.InputQuantity}" 
                                Grid.Column="0" x:Name="inputQ"
+                               TextChanged="CalcQuantity"
                                Placeholder="к-сть"
                                Keyboard="Numeric"/>
 
@@ -60,7 +61,7 @@
                                IsReadOnly="True" />
                     </Grid>
 
-                    <Entry Text="{Binding ScanData.QuantityBarCode}" 
+                    <Entry Text="{Binding QuantityBarCode}" 
                            Grid.Column="1"
                            Grid.Row="1"
                            IsReadOnly="True" />
@@ -135,6 +136,10 @@
                            FontSize="18"
                            Grid.Column="3" 
                            TextColor="#816f20" >
+
+                        <Label.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="Reset" />
+                        </Label.GestureRecognizers>
                     </Label>
                     <Label Text="f2-" FontSize="16" 
                            TextColor = "#ff5c5c"
