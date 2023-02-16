@@ -38,6 +38,7 @@ namespace BRB5.View
             TypeDoc = Config.GetDocSetting(pTypeDoc);
             c = Connector.Connector.GetInstance();
             var tempListWares = db.GetDocWares(pDocId, 2, eTypeOrder.Scan);
+            foreach (var t in tempListWares) { t.Ord = -1; }
             ListWares = tempListWares == null ? new ObservableCollection<DocWaresEx>(): new ObservableCollection<DocWaresEx>(tempListWares);
             OrderDoc = ListWares.Count > 0 ? ListWares.First().OrderDoc : 0;
 
@@ -56,7 +57,6 @@ namespace BRB5.View
 
                     if (ScanData != null)
                     { 
-                        //inputQ.Focus();
                         inputQ.Text = "";
                         AddWare();
                     }
@@ -77,9 +77,13 @@ namespace BRB5.View
                     {
                         ScanData.Quantity = ScanData.InputQuantity;
                         ScanData.OrderDoc = ++OrderDoc;
+                        ScanData.Ord = -1;
                         if (db.ReplaceDocWares(ScanData))
                         {
                             ListWares.Insert(0, ScanData);
+                            foreach (var ware in ListWares){
+                                if (ware.CodeWares == ScanData.CodeWares)ware.Ord = -1;}
+
                             ScanData = null;
                             pBeforeQuantity= 0;
                         }
@@ -96,8 +100,11 @@ namespace BRB5.View
             { 
                 foreach(var ware in ListWares)
                 {
-                    if (ware.CodeWares == pCodeWares) 
+                    if (ware.CodeWares == pCodeWares)
+                    {
                         res += ware.InputQuantity;
+                        ware.Ord = 0;
+                    }
                 }
             }
             return res;

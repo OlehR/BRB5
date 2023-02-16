@@ -34,12 +34,13 @@ namespace BRB5.Model
 
         // Лоти  3- недостача. //2 - надлишок, // 1 - є з причиною // 0 - все ОК.
         // Ревізія. // 0- Зеленим кольором пораховані, 2- оранжевим додані вручну, 0- жовтим непораховані.
-        public int Ord{ get; set; }
+        private int _Ord;
+        public int Ord{ get { return _Ord; } set { _Ord = value; OnPropertyChanged("GetLightBackgroundColor"); } }
 
         public ParseBarCode ParseBarCode { get; set; }
 
         //public boolean IsRecord = false;
-        // 3 - червоний, 2- оранжевий, 1 - жовтий, 0 - зелений, інше грязно жовтий-ранжевий.
+        // 3 - червоний, 2- оранжевий, 1 - жовтий, 0 - зелений, -1 - білий, інше грязно жовтий-ранжевий.
         public string GetBackgroundColor
         {
             get
@@ -78,10 +79,12 @@ namespace BRB5.Model
                         return "#ffffb7";
                     case 0:
                         return "#c4ffc4";
+                    case -1:
+                        return "#ffffff";
                     default:
                         return "#fff3cd";
                 }
-            }
+            }        
         }
         /*
         public string GetNameUnit() { return NameUnit + "X"; }
