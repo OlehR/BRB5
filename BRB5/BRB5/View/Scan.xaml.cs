@@ -25,7 +25,8 @@ namespace BRB5.View
         public TypeDoc TypeDoc { get; set; }
         public int OrderDoc { get; set; }
 
-        public decimal BeforeQuantity { get; set; }
+        private decimal _BeforeQuantity;
+        public decimal BeforeQuantity { get { return _BeforeQuantity; } set { _BeforeQuantity = value; OnPropertyChanged("BeforeQuantity"); } }
 
         public Scan(int pTypeDoc, DocId pDocId)
         {
@@ -34,7 +35,7 @@ namespace BRB5.View
             c = Connector.Connector.GetInstance();
             var tempListWares = db.GetDocWares(pDocId, 2, eTypeOrder.Scan);
             ListWares = tempListWares == null ? new ObservableCollection<DocWaresEx>(): new ObservableCollection<DocWaresEx>(tempListWares);
-            OrderDoc = ListWares.First().OrderDoc;
+            OrderDoc = ListWares.Count > 0 ? ListWares.First().OrderDoc : 0;
 
             zxing.OnScanResult += (result) =>
                 Device.BeginInvokeOnMainThread(async () =>
@@ -74,6 +75,7 @@ namespace BRB5.View
                         {
                             ListWares.Insert(0, ScanData);
                             ScanData = null;
+                            BeforeQuantity= 0;
                         }
                     }
                 }
