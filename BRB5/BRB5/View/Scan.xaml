@@ -37,7 +37,7 @@
                            IsReadOnly="True"
                            Placeholder="баркод" />
 
-                    <Entry Text="{Binding pBeforeQuantity}" 
+                    <Entry Text="{Binding ScanData.BeforeQuantity}" 
                            Grid.Column="1"
                            IsReadOnly="True" />
 
@@ -117,7 +117,7 @@
                                     <Label Text="{Binding InputQuantity}" 
                                        Grid.Column="2"
                                        BackgroundColor="{Binding GetLightBackgroundColor}" />
-                                    <Label Text="{Binding BeforeQuantity}" 
+                                    <Label Text="{Binding QuantityOld}" 
                                        Grid.Column="3"
                                        BackgroundColor="{Binding GetLightBackgroundColor}" />
 

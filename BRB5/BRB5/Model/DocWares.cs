@@ -15,8 +15,10 @@ namespace BRB5.Model
     }
     public class DocWares: DocWaresId
     {
-        public decimal QuantityOld { get; set; }
-        public decimal InputQuantity { get; set; }
+        private decimal _QuantityOld;
+        public decimal QuantityOld { get { return _QuantityOld; } set { _QuantityOld = value; OnPropertyChanged("QuantityOld"); } }
+        private decimal _InputQuantity;
+        public decimal InputQuantity { get { return _InputQuantity; } set { _InputQuantity = value; OnPropertyChanged("InputQuantity"); } }
         public int CodeReason { get; set; }
         public DateTime DTInsert { get; set; }
     }

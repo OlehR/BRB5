@@ -23,10 +23,9 @@ namespace BRB5.Model
         //public double QuantityOld{ get; set; }
         public decimal QuantityOrder { get; set; }
 
-        private decimal _InputQuantity;
-        public decimal InputQuantity { get { return _InputQuantity; } set { _InputQuantity = value; OnPropertyChanged("InputQuantity"); } }
         public decimal QuantityReason { get; set; }
-        public decimal QuantityBarCode { get { return ParseBarCode?.Quantity ?? 0m; } }
+        private decimal _QuantityBarCode;
+        public decimal QuantityBarCode { get { return ParseBarCode?.Quantity ?? 0m; } set { _QuantityBarCode = value; OnPropertyChanged("QuantityBarCode"); } }
         /// <summary>
         /// Чи є даний товар в документі
         /// </summary>

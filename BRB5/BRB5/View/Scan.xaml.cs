@@ -26,12 +26,6 @@ namespace BRB5.View
         public TypeDoc TypeDoc { get; set; }
         public int OrderDoc { get; set; }
 
-        private decimal _pBeforeQuantity;
-        public decimal pBeforeQuantity { get { return _pBeforeQuantity; } set { _pBeforeQuantity = value; OnPropertyChanged("pBeforeQuantity"); } }
-
-        private decimal _QuantityBarCode;
-        public decimal QuantityBarCode { get { return _QuantityBarCode; } set { _QuantityBarCode = value; OnPropertyChanged("QuantityBarCode"); } }
-
         public Scan(int pTypeDoc, DocId pDocId)
         {
             InitializeComponent();
@@ -51,9 +45,9 @@ namespace BRB5.View
                     ScanData = db.GetScanData(pDocId, c.ParsedBarCode(result.Text, true/*?*/));
                     _ = FindWareByBarCodeAsync(result.Text);
 
-                    QuantityBarCode = ScanData.QuantityBarCode;
+                    //QuantityBarCode = ScanData.QuantityBarCode;
 
-                    pBeforeQuantity = CountBeforeQuantity(ScanData.CodeWares);
+                    ScanData.BeforeQuantity = CountBeforeQuantity(ScanData.CodeWares);
 
                     if (ScanData != null)
                     { 
@@ -85,7 +79,6 @@ namespace BRB5.View
                                 if (ware.CodeWares == ScanData.CodeWares)ware.Ord = -1;}
 
                             ScanData = null;
-                            pBeforeQuantity= 0;
                         }
                     }
                 }
@@ -180,9 +173,9 @@ namespace BRB5.View
                 {
                     if (ware.CodeWares == ScanData.CodeWares)
                     {
-                        ware.BeforeQuantity = ware.InputQuantity;
+                        ware.QuantityOld = ware.InputQuantity;
                         ware.InputQuantity = 0;
-                        ware.QuantityOld= ware.BeforeQuantity;
+                        ware.Quantity = 0; 
                         db.ReplaceDocWares(ware);
                     }
                 }
@@ -192,9 +185,8 @@ namespace BRB5.View
 
         private void CalcQuantity(object sender, TextChangedEventArgs e)
         {
-            if (ScanData == null) QuantityBarCode = 0;
-            else if (ScanData.QuantityBarCode == 0)
-                QuantityBarCode = ScanData.InputQuantity * ScanData.Coefficient;
+            if (ScanData != null && ScanData.QuantityBarCode == 0)
+                ScanData.QuantityBarCode = ScanData.InputQuantity * ScanData.Coefficient;
         }
     }
 }
