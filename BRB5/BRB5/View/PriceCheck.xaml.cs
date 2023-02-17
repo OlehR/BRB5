@@ -203,9 +203,8 @@ namespace BRB5
 
         private void OnF5(object sender, EventArgs e)
         {
-            IsVisRepl = !IsVisRepl;
+            //IsVisRepl = !IsVisRepl;
             IsMultyLabel= !IsMultyLabel;
         }
-
     }
 }
