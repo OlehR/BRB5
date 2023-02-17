@@ -295,7 +295,7 @@ namespace BRB5.Connector
         /// <param name="pWares"></param>
         /// <param name="pIsClose"></param>
         /// <returns></returns>
-        public override Result SendDocsData(Doc pDoc, IEnumerable<DocWares> pWares, int pIsClose)
+        public override Result SendDocsData(Doc pDoc, IEnumerable<DocWares> pWares)
         {
             var r = pWares.Select(el => new Object[] { el.OrderDoc, el.CodeWares, el.InputQuantity });
             var res = new ApiSaveDoc(153, pDoc.TypeDoc, pDoc.NumberDoc, r);

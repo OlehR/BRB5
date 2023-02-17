@@ -62,7 +62,7 @@ namespace BRB5.Connector
         /// <param name="pWares"></param>
         /// <param name="pIsClose"></param>
         /// <returns></returns>
-        public virtual Result SendDocsData(Doc pDoc, IEnumerable<DocWares> pWares, int pIsClose) { throw new NotImplementedException(); }
+        public virtual Result SendDocsData(Doc pDoc, IEnumerable<DocWares> pWares) { throw new NotImplementedException(); }
 
         //Збереження ПРосканованих товарів в 1С
         public virtual Result SendLogPrice(IEnumerable<LogPrice> pList) { throw new NotImplementedException(); }

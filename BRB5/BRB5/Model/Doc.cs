@@ -8,6 +8,7 @@ namespace BRB5
 {
     public class DocId: Element
     {
+
         /// <summary>
         /// Тип документа (1-ревізія 2-приходи тощо,11-опитування)
         /// </summary>
@@ -16,6 +17,13 @@ namespace BRB5
         /// (Номер документа в 1С)
         /// </summary>
         public string NumberDoc { get; set; }
+        public DocId() { }
+
+        public DocId(DocId pDocId)
+        { 
+            TypeDoc = pDocId.TypeDoc;
+            NumberDoc = pDocId.NumberDoc;
+        }
     }
 
     public class Doc:DocId
@@ -126,26 +134,23 @@ namespace BRB5
 
         //public int isClose; //0- не закривати, 1 - закривати.
         public Doc() { }
-        public Doc(int pTypeDoc, string pNumberDoc)
-        {
-            TypeDoc = pTypeDoc;
-            NumberDoc = pNumberDoc;
-        }
+        
+        public Doc(DocId pDocId):base(pDocId) { }        
 
 
-       /* public Date GetDateOutInvoice()
-        {
-            SimpleDateFormat formatterDate = new SimpleDateFormat("yyyy-MM-dd");
-            Date DateOut = Calendar.getInstance().getTime();
-            try
-            {
-                DateOut = formatterDate.parse(DateOutInvoice);
-            }
-            catch (Exception e)
-            {
-                try { DateOut = formatterDate.parse(formatterDate.format(DateOut)); } catch (Exception ee) { }
-            }
-            return DateOut;
-        }*/
+        /* public Date GetDateOutInvoice()
+         {
+             SimpleDateFormat formatterDate = new SimpleDateFormat("yyyy-MM-dd");
+             Date DateOut = Calendar.getInstance().getTime();
+             try
+             {
+                 DateOut = formatterDate.parse(DateOutInvoice);
+             }
+             catch (Exception e)
+             {
+                 try { DateOut = formatterDate.parse(formatterDate.format(DateOut)); } catch (Exception ee) { }
+             }
+             return DateOut;
+         }*/
     }
 }

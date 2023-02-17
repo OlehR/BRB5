@@ -114,6 +114,7 @@ namespace BRB5.View
             zxing.IsScanning = false;
             base.OnDisappearing();
         }
+
         public async Task FindWareByBarCodeAsync(string BarCode)
         {
             if(ScanData == null)

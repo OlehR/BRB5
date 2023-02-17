@@ -345,6 +345,16 @@ CREATE UNIQUE INDEX UserLogin ON User (Login);
                                 where TypeDoc= @TypeDoc and DateDoc >= date(datetime(CURRENT_TIMESTAMP,'-5 day')) order by DateDoc DESC";
             return db.Execute<object, Doc>(Sql, new  { TypeDoc = pTypeDoc });
         }
+        public Doc GetDoc(DocId pDocId)
+        {
+            string Sql = @"select d.* , Wh.Name as Address from Doc d 
+ left join Warehouse  Wh on d.CodeWarehouse   =wh.number 
+                                where d.TypeDoc= @TypeDoc and d.numberdoc=@DocNumber";
+            var r= db.Execute<DocId, Doc>(Sql,pDocId);
+            if(r!=null&&r.Any())
+                return r.First();
+            return null;
+        }
 
         public DocWaresEx GetScanData(DocId pDocId, ParseBarCode pParseBarCode)
         {

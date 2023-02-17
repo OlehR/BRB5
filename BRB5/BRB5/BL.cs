@@ -41,7 +41,6 @@ namespace BRB5
                         //Utils.WriteLog("e", TAG, "SendLogPricePSU  >>", e);
                         break;
                     }
-
                 }
                 else
                     break;

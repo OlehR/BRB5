@@ -323,7 +323,7 @@ namespace BRB5.Connector
         /// <param name="pWares"></param>
         /// <param name="pIsClose"></param>
         /// <returns></returns>
-        public override Result SendDocsData(Doc pDoc, IEnumerable<DocWares> pWares, int pIsClose)
+        public override Result SendDocsData(Doc pDoc, IEnumerable<DocWares> pWares)
         {
             return null;
         }
