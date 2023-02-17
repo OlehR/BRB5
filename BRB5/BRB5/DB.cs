@@ -421,7 +421,7 @@ CREATE UNIQUE INDEX UserLogin ON User (Login);
                 // Пошук по коду
                 if (res == null && (pParseBarCode.CodeWares > 0 || pParseBarCode.Article != null))
                 {
-                    String Find = pParseBarCode.CodeWares > 0 ? $"w.code_wares={pParseBarCode.CodeWares}" : @"w.ARTICL='{pParseBarCode.Article}'";
+                    String Find = pParseBarCode.CodeWares > 0 ? $"w.code_wares={pParseBarCode.CodeWares}" : $"w.ARTICL='{pParseBarCode.Article:D8}'";
                     sql = @"select w.CODEWARES,w.NAMEWARES as NameWares, au.COEFFICIENT as Coefficient,w.CODEUNIT as CodeUnit, ud.ABRUNIT as NameUnit,
                             '' as BARCODE  ,w.CODEUNIT as BaseCodeUnit 
                                 from WARES w 
