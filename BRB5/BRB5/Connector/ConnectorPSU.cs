@@ -180,8 +180,8 @@ namespace BRB5.Connector
                     //  Log.e("XXX",number+' ' +number.Substring(0,1));
                     if (pBarCode.Substring(0, 2).Equals("22"))
                     {
-                        res.Article = Convert.ToInt32(pBarCode.Substring(2, 8));
-                        String Quantity = pBarCode.Substring(8, 12);
+                        res.Article = Convert.ToInt32(pBarCode.Substring(2, 6));
+                        String Quantity = pBarCode.Substring(8, 4);
                         res.Quantity = Convert.ToDecimal(Quantity) / 1000m;
                         // Log.e("XXX",Article+" "+ Quantity );
                     }
@@ -189,8 +189,8 @@ namespace BRB5.Connector
                     if (pBarCode.Substring(0, 3).Equals("111"))
                     {
                         //isBarCode=false;
-                        res.Article = Convert.ToInt32(pBarCode.Substring(3, 9));
-                        String Quantity = pBarCode.Substring(9, 12);
+                        res.Article = Convert.ToInt32(pBarCode.Substring(3, 6));
+                        String Quantity = pBarCode.Substring(9, 3);
                         res.Quantity = Convert.ToDecimal(Quantity);
                         //Log.e("XXX",Article+" "+ Quantity );
                     }
@@ -201,7 +201,6 @@ namespace BRB5.Connector
                         res.BarCode = null;
                     }
                 }
-
             }
             return res;
         }
