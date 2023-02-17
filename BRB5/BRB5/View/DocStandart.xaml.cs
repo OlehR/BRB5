@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
+using Xamarin.CommunityToolkit.Extensions;
 
 namespace BRB5.View
 {
@@ -30,15 +31,19 @@ namespace BRB5.View
             this.BindingContext = this;
             InitializeComponent();
         }
-
-        private void F2Save(object sender, EventArgs e)
+        private void F2(object sender, EventArgs e)
         {
-            c.SendDocsData(new Doc(myDocId), db.GetDocWares(myDocId, 2, eTypeOrder.Scan));
+            F2Save();
+        }
+        private async Task F2Save()
+        {
+            var r = c.SendDocsData(new Doc(myDocId), db.GetDocWares(myDocId, 2, eTypeOrder.Scan));
+            if (r.State != 0) await DisplayAlert("Помилка", r.TextError, "OK");
+            else await this.DisplayToastAsync("Документ успішно збережений");
         }
 
         private async void F3Scan(object sender, EventArgs e)
         {
-
             await Navigation.PushAsync(new Scan(myTypeDoc, myDocId));
         }
 
@@ -51,6 +56,8 @@ namespace BRB5.View
         {
 
         }
+
+        
     }
     public class AlternateColorDataTemplateSelector : DataTemplateSelector
     {
