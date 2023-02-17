@@ -21,6 +21,7 @@
                     </Grid.ColumnDefinitions>
 
                     <Button Text="{Binding NamePrintColorType}"
+                            IsEnabled ="{Binding IsEnabledPrintType}"
                         HorizontalOptions="Fill"
                         Clicked="OnClickChangePrintColorType" />
 
@@ -172,6 +173,19 @@
                 
                 <StackLayout VerticalOptions="End" Orientation="Horizontal">
 
+                    <Label Text="f1-" 
+                           VerticalOptions="Center"
+                           FontSize="16" 
+                           TextColor = "#ff5c5c"/>
+                    <Label Text="Друк"
+                           FontSize="18"
+                           Grid.Column="1"
+                           TextColor="#816f20">
+                        <Label.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="OnF1" />
+                        </Label.GestureRecognizers>
+                    </Label>
+                    
                     <Label Text="f2-" 
                            VerticalOptions="Center"
                            FontSize="16"

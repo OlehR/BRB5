@@ -43,6 +43,7 @@ namespace BRB5
 
         int _PrintType = 0;//Колір чека 0-звичайний 1-жовтий, -1 не розділяти.        
         public int PrintType { get { return _PrintType; } set { _PrintType = value; OnPropertyChanged("PrintType"); OnPropertyChanged("NamePrintColorType"); OnPropertyChanged("ColorPrintColorType"); } }
+        public bool IsEnabledPrintType { get { return Config.TypeUsePrinter != eTypeUsePrinter.NotDefined && Config.TypeUsePrinter != eTypeUsePrinter.StationaryWithCutAuto; }  }
 
         public bool IsOnline { get; set; } = true;
 
@@ -62,7 +63,7 @@ namespace BRB5
 
 
         //public int ColorPrintColorType() { return Color.parseColor(HttpState != eStateHTTP.HTTP_OK ? "#ffb3b3" : (PrintType == 0 ? "#ffffff" : "#3fffff00")); }
-        public string NamePrintColorType { get { return PrintType == 0 ? "Звичайний" : PrintType == 1 ? "Жовтий" : "Авто"; } }
+        public string NamePrintColorType { get { return PrintType == 0 ? "Звичайний" : PrintType == 1 ? "Жовтий" : "Авто"; } }//
         public string ColorPrintColorType { get { return PrintType == 0 ? "#ffffff" : PrintType == 1 ? "#ffffa8" : "#ffffff"; } }
 
         public string TextColorPrice { get { return (WP!=null && (WP.Price != WP.PriceOld || WP.Price == 0) && WP.PriceOpt != WP.PriceOptOld) ? "#009800" : "#ff5c5c";  } }
@@ -79,7 +80,11 @@ namespace BRB5
             InitializeComponent();
             c = Connector.Connector.GetInstance();
             var r = db.GetCountScanCode();
-            if(r!=null)
+
+            if (Config.TypeUsePrinter == eTypeUsePrinter.StationaryWithCutAuto) PrintType = -1;
+
+
+            if (r!=null)
             {
                 AllScan = r.AllScan;
                 BadScan = r.BadScan;
@@ -200,6 +205,11 @@ namespace BRB5
         private void OnF5(object sender, EventArgs e)
         {
             IsVisRepl = !IsVisRepl;
+        }
+
+        private void OnF1(object sender, EventArgs e)
+        {
+
         }
     }
 }
