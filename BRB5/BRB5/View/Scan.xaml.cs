@@ -93,6 +93,7 @@ namespace BRB5.View
             { 
                 foreach(var ware in ListWares)
                 {
+                    ware.Ord = -1;
                     if (ware.CodeWares == pCodeWares)
                     {
                         res += ware.InputQuantity;
