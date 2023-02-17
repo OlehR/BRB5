@@ -182,7 +182,7 @@
                            Grid.Column="1"
                            TextColor="#816f20">
                         <Label.GestureRecognizers>
-                            <TapGestureRecognizer Tapped="OnF1" />
+                            <TapGestureRecognizer Tapped="OnClickPrintBlock" />
                         </Label.GestureRecognizers>
                     </Label>
                     

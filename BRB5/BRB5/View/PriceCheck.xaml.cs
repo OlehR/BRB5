@@ -99,9 +99,8 @@ namespace BRB5
                     FoundWares(result.Text, false);
                  zxing.IsAnalyzing = true;
                 }
-            //zxing.IsScanning = true;
-
                 );
+
             NumberOfReplenishment.Unfocused += (object sender, FocusEventArgs e) =>
             {
                 decimal d;
@@ -207,9 +206,5 @@ namespace BRB5
             IsVisRepl = !IsVisRepl;
         }
 
-        private void OnF1(object sender, EventArgs e)
-        {
-
-        }
     }
 }
