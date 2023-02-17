@@ -20,9 +20,9 @@
                         <ColumnDefinition />
                     </Grid.ColumnDefinitions>
 
-                    <Button Text="Стандартна?"
+                    <Button Text="{Binding NamePrintColorType}"
                         HorizontalOptions="Fill"
-                        Clicked="OnClickChangePrintType" />
+                        Clicked="OnClickChangePrintColorType" />
 
                     <Button 
                         Grid.Column="1" 
@@ -140,20 +140,15 @@
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition />
                         <ColumnDefinition />
-                        <ColumnDefinition />
                     </Grid.ColumnDefinitions>
 
-                    <Button Text="{Binding NamePrintColorType}"
-                        HorizontalOptions="Fill"
-                        Clicked="OnClickChangePrintColorType" />
-                    <Picker Title="пакети"                        
-                        Grid.Column="1"
+                    <Picker Title="пакети"  
                         ItemsSource="{Binding ListPrintBlockItems}"
                         ItemDisplayBinding="{Binding stringPrintBlockItem}"
                         SelectedIndex="{Binding SelectedPrintBlockItems}"/>
 
                     <Button Text="f1-Друк"
-                        Grid.Column="2" 
+                        Grid.Column="1" 
                         HorizontalOptions="Fill"
                         Clicked="OnClickPrintBlock" />
                 </Grid>
@@ -177,20 +172,6 @@
                 
                 <StackLayout VerticalOptions="End" Orientation="Horizontal">
 
-                    <!--<Label Text="f1-" 
-                           VerticalOptions="Center"
-                           FontSize="16" 
-                           TextColor = "#ff5c5c"/>
-                    <Label Text="Друк"
-                           FontSize="18"
-                           Grid.Column="1"
-                           TextColor="#816f20">
-                        <Label.GestureRecognizers>
-                            <TapGestureRecognizer Tapped="OnF1" />
-                        </Label.GestureRecognizers>
-                    </Label>
-                    
-                     -->
                     <Label Text="f2-" 
                            VerticalOptions="Center"
                            FontSize="16"
@@ -239,22 +220,6 @@
 
             </StackLayout >
         </AbsoluteLayout>
-        <!--
-        <AbsoluteLayout>
-             
-                <forms:ZXingScannerView x:Name="zxing" HorizontalOptions="StartAndExpand" VerticalOptions="FillAndExpand" ScaleY="1.5"  
-                    AbsoluteLayout.LayoutBounds="0, -0.2, 1, .4"  AbsoluteLayout.LayoutFlags="All"   >
-                    
-                </forms:ZXingScannerView>
-
-            <StackLayout  AbsoluteLayout.LayoutBounds="1, 1, 1, .6"  AbsoluteLayout.LayoutFlags="All" >
-                <ProgressBar Progress="0.8" ProgressColor="Black" />
-                <Label Text="Welcome to Xamarin.Forms!"
-                VerticalOptions="CenterAndExpand" 
-                HorizontalOptions="CenterAndExpand" />
-            </StackLayout >
-           
-        </AbsoluteLayout>
-             -->
+        
     </ContentPage.Content>
 </ContentPage>

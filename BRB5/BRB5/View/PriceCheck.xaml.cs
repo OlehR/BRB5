@@ -106,20 +106,7 @@ namespace BRB5
 
             Config.OnProgress += (pProgress)=>{ PB = pProgress; };
                 //MainSL.Children.Add(zxing);
-
-                /*overlay = new ZXingDefaultOverlay
-                {
-                    TopText = "Hold your phone up to the barcode",
-                    BottomText = "Scanning will happen automatically",
-                    ShowFlashButton = zxing.HasTorch,
-                    AutomationId = "zxingDefaultOverlay",
-                };
-                overlay.FlashButtonClicked += (sender, e) =>
-                {
-                    zxing.IsTorchOn = !zxing.IsTorchOn;
-                };*/
-
-
+                
                 /* ZXingScannerPage scanPage = new ZXingScannerPage();
                  ZXingScannerPage.ScanResultDelegate scanResultDelegate = (Result) =>
                  {
@@ -183,12 +170,7 @@ namespace BRB5
         {
             bl.SendLogPrice();
         }
-
-        private void OnClickChangePrintType(object sender, EventArgs e)
-        {
-            
-        }
-       
+                      
         private void OnClickAddPrintBlock(object sender, EventArgs e)
         {
             PackageNumber++;
