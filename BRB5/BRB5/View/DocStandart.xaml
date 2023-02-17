@@ -7,9 +7,9 @@
             <DataTemplate x:Key="evenTemplate">
                 <ViewCell>
                     <Grid RowSpacing="1"
-                                  ColumnSpacing="1"  
-                                  Padding="1" 
-                                  BackgroundColor="#adaea7">
+                          ColumnSpacing="1"  
+                          Padding="1" 
+                          BackgroundColor="#adaea7">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="1*" />
                             <ColumnDefinition Width="1*" />

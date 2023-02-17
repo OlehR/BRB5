@@ -151,6 +151,7 @@
                     <Button Text="f1-Друк"
                         Grid.Column="1" 
                         HorizontalOptions="Fill"
+                        IsEnabled ="{Binding IsEnabledPrint}"
                         Clicked="OnClickPrintBlock" />
                 </Grid>
 

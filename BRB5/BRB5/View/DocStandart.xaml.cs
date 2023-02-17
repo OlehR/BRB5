@@ -16,10 +16,12 @@ namespace BRB5.View
     {
         private int myTypeDoc;
         private DocId myDocId;
+        private Connector.Connector c; 
+        protected DB db = DB.GetDB();
         public ObservableCollection<DocWaresEx> MyDocWares { get; set; }
         public DocStandart(DocId pDocId, int pTypeResult, eTypeOrder pTypeOrder, int pTypeDoc)
         {
-            DB db = DB.GetDB();
+            c = Connector.Connector.GetInstance();
             myTypeDoc = pTypeDoc;
             myDocId = pDocId;
             var r = db.GetDocWares(pDocId, pTypeResult, pTypeOrder);
@@ -31,7 +33,7 @@ namespace BRB5.View
 
         private void F2Save(object sender, EventArgs e)
         {
-
+            c.SendDocsData(new Doc(myDocId), db.GetDocWares(myDocId, 2, eTypeOrder.Scan));
         }
 
         private async void F3Scan(object sender, EventArgs e)
