@@ -61,7 +61,7 @@
                                IsReadOnly="True" />
                     </Grid>
 
-                    <Entry Text="{Binding QuantityBarCode}" 
+                    <Entry Text="{Binding ScanData.QuantityBarCode}" 
                            Grid.Column="1"
                            Grid.Row="1"
                            IsReadOnly="True" />

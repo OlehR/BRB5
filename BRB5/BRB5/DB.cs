@@ -2,9 +2,11 @@
 using BRB5.Model;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using Utils;
 using Xamarin.Essentials;
 using Xamarin.Forms;
@@ -69,8 +71,8 @@ CREATE TABLE DocWares (
     NumberDoc   TEXT            NOT NULL,
     OrderDoc    INTEGER         NOT NULL DEFAULT (0),
     CodeWares   INTEGER         NOT NULL,
-    Quantity    NUMERIC (12, 3) NOT NULL,   
-    QuantityOld NUMERIC (12, 3),   
+    Quantity    NUMBER  NOT NULL,   
+    QuantityOld NUMBER ,   
     CodeReason  INTEGER,
     DTInsert    TIMESTAMP       DEFAULT (DATETIME('NOW', 'LOCALTIME') )
 );
@@ -82,9 +84,9 @@ CREATE TABLE DocWaresSample (
     NumberDoc   TEXT,
     OrderDoc    INTEGER         NOT NULL,
     CodeWares   INTEGER         NOT NULL,
-    Quantity     NUMERIC (12, 3),
-    QuantityMin NUMERIC (12, 3),
-    QuantityMax NUMERIC (12, 3),
+    Quantity     NUMBER,
+    QuantityMin NUMBER,
+    QuantityMax NUMBER, --NUMERIC (12, 3),
     Name         TEXT,
     BarCode      TEXT);
 CREATE INDEX DOCWaresSampleBC ON DocWaresSample (BarCode);
@@ -260,7 +262,7 @@ CREATE UNIQUE INDEX UserLogin ON User (Login);
 
             if (pTypeResult == 1)
                 Sql = $@"select d.TypeDoc as TypeDoc, d.numberdoc as NumberDoc, dw1.orderdoc as OrderDoc, dw1.CODEWARES as CodeWares,coalesce(dws.name,w.NAMEWARES) as NameWares,
-                         coalesce(dws.quantity,0) as QuantityOrder,coalesce(dw1.quantityinput,0) as InputQuantity, coalesce(dws.quantitymin,0) as QuantityMin, 
+                         coalesce(dws.quantity,0) as QuantityOrder,coalesce(dw1.quantityinput,0) as InputQuantityStr, coalesce(dws.quantitymin,0) as QuantityMin, 
                         coalesce(dws.quantitymax,0) as QuantityMax ,coalesce(d.IsControl,0) as IsControl, coalesce(dw1.quantityold,0) as QuantityOld
                       ,dw1.quantityreason as QuantityReason
                         {Color}
@@ -292,7 +294,9 @@ CREATE UNIQUE INDEX UserLogin ON User (Login);
             if (pTypeResult == 2)
                 Sql = $@"select d.TypeDoc as TypeDoc, d.numberdoc as NumberDoc, dw1.orderdoc as OrderDoc, dw1.CODEWARES as CodeWares,coalesce(dws.name,w.NAMEWARES) as NameWares,
                         coalesce(dws.quantity,0) as QuantityOrder,
-                        coalesce(dw1.quantity,0) as InputQuantity, coalesce(dws.quantitymin,0) as QuantityMin, coalesce(dws.quantitymax,0) as QuantityMax ,
+                        --coalesce(dw1.quantity,0) as InputQuantityStr,
+coalesce(dw1.quantity,0) as InputQuantity,
+                        coalesce(dws.quantitymin,0) as QuantityMin, coalesce(dws.quantitymax,0) as QuantityMax ,
                         coalesce(d.IsControl,0) as IsControl, coalesce(dw1.quantityold,0) as QuantityOld,dw1.CODEReason as  CodeReason
                         ,0 as Ord,w.codeunit
                             from Doc d 
@@ -307,11 +311,15 @@ CREATE UNIQUE INDEX UserLogin ON User (Login);
 
             try
             {
+                
+                decimal aa = Convert.ToDecimal("0.999");
+
                 var r= db.Execute<DocId, DocWaresEx>(Sql, pDocId);
                 return r;
             }
             catch (Exception e)
             {
+                string msg = e.Message;
                 //Utils.WriteLog("e", TAG, "GetDocWares >>", e);
             }
             return null;

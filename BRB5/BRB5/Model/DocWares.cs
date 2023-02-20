@@ -19,6 +19,7 @@ namespace BRB5.Model
         public decimal QuantityOld { get { return _QuantityOld; } set { _QuantityOld = value; OnPropertyChanged("QuantityOld"); } }
         private decimal _InputQuantity;
         public decimal InputQuantity { get { return _InputQuantity; } set { _InputQuantity = value; OnPropertyChanged("InputQuantity"); } }
+        public string InputQuantityStr { set { _InputQuantity = Convert.ToDecimal(value); } }
         public int CodeReason { get; set; }
         public DateTime DTInsert { get; set; }
     }

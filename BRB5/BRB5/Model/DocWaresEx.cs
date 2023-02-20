@@ -13,7 +13,8 @@ namespace BRB5.Model
         public int CodeUnit{ get; set; }
         public string NameUnit{ get; set; }
         public string IsControl { get; set;  }
-        public string BarCode{ get; set; }
+        private string _BarCode;
+        public string BarCode { get { return _BarCode; } set { _BarCode = value; OnPropertyChanged("BarCode"); } }
         public int BaseCodeUnit{ get; set; }
 
         private decimal _BeforeQuantity;
@@ -36,6 +37,7 @@ namespace BRB5.Model
         private int _Ord;
         public int Ord{ get { return _Ord; } set { _Ord = value; OnPropertyChanged("GetLightBackgroundColor"); } }
 
+        
         public ParseBarCode ParseBarCode { get; set; }
 
         //public boolean IsRecord = false;
