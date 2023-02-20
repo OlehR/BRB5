@@ -45,13 +45,14 @@ namespace BRB5.View
                     ScanData = db.GetScanData(pDocId, c.ParsedBarCode(result.Text, true/*?*/));
                     _ = FindWareByBarCodeAsync(result.Text);
 
-                    //QuantityBarCode = ScanData.QuantityBarCode;
-
-                    ScanData.BeforeQuantity = CountBeforeQuantity(ScanData.CodeWares);
-
                     if (ScanData != null)
-                    { 
-                        inputQ.Text = "";
+                    {
+                        ScanData.BarCode = result.Text;
+
+                        if (ScanData.QuantityBarCode > 0)
+                            ScanData.InputQuantity = ScanData.QuantityBarCode;
+                        else
+                            inputQ.Text = "";
                         AddWare();
                     }
                     zxing.IsAnalyzing = true;
@@ -143,9 +144,8 @@ namespace BRB5.View
                     }
                 }
 
-                /*
-                   WaresItem.BeforeQuantity = CountBeforeQuantity(ListWares, WaresItem.CodeWares);
-                */
+                ScanData.BeforeQuantity = CountBeforeQuantity(ScanData.CodeWares);
+
                 if (TypeDoc.IsSimpleDoc)
                 {
                     if (ScanData.BeforeQuantity > 0)
@@ -159,11 +159,6 @@ namespace BRB5.View
 
             }
 
-            if (ScanData.QuantityBarCode > 0) ;
-               // inputCount.setText(Double.toString(WaresItem.QuantityBarCode));
-               //!!!
-            //SetAlert(WaresItem.CodeWares);
-            //!!!
             return;
         }
 
