@@ -23,7 +23,7 @@ namespace BRB5.Model
         public decimal QuantityMax { get; set; }
         //public double QuantityOld{ get; set; }
         public decimal QuantityOrder { get; set; }
-
+        public string QuantityOrderStr { set { QuantityOrder = Convert.ToDecimal(value); } }
         public decimal QuantityReason { get; set; }
         private decimal _QuantityBarCode;
         public decimal QuantityBarCode { get { return ParseBarCode?.Quantity ?? 0m; } set { _QuantityBarCode = value; OnPropertyChanged("QuantityBarCode"); } }

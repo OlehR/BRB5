@@ -9,6 +9,7 @@ using System.Windows.Input;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 using Xamarin.CommunityToolkit.Extensions;
+using System.Collections.Specialized;
 
 namespace BRB5.View
 {
@@ -30,6 +31,24 @@ namespace BRB5.View
                 MyDocWares = new ObservableCollection<DocWaresEx>(r);
             this.BindingContext = this;
             InitializeComponent();
+        }
+        protected override void OnAppearing()
+        {
+            //Write the code of your page here
+            base.OnAppearing();
+            var r = db.GetDocWares(myDocId, 1, eTypeOrder.Scan);
+            if (r != null)
+            {
+                MyDocWares.Clear();
+                //MyDocWares.CheckReentrancy();
+                foreach (var item in r)
+                    MyDocWares.Add(item);
+                //this.OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
+
+            }
+            //= new ObservableCollection<DocWaresEx>(r);
+
+
         }
         private void F2(object sender, EventArgs e)
         {
