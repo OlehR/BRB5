@@ -168,7 +168,7 @@ namespace BRB5.View
             {
                 foreach (var ware in ListWares)
                 {
-                    if (ware.CodeWares == ScanData.CodeWares)
+                    if (ware.CodeWares == ScanData.CodeWares&& ware.InputQuantity!=0)
                     {
                         ware.QuantityOld = ware.InputQuantity;
                         ware.InputQuantity = 0;
