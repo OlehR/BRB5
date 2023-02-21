@@ -31,21 +31,14 @@ namespace BRB5.View
         }
         protected override void OnAppearing()
         {
-            //Write the code of your page here
             base.OnAppearing();
             var r = db.GetDocWares(myDocId, 1, eTypeOrder.Scan);
             if (r != null)
             {
                 MyDocWares.Clear();
-                //MyDocWares.CheckReentrancy();
                 foreach (var item in r)
                     MyDocWares.Add(item);
-                //this.OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
-
             }
-            //= new ObservableCollection<DocWaresEx>(r);
-
-
         }
         private void F2(object sender, EventArgs e)
         {
