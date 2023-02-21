@@ -20,16 +20,13 @@ namespace BRB5.View
         private DocId myDocId;
         private Connector.Connector c; 
         protected DB db = DB.GetDB();
-        public ObservableCollection<DocWaresEx> MyDocWares { get; set; }
+        public ObservableCollection<DocWaresEx> MyDocWares { get; set; } = new ObservableCollection<DocWaresEx>();
         public DocStandart(DocId pDocId, int pTypeResult, eTypeOrder pTypeOrder, int pTypeDoc)
         {
             c = Connector.Connector.GetInstance();
             myTypeDoc = pTypeDoc;
-            myDocId = pDocId;
-            var r = db.GetDocWares(pDocId, pTypeResult, pTypeOrder);
-            if(r != null)
-                MyDocWares = new ObservableCollection<DocWaresEx>(r);
-            this.BindingContext = this;
+            myDocId = pDocId;           
+            BindingContext = this;
             InitializeComponent();
         }
         protected override void OnAppearing()
