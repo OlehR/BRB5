@@ -26,10 +26,10 @@ namespace BRB5.View
         public TypeDoc TypeDoc { get; set; }
         public int OrderDoc { get; set; }
 
-        public Scan(int pTypeDoc, DocId pDocId)
+        public Scan(DocId pDocId, TypeDoc pTypeDoc = null)
         {
             InitializeComponent();
-            TypeDoc = Config.GetDocSetting(pTypeDoc);
+            TypeDoc = pTypeDoc!=null? pTypeDoc:Config.GetDocSetting(pDocId.TypeDoc);
             c = Connector.Connector.GetInstance();
             var tempListWares = db.GetDocWares(pDocId, 2, eTypeOrder.Scan);
             foreach (var t in tempListWares) { t.Ord = -1; }

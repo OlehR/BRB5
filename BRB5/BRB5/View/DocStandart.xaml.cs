@@ -16,23 +16,23 @@ namespace BRB5.View
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class DocStandart : ContentPage
     {
-        private int myTypeDoc;
-        private DocId myDocId;
-        private Connector.Connector c; 
+        private readonly TypeDoc TypeDoc;
+        
+        private DocId DocId;
+        private Connector.Connector c = Connector.Connector.GetInstance(); 
         protected DB db = DB.GetDB();
         public ObservableCollection<DocWaresEx> MyDocWares { get; set; } = new ObservableCollection<DocWaresEx>();
-        public DocStandart(DocId pDocId, int pTypeResult, eTypeOrder pTypeOrder, int pTypeDoc)
+        public DocStandart(DocId pDocId,  TypeDoc pTypeDoc)
         {
-            c = Connector.Connector.GetInstance();
-            myTypeDoc = pTypeDoc;
-            myDocId = pDocId;           
+            TypeDoc = pTypeDoc;
+            DocId = pDocId;           
             BindingContext = this;
             InitializeComponent();
         }
         protected override void OnAppearing()
         {
             base.OnAppearing();
-            var r = db.GetDocWares(myDocId, 1, eTypeOrder.Scan);
+            var r = db.GetDocWares(DocId, 1, eTypeOrder.Scan);
             if (r != null)
             {
                 MyDocWares.Clear();
@@ -46,14 +46,14 @@ namespace BRB5.View
         }
         private async Task F2Save()
         {
-            var r = c.SendDocsData(new Doc(myDocId), db.GetDocWares(myDocId, 2, eTypeOrder.Scan));
+            var r = c.SendDocsData(new Doc(DocId), db.GetDocWares(DocId, 2, eTypeOrder.Scan));
             if (r.State != 0) await DisplayAlert("Помилка", r.TextError, "OK");
             else await this.DisplayToastAsync("Документ успішно збережений");
         }
 
         private async void F3Scan(object sender, EventArgs e)
         {
-            await Navigation.PushAsync(new Scan(myTypeDoc, myDocId));
+            await Navigation.PushAsync(new Scan(DocId, TypeDoc));
         }
 
         private void F4WrOff(object sender, EventArgs e)
