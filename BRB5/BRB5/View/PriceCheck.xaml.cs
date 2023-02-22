@@ -44,7 +44,7 @@ namespace BRB5
         int _PrintType = 0;//Колір чека 0-звичайний 1-жовтий, -1 не розділяти.        
         public int PrintType { get { return _PrintType; } set { _PrintType = value; OnPropertyChanged("PrintType"); OnPropertyChanged("NamePrintColorType"); OnPropertyChanged("ColorPrintColorType"); } }
         public bool IsEnabledPrintType { get { return Config.TypeUsePrinter != eTypeUsePrinter.NotDefined && Config.TypeUsePrinter != eTypeUsePrinter.StationaryWithCutAuto; }  }
-
+        public bool IsEnabledPrint { get { return Config.TypeUsePrinter != eTypeUsePrinter.NotDefined; } }
         public bool IsOnline { get; set; } = true;
 
         /// <summary>
@@ -188,7 +188,7 @@ namespace BRB5
 
         private void OnClickPrintBlock(object sender, EventArgs e)
         {
-
+            if (IsEnabledPrint) bl.PrintPackage(PrintType, SelectedPrintBlockItems, IsMultyLabel);
         }
         
         private void OnF2(object sender, EventArgs e)
@@ -203,8 +203,8 @@ namespace BRB5
 
         private void OnF5(object sender, EventArgs e)
         {
-            IsVisRepl = !IsVisRepl;
+            //IsVisRepl = !IsVisRepl;
+            IsMultyLabel= !IsMultyLabel;
         }
-
     }
 }

@@ -19,7 +19,7 @@ namespace BRB5.Connector
 
         public static Connector GetInstance()
         {
-            if (Instance == null)
+            if (Instance == null || Instance is Connector)
             {
                 switch (Config.Company)
                 {
@@ -32,6 +32,8 @@ namespace BRB5.Connector
                     case eCompany.SparPSU:
                     case eCompany.VPSU:
                         Instance = new ConnectorPSU();
+                        break; 
+                       default: Instance = new ConnectorPSU();
                         break;
                 }
             }

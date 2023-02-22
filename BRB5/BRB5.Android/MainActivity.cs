@@ -12,6 +12,8 @@ using BRB5.Connector;
 using System.Net;
 using System.Runtime.Serialization;
 using Result = Android.App.Result;
+using System.Threading;
+using System.Globalization;
 //using Xamarin.Essentials;
 
 namespace BRB5.Droid
@@ -24,6 +26,9 @@ namespace BRB5.Droid
         {
             base.OnCreate(savedInstanceState);
             global::Xamarin.Forms.Forms.Init(this, savedInstanceState);
+
+            Thread.CurrentThread.CurrentCulture = CultureInfo.InvariantCulture;
+            Thread.CurrentThread.CurrentUICulture = CultureInfo.InvariantCulture;
 
             Config.PathDownloads = Path.Combine(Android.App.Application.Context.GetExternalFilesDir("").AbsolutePath, Android.OS.Environment.DirectoryDownloads);
            // Path.Combine(Android.OS.Environment.ExternalStorageDirectory.AbsolutePath, Android.OS.Environment.DirectoryDownloads);

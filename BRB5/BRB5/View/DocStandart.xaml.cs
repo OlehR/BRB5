@@ -8,36 +8,52 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
+using Xamarin.CommunityToolkit.Extensions;
+using System.Collections.Specialized;
 
 namespace BRB5.View
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class DocStandart : ContentPage
     {
-        private int myTypeDoc;
-        private DocId myDocId;
-        public ObservableCollection<DocWaresEx> MyDocWares { get; set; }
-        public DocStandart(DocId pDocId, int pTypeResult, eTypeOrder pTypeOrder, int pTypeDoc)
+        private readonly TypeDoc TypeDoc;
+        
+        private DocId DocId;
+        private Connector.Connector c = Connector.Connector.GetInstance(); 
+        protected DB db = DB.GetDB();
+        public ObservableCollection<DocWaresEx> MyDocWares { get; set; } = new ObservableCollection<DocWaresEx>();
+        public DocStandart(DocId pDocId,  TypeDoc pTypeDoc)
         {
-            DB db = DB.GetDB();
-            myTypeDoc = pTypeDoc;
-            myDocId = pDocId;
-            var r = db.GetDocWares(pDocId, pTypeResult, pTypeOrder);
-            if(r != null)
-                MyDocWares = new ObservableCollection<DocWaresEx>(r);
-            this.BindingContext = this;
+            TypeDoc = pTypeDoc;
+            DocId = pDocId;           
+            BindingContext = this;
             InitializeComponent();
         }
-
-        private void F2Save(object sender, EventArgs e)
+        protected override void OnAppearing()
         {
-
+            base.OnAppearing();
+            var r = db.GetDocWares(DocId, 1, eTypeOrder.Scan);
+            if (r != null)
+            {
+                MyDocWares.Clear();
+                foreach (var item in r)
+                    MyDocWares.Add(item);
+            }
+        }
+        private void F2(object sender, EventArgs e)
+        {
+            F2Save();
+        }
+        private async Task F2Save()
+        {
+            var r = c.SendDocsData(new Doc(DocId), db.GetDocWares(DocId, 2, eTypeOrder.Scan));
+            if (r.State != 0) await DisplayAlert("Помилка", r.TextError, "OK");
+            else await this.DisplayToastAsync("Документ успішно збережений");
         }
 
         private async void F3Scan(object sender, EventArgs e)
         {
-
-            await Navigation.PushAsync(new Scan(myTypeDoc, myDocId));
+            await Navigation.PushAsync(new Scan(DocId, TypeDoc));
         }
 
         private void F4WrOff(object sender, EventArgs e)
@@ -49,6 +65,8 @@ namespace BRB5.View
         {
 
         }
+
+        
     }
     public class AlternateColorDataTemplateSelector : DataTemplateSelector
     {

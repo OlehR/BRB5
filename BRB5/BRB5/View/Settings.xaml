@@ -2,6 +2,7 @@
 <TabbedPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
             NavigationPage.HasNavigationBar="False"
+              xmlns:controls="clr-namespace:BRB5.View"
              x:Class="BRB5.View.Settings">
     <ContentPage Title="Налаштування">
         <ContentPage.Content>
@@ -137,11 +138,20 @@
 
                 </Grid>
 
-                <Entry Text="{Binding ApiUrl1}" />
+                <Frame Style="{StaticResource FrameStyle}" >
+                    <controls:CustomEntry Style="{StaticResource EntryStyle}"
+                                      Text="{Binding ApiUrl1}"/>
+                </Frame>
 
-                <Entry Text="{Binding ApiUrl2}" />
+                <Frame Style="{StaticResource FrameStyle}" >
+                    <controls:CustomEntry Style="{StaticResource EntryStyle}"
+                                      Text="{Binding ApiUrl2}"/>
+                </Frame>
 
-                <Entry Text="{Binding ApiUrl3}" IsVisible="{Binding IsVisApi3}"/>
+                <Frame Style="{StaticResource FrameStyle}" IsVisible="{Binding IsVisApi3}">
+                    <controls:CustomEntry Style="{StaticResource EntryStyle}" 
+                                          Text="{Binding ApiUrl3}" IsVisible="{Binding IsVisApi3}"/>
+                </Frame>
 
                 <Grid>
                     <Grid.ColumnDefinitions>

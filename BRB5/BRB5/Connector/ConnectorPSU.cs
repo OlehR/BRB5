@@ -301,7 +301,7 @@ namespace BRB5.Connector
             String data = res.ToJSON();
             try
             {
-                HttpResult result = Http.HTTPRequest(0, "", data, "application/json; charset=utf-8", null, null);
+                HttpResult result = Http.HTTPRequest(0, "", data, "application/json", null, null);
                 if (result.HttpState != eStateHTTP.HTTP_OK)
                 {
                     return new Result(result);

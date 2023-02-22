@@ -2,6 +2,7 @@
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="BRB5.MainPage"
+             xmlns:controls="clr-namespace:BRB5.View"
              NavigationPage.HasNavigationBar="True"
              >
     <NavigationPage.TitleView>
@@ -32,9 +33,18 @@
                      ItemDisplayBinding="{Binding Name}"
                      SelectedIndex="{Binding SelectedLS}"
                      HorizontalOptions="Fill"/>
-            <Entry x:Name="loginEntry" Text="{Binding Login}" />
+            <Frame Style="{StaticResource FrameStyle}" >
+                <controls:CustomEntry Style="{StaticResource EntryStyle}"
+                                      x:Name="loginEntry" Text="{Binding Login}"/>
+            </Frame>
             <!--TextChanged="loginEntry_TextChanged"-->
-            <Entry x:Name="passwordEntry" Text="{Binding Password}"  Placeholder = "Password" IsPassword ="True" />
+            <Frame Style="{StaticResource FrameStyle}" >
+                <controls:CustomEntry Style="{StaticResource EntryStyle}"
+                                      x:Name="passwordEntry" 
+                                      Text="{Binding Password}"  
+                                      Placeholder = "Password" 
+                                      IsPassword ="True"/>
+            </Frame>
             <Button Text = "Залогінитись" FontSize="Large" BorderWidth="1"
                     HorizontalOptions="Center" VerticalOptions="CenterAndExpand"
                     Clicked="OnButtonLogin" />

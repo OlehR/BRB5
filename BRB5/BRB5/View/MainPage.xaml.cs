@@ -95,7 +95,7 @@ namespace BRB5
                     break;
                 case eKindDoc.Normal:
                 case eKindDoc.Simple:
-                    await Navigation.PushAsync(new DocsStandart(vTypeDoc.CodeDoc));
+                    await Navigation.PushAsync(new DocsStandart(vTypeDoc));
                     break;
                 case eKindDoc.Raiting:
                     await Navigation.PushAsync(new Docs(vTypeDoc.CodeDoc));

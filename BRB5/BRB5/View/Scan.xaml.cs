@@ -26,10 +26,10 @@ namespace BRB5.View
         public TypeDoc TypeDoc { get; set; }
         public int OrderDoc { get; set; }
 
-        public Scan(int pTypeDoc, DocId pDocId)
+        public Scan(DocId pDocId, TypeDoc pTypeDoc = null)
         {
             InitializeComponent();
-            TypeDoc = Config.GetDocSetting(pTypeDoc);
+            TypeDoc = pTypeDoc!=null? pTypeDoc:Config.GetDocSetting(pDocId.TypeDoc);
             c = Connector.Connector.GetInstance();
             var tempListWares = db.GetDocWares(pDocId, 2, eTypeOrder.Scan);
             foreach (var t in tempListWares) { t.Ord = -1; }
@@ -45,13 +45,14 @@ namespace BRB5.View
                     ScanData = db.GetScanData(pDocId, c.ParsedBarCode(result.Text, true/*?*/));
                     _ = FindWareByBarCodeAsync(result.Text);
 
-                    //QuantityBarCode = ScanData.QuantityBarCode;
-
-                    ScanData.BeforeQuantity = CountBeforeQuantity(ScanData.CodeWares);
-
                     if (ScanData != null)
-                    { 
-                        inputQ.Text = "";
+                    {
+                        ScanData.BarCode = result.Text;
+
+                        if (ScanData.QuantityBarCode > 0)
+                            ScanData.InputQuantity = ScanData.QuantityBarCode;
+                        else
+                            inputQ.Text = "";
                         AddWare();
                     }
                     zxing.IsAnalyzing = true;
@@ -143,9 +144,8 @@ namespace BRB5.View
                     }
                 }
 
-                /*
-                   WaresItem.BeforeQuantity = CountBeforeQuantity(ListWares, WaresItem.CodeWares);
-                */
+                ScanData.BeforeQuantity = CountBeforeQuantity(ScanData.CodeWares);
+
                 if (TypeDoc.IsSimpleDoc)
                 {
                     if (ScanData.BeforeQuantity > 0)
@@ -159,11 +159,6 @@ namespace BRB5.View
 
             }
 
-            if (ScanData.QuantityBarCode > 0) ;
-               // inputCount.setText(Double.toString(WaresItem.QuantityBarCode));
-               //!!!
-            //SetAlert(WaresItem.CodeWares);
-            //!!!
             return;
         }
 
@@ -173,7 +168,7 @@ namespace BRB5.View
             {
                 foreach (var ware in ListWares)
                 {
-                    if (ware.CodeWares == ScanData.CodeWares)
+                    if (ware.CodeWares == ScanData.CodeWares&& ware.InputQuantity!=0)
                     {
                         ware.QuantityOld = ware.InputQuantity;
                         ware.InputQuantity = 0;

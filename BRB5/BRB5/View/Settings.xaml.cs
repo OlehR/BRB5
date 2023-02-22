@@ -38,9 +38,28 @@ namespace BRB5.View
         public List<string> ListCompany { get { return Enum.GetNames(typeof(eCompany)).ToList(); } }
         public List<string> ListTypeLog { get { return Enum.GetNames(typeof(eTypeLog)).ToList(); } }
 
-        public List<Warehouse> ListWarehouse { get { return db.GetWarehouse().ToList(); } }        
+        public List<Warehouse> ListWarehouse
+        {
+            get
+            {
+                List<Warehouse> wh = null;
+                try
+                {
+                    wh = db.GetWarehouse()?.ToList();
 
-        public int SelectedWarehouse { get { return ListWarehouse.FindIndex(x => x.Code == Config.CodeWarehouse) ; } set { Config.CodeWarehouse = ListWarehouse[value].Code; } }
+                }
+                catch (Exception ex)
+                {
+                    string msg = ex.Message;
+                }
+                if (wh == null || !wh.Any())
+                    wh = new List<Warehouse>() { new Warehouse() { Code = 0, Name = "ddd" } };
+                return wh;
+
+            }
+        }        
+
+        public int SelectedWarehouse { get { return ListWarehouse?.FindIndex(x => x.Code == Config.CodeWarehouse)??0 ; } set { Config.CodeWarehouse = ListWarehouse[value].Code; } }
 
         public int SelectedCompany { get { return ListCompany.FindIndex(x => x == Enum.GetName(typeof(eCompany),Config.Company)); } set { Config.Company = (eCompany)value; OnPropertyChanged("IsVisApi3"); } }
         public int SelectedTypePrinter { get { return Enum.GetNames(typeof(eTypeUsePrinter)).ToList().FindIndex(x => x == Enum.GetName(typeof(eTypeUsePrinter), Config.TypeUsePrinter)); } set { Config.TypeUsePrinter = (eTypeUsePrinter)value; } }

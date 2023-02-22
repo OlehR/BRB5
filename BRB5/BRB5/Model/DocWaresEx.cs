@@ -13,7 +13,8 @@ namespace BRB5.Model
         public int CodeUnit{ get; set; }
         public string NameUnit{ get; set; }
         public string IsControl { get; set;  }
-        public string BarCode{ get; set; }
+        private string _BarCode;
+        public string BarCode { get { return _BarCode; } set { _BarCode = value; OnPropertyChanged("BarCode"); } }
         public int BaseCodeUnit{ get; set; }
 
         private decimal _BeforeQuantity;
@@ -22,7 +23,7 @@ namespace BRB5.Model
         public decimal QuantityMax { get; set; }
         //public double QuantityOld{ get; set; }
         public decimal QuantityOrder { get; set; }
-
+        public string QuantityOrderStr { set { QuantityOrder = Convert.ToDecimal(value); } }
         public decimal QuantityReason { get; set; }
         private decimal _QuantityBarCode;
         public decimal QuantityBarCode { get { return ParseBarCode?.Quantity ?? 0m; } set { _QuantityBarCode = value; OnPropertyChanged("QuantityBarCode"); } }
@@ -36,6 +37,7 @@ namespace BRB5.Model
         private int _Ord;
         public int Ord{ get { return _Ord; } set { _Ord = value; OnPropertyChanged("GetLightBackgroundColor"); } }
 
+        
         public ParseBarCode ParseBarCode { get; set; }
 
         //public boolean IsRecord = false;
