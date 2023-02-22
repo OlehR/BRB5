@@ -31,37 +31,33 @@
                                     </Grid.GestureRecognizers>
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="1*" />
-                                        <ColumnDefinition Width="1*" />
-                                        <ColumnDefinition Width="1*" />
+                                        <ColumnDefinition Width="3*" />
                                     </Grid.ColumnDefinitions>
                                     <Grid.RowDefinitions>
-                                        <RowDefinition />
-                                        <RowDefinition  />
+                                        <RowDefinition Height="*"/>
+                                        <RowDefinition Height="*" />
                                     </Grid.RowDefinitions>
 
+                                    <Label Grid.Row="0"
+                                           Grid.Column="0"
+                                           FontSize="Medium"
+                                           FontAttributes="Bold"
+                                           Text="{Binding CodeWarehouse}"/>
+                                    <Label Grid.Row="0"
+                                           Grid.Column="1"
+                                           FontSize="Small"
+                                           Text="{Binding ShortAddress}"/>
 
-                                    <Label Text="{Binding DateString}" 
-                                               ClassId="Ok" 
-                                               FontSize="Medium"
-                                               FontAttributes="Bold"/>
-                                    <Label Grid.Column="1"
-                                               FontSize="Medium"
-                                               HorizontalOptions="Center"
-                                               Text="{Binding Description}"/>
-                                    <Label Grid.Column="2"
-                                               HorizontalOptions="End"
-                                               FontSize="Medium"
-                                               Text="{Binding NumberDoc}"/>
-                                    <Label Grid.Row="1"  
-                                               FontSize="Medium"
-                                               FontAttributes="Bold"
-                                               Text="{Binding CodeWarehouse}"
-                                               Grid.ColumnSpan="2" />
-                                    <Label Grid.Row="1"  
-                                               FontSize="Medium"
-                                               Text="{Binding NameUser}"
-                                               Grid.Column="2" />
-
+                                    <Label Grid.Row="1"
+                                           Grid.Column="0"
+                                           Text="{Binding DateString}" 
+                                           ClassId="Ok" 
+                                           FontSize="Small"/>
+                                    <Label Grid.Row="1"
+                                           Grid.Column="1"
+                                           FontSize="Small"
+                                           HorizontalOptions="Center"
+                                           Text="{Binding Description}"/>
 
                                 </Grid>
                             </Grid>

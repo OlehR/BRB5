@@ -63,6 +63,12 @@ namespace BRB5
         /// Адреса
         /// </summary>
         public string Address { get; set; } // 
+        public string ShortAddress { 
+            get { 
+                var temp = Address.Split('-')[1];
+                if (temp.Length < 2) temp= "";
+                return temp;
+            }  } // 
 
         public string NameUser { get; set; } // 
         /// <summary>
