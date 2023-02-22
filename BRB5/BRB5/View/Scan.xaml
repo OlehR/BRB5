@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:forms="clr-namespace:ZXing.Net.Mobile.Forms;assembly=ZXing.Net.Mobile.Forms"
              NavigationPage.HasNavigationBar="False"
+             xmlns:controls="clr-namespace:BRB5.View"
              x:Class="BRB5.View.Scan">
     <ContentPage.Content>
         <AbsoluteLayout>
@@ -33,13 +34,18 @@
                         <RowDefinition/>
                     </Grid.RowDefinitions>
 
-                    <Entry Text="{Binding ScanData.BarCode}" 
-                           IsReadOnly="True"
-                           Placeholder="баркод" />
-
-                    <Entry Text="{Binding ScanData.BeforeQuantity}" 
-                           Grid.Column="1"
-                           IsReadOnly="True" />
+                    <Frame Style="{StaticResource FrameStyle}" >
+                        <controls:CustomEntry Style="{StaticResource EntryStyle}"
+                                              Text="{Binding ScanData.BarCode}" 
+                                              IsReadOnly="True"
+                                              Placeholder="баркод"/>
+                    </Frame>
+                    <Frame Style="{StaticResource FrameStyle}" 
+                           Grid.Column="1">
+                        <controls:CustomEntry Style="{StaticResource EntryStyle}"
+                                              Text="{Binding ScanData.BeforeQuantity}" 
+                                              IsReadOnly="True"/>
+                    </Frame>
 
                     <Grid Grid.Row="1">
                         <Grid.ColumnDefinitions>
@@ -48,23 +54,34 @@
                             <ColumnDefinition Width="*"  />
                             <ColumnDefinition Width="2*"  />
                         </Grid.ColumnDefinitions>
-                        <Entry Text="{Binding ScanData.InputQuantity}" 
-                               Grid.Column="0" x:Name="inputQ"
-                               TextChanged="CalcQuantity"
-                               Placeholder="к-сть"
-                               Keyboard="Numeric"/>
+
+                        <Frame Grid.Column="0" Style="{StaticResource FrameStyle}" >
+                            <controls:CustomEntry Style="{StaticResource EntryStyle}"
+                                    Text="{Binding ScanData.InputQuantity}" 
+                                    x:Name="inputQ"
+                                    TextChanged="CalcQuantity"
+                                    Placeholder="к-сть"
+                                    Keyboard="Numeric"/>
+                        </Frame>
 
                         <Label Text="{Binding ScanData.NameUnit}" Grid.Column="1"/>
                         <Label Text="X" Grid.Column="2"/>
-                        <Entry Text="{Binding ScanData.Coefficient}" 
-                               Grid.Column="3"
-                               IsReadOnly="True" />
+                        
+                        <Frame Style="{StaticResource FrameStyle}"
+                               Grid.Column="3" >
+                            <controls:CustomEntry Style="{StaticResource EntryStyle}"
+                                              Text="{Binding ScanData.Coefficient}" 
+                                              IsReadOnly="True"/>
+                        </Frame>
                     </Grid>
 
-                    <Entry Text="{Binding ScanData.QuantityBarCode}" 
+                    <Frame Style="{StaticResource FrameStyle}"
                            Grid.Column="1"
-                           Grid.Row="1"
-                           IsReadOnly="True" />
+                           Grid.Row="1">
+                        <controls:CustomEntry Style="{StaticResource EntryStyle}"
+                                              Text="{Binding ScanData.QuantityBarCode}" 
+                                              IsReadOnly="True"/>
+                    </Frame>
                 </Grid>
 
 

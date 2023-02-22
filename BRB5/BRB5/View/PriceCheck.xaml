@@ -2,7 +2,8 @@
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" 
              xmlns:forms="clr-namespace:ZXing.Net.Mobile.Forms;assembly=ZXing.Net.Mobile.Forms"
-             NavigationPage.HasNavigationBar="False"
+             NavigationPage.HasNavigationBar="False"              
+             xmlns:controls="clr-namespace:BRB5.View"
              x:Class="BRB5.PriceCheck">
     <ContentPage.Content>
         <AbsoluteLayout>
@@ -118,8 +119,10 @@
                     </Grid.ColumnDefinitions>
 
                     <Label Text="Штрих код:" />
-                    <Entry Text="{Binding WP.BarCodes}"
-                       Grid.Column="1"  />
+                    <Frame Style="{StaticResource FrameStyle}" Grid.Column="1" >
+                        <controls:CustomEntry Style="{StaticResource EntryStyle}"
+                                              Text="{Binding WP.BarCodes}" />
+                    </Frame>
                 </Grid>
 
                 <Grid IsVisible="{Binding IsVisRepl}">
@@ -129,12 +132,13 @@
                     </Grid.ColumnDefinitions>
 
                     <Label Text="Поповнення:" />
-                    <Entry Text="" 
+                    <Frame Style="{StaticResource FrameStyle}" 
+                           Grid.Column="1" >
+                        <controls:CustomEntry Style="{StaticResource EntryStyle}"
+                           Text="" 
                            x:Name="NumberOfReplenishment"
-                           Grid.Column="1" 
-                           Keyboard="Numeric">                        
-                        
-                    </Entry>
+                           Keyboard="Numeric" />
+                    </Frame>
                 </Grid>
 
                 <Grid VerticalOptions="EndAndExpand">
