@@ -11,7 +11,9 @@ namespace BRB5
         public eKindDoc KindDoc { get; set; } = eKindDoc.Normal;
         public string NameDoc { get; set; }
         //public string NameClass { get { return $"{}_{CodeDoc}"}; }
-
+        /// <summary>
+        /// Як реагувати коли сканується товар, відсутній в документі (Control, Ask, NoControl)
+        /// </summary>
         public eTypeControlDoc TypeControlQuantity = eTypeControlDoc.NoControl;
         
         /// <summary>

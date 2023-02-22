@@ -34,8 +34,17 @@ namespace BRB5
 
     public enum eTypeControlDoc
     {
+        /// <summary>
+        /// Не дозволяти додавати даний товар
+        /// </summary>
         Control,
+        /// <summary>
+        /// Запитувати чи добавляти
+        /// </summary>
         Ask,
+        /// <summary>
+        /// Додавати без питань.
+        /// </summary>
         NoControl
     }
 
