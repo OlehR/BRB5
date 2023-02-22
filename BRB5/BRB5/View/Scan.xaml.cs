@@ -134,12 +134,13 @@ namespace BRB5.View
                             ScanData.QuantityMax = decimal.MaxValue;
                             _ = FindWareByBarCodeAsync(BarCode);
                         }
+                        else ScanData = null;
                         return;
                     }
                     if (TypeDoc.TypeControlQuantity == eTypeControlDoc.Control)
                     {
                         _ = DisplayAlert("Товар відсутній в документі", ScanData.NameWares, "OK");
-                        //? ScanData = null;
+                        ScanData = null;
                         return;
                     }
                 }
