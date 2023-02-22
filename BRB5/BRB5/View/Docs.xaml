@@ -23,7 +23,7 @@
                             <Grid Padding="5"
                                   BackgroundColor="#dede7b">
                                 <Grid Focused="Grid_Focused" 
-                                      Padding="5"
+                                      Padding="1"
                                       BackgroundColor="{Binding GetColor}" >
 
                                     <Grid.GestureRecognizers>
@@ -31,7 +31,7 @@
                                     </Grid.GestureRecognizers>
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="1*" />
-                                        <ColumnDefinition Width="3*" />
+                                        <ColumnDefinition Width="4*" />
                                     </Grid.ColumnDefinitions>
                                     <Grid.RowDefinitions>
                                         <RowDefinition Height="*"/>

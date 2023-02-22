@@ -66,7 +66,7 @@ namespace BRB5
         public string ShortAddress { 
             get { 
                 var temp = Address.Split('-')[1];
-                if (temp.Length < 2) temp= "";
+                if (temp.Length < 2) temp= Address;
                 return temp;
             }  } // 
 
