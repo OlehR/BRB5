@@ -148,7 +148,7 @@
                                       Text="{Binding ApiUrl2}"/>
                 </Frame>
 
-                <Frame Style="{StaticResource FrameStyle}" >
+                <Frame Style="{StaticResource FrameStyle}" IsVisible="{Binding IsVisApi3}">
                     <controls:CustomEntry Style="{StaticResource EntryStyle}" 
                                           Text="{Binding ApiUrl3}" IsVisible="{Binding IsVisApi3}"/>
                 </Frame>
