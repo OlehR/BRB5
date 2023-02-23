@@ -1,7 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" xmlns:local="clr-namespace:BRB5.View"
-             x:Class="BRB5.View.DocStandart">
+             x:Class="BRB5.View.DocStandart"                        
+             xmlns:controls="clr-namespace:BRB5.View">
     <ContentPage.Resources>
         <ResourceDictionary>
             <DataTemplate x:Key="evenTemplate">
@@ -77,6 +78,18 @@
 
     <ContentPage.Content>
         <StackLayout>
+
+            <StackLayout IsVisible="{Binding IsVisibleDocF6}">
+                <Picker Title="дата"  
+                        ItemsSource="{Binding ListDataStr}"
+                        ItemDisplayBinding="{Binding DateString}"
+                        SelectedIndex="{Binding SelectedDataStr}"/>
+                <Frame Style="{StaticResource FrameStyle}"  >
+                    <controls:CustomEntry Style="{StaticResource EntryStyle}"
+                                          Placeholder="номер"
+                                          Text="{Binding NumberOutInvoice}" />
+                </Frame>
+            </StackLayout>
             <ListView ItemTemplate="{StaticResource alternateColorDataTemplateSelector}"  
                       ItemsSource="{Binding MyDocWares}" SeparatorVisibility="None" >
                 <ListView.Header>
