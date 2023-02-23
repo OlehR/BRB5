@@ -35,7 +35,7 @@ namespace BRB5
         /// <summary>
         /// -1 - стандартна, 1 - 7-23 Ревізія? 2 -7-23 Лоти.
         /// </summary>
-        public int TypeColor = -1;
+        public int TypeColor = 1;
         /// <summary>
         /// Скільки днів дивитись документи До і Після сьогодня.
         /// </summary>
@@ -65,6 +65,7 @@ namespace BRB5
         /// Код API для документа (723 -(0-2)
         /// </summary>
         public int CodeApi = 0;
+        public bool IsCreateNewDoc = false;
 
     }
 }
