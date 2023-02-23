@@ -224,7 +224,10 @@ namespace BRB5
             try
             {
                 foreach (var el in Parameters)
-                { ExecuteNonQuery(parQuery, el, transaction); i++; }
+                { 
+                    ExecuteNonQuery(parQuery, el, transaction); 
+                    i++; 
+                }
                 transaction.Commit();
             }
             catch (Exception ex)

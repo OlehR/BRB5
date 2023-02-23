@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 //using System.Drawing;
 using System.Text;
 using Xamarin.Forms;
 
 namespace BRB5
 {
-    public class DocId: Element
+    public class DocId:  INotifyPropertyChanged
     {
 
         /// <summary>
@@ -24,6 +25,13 @@ namespace BRB5
             TypeDoc = pDocId.TypeDoc;
             NumberDoc = pDocId.NumberDoc;
         }
+
+        public event PropertyChangedEventHandler PropertyChanged;        
+        protected virtual void OnPropertyChanged(string propertyName)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
     }
 
     public class Doc:DocId

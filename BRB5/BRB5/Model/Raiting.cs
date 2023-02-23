@@ -8,13 +8,14 @@ using System.Text;
 
 namespace BRB5
 {
-    public class Raiting : DocId, INotifyPropertyChanged
+    public class Raiting : DocId
     {
         /// <summary>
         /// 
         /// </summary>
         public int Id { get; set; }
         public int Parent { get; set; }
+        //public int ParentEx { get { return Parent; } }
         [JsonIgnore]
 
         // заголовок групи
@@ -71,15 +72,7 @@ namespace BRB5
         [JsonIgnore]
         public bool IsEnableBad { get { return (RatingTemplate & 4) == 4; } }
         [JsonIgnore]
-        public bool IsEnableNotKnow { get { return (RatingTemplate & 8) ==8; } }
-
-        public event PropertyChangedEventHandler PropertyChanged;
-        protected virtual void OnPropertyChanged(string propertyName)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
-
-
+        public bool IsEnableNotKnow { get { return (RatingTemplate & 8) ==8; } }    
 
     }
 }

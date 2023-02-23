@@ -505,7 +505,7 @@ CREATE UNIQUE INDEX UserLogin ON User (Login);
         public bool ReplaceRaitingSample(IEnumerable<Raiting> pR)
         {
             string Sql = @"replace into RaitingSample ( TypeDoc, NumberDoc, Id, Parent, IsHead, Text, RatingTemplate, OrderRS ) values 
-                                                      (@TypeDoc,@NumberDoc,@Id,@Parent,@IsHead,@Text,@RatingTemplate,@OrderRS )";
+                                                      (@TypeDoc,@NumberDoc,@Id,@Parent,@IsHead,@Text,@RatingTemplate,@OrderRS)";                                                   
             return db.BulkExecuteNonQuery<Raiting>(Sql, pR) >= 0;
         }
 
