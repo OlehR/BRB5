@@ -19,7 +19,7 @@ namespace BRB5
         /// <summary>
         /// Шукати документ по штрихкоду
         /// </summary>
-        public bool IsAddBarCode = false;
+        public bool IsFindBarCode = false;
         /// <summary>
         /// Показувати причину( бій брак тощо)
         /// </summary>

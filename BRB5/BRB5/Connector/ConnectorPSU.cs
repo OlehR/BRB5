@@ -252,10 +252,15 @@ namespace BRB5.Connector
         public override IEnumerable<TypeDoc> GetTypeDoc(eRole pRole, eLoginServer pLS)
         {
             var Res = new List<TypeDoc>(){ 
-                                        new TypeDoc() { CodeDoc = 0, KindDoc = eKindDoc.PriceCheck, NameDoc = "Прайсчекер" },
-                                        //new TypeDoc() { CodeDoc = 11, KindDoc = eKindDoc.Raiting, NameDoc = "Опитування" },
-                                        new TypeDoc() { CodeDoc = 1, TypeControlQuantity=eTypeControlDoc.Ask, KindDoc = eKindDoc.Normal, NameDoc = "Ревізія" },
-            };
+                                        new TypeDoc() { CodeDoc = 0, NameDoc = "Прайсчекер" , KindDoc = eKindDoc.PriceCheck},                                        
+                                        new TypeDoc() { CodeDoc = 1, NameDoc = "Ревізія", TypeControlQuantity = eTypeControlDoc.Ask, IsSaveOnlyScan=false, KindDoc = eKindDoc.Normal },
+                                        new TypeDoc() { CodeDoc = 2, NameDoc = "Прихід", TypeControlQuantity = eTypeControlDoc.Ask, IsViewOut=true, KindDoc = eKindDoc.Normal },
+                                        new TypeDoc() { CodeDoc = 3, NameDoc = "Переміщення Вих", TypeControlQuantity=eTypeControlDoc.Ask, KindDoc = eKindDoc.Normal },
+                                        new TypeDoc() { CodeDoc = 4, NameDoc = "Списання" ,  KindDoc = eKindDoc.Normal},
+                                        new TypeDoc() { CodeDoc = 5, NameDoc = "Повернення" ,  KindDoc = eKindDoc.Normal},
+                                        new TypeDoc() { CodeDoc = 7, NameDoc = "Ревізія ОЗ", TypeControlQuantity=eTypeControlDoc.Ask, IsSimpleDoc=true, KindDoc = eKindDoc.Normal,CodeApi=1,IsCreateNewDoc=true },
+                                        new TypeDoc() { CodeDoc = 8, NameDoc = "Переміщення Вх", TypeControlQuantity=eTypeControlDoc.Ask, IsViewOut=true, IsViewReason=true,KindDoc = eKindDoc.Normal },
+};
             return Res;
         }
 
