@@ -91,7 +91,8 @@
                 <Frame Style="{StaticResource FrameStyle}"  >
                     <controls:CustomEntry Style="{StaticResource EntryStyle}"
                                           Placeholder="штрихкод"
-                                          Text="{Binding OPKOstr}" />
+                                          Text="{Binding OPKOstr}" 
+                                          Keyboard="Numeric"/>
                 </Frame>
             </Grid>
             <ListView ItemsSource="{Binding MyDocsR}" 
@@ -133,13 +134,13 @@
                            TextColor="#816f20"  >                    
                 </Label>
                 <Label Text="F1-" 
-                       IsVisible="{Binding TypeDoc.IsViewOut}"
+                       IsVisible="{Binding IsViewOut}"
                            FontSize="16"
                            Grid.Column="6" 
                            TextColor = "#ff5c5c"
                            VerticalOptions="Center" />
                 <Label Text="ОКПО" 
-                       IsVisible="{Binding TypeDoc.IsViewOut}"
+                       IsVisible="{Binding IsViewOut}"
                            FontSize="18"
                            Grid.Column="7"
                            TextColor="#816f20"  >

@@ -22,6 +22,7 @@ namespace BRB5.View
         public bool IsVisOPKO { get { return _IsVisOPKO; } set { _IsVisOPKO = value; OnPropertyChanged("IsVisOPKO"); } }
         string _OPKOstr = "";
         public string OPKOstr { get { return _OPKOstr; } set { _OPKOstr = value; OnPropertyChanged("OPKOstr"); } }
+        public bool IsViewOut { get { return TypeDoc.IsViewOut; } }
 
 
         public DocsStandart(TypeDoc pTypeDoc )
