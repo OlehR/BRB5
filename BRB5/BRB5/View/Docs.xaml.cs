@@ -20,7 +20,7 @@ namespace BRB5
         Connector.Connector c;
         public ObservableCollection<Doc> MyDoc { get; set; }
         //public string Help { get; set; } = "ERHHHHHHH54";
-        public Docs(int TypeDoc=-1)
+        public Docs(TypeDoc TypeDoc )
         {
             DB db =  DB.GetDB();
             c = BRB5.Connector.Connector.GetInstance();
@@ -33,7 +33,7 @@ namespace BRB5
                 ,new Doc() { TypeDoc = 11, NumberDoc = "2", DateDoc = DateTime.Now.Date.ToString("yyyy-MM-dd"), NameUser = "Рутковський О", Description = "ТЗ 1004" }
                 ,new Doc() { TypeDoc = 11, NumberDoc = "3", DateDoc = DateTime.Now.Date.ToString("yyyy-MM-dd"), NameUser = "Рутковський О", Description = "ТЗ 1104" }
             };*/
-            new ObservableCollection<Doc> ( db.GetDoc(11).OrderByDescending(el=>el.NumberDoc));
+            new ObservableCollection<Doc> ( db.GetDoc(TypeDoc).OrderByDescending(el=>el.NumberDoc));
             this.BindingContext = this;            
 
         }

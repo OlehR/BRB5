@@ -35,7 +35,7 @@ namespace BRB5.View
         {
             base.OnAppearing();
             c.LoadDocsData(TypeDoc.CodeDoc, null, false);
-            MyDocsR = new ObservableCollection<Doc>(db.GetDoc(1));
+            MyDocsR = new ObservableCollection<Doc>(db.GetDoc(TypeDoc));
             OnPropertyChanged(nameof(MyDocsR));
         }
             private async void OpenDoc(object sender, EventArgs e)

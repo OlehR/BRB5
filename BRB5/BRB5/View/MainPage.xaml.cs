@@ -67,7 +67,7 @@ namespace BRB5
                 long SizeDel = 0, SizeUse = 0;
                 if (Config.Company == eCompany.Sim23)
                 {
-                    var a = db.GetDoc(11);
+                    var a = db.GetDoc(Config.GetDocSetting(11));
                      (SizeDel, SizeUse) = u.DelDir(Config.PathFiles, a.Select(el=>el.NumberDoc));
                 }
 
@@ -98,7 +98,7 @@ namespace BRB5
                     await Navigation.PushAsync(new DocsStandart(vTypeDoc));
                     break;
                 case eKindDoc.Raiting:
-                    await Navigation.PushAsync(new Docs(vTypeDoc.CodeDoc));
+                    await Navigation.PushAsync(new Docs(vTypeDoc));
                     break;
                 default:                  
                     break;
