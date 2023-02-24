@@ -346,12 +346,30 @@ CREATE UNIQUE INDEX UserLogin ON User (Login);
             return db.BulkExecuteNonQuery<Doc>(Sql, pDoc) >= 0;
         }
 
-        public IEnumerable<Doc> GetDoc(int pTypeDoc,string pBarCode=null,string pExtFilrer=null)
+        public IEnumerable<Doc> GetDoc(TypeDoc pTypeDoc, string pBarCode = null, string pExFilrer = null)
         {
-            string Sql = @"select d.* , Wh.Name as Address from Doc d 
- left join Warehouse  Wh on d.CodeWarehouse   =wh.number 
-                                where TypeDoc= @TypeDoc and DateDoc >= date(datetime(CURRENT_TIMESTAMP,'-5 day')) order by DateDoc DESC";
-            return db.Execute<object, Doc>(Sql, new  { TypeDoc = pTypeDoc });
+            string Sql = $@"select d.*, Wh.Name as Address from Doc d 
+ left join Warehouse  Wh on d.CodeWarehouse = wh.number 
+                                where TypeDoc = @TypeDoc and DateDoc >= date(datetime(CURRENT_TIMESTAMP,'-{pTypeDoc.DayBefore} day'))" +
+                                (string.IsNullOrEmpty(pBarCode)?"": $" and BarCode like'%{pBarCode}%'") +
+                                (string.IsNullOrEmpty(pExFilrer) ? "" : $" and ExtInfo like'%{pExFilrer}%'") +
+" order by DateDoc DESC";
+
+            var res = db.Execute<object, Doc>(Sql, new  { TypeDoc = pTypeDoc.CodeDoc });
+            if(!res.Any() && !string.IsNullOrEmpty(pBarCode))
+            {
+                Sql = $@"select d.*, Wh.Name as Address 
+from Doc d 
+ left join Warehouse  Wh on d.CodeWarehouse = wh.number 
+ Join DOCWARESSAMPLE dw on dw.numberdoc=d.numberdoc and dw.TypeDoc=d.TypeDoc
+ join barcode bc on dw.codewares=bc.CODEWARES 
+   where d.TypeDoc = @TypeDoc and DateDoc >= date(datetime(CURRENT_TIMESTAMP,'-{pTypeDoc.DayBefore} day'))
+and bc.BarCode=@BarCode
+ order by DateDoc DESC";
+                res = db.Execute<object, Doc>(Sql, new { TypeDoc = pTypeDoc.CodeDoc, BarCode = pBarCode });
+            }
+           
+            return res;
         }
         public Doc GetDoc(DocId pDocId)
         {
