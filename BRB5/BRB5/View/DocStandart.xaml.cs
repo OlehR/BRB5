@@ -18,21 +18,35 @@ namespace BRB5.View
     {
         private readonly TypeDoc TypeDoc;
         
-        private DocId DocId;
+        private Doc Doc;
         private Connector.Connector c = Connector.Connector.GetInstance(); 
         protected DB db = DB.GetDB();
+        string _NumberOutInvoice = "";
+        public string NumberOutInvoice { get { return _NumberOutInvoice; } set { _NumberOutInvoice = value; OnPropertyChanged("NumberOutInvoice"); } }
+        public List<DataStr> ListDataStr { 
+            get { 
+                var list = new List<DataStr>();
+                for(int i=0; i<10; i++)
+                    list.Add(new DataStr(DateTime.Today.AddDays(-1 * i)));
+                
+                return list;
+                }
+        }
+        public int SelectedDataStr { get; set; } = 0;
+        bool _IsVisibleDocF6 = false;
+        public bool IsVisibleDocF6 { get { return _IsVisibleDocF6; } set { _IsVisibleDocF6 = value; OnPropertyChanged("IsVisibleDocF6"); } } 
         public ObservableCollection<DocWaresEx> MyDocWares { get; set; } = new ObservableCollection<DocWaresEx>();
         public DocStandart(DocId pDocId,  TypeDoc pTypeDoc)
         {
             TypeDoc = pTypeDoc;
-            DocId = pDocId;           
+            Doc = new Doc(pDocId);           
             BindingContext = this;
             InitializeComponent();
         }
         protected override void OnAppearing()
         {
             base.OnAppearing();
-            var r = db.GetDocWares(DocId, 1, eTypeOrder.Scan);
+            var r = db.GetDocWares(Doc, 1, eTypeOrder.Scan);
             if (r != null)
             {
                 MyDocWares.Clear();
@@ -46,14 +60,16 @@ namespace BRB5.View
         }
         private async Task F2Save()
         {
-            var r = c.SendDocsData(new Doc(DocId), db.GetDocWares(DocId, 2, eTypeOrder.Scan));
+            Doc.NumberOutInvoice = NumberOutInvoice;
+            Doc.DateOutInvoice = ListDataStr[SelectedDataStr].DateString;
+            var r = c.SendDocsData(Doc, db.GetDocWares(Doc, 2, eTypeOrder.Scan));
             if (r.State != 0) await DisplayAlert("Помилка", r.TextError, "OK");
             else await this.DisplayToastAsync("Документ успішно збережений");
         }
 
         private async void F3Scan(object sender, EventArgs e)
         {
-            await Navigation.PushAsync(new Scan(DocId, TypeDoc));
+            await Navigation.PushAsync(new Scan(Doc, TypeDoc));
         }
 
         private void F4WrOff(object sender, EventArgs e)
@@ -63,7 +79,7 @@ namespace BRB5.View
 
         private void F6Doc(object sender, EventArgs e)
         {
-
+            IsVisibleDocF6 = !IsVisibleDocF6;
         }
 
         
