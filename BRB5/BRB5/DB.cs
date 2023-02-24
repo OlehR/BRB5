@@ -346,7 +346,7 @@ CREATE UNIQUE INDEX UserLogin ON User (Login);
             return db.BulkExecuteNonQuery<Doc>(Sql, pDoc) >= 0;
         }
 
-        public IEnumerable<Doc> GetDoc(int pTypeDoc)
+        public IEnumerable<Doc> GetDoc(int pTypeDoc,string pBarCode=null,string pExtFilrer=null)
         {
             string Sql = @"select d.* , Wh.Name as Address from Doc d 
  left join Warehouse  Wh on d.CodeWarehouse   =wh.number 
