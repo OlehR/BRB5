@@ -54,7 +54,7 @@ namespace BRB5.Model
 
         public static string PathFiles { get { string res=@"D:\temp";
                 try {
-                    res = Path.Combine(FileSystem.AppDataDirectory,"BRBFiles"); 
+                    res = Path.Combine(Config.PathDownloads /*FileSystem.AppDataDirectory*/,"BRBFiles"); 
                     if(!Directory.Exists(res))
                         Directory.CreateDirectory(res);
                 } catch (Exception e)

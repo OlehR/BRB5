@@ -341,14 +341,16 @@ CREATE UNIQUE INDEX UserLogin ON User (Login);
 
         public bool ReplaceDoc(IEnumerable<Doc> pDoc)
         {
-            string Sql = @"replace into Doc ( DateDoc, TypeDoc, NumberDoc, CodeWarehouse, ExtInfo, NameUser, BarCode, Description, State, IsControl, NumberDoc1C, DateOutInvoice, NumberOutInvoice, Color) values 
-                                            (@DateDoc,@TypeDoc,@NumberDoc,@CodeWarehouse,@ExtInfo,@NameUser,@BarCode,@Description,@State,@IsControl,@NumberDoc1C,@DateOutInvoice,@NumberOutInvoice,@Color)";
+            string Sql = @"replace into Doc ( DateDoc, TypeDoc, NumberDoc, CodeWarehouse, ExtInfo, NameUser, BarCode, Description, State,
+                                              IsControl, NumberDoc1C, DateOutInvoice, NumberOutInvoice, Color) values 
+                                            (@DateDoc,@TypeDoc,@NumberDoc,@CodeWarehouse,@ExtInfo,@NameUser,@BarCode,@Description,(select max(d.state,@State) from Doc d where d.Typedoc=@TypeDoc and d.numberdoc=@NumberDoc ),
+                                             @IsControl,@NumberDoc1C,@DateOutInvoice,@NumberOutInvoice,@Color)";
             return db.BulkExecuteNonQuery<Doc>(Sql, pDoc) >= 0;
         }
 
         public IEnumerable<Doc> GetDoc(TypeDoc pTypeDoc, string pBarCode = null, string pExFilrer = null)
         {
-            string Sql = $@"select d.*, Wh.Name as Address from Doc d 
+            string Sql = $@"select d.*, Wh.Name as Address,d.State as Color from Doc d 
  left join Warehouse  Wh on d.CodeWarehouse = wh.number 
                                 where TypeDoc = @TypeDoc and DateDoc >= date(datetime(CURRENT_TIMESTAMP,'-{pTypeDoc.DayBefore} day'))" +
                                 (string.IsNullOrEmpty(pBarCode)?"": $" and BarCode like'%{pBarCode}%'") +
@@ -358,7 +360,7 @@ CREATE UNIQUE INDEX UserLogin ON User (Login);
             var res = db.Execute<object, Doc>(Sql, new  { TypeDoc = pTypeDoc.CodeDoc });
             if(!res.Any() && !string.IsNullOrEmpty(pBarCode))
             {
-                Sql = $@"select d.*, Wh.Name as Address 
+                Sql = $@"select d.*, Wh.Name as Address,d.State as Color  
 from Doc d 
  left join Warehouse  Wh on d.CodeWarehouse = wh.number 
  Join DOCWARESSAMPLE dw on dw.numberdoc=d.numberdoc and dw.TypeDoc=d.TypeDoc
@@ -371,6 +373,7 @@ and bc.BarCode=@BarCode
            
             return res;
         }
+
         public Doc GetDoc(DocId pDocId)
         {
             string Sql = @"select d.* , Wh.Name as Address from Doc d 
@@ -549,7 +552,7 @@ and bc.BarCode=@BarCode
 
         public bool SetStateDoc(Doc pDoc)
         {
-            string Sql = @"Update Doc set State=@State  where NumberDoc= @NumberDoc";
+            string Sql = @"Update Doc set State=@State  where NumberDoc= @NumberDoc and TypeDoc=@TypeDoc";
             return db.ExecuteNonQuery<Doc>(Sql, pDoc) >= 0;
         }
 

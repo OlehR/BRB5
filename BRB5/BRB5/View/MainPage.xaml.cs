@@ -10,6 +10,7 @@ using BRB5.View;
 using Xamarin.Essentials;
 using System.Threading;
 using Utils;
+using System.IO;
 
 //[assembly: Xamarin.Forms.Dependency(typeof(AndroidStorageManager))]
 
@@ -68,7 +69,10 @@ namespace BRB5
                 if (Config.Company == eCompany.Sim23)
                 {
                     var a = db.GetDoc(Config.GetDocSetting(11));
-                     (SizeDel, SizeUse) = u.DelDir(Config.PathFiles, a.Select(el=>el.NumberDoc));
+                    (SizeDel, SizeUse) = u.DelDir(Config.PathFiles, a.Select(el => el.NumberDoc));
+                    FileLogger.WriteLogMessage($"{Config.PathFiles} => SizeDel={SizeDel}, SizeUse=>{SizeUse}");
+                    (SizeDel, SizeUse) = u.DelDir(Path.Combine(Config.PathFiles, "arx"), a.Select(el => el.NumberDoc));
+                    FileLogger.WriteLogMessage($"{Path.Combine(Config.PathFiles, "arx")} => SizeDel={SizeDel}, SizeUse=>{SizeUse}");
                 }
 
                 if(Config.DateLastLoadGuid.Date != DateTime.Today.Date)
