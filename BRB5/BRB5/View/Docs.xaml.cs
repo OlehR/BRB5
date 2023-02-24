@@ -24,22 +24,12 @@ namespace BRB5
         //public string Help { get; set; } = "ERHHHHHHH54";
         public Docs(TypeDoc pTypeDoc )
         {
-
             TypeDoc = pTypeDoc;
             c = BRB5.Connector.Connector.GetInstance();
             InitializeComponent();
             Routing.RegisterRoute(nameof(Item), typeof(Item));
             c.LoadDocsData(11, null, false);
-
-
-            //MyDoc =/* new ObservableCollection<Doc>() { 
-            //     new Doc() { TypeDoc = 11, NumberDoc = "1", DateDoc = DateTime.Now.Date.ToString("yyyy-MM-dd"), NameUser = "Рутковський О", Description = "ТЗ 1001" } 
-            //    ,new Doc() { TypeDoc = 11, NumberDoc = "2", DateDoc = DateTime.Now.Date.ToString("yyyy-MM-dd"), NameUser = "Рутковський О", Description = "ТЗ 1004" }
-            //    ,new Doc() { TypeDoc = 11, NumberDoc = "3", DateDoc = DateTime.Now.Date.ToString("yyyy-MM-dd"), NameUser = "Рутковський О", Description = "ТЗ 1104" }
-            //};*/
-            //new ObservableCollection<Doc> ( db.GetDoc(TypeDoc).OrderByDescending(el=>el.NumberDoc));
             this.BindingContext = this;            
-
         }
 
         protected override void OnAppearing()
@@ -52,7 +42,6 @@ namespace BRB5
                 foreach (var item in r)
                     MyDoc.Add(item);
             }
-
         }
 
         private async void OnButtonClicked(object sender, System.EventArgs e)
