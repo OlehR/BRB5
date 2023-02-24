@@ -37,7 +37,7 @@ namespace BRB5.Connector
             if (pLS == eLoginServer.Local)
                 Res.Add( new TypeDoc() { CodeDoc = 0, KindDoc = eKindDoc.PriceCheck, NameDoc = "Прайсчекер" });
             if (pLS == eLoginServer.Bitrix)
-                Res.Add( new TypeDoc() { CodeDoc = 11, KindDoc = eKindDoc.Raiting, NameDoc = "Опитування" } );
+                Res.Add( new TypeDoc() { CodeDoc = 11, KindDoc = eKindDoc.Raiting, NameDoc = "Опитування",DayBefore=10 } );
             return Res;
         }
 

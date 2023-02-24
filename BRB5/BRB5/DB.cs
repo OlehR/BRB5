@@ -343,7 +343,7 @@ CREATE UNIQUE INDEX UserLogin ON User (Login);
         {
             string Sql = @"replace into Doc ( DateDoc, TypeDoc, NumberDoc, CodeWarehouse, ExtInfo, NameUser, BarCode, Description, State,
                                               IsControl, NumberDoc1C, DateOutInvoice, NumberOutInvoice, Color) values 
-                                            (@DateDoc,@TypeDoc,@NumberDoc,@CodeWarehouse,@ExtInfo,@NameUser,@BarCode,@Description,(select max(d.state,@State) from Doc d where d.Typedoc=@TypeDoc and d.numberdoc=@NumberDoc ),
+                                            (@DateDoc,@TypeDoc,@NumberDoc,@CodeWarehouse,@ExtInfo,@NameUser,@BarCode,@Description,max(@State, (select max(d.state) from Doc d where d.Typedoc=@TypeDoc and d.numberdoc=@NumberDoc )),
                                              @IsControl,@NumberDoc1C,@DateOutInvoice,@NumberOutInvoice,@Color)";
             return db.BulkExecuteNonQuery<Doc>(Sql, pDoc) >= 0;
         }
