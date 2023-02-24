@@ -51,8 +51,7 @@
         </StackLayout>
         <ListView x:Name="ListDocs" IsVisible="false"
               HasUnevenRows="True"
-              ItemsSource="{Binding OCTypeDoc}"                  
-              >
+              ItemsSource="{Binding OCTypeDoc}" >
             <ListView.Header>
                 <StackLayout Orientation="Horizontal">
                    <!-- <Label Text="Список    Запитань2" FontSize="25"
@@ -64,8 +63,10 @@
                 <DataTemplate xmlns:brb5="clr-namespace:BRB5">
                     <ViewCell>
                         <ViewCell.View  >
-                            <Button Text = "{Binding NameDoc}" FontSize="Large" BorderWidth="1"
-            HorizontalOptions="Center" VerticalOptions="CenterAndExpand"   Clicked="OnButtonClicked" />
+                            <Button Text = "{Binding NameDoc}" 
+                                    FontSize="Large" 
+                                    Clicked="OnButtonClicked" 
+                                    Style="{StaticResource ButtonStyle}" />
                         </ViewCell.View>
                     </ViewCell>
                 </DataTemplate>
