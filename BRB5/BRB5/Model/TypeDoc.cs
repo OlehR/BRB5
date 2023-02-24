@@ -66,6 +66,7 @@ namespace BRB5
         /// </summary>
         public int CodeApi = 0;
         public bool IsCreateNewDoc = false;
+        //public bool IsViewOPKO = false;
 
     }
 }

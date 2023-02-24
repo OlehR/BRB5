@@ -1,7 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" xmlns:local="clr-namespace:BRB5.View"
-             x:Class="BRB5.View.DocsStandart">
+             x:Class="BRB5.View.DocsStandart"                        
+             xmlns:controls="clr-namespace:BRB5.View">
     <ContentPage.Resources>
         <ResourceDictionary>
             <DataTemplate x:Key="evenTemplate">
@@ -86,6 +87,13 @@
     </ContentPage.Resources>
     <ContentPage.Content>
         <StackLayout>
+            <Grid IsVisible="{Binding IsVisOPKO}" HeightRequest="50">
+                <Frame Style="{StaticResource FrameStyle}"  >
+                    <controls:CustomEntry Style="{StaticResource EntryStyle}"
+                                          Placeholder="штрихкод"
+                                          Text="{Binding OPKOstr}" />
+                </Frame>
+            </Grid>
             <ListView ItemsSource="{Binding MyDocsR}" 
                       SeparatorVisibility="None"
                       HasUnevenRows="True"
@@ -110,8 +118,7 @@
                            Grid.Column="4"
                            VerticalOptions="Center"  />
                 <Label Text="↓" 
-                           FontSize="18" 
-                       
+                           FontSize="18"                        
                            Grid.Column="5"
                            TextColor="#816f20"  >
                 </Label>
@@ -124,6 +131,21 @@
                            FontSize="18"
                            Grid.Column="7"
                            TextColor="#816f20"  >                    
+                </Label>
+                <Label Text="F1-" 
+                       IsVisible="{Binding TypeDoc.IsViewOut}"
+                           FontSize="16"
+                           Grid.Column="6" 
+                           TextColor = "#ff5c5c"
+                           VerticalOptions="Center" />
+                <Label Text="ОКПО" 
+                       IsVisible="{Binding TypeDoc.IsViewOut}"
+                           FontSize="18"
+                           Grid.Column="7"
+                           TextColor="#816f20"  >
+                    <Label.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="F1" />
+                    </Label.GestureRecognizers>
                 </Label>
 
                 
