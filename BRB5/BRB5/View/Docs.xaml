@@ -20,10 +20,9 @@
                     <ViewCell >
                         <ViewCell.View BackgroundColor="white">
                             
-                            <Grid Padding="5"
+                            <Grid Padding="4"
                                   BackgroundColor="#dede7b">
                                 <Grid Focused="Grid_Focused" 
-                                      Padding="1"
                                       BackgroundColor="{Binding GetColor}" >
 
                                     <Grid.GestureRecognizers>
