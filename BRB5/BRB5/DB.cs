@@ -62,8 +62,11 @@ CREATE TABLE DOC (
     NumberDoc1C      TEXT,
     DateOutInvoice   DATE,
     NumberOutInvoice TEXT,
-    Color              INTEGER,
-    DTInsert          TIMESTAMP DEFAULT (DATETIME('NOW', 'LOCALTIME') ));
+    Color            INTEGER,
+    DTStart          TIMESTAMP DEFAULT null,
+    DTEnd            TIMESTAMP DEFAULT null,
+    DTInsert         TIMESTAMP DEFAULT (DATETIME('NOW', 'LOCALTIME') )
+);
 CREATE UNIQUE INDEX DocId ON DOC (TypeDoc,NumberDoc);
 
 CREATE TABLE DocWares (
@@ -159,7 +162,9 @@ CREATE TABLE Raiting(
     Id           INTEGER  NOT NULL,   
     Rating       INTEGER NOT NULL DEFAULT (0),   
     QuantityPhoto INTEGER NOT NULL DEFAULT (0),
-    Note TEXT);
+    Note TEXT,
+    DTInsert    TIMESTAMP  DEFAULT (DATETIME('NOW', 'LOCALTIME'))
+);
 CREATE UNIQUE INDEX RaitingId ON Raiting (TypeDoc,Id);
 
 CREATE TABLE User (
@@ -342,9 +347,12 @@ CREATE UNIQUE INDEX UserLogin ON User (Login);
         public bool ReplaceDoc(IEnumerable<Doc> pDoc)
         {
             string Sql = @"replace into Doc ( DateDoc, TypeDoc, NumberDoc, CodeWarehouse, ExtInfo, NameUser, BarCode, Description, State,
-                                              IsControl, NumberDoc1C, DateOutInvoice, NumberOutInvoice, Color) values 
+                                              IsControl, NumberDoc1C, DateOutInvoice, NumberOutInvoice, Color,DTStart,DTEnd) values 
                                             (@DateDoc,@TypeDoc,@NumberDoc,@CodeWarehouse,@ExtInfo,@NameUser,@BarCode,@Description,max(@State, (select max(d.state) from Doc d where d.Typedoc=@TypeDoc and d.numberdoc=@NumberDoc )),
-                                             @IsControl,@NumberDoc1C,@DateOutInvoice,@NumberOutInvoice,@Color)";
+                                             @IsControl,@NumberDoc1C,@DateOutInvoice,@NumberOutInvoice,@Color,
+(select max(d.DTStart) from Doc d where d.Typedoc=@TypeDoc and d.numberdoc=@NumberDoc ),
+(select max(d.DTEnd) from Doc d where d.Typedoc=@TypeDoc and d.numberdoc=@NumberDoc )
+)";
             return db.BulkExecuteNonQuery<Doc>(Sql, pDoc) >= 0;
         }
 
@@ -377,8 +385,8 @@ and bc.BarCode=@BarCode
         public Doc GetDoc(DocId pDocId)
         {
             string Sql = @"select d.* , Wh.Name as Address from Doc d 
- left join Warehouse  Wh on d.CodeWarehouse   =wh.number 
-                                where d.TypeDoc= @TypeDoc and d.numberdoc=@DocNumber";
+   left join Warehouse Wh on d.CodeWarehouse = wh.number 
+   where d.TypeDoc = @TypeDoc and d.numberdoc = @NumberDoc";
             var r= db.Execute<DocId, Doc>(Sql,pDocId);
             if(r!=null&&r.Any())
                 return r.First();
@@ -520,7 +528,16 @@ and bc.BarCode=@BarCode
         {
             string Sql = @"replace into Raiting ( TypeDoc, NumberDoc, Id, Rating, QuantityPhoto, Note) values 
                                                 (@TypeDoc,@NumberDoc,@Id,@Rating,@QuantityPhoto,@Note)";
-            return db.ExecuteNonQuery<Raiting>(Sql, pR) >= 0;
+            var res= db.ExecuteNonQuery<Raiting>(Sql, pR) >= 0;
+
+            Sql = @"update doc set  DTStart = case when DTStart is null then (DATETIME('NOW', 'LOCALTIME')) else DTStart end,
+        DTEnd = (DATETIME('NOW', 'LOCALTIME')) where  Typedoc=@TypeDoc and numberdoc=@NumberDoc";
+            try
+            {
+              db.ExecuteNonQuery<Raiting>(Sql, pR);
+            }catch (Exception ex) 
+            { var s = ex.Message; }
+            return res;
         }
 
         public bool ReplaceRaitingSample(IEnumerable<Raiting> pR)

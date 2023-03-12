@@ -99,10 +99,14 @@ namespace BRB5
         /// Номер розхідної накладної для приходу
         /// </summary>
         public string NumberOutInvoice { get; set; } // 
-        /// <summary>
-        /// Колір відображення документа
-        /// </summary>
-        public int Color { get; set; }
+
+        public DateTime DTStart { get; set; }
+
+        public DateTime DTEnd { get; set; }
+    /// <summary>
+    /// Колір відображення документа
+    /// </summary>
+    public int Color { get; set; }
 
         // 9 - червоний, 2- оранжевий, 1 - жовтий, 0 - зелений, інше грязно жовтий-ранжевий.
         public string GetColor

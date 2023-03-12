@@ -36,9 +36,14 @@ namespace BRB5
         bool IsAll = true;
         public string TextAllNoChoice { get { return IsAll ? "Без відповіді" : "Всі"; } }
         public string QuantityAllChoice { get { return $"{CountChoice}/{CountAll}"; } }
-        public string NameWarehouse { get { return cDoc.Address; } }
         
-        public System.Drawing.Color GetGPSColor { get { return System.Drawing.Color.FromArgb(200, 200, 200);  } }
+        public string NameWarehouse { get {  return Config.LocationWarehouse?.CodeWarehouse == cDoc.CodeWarehouse? cDoc.Address: cDoc.Address+ "\n Найближчий:"+Config.LocationWarehouse?.Name; } }        
+        public System.Drawing.Color GetGPSColor { get { if(Config.LocationWarehouse==null) return System.Drawing.Color.FromArgb(200, 200, 200);
+                return Config.LocationWarehouse.CodeWarehouse == cDoc.CodeWarehouse ? System.Drawing.Color.FromArgb(100, 250, 100) :
+                        System.Drawing.Color.FromArgb(250, 100, 100);
+            } }
+
+        public string SizeWarehouse { get { return (Config.LocationWarehouse == null || Config.LocationWarehouse?.CodeWarehouse == cDoc.CodeWarehouse ? "25" : "50"); } }
 
         public string TextSave { get; set; } = "";
         public bool IsSaving { get; set; } = false;
@@ -58,8 +63,13 @@ namespace BRB5
         public Item(Doc pDoc)
         {
             cDoc = pDoc;
-
             InitializeComponent();
+            _ = Config.GetCurrentLocation(db.GetWarehouse());
+            Config.OnLocation += (Location) =>
+            {
+                OnPropertyChanged("GetGPSColor");
+                OnPropertyChanged("NameWarehouse");
+            };
             var Q = db.GetRating(cDoc);
             var R = new List<Raiting>();
             foreach (var e in Q.Where(d => d.IsHead).OrderBy(d => d.OrderRS))
@@ -209,7 +219,8 @@ namespace BRB5
                     OnPropertyChanged("IsSaved");
                     OnPropertyChanged("TextButtonSaved");
                     var r = db.GetRating(cDoc);
-                    res = c.SendRaiting(r, cDoc);
+                    Doc d = db.GetDoc(cDoc);
+                    res = c.SendRaiting(r, d);
                     if (res.State == 0)
                     {
                         cDoc.State = 1;
@@ -228,6 +239,10 @@ namespace BRB5
                 // Navigation.PopAsync();
             }
             );
+        }
+        private void OnFindGPS(object sender, System.EventArgs e)
+        {
+            _ = Config.GetCurrentLocation(db.GetWarehouse());
         }
 
         private void EditPhoto(object sender, System.EventArgs e)

@@ -37,7 +37,7 @@ namespace BRB5.Connector
             if (pLS == eLoginServer.Local)
                 Res.Add( new TypeDoc() { CodeDoc = 0, KindDoc = eKindDoc.PriceCheck, NameDoc = "Прайсчекер" });
             if (pLS == eLoginServer.Bitrix)
-                Res.Add( new TypeDoc() { CodeDoc = 11, KindDoc = eKindDoc.Raiting, NameDoc = "Опитування",DayBefore=10 } );
+                Res.Add( new TypeDoc() { CodeDoc = 11, KindDoc = eKindDoc.Raiting, NameDoc = "Опитування",DayBefore=4 } );
             return Res;
         }
 
@@ -348,8 +348,8 @@ namespace BRB5.Connector
                 if (e == null || e.Id == 0)
                     e = pR.FirstOrDefault();
                 var r = new RequestSendRaiting() { userId = Config.CodeUser, action = "results", answers = RD, planId = int.Parse(e.NumberDoc), text = e.Note,
-                    dateStart = DateTime.Now.AddMinutes(-100),
-                    dateEnd = DateTime.Now.AddMinutes(-1)
+                    dateStart = pDoc.DTStart,
+                    dateEnd = pDoc.DTEnd
                 };
                 //var p = JsonConvert.DeserializeObject<Data>(result2.Result);
                 string data = JsonConvert.SerializeObject(r, new IsoDateTimeConverter { DateTimeFormat = "dd.MM.yyyy HH:mm:ss" });
@@ -363,6 +363,13 @@ namespace BRB5.Connector
                     OnSave?.Invoke($"SendRaiting=> (res.success={res.success})");
                     if (res.success)
                     {
+                        try
+                        {
+                            var FileName = Path.Combine(FileLogger.PathLog, $"{pDoc.NumberDoc}_{DateTime.Now:yyyyMMddHHmmssfff}.json");
+                            File.AppendAllText(FileName, data);
+                        }
+                        catch (Exception) { }
+                        
                         Res = SendRaitingFiles(e.NumberDoc);
                     }
                 }
@@ -663,9 +670,11 @@ namespace BRB5.Connector
         public String Unit { get; set; } //Name
         public String InternalIP { get; set; }
         public String ExternalIP { get; set; }
+        public String latitude { get; set; }
+        public String longitude { get; set; }
         public Warehouse GetWarehouse()
         {
-            return new Warehouse() { Code = Code, Number = StoreCode, Name = Unit, Url = Name, InternalIP = InternalIP, ExternalIP = ExternalIP };
+            return new Warehouse() { Code = Code, Number = StoreCode, Name = Unit, Url = Name, InternalIP = InternalIP, ExternalIP = ExternalIP,Location=$"{latitude},{longitude}"};
         }
 
     }

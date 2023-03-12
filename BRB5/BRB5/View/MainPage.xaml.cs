@@ -19,7 +19,6 @@ namespace BRB5
 
     public partial class MainPage : ContentPage
     {
-
         public ObservableCollection<TypeDoc> OCTypeDoc { get; set; }
         BRB5.Connector.Connector c;
         DB db = DB.GetDB();
@@ -112,7 +111,7 @@ namespace BRB5
 
         void Init()
         {
-            _ = GetCurrentLocation();
+            _ = Config.GetCurrentLocation(db.GetWarehouse());
             Config.IsAutoLogin = db.GetConfig<bool>("IsAutoLogin");
             Config.LoginServer = db.GetConfig<eLoginServer>("LoginServer");
             Login = db.GetConfig<string>("Login");
@@ -130,7 +129,6 @@ namespace BRB5
                     IsVisLS = false;
                     Config.LoginServer = LS.First().Code;
                 }
-
             }
             Config.IsVibration = db.GetConfig<bool>("IsVibration");
             Config.IsSound = db.GetConfig<bool>("IsSound");
@@ -142,64 +140,13 @@ namespace BRB5
             Config.CodeWarehouse = db.GetConfig<int>("CodeWarehouse");
             Config.Company = db.GetConfig<eCompany>("Company");
             Config.TypeUsePrinter = db.GetConfig<eTypeUsePrinter>("TypeUsePrinter");
-            FileLogger.TypeLog = db.GetConfig<eTypeLog>("TypeLog");
-            /*var Wh = GetCurrentLocation().Result;
-           var FWh = Wh.First();
-           if (FWh.Distance>0 && FWh.Distance<0.032)
-           {
-               //Знайшли текучий магазин
-           }
-           else //вибір вручну магазина.
-           { }*/
+            FileLogger.TypeLog = db.GetConfig<eTypeLog>("TypeLog");         
 
         }
-
-        CancellationTokenSource cts;
-
-        async Task<IEnumerable<Warehouse>> GetCurrentLocation()
-        {
-            var Wh = db.GetWarehouse();
-            try
-            {
-                var request = new GeolocationRequest(GeolocationAccuracy.High, TimeSpan.FromSeconds(10));
-                cts = new CancellationTokenSource();
-                var location = await Geolocation.GetLocationAsync(request, cts.Token);
-                
-                if (location != null)
-                {
-                    foreach(var el in Wh)
-                    {
-                        el.Distance = location.CalculateDistance(el.GPSX, el.GPSY, DistanceUnits.Kilometers);
-                    }
-                    Console.WriteLine($"Latitude: {location.Latitude}, Longitude: {location.Longitude}, Altitude: {location.Altitude}");
-                    return Wh.OrderBy(o => o.Distance);
-                    
-                }                
-            }
-            catch (FeatureNotSupportedException fnsEx)
-            {
-                // Handle not supported on device exception
-            }
-
-            catch (FeatureNotEnabledException fneEx)
-            {
-                // Handle not enabled on device exception
-            }
-            catch (PermissionException pEx)
-            {
-                // Handle permission exception
-            }
-            catch (Exception ex)
-            {
-                // Unable to get location
-            }
-            return Wh;
-        }
+       
 
         protected override void OnDisappearing()
-        {
-            if (cts != null && !cts.IsCancellationRequested)
-                cts.Cancel();
+        {         
             base.OnDisappearing();
         }
 
