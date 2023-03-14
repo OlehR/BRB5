@@ -71,7 +71,7 @@ namespace BRB5.Droid
             //Utils Util = Utils.GetInstance();
             //Config.Company = db.GetConfig<eCompany>("Company");
             //Config.CodeWarehouse = db.GetConfig<int>("CodeWarehouse");
-            //if ( LoadAPK($"https://github.com/OlehR/BRB5/raw/master/Apk/{Config.Company}/", "ua.UniCS.TM.brb5.apk", null, VerCode))
+            if ( LoadAPK($"https://github.com/OlehR/BRB5/raw/master/Apk/{Config.Company}/", "ua.UniCS.TM.brb5.apk", null, VerCode))
                          InstallAPK(Path.Combine(Config.PathDownloads, "ua.UniCS.TM.brb5.apk"));
 
             NativeMedia.Platform.Init(this, savedInstanceState);
@@ -129,48 +129,7 @@ namespace BRB5.Droid
                 e = e.InnerException;
             }
         }
-        /*
-        public static void InstallPackageAndroidQAndAbove(Context context, string filePath, string packageName)
-        {
-            var packageInstaller = context.PackageManager.PackageInstaller;
-            var sessionParams = new PackageInstaller.SessionParams(PackageInstallMode.FullInstall);
-            sessionParams.SetAppPackageName(packageName);
-            int sessionId = packageInstaller.CreateSession(sessionParams);
-            var session = packageInstaller.OpenSession(sessionId);
-
-            var input = new FileStream(filePath, FileMode.Open, FileAccess.Read);
-            var output = session.OpenWrite(packageName, 0, -1);
-
-            input.CopyTo(output);
-
-            output.Close();
-            input.Close();
-            input.Dispose();
-
-            session.Fsync(output);
-
-            var pendingIntent = PendingIntent.GetBroadcast(context, sessionId, new Intent(Intent.ActionInstallPackage), 0);
-            session.Commit(pendingIntent.IntentSender);
-        }
-
-        private static void addApkToInstallSession(string filePath, PackageInstaller.Session session)
-        {
-            using (var input = new FileStream(filePath, FileMode.Open, FileAccess.Read))
-            {
-                using (var packageInSession = session.OpenWrite("package", 0, -1))
-                {
-                    input.CopyTo(packageInSession);
-                    packageInSession.Close();
-                }
-                input.Close();
-            }
-            //That this is necessary could be a Xamarin bug.
-            GC.Collect();
-            GC.WaitForPendingFinalizers();
-            GC.Collect();
-
-        }
-        */
+        
         const string PACKAGE_INSTALLED_ACTION =
             "com.example.android.apis.content.SESSION_API_PACKAGE_INSTALLED";
 
@@ -239,7 +198,7 @@ namespace BRB5.Droid
 
             Bundle extras = intent.Extras;
 
-           /* if (PACKAGE_INSTALLED_ACTION.Equals(intent.Action))
+            if (PACKAGE_INSTALLED_ACTION.Equals(intent.Action))
             {
                 int status = extras.GetInt(PackageInstaller.ExtraStatus);
                 String message = extras.GetString(PackageInstaller.ExtraStatusMessage);
@@ -271,7 +230,7 @@ namespace BRB5.Droid
                 }
             }
 
-            */
+            
         }
 
         public string GetDeviceId()
@@ -332,7 +291,7 @@ namespace BRB5.Droid
                     catch (Exception)
                     {
                     }
-                    if ( ver > pVersionCode)
+                    if ( ver >= pVersionCode)
                     {
                         pProgress?.Invoke(15,$"Завантажуємо нову версію={ver} Текуча={pVersionCode}");
                         string FileName = Path.Combine(Config.PathDownloads, pNameAPK);
