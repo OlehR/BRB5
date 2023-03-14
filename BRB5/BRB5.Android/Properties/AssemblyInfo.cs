@@ -24,8 +24,8 @@ using Android.App;
 //      Minor Version 
 //      Build Number
 //      Revision
-[assembly: AssemblyVersion("5.0.0.26")]
-[assembly: AssemblyFileVersion("5.0.0.26")]
+[assembly: AssemblyVersion("5.0.0.27")]
+[assembly: AssemblyFileVersion("5.0.0.27")]
 
 // Add some common permissions, these can be removed if not needed
 [assembly: UsesPermission(Android.Manifest.Permission.Internet)]

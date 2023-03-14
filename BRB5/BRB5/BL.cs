@@ -166,13 +166,13 @@ namespace BRB5
 
         public  Warehouse GetWarehouse(int pCodeWarehouse)
         {
-            /* if (Warehouses == null)
-                 Warehouses = GetWorker().GetWarehouse();
+            var Warehouses = db.GetWarehouse();
+             
              if (Warehouses == null) return null;
 
-             for (int ind = 0; ind < Warehouses.length; ind++)
-                 if (Warehouses[ind].Code == pCodeWarehouse)
-                     return Warehouses[ind];*/
+             foreach (var el in Warehouses)
+                 if (el.CodeWarehouse == pCodeWarehouse)
+                     return el;
             return null;
         }
     }

@@ -27,6 +27,7 @@ namespace BRB5
         Utils u = Utils.GetUtils();
 
         DB db = DB.GetDB();
+        BL Bl = BL.GetBL();
         Doc cDoc;
         Connector.Connector c = Connector.Connector.GetInstance();
         public ObservableCollection<Raiting> Questions { get; set; }
@@ -37,13 +38,27 @@ namespace BRB5
         public string TextAllNoChoice { get { return IsAll ? "Без відповіді" : "Всі"; } }
         public string QuantityAllChoice { get { return $"{CountChoice}/{CountAll}"; } }
         
-        public string NameWarehouse { get {  return Config.LocationWarehouse?.CodeWarehouse == cDoc.CodeWarehouse? cDoc.Address: cDoc.Address+ "\n Найближчий:"+Config.LocationWarehouse?.Name; } }        
+        bool IsOkWh { get {return Config.LocationWarehouse?.CodeWarehouse == cDoc.CodeWarehouse; } }
+        public string NameWarehouse
+        {
+            get
+            {
+                string res = cDoc.ShortAddress;
+                if (!IsOkWh)
+                {
+                    var Wh = Bl.GetWarehouse(cDoc.CodeWarehouse);
+                    if (Wh != null)
+                        res += $"( {Wh.Location}){Environment.NewLine}Найближчий:\" + {Config.LocationWarehouse?.Name} ({Config.LocationWarehouse?.Location})";
+                }
+                return res;
+            }
+        }       
         public System.Drawing.Color GetGPSColor { get { if(Config.LocationWarehouse==null) return System.Drawing.Color.FromArgb(200, 200, 200);
-                return Config.LocationWarehouse.CodeWarehouse == cDoc.CodeWarehouse ? System.Drawing.Color.FromArgb(100, 250, 100) :
+                return IsOkWh ? System.Drawing.Color.FromArgb(100, 250, 100) :
                         System.Drawing.Color.FromArgb(250, 100, 100);
             } }
 
-        public string SizeWarehouse { get { return (Config.LocationWarehouse == null || Config.LocationWarehouse?.CodeWarehouse == cDoc.CodeWarehouse ? "25" : "50"); } }
+        public string SizeWarehouse { get { return (IsOkWh ? "25" : "50"); } }
 
         public string TextSave { get; set; } = "";
         public bool IsSaving { get; set; } = false;
@@ -69,6 +84,7 @@ namespace BRB5
             {
                 OnPropertyChanged("GetGPSColor");
                 OnPropertyChanged("NameWarehouse");
+                OnPropertyChanged("SizeWarehouse");
             };
             var Q = db.GetRating(cDoc);
             var R = new List<Raiting>();
@@ -114,7 +130,7 @@ namespace BRB5
         {
             var task = Task.Run(() =>
             {
-                c.SendRaitingFiles(cDoc.NumberDoc, 1, 2 * 60, 10 * 60);
+                c.SendRaitingFiles(cDoc.NumberDoc, 1, 3 * 60, 10 * 60);
             });
           
         }

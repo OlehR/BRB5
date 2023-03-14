@@ -22,6 +22,16 @@ namespace BRB5.Model
 
         public string Address { get;set;}
 
+        public string ShortAddress
+        {
+            get
+            {
+                var temp = Address.Split('-')[1];
+                if (temp.Length < 2) temp = Address;
+                return temp;
+            }
+        } // 
+
         public string Url {get;set;}
         public string InternalIP {get;set;}
         public string ExternalIP {get;set;}

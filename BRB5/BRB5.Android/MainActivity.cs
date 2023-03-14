@@ -14,6 +14,7 @@ using System.Runtime.Serialization;
 using Result = Android.App.Result;
 using System.Threading;
 using System.Globalization;
+using Android.Widget;
 //using Xamarin.Essentials;
 
 namespace BRB5.Droid
@@ -68,8 +69,8 @@ namespace BRB5.Droid
             //Utils Util = Utils.GetInstance();
             //Config.Company = db.GetConfig<eCompany>("Company");
             //Config.CodeWarehouse = db.GetConfig<int>("CodeWarehouse");
-            //         if ( LoadAPK($"https://github.com/OlehR/BRB5/raw/master/Apk/{Config.Company}/", "ua.UniCS.TM.brb5.apk", null, VerCode))
-            //             InstallAPK(Path.Combine(Config.PathDownloads, "ua.UniCS.TM.brb5.apk"));
+            if ( LoadAPK($"https://github.com/OlehR/BRB5/raw/master/Apk/{Config.Company}/", "ua.UniCS.TM.brb5.apk", null, VerCode))
+                         InstallAPK(Path.Combine(Config.PathDownloads, "ua.UniCS.TM.brb5.apk"));
 
             NativeMedia.Platform.Init(this, savedInstanceState);
             Xamarin.Essentials.Platform.Init(this, savedInstanceState);
@@ -100,12 +101,17 @@ namespace BRB5.Droid
                 Java.IO.File file = new Java.IO.File(filepath);
                 if (Build.VERSION.SdkInt >= BuildVersionCodes.N)
                 {
-                    Android.Net.Uri URIAPK = FileProvider.GetUriForFile(Android.App.Application.Context, Android.App.Application.Context.ApplicationContext.PackageName + ".provider", file);
-                    Intent intS = new Intent(Intent.ActionInstallPackage);
-                    intS.SetData(URIAPK);
-                    intS.SetFlags(ActivityFlags.GrantReadUriPermission);
-                    intS.SetFlags(ActivityFlags.NewTask );
-                    Android.App.Application.Context.StartActivity(intS);
+                    if (Build.VERSION.SdkInt >= BuildVersionCodes.Q)
+                        InstallPackageAndroidQAndAbove(Application.Context, filepath);
+                    else
+                    {
+                        Android.Net.Uri URIAPK = FileProvider.GetUriForFile(Android.App.Application.Context, Android.App.Application.Context.ApplicationContext.PackageName + ".provider", file);
+                        Intent intS = new Intent(Intent.ActionInstallPackage);
+                        intS.SetData(URIAPK);
+                        intS.SetFlags(ActivityFlags.GrantReadUriPermission);
+                        intS.SetFlags(ActivityFlags.NewTask);
+                        Application.Context.StartActivity(intS);
+                    }
                 }
                 else
                 {
@@ -113,7 +119,7 @@ namespace BRB5.Droid
                     Intent intS = new Intent(Intent.ActionView);
                     intS.SetDataAndType(URIAPK, "application/vnd.android.package-archive");
                     intS.SetFlags(ActivityFlags.NewTask);
-                    Android.App.Application.Context.StartActivity(intS);
+                    Application.Context.StartActivity(intS);
                 }
             }catch(Exception e )
             {
@@ -121,7 +127,132 @@ namespace BRB5.Droid
                 e = e.InnerException;
             }
         }
+        /*
+        public static void InstallPackageAndroidQAndAbove(Context context, string filePath, string packageName)
+        {
+            var packageInstaller = context.PackageManager.PackageInstaller;
+            var sessionParams = new PackageInstaller.SessionParams(PackageInstallMode.FullInstall);
+            sessionParams.SetAppPackageName(packageName);
+            int sessionId = packageInstaller.CreateSession(sessionParams);
+            var session = packageInstaller.OpenSession(sessionId);
 
+            var input = new FileStream(filePath, FileMode.Open, FileAccess.Read);
+            var output = session.OpenWrite(packageName, 0, -1);
+
+            input.CopyTo(output);
+
+            output.Close();
+            input.Close();
+            input.Dispose();
+
+            session.Fsync(output);
+
+            var pendingIntent = PendingIntent.GetBroadcast(context, sessionId, new Intent(Intent.ActionInstallPackage), 0);
+            session.Commit(pendingIntent.IntentSender);
+        }
+
+        private static void addApkToInstallSession(string filePath, PackageInstaller.Session session)
+        {
+            using (var input = new FileStream(filePath, FileMode.Open, FileAccess.Read))
+            {
+                using (var packageInSession = session.OpenWrite("package", 0, -1))
+                {
+                    input.CopyTo(packageInSession);
+                    packageInSession.Close();
+                }
+                input.Close();
+            }
+            //That this is necessary could be a Xamarin bug.
+            GC.Collect();
+            GC.WaitForPendingFinalizers();
+            GC.Collect();
+
+        }
+        */
+        const string PACKAGE_INSTALLED_ACTION =
+            "com.example.android.apis.content.SESSION_API_PACKAGE_INSTALLED";
+
+        public static void InstallPackageAndroidQAndAbove(Context context, string filePath)
+        {
+
+            var packageInstaller = context.PackageManager.PackageInstaller;
+            var sessionParams = new PackageInstaller.SessionParams(PackageInstallMode.FullInstall);
+            int sessionId = packageInstaller.CreateSession(sessionParams);
+            var session = packageInstaller.OpenSession(sessionId);
+
+            addApkToInstallSession(filePath, session);
+
+            // Create an install status receiver.
+            Intent intent = new Intent(context, context.Class);
+            intent.SetAction(PACKAGE_INSTALLED_ACTION);
+            PendingIntent pendingIntent = PendingIntent.GetActivity(context, 0, intent, 0);
+            IntentSender statusReceiver = pendingIntent.IntentSender;
+
+            // Commit the session (this will start the installation workflow).
+            session.Commit(statusReceiver);
+
+        }
+
+        private static void addApkToInstallSession(string filePath, PackageInstaller.Session session)
+        {
+            using (var input = new FileStream(filePath, FileMode.Open, FileAccess.Read))
+            {
+                using (var packageInSession = session.OpenWrite("package", 0, -1))
+                {
+                    input.CopyTo(packageInSession);
+                    packageInSession.Close();
+                }
+                input.Close();
+            }
+            //That this is necessary could be a Xamarin bug.
+            GC.Collect();
+            GC.WaitForPendingFinalizers();
+            GC.Collect();
+
+        }
+
+
+        // Note: this Activity must run in singleTop launchMode for it to be able to receive the //intent
+        protected override void OnNewIntent(Intent intent)
+        {
+            base.OnNewIntent(intent);
+
+            Bundle extras = intent.Extras;
+
+           /* if (PACKAGE_INSTALLED_ACTION.Equals(intent.Action))
+            {
+                int status = extras.GetInt(PackageInstaller.ExtraStatus);
+                String message = extras.GetString(PackageInstaller.ExtraStatusMessage);
+
+                switch (status)
+                {
+                    case (int)PackageInstallStatus.PendingUserAction:
+                        // This test app isn't privileged, so the user has to confirm the install.
+                        Intent confirmIntent = (Intent)extras.Get(Intent.ExtraIntent);
+                        StartActivity(confirmIntent);
+                        break;
+                    case (int)PackageInstallStatus.Success:
+                        Toast.MakeText(this, "Install succeeded!", ToastLength.Long).Show();
+                        break;
+                    case (int)PackageInstallStatus.Failure:
+                    case (int)PackageInstallStatus.FailureAborted:
+                    case (int)PackageInstallStatus.FailureBlocked:
+                    case (int)PackageInstallStatus.FailureConflict:
+                    case (int)PackageInstallStatus.FailureIncompatible:
+                    case (int)PackageInstallStatus.FailureInvalid:
+                    case (int)PackageInstallStatus.FailureStorage:
+                        Toast.MakeText(this, "Install failed! " + status + ", " + message,
+                                ToastLength.Long).Show();
+                        break;
+                    default:
+                        Toast.MakeText(this, "Unrecognized status received from installer: " + status,
+                               ToastLength.Long).Show();
+                        break;
+                }
+            }
+
+            */
+        }
 
         public string GetDeviceId()
         {
@@ -160,6 +291,7 @@ namespace BRB5.Droid
                 return VerCode;
             }
         }
+        
         public bool LoadAPK(string pPath, string pNameAPK, Action<int,string> pProgress, int pVersionCode)
         {
             GetDataHTTP Http = GetDataHTTP.GetInstance();
