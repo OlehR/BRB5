@@ -122,8 +122,7 @@ namespace BRB5
             t = new System.Timers.Timer(3 * 60 * 1000); //3 хв
             t.AutoReset = true;
             t.Elapsed += new ElapsedEventHandler(OnTimedEvent);
-            t.Start();
-            
+            t.Start();            
         }
 
         private void OnTimedEvent(Object source, ElapsedEventArgs e)
@@ -134,6 +133,7 @@ namespace BRB5
             });
           
         }
+
         private void OnButtonClicked(object sender, System.EventArgs e)
         {
             Xamarin.Forms.View button = (Xamarin.Forms.View)sender;
@@ -256,6 +256,7 @@ namespace BRB5
             }
             );
         }
+
         private void OnFindGPS(object sender, System.EventArgs e)
         {
             _ = Config.GetCurrentLocation(db.GetWarehouse());
@@ -271,7 +272,7 @@ namespace BRB5
         {
             ImageButton button = (ImageButton)sender;
             var vQuestion = button.BindingContext as Raiting;
-            var FileName = $"{vQuestion.Id}_{DateTime.Now.ToString("yyyyMMdd_hhmmssfff")}";
+            var FileName = $"{vQuestion.Id}_{DateTime.Now.ToString("yyyyMMdd_HHmmssfff")}";
 
             try
             {

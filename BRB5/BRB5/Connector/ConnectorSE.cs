@@ -420,13 +420,13 @@ namespace BRB5.Connector
                 foreach (var f in Files)
                 {
                     if (StopSend) break;
-                    if (pMaxSecondSend > 0 && (DateTime.Now - StartTime).TotalSeconds > pMaxSecondSend) break;
+                    if (pMaxSecondSend > 0 && (DateTime.Now - StartTime).TotalSeconds > pMaxSecondSend) continue; 
                     string s = Path.GetFileNameWithoutExtension(f).Split('_')[1]+"_"+ Path.GetFileNameWithoutExtension(f).Split('_')[2];
-                    R.DT = DateTime.ParseExact(s, "yyyyMMdd_hhmmssfff", provider);
+                    R.DT = DateTime.ParseExact(s, "yyyyMMdd_HHmmssfff", provider);
                     if(pSecondSkip>0 && (DateTime.Now-R.DT).TotalSeconds< pSecondSkip)
                     {
                         FileLogger.WriteLogMessage($"SendRaitingFiles Skip DateCreateFile {DateTime.Now} / {R.DT}", eTypeLog.Full);
-                        break;
+                        continue;
                     }
 
                     i++;

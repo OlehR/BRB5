@@ -151,7 +151,7 @@ namespace BRB5.View
             foreach (var file in files)
             {
                 var ext = "." + file.Extension;
-                var FileName = $"{Raiting.Id}_{DateTime.Now:yyyyMMdd_hhmmssfff}";
+                var FileName = $"{Raiting.Id}_{DateTime.Now:yyyyMMdd_HHmmssfff}";
                 var newFile = Path.Combine(dir, FileName + ext);
 
                 using (var stream = await file.OpenReadAsync())

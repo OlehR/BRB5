@@ -291,7 +291,7 @@ namespace BRB5.Droid
                     catch (Exception)
                     {
                     }
-                    if ( ver >= pVersionCode)
+                    if ( ver > pVersionCode)
                     {
                         pProgress?.Invoke(15,$"Завантажуємо нову версію={ver} Текуча={pVersionCode}");
                         string FileName = Path.Combine(Config.PathDownloads, pNameAPK);
