@@ -24,7 +24,9 @@ namespace BRB5
         //public string Help { get; set; } = "ERHHHHHHH54";
         public Docs(TypeDoc pTypeDoc )
         {
-            DB db =  DB.GetDB();
+
+            DB db = DB.GetDB();
+            _ = Config.GetCurrentLocation(db.GetWarehouse());
             c = BRB5.Connector.Connector.GetInstance();
             InitializeComponent();
             Routing.RegisterRoute(nameof(Item), typeof(Item));

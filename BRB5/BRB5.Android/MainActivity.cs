@@ -53,7 +53,7 @@ namespace BRB5.Droid
             try
             {
 
-                string CopyTo = Path.Combine(Config.PathDownloads, "brb.db");
+                string CopyTo = Path.Combine(Config.PathDownloads, "brb5.db");
                 if (File.Exists(CopyTo))
                     File.Delete(CopyTo);
                 File.Copy(db.PathNameDB, CopyTo, true);
