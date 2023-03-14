@@ -15,6 +15,8 @@ using Result = Android.App.Result;
 using System.Threading;
 using System.Globalization;
 using Android.Widget;
+using static Android.Renderscripts.ScriptGroup;
+using System.Runtime.Remoting.Contexts;
 //using Xamarin.Essentials;
 
 namespace BRB5.Droid
@@ -69,7 +71,7 @@ namespace BRB5.Droid
             //Utils Util = Utils.GetInstance();
             //Config.Company = db.GetConfig<eCompany>("Company");
             //Config.CodeWarehouse = db.GetConfig<int>("CodeWarehouse");
-            if ( LoadAPK($"https://github.com/OlehR/BRB5/raw/master/Apk/{Config.Company}/", "ua.UniCS.TM.brb5.apk", null, VerCode))
+            //if ( LoadAPK($"https://github.com/OlehR/BRB5/raw/master/Apk/{Config.Company}/", "ua.UniCS.TM.brb5.apk", null, VerCode))
                          InstallAPK(Path.Combine(Config.PathDownloads, "ua.UniCS.TM.brb5.apk"));
 
             NativeMedia.Platform.Init(this, savedInstanceState);
@@ -172,7 +174,7 @@ namespace BRB5.Droid
         const string PACKAGE_INSTALLED_ACTION =
             "com.example.android.apis.content.SESSION_API_PACKAGE_INSTALLED";
 
-        public static void InstallPackageAndroidQAndAbove(Context context, string filePath)
+        public static void InstallPackageAndroidQAndAbove(Android.Content.Context context, string filePath)
         {
 
             var packageInstaller = context.PackageManager.PackageInstaller;
@@ -184,7 +186,7 @@ namespace BRB5.Droid
 
             // Create an install status receiver.
             Intent intent = new Intent(context, context.Class);
-            intent.SetAction(PACKAGE_INSTALLED_ACTION);
+            intent.SetAction(Intent.ActionInstallPackage);
             PendingIntent pendingIntent = PendingIntent.GetActivity(context, 0, intent, 0);
             IntentSender statusReceiver = pendingIntent.IntentSender;
 
@@ -195,7 +197,25 @@ namespace BRB5.Droid
 
         private static void addApkToInstallSession(string filePath, PackageInstaller.Session session)
         {
-            using (var input = new FileStream(filePath, FileMode.Open, FileAccess.Read))
+            var packageInSession = session.OpenWrite("package", 0, -1);
+            var input = new FileStream(filePath, FileMode.Open, FileAccess.Read);//context.ContentResolver.OpenInputStream(apkUri);
+            try
+            {
+                if (input != null)
+                {
+                    input.CopyTo(packageInSession);
+                }
+                else
+                {
+                    throw new Exception("Inputstream is null");
+                }
+            }
+            finally
+            {
+                packageInSession.Close();
+                input.Close();
+            }
+            /*using (var input = new FileStream(filePath, FileMode.Open, FileAccess.Read))
             {
                 using (var packageInSession = session.OpenWrite("package", 0, -1))
                 {
@@ -203,7 +223,7 @@ namespace BRB5.Droid
                     packageInSession.Close();
                 }
                 input.Close();
-            }
+            }*/
             //That this is necessary could be a Xamarin bug.
             GC.Collect();
             GC.WaitForPendingFinalizers();
