@@ -165,7 +165,7 @@ CREATE TABLE Raiting(
     Note TEXT,
     DTInsert    TIMESTAMP  DEFAULT (DATETIME('NOW', 'LOCALTIME'))
 );
-CREATE UNIQUE INDEX RaitingId ON Raiting (TypeDoc,Id);
+CREATE UNIQUE INDEX RaitingId ON Raiting (TypeDoc,NumberDoc,Id);
 
 CREATE TABLE User (
     CodeUser   INTEGER NOT NULL,

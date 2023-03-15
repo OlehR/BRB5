@@ -334,7 +334,7 @@ namespace BRB5.Connector
         /// <returns></returns>
         public override Result SendRaiting(IEnumerable<Raiting> pR, Doc pDoc)
         {
-            OnSave?.Invoke("StartSave");
+            OnSave?.Invoke($"StartSave NumberDoc=>{pDoc.NumberDoc}");
             var Res = new Result();
             try
             {
@@ -353,23 +353,28 @@ namespace BRB5.Connector
                 };
                 //var p = JsonConvert.DeserializeObject<Data>(result2.Result);
                 string data = JsonConvert.SerializeObject(r, new IsoDateTimeConverter { DateTimeFormat = "dd.MM.yyyy HH:mm:ss" });
-                HttpResult result = Http.HTTPRequest(2, "", data, "application/json");//
+                //Збереження Json
+                try
+                {
+                    var FileName = Path.Combine(FileLogger.PathLog, $"{pDoc.NumberDoc}_{DateTime.Now:yyyyMMddHHmmssfff}.json");
+                    File.AppendAllText(FileName, data);
+                }
+                catch (Exception) { }
+                HttpResult result = Http.HTTPRequest(2, "", data, "application/json");
+
+                FileLogger.WriteLogMessage($"ConnectorPSU.SendRaiting=>(NumberDoc=>{pDoc.NumberDoc}) Res=>({result.HttpState}");
 
                 if (result.HttpState != eStateHTTP.HTTP_OK)
+                {
+                    FileLogger.WriteLogMessage($"ConnectorPSU.SendRaiting=>(NumberDoc=>{pDoc.NumberDoc}) Res=>({Res.State},{Res.Info},{Res.TextError})", eTypeLog.Error);
                     Res = new Result(result);
+                }
                 else
                 {
                     var res = JsonConvert.DeserializeObject<AnswerSendRaiting>(result.Result);
-                    OnSave?.Invoke($"SendRaiting=> (res.success={res.success})");
+                    OnSave?.Invoke($"SendRaiting=>  (res.success={res.success})");
                     if (res.success)
                     {
-                        try
-                        {
-                            var FileName = Path.Combine(FileLogger.PathLog, $"{pDoc.NumberDoc}_{DateTime.Now:yyyyMMddHHmmssfff}.json");
-                            File.AppendAllText(FileName, data);
-                        }
-                        catch (Exception) { }
-                        
                         Res = SendRaitingFiles(e.NumberDoc);
                     }
                 }
@@ -378,7 +383,7 @@ namespace BRB5.Connector
             {
                 Res = new Result(ex);
             }
-            FileLogger.WriteLogMessage($"ConnectorPSU.SendRaiting=>() Res=>({Res.State},{Res.Info},{Res.TextError})", eTypeLog.Error);
+            FileLogger.WriteLogMessage($"ConnectorPSU.SendRaiting=>(NumberDoc=>{pDoc.NumberDoc}) Res=>({Res.State},{Res.Info},{Res.TextError})");
             OnSave?.Invoke("EndSave");
             return Res;
         }
@@ -393,10 +398,10 @@ namespace BRB5.Connector
         /// <returns></returns>
         public override Result SendRaitingFiles(string pNumberDoc, int pTry = 2, int pMaxSecondSend = 0, int pSecondSkip = 0)
         {            
-            FileLogger.WriteLogMessage("SendRaitingFiles Start", eTypeLog.Full);
+            FileLogger.WriteLogMessage($"SendRaitingFiles Start pNumberDoc=>{pNumberDoc} pTry=>{pTry} pMaxSecondSend=>{pMaxSecondSend} pSecondSkip=>pSecondSkip", eTypeLog.Full);
             lock (Lock)
             {
-                FileLogger.WriteLogMessage("SendRaitingFiles Lock", eTypeLog.Full);
+                //FileLogger.WriteLogMessage("SendRaitingFiles Lock", eTypeLog.Full);
                 var StartTime = DateTime.Now;
 
                 StopSend = false;
@@ -416,6 +421,7 @@ namespace BRB5.Connector
                 var R = new RequestSendRaitingFile() { planId = int.Parse(pNumberDoc), action = "file", userId = Config.CodeUser };
 
                 var Files = Directory.GetFiles(Path.Combine(Config.PathFiles, pNumberDoc));
+                FileLogger.WriteLogMessage($"SendRaitingFiles Files=>{Files?.Length}", eTypeLog.Full);
                 int i = 0;
                 foreach (var f in Files)
                 {
@@ -449,11 +455,12 @@ namespace BRB5.Connector
                         string data = JsonConvert.SerializeObject(R);
                         HttpResult result = Http.HTTPRequest(2, "", data, "application/json", null, null, 60, false);
                         R.file = null;
-                        FileLogger.WriteLogMessage($"ConnectorPSU.SendRaitingFiles HTTP=>({R.ToJSON()}) HttpState=>{result.HttpState}");
-
+        
                         if (result.HttpState == eStateHTTP.HTTP_OK)
                         {
                             var res = JsonConvert.DeserializeObject<Answer>(result.Result);
+                            FileLogger.WriteLogMessage($"ConnectorPSU.SendRaitingFiles  File=>{f} HTTP=>({R.ToJSON()}) HttpState=>{result.HttpState} success=>{res.success}");
+
                             if (res.success)
                             {
                                 var FileTo = Path.Combine(DirArx, pNumberDoc, Path.GetFileName(f));

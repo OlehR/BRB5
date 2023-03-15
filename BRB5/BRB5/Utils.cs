@@ -62,7 +62,9 @@ namespace BRB5
 
         public (long,long) DelDir(string pDir, IEnumerable<string> pNotDelDir)
         {
-            //return(0,0);
+            FileLogger.WriteLogMessage($"DelDir Start =>{pDir}");
+            if (pNotDelDir == null || !pNotDelDir.Any())
+                return(0,0);            
             long SizeDel = 0,SizeUse=0;
             var dirs = Directory.GetDirectories(Config.PathFiles, "*", SearchOption.TopDirectoryOnly);
             foreach (var el in dirs)
@@ -70,7 +72,10 @@ namespace BRB5
                 var dir = new DirectoryInfo(el);
                 var LD= pNotDelDir.Where(e => el.EndsWith(e));
                 if (LD.Count() > 0)
+                {
                     SizeUse += DirSize(dir);
+                    FileLogger.WriteLogMessage($"DelDir Skip =>{dir.FullName}");
+                }
                 else
                 {
                     SizeDel += DirSize(dir);
@@ -78,6 +83,7 @@ namespace BRB5
                     dir.Delete(true);
                 }
             }
+            FileLogger.WriteLogMessage($"DelDir End SizeDel=>{SizeDel}, SizeUse=>{SizeUse}");
             return (SizeDel , SizeUse);
 
         }

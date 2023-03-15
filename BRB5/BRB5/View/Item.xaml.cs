@@ -115,6 +115,7 @@ namespace BRB5
             RefreshHead();
             this.BindingContext = this;
             StartTimer();
+            FileLogger.WriteLogMessage($"Item Start=>{pDoc.NumberDoc}");
         }
 
         void StartTimer()
