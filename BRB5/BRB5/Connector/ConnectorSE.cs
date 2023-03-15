@@ -426,15 +426,22 @@ namespace BRB5.Connector
                 foreach (var f in Files)
                 {
                     if (StopSend) break;
-                    if (pMaxSecondSend > 0 && (DateTime.Now - StartTime).TotalSeconds > pMaxSecondSend) continue; 
-                    string s = Path.GetFileNameWithoutExtension(f).Split('_')[1]+"_"+ Path.GetFileNameWithoutExtension(f).Split('_')[2];
-                    R.DT = DateTime.ParseExact(s, "yyyyMMdd_HHmmssfff", provider);
-                    if(pSecondSkip>0 && (DateTime.Now-R.DT).TotalSeconds< pSecondSkip)
+                    if (pMaxSecondSend > 0 && (DateTime.Now - StartTime).TotalSeconds > pMaxSecondSend) continue;
+                    try
                     {
-                        FileLogger.WriteLogMessage($"SendRaitingFiles Skip DateCreateFile {DateTime.Now} / {R.DT}", eTypeLog.Full);
-                        continue;
+                        string s = Path.GetFileNameWithoutExtension(f).Split('_')[1] + "_" + Path.GetFileNameWithoutExtension(f).Split('_')[2];
+                        if (s.Length > 18) { s = s.Substring(0, 18); }
+                        R.DT = DateTime.ParseExact(s, "yyyyMMdd_HHmmssfff", provider);
+                        if (pSecondSkip > 0 && (DateTime.Now - R.DT).TotalSeconds < pSecondSkip)
+                        {
+                            FileLogger.WriteLogMessage($"SendRaitingFiles Skip DateCreateFile {DateTime.Now} / {R.DT}", eTypeLog.Full);
+                            continue;
+                        }
+                    }catch(Exception e)
+                    {
+                        FileLogger.WriteLogMessage($"SendRaitingFiles Error=> {e.Message}", eTypeLog.Error);
+                        OnSave?.Invoke($"Error=>{e.Message}");
                     }
-
                     i++;
                     if (StopSave)
                     {
