@@ -167,6 +167,12 @@ CREATE TABLE Raiting(
 );
 CREATE UNIQUE INDEX RaitingId ON Raiting (TypeDoc,NumberDoc,Id);
 
+CREATE TABLE RaitingTemplate(
+Id           INTEGER  NOT NULL, 
+ Text TEXT,
+IsActive  INTEGER  NOT NULL DEFAULT (0) 
+);
+
 CREATE TABLE User (
     CodeUser   INTEGER NOT NULL,
     NameUser   TEXT NOT NULL,
