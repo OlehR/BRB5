@@ -566,6 +566,14 @@ and bc.BarCode=@BarCode
             return db.ExecuteScalar<int>(Sql);
         }
 
+        public IEnumerable<RaitingTemplate> GetRaitingTemplate()
+        {
+            string Sql = @"select * from RaitingTemplate";
+
+            return db.Execute<RaitingTemplate>(Sql);
+            
+        }
+
         public bool ReplaceDocWaresSample(IEnumerable<DocWaresSample> pDWS)
         {
             string Sql = @"replace into DocWaresSample ( TypeDoc, NumberDoc, OrderDoc, CodeWares, Quantity, QuantityMin, QuantityMax, Name, BarCode) values 

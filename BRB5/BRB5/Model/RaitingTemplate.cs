@@ -9,7 +9,6 @@ namespace BRB5.Model
         public int Id { get; set; }
         public string Text { get; set; }
         public bool IsActive { get; set; }
-        //public bool IsActiveB { get { return IsActive; } }
 
     }
 }

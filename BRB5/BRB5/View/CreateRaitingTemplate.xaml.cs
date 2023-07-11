@@ -26,10 +26,12 @@ namespace BRB5.View
             this.BindingContext = this;
         }
 
-        private void Create(object sender, EventArgs e)
+        private async void Create(object sender, EventArgs e)
         {
 			RT.IsActive = true;
 			db.ReplaceRaitingTemplate(RT);
+
+            await Navigation.PushAsync(new TemplateRaiting());
         }
     }
 }
