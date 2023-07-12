@@ -54,13 +54,12 @@ namespace BRB5.View
             var s = b.Parent as Grid;
 
             var vRaitingTemplate = s.BindingContext as RaitingTemplate;
-
             var customFileType =
-           new FilePickerFileType(new Dictionary<DevicePlatform, IEnumerable<string>>
-           {
+            new FilePickerFileType(new Dictionary<DevicePlatform, IEnumerable<string>>
+            {
               // { DevicePlatform.iOS, new[] { "public.my.comic.extension" } }, // or general UTType values  
                { DevicePlatform.Android, new[] { "*/*" } },
-           });
+            });
             var options = new PickOptions
             {
                 PickerTitle = "Please select a comic file",
@@ -70,27 +69,32 @@ namespace BRB5.View
 
             var text = File.ReadAllText(result.FullPath);
             var t = text.Split(new string[] { "\r\n" }, StringSplitOptions.None);
-            RaitingSample[] RS = new RaitingSample[t.Length];
+            Raiting[] RS = new Raiting[t.Length];
             int i = 0;
             foreach ( var v in t )
             {
                 var p = v.Split(',');
-                RS[i] = new RaitingSample();
+                RS[i] = new Raiting();
                 int temp = 0;
+
                 Int32.TryParse(p[0], out temp);
                 RS[i].Id = temp;
 
                 Int32.TryParse(p[1], out temp);
-                RS[i].IsHead = temp;
+                RS[i].IsHead = !(temp==0);
 
                 Int32.TryParse(p[2], out temp);
                 RS[i].Parent = temp;
 
                 RS[i].Text = p[3];
+
+                RS[i].TypeDoc = -1;
+                RS[i].NumberDoc = vRaitingTemplate.Id.ToString();
                 i++;
+
             }
 
-            await Navigation.PushAsync(new CreateRaitingSample(vRaitingTemplate.Id));
+            db.ReplaceRaitingSample(RS);
         }
     }
 }
