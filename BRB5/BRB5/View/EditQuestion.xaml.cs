@@ -38,11 +38,15 @@ namespace BRB5.View
         {
             InitializeComponent();
             DocId = docId;
-            RQ = new Raiting();
-            RQ.Id = Id;
-            RQ.OrderRS = Id;
-            RQ.NumberDoc = docId.NumberDoc;
-            RQ.TypeDoc = docId.TypeDoc;
+            RQ = new Raiting
+            {
+                Id = Id,
+                OrderRS = Id,
+                NumberDoc = docId.NumberDoc,
+                TypeDoc = docId.TypeDoc,
+                //IsEnableBad = true
+            };
+
 
 
             this.BindingContext = this;
@@ -52,7 +56,10 @@ namespace BRB5.View
         {
             db.ReplaceRaitingSample(new List<Raiting>(){RQ});
         }
-        //Parent, IsHead, Text, RatingTemplate, 
-        // TypeDoc, NumberDoc, Id, OrderRS
+
+        private void OnButtonClicked(object sender, EventArgs e)
+        {
+
+        }
     }
 }

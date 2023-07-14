@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
-             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" xmlns:controls="clr-namespace:BRB5.View"
              x:Class="BRB5.View.EditQuestion">
     <NavigationPage.TitleView>
             <Button Text = "Зберегти"
@@ -33,7 +33,65 @@
                         SelectedIndex="{Binding RG.Parent}"
                         HorizontalOptions="Fill"
                         Grid.Row="1" Grid.Column="1" />
-                <Editor Grid.Row="2" Grid.Column="1" Text="{Binding RQ.Text}"/>
+
+                <Frame Style="{StaticResource FrameStyle}" Grid.Row="2" Grid.Column="1">
+                    <controls:CustomEntry Style="{StaticResource EntryStyle}"
+                                          Text="{Binding RQ.Text}"/>
+                </Frame>
+
+                <Grid Margin="0" Padding="0" Grid.Row="3" Grid.Column="1">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="1*" />
+                        <ColumnDefinition Width="1*" />
+                        <ColumnDefinition Width="1*" />
+                        <ColumnDefinition Width="1*" />
+                    </Grid.ColumnDefinitions>
+
+                    <ImageButton  IsVisible="{Binding RQ.IsEnableOk}"
+                                  Margin="0" Padding="0"
+                                  Source="Ok.png" 
+                                  ClassId="Ok"
+                                  BackgroundColor="Transparent"
+                                  HeightRequest="60"
+                                  Aspect="AspectFit" 
+                                  Opacity="{Binding OpacityOk}"
+                                  Clicked="OnButtonClicked" />
+
+                    <ImageButton IsVisible="{Binding RQ.IsEnableSoSo}"
+                                 Margin="0" Padding="0"
+                                 Source="So_so.png" 
+                                 ClassId="SoSo" 
+                                 Grid.Column="1" 
+                                 BackgroundColor="Transparent" 
+                                 HeightRequest="60"
+                                 Aspect="AspectFit" 
+                                 Opacity="{Binding OpacitySoSo}"
+                                 Clicked="OnButtonClicked" />
+
+                    <ImageButton IsVisible="{Binding RQ.IsEnableBad}" 
+                                 Margin="0" Padding="0"
+                                 Source="Bad.png"
+                                 ClassId="Bad" 
+                                 Grid.Column="2"
+                                 BackgroundColor="Transparent"
+                                 HeightRequest="60" 
+                                 Aspect="AspectFit" 
+                                 Opacity="{Binding OpacityBad}"
+                                 Clicked="OnButtonClicked" />
+
+                    <ImageButton IsVisible="{Binding RQ.IsEnableNotKnow}"
+                                 Margin="0" Padding="0"
+                                 Source="NotKnow.png" 
+                                 ClassId="NotKnow" 
+                                 Grid.Column="3" 
+                                 BackgroundColor="Transparent"
+                                 HeightRequest="60"
+                                 Aspect="AspectFit" 
+                                 Opacity="{Binding OpacityNotKnow}"
+                                 Clicked="OnButtonClicked" />
+
+
+                </Grid>
 
             </Grid>
         </StackLayout>
