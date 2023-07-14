@@ -12,9 +12,9 @@
             </Frame>
 
             <Button Text = "Зберегти" 
-                                    FontSize="Medium" 
-                                    Clicked="Create" 
-                                    Style="{StaticResource ButtonStyle}" />
+                    FontSize="Medium" 
+                    Clicked="Create"
+                    Style="{StaticResource ButtonStyle}" />
 
         </StackLayout>
     </ContentPage.Content>

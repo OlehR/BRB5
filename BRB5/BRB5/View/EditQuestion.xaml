@@ -1,0 +1,41 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="BRB5.View.EditQuestion">
+    <NavigationPage.TitleView>
+            <Button Text = "Зберегти"
+                Clicked="Save" 
+                Style="{StaticResource ButtonStyle}" />
+
+    </NavigationPage.TitleView>
+    <ContentPage.Content>
+        <StackLayout>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="1*" />
+                    <ColumnDefinition Width="3*" />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                </Grid.RowDefinitions>
+                <Label Text="Заголовок" Grid.Row="0" />
+                <Label Text="Додати до" Grid.Row="1" />
+                <Label Text="Текст питання" Grid.Row="2" />
+                <Label Text="Оцінки" Grid.Row="3" />
+                
+                <CheckBox Grid.Row="0" IsChecked="{Binding IsActive}" Grid.Column="1"/>
+                <Picker Title="Заголовки" 
+                        ItemsSource="{Binding ListHeads}"
+                        ItemDisplayBinding="{Binding Text}"
+                        SelectedIndex="{Binding RG.Parent}"
+                        HorizontalOptions="Fill"
+                        Grid.Row="1" Grid.Column="1" />
+                <Editor Grid.Row="2" Grid.Column="1" Text="{Binding RQ.Text}"/>
+
+            </Grid>
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>

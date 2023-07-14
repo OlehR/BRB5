@@ -565,7 +565,12 @@ and bc.BarCode=@BarCode
             string Sql = @"select coalesce(max(Id),0)+1 from RaitingTemplate ";
             return db.ExecuteScalar<int>(Sql);
         }
-
+        public int GetIdRaitingSample(DocId pD)
+        {
+            string Sql = @"select coalesce(max(Id),0)+1 from RaitingSample rs where rs.Typedoc=@TypeDoc and rs.numberdoc=@NumberDoc";
+            // rs where rs.Typedoc=@TypeDoc and rs.numberdoc=@NumberDoc
+            return db.ExecuteScalar<DocId, int>(Sql,pD);
+        }
         public IEnumerable<RaitingTemplate> GetRaitingTemplate()
         {
             string Sql = @"select * from RaitingTemplate";
