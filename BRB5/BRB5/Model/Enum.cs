@@ -289,4 +289,15 @@ namespace BRB5
          */
         HTTP_VERSION = 505
     }
+
+    public enum eTypeScaner
+    {
+        NotDefine,
+        Zebra,
+        PM550,
+        PM351,
+        Camera,
+        BitaHC61,
+        KeyBoard
+    }
 }

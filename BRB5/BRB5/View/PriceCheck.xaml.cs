@@ -10,6 +10,7 @@ using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 using ZXing.Net.Mobile.Forms;
 using Xamarin.Essentials;
+using ZXing;
 //using BRB5.Connector;
 namespace BRB5
 {
@@ -101,6 +102,8 @@ namespace BRB5
                 }
                 );
 
+            Config.BarCode = BarCode;
+
             NumberOfReplenishment.Unfocused += (object sender, FocusEventArgs e) =>
             {
                 decimal d;
@@ -126,6 +129,10 @@ namespace BRB5
                 this.BindingContext = this;           
         }
         
+        void BarCode(string pBarCode)
+        {
+            FoundWares(pBarCode, false);
+        }
 
         void FoundWares(string pBarCode, bool pIsHandInput = false)
         {
@@ -173,6 +180,7 @@ namespace BRB5
         public void Dispose()
         {
             bl.SendLogPrice();
+            Config.BarCode -= BarCode;
         }
                       
         private void OnClickAddPrintBlock(object sender, EventArgs e)

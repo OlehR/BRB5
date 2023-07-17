@@ -13,9 +13,12 @@ namespace BRB5.Model
     {
         public static Action<string> BarCode;
         public static Action<double> OnProgress;
+        public static string Manufacturer;
+        public static string Model;
         //static DB db = DB.GetDB();
         public static int CodeWarehouse;
         static eCompany _Company = eCompany.NotDefined;
+        public static eTypeScaner TypeScaner;
         public static eCompany Company
         {
             get {
@@ -122,6 +125,19 @@ namespace BRB5.Model
         {
             if (cts != null && !cts.IsCancellationRequested)
                 cts.Cancel();
+        }
+
+        public static eTypeScaner GetTypeScaner()
+        {
+            if ( (Manufacturer.Contains("Zebra Technologies") || Manufacturer.Contains("Motorola Solutions")))
+                return eTypeScaner.Zebra;
+            if (Model.Equals("PM550") && (Manufacturer.Contains("POINTMOBILE") || Manufacturer.Contains("Point Mobile Co., Ltd.")))
+                return eTypeScaner.PM550;
+            if (Model.Equals("PM351") && (Manufacturer.Contains("POINTMOBILE") || Manufacturer.Contains("Point Mobile Co., Ltd.")))
+                return eTypeScaner.PM351;
+            if (Model.Equals("HC61") || Manufacturer.Contains("Bita"))
+                return eTypeScaner.BitaHC61;
+            return eTypeScaner.Camera;
         }
 
         // public static string GenRaitingFileName(Raiting r);

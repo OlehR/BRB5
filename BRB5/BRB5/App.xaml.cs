@@ -1,4 +1,5 @@
 ﻿//using BRB5.Model;
+using BRB5.Model;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -12,7 +13,6 @@ namespace BRB5
         public App()
         {
             InitializeComponent();
-           
             /*var D = new List<Doc>() { 
                 new Doc() { TypeDoc =11,NumberDoc="1", DateDoc = DateTime.Now.Date, NameUser ="Рутковський О", ExtInfo="1001", Description="ТЗ 1001"},
                 new Doc() { TypeDoc =11,NumberDoc="SE00002", DateDoc = DateTime.Now.Date, NameUser ="Пупкін О", ExtInfo="1104" ,Description="ТЗ 1104"},
@@ -36,6 +36,7 @@ namespace BRB5
             db.ReplaceRaitingSample(R);
             */
 
+            Config.TypeScaner = Config.GetTypeScaner();
             MainPage = new NavigationPage(new MainPage());//new Docs()); //new Item2(); // 
         }
 
