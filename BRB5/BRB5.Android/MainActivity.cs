@@ -24,12 +24,12 @@ namespace BRB5.Droid
     [Activity(Label = "BRB5", Icon = "@mipmap/icon", Theme = "@style/MainTheme", MainLauncher = true, ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation | ConfigChanges.UiMode | ConfigChanges.ScreenLayout | ConfigChanges.SmallestScreenSize)]
     public class MainActivity : global::Xamarin.Forms.Platform.Android.FormsAppCompatActivity
     {
-        MyBroadcastReceiverPM550 BR;
+        MyBroadcastReceiver BR;
         //public static string SerialNumber = "None";
         protected override void OnCreate(Bundle savedInstanceState)
         {
             base.OnCreate(savedInstanceState);
-            BR = new MyBroadcastReceiverPM550();
+            BR = new MyBroadcastReceiver();
             global::Xamarin.Forms.Forms.Init(this, savedInstanceState);
 
             Thread.CurrentThread.CurrentCulture = CultureInfo.InvariantCulture;
@@ -91,7 +91,7 @@ namespace BRB5.Droid
         protected override void OnResume()
         {
             base.OnResume();
-            RegisterReceiver(BR, new IntentFilter(MyBroadcastReceiverPM550.IntentEvent));
+            RegisterReceiver(BR, new IntentFilter(MyBroadcastReceiver.IntentEvent));
             // Code omitted for clarity
         }
 
