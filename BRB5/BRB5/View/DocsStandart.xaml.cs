@@ -43,7 +43,7 @@ namespace BRB5.View
             MyDocsR = new ObservableCollection<Doc>(db.GetDoc(TypeDoc));
             OnPropertyChanged(nameof(MyDocsR));
         }
-            private async void OpenDoc(object sender, EventArgs e)
+        private async void OpenDoc(object sender, EventArgs e)
         {
             var s = sender as Grid;
 

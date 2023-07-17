@@ -172,6 +172,7 @@ Id           INTEGER  NOT NULL,
  Text TEXT,
 IsActive  INTEGER  NOT NULL DEFAULT (0) 
 );
+CREATE UNIQUE INDEX RaitingTemplateId ON RaitingTemplate (Id);
 
 CREATE TABLE User (
     CodeUser   INTEGER NOT NULL,
@@ -551,6 +552,31 @@ and bc.BarCode=@BarCode
             string Sql = @"replace into RaitingSample ( TypeDoc, NumberDoc, Id, Parent, IsHead, Text, RatingTemplate, OrderRS ) values 
                                                       (@TypeDoc,@NumberDoc,@Id,@Parent,@IsHead,@Text,@RatingTemplate,@OrderRS)";                                                   
             return db.BulkExecuteNonQuery<Raiting>(Sql, pR) >= 0;
+        }
+
+        public bool ReplaceRaitingTemplate(RaitingTemplate pR)
+        {
+            string Sql = @"replace into RaitingTemplate ( Id, Text, IsActive ) values 
+                                                      (@Id,@Text,@IsActive)";
+            return db.ExecuteNonQuery<RaitingTemplate>(Sql, pR) >= 0;
+        }
+        public int GetIdRaitingTemplate()
+        {
+            string Sql = @"select coalesce(max(Id),0)+1 from RaitingTemplate ";
+            return db.ExecuteScalar<int>(Sql);
+        }
+        public int GetIdRaitingSample(DocId pD)
+        {
+            string Sql = @"select coalesce(max(Id),0)+1 from RaitingSample rs where rs.Typedoc=@TypeDoc and rs.numberdoc=@NumberDoc";
+            // rs where rs.Typedoc=@TypeDoc and rs.numberdoc=@NumberDoc
+            return db.ExecuteScalar<DocId, int>(Sql,pD);
+        }
+        public IEnumerable<RaitingTemplate> GetRaitingTemplate()
+        {
+            string Sql = @"select * from RaitingTemplate";
+
+            return db.Execute<RaitingTemplate>(Sql);
+            
         }
 
         public bool ReplaceDocWaresSample(IEnumerable<DocWaresSample> pDWS)

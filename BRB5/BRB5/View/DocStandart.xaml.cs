@@ -72,9 +72,9 @@ namespace BRB5.View
             await Navigation.PushAsync(new Scan(Doc, TypeDoc));
         }
 
-        private void F4WrOff(object sender, EventArgs e)
+        private async void F4WrOff(object sender, EventArgs e)
         {
-
+            await Navigation.PushAsync(new ManualInput(Doc, TypeDoc));
         }
 
         private void F6Doc(object sender, EventArgs e)

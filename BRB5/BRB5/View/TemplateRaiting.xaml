@@ -1,0 +1,74 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="BRB5.View.TemplateRaiting">
+    <ContentPage.Content>
+        <StackLayout>
+
+            <StackLayout Orientation="Horizontal">
+                <Button Text = "Створити" 
+                                    FontSize="Medium" 
+                                    Clicked="Create" 
+                                    Style="{StaticResource ButtonStyle}" />
+                <Button Text = "Приховані" 
+                                    FontSize="Medium" 
+                                    Clicked="OnHiddenClick" 
+                                    Style="{StaticResource ButtonStyle}" />
+
+            </StackLayout>
+            <ListView ItemsSource="{Binding RTemplate}"  >
+                <ListView.Header>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="1*" />
+                            <ColumnDefinition Width="2*" />
+                            <ColumnDefinition Width="2*" />
+                            <ColumnDefinition Width="2*" />
+                            <ColumnDefinition Width="1*" />
+                        </Grid.ColumnDefinitions>
+                        <Label Text=" ID" Grid.Column="0" />
+                        <Label Text="Назва" Grid.Column="1" />
+                        <Label Text="Активний" Grid.Column="4" />
+                        
+                    </Grid>
+                </ListView.Header>
+                <ListView.ItemTemplate>
+                    <DataTemplate xmlns:brb5="clr-namespace:BRB5">
+                        <ViewCell>
+                            <ViewCell.View  >
+
+                                <Grid IsVisible="{Binding IsActive}">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="1*" />
+                                        <ColumnDefinition Width="2*" />
+                                        <ColumnDefinition Width="2*" />
+                                        <ColumnDefinition Width="2*" />
+                                        <ColumnDefinition Width="1*" />
+                                    </Grid.ColumnDefinitions>
+
+
+                                    <Label Text="{Binding Id}"  Grid.Column="0" />
+                                    <Label Text="{Binding Text}" Grid.Column="1" />
+                                    <Button Text="Редагувати"                                          
+                                            Grid.Column="2"
+                                            FontSize="Medium" 
+                                            Clicked="Edit" 
+                                            Style="{StaticResource ButtonStyle}"  />
+                                    <Button Text="Імпортувати"
+                                            Grid.Column="3"
+                                            FontSize="Medium" 
+                                            Clicked="Import" 
+                                            Style="{StaticResource ButtonStyle}"  />
+                                    <CheckBox IsChecked="{Binding IsActive}" Grid.Column="4"/>
+
+                                </Grid>
+
+                            </ViewCell.View>
+                        </ViewCell>
+                    </DataTemplate>
+                    
+                </ListView.ItemTemplate> 
+            </ListView>
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>
