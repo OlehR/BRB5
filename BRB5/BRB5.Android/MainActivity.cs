@@ -24,12 +24,12 @@ namespace BRB5.Droid
     [Activity(Label = "BRB5", Icon = "@mipmap/icon", Theme = "@style/MainTheme", MainLauncher = true, ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation | ConfigChanges.UiMode | ConfigChanges.ScreenLayout | ConfigChanges.SmallestScreenSize)]
     public class MainActivity : global::Xamarin.Forms.Platform.Android.FormsAppCompatActivity
     {
-        MySampleBroadcastReceiverPM550 BR;
+        MyBroadcastReceiverPM550 BR;
         //public static string SerialNumber = "None";
         protected override void OnCreate(Bundle savedInstanceState)
         {
             base.OnCreate(savedInstanceState);
-            BR = new MySampleBroadcastReceiverPM550();
+            BR = new MyBroadcastReceiverPM550();
             global::Xamarin.Forms.Forms.Init(this, savedInstanceState);
 
             Thread.CurrentThread.CurrentCulture = CultureInfo.InvariantCulture;
@@ -82,13 +82,16 @@ namespace BRB5.Droid
             global::Xamarin.Forms.Forms.Init(this, savedInstanceState);
             global::ZXing.Net.Mobile.Forms.Android.Platform.Init();
             Config.SN = GetDeviceId();
+            Config.Manufacturer= Xamarin.Essentials.DeviceInfo.Manufacturer;
+            Config.Model = Xamarin.Essentials.DeviceInfo.Model;
+
             LoadApplication(new App());
         }
 
         protected override void OnResume()
         {
             base.OnResume();
-            RegisterReceiver(BR, new IntentFilter(MySampleBroadcastReceiverPM550.IntentEvent));
+            RegisterReceiver(BR, new IntentFilter(MyBroadcastReceiverPM550.IntentEvent));
             // Code omitted for clarity
         }
 
@@ -251,19 +254,12 @@ namespace BRB5.Droid
 
         public string GetDeviceId()
         {
-
             string deviceID = Android.OS.Build.Serial?.ToString();
-
             if (string.IsNullOrEmpty(deviceID) || deviceID.ToUpper() == "UNKNOWN") // Android 9 returns "Unknown"
             {
-
                 //ContentResolver myContentResolver = MainActivity.myContentResolver;
-
                 deviceID = Android.Provider.Settings.Secure.GetString(ContentResolver, Android.Provider.Settings.Secure.AndroidId);
-
             }
-
-
             return deviceID;
 
         }

@@ -11,6 +11,7 @@ namespace BRB5.Model
 {
     public class Config
     {
+        public static Action<string> BarCode;
         public static Action<double> OnProgress;
         //static DB db = DB.GetDB();
         public static int CodeWarehouse;
