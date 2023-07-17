@@ -66,13 +66,13 @@ namespace BRB5
         public double OpacityNotKnow { get { return Rating == 4 ? 1d : 0.4d; } }
 
         [JsonIgnore]
-        public bool IsEnableOk { get { return (RatingTemplate & 1) == 1; } }
+        public bool IsEnableOk { get { return (RatingTemplate & 1) == 1; } set { RatingTemplate = value ? RatingTemplate | 1 : RatingTemplate & (8 + 4 + 2); } }
         [JsonIgnore]
-        public bool IsEnableSoSo { get { return (RatingTemplate & 2) == 2; } }
+        public bool IsEnableSoSo { get { return (RatingTemplate & 2) == 2; } set { RatingTemplate = value ? RatingTemplate | 2 : RatingTemplate & (8 + 4 + 1); } }
+            [JsonIgnore]
+        public bool IsEnableBad { get { return (RatingTemplate & 4) == 4; } set { RatingTemplate = value ? RatingTemplate | 4 : RatingTemplate & (8 + 2 + 1); } }
         [JsonIgnore]
-        public bool IsEnableBad { get { return (RatingTemplate & 4) == 4; } }
-        [JsonIgnore]
-        public bool IsEnableNotKnow { get { return (RatingTemplate & 8) ==8; } }    
+        public bool IsEnableNotKnow { get { return (RatingTemplate & 8) ==8; } set { RatingTemplate = value ? RatingTemplate | 8: RatingTemplate & ( 4 + 2+ 1); } }    
 
     }
 }
