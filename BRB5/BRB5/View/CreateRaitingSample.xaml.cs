@@ -103,14 +103,14 @@ namespace BRB5.View
 
         private async void Edit(object sender, EventArgs e)
         {
-            Button b = sender as Button;
+            var b = sender as ImageButton;
             var s = b.Parent as Grid;
 
             var vRaiting = s.BindingContext as Raiting;
             await Navigation.PushAsync(new EditQuestion(vRaiting));
         }
 
-        private async void Add(object sender, EventArgs e)
+        private async void AddHead(object sender, EventArgs e)
         {
             var vRaiting = new Raiting
             {
@@ -122,6 +122,29 @@ namespace BRB5.View
                 IsEnableSoSo = true,
                 IsEnableNotKnow = true,
                 IsEnableOk = true,
+                IsHead = true,
+                Parent = 0
+            };
+            await Navigation.PushAsync(new EditQuestion(vRaiting));
+        }
+
+        private async void AddItem(object sender, EventArgs e)
+        {
+            var b = sender as ImageButton;
+            var s = b.Parent as Grid;
+
+            var temp = s.BindingContext as Raiting;
+            var vRaiting = new Raiting
+            {
+                Id = db.GetIdRaitingSample(DocId),
+                OrderRS = db.GetIdRaitingSample(DocId),
+                NumberDoc = DocId.NumberDoc,
+                TypeDoc = DocId.TypeDoc,
+                IsEnableBad = true,
+                IsEnableSoSo = true,
+                IsEnableNotKnow = true,
+                IsEnableOk = true,
+                Parent = temp.Id
             };
             await Navigation.PushAsync(new EditQuestion(vRaiting));
         }
