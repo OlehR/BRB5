@@ -107,12 +107,23 @@ namespace BRB5.View
             var s = b.Parent as Grid;
 
             var vRaiting = s.BindingContext as Raiting;
-            await Navigation.PushAsync(new EditQuestion(vRaiting.Id, DocId));
+            await Navigation.PushAsync(new EditQuestion(vRaiting));
         }
 
         private async void Add(object sender, EventArgs e)
         {
-            await Navigation.PushAsync(new EditQuestion(db.GetIdRaitingSample(DocId), DocId));
+            var vRaiting = new Raiting
+            {
+                Id = db.GetIdRaitingSample(DocId),
+                OrderRS = db.GetIdRaitingSample(DocId),
+                NumberDoc = DocId.NumberDoc,
+                TypeDoc = DocId.TypeDoc,
+                IsEnableBad = true,
+                IsEnableSoSo = true,
+                IsEnableNotKnow = true,
+                IsEnableOk = true,
+            };
+            await Navigation.PushAsync(new EditQuestion(vRaiting));
         }
     }
 }

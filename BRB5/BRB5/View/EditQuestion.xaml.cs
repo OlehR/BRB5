@@ -1,4 +1,5 @@
-﻿using BRB5.Model;
+﻿using BRB5.Connector;
+using BRB5.Model;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -7,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 using Xamarin.Forms;
+using Xamarin.Forms.PlatformConfiguration.AndroidSpecific;
 using Xamarin.Forms.Xaml;
 
 namespace BRB5.View
@@ -17,39 +19,20 @@ namespace BRB5.View
 
         private Raiting _RQ;
         public Raiting RQ { get { return _RQ; } set { _RQ = value; OnPropertyChanged(nameof(RQ)); } }
+
         DB db = DB.GetDB();
         private DocId DocId;
-        public List<Raiting> ListHeads 
-        { get
-            {
-                List<Raiting> lh = null;
-                try {
-                    var plh = db.GetRating(DocId);
-                    lh = plh.Where(rs => rs.IsHead).ToList(); 
-                }
-                catch (Exception ex) { 
-                    string msg = ex.Message; }
 
-                return lh;
-            }
-        }
-
-        public EditQuestion(int Id, DocId docId)
+        public EditQuestion(Raiting rq)
         {
-            InitializeComponent();
-            DocId = docId;
-            RQ = new Raiting
-            {
-                Id = Id,
-                OrderRS = Id,
-                NumberDoc = docId.NumberDoc,
-                TypeDoc = docId.TypeDoc,
-                //IsEnableBad = true
-            };
-
-
+            DocId = new DocId();
+            DocId.NumberDoc = rq.NumberDoc;
+            DocId.TypeDoc = rq.TypeDoc;
+            RQ = rq;
+            RQ.IsTemplate = true;
 
             this.BindingContext = this;
+            InitializeComponent();
         }
 
         private void Save(object sender, EventArgs e)
@@ -59,7 +42,22 @@ namespace BRB5.View
 
         private void OnButtonClicked(object sender, EventArgs e)
         {
-
+            Xamarin.Forms.View button = (Xamarin.Forms.View)sender;
+            switch (button.ClassId)
+            {
+                case "Ok":
+                    RQ.IsEnableOk = !RQ.IsEnableOk;
+                    break;
+                case "SoSo":
+                    RQ.IsEnableSoSo = !RQ.IsEnableSoSo;
+                    break;
+                case "Bad":
+                    RQ.IsEnableBad = !RQ.IsEnableBad;
+                    break;
+                case "NotKnow":
+                    RQ.IsEnableNotKnow = !RQ.IsEnableNotKnow;
+                    break;
+            }
         }
     }
 }
