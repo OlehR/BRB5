@@ -57,7 +57,6 @@ namespace BRB5.View
             var customFileType =
             new FilePickerFileType(new Dictionary<DevicePlatform, IEnumerable<string>>
             {
-              // { DevicePlatform.iOS, new[] { "public.my.comic.extension" } }, // or general UTType values  
                { DevicePlatform.Android, new[] { "text/csv" } },
             });
             var options = new PickOptions
