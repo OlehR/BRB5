@@ -53,7 +53,8 @@ namespace BRB5.View
             var s = b.Parent as Grid;
             var Droped = s.BindingContext as Raiting;
 
-            if(Draged.IsItem) DragDrop(Droped);          
+            if(Draged.IsItem) DragDropItem(Droped);   
+            else DragDropHead(Droped);
         }
 
         private void OnDrag(object sender, DragStartingEventArgs e)
@@ -63,7 +64,19 @@ namespace BRB5.View
             Draged = s.BindingContext as Raiting;
         }
 
-        private void DragDrop(Raiting Droped)
+        private void DragDropHead(Raiting Droped)
+        {
+            if(Droped.IsItem){
+                var temp=RS.Where(rs => rs.Parent == Droped.Id).FirstOrDefault();
+                if (temp!= null) Droped=temp;
+            }
+
+            foreach (var el in RS.Where(rs => rs.Parent == 0 && rs.OrderRS > Droped.OrderRS)) el.OrderRS += 1;
+
+            Draged.OrderRS = Droped.OrderRS + 1;
+            RS = SortRS(RS);
+        }
+        private void DragDropItem(Raiting Droped)
         {
             var dropedIndex = RS.IndexOf(Droped);
 
