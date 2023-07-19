@@ -11,8 +11,8 @@
             <Button Text = "Зберегти"  Grid.Column="0"
                 Clicked="Save" 
                 Style="{StaticResource ButtonStyle}" />
-            <Button Text = "Додати"  Grid.Column="1"
-                Clicked="Add" 
+            <Button Text = "Додати заг."  Grid.Column="1"
+                Clicked="AddHead" 
                 Style="{StaticResource ButtonStyle}" />
         </Grid>
         
@@ -26,12 +26,12 @@
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="1*" />
-                            <ColumnDefinition Width="6*" />
-                            <ColumnDefinition Width="3*" />
+                            <ColumnDefinition Width="5*" />
+                            <ColumnDefinition Width="1*" />
+                            <ColumnDefinition Width="1*" />
                         </Grid.ColumnDefinitions>
                         <Label Text=" ID" Grid.Column="0" />
                         <Label Text="Питання" Grid.Column="1" />
-                        <Label Text="ред" Grid.Column="2" />
 
                     </Grid>
                 </ListView.Header>
@@ -43,8 +43,9 @@
                                 <Grid IsVisible="{Binding IsVisible}" BackgroundColor="{Binding BackgroundColor}">
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="1*" />
-                                        <ColumnDefinition Width="6*" />
-                                        <ColumnDefinition Width="3*" />
+                                        <ColumnDefinition Width="5*" />
+                                        <ColumnDefinition Width="1*" />
+                                        <ColumnDefinition Width="1*" />
                                     </Grid.ColumnDefinitions>
 
                                     <Grid.GestureRecognizers>
@@ -57,10 +58,13 @@
                                     <Label Text="{Binding Id}"  Grid.Column="0" />
                                     <Label Text="{Binding Text}" Grid.Column="1" />
 
-                                    <Button Text = "редагувати" 
+                                    <ImageButton Source="Edit.png"
                                             Clicked="Edit" 
-                                            Grid.Column="2" 
-                                            Style="{StaticResource ButtonStyle}" />
+                                            Grid.Column="2" />
+                                    <ImageButton Source="Add.png"
+                                            Clicked="AddItem" 
+                                            IsVisible="{Binding IsHead}"
+                                            Grid.Column="3" />
 
                                 </Grid>
 
