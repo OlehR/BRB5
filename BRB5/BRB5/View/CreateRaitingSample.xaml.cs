@@ -17,6 +17,7 @@ namespace BRB5.View
         private ObservableCollection<Raiting> _RS;
         public ObservableCollection<Raiting> RS { get { return _RS; } set { _RS = value; OnPropertyChanged(nameof(RS)); } }
         private Raiting Draged;
+        private bool ShowDeleted = false;
 
         private DocId DocId;
         DB db = DB.GetDB();
@@ -27,7 +28,7 @@ namespace BRB5.View
             DocId = new DocId();
             DocId.NumberDoc = id.ToString();
             DocId.TypeDoc = -1;
-                        
+
             RS = SortRS(db.GetRating(DocId));
 
             this.BindingContext = this;
@@ -42,6 +43,7 @@ namespace BRB5.View
                 res.Add(r);
                 res.AddRange(temp.Where(rs => rs.Parent == r.Id).OrderBy(el => el.OrderRS));                
             }
+            if (!ShowDeleted) foreach (Raiting r in temp)  r.IsVisible = !r.IsDelete;
 
             return new ObservableCollection<Raiting>(res);
         }
@@ -105,7 +107,7 @@ namespace BRB5.View
             if (rs.IsHead)
             {
                 var temp = RS.Where(r => r.Parent == rs.Id);
-                foreach (Raiting r in temp) r.IsVisible = !r.IsVisible;
+                foreach (Raiting r in temp) r.IsVisible = !r.IsVisible && !r.IsDelete;
             }
         }
 
@@ -120,7 +122,7 @@ namespace BRB5.View
             var s = b.Parent as Grid;
 
             var vRaiting = s.BindingContext as Raiting;
-            await Navigation.PushAsync(new EditQuestion(vRaiting));
+            if(!vRaiting.IsDelete) await Navigation.PushAsync(new EditQuestion(vRaiting));
         }
 
         private async void AddHead(object sender, EventArgs e)
@@ -147,6 +149,7 @@ namespace BRB5.View
             var s = b.Parent as Grid;
 
             var temp = s.BindingContext as Raiting;
+
             var vRaiting = new Raiting
             {
                 Id = db.GetIdRaitingSample(DocId),
@@ -159,7 +162,55 @@ namespace BRB5.View
                 IsEnableOk = true,
                 Parent = temp.Id
             };
-            await Navigation.PushAsync(new EditQuestion(vRaiting));
+            if (!temp.IsDelete) await Navigation.PushAsync(new EditQuestion(vRaiting));
+        }
+
+        private async void Delete(object sender, EventArgs e)
+        {
+            var b = sender as ImageButton;
+            var s = b.Parent as Grid;
+            var vRaiting = s.BindingContext as Raiting;
+
+            if(vRaiting.IsDelete)
+            {
+                vRaiting.DTDelete = default;
+                db.ReplaceRaitingSample(RS);
+                RS.Clear();
+                RS = SortRS(db.GetRating(DocId));
+                return;
+            }
+
+
+            var Question = "Ви точно хочете видалти ";
+            if (vRaiting.IsHead) Question += "групу '" + vRaiting.Text + "' з " + RS.Where(rs => rs.Parent == vRaiting.Id).Count() + " питаннями";
+            else Question += "питання '" + vRaiting.Text + "'";
+            
+
+            if (await DisplayAlert("Видалення", Question, "Видалити", "Ні"))
+            {
+                vRaiting.DTDelete = DateTime.Now;
+
+                if (vRaiting.IsHead)
+                    foreach (Raiting r in RS.Where(rs => rs.Parent == vRaiting.Id))
+                    {
+                        r.DTDelete = DateTime.Now;
+                    }
+
+                db.ReplaceRaitingSample(RS);
+
+                RS.Clear();
+                RS = SortRS(db.GetRating(DocId));
+            }
+        }
+
+        private void DeletedShow(object sender, EventArgs e)
+        {
+            ShowDeleted = !ShowDeleted;
+            foreach (Raiting r in RS)
+            {
+                if (ShowDeleted) r.IsVisible = true;
+                else r.IsVisible = !r.IsDelete;
+            }
         }
     }
 }

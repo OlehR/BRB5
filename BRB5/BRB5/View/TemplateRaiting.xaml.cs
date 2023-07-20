@@ -94,7 +94,7 @@ namespace BRB5.View
 
                 }
 
-                db.ReplaceRaitingSample(RS);
+                var tdi = db.ReplaceRaitingSample(RS);
             }
         }
             

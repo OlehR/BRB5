@@ -35,9 +35,10 @@ namespace BRB5.View
             InitializeComponent();
         }
 
-        private void Save(object sender, EventArgs e)
+        private async void Save(object sender, EventArgs e)
         {
             db.ReplaceRaitingSample(new List<Raiting>(){RQ});
+            await Navigation.PushAsync(new CreateRaitingSample(int.Parse(RQ.NumberDoc)));
         }
 
         private void OnButtonClicked(object sender, EventArgs e)

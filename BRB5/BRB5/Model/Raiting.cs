@@ -47,7 +47,7 @@ namespace BRB5
                 OnPropertyChanged("OpacityNotKnow");
                 //OnPropertyChanged(nameof(Rating));
             } } 
-        public string Note { get; set; }
+        public string Note { get; set; }        
         public DateTime DTDelete { get; set; }
         int _QuantityPhoto;
        
@@ -58,6 +58,9 @@ namespace BRB5
         public bool IsVisible { get { return _IsVisible; } set { _IsVisible = value; OnPropertyChanged("IsVisible"); OnPropertyChanged("HeightRequest"); } }
         [JsonIgnore]
         public double HeightRequest { get { return _IsVisible ? -1d : 0d; } }
+        [JsonIgnore]
+        public bool IsDelete { get { return DTDelete != default; } set {  OnPropertyChanged(nameof(OpacityDelete)); } }
+        public double OpacityDelete { get { return IsDelete ? 0.3d : 1d; } }
         [JsonIgnore]
         public double OpacityOk { get { if (IsTemplate) return IsEnableOk ? 1d : 0.4d; return Rating == 1 ? 1d : 0.4d; } }
         [JsonIgnore]
