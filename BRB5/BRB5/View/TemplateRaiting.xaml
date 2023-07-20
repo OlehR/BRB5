@@ -2,28 +2,37 @@
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="BRB5.View.TemplateRaiting">
+    <NavigationPage.TitleView>
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="1*" />
+                <ColumnDefinition Width="1*" />
+            </Grid.ColumnDefinitions>
+            <Button Text = "Створити" 
+                    Grid.Column="0"
+                    FontSize="Medium" 
+                    Clicked="Create" 
+                    Style="{StaticResource ButtonStyle}" />
+            <Button Text = "Приховані" 
+                    Grid.Column="1"
+                    FontSize="Medium" 
+                    Clicked="OnHiddenClick" 
+                    Style="{StaticResource ButtonStyle}" />
+        </Grid>
+
+    </NavigationPage.TitleView>
+
     <ContentPage.Content>
         <StackLayout>
 
-            <StackLayout Orientation="Horizontal">
-                <Button Text = "Створити" 
-                                    FontSize="Medium" 
-                                    Clicked="Create" 
-                                    Style="{StaticResource ButtonStyle}" />
-                <Button Text = "Приховані" 
-                                    FontSize="Medium" 
-                                    Clicked="OnHiddenClick" 
-                                    Style="{StaticResource ButtonStyle}" />
-
-            </StackLayout>
             <ListView ItemsSource="{Binding RTemplate}"  >
                 <ListView.Header>
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="1*" />
-                            <ColumnDefinition Width="2*" />
-                            <ColumnDefinition Width="2*" />
-                            <ColumnDefinition Width="2*" />
+                            <ColumnDefinition Width="4*" />
+                            <ColumnDefinition Width="1*" />
+                            <ColumnDefinition Width="1*" />
                             <ColumnDefinition Width="1*" />
                         </Grid.ColumnDefinitions>
                         <Label Text=" ID" Grid.Column="0" />
@@ -40,25 +49,21 @@
                                 <Grid IsVisible="{Binding IsActive}">
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="1*" />
-                                        <ColumnDefinition Width="2*" />
-                                        <ColumnDefinition Width="2*" />
-                                        <ColumnDefinition Width="2*" />
+                                        <ColumnDefinition Width="4*" />
+                                        <ColumnDefinition Width="1*" />
+                                        <ColumnDefinition Width="1*" />
                                         <ColumnDefinition Width="1*" />
                                     </Grid.ColumnDefinitions>
 
 
                                     <Label Text="{Binding Id}"  Grid.Column="0" />
                                     <Label Text="{Binding Text}" Grid.Column="1" />
-                                    <Button Text="Редагувати"                                          
-                                            Grid.Column="2"
-                                            FontSize="Medium" 
-                                            Clicked="Edit" 
-                                            Style="{StaticResource ButtonStyle}"  />
-                                    <Button Text="Імпортувати"
+                                    <ImageButton Source="Edit.png"                                         
+                                            Grid.Column="2" 
+                                            Clicked="Edit"  />
+                                    <ImageButton Source="Import1.png" 
                                             Grid.Column="3"
-                                            FontSize="Medium" 
-                                            Clicked="Import" 
-                                            Style="{StaticResource ButtonStyle}"  />
+                                            Clicked="Import"   />
                                     <CheckBox IsChecked="{Binding IsActive}" Grid.Column="4"/>
 
                                 </Grid>

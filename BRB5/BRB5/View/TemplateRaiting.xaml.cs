@@ -41,7 +41,7 @@ namespace BRB5.View
 
         private async void Edit(object sender, EventArgs e)
         {
-            Button b = sender as Button;
+            var b = sender as ImageButton;
             var s = b.Parent as Grid;
 
             var vRaitingTemplate = s.BindingContext as RaitingTemplate;
@@ -50,51 +50,53 @@ namespace BRB5.View
 
         private async void Import(object sender, EventArgs e)
         {
-            Button b = sender as Button;
+            var b = sender as ImageButton;
             var s = b.Parent as Grid;
 
             var vRaitingTemplate = s.BindingContext as RaitingTemplate;
             var customFileType =
             new FilePickerFileType(new Dictionary<DevicePlatform, IEnumerable<string>>
             {
-              // { DevicePlatform.iOS, new[] { "public.my.comic.extension" } }, // or general UTType values  
-               { DevicePlatform.Android, new[] { "*/*" } },
+               { DevicePlatform.Android, new[] { "text/csv" } },
             });
             var options = new PickOptions
             {
-                PickerTitle = "Please select a comic file",
+                PickerTitle = "Please select a file",
                 FileTypes = customFileType,
             };
             var result = await FilePicker.PickAsync(options);
-
-            var text = File.ReadAllText(result.FullPath);
-            var t = text.Split(new string[] { "\r\n" }, StringSplitOptions.None);
-            Raiting[] RS = new Raiting[t.Length];
-            int i = 0;
-            foreach ( var v in t )
+            if (result != null) 
             {
-                var p = v.Split(',');
-                RS[i] = new Raiting();
-                int temp = 0;
+                var text = File.ReadAllText(result.FullPath);
+                var t = text.Split(new string[] { "\r\n" }, StringSplitOptions.None);
+                Raiting[] RS = new Raiting[t.Length];
+                int i = 0;
+                foreach (var v in t)
+                {
+                    var p = v.Split(',');
+                    RS[i] = new Raiting();
+                    int temp = 0;
 
-                Int32.TryParse(p[0], out temp);
-                RS[i].Id = temp;
+                    Int32.TryParse(p[0], out temp);
+                    RS[i].Id = temp;
 
-                Int32.TryParse(p[1], out temp);
-                RS[i].IsHead = !(temp==0);
+                    Int32.TryParse(p[1], out temp);
+                    RS[i].IsHead = !(temp == 0);
 
-                Int32.TryParse(p[2], out temp);
-                RS[i].Parent = temp;
+                    Int32.TryParse(p[2], out temp);
+                    RS[i].Parent = temp;
 
-                RS[i].Text = p[3];
+                    RS[i].Text = p[3];
 
-                RS[i].TypeDoc = -1;
-                RS[i].NumberDoc = vRaitingTemplate.Id.ToString();
-                i++;
+                    RS[i].TypeDoc = -1;
+                    RS[i].NumberDoc = vRaitingTemplate.Id.ToString();
+                    i++;
 
+                }
+
+                db.ReplaceRaitingSample(RS);
             }
-
-            db.ReplaceRaitingSample(RS);
         }
+            
     }
 }
