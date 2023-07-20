@@ -180,7 +180,6 @@ namespace BRB5.View
                 return;
             }
 
-
             var Question = "Ви точно хочете видалти ";
             if (vRaiting.IsHead) Question += "групу '" + vRaiting.Text + "' з " + RS.Where(rs => rs.Parent == vRaiting.Id).Count() + " питаннями";
             else Question += "питання '" + vRaiting.Text + "'";
