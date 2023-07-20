@@ -153,7 +153,10 @@ CREATE TABLE RaitingSample(
     IsHead INTEGER  NOT NULL DEFAULT(0),
     Text TEXT,
     RatingTemplate INTEGER         NOT NULL DEFAULT (0),
-    OrderRS INTEGER);
+    OrderRS INTEGER,
+    DTInsert    TIMESTAMP  DEFAULT (DATETIME('NOW', 'LOCALTIME')),
+    DTDelete    TIMESTAMP
+);
 CREATE UNIQUE INDEX RaitingSampleId ON RaitingSample (TypeDoc,NumberDoc,Id);
 
 CREATE TABLE Raiting(
@@ -549,8 +552,8 @@ and bc.BarCode=@BarCode
 
         public bool ReplaceRaitingSample(IEnumerable<Raiting> pR)
         {
-            string Sql = @"replace into RaitingSample ( TypeDoc, NumberDoc, Id, Parent, IsHead, Text, RatingTemplate, OrderRS ) values 
-                                                      (@TypeDoc,@NumberDoc,@Id,@Parent,@IsHead,@Text,@RatingTemplate,@OrderRS)";                                                   
+            string Sql = @"replace into RaitingSample ( TypeDoc, NumberDoc, Id, Parent, IsHead, Text, RatingTemplate, OrderRS,DTDelete ) values 
+                                                      (@TypeDoc,@NumberDoc,@Id,@Parent,@IsHead,@Text,@RatingTemplate,@OrderRS,@DTDelete)";                                                   
             return db.BulkExecuteNonQuery<Raiting>(Sql, pR) >= 0;
         }
 
