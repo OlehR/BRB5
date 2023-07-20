@@ -48,6 +48,7 @@ namespace BRB5
                 //OnPropertyChanged(nameof(Rating));
             } } 
         public string Note { get; set; }
+        public DateTime DTDelete { get; set; }
         int _QuantityPhoto;
        
         public int QuantityPhoto { get { return _QuantityPhoto; } set { _QuantityPhoto = value; OnPropertyChanged("QuantityPhoto"); } }
