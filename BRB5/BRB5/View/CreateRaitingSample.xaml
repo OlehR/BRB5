@@ -21,7 +21,7 @@
     <ContentPage.Content>
         
         <StackLayout>
-            <ListView ItemsSource="{Binding RS}"   CachingStrategy="RecycleElement">
+            <ListView ItemsSource="{Binding RS}"   CachingStrategy="RecycleElement" HasUnevenRows="True" RowHeight="30">
                 <ListView.Header>
                     <Grid>
                         <Grid.ColumnDefinitions>
@@ -39,9 +39,8 @@
                     <DataTemplate xmlns:brb5="clr-namespace:BRB5">
                         <ViewCell >
                             <ViewCell.View >
-
-                                <StackLayout IsVisible="{Binding IsVisible}">
-                                    <Grid  BackgroundColor="{Binding BackgroundColor}">
+                                <StackLayout >
+                                    <Grid  BackgroundColor="{Binding BackgroundColor}" IsVisible="{Binding IsVisible}">
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="1*" />
                                             <ColumnDefinition Width="5*" />
@@ -59,13 +58,24 @@
                                         <Label Text="{Binding Id}"  Grid.Column="0" />
                                         <Label Text="{Binding Text}" Grid.Column="1" />
 
+                                        
                                         <ImageButton Source="Edit.png"
                                             Clicked="Edit" 
-                                            Grid.Column="2" />
+                                            Grid.Column="2" 
+                                                     BackgroundColor="Transparent"
+                                                          HeightRequest="60"
+                                                          Aspect="AspectFit" 
+                                                     />
+                                       
                                         <ImageButton Source="Add.png"
                                             Clicked="AddItem" 
                                             IsVisible="{Binding IsHead}"
-                                            Grid.Column="3" />
+                                            Grid.Column="3" 
+                                                     BackgroundColor="Transparent"
+                                                          HeightRequest="60"
+                                                          Aspect="AspectFit" 
+                                                     />
+                                         
 
                                     </Grid>
 

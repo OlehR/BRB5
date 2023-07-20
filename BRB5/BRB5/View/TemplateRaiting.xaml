@@ -25,7 +25,7 @@
     <ContentPage.Content>
         <StackLayout>
 
-            <ListView ItemsSource="{Binding RTemplate}"  >
+            <ListView ItemsSource="{Binding RTemplate}"    >
                 <ListView.Header>
                     <Grid>
                         <Grid.ColumnDefinitions>
@@ -45,8 +45,8 @@
                     <DataTemplate xmlns:brb5="clr-namespace:BRB5">
                         <ViewCell>
                             <ViewCell.View  >
-
-                                <Grid IsVisible="{Binding IsActive}">
+                                <StackLayout>
+                                    <Grid IsVisible="{Binding IsActive}">
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="1*" />
                                         <ColumnDefinition Width="4*" />
@@ -67,7 +67,7 @@
                                     <CheckBox IsChecked="{Binding IsActive}" Grid.Column="4"/>
 
                                 </Grid>
-
+                                </StackLayout>
                             </ViewCell.View>
                         </ViewCell>
                     </DataTemplate>

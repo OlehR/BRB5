@@ -91,13 +91,15 @@ namespace BRB5.Droid
         protected override void OnResume()
         {
             base.OnResume();
+            if(Config.TypeScaner!=eTypeScaner.Camera && Config.TypeScaner != eTypeScaner.NotDefine )
             RegisterReceiver(BR, new IntentFilter(MyBroadcastReceiver.IntentEvent));
             // Code omitted for clarity
         }
 
         protected override void OnPause()
         {
-            UnregisterReceiver(BR);
+            if (Config.TypeScaner != eTypeScaner.Camera && Config.TypeScaner != eTypeScaner.NotDefine)
+                UnregisterReceiver(BR);
             // Code omitted for clarity
             base.OnPause();
         }
