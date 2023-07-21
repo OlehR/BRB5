@@ -557,11 +557,11 @@ and bc.BarCode=@BarCode
             return db.BulkExecuteNonQuery<Raiting>(Sql, pR) >= 0;
         }
 
-        public bool ReplaceRaitingTemplate(RaitingTemplate pR)
+        public bool ReplaceRaitingTemplate(IEnumerable<RaitingTemplate> pR)
         {
             string Sql = @"replace into RaitingTemplate ( Id, Text, IsActive ) values 
                                                       (@Id,@Text,@IsActive)";
-            return db.ExecuteNonQuery<RaitingTemplate>(Sql, pR) >= 0;
+            return db.BulkExecuteNonQuery<RaitingTemplate>(Sql, pR) >= 0;
         }
         public int GetIdRaitingTemplate()
         {

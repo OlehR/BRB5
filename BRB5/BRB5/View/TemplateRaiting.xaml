@@ -7,15 +7,18 @@
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="1*" />
                 <ColumnDefinition Width="1*" />
+                <ColumnDefinition Width="1*" />
             </Grid.ColumnDefinitions>
-            <Button Text = "Створити" 
+            <Button Text = "Зберегти"  
                     Grid.Column="0"
-                    FontSize="Medium" 
+                    Clicked="Save" 
+                    Style="{StaticResource ButtonStyle}" />
+            <Button Text = "Створити" 
+                    Grid.Column="1"
                     Clicked="Create" 
                     Style="{StaticResource ButtonStyle}" />
             <Button Text = "Приховані" 
-                    Grid.Column="1"
-                    FontSize="Medium" 
+                    Grid.Column="2"
                     Clicked="OnHiddenClick" 
                     Style="{StaticResource ButtonStyle}" />
         </Grid>
@@ -25,7 +28,8 @@
     <ContentPage.Content>
         <StackLayout>
 
-            <ListView ItemsSource="{Binding RTemplate}"    >
+            <ListView ItemsSource="{Binding RTemplate}"   
+                          HasUnevenRows="True" >
                 <ListView.Header>
                     <Grid>
                         <Grid.ColumnDefinitions>
@@ -46,7 +50,7 @@
                         <ViewCell>
                             <ViewCell.View  >
                                 <StackLayout>
-                                    <Grid IsVisible="{Binding IsActive}">
+                                    <Grid IsVisible="{Binding IsHidden}">
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="1*" />
                                             <ColumnDefinition Width="4*" />

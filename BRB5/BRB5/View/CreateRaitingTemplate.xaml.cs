@@ -29,7 +29,7 @@ namespace BRB5.View
         private async void Create(object sender, EventArgs e)
         {
 			RT.IsActive = true;
-			db.ReplaceRaitingTemplate(RT);
+			db.ReplaceRaitingTemplate(new List<RaitingTemplate>() { RT });
 
             await Navigation.PushAsync(new TemplateRaiting());
         }

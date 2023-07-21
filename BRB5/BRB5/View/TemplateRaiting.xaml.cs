@@ -20,6 +20,7 @@ namespace BRB5.View
         public ObservableCollection<RaitingTemplate> RTemplate { get { return _RTemplate; } set { _RTemplate = value; OnPropertyChanged(nameof(RTemplate)); } }
 
         DB db = DB.GetDB();
+        private bool ShowHidden = false;
 
         public TemplateRaiting()
         {
@@ -31,6 +32,9 @@ namespace BRB5.View
 
         private void OnHiddenClick(object sender, EventArgs e)
         {
+            ShowHidden = !ShowHidden;
+            if (ShowHidden) foreach (var rt in  RTemplate) rt.IsHidden = true;
+            else foreach (var rt in RTemplate) rt.IsHidden = rt.IsActive;
 
         }
 
@@ -97,6 +101,10 @@ namespace BRB5.View
                 var tdi = db.ReplaceRaitingSample(RS);
             }
         }
-            
+
+        private void Save(object sender, EventArgs e)
+        {
+            db.ReplaceRaitingTemplate(RTemplate);
+        }
     }
 }
