@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
+using ZXing;
 using ZXing.QrCode.Internal;
 
 namespace BRB5.View
@@ -25,18 +26,22 @@ namespace BRB5.View
         private Connector.Connector c;
         public TypeDoc TypeDoc { get; set; }
         public int OrderDoc { get; set; }
+        public bool IsVisScan { get { return Config.TypeScaner == eTypeScaner.Camera; } }
+        private DocId DocId;
 
         public Scan(DocId pDocId, TypeDoc pTypeDoc = null)
         {
             InitializeComponent();
+            DocId = pDocId;
             TypeDoc = pTypeDoc!=null? pTypeDoc:Config.GetDocSetting(pDocId.TypeDoc);
             c = Connector.Connector.GetInstance();
             var tempListWares = db.GetDocWares(pDocId, 2, eTypeOrder.Scan);
             foreach (var t in tempListWares) { t.Ord = -1; }
             ListWares = tempListWares == null ? new ObservableCollection<DocWaresEx>(): new ObservableCollection<DocWaresEx>(tempListWares);
             OrderDoc = ListWares.Count > 0 ? ListWares.First().OrderDoc : 0;
-
-            zxing.OnScanResult += (result) =>
+            if (IsVisScan)
+            {
+                zxing.OnScanResult += (result) =>
                 Device.BeginInvokeOnMainThread(async () =>
                 // Stop analysis until we navigate away so we don't keep reading barcodes
                 {
@@ -57,10 +62,31 @@ namespace BRB5.View
                     }
                     zxing.IsAnalyzing = true;
                 });
+            }
+            else Config.BarCode = BarCode;
 
             this.BindingContext = this;
         }
+        void BarCode(string pBarCode)
+        {
+            ScanData = db.GetScanData(DocId, c.ParsedBarCode(pBarCode, true/*?*/));
+            _ = FindWareByBarCodeAsync(pBarCode);
 
+            if (ScanData != null)
+            {
+                ScanData.BarCode = pBarCode;
+
+                if (ScanData.QuantityBarCode > 0)
+                    ScanData.InputQuantity = ScanData.QuantityBarCode;
+                else
+                    inputQ.Text = "";
+                AddWare();
+            }
+        }
+        public void Dispose()
+        {
+            Config.BarCode -= BarCode;
+        }
         private void AddWare()
         {
             inputQ.Unfocused += (object sender, FocusEventArgs e) =>

@@ -76,6 +76,8 @@ namespace BRB5
 
         public string F5Text { get { return IsMultyLabel  ? "Дублювати" : "Унікальні"; } }
 
+        public bool IsVisScan { get { return Config.TypeScaner == eTypeScaner.Camera; } }
+
         public PriceCheck()
         {
             InitializeComponent();
@@ -92,17 +94,17 @@ namespace BRB5
                 LineNumber = r.LineNumber;
                 PackageNumber = r.PackageNumber;
             }
-
-            zxing.OnScanResult += (result) =>
-                Device.BeginInvokeOnMainThread(async () =>
-                // Stop analysis until we navigate away so we don't keep reading barcodes
-                { zxing.IsAnalyzing = false;
-                    FoundWares(result.Text, false);
-                 zxing.IsAnalyzing = true;
-                }
-                );
-
-            Config.BarCode = BarCode;
+            if(IsVisScan)
+            {
+                zxing.OnScanResult += (result) =>
+                    Device.BeginInvokeOnMainThread(async () =>
+                    // Stop analysis until we navigate away so we don't keep reading barcodes
+                    {
+                        zxing.IsAnalyzing = false;
+                        FoundWares(result.Text, false);
+                        zxing.IsAnalyzing = true;
+                    });
+            } else Config.BarCode = BarCode;
 
             NumberOfReplenishment.Unfocused += (object sender, FocusEventArgs e) =>
             {
@@ -112,21 +114,7 @@ namespace BRB5
             };
 
             Config.OnProgress += (pProgress)=>{ PB = pProgress; };
-                //MainSL.Children.Add(zxing);
-                
-                /* ZXingScannerPage scanPage = new ZXingScannerPage();
-                 ZXingScannerPage.ScanResultDelegate scanResultDelegate = (Result) =>
-                 {
-                     scanPage.IsScanning = false;
-                     Device.BeginInvokeOnMainThread(() =>
-                     {
-                         Navigation.PopAsync();
-
-                     });
-                 };
-                 scanPage.OnScanResult += scanResultDelegate;
-                await Navigation.PushAsync(scanPage);*/
-                this.BindingContext = this;           
+            this.BindingContext = this;
         }
         
         void BarCode(string pBarCode)

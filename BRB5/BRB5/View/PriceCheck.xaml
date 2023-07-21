@@ -6,15 +6,14 @@
              xmlns:controls="clr-namespace:BRB5.View"
              x:Class="BRB5.PriceCheck">
     <ContentPage.Content>
-        <AbsoluteLayout>
+            <StackLayout BackgroundColor="{Binding ColorPrintColorType}"  >
 
-            <forms:ZXingScannerView x:Name="zxing" HorizontalOptions="StartAndExpand" VerticalOptions="FillAndExpand" ScaleY="1.2"  
-                    AbsoluteLayout.LayoutBounds="0, -0.2, 1, .4"  AbsoluteLayout.LayoutFlags="All"   >
-
-            </forms:ZXingScannerView>
-
-            <StackLayout BackgroundColor="{Binding ColorPrintColorType}"  AbsoluteLayout.LayoutBounds="1, 1, 1, .67"  AbsoluteLayout.LayoutFlags="All" >
-
+                <Grid IsVisible="{Binding IsVisScan}" HeightRequest="200">
+                    <forms:ZXingScannerView x:Name="zxing" 
+                                        HorizontalOptions="StartAndExpand" 
+                                        VerticalOptions="FillAndExpand" >
+                    </forms:ZXingScannerView>
+                </Grid>
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition />
@@ -238,7 +237,6 @@
                 </Grid>
 
             </StackLayout >
-        </AbsoluteLayout>
         
     </ContentPage.Content>
 </ContentPage>

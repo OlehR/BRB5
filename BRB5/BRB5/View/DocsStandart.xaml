@@ -153,17 +153,17 @@
                     </Label.GestureRecognizers>
                 </Label>
 
-                <Label Text="штрихкод" 
+                <Grid IsVisible="{Binding IsVisScan}">
+                    <Label  Text="штрихкод" 
                        IsVisible="{Binding IsViewOut}"
                            FontSize="18"
                            TextColor="#816f20"  >
-                    <Label.GestureRecognizers>
-                        <TapGestureRecognizer Tapped="BarCode" />
-                    </Label.GestureRecognizers>
-                </Label>
-
-
-
+                        <Label.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="TabBarCode" />
+                        </Label.GestureRecognizers>
+                    </Label>
+                </Grid>
+            
             </StackLayout>
         </StackLayout>
     </ContentPage.Content>

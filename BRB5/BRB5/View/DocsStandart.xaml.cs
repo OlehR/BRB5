@@ -1,13 +1,16 @@
 ﻿using BRB5.Connector;
+using BRB5.Model;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Runtime.InteropServices.ComTypes;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
+using ZXing;
 
 namespace BRB5.View
 {
@@ -28,10 +31,12 @@ namespace BRB5.View
         public bool IsVisBarCode { get { return _IsVisBarCode; } set { _IsVisBarCode = value; OnPropertyChanged("IsVisBarCode"); } }
         public bool IsViewOut { get { return TypeDoc.IsViewOut; } }
 
+        public bool IsVisScan { get { return Config.TypeScaner == eTypeScaner.Camera; } }
 
         public DocsStandart(TypeDoc pTypeDoc )
         {
             TypeDoc = pTypeDoc;
+            Config.BarCode = BarCode;
             BindingContext = this;
             InitializeComponent();
         }
@@ -63,10 +68,18 @@ namespace BRB5.View
                 MyDocsR = new ObservableCollection<Doc>(db.GetDoc(TypeDoc, null, OPKOstr));
         }
 
-        private void BarCode(object sender, EventArgs e)
+        private void TabBarCode(object sender, EventArgs e)
         {
             IsVisBarCode= !IsVisBarCode;
             zxing.IsScanning = IsVisBarCode;
+        }
+        void BarCode(string pBarCode)
+        {
+            MyDocsR = new ObservableCollection<Doc>(db.GetDoc(TypeDoc, pBarCode, null));
+        }
+        public void Dispose()
+        {
+            Config.BarCode -= BarCode;
         }
 
         private void FilterBarCode(ZXing.Result result)

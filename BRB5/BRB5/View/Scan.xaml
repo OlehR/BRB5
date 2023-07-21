@@ -6,14 +6,16 @@
              xmlns:controls="clr-namespace:BRB5.View"
              x:Class="BRB5.View.Scan">
     <ContentPage.Content>
-        <AbsoluteLayout>
+        <StackLayout>
+            <Grid IsVisible="{Binding IsVisScan}" HeightRequest="300" >
+                <forms:ZXingScannerView x:Name="zxing" 
+                                        ScaleY="1.7"
+                                        HorizontalOptions="StartAndExpand" 
+                                        VerticalOptions="FillAndExpand" >
+                </forms:ZXingScannerView>
+            </Grid>
 
-            <forms:ZXingScannerView x:Name="zxing" HorizontalOptions="StartAndExpand" VerticalOptions="FillAndExpand" ScaleY="1.2"  
-                    AbsoluteLayout.LayoutBounds="0, -0.2, 1, .35"  AbsoluteLayout.LayoutFlags="All"   >
-
-            </forms:ZXingScannerView>
-
-            <Grid   AbsoluteLayout.LayoutBounds="1, 1.25, 1, .8"  AbsoluteLayout.LayoutFlags="All" >
+            <Grid  >
 
                 <Grid.RowDefinitions>
                     <RowDefinition Height="auto"/>
@@ -193,6 +195,6 @@
 
 
 
-        </AbsoluteLayout>
+        </StackLayout>
     </ContentPage.Content>
 </ContentPage>
