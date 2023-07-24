@@ -515,7 +515,7 @@ and bc.BarCode=@BarCode
             return res;
         }        
 
-        public IEnumerable<Raiting> GetRating(DocId pDoc)
+        public IEnumerable<Raiting> GetRaiting(DocId pDoc)
         {
             string sql = @"select Rs.TypeDoc,Rs.NumberDoc,Rs.Id,Rs.Parent as Parent,Rs.IsHead,Rs.Text,Rs.RatingTemplate,R.Rating,R.QuantityPhoto,R.Note,Rs.OrderRS,Rs.DTDelete
         from RaitingSample as Rs

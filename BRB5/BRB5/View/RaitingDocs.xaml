@@ -1,0 +1,62 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="BRB5.View.RaitingDocs">
+    <NavigationPage.TitleView>
+        <Button Text = "Створити" 
+                Grid.Column="1"
+                Clicked="Create" 
+                Style="{StaticResource ButtonStyle}" />
+
+    </NavigationPage.TitleView>
+    <ContentPage.Content>
+        <ListView ItemsSource="{Binding RD}"   
+                          HasUnevenRows="True" >
+            <ListView.Header>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="3*" />
+                        <ColumnDefinition Width="6*" />
+                        <ColumnDefinition Width="4*" />
+                        <ColumnDefinition Width="2*" />
+                    </Grid.ColumnDefinitions>
+                    <Label Text=" ID" Grid.Column="0" FontSize="Medium"/>
+                    <Label Text="Назва" Grid.Column="1" FontSize="Medium"/>
+                    <Label Text="Дата" Grid.Column="2" FontSize="Medium"/>
+
+                </Grid>
+            </ListView.Header>
+            <ListView.ItemTemplate>
+                <DataTemplate xmlns:brb5="clr-namespace:BRB5">
+                    <ViewCell>
+                        <ViewCell.View  >
+                            <StackLayout>
+                                <Grid IsVisible="{Binding IsHidden}">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="3*" />
+                                        <ColumnDefinition Width="6*" />
+                                        <ColumnDefinition Width="4*" />
+                                        <ColumnDefinition Width="2*" />
+                                    </Grid.ColumnDefinitions>
+
+                                    <Label Text="{Binding NumberDoc}"  Grid.Column="0" FontSize="Large"/>
+                                    <Label Text="{Binding Description}" Grid.Column="1" FontSize="Large" TextColor="Black"/>
+                                    <Label Text="{Binding DateString}" Grid.Column="2" FontSize="Large" TextColor="Black"/> 
+
+                                    <ImageButton Source="Edit.png"                                         
+                                            Grid.Column="3" 
+                                            Clicked="Edit" 
+                                            BackgroundColor="Transparent"
+                                            HeightRequest="60"
+                                            Aspect="AspectFit"  />
+
+                                </Grid>
+                            </StackLayout>
+                        </ViewCell.View>
+                    </ViewCell>
+                </DataTemplate>
+
+            </ListView.ItemTemplate>
+        </ListView>
+    </ContentPage.Content>
+</ContentPage>

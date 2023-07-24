@@ -29,7 +29,7 @@ namespace BRB5.View
             DocId.NumberDoc = id.ToString();
             DocId.TypeDoc = -1;
 
-            RS = SortRS(db.GetRating(DocId));
+            RS = SortRS(db.GetRaiting(DocId));
 
             this.BindingContext = this;
         }
@@ -176,7 +176,7 @@ namespace BRB5.View
                 vRaiting.DTDelete = default;
                 db.ReplaceRaitingSample(RS);
                 RS.Clear();
-                RS = SortRS(db.GetRating(DocId));
+                RS = SortRS(db.GetRaiting(DocId));
                 return;
             }
 
@@ -198,7 +198,7 @@ namespace BRB5.View
                 db.ReplaceRaitingSample(RS);
 
                 RS.Clear();
-                RS = SortRS(db.GetRating(DocId));
+                RS = SortRS(db.GetRaiting(DocId));
             }
         }
 

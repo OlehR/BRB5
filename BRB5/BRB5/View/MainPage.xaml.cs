@@ -106,6 +106,9 @@ namespace BRB5
                 case eKindDoc.TempateRaiting:
                     await Navigation.PushAsync(new TemplateRaiting());
                     break;
+                case eKindDoc.RaitingCreate:
+                    await Navigation.PushAsync(new RaitingDocs(vTypeDoc));
+                    break;
                 default:                  
                     break;
             }

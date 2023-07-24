@@ -25,19 +25,13 @@ namespace BRB5
         public Docs(TypeDoc pTypeDoc )
         {
             TypeDoc= pTypeDoc;
-            DB db = DB.GetDB();
             _ = Config.GetCurrentLocation(db.GetWarehouse());
             c = BRB5.Connector.Connector.GetInstance();
             InitializeComponent();
             Routing.RegisterRoute(nameof(Item), typeof(Item));
             c.LoadDocsData(11, null, false);
 
-            MyDoc =/* new ObservableCollection<Doc>() { 
-                 new Doc() { TypeDoc = 11, NumberDoc = "1", DateDoc = DateTime.Now.Date.ToString("yyyy-MM-dd"), NameUser = "Рутковський О", Description = "ТЗ 1001" } 
-                ,new Doc() { TypeDoc = 11, NumberDoc = "2", DateDoc = DateTime.Now.Date.ToString("yyyy-MM-dd"), NameUser = "Рутковський О", Description = "ТЗ 1004" }
-                ,new Doc() { TypeDoc = 11, NumberDoc = "3", DateDoc = DateTime.Now.Date.ToString("yyyy-MM-dd"), NameUser = "Рутковський О", Description = "ТЗ 1104" }
-            };*/
-            new ObservableCollection<Doc> ( db.GetDoc(TypeDoc).OrderByDescending(el=>el.NumberDoc));
+            MyDoc = new ObservableCollection<Doc> ( db.GetDoc(TypeDoc).OrderByDescending(el=>el.NumberDoc));
             this.BindingContext = this;            
         }
 

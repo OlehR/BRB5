@@ -86,7 +86,7 @@ namespace BRB5
                 OnPropertyChanged("NameWarehouse");
                 OnPropertyChanged("SizeWarehouse");
             };
-            var Q = db.GetRating(cDoc);
+            var Q = db.GetRaiting(cDoc);
             var R = new List<Raiting>();
             foreach (var e in Q.Where(d => d.IsHead).OrderBy(d => d.OrderRS))
             {
@@ -235,7 +235,7 @@ namespace BRB5
                     IsSaved = false;
                     OnPropertyChanged("IsSaved");
                     OnPropertyChanged("TextButtonSaved");
-                    var r = db.GetRating(cDoc);
+                    var r = db.GetRaiting(cDoc);
                     Doc d = db.GetDoc(cDoc);
                     res = c.SendRaiting(r, d);
                     if (res.State == 0)

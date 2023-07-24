@@ -1,0 +1,33 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" xmlns:controls="clr-namespace:BRB5.View"
+             x:Class="BRB5.View.RaitingEdit">
+    <NavigationPage.TitleView>
+        <Button Text = "Зберегти" 
+                Grid.Column="1"
+                Clicked="Save" 
+                Style="{StaticResource ButtonStyle}" />
+
+    </NavigationPage.TitleView>
+    <ContentPage.Content>
+        <StackLayout>
+            <Label Text="{Binding RD.NumberDoc}" FontSize="Large" />
+            <Label Text="Дата:" FontSize="Medium" />
+            <DatePicker Date="{Binding RD.DateDoc}" />
+
+            <Label Text="Назва:" FontSize="Medium" />
+            <Frame Style="{StaticResource FrameStyle}" 
+                           Grid.Column="1" >
+                <controls:CustomEntry Style="{StaticResource EntryStyle}"
+                           Text="{Binding RD.Description}" 
+                           Keyboard="Numeric" />
+            </Frame>
+
+            <Label Text="Шаблон опитування:" FontSize="Medium" />
+            <Picker Title="Шаблони"  
+                    ItemsSource="{Binding RT}"
+                    ItemDisplayBinding="{Binding Text}"
+                    SelectedIndex="{Binding SelectedTemplate}"/>
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>

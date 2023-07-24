@@ -40,6 +40,8 @@ namespace BRB5.Connector
                 Res.Add( new TypeDoc() { CodeDoc = 11, KindDoc = eKindDoc.Raiting, NameDoc = "Опитування",DayBefore=4 } );
             if (pLS == eLoginServer.Bitrix)
                 Res.Add(new TypeDoc() { CodeDoc = -1, KindDoc = eKindDoc.TempateRaiting, NameDoc = "Шаблони Опитування"});
+            if (pLS == eLoginServer.Bitrix)
+                Res.Add(new TypeDoc() { CodeDoc = 12, KindDoc = eKindDoc.RaitingCreate, NameDoc = "Керування Опитуваннями" });
             return Res;
         }
 
