@@ -32,7 +32,6 @@ namespace BRB5
         Connector.Connector c = Connector.Connector.GetInstance();
         bool _IsVisBarCode = false;
         public bool IsVisBarCode { get { return _IsVisBarCode; } set { _IsVisBarCode = value; OnPropertyChanged("IsVisBarCode"); } }
-
         public ObservableCollection<Raiting> Questions { get; set; }
 
         int CountAll, CountChoice;
@@ -356,6 +355,7 @@ namespace BRB5
             var temp = Questions.Where(el => el.Id==-1).FirstOrDefault();
             if (temp.Note == null || !temp.Note.StartsWith(result.Text)) { temp.Note = result.Text + temp.Note; }
             db.ReplaceRaiting(temp);
+            Questions[Questions.IndexOf(temp)] = temp;
             zxing.IsAnalyzing = true;
         }
 
