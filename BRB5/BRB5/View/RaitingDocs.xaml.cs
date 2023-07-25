@@ -32,14 +32,14 @@ namespace BRB5.View
         private async void Create(object sender, EventArgs e)
         {
 
-            await Navigation.PushAsync(new RaitingEdit(new Doc()));
+            await Navigation.PushAsync(new RaitingEdit(new Doc() { DateDoc = DateTime.Today }, TypeDoc));
         }
 
         private async void Edit(object sender, EventArgs e)
         {
             ImageButton cc = sender as ImageButton;
             var vDoc = cc.BindingContext as Doc;
-            await Navigation.PushAsync(new RaitingEdit(vDoc));
+            await Navigation.PushAsync(new RaitingEdit(vDoc, TypeDoc));
         }
     }
 }
