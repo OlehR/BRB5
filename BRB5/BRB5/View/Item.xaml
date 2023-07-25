@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" 
-             xmlns:brb5="clr-namespace:BRB5" x:DataType="brb5:Item"
+             xmlns:brb5="clr-namespace:BRB5" xmlns:forms="clr-namespace:ZXing.Net.Mobile.Forms;assembly=ZXing.Net.Mobile.Forms" x:DataType="brb5:Item"
              NavigationPage.HasNavigationBar="False"
              x:Class="BRB5.Item">
     <ContentPage.Content>
@@ -18,6 +18,16 @@
                         VerticalOptions="CenterAndExpand"  
                         Clicked="OnButtonSaved" />
 
+                <Grid IsVisible="{Binding IsVisBarCode}" HeightRequest="150">
+                    <forms:ZXingScannerView x:Name="zxing" 
+                                        HorizontalOptions="StartAndExpand" 
+                                        VerticalOptions="FillAndExpand" 
+                                        ScaleY="2"  
+                                        OnScanResult="OnScanBarCode" 
+                                        IsScanning="False">
+                    </forms:ZXingScannerView>
+                </Grid>
+                
                 <ListView x:Name="ListQuestions"
                           HasUnevenRows="True"
                           ItemsSource="{Binding Questions}" >
@@ -195,16 +205,28 @@
                         HorizontalOptions="FillAndExpand" 
                         VerticalOptions="CenterAndExpand"  
                         Clicked="OnAllOpen" />
-                
-                <Label Grid.Column="3"
-                       IsVisible="{Binding QuantityAllChoice}" 
+
+                <Grid Grid.Column="3">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="2*"/>
+                        <RowDefinition Height="3*"/>
+                    </Grid.RowDefinitions>
+                    
+                    <Label IsVisible="{Binding QuantityAllChoice}" 
                        TextColor="Red" 
                        Text="{Binding QuantityAllChoice}" 
                        ClassId="CountFoto" 
-                       FontSize="22" 
+                       FontSize="20" 
                        FontAttributes="Bold" 
                        VerticalOptions="Start"  
                        HorizontalOptions="End"/>
+                    
+                    <ImageButton Source="BarcodeScanning.png"
+                             Clicked="BarCode" Grid.Row="1"
+                             BackgroundColor="Transparent" 
+                                 Aspect="AspectFill" 
+                                 Margin="0" Padding="0"/>
+                </Grid>
             </Grid>
         </AbsoluteLayout>
     </ContentPage.Content>

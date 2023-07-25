@@ -30,6 +30,8 @@ namespace BRB5
         BL Bl = BL.GetBL();
         Doc cDoc;
         Connector.Connector c = Connector.Connector.GetInstance();
+        bool _IsVisBarCode = false;
+        public bool IsVisBarCode { get { return _IsVisBarCode; } set { _IsVisBarCode = value; OnPropertyChanged("IsVisBarCode"); } }
         public ObservableCollection<Raiting> Questions { get; set; }
 
         int CountAll, CountChoice;
@@ -339,6 +341,21 @@ namespace BRB5
                     el.IsVisible = false;
 
             OnPropertyChanged("TextAllOpen");
+        }
+
+        private void BarCode(object sender, EventArgs e)
+        {
+            IsVisBarCode = !IsVisBarCode;
+            zxing.IsScanning = IsVisBarCode;
+        }
+        private void OnScanBarCode(ZXing.Result result)
+        {
+            zxing.IsAnalyzing = false;
+
+            var temp = Questions.Where(el => el.Id==-1).FirstOrDefault();
+            if (temp.Note == null || !temp.Note.StartsWith(result.Text)) { temp.Note = result.Text + temp.Note; }
+            db.ReplaceRaiting(temp);
+            zxing.IsAnalyzing = true;
         }
 
         private Raiting GetRaiting(object sender)
