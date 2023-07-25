@@ -32,6 +32,7 @@ namespace BRB5
         Connector.Connector c = Connector.Connector.GetInstance();
         bool _IsVisBarCode = false;
         public bool IsVisBarCode { get { return _IsVisBarCode; } set { _IsVisBarCode = value; OnPropertyChanged("IsVisBarCode"); } }
+
         public ObservableCollection<Raiting> Questions { get; set; }
 
         int CountAll, CountChoice;
