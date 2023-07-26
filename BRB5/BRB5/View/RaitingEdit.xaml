@@ -28,6 +28,14 @@
                     ItemsSource="{Binding RT}"
                     ItemDisplayBinding="{Binding Text}"
                     SelectedItem ="{Binding SelectedTemplate}"/>
+
+            <Label Text="Магазин:" FontSize="Medium" />
+            <Picker Title="Магазини"        
+                        ItemsSource="{Binding ListWarehouse}"
+                        ItemDisplayBinding="{Binding Name}"
+                        SelectedItem="{Binding SelectedWarehouse}"
+                        HorizontalOptions="Fill"/>
+
         </StackLayout>
     </ContentPage.Content>
 </ContentPage>
