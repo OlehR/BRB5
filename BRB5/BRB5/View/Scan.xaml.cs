@@ -46,20 +46,7 @@ namespace BRB5.View
                 // Stop analysis until we navigate away so we don't keep reading barcodes
                 {
                     zxing.IsAnalyzing = false;
-
-                    ScanData = db.GetScanData(pDocId, c.ParsedBarCode(result.Text, true/*?*/));
-                    _ = FindWareByBarCodeAsync(result.Text);
-
-                    if (ScanData != null)
-                    {
-                        ScanData.BarCode = result.Text;
-
-                        if (ScanData.QuantityBarCode > 0)
-                            ScanData.InputQuantity = ScanData.QuantityBarCode;
-                        else
-                            inputQ.Text = "";
-                        AddWare();
-                    }
+                    BarCode(result.Text);
                     zxing.IsAnalyzing = true;
                 });
             }
@@ -70,7 +57,7 @@ namespace BRB5.View
         void BarCode(string pBarCode)
         {
             ScanData = db.GetScanData(DocId, c.ParsedBarCode(pBarCode, true/*?*/));
-            _ = FindWareByBarCodeAsync(pBarCode);
+            FindWareByBarCodeAsync(pBarCode);
 
             if (ScanData != null)
             {
@@ -142,7 +129,7 @@ namespace BRB5.View
             base.OnDisappearing();
         }
 
-        public async Task FindWareByBarCodeAsync(string BarCode)
+        public void FindWareByBarCodeAsync(string BarCode)
         {
             if(ScanData == null)
             {
@@ -154,11 +141,12 @@ namespace BRB5.View
                 {
                     if (TypeDoc.TypeControlQuantity == eTypeControlDoc.Ask)
                     {
-                        if (await DisplayAlert("Добавити відсутній товар?", ScanData.NameWares, "OK", "Cancel"))
+                        //await DisplayAlert("Добавити відсутній товар?", ScanData.NameWares, "OK", "Cancel")
+                        if (true)
                         {
                             ScanData.IsRecord = true;
                             ScanData.QuantityMax = decimal.MaxValue;
-                            _ = FindWareByBarCodeAsync(BarCode);
+                            FindWareByBarCodeAsync(BarCode);
                         }
                         else ScanData = null;
                         return;
