@@ -28,6 +28,13 @@ namespace BRB5.View
         public int OrderDoc { get; set; }
         public bool IsVisScan { get { return Config.TypeScaner == eTypeScaner.Camera; } }
         private DocId DocId;
+        private bool _IsVisQ = false;
+        public bool IsVisQ { get { return _IsVisQ; } set { _IsVisQ = value; OnPropertyChanged(nameof(IsVisQ)); } }
+        private bool _IsVisQOk = false;
+        public bool IsVisQOk { get { return _IsVisQOk; } set { _IsVisQOk = value; OnPropertyChanged(nameof(IsVisQOk)); } }
+        private string _DisplayQuestion;
+        public string DisplayQuestion { get { return _DisplayQuestion; } set { _DisplayQuestion = value; OnPropertyChanged(nameof(DisplayQuestion)); } }
+        private string TempBarcode;
 
         public Scan(DocId pDocId, TypeDoc pTypeDoc = null)
         {
@@ -42,12 +49,11 @@ namespace BRB5.View
             if (IsVisScan)
             {
                 zxing.OnScanResult += (result) =>
-                Device.BeginInvokeOnMainThread(async () =>
-                // Stop analysis until we navigate away so we don't keep reading barcodes
+                Device.BeginInvokeOnMainThread(async () => 
                 {
                     zxing.IsAnalyzing = false;
                     BarCode(result.Text);
-                    zxing.IsAnalyzing = true;
+                    //zxing.IsAnalyzing = true;
                 });
             }
             else Config.BarCode = BarCode;
@@ -133,7 +139,8 @@ namespace BRB5.View
         {
             if(ScanData == null)
             {
-                _ = DisplayAlert("Товар не знайдено", "Даний штрихкод=> " + BarCode + " відсутній в базі", "OK");
+                DisplayQuestion = "Товар не знайдено \n"+ "Даний штрихкод=> " + BarCode + " відсутній в базі";
+                IsVisQ = true;
             }
             else
             {
@@ -141,19 +148,16 @@ namespace BRB5.View
                 {
                     if (TypeDoc.TypeControlQuantity == eTypeControlDoc.Ask)
                     {
-                        //await DisplayAlert("Добавити відсутній товар?", ScanData.NameWares, "OK", "Cancel")
-                        if (true)
-                        {
-                            ScanData.IsRecord = true;
-                            ScanData.QuantityMax = decimal.MaxValue;
-                            FindWareByBarCodeAsync(BarCode);
-                        }
-                        else ScanData = null;
+                        DisplayQuestion = "Добавити відсутній товар? \n" + ScanData.NameWares;
+                        IsVisQ = true;
+                        IsVisQOk = true;
+                        TempBarcode = BarCode;
                         return;
                     }
                     if (TypeDoc.TypeControlQuantity == eTypeControlDoc.Control)
                     {
-                        _ = DisplayAlert("Товар відсутній в документі", ScanData.NameWares, "OK");
+                        DisplayQuestion = "Товар відсутній в документі \n" + ScanData.NameWares;
+                        IsVisQ = true;
                         ScanData = null;
                         return;
                     }
@@ -165,13 +169,13 @@ namespace BRB5.View
                 {
                     if (ScanData.BeforeQuantity > 0)
                     {
-                        _ = DisplayAlert("Вже добавлено в документ!", ScanData.NameWares, "OK");
+                        DisplayQuestion = "Вже добавлено в документ! \n" + ScanData.NameWares;
+                        IsVisQ = true;
                         return;
                     }
-                    //ScanData.QuantityBarCode = 1;
-                    //!!!TMP
-                }              
+                }
 
+                zxing.IsAnalyzing = true;
             }
 
             return;
@@ -199,6 +203,29 @@ namespace BRB5.View
         {
             if (ScanData != null && ScanData.QuantityBarCode == 0)
                 ScanData.QuantityBarCode = ScanData.InputQuantity * ScanData.Coefficient;
+        }
+
+        private void OkClicked(object sender, EventArgs e)      
+        {
+            IsVisQ = false;
+            IsVisQOk = false;
+            if (TypeDoc.TypeControlQuantity == eTypeControlDoc.Ask)
+            {
+                ScanData.IsRecord = true;
+                ScanData.QuantityMax = decimal.MaxValue;
+                FindWareByBarCodeAsync(TempBarcode);
+            }
+
+            zxing.IsAnalyzing = true;
+        }
+
+        private void CancelClicked(object sender, EventArgs e)
+        {
+            IsVisQ = false;
+            IsVisQOk = false;
+            if (TypeDoc.TypeControlQuantity == eTypeControlDoc.Ask) ScanData = null;
+
+            zxing.IsAnalyzing = true;
         }
     }
 }

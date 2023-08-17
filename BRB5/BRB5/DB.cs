@@ -461,7 +461,7 @@ and bc.BarCode=@BarCode
                                 }
                             }
                         }
-                        res.ParseBarCode = pParseBarCode;
+                        if(res != null)  res.ParseBarCode = pParseBarCode;
                        // return res;
                     }
                 }
@@ -510,8 +510,11 @@ and bc.BarCode=@BarCode
 
             }
             //Log.d(TAG, "Found in DB  >>" + (model == null ? "Not Found" : model.NameWares));
-            res.NumberDoc = pDocId.NumberDoc;
-            res.TypeDoc = pDocId.TypeDoc;
+            if (res != null)
+            {
+                res.NumberDoc = pDocId.NumberDoc;
+                res.TypeDoc = pDocId.TypeDoc;
+            }
             return res;
         }        
 
