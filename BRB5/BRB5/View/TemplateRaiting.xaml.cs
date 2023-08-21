@@ -20,12 +20,13 @@ namespace BRB5.View
         public ObservableCollection<RaitingTemplate> RTemplate { get { return _RTemplate; } set { _RTemplate = value; OnPropertyChanged(nameof(RTemplate)); } }
 
         DB db = DB.GetDB();
+        BRB5.Connector.Connector c;
         private bool ShowHidden = false;
 
         public TemplateRaiting()
         {
             InitializeComponent();
-
+            c = Connector.Connector.GetInstance();
             RTemplate = new ObservableCollection<RaitingTemplate>(db.GetRaitingTemplate());
             this.BindingContext = this;
         }
@@ -40,7 +41,7 @@ namespace BRB5.View
 
         private async void Create(object sender, EventArgs e)
         {
-            await Navigation.PushAsync(new CreateRaitingTemplate(db.GetIdRaitingTemplate()));
+            await Navigation.PushAsync(new CreateRaitingTemplate(c.GetIdRaitingTemplate().Info));
         }
 
         private async void Edit(object sender, EventArgs e)
@@ -105,6 +106,11 @@ namespace BRB5.View
         private void Save(object sender, EventArgs e)
         {
             db.ReplaceRaitingTemplate(RTemplate);
+        }
+
+        private void SaveRaiting(object sender, EventArgs e)
+        {
+            c.SaveDocRaiting();
         }
     }
 }

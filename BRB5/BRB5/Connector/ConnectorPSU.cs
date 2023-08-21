@@ -384,13 +384,52 @@ namespace BRB5.Connector
             return null;
         }
 
-        public override Result<int> GetNumberDocRaiting() { throw new NotImplementedException(); }
+        public override Result<int> GetNumberDocRaiting()
+        {
+            HttpResult result = Http.HTTPRequest(0, "DCT/Raitting/GetNumberDocRaiting", null, "application/json", "brb", "brb");//
 
-        public override Result SaveTemplate(RaitingTemplate pRT) { throw new NotImplementedException(); }
+            if (result.HttpState == eStateHTTP.HTTP_OK)
+            {
+                var r = JsonConvert.DeserializeObject<Result<int>>(result.Result);
+                return r;
+            }
+            return null;
+        }
 
-        public override Result SaveDocRaiting() { throw new NotImplementedException(); }
+        public override Result SaveTemplate(RaitingTemplate pRT)
+        {
+            HttpResult result = Http.HTTPRequest(0, "DCT/Raitting/SaveTemplate", pRT.ToJSON(), "application/json", "brb", "brb");//
 
-        public override IEquatable<RaitingTemplate> GetRaitingTemplate() { throw new NotImplementedException(); }
+            if (result.HttpState == eStateHTTP.HTTP_OK)
+            {
+                //var r = JsonConvert.DeserializeObject<Result<int>>(result.Result);
+                //return r;
+            }
+            return null;
+        }
+
+        public override Result SaveDocRaiting()
+        {
+            HttpResult result = Http.HTTPRequest(0, "DCT/Raitting/SaveDocRaiting", null, "application/json", "brb", "brb");//
+
+            if (result.HttpState == eStateHTTP.HTTP_OK)
+            {
+                //var r = JsonConvert.DeserializeObject<Result<int>>(result.Result);
+                //return r;
+            }
+            return null;
+        }
+        public override IEquatable<RaitingTemplate> GetRaitingTemplate()
+        {
+            HttpResult result = Http.HTTPRequest(0, "DCT/Raitting/GetRaitingTemplate", null, "application/json", "brb", "brb");//
+
+            if (result.HttpState == eStateHTTP.HTTP_OK)
+            {
+                //var r = JsonConvert.DeserializeObject<Result<int>>(result.Result);
+                //return r;
+            }
+            return null;
+        }
 
 
 
