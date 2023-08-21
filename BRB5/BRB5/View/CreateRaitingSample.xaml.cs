@@ -1,4 +1,5 @@
 ﻿using BRB5.Connector;
+using BRB5.Model;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;

@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
-             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" 
-             xmlns:brb5="clr-namespace:BRB5" x:DataType="brb5:Docs"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"             
+             xmlns:Model="clr-namespace:BRB5.Model;assembly=BRB5.Model"
              NavigationPage.HasNavigationBar="False"
              x:Class="BRB5.Docs">
 
@@ -16,7 +16,7 @@
                 </StackLayout>
             </ListView.Header>
             <ListView.ItemTemplate>
-                <DataTemplate xmlns:brb5="clr-namespace:BRB5" x:DataType="brb5:Doc">
+                <DataTemplate xmlns:brb5="clr-namespace:BRB5" x:DataType="Model:Doc">
                     <ViewCell >
                         <ViewCell.View BackgroundColor="white">
                             

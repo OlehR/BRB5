@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.ComponentModel;
 //using System.Drawing;
 using System.Text;
-using Xamarin.Forms;
+//using Xamarin.Forms;
 
-namespace BRB5
+namespace BRB5.Model
 {
     public class DocId:  INotifyPropertyChanged
     {

@@ -115,6 +115,16 @@ namespace BRB5.Connector
         public virtual IEnumerable<Warehouse> LoadWarehouse() { throw new NotImplementedException(); }
 
         public virtual IEnumerable<LoginServer> LoginServer() { throw new NotImplementedException(); }
+
+        public virtual int GetIdRaitingTemplate() { throw new NotImplementedException(); }
+
+        public virtual int GetNumberDocRaiting() { throw new NotImplementedException(); }
+
+        public virtual Result SaveTemplate(RaitingTemplate pRT) { throw new NotImplementedException(); }        
+
+        public virtual Result SaveDocRaiting() { throw new NotImplementedException(); }
+
+        public virtual IEquatable<RaitingTemplate> GetRaitingTemplate() { throw new NotImplementedException(); }
     }
 
     public class LoginServer
@@ -122,4 +132,6 @@ namespace BRB5.Connector
         public eLoginServer Code { get;set;}   
         public string Name { get;set;}
     }
+
+    
 }

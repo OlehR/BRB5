@@ -69,7 +69,7 @@ namespace BRB5
         StationaryWithCutAuto = 4
     }
 
-    static class EnumMethods
+    public static class EnumMethods
     {
 
         /*public static string GetString(this eTypeUsePrinter pThis)

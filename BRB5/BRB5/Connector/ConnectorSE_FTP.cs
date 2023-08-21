@@ -9,7 +9,7 @@ using System.Linq;
 
 namespace BRB5.Connector
 {
-    class RaitingTemplate : Raiting
+    public class RaitingTemplateSE : Raiting
     {
         /// <summary>
         /// Шаблон опитування.
@@ -82,7 +82,7 @@ namespace BRB5.Connector
                         db.ReplaceDoc(Doc);
 
                         var strRS = File.ReadAllText(Path.Combine(Config.PathFiles, "RaitingTemplate.json"));
-                        var R = JsonConvert.DeserializeObject<List<RaitingTemplate>>(strRS);
+                        var R = JsonConvert.DeserializeObject<List<RaitingTemplateSE>>(strRS);
 
                         foreach(var el in Doc)
                         {

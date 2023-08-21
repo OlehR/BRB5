@@ -260,7 +260,10 @@ namespace BRB5.Connector
                                         new TypeDoc() { CodeDoc = 5, NameDoc = "Повернення" ,  KindDoc = eKindDoc.Normal},
                                         new TypeDoc() { CodeDoc = 7, NameDoc = "Ревізія ОЗ", TypeControlQuantity=eTypeControlDoc.Ask, IsSimpleDoc=true, KindDoc = eKindDoc.Normal,CodeApi=1,IsCreateNewDoc=true },
                                         new TypeDoc() { CodeDoc = 8, NameDoc = "Переміщення Вх", TypeControlQuantity=eTypeControlDoc.Ask, IsViewOut=true, IsViewReason=true,KindDoc = eKindDoc.Normal },
-};
+                                        new TypeDoc() { CodeDoc = 11, KindDoc = eKindDoc.Raiting, NameDoc = "Опитування", DayBefore = 4 },
+                                        new TypeDoc() { CodeDoc = -1, KindDoc = eKindDoc.TempateRaiting, NameDoc = "Шаблони Опитування" },
+                                        new TypeDoc() { CodeDoc = 12, KindDoc = eKindDoc.RaitingCreate, NameDoc = "Керування Опитуваннями" }
+        };
             return Res;
         }
 

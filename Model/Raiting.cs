@@ -6,7 +6,7 @@ using System.Drawing;
 using System.Runtime.CompilerServices;
 using System.Text;
 
-namespace BRB5
+namespace BRB5.Model
 {
     public class Raiting : DocId
     {

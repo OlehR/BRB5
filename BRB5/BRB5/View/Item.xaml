@@ -1,7 +1,10 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" 
-             xmlns:brb5="clr-namespace:BRB5" xmlns:forms="clr-namespace:ZXing.Net.Mobile.Forms;assembly=ZXing.Net.Mobile.Forms" x:DataType="brb5:Item"
+             xmlns:brb5="clr-namespace:BRB5"              
+             xmlns:forms="clr-namespace:ZXing.Net.Mobile.Forms;assembly=ZXing.Net.Mobile.Forms" 
+             xmlns:Model="clr-namespace:BRB5.Model;assembly=BRB5.Model" 
+             x:DataType="brb5:Item"
              NavigationPage.HasNavigationBar="False"
              x:Class="BRB5.Item">
     <ContentPage.Content>
@@ -41,7 +44,7 @@
                     </ListView.Header>
 
                     <ListView.ItemTemplate>
-                        <DataTemplate xmlns:brb5="clr-namespace:BRB5" x:DataType="brb5:Raiting" >
+                        <DataTemplate x:DataType="Model:Raiting" >
                             <ViewCell>
                                 <ViewCell.View>
                                     <StackLayout>
