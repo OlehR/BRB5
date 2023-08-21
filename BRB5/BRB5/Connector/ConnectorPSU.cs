@@ -373,7 +373,26 @@ namespace BRB5.Connector
             }
         }
 
-        
+        public override Result<int> GetIdRaitingTemplate() {
+            HttpResult result = Http.HTTPRequest(0, "DCT/Raitting/GetIdRaitingTemplate", null, "application/json", "brb", "brb");//
+
+            if (result.HttpState == eStateHTTP.HTTP_OK)
+            {
+                var r = JsonConvert.DeserializeObject<Result<int>>(result.Result);
+                return r;
+            }
+            return null;
+        }
+
+        public override Result<int> GetNumberDocRaiting() { throw new NotImplementedException(); }
+
+        public override Result SaveTemplate(RaitingTemplate pRT) { throw new NotImplementedException(); }
+
+        public override Result SaveDocRaiting() { throw new NotImplementedException(); }
+
+        public override IEquatable<RaitingTemplate> GetRaitingTemplate() { throw new NotImplementedException(); }
+
+
 
     }
 

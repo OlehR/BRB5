@@ -116,9 +116,9 @@ namespace BRB5.Connector
 
         public virtual IEnumerable<LoginServer> LoginServer() { throw new NotImplementedException(); }
 
-        public virtual int GetIdRaitingTemplate() { throw new NotImplementedException(); }
+        public virtual Result<int> GetIdRaitingTemplate() { throw new NotImplementedException(); }
 
-        public virtual int GetNumberDocRaiting() { throw new NotImplementedException(); }
+        public virtual Result<int> GetNumberDocRaiting() { throw new NotImplementedException(); }
 
         public virtual Result SaveTemplate(RaitingTemplate pRT) { throw new NotImplementedException(); }        
 
