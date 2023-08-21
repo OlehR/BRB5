@@ -11,6 +11,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BRB5", "BRB5\BRB5\BRB5.cspr
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Test", "Test\Test.csproj", "{C69E62EB-3F5B-4050-9FE8-66CEA32C47CE}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BRB5.Model", "Model\BRB5.Model.csproj", "{E1C7DAB8-E775-414D-91CE-30E46D8F40AF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -87,6 +89,18 @@ Global
 		{C69E62EB-3F5B-4050-9FE8-66CEA32C47CE}.Release|iPhone.Build.0 = Release|Any CPU
 		{C69E62EB-3F5B-4050-9FE8-66CEA32C47CE}.Release|iPhoneSimulator.ActiveCfg = Release|Any CPU
 		{C69E62EB-3F5B-4050-9FE8-66CEA32C47CE}.Release|iPhoneSimulator.Build.0 = Release|Any CPU
+		{E1C7DAB8-E775-414D-91CE-30E46D8F40AF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E1C7DAB8-E775-414D-91CE-30E46D8F40AF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E1C7DAB8-E775-414D-91CE-30E46D8F40AF}.Debug|iPhone.ActiveCfg = Debug|Any CPU
+		{E1C7DAB8-E775-414D-91CE-30E46D8F40AF}.Debug|iPhone.Build.0 = Debug|Any CPU
+		{E1C7DAB8-E775-414D-91CE-30E46D8F40AF}.Debug|iPhoneSimulator.ActiveCfg = Debug|Any CPU
+		{E1C7DAB8-E775-414D-91CE-30E46D8F40AF}.Debug|iPhoneSimulator.Build.0 = Debug|Any CPU
+		{E1C7DAB8-E775-414D-91CE-30E46D8F40AF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E1C7DAB8-E775-414D-91CE-30E46D8F40AF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E1C7DAB8-E775-414D-91CE-30E46D8F40AF}.Release|iPhone.ActiveCfg = Release|Any CPU
+		{E1C7DAB8-E775-414D-91CE-30E46D8F40AF}.Release|iPhone.Build.0 = Release|Any CPU
+		{E1C7DAB8-E775-414D-91CE-30E46D8F40AF}.Release|iPhoneSimulator.ActiveCfg = Release|Any CPU
+		{E1C7DAB8-E775-414D-91CE-30E46D8F40AF}.Release|iPhoneSimulator.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
