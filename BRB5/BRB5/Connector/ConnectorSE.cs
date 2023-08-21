@@ -405,7 +405,8 @@ namespace BRB5.Connector
             FileLogger.WriteLogMessage($"SendRaitingFiles Start pNumberDoc=>{pNumberDoc} pTry=>{pTry} pMaxSecondSend=>{pMaxSecondSend} pSecondSkip=>pSecondSkip", eTypeLog.Full);
             lock (Lock)
             {
-                //FileLogger.WriteLogMessage("SendRaitingFiles Lock", eTypeLog.Full);
+                FileLogger.WriteLogMessage($"SendRaitingFiles Lock pNumberDoc=>{pNumberDoc} pTry=>{pTry} pMaxSecondSend=>{pMaxSecondSend} pSecondSkip=>pSecondSkip", eTypeLog.Full);
+
                 var StartTime = DateTime.Now;
 
                 StopSend = false;
