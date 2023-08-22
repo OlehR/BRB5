@@ -49,15 +49,17 @@
                             <ViewCell.View  >
                                 <Grid  RowSpacing="1"
                                        ColumnSpacing="1"  
+                                       HeightRequest="60"
                                        Padding="1" 
-                                       BackgroundColor="#adaea7">
+                                       BackgroundColor="#adaea7"
+                                       >
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="1*" />
                                         <ColumnDefinition Width="1*" />
                                     </Grid.ColumnDefinitions>
                                     <Grid.RowDefinitions   >
-                                        <RowDefinition/>
-                                        <RowDefinition/>
+                                        <RowDefinition Height="20" />
+                                        <RowDefinition Height="40"/>
                                     </Grid.RowDefinitions>
 
                                     <Label Text="{Binding NameWares}"                                                 
