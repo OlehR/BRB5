@@ -115,6 +115,12 @@ namespace BRB5.View
 
             var vRaitingTemplate = s.BindingContext as RaitingTemplate;
 
+            var DocId = new DocId();
+            DocId.NumberDoc = vRaitingTemplate.Id.ToString();
+            DocId.TypeDoc = -1;
+
+            vRaitingTemplate.Item = db.GetRaiting(DocId);
+
             _ = DisplayAlert("збереження", c.SaveTemplate(vRaitingTemplate).TextError, "OK");
             
         }

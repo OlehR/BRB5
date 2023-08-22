@@ -27,6 +27,7 @@ namespace BRB5.View
             TypeDoc.CodeDoc = 11;
             c = Connector.Connector.GetInstance();
 
+            // db.GetDoc(TypeDoc) ?????? чи з api
             RD = new ObservableCollection<Doc>(db.GetDoc(TypeDoc));
             this.BindingContext = this;
         }
