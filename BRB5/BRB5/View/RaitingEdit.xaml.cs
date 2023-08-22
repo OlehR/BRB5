@@ -14,13 +14,14 @@ namespace BRB5.View
 	[XamlCompilation(XamlCompilationOptions.Compile)]
 	public partial class RaitingEdit : ContentPage
 	{
-        private Doc _RD;
         DB db = DB.GetDB();
+        BRB5.Connector.Connector c;
         private readonly TypeDoc TypeDoc;
 
         private RaitingTemplate _SelectedTemplate;
         public RaitingTemplate SelectedTemplate { get { return _SelectedTemplate; } set { _SelectedTemplate = value; OnPropertyChanged(nameof(SelectedTemplate)); } }
         public List<RaitingTemplate> RT { get { return db.GetRaitingTemplate().ToList(); } }
+        private Doc _RD;
         public Doc RD { get { return _RD; } set { _RD = value; OnPropertyChanged(nameof(RD)); } }
         public List<Warehouse> ListWarehouse
         {
@@ -47,6 +48,7 @@ namespace BRB5.View
         public RaitingEdit (Doc doc, TypeDoc vTypeDoc)
 		{
 			InitializeComponent ();
+            c = Connector.Connector.GetInstance();
             RD = doc;
             TypeDoc = vTypeDoc;
 
@@ -58,6 +60,7 @@ namespace BRB5.View
             RD.IdTempate = SelectedTemplate.Id;
             RD.CodeWarehouse = SelectedWarehouse.CodeWarehouse;
 
+            _ = DisplayAlert("збереження", c.SaveDocRaiting(RD).TextError, "OK");
 
             await Navigation.PushAsync(new RaitingDocs(TypeDoc));
 

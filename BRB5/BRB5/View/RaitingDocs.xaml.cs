@@ -15,6 +15,7 @@ namespace BRB5.View
 	public partial class RaitingDocs : ContentPage
 	{
         private readonly TypeDoc TypeDoc;
+        BRB5.Connector.Connector c;
         DB db = DB.GetDB();
         private ObservableCollection<Doc> _RD;
         public ObservableCollection<Doc> RD { get { return _RD; } set { _RD = value; OnPropertyChanged(nameof(RD)); } }
@@ -24,6 +25,7 @@ namespace BRB5.View
 			InitializeComponent ();
             TypeDoc = vTypeDoc;
             TypeDoc.CodeDoc = 11;
+            c = Connector.Connector.GetInstance();
 
             RD = new ObservableCollection<Doc>(db.GetDoc(TypeDoc));
             this.BindingContext = this;
@@ -31,8 +33,7 @@ namespace BRB5.View
 
         private async void Create(object sender, EventArgs e)
         {
-
-            await Navigation.PushAsync(new RaitingEdit(new Doc() { DateDoc = DateTime.Today }, TypeDoc));
+            await Navigation.PushAsync(new RaitingEdit(new Doc() { DateDoc = DateTime.Today, NumberDoc = c.GetNumberDocRaiting().Info }, TypeDoc));
         }
 
         private async void Edit(object sender, EventArgs e)

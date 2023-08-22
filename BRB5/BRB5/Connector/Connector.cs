@@ -118,13 +118,13 @@ namespace BRB5.Connector
 
         public virtual Result<int> GetIdRaitingTemplate() { throw new NotImplementedException(); }
 
-        public virtual Result<int> GetNumberDocRaiting() { throw new NotImplementedException(); }
+        public virtual Result GetNumberDocRaiting() { throw new NotImplementedException(); }
 
         public virtual Result SaveTemplate(RaitingTemplate pRT) { throw new NotImplementedException(); }        
 
-        public virtual Result SaveDocRaiting() { throw new NotImplementedException(); }
+        public virtual Result SaveDocRaiting(Doc pDoc) { throw new NotImplementedException(); }
 
-        public virtual IEquatable<RaitingTemplate> GetRaitingTemplate() { throw new NotImplementedException(); }
+        public virtual IEnumerable<RaitingTemplate> GetRaitingTemplate() { throw new NotImplementedException(); }
     }
 
     public class LoginServer

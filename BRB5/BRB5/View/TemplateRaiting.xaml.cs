@@ -27,7 +27,7 @@ namespace BRB5.View
         {
             InitializeComponent();
             c = Connector.Connector.GetInstance();
-            RTemplate = new ObservableCollection<RaitingTemplate>(db.GetRaitingTemplate());
+            RTemplate = new ObservableCollection<RaitingTemplate>(c.GetRaitingTemplate());
             this.BindingContext = this;
         }
 
@@ -115,8 +115,8 @@ namespace BRB5.View
 
             var vRaitingTemplate = s.BindingContext as RaitingTemplate;
 
-            DisplayAlert 
-            c.SaveTemplate(vRaitingTemplate);
+            _ = DisplayAlert("збереження", c.SaveTemplate(vRaitingTemplate).TextError, "OK");
+            
         }
     }
 }

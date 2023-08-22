@@ -384,13 +384,13 @@ namespace BRB5.Connector
             return null;
         }
 
-        public override Result<int> GetNumberDocRaiting()
+        public override Result GetNumberDocRaiting()
         {
             HttpResult result = Http.HTTPRequest(0, "DCT/Raitting/GetNumberDocRaiting", null, "application/json", "brb", "brb");//
 
             if (result.HttpState == eStateHTTP.HTTP_OK)
             {
-                var r = JsonConvert.DeserializeObject<Result<int>>(result.Result);
+                var r = JsonConvert.DeserializeObject<Result>(result.Result);
                 return r;
             }
             return null;
@@ -402,31 +402,31 @@ namespace BRB5.Connector
 
             if (result.HttpState == eStateHTTP.HTTP_OK)
             {
-                //var r = JsonConvert.DeserializeObject<Result<int>>(result.Result);
-                //return r;
+                var r = JsonConvert.DeserializeObject<Result>(result.Result);
+                return r;
             }
             return null;
         }
 
-        public override Result SaveDocRaiting()
+        public override Result SaveDocRaiting(Doc pDoc)
         {
-            HttpResult result = Http.HTTPRequest(0, "DCT/Raitting/SaveDocRaiting", null, "application/json", "brb", "brb");//
+            HttpResult result = Http.HTTPRequest(0, "DCT/Raitting/SaveDocRaiting", pDoc.ToJSON(), "application/json", "brb", "brb");//
 
             if (result.HttpState == eStateHTTP.HTTP_OK)
             {
-                //var r = JsonConvert.DeserializeObject<Result<int>>(result.Result);
-                //return r;
+                var r = JsonConvert.DeserializeObject<Result>(result.Result);
+                return r;
             }
             return null;
         }
-        public override IEquatable<RaitingTemplate> GetRaitingTemplate()
+        public override IEnumerable<RaitingTemplate> GetRaitingTemplate()
         {
             HttpResult result = Http.HTTPRequest(0, "DCT/Raitting/GetRaitingTemplate", null, "application/json", "brb", "brb");//
 
             if (result.HttpState == eStateHTTP.HTTP_OK)
             {
-                //var r = JsonConvert.DeserializeObject<Result<int>>(result.Result);
-                //return r;
+                var r = JsonConvert.DeserializeObject<IEnumerable<RaitingTemplate>>(result.Result);
+                return r;
             }
             return null;
         }
