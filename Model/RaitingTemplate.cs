@@ -20,6 +20,6 @@ namespace BRB5.Model
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
-        public IEquatable<Raiting> Item { get;set; }
+        public IEnumerable<Raiting> Item { get;set; }
     }
 }

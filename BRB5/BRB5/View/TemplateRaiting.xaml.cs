@@ -110,7 +110,13 @@ namespace BRB5.View
 
         private void SaveRaiting(object sender, EventArgs e)
         {
-            c.SaveDocRaiting();
+            var b = sender as ImageButton;
+            var s = b.Parent as Grid;
+
+            var vRaitingTemplate = s.BindingContext as RaitingTemplate;
+
+            DisplayAlert 
+            c.SaveTemplate(vRaitingTemplate);
         }
     }
 }
