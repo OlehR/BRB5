@@ -34,7 +34,7 @@ namespace BRB5.View
 
         private async void Create(object sender, EventArgs e)
         {
-            await Navigation.PushAsync(new RaitingEdit(new Doc() { DateDoc = DateTime.Today, NumberDoc = c.GetNumberDocRaiting().Info }, TypeDoc));
+            await Navigation.PushAsync(new RaitingEdit(new Doc() { DateDoc = DateTime.Today,/* NumberDoc = c.GetNumberDocRaiting().Info*/ }, TypeDoc));
         }
 
         private async void Edit(object sender, EventArgs e)

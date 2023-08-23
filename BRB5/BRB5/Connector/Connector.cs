@@ -125,6 +125,7 @@ namespace BRB5.Connector
         public virtual Result SaveDocRaiting(Doc pDoc) { throw new NotImplementedException(); }
 
         public virtual IEnumerable<RaitingTemplate> GetRaitingTemplate() { throw new NotImplementedException(); }
+        public virtual IEnumerable<Doc> GetRaitingDocs() { throw new NotImplementedException(); }
     }
 
     public class LoginServer

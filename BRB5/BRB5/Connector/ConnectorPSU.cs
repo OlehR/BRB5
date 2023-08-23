@@ -398,7 +398,7 @@ namespace BRB5.Connector
 
         public override Result SaveTemplate(RaitingTemplate pRT)
         {
-            HttpResult result = Http.HTTPRequest(0, "DCT/Raitting/SaveTemplate", pRT.ToJSON(), "application/json", "brb", "brb");//
+            HttpResult result = Http.HTTPRequest(0, "DCT/Raitting/SaveTemplate", pRT.ToJSON("yyyy-MM-ddTHH:mm:ss"), "application/json", "brb", "brb");//
 
             if (result.HttpState == eStateHTTP.HTTP_OK)
             {
@@ -410,7 +410,7 @@ namespace BRB5.Connector
 
         public override Result SaveDocRaiting(Doc pDoc)
         {
-            HttpResult result = Http.HTTPRequest(0, "DCT/Raitting/SaveDocRaiting", pDoc.ToJSON(), "application/json", "brb", "brb");//
+            HttpResult result = Http.HTTPRequest(0, "DCT/Raitting/SaveDocRaiting", pDoc.ToJSON("yyyy-MM-ddTHH:mm:ss"), "application/json", "brb", "brb");//
 
             if (result.HttpState == eStateHTTP.HTTP_OK)
             {
@@ -430,7 +430,17 @@ namespace BRB5.Connector
             }
             return null;
         }
+        public override IEnumerable<Doc> GetRaitingDocs()
+        {
+            HttpResult result = Http.HTTPRequest(0, "DCT/Raitting/GetRaitingDocs", null, "application/json", "brb", "brb");//
 
+            if (result.HttpState == eStateHTTP.HTTP_OK)
+            {
+                var r = JsonConvert.DeserializeObject<IEnumerable<Doc>>(result.Result);
+                return r;
+            }
+            return null;
+        }
 
 
     }

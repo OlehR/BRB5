@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 //using System.Drawing;
@@ -71,6 +72,7 @@ namespace BRB5.Model
         /// Адреса
         /// </summary>
         public string Address { get; set; } // 
+        [JsonIgnore]
         public string ShortAddress { 
             get { 
                 var temp = Address.Split('-')[1];
@@ -109,6 +111,7 @@ namespace BRB5.Model
     public int Color { get; set; }
 
         // 9 - червоний, 2- оранжевий, 1 - жовтий, 0 - зелений, інше грязно жовтий-ранжевий.
+        [JsonIgnore]
         public string GetColor
         {
             get
@@ -128,7 +131,7 @@ namespace BRB5.Model
                 }
             }
         }
-
+        [JsonIgnore]
         public string GetLightColor
         {
             get

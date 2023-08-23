@@ -27,7 +27,7 @@ namespace BRB5.View
         {
             InitializeComponent();
             c = Connector.Connector.GetInstance();
-            RTemplate = new ObservableCollection<RaitingTemplate>(c.GetRaitingTemplate());
+            RTemplate = new ObservableCollection<RaitingTemplate>(db.GetRaitingTemplate());
             this.BindingContext = this;
         }
 
@@ -41,7 +41,8 @@ namespace BRB5.View
 
         private async void Create(object sender, EventArgs e)
         {
-            await Navigation.PushAsync(new CreateRaitingTemplate(c.GetIdRaitingTemplate().Info));
+            //await Navigation.PushAsync(new CreateRaitingTemplate(c.GetIdRaitingTemplate().Info));
+            await Navigation.PushAsync(new CreateRaitingTemplate(db.GetIdRaitingTemplate()));
         }
 
         private async void Edit(object sender, EventArgs e)
