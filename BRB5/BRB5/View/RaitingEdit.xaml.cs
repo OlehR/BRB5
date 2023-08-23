@@ -57,7 +57,7 @@ namespace BRB5.View
 
         private async void Save(object sender, EventArgs e)
         {
-            RD.IdTempate = SelectedTemplate.Id;
+            RD.IdTemplate = SelectedTemplate.Id;
             RD.CodeWarehouse = SelectedWarehouse.CodeWarehouse;
 
             _ = DisplayAlert("збереження", c.SaveDocRaiting(RD).TextError, "OK");

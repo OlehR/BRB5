@@ -86,7 +86,7 @@ namespace BRB5.Connector
 
                         foreach(var el in Doc)
                         {
-                            var RS = R.Where(e => e.IdTempate == el.IdTempate);
+                            var RS = R.Where(e => e.IdTempate == el.IdTemplate);
                             foreach (var e in RS)
                             {
                                 e.NumberDoc = el.NumberDoc;

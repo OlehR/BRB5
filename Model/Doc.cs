@@ -57,7 +57,7 @@ namespace BRB5.Model
         /// <summary>
         /// Шаблон
         /// </summary>
-        public int IdTempate { get; set; }
+        public int IdTemplate { get; set; }
         /// <summary>
         /// Код складу
         /// </summary>
