@@ -27,14 +27,13 @@ namespace BRB5.View
             TypeDoc.CodeDoc = 11;
             c = Connector.Connector.GetInstance();
 
-            // db.GetDoc(TypeDoc) ?????? чи з api
-            RD = new ObservableCollection<Doc>(db.GetDoc(TypeDoc));
+            RD = new ObservableCollection<Doc>(c.GetRaitingDocs());
             this.BindingContext = this;
         }
 
         private async void Create(object sender, EventArgs e)
         {
-            await Navigation.PushAsync(new RaitingEdit(new Doc() { DateDoc = DateTime.Today,/* NumberDoc = c.GetNumberDocRaiting().Info*/ }, TypeDoc));
+            await Navigation.PushAsync(new RaitingEdit(new Doc() { DateDoc = DateTime.Today, NumberDoc = c.GetNumberDocRaiting().Info }, TypeDoc));
         }
 
         private async void Edit(object sender, EventArgs e)

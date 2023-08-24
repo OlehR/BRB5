@@ -69,13 +69,13 @@ namespace BRB5.Connector
                 }
 
                 client.Timeout = TimeSpan.FromSeconds(pTimeOut);
-                
+
                 //client.BaseAddress = new Uri(pURL);
                 //var byteArray = Encoding.ASCII.GetBytes("admin:Xa38dF79");
                 //client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Basic", Convert.ToBase64String(byteArray));
 
-
-                StringContent content = new StringContent(pData, Encoding.UTF8, pContentType);
+                StringContent content = null;
+                if (pData != null) content = new StringContent(pData, Encoding.UTF8, pContentType);
                 HttpResponseMessage response = await client.PostAsync(pURL, content).ConfigureAwait(continueOnCapturedContext: false); 
                 if (response.IsSuccessStatusCode)
                 {

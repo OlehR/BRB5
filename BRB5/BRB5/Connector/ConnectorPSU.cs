@@ -374,7 +374,7 @@ namespace BRB5.Connector
         }
 
         public override Result<int> GetIdRaitingTemplate() {
-            HttpResult result = Http.HTTPRequest(0, "DCT/Raitting/GetIdRaitingTemplate", null, "application/json", "brb", "brb");//
+            HttpResult result = Http.HTTPRequest(1, "DCT/Raitting/GetIdRaitingTemplate", null, "application/json", "brb", "brb");//
 
             if (result.HttpState == eStateHTTP.HTTP_OK)
             {
@@ -386,7 +386,7 @@ namespace BRB5.Connector
 
         public override Result GetNumberDocRaiting()
         {
-            HttpResult result = Http.HTTPRequest(0, "DCT/Raitting/GetNumberDocRaiting", null, "application/json", "brb", "brb");//
+            HttpResult result = Http.HTTPRequest(1, "DCT/Raitting/GetNumberDocRaiting", null, "application/json", "brb", "brb");//
 
             if (result.HttpState == eStateHTTP.HTTP_OK)
             {
@@ -398,7 +398,7 @@ namespace BRB5.Connector
 
         public override Result SaveTemplate(RaitingTemplate pRT)
         {
-            HttpResult result = Http.HTTPRequest(0, "DCT/Raitting/SaveTemplate", pRT.ToJSON("yyyy-MM-ddTHH:mm:ss"), "application/json", "brb", "brb");//
+            HttpResult result = Http.HTTPRequest(1, "DCT/Raitting/SaveTemplate", pRT.ToJSON("yyyy-MM-ddTHH:mm:ss"), "application/json", "brb", "brb");//
 
             if (result.HttpState == eStateHTTP.HTTP_OK)
             {
@@ -410,7 +410,7 @@ namespace BRB5.Connector
 
         public override Result SaveDocRaiting(Doc pDoc)
         {
-            HttpResult result = Http.HTTPRequest(0, "DCT/Raitting/SaveDocRaiting", pDoc.ToJSON("yyyy-MM-ddTHH:mm:ss"), "application/json", "brb", "brb");//
+            HttpResult result = Http.HTTPRequest(1, "DCT/Raitting/SaveDocRaiting", pDoc.ToJSON("yyyy-MM-ddTHH:mm:ss"), "application/json", "brb", "brb");//
 
             if (result.HttpState == eStateHTTP.HTTP_OK)
             {
@@ -421,7 +421,7 @@ namespace BRB5.Connector
         }
         public override IEnumerable<RaitingTemplate> GetRaitingTemplate()
         {
-            HttpResult result = Http.HTTPRequest(0, "DCT/Raitting/GetRaitingTemplate", null, "application/json", "brb", "brb");//
+            HttpResult result = Http.HTTPRequest(1, "DCT/Raitting/GetRaitingTemplate", null, "application/json", "brb", "brb");//
 
             if (result.HttpState == eStateHTTP.HTTP_OK)
             {
@@ -432,7 +432,7 @@ namespace BRB5.Connector
         }
         public override IEnumerable<Doc> GetRaitingDocs()
         {
-            HttpResult result = Http.HTTPRequest(0, "DCT/Raitting/GetRaitingDocs", null, "application/json", "brb", "brb");//
+            HttpResult result = Http.HTTPRequest(1, "DCT/Raitting/GetRaitingDocs", null, "application/json", "brb", "brb");//
 
             if (result.HttpState == eStateHTTP.HTTP_OK)
             {
