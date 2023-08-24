@@ -1,60 +1,60 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
-<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
-             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="BRB5.MainPage"
-             xmlns:controls="clr-namespace:BRB5.View"
-             NavigationPage.HasNavigationBar="True"
-             >
+﻿<?xml version="1.0" encoding="utf-8"?>
+
+<controls:BaseContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+                          xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+                          x:Class="BRB5.MainPage"
+                          xmlns:controls="clr-namespace:BRB5.View"
+                          NavigationPage.HasNavigationBar="True">
     <NavigationPage.TitleView>
         <Grid>
-            <Label  Text="{Binding Ver}" 
-                    VerticalOptions="Center"/>
+            <Label Text="{Binding Ver}"
+                   VerticalOptions="Center" />
             <Label HorizontalOptions="Center"
-                Text="{Binding Company}" 
-                FontSize="28" />
+                   Text="{Binding Company}"
+                   FontSize="28" />
         </Grid>
     </NavigationPage.TitleView>
     <ContentPage.ToolbarItems>
         <ToolbarItem Text="Налаштування"
                      Order="Secondary"
-                     Priority="0" 
-                     Clicked="OnSettingsClicked"/>
+                     Priority="0"
+                     Clicked="OnSettingsClicked" />
         <ToolbarItem Text="Автризація"
                      Order="Secondary"
-                     Priority="1" 
-                     Clicked="OnAuthorizationClicked"/>
+                     Priority="1"
+                     Clicked="OnAuthorizationClicked" />
     </ContentPage.ToolbarItems>
     <StackLayout>
         <StackLayout x:Name="SLLogin">
-            
-            <Picker  Title="сервер"        
-                     ItemsSource="{Binding LS}"
-                     IsVisible="{Binding IsVisLS}"
-                     ItemDisplayBinding="{Binding Name}"
-                     SelectedIndex="{Binding SelectedLS}"
-                     HorizontalOptions="Fill"/>
-            <Frame Style="{StaticResource FrameStyle}" >
+
+            <Picker Title="сервер"
+                    ItemsSource="{Binding LS}"
+                    IsVisible="{Binding IsVisLS}"
+                    ItemDisplayBinding="{Binding Name}"
+                    SelectedIndex="{Binding SelectedLS}"
+                    HorizontalOptions="Fill" />
+            <Frame Style="{StaticResource FrameStyle}">
                 <controls:CustomEntry Style="{StaticResource EntryStyle}"
-                                      x:Name="loginEntry" Text="{Binding Login}"/>
+                                      x:Name="loginEntry" Text="{Binding Login}" />
             </Frame>
             <!--TextChanged="loginEntry_TextChanged"-->
-            <Frame Style="{StaticResource FrameStyle}" >
+            <Frame Style="{StaticResource FrameStyle}">
                 <controls:CustomEntry Style="{StaticResource EntryStyle}"
-                                      x:Name="passwordEntry" 
-                                      Text="{Binding Password}"  
-                                      Placeholder = "Password" 
-                                      IsPassword ="True"/>
+                                      x:Name="passwordEntry"
+                                      Text="{Binding Password}"
+                                      Placeholder="Password"
+                                      IsPassword="True" />
             </Frame>
-            <Button Text = "Залогінитись" FontSize="Large" BorderWidth="1"
+            <Button Text="Залогінитись" FontSize="Large" BorderWidth="1"
                     HorizontalOptions="Center" VerticalOptions="CenterAndExpand"
                     Clicked="OnButtonLogin" />
         </StackLayout>
         <ListView x:Name="ListDocs" IsVisible="false"
-              HasUnevenRows="True"
-              ItemsSource="{Binding OCTypeDoc}" >
+                  HasUnevenRows="True"
+                  ItemsSource="{Binding OCTypeDoc}">
             <ListView.Header>
                 <StackLayout Orientation="Horizontal">
-                   <!-- <Label Text="Список    Запитань2" FontSize="25"
+                    <!-- <Label Text="Список    Запитань2" FontSize="25"
                            BackgroundColor="#c5cae9" HorizontalOptions="FillAndExpand" />-->
                 </StackLayout>
             </ListView.Header>
@@ -62,10 +62,10 @@
             <ListView.ItemTemplate>
                 <DataTemplate xmlns:brb5="clr-namespace:BRB5">
                     <ViewCell>
-                        <ViewCell.View  >
-                            <Button Text = "{Binding NameDoc}" 
-                                    FontSize="Large" 
-                                    Clicked="OnButtonClicked" 
+                        <ViewCell.View>
+                            <Button Text="{Binding NameDoc}"
+                                    FontSize="Large"
+                                    Clicked="OnButtonClicked"
                                     Style="{StaticResource ButtonStyle}" />
                         </ViewCell.View>
                     </ViewCell>
@@ -74,4 +74,4 @@
         </ListView>
     </StackLayout>
 
-</ContentPage>
+</controls:BaseContentPage>

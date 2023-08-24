@@ -1,242 +1,240 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
-<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
-             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" 
-             xmlns:forms="clr-namespace:ZXing.Net.Mobile.Forms;assembly=ZXing.Net.Mobile.Forms"
-             NavigationPage.HasNavigationBar="False"              
-             xmlns:controls="clr-namespace:BRB5.View"
-             x:Class="BRB5.PriceCheck">
+﻿<?xml version="1.0" encoding="utf-8"?>
+
+<controls:BaseContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+                          xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+                          xmlns:forms="clr-namespace:ZXing.Net.Mobile.Forms;assembly=ZXing.Net.Mobile.Forms"
+                          NavigationPage.HasNavigationBar="False"
+                          xmlns:controls="clr-namespace:BRB5.View"
+                          x:Class="BRB5.PriceCheck">
     <ContentPage.Content>
-            <StackLayout BackgroundColor="{Binding ColorPrintColorType}"  >
+        <StackLayout BackgroundColor="{Binding ColorPrintColorType}">
 
-                <Grid IsVisible="{Binding IsVisScan}" HeightRequest="200">
-                    <forms:ZXingScannerView x:Name="zxing" 
-                                        HorizontalOptions="StartAndExpand" 
-                                        VerticalOptions="FillAndExpand" >
-                    </forms:ZXingScannerView>
-                </Grid>
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition />
-                        <ColumnDefinition />
-                    </Grid.ColumnDefinitions>
+            <Grid IsVisible="{Binding IsVisScan}" 
+                  HeightRequest="200">
+                <forms:ZXingScannerView x:Name="zxing" />
+            </Grid>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+                </Grid.ColumnDefinitions>
 
-                    <Button Text="{Binding NamePrintColorType}"
-                            IsEnabled ="{Binding IsEnabledPrintType}"
+                <Button Text="{Binding NamePrintColorType}"
+                        IsEnabled="{Binding IsEnabledPrintType}"
                         HorizontalOptions="Fill"
                         Clicked="OnClickChangePrintColorType" />
 
-                    <Button 
-                        Grid.Column="1" 
-                        Text="{Binding PackageNumber}"
-                        HorizontalOptions="Fill"
-                        Clicked="OnClickAddPrintBlock" />
-                </Grid>
+                <Button
+                    Grid.Column="1"
+                    Text="{Binding PackageNumber}"
+                    HorizontalOptions="Fill"
+                    Clicked="OnClickAddPrintBlock" />
+            </Grid>
 
-                <Grid >
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="2*"/>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="2*"/>
-                        <ColumnDefinition Width="2*"/>
-                    </Grid.ColumnDefinitions>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="2*" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="2*" />
+                    <ColumnDefinition Width="2*" />
+                </Grid.ColumnDefinitions>
 
-                    <Label Text="Арт:" />
-                    <Label Text="{Binding WP.Article}"
-                       Grid.Column="1"  />
-                    <Label Text="Зал:"
-                       Grid.Column="2"  />
-                    <Label Text="{Binding WP.Rest}"
-                       Grid.Column="3"  />
-                    <Label Text="{Binding WP.Unit}"
-                       Grid.Column="4"  />
-                </Grid>
+                <Label Text="Арт:" />
+                <Label Text="{Binding WP.Article}"
+                       Grid.Column="1" />
+                <Label Text="Зал:"
+                       Grid.Column="2" />
+                <Label Text="{Binding WP.Rest}"
+                       Grid.Column="3" />
+                <Label Text="{Binding WP.Unit}"
+                       Grid.Column="4" />
+            </Grid>
 
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="2*"/>
-                        <ColumnDefinition Width="3*"/>
-                        <ColumnDefinition Width="2*"/>
-                        <ColumnDefinition Width="3*"/>
-                    </Grid.ColumnDefinitions>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="2*" />
+                    <ColumnDefinition Width="3*" />
+                    <ColumnDefinition Width="2*" />
+                    <ColumnDefinition Width="3*" />
+                </Grid.ColumnDefinitions>
 
-                    <Label Text="Ціна с:"  
-                           VerticalOptions="Center"
-                           FontSize="16"
-                           TextColor="{Binding TextColorPrice}"/>
-                    <Label Text="{Binding WP.PriceOld}"
-                           Grid.Column="1"
-                           FontSize="24"
-                           TextColor="{Binding TextColorPrice}"/>
-                    <Label Text="Ціна н:"
-                           VerticalOptions="Center"
-                           FontSize="16"
-                           Grid.Column="2"  
-                           TextColor="{Binding TextColorPrice}"/>
-                    <Label Text="{Binding WP.Price}"
-                           FontSize="24"                       
-                           Grid.Column="3"  
-                           TextColor="{Binding TextColorPrice}"/>
-                </Grid>
+                <Label Text="Ціна с:"
+                       VerticalOptions="Center"
+                       FontSize="16"
+                       TextColor="{Binding TextColorPrice}" />
+                <Label Text="{Binding WP.PriceOld}"
+                       Grid.Column="1"
+                       FontSize="24"
+                       TextColor="{Binding TextColorPrice}" />
+                <Label Text="Ціна н:"
+                       VerticalOptions="Center"
+                       FontSize="16"
+                       Grid.Column="2"
+                       TextColor="{Binding TextColorPrice}" />
+                <Label Text="{Binding WP.Price}"
+                       FontSize="24"
+                       Grid.Column="3"
+                       TextColor="{Binding TextColorPrice}" />
+            </Grid>
 
-                <Grid IsVisible="{Binding IsVisPriceOpt}">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="2*"/>
-                        <ColumnDefinition Width="3*"/>
-                        <ColumnDefinition Width="2*"/>
-                        <ColumnDefinition Width="3*"/>
-                    </Grid.ColumnDefinitions>
+            <Grid IsVisible="{Binding IsVisPriceOpt}">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="2*" />
+                    <ColumnDefinition Width="3*" />
+                    <ColumnDefinition Width="2*" />
+                    <ColumnDefinition Width="3*" />
+                </Grid.ColumnDefinitions>
 
-                    <Label Text="Ц.с.опт."
-                           VerticalOptions="Center"
-                           FontSize="16" 
-                           TextColor="{Binding TextColorPrice}" />
-                    <Label Text="{Binding WP.PriceOptOld}"
-                           FontSize="24" 
-                           Grid.Column="1"  
-                           TextColor="{Binding TextColorPrice}"/>
-                    <Label Text="Ц.н.опт."
-                           VerticalOptions="Center"
-                           FontSize="16" 
-                           Grid.Column="2" 
-                           TextColor="{Binding TextColorPrice}" />
-                    <Label Text="{Binding WP.PriceOpt}"
-                           FontSize="24" 
-                           Grid.Column="3" 
-                           TextColor="{Binding TextColorPrice}" />
-                </Grid>
+                <Label Text="Ц.с.опт."
+                       VerticalOptions="Center"
+                       FontSize="16"
+                       TextColor="{Binding TextColorPrice}" />
+                <Label Text="{Binding WP.PriceOptOld}"
+                       FontSize="24"
+                       Grid.Column="1"
+                       TextColor="{Binding TextColorPrice}" />
+                <Label Text="Ц.н.опт."
+                       VerticalOptions="Center"
+                       FontSize="16"
+                       Grid.Column="2"
+                       TextColor="{Binding TextColorPrice}" />
+                <Label Text="{Binding WP.PriceOpt}"
+                       FontSize="24"
+                       Grid.Column="3"
+                       TextColor="{Binding TextColorPrice}" />
+            </Grid>
 
-                <Grid>
-                    <Label Text="{Binding WP.Name}"
-                           FontSize="28"  />
-                </Grid>
+            <Grid>
+                <Label Text="{Binding WP.Name}"
+                       FontSize="28" />
+            </Grid>
 
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="1*" />
-                        <ColumnDefinition Width="2*"  />
-                    </Grid.ColumnDefinitions>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="1*" />
+                    <ColumnDefinition Width="2*" />
+                </Grid.ColumnDefinitions>
 
-                    <Label Text="Штрих код:" />
-                    <Frame Style="{StaticResource FrameStyle}" Grid.Column="1" >
-                        <controls:CustomEntry Style="{StaticResource EntryStyle}"
-                                              Text="{Binding WP.BarCodes}" />
-                    </Frame>
-                </Grid>
+                <Label Text="Штрих код:" />
+                <Frame Style="{StaticResource FrameStyle}" Grid.Column="1">
+                    <controls:CustomEntry Style="{StaticResource EntryStyle}"
+                                          Text="{Binding WP.BarCodes}" />
+                </Frame>
+            </Grid>
 
-                <Grid IsVisible="{Binding IsVisRepl}">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="1*" />
-                        <ColumnDefinition Width="2*"  />
-                    </Grid.ColumnDefinitions>
+            <Grid IsVisible="{Binding IsVisRepl}">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="1*" />
+                    <ColumnDefinition Width="2*" />
+                </Grid.ColumnDefinitions>
 
-                    <Label Text="Поповнення:" />
-                    <Frame Style="{StaticResource FrameStyle}" 
-                           Grid.Column="1" >
-                        <controls:CustomEntry Style="{StaticResource EntryStyle}"
-                           Text="" 
-                           x:Name="NumberOfReplenishment"
-                           Keyboard="Numeric" />
-                    </Frame>
-                </Grid>
+                <Label Text="Поповнення:" />
+                <Frame Style="{StaticResource FrameStyle}"
+                       Grid.Column="1">
+                    <controls:CustomEntry Style="{StaticResource EntryStyle}"
+                                          Text=""
+                                          x:Name="NumberOfReplenishment"
+                                          Keyboard="Numeric" />
+                </Frame>
+            </Grid>
 
-                <Grid VerticalOptions="EndAndExpand">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition />
-                        <ColumnDefinition />
-                    </Grid.ColumnDefinitions>
+            <Grid VerticalOptions="EndAndExpand">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+                </Grid.ColumnDefinitions>
 
-                    <Picker Title="пакети"  
+                <Picker Title="пакети"
                         ItemsSource="{Binding ListPrintBlockItems}"
                         ItemDisplayBinding="{Binding stringPrintBlockItem}"
-                        SelectedIndex="{Binding SelectedPrintBlockItems}"/>
+                        SelectedIndex="{Binding SelectedPrintBlockItems}" />
 
-                    <Button Text="f1-Друк"
-                        Grid.Column="1" 
+                <Button Text="f1-Друк"
+                        Grid.Column="1"
                         HorizontalOptions="Fill"
-                        IsEnabled ="{Binding IsEnabledPrint}"
+                        IsEnabled="{Binding IsEnabledPrint}"
                         Clicked="OnClickPrintBlock" />
-                </Grid>
+            </Grid>
 
-                <Grid VerticalOptions="End">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition />
-                        <ColumnDefinition />
-                        <ColumnDefinition />
-                    </Grid.ColumnDefinitions>
+            <Grid VerticalOptions="End">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+                </Grid.ColumnDefinitions>
 
-                    <Label 
-                        Text="{Binding WP.StrHttpResult}" 
-                        TextColor="{Binding TextColorHttp}" 
-                           />
-                    <Label Text=""
-                       Grid.Column="1"  />
-                    <Label Text=""
-                       Grid.Column="2"  />
-                </Grid>
-                
-                <StackLayout VerticalOptions="End" Orientation="Horizontal">
+                <Label
+                    Text="{Binding WP.StrHttpResult}"
+                    TextColor="{Binding TextColorHttp}" />
+                <Label Text=""
+                       Grid.Column="1" />
+                <Label Text=""
+                       Grid.Column="2" />
+            </Grid>
 
-                    <Label Text="f1-" 
-                           VerticalOptions="Center"
-                           FontSize="16" 
-                           TextColor = "#ff5c5c"/>
-                    <Label Text="Друк"
-                           FontSize="18"
-                           Grid.Column="1"
-                           TextColor="#816f20">
-                        <Label.GestureRecognizers>
-                            <TapGestureRecognizer Tapped="OnClickPrintBlock" />
-                        </Label.GestureRecognizers>
-                    </Label>
-                    
-                    <Label Text="f2-" 
-                           VerticalOptions="Center"
-                           FontSize="16"
-                           Grid.Column="2" 
-                           TextColor = "#ff5c5c" />
-                    <Label Text="Підбір"
-                           FontSize="18"
-                           Grid.Column="3" 
-                           TextColor="#816f20" >
-                        <Label.GestureRecognizers>
-                            <TapGestureRecognizer Tapped="OnF2" />
-                        </Label.GestureRecognizers>
-                    </Label>
-                    <Label Text="f4-" FontSize="16" 
-                           IsVisible="{Binding IsVisF4}"
-                           TextColor = "#ff5c5c"
-                           Grid.Column="4"
-                           VerticalOptions="Center"  />
-                    <Label Text="" 
-                           FontSize="18" 
-                           IsVisible="{Binding IsVisF4}"
-                           Grid.Column="5"
-                           TextColor="#816f20"  >
-                        <Label.GestureRecognizers>
-                            <TapGestureRecognizer Tapped="OnF4" />
-                        </Label.GestureRecognizers>
-                    </Label>
-                    <Label Text="f5-" 
-                           FontSize="16"
-                           Grid.Column="6" 
-                           TextColor = "#ff5c5c"
-                           VerticalOptions="Center" />
-                    <Label Text="{Binding F5Text}" 
-                           FontSize="18"
-                           Grid.Column="7"
-                           TextColor="#816f20"  >
-                        <Label.GestureRecognizers>
-                            <TapGestureRecognizer Tapped="OnF5" />
-                        </Label.GestureRecognizers>
-                    </Label>
-                </StackLayout>
-               
-                <Grid VerticalOptions="End">
-                    <ProgressBar x:Name="pb"  ScaleY="2" Progress="{Binding PB}" ProgressColor="Black" />
-                </Grid>
+            <StackLayout VerticalOptions="End" Orientation="Horizontal">
 
-            </StackLayout >
-        
+                <Label Text="f1-"
+                       VerticalOptions="Center"
+                       FontSize="16"
+                       TextColor="#ff5c5c" />
+                <Label Text="Друк"
+                       FontSize="18"
+                       Grid.Column="1"
+                       TextColor="#816f20">
+                    <Label.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="OnClickPrintBlock" />
+                    </Label.GestureRecognizers>
+                </Label>
+
+                <Label Text="f2-"
+                       VerticalOptions="Center"
+                       FontSize="16"
+                       Grid.Column="2"
+                       TextColor="#ff5c5c" />
+                <Label Text="Підбір"
+                       FontSize="18"
+                       Grid.Column="3"
+                       TextColor="#816f20">
+                    <Label.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="OnF2" />
+                    </Label.GestureRecognizers>
+                </Label>
+                <Label Text="f4-" FontSize="16"
+                       IsVisible="{Binding IsVisF4}"
+                       TextColor="#ff5c5c"
+                       Grid.Column="4"
+                       VerticalOptions="Center" />
+                <Label Text=""
+                       FontSize="18"
+                       IsVisible="{Binding IsVisF4}"
+                       Grid.Column="5"
+                       TextColor="#816f20">
+                    <Label.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="OnF4" />
+                    </Label.GestureRecognizers>
+                </Label>
+                <Label Text="f5-"
+                       FontSize="16"
+                       Grid.Column="6"
+                       TextColor="#ff5c5c"
+                       VerticalOptions="Center" />
+                <Label Text="{Binding F5Text}"
+                       FontSize="18"
+                       Grid.Column="7"
+                       TextColor="#816f20">
+                    <Label.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="OnF5" />
+                    </Label.GestureRecognizers>
+                </Label>
+            </StackLayout>
+
+            <Grid VerticalOptions="End">
+                <ProgressBar x:Name="pb" ScaleY="2" Progress="{Binding PB}" ProgressColor="Black" />
+            </Grid>
+
+        </StackLayout>
+
     </ContentPage.Content>
-</ContentPage>
+</controls:BaseContentPage>

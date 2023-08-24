@@ -129,7 +129,10 @@ namespace BRB5.Model
 
         public static eTypeScaner GetTypeScaner()
         {
-            if ( (Manufacturer.Contains("Zebra Technologies") || Manufacturer.Contains("Motorola Solutions")))
+            if (string.IsNullOrEmpty(Manufacturer))
+                return eTypeScaner.Camera;
+            
+            if (Manufacturer.Contains("Zebra Technologies") || Manufacturer.Contains("Motorola Solutions"))
                 return eTypeScaner.Zebra;
             if (Model.Equals("PM550") && (Manufacturer.Contains("POINTMOBILE") || Manufacturer.Contains("Point Mobile Co., Ltd.")))
                 return eTypeScaner.PM550;
@@ -137,6 +140,7 @@ namespace BRB5.Model
                 return eTypeScaner.PM351;
             if (Model.Equals("HC61") || Manufacturer.Contains("Bita"))
                 return eTypeScaner.BitaHC61;
+            
             return eTypeScaner.Camera;
         }
 

@@ -289,7 +289,14 @@ namespace BRB5.Connector
             {
                 string[] lines = result.Result.Split(new String[] { ";;;" }, StringSplitOptions.None);
                 foreach (var el in lines)
-                    db.db.ExecuteNonQuery(el);
+                    try
+                    {
+                        db.db.ExecuteNonQuery(el);
+                    }
+                    catch (Exception e)
+                    {
+                        Console.WriteLine(e);
+                    }
             }
             return null;
         }

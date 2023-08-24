@@ -1,101 +1,102 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
-<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
-             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:forms="clr-namespace:ZXing.Net.Mobile.Forms;assembly=ZXing.Net.Mobile.Forms"
-             NavigationPage.HasNavigationBar="False"
-             xmlns:controls="clr-namespace:BRB5.View"
-             x:Class="BRB5.View.Scan">
+﻿<?xml version="1.0" encoding="utf-8"?>
+
+<controls:BaseContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+                          xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+                          xmlns:forms="clr-namespace:ZXing.Net.Mobile.Forms;assembly=ZXing.Net.Mobile.Forms"
+                          NavigationPage.HasNavigationBar="False"
+                          xmlns:controls="clr-namespace:BRB5.View"
+                          x:Class="BRB5.View.Scan">
     <ContentPage.Content>
         <AbsoluteLayout Padding="0" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand">
-            
-            <StackLayout IsEnabled="True"  AbsoluteLayout.LayoutBounds="1, 1, 1,1" AbsoluteLayout.LayoutFlags="All">
-                <Grid IsVisible="{Binding IsVisScan}" HeightRequest="300" >
-                    <forms:ZXingScannerView x:Name="zxing" 
-                                        ScaleY="1.7"
-                                        HorizontalOptions="StartAndExpand" 
-                                        VerticalOptions="FillAndExpand" >
+
+            <StackLayout IsEnabled="True" AbsoluteLayout.LayoutBounds="1, 1, 1,1" AbsoluteLayout.LayoutFlags="All">
+                <Grid IsVisible="{Binding IsVisScan}" HeightRequest="300">
+                    <forms:ZXingScannerView x:Name="zxing"
+                                            ScaleY="1.7"
+                                            HorizontalOptions="StartAndExpand"
+                                            VerticalOptions="FillAndExpand">
                     </forms:ZXingScannerView>
                 </Grid>
-                <Grid IsVisible="{Binding IsVisScan}" HeightRequest="50"/>
+                <Grid IsVisible="{Binding IsVisScan}" HeightRequest="50" />
 
-                <Grid  >
+                <Grid>
 
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="auto"/>
-                        <RowDefinition Height="3*"/>
-                        <RowDefinition Height="7*"/>
-                        <RowDefinition Height="2*"/>
+                        <RowDefinition Height="auto" />
+                        <RowDefinition Height="3*" />
+                        <RowDefinition Height="7*" />
+                        <RowDefinition Height="2*" />
                     </Grid.RowDefinitions>
 
                     <Label Text="{Binding ScanData.NameWares}"
-                           FontSize="28"  />
-                    <Grid Grid.Row="1" >
+                           FontSize="28" />
+                    <Grid Grid.Row="1">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="*"  />
+                            <ColumnDefinition Width="*" />
                         </Grid.ColumnDefinitions>
                         <Grid.RowDefinitions>
-                            <RowDefinition/>
-                            <RowDefinition/>
+                            <RowDefinition />
+                            <RowDefinition />
                         </Grid.RowDefinitions>
 
-                        <Frame Style="{StaticResource FrameStyle}" >
+                        <Frame Style="{StaticResource FrameStyle}">
                             <controls:CustomEntry Style="{StaticResource EntryStyle}"
-                                              Text="{Binding ScanData.BarCode}" 
-                                              IsReadOnly="True"
-                                              Placeholder="баркод"/>
+                                                  Text="{Binding ScanData.BarCode}"
+                                                  IsReadOnly="True"
+                                                  Placeholder="баркод" />
                         </Frame>
-                        <Frame Style="{StaticResource FrameStyle}" 
-                           Grid.Column="1">
+                        <Frame Style="{StaticResource FrameStyle}"
+                               Grid.Column="1">
                             <controls:CustomEntry Style="{StaticResource EntryStyle}"
-                                              Text="{Binding ScanData.BeforeQuantity}" 
-                                              IsReadOnly="True"/>
+                                                  Text="{Binding ScanData.BeforeQuantity}"
+                                                  IsReadOnly="True" />
                         </Frame>
 
                         <Grid Grid.Row="1">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="3*" />
-                                <ColumnDefinition Width="*"  />
-                                <ColumnDefinition Width="*"  />
-                                <ColumnDefinition Width="2*"  />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="2*" />
                             </Grid.ColumnDefinitions>
 
-                            <Frame Grid.Column="0" Style="{StaticResource FrameStyle}" >
+                            <Frame Grid.Column="0" Style="{StaticResource FrameStyle}">
                                 <controls:CustomEntry Style="{StaticResource EntryStyle}"
-                                    Text="{Binding ScanData.InputQuantity}" 
-                                    x:Name="inputQ"
-                                    TextChanged="CalcQuantity"
-                                    Placeholder="к-сть"
-                                    Keyboard="Numeric"/>
+                                                      Text="{Binding ScanData.InputQuantity}"
+                                                      x:Name="inputQ"
+                                                      TextChanged="CalcQuantity"
+                                                      Placeholder="к-сть"
+                                                      Keyboard="Numeric" />
                             </Frame>
 
-                            <Label Text="{Binding ScanData.NameUnit}" Grid.Column="1"/>
-                            <Label Text="X" Grid.Column="2"/>
+                            <Label Text="{Binding ScanData.NameUnit}" Grid.Column="1" />
+                            <Label Text="X" Grid.Column="2" />
 
                             <Frame Style="{StaticResource FrameStyle}"
-                               Grid.Column="3" >
+                                   Grid.Column="3">
                                 <controls:CustomEntry Style="{StaticResource EntryStyle}"
-                                              Text="{Binding ScanData.Coefficient}" 
-                                              IsReadOnly="True"/>
+                                                      Text="{Binding ScanData.Coefficient}"
+                                                      IsReadOnly="True" />
                             </Frame>
                         </Grid>
 
                         <Frame Style="{StaticResource FrameStyle}"
-                           Grid.Column="1"
-                           Grid.Row="1">
+                               Grid.Column="1"
+                               Grid.Row="1">
                             <controls:CustomEntry Style="{StaticResource EntryStyle}"
-                                              Text="{Binding ScanData.QuantityBarCode}" 
-                                              IsReadOnly="True"/>
+                                                  Text="{Binding ScanData.QuantityBarCode}"
+                                                  IsReadOnly="True" />
                         </Frame>
                     </Grid>
 
 
-                    <ListView Grid.Row="2" ItemsSource="{Binding ListWares}" SeparatorVisibility="None" >
+                    <ListView Grid.Row="2" ItemsSource="{Binding ListWares}" SeparatorVisibility="None">
                         <ListView.Header>
-                            <Grid  RowSpacing="1"
-                                ColumnSpacing="1"  
-                                Padding="1" 
-                                BackgroundColor="#adaea7">
+                            <Grid RowSpacing="1"
+                                  ColumnSpacing="1"
+                                  Padding="1"
+                                  BackgroundColor="#adaea7">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="1*" />
                                     <ColumnDefinition Width="6*" />
@@ -103,27 +104,27 @@
                                     <ColumnDefinition Width="2*" />
                                 </Grid.ColumnDefinitions>
 
-                                <Label Text="№"        
-                                    BackgroundColor="White" />
-                                <Label Text="Назва" 
-                                    Grid.Column="1"
-                                    BackgroundColor="White" />
-                                <Label Text="к-сть" 
-                                    Grid.Column="2"
-                                    BackgroundColor="White" />
-                                <Label Text="ст.к-сть" 
-                                    Grid.Column="3"
-                                    BackgroundColor="White" />
+                                <Label Text="№"
+                                       BackgroundColor="White" />
+                                <Label Text="Назва"
+                                       Grid.Column="1"
+                                       BackgroundColor="White" />
+                                <Label Text="к-сть"
+                                       Grid.Column="2"
+                                       BackgroundColor="White" />
+                                <Label Text="ст.к-сть"
+                                       Grid.Column="3"
+                                       BackgroundColor="White" />
                             </Grid>
                         </ListView.Header>
 
                         <ListView.ItemTemplate>
-                            <DataTemplate >
+                            <DataTemplate>
                                 <ViewCell>
-                                    <Grid  RowSpacing="1"
-                                   ColumnSpacing="1"  
-                                   Padding="1" 
-                                   BackgroundColor="#adaea7">
+                                    <Grid RowSpacing="1"
+                                          ColumnSpacing="1"
+                                          Padding="1"
+                                          BackgroundColor="#adaea7">
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="1*" />
                                             <ColumnDefinition Width="6*" />
@@ -131,17 +132,17 @@
                                             <ColumnDefinition Width="2*" />
                                         </Grid.ColumnDefinitions>
 
-                                        <Label Text="{Binding OrderDoc}"        
-                                       BackgroundColor="{Binding GetLightBackgroundColor}" />
-                                        <Label Text="{Binding NameWares}" 
-                                       Grid.Column="1"
-                                       BackgroundColor="{Binding GetLightBackgroundColor}" />
-                                        <Label Text="{Binding InputQuantity}" 
-                                       Grid.Column="2"
-                                       BackgroundColor="{Binding GetLightBackgroundColor}" />
-                                        <Label Text="{Binding QuantityOld}" 
-                                       Grid.Column="3"
-                                       BackgroundColor="{Binding GetLightBackgroundColor}" />
+                                        <Label Text="{Binding OrderDoc}"
+                                               BackgroundColor="{Binding GetLightBackgroundColor}" />
+                                        <Label Text="{Binding NameWares}"
+                                               Grid.Column="1"
+                                               BackgroundColor="{Binding GetLightBackgroundColor}" />
+                                        <Label Text="{Binding InputQuantity}"
+                                               Grid.Column="2"
+                                               BackgroundColor="{Binding GetLightBackgroundColor}" />
+                                        <Label Text="{Binding QuantityOld}"
+                                               Grid.Column="3"
+                                               BackgroundColor="{Binding GetLightBackgroundColor}" />
 
                                     </Grid>
                                 </ViewCell>
@@ -149,71 +150,72 @@
                         </ListView.ItemTemplate>
                     </ListView>
 
-                    <StackLayout Grid.Row="3" VerticalOptions="Fill"   Orientation="Horizontal">
-                        <Label Text="f1-" 
-                           FontSize="16"
-                           Grid.Column="2" 
-                           TextColor = "#ff5c5c" />
+                    <StackLayout Grid.Row="3" VerticalOptions="Fill" Orientation="Horizontal">
+                        <Label Text="f1-"
+                               FontSize="16"
+                               Grid.Column="2"
+                               TextColor="#ff5c5c" />
                         <Label Text="обнулити"
-                           FontSize="18"
-                           Grid.Column="3" 
-                           TextColor="#816f20" >
+                               FontSize="18"
+                               Grid.Column="3"
+                               TextColor="#816f20">
 
                             <Label.GestureRecognizers>
                                 <TapGestureRecognizer Tapped="Reset" />
                             </Label.GestureRecognizers>
                         </Label>
-                        <Label Text="f2-" FontSize="16" 
-                           TextColor = "#ff5c5c"
-                           Grid.Column="4" />
-                        <Label Text="↑" 
-                           FontSize="18" 
-                           Grid.Column="5"
-                           TextColor="#816f20"  >
+                        <Label Text="f2-" FontSize="16"
+                               TextColor="#ff5c5c"
+                               Grid.Column="4" />
+                        <Label Text="↑"
+                               FontSize="18"
+                               Grid.Column="5"
+                               TextColor="#816f20">
                         </Label>
-                        <Label Text="f3-" 
-                           FontSize="16"
-                           Grid.Column="6" 
-                           TextColor = "#ff5c5c" />
-                        <Label Text="↓" 
-                           FontSize="18"
-                           Grid.Column="7"
-                           TextColor="#816f20"  >
+                        <Label Text="f3-"
+                               FontSize="16"
+                               Grid.Column="6"
+                               TextColor="#ff5c5c" />
+                        <Label Text="↓"
+                               FontSize="18"
+                               Grid.Column="7"
+                               TextColor="#816f20">
                         </Label>
-                        <Label Text="f8-" 
-                           FontSize="16"
-                           Grid.Column="6" 
-                           TextColor = "#ff5c5c" />
-                        <Label Text="{Binding F8Text}" 
-                           FontSize="18"
-                           Grid.Column="7"
-                           TextColor="#816f20"  >
+                        <Label Text="f8-"
+                               FontSize="16"
+                               Grid.Column="6"
+                               TextColor="#ff5c5c" />
+                        <Label Text="{Binding F8Text}"
+                               FontSize="18"
+                               Grid.Column="7"
+                               TextColor="#816f20">
                         </Label>
                     </StackLayout>
 
-                </Grid >
-                
+                </Grid>
+
             </StackLayout>
-            <BoxView IsVisible="{Binding IsVisQ}" Color="Gray" Opacity=".3" AbsoluteLayout.LayoutBounds="0, 0, 1, 1" AbsoluteLayout.LayoutFlags="All" />
-            <Frame AbsoluteLayout.LayoutBounds="0.5, 0.5, -1, -1"  IsVisible="{Binding IsVisQ}"
+            <BoxView IsVisible="{Binding IsVisQ}" Color="Gray" Opacity=".3" AbsoluteLayout.LayoutBounds="0, 0, 1, 1"
+                     AbsoluteLayout.LayoutFlags="All" />
+            <Frame AbsoluteLayout.LayoutBounds="0.5, 0.5, -1, -1" IsVisible="{Binding IsVisQ}"
                    AbsoluteLayout.LayoutFlags="PositionProportional"
-                   CornerRadius="10"   Padding="0">
-                <StackLayout Padding="10" WidthRequest="300" BackgroundColor="White" >
+                   CornerRadius="10" Padding="0">
+                <StackLayout Padding="10" WidthRequest="300" BackgroundColor="White">
 
                     <Label TextColor="Black" Text="{Binding DisplayQuestion}" FontSize="Large" VerticalOptions="Center" />
-                    <StackLayout Orientation="Horizontal" HorizontalOptions="End" >
-                        <Button Text = "Ok"
-                            IsVisible="{Binding IsVisQOk}"
-                            Clicked="OkClicked" 
-                            FontSize="Medium" 
-                            Style="{StaticResource ButtonStyle}" />
-                        <Button Text = "Cancel" 
-                            FontSize="Medium" 
-                            Clicked="CancelClicked" 
-                            Style="{StaticResource ButtonStyle}" />
+                    <StackLayout Orientation="Horizontal" HorizontalOptions="End">
+                        <Button Text="Ok"
+                                IsVisible="{Binding IsVisQOk}"
+                                Clicked="OkClicked"
+                                FontSize="Medium"
+                                Style="{StaticResource ButtonStyle}" />
+                        <Button Text="Cancel"
+                                FontSize="Medium"
+                                Clicked="CancelClicked"
+                                Style="{StaticResource ButtonStyle}" />
                     </StackLayout>
                 </StackLayout>
             </Frame>
         </AbsoluteLayout>
     </ContentPage.Content>
-</ContentPage>
+</controls:BaseContentPage>

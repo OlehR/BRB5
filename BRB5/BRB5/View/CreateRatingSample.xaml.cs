@@ -1,19 +1,13 @@
-﻿using BRB5.Connector;
-using BRB5.Model;
+﻿using BRB5.Model;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 using Xamarin.Forms;
-using Xamarin.Forms.Xaml;
 
 namespace BRB5.View
 {
-    [XamlCompilation(XamlCompilationOptions.Compile)]
-    public partial class CreateRaitingSample : ContentPage
+    public partial class CreateRatingSample
     {
         private ObservableCollection<Raiting> _RS;
         public ObservableCollection<Raiting> RS { get { return _RS; } set { _RS = value; OnPropertyChanged(nameof(RS)); } }
@@ -23,7 +17,7 @@ namespace BRB5.View
         private DocId DocId;
         DB db = DB.GetDB();
 
-        public CreateRaitingSample(int id)
+        public CreateRatingSample(int id)
         {
             InitializeComponent();
             DocId = new DocId();

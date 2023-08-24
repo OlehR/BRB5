@@ -1,58 +1,60 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
-<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
-             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             NavigationPage.HasNavigationBar="False"
-             x:Class="BRB5.View.EditPhoto">
+﻿<?xml version="1.0" encoding="utf-8"?>
+
+<view:BaseContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+                      xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+                      xmlns:view="clr-namespace:BRB5.View;assembly=BRB5"
+                      NavigationPage.HasNavigationBar="False"
+                      x:Class="BRB5.View.EditPhoto">
     <ContentPage.Content>
-        <AbsoluteLayout>           
-            
+        <AbsoluteLayout>
+
             <ListView x:Name="Files"
                       HasUnevenRows="True"
-                      ItemsSource="{Binding MyFiles}" 
-                      AbsoluteLayout.LayoutBounds="1, 0, 1, .9"  AbsoluteLayout.LayoutFlags="All">
+                      ItemsSource="{Binding MyFiles}"
+                      AbsoluteLayout.LayoutBounds="1, 0, 1, .9" AbsoluteLayout.LayoutFlags="All">
                 <ListView.Header>
                     <StackLayout Orientation="Horizontal">
                         <Label Text="Фотографії" FontSize="25"
-                           BackgroundColor="#c5cae9" HorizontalOptions="FillAndExpand" />
+                               BackgroundColor="#c5cae9" HorizontalOptions="FillAndExpand" />
                     </StackLayout>
                 </ListView.Header>
                 <!-- ItemTapped="OnItemTapped"-->
                 <ListView.ItemTemplate>
-                    <DataTemplate xmlns:brb5="clr-namespace:BRB5" >
+                    <DataTemplate xmlns:brb5="clr-namespace:BRB5">
                         <ViewCell>
-                            <ViewCell.View  >
-                                <Grid   >
+                            <ViewCell.View>
+                                <Grid>
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="4*" />
                                         <ColumnDefinition Width="1*" />
                                     </Grid.ColumnDefinitions>
                                     <Image Source="{Binding FileName}"
-                                                     ClassId="Ok"
-                                                     BackgroundColor="Transparent" 
-                                                     WidthRequest="240" HeightRequest="500"
-                                                     FlexLayout.AlignSelf="Center"  
-                                                     FlexLayout.Grow="1" Aspect="AspectFit"
-                                                     IsVisible="{Binding IsPhoto}" />
+                                           ClassId="Ok"
+                                           BackgroundColor="Transparent"
+                                           WidthRequest="240" HeightRequest="500"
+                                           FlexLayout.AlignSelf="Center"
+                                           FlexLayout.Grow="1" Aspect="AspectFit"
+                                           IsVisible="{Binding IsPhoto}" />
                                     <Image Source="Video.png"
-                                                     ClassId="Ok"
-                                                     BackgroundColor="Transparent" 
-                                                     WidthRequest="240"
-                                                     FlexLayout.AlignSelf="Center"  
-                                                     FlexLayout.Grow="1" Aspect="AspectFit"                                                     
-                                                     IsVisible="{Binding IsVideo}" />
+                                           ClassId="Ok"
+                                           BackgroundColor="Transparent"
+                                           WidthRequest="240"
+                                           FlexLayout.AlignSelf="Center"
+                                           FlexLayout.Grow="1" Aspect="AspectFit"
+                                           IsVisible="{Binding IsVideo}" />
 
-                                    <ImageButton Source="Delete.png" 
-                                                     ClassId="NotKnow"
-                                                     Grid.Column="1"
-                                                     BackgroundColor="Transparent"
-                                                     WidthRequest="40" 
-                                                     HeightRequest="40"
-                                                     FlexLayout.AlignSelf="Center" 
-                                                     FlexLayout.Grow="1" 
-                                                     Aspect="AspectFit" 
-                                                     Opacity="{Binding OpacityNotKnow}" 
-                                                     IsVisible="{Binding IsNotSend}"
-                                                     Clicked="OnButtonDel" />
+                                    <ImageButton Source="Delete.png"
+                                                 ClassId="NotKnow"
+                                                 Grid.Column="1"
+                                                 BackgroundColor="Transparent"
+                                                 WidthRequest="40"
+                                                 HeightRequest="40"
+                                                 FlexLayout.AlignSelf="Center"
+                                                 FlexLayout.Grow="1"
+                                                 Aspect="AspectFit"
+                                                 Opacity="{Binding OpacityNotKnow}"
+                                                 IsVisible="{Binding IsNotSend}"
+                                                 Clicked="OnButtonDel" />
                                 </Grid>
 
                             </ViewCell.View>
@@ -60,18 +62,18 @@
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>
-            
-            <Grid AbsoluteLayout.LayoutBounds="0, 1, 1, .1"  AbsoluteLayout.LayoutFlags="All">
-                
-                <Button x:Name="AddFotos"  
-                        Text = "Додати медіа" 
-                        FontSize="Medium" 
+
+            <Grid AbsoluteLayout.LayoutBounds="0, 1, 1, .1" AbsoluteLayout.LayoutFlags="All">
+
+                <Button x:Name="AddFotos"
+                        Text="Додати медіа"
+                        FontSize="Medium"
                         BorderWidth="1"
-                        HorizontalOptions="Center" 
+                        HorizontalOptions="Center"
                         VerticalOptions="CenterAndExpand"
                         Clicked="OnPhotosAdd" />
 
             </Grid>
         </AbsoluteLayout>
     </ContentPage.Content>
-</ContentPage>
+</view:BaseContentPage>

@@ -1,17 +1,10 @@
 ﻿using BRB5.Model;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-using Xamarin.Forms;
-using Xamarin.Forms.Xaml;
 
 namespace BRB5.View
 {
-	[XamlCompilation(XamlCompilationOptions.Compile)]
-	public partial class CreateRaitingTemplate : ContentPage
+	public partial class CreateRaitingTemplate
 	{
 		private RaitingTemplate _RT;
 		public RaitingTemplate RT { get { return _RT; } set { _RT = value; OnPropertyChanged(nameof(RT.Text)); } }
@@ -23,7 +16,7 @@ namespace BRB5.View
             RT = new RaitingTemplate();
 			RT.Id = id;
 
-            this.BindingContext = this;
+            BindingContext = this;
         }
 
         private async void Create(object sender, EventArgs e)
@@ -31,7 +24,7 @@ namespace BRB5.View
 			RT.IsActive = true;
 			db.ReplaceRaitingTemplate(new List<RaitingTemplate>() { RT });
 
-            await Navigation.PushAsync(new TemplateRaiting());
+            await Navigation.PushAsync(new TemplateRating());
         }
     }
 }

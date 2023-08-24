@@ -1,21 +1,12 @@
 ﻿using BRB5.Model;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Runtime.InteropServices.ComTypes;
-using System.Text;
-using System.Threading.Tasks;
-
 using Xamarin.Forms;
-using Xamarin.Forms.Xaml;
-using ZXing;
-using ZXing.QrCode.Internal;
 
 namespace BRB5.View
 {
-    [XamlCompilation(XamlCompilationOptions.Compile)]
-    public partial class Scan : ContentPage
+    public partial class Scan
     {
         private ObservableCollection<DocWaresEx> _ListWares;
         public ObservableCollection<DocWaresEx> ListWares { get { return _ListWares; } set { _ListWares = value; OnPropertyChanged("ListWares"); } }

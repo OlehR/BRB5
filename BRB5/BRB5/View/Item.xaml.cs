@@ -3,25 +3,20 @@ using BRB5.View;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Timers;
 using Utils;
 using Xamarin.Essentials;
 using Xamarin.Forms;
-using Xamarin.Forms.Xaml;
-using System.Drawing;
-
 
 namespace BRB5
 {
     //[QueryProperty(nameof(NumberDoc), nameof(NumberDoc))]
     //[QueryProperty(nameof(TypeDoc), nameof(TypeDoc))]
     //[XamlCompilation(XamlCompilationOptions.Compile)]
-    public partial class Item : ContentPage, INotifyPropertyChanged
+    public partial class Item
     {
         Timer t;
         Utils u = Utils.GetUtils();

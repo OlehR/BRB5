@@ -1,20 +1,13 @@
 ﻿using BRB5.Model;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 using Utils;
 using Xamarin.Essentials;
-using Xamarin.Forms;
-using Xamarin.Forms.Xaml;
 
 namespace BRB5.View
 {
-    [XamlCompilation(XamlCompilationOptions.Compile)]
-    public partial class Settings : TabbedPage, INotifyPropertyChanged
+    public partial class Settings
     {
         private Connector.Connector c;
         DB db = DB.GetDB();

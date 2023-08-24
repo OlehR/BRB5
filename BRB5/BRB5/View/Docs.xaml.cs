@@ -14,8 +14,7 @@ using Xamarin.Forms.Xaml;
 
 namespace BRB5
 {
-    [XamlCompilation(XamlCompilationOptions.Compile)]
-    public partial class Docs : ContentPage
+    public partial class Docs
     {
         Connector.Connector c;
         DB db = DB.GetDB();
