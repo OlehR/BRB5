@@ -74,7 +74,8 @@ namespace BRB5.Model
         public string Address { get; set; } // 
         [JsonIgnore]
         public string ShortAddress { 
-            get { 
+            get {
+                if (Address == null) return null;
                 var temp = Address.Split('-')[1];
                 if (temp.Length < 2) temp= Address;
                 return temp;
