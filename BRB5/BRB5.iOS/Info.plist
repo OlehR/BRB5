@@ -3,13 +3,13 @@
 <plist version="1.0">
 <dict>
 	<key>MinimumOSVersion</key>
-	<string>8.0</string>
+	<string>14.3</string>
 	<key>CFBundleDisplayName</key>
 	<string>BRB5</string>
 	<key>CFBundleIdentifier</key>
 	<string>ua.uz.spar.brb5</string>
 	<key>CFBundleVersion</key>
-	<string>1.0</string>
+	<string>5.0.36</string>
 	<key>CFBundleName</key>
 	<string>BRB5</string>
 	<key>UIDeviceFamily</key>
@@ -45,5 +45,7 @@
 	<string>CICON app needs access to the photo gallery to pick photos for user avatar and chat.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>CICON app needs access to the photo gallery to pick photos for user avatar and chat.</string>
+	<key>CFBundleShortVersionString</key>
+	<string>5.0.36</string>
 </dict>
 </plist>
