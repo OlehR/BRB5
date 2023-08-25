@@ -1,20 +1,10 @@
-﻿using BRB5.Connector;
-using BRB5.Model;
+﻿using BRB5.Model;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-using Xamarin.Forms;
-using Xamarin.Forms.PlatformConfiguration.AndroidSpecific;
-using Xamarin.Forms.Xaml;
 
 namespace BRB5.View
 {
-    [XamlCompilation(XamlCompilationOptions.Compile)]
-    public partial class EditQuestion : ContentPage
+    public partial class EditQuestion
     {
 
         private Raiting _RQ;
@@ -38,7 +28,7 @@ namespace BRB5.View
         private async void Save(object sender, EventArgs e)
         {
             db.ReplaceRaitingSample(new List<Raiting>(){RQ});
-            await Navigation.PushAsync(new CreateRaitingSample(int.Parse(RQ.NumberDoc)));
+            await Navigation.PushAsync(new CreateRatingSample(int.Parse(RQ.NumberDoc)));
         }
 
         private void OnButtonClicked(object sender, EventArgs e)

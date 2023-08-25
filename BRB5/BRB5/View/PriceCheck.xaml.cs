@@ -11,11 +11,12 @@ using Xamarin.Forms.Xaml;
 using ZXing.Net.Mobile.Forms;
 using Xamarin.Essentials;
 using ZXing;
+using ZXing.Mobile;
+
 //using BRB5.Connector;
 namespace BRB5
 {
-    [XamlCompilation(XamlCompilationOptions.Compile)]
-    public partial class PriceCheck : ContentPage, INotifyPropertyChanged, IDisposable
+    public partial class PriceCheck : IDisposable
 {
     
         Connector.Connector c;    
@@ -96,6 +97,15 @@ namespace BRB5
             }
             if(IsVisScan)
             {
+                zxing.Options = new MobileBarcodeScanningOptions
+                {
+                    PossibleFormats = new List<BarcodeFormat>
+                    {
+                        BarcodeFormat.All_1D,
+                        BarcodeFormat.QR_CODE,
+                    },
+                    UseNativeScanning = true,
+                };
                 zxing.OnScanResult += (result) =>
                     Device.BeginInvokeOnMainThread(async () =>
                     // Stop analysis until we navigate away so we don't keep reading barcodes

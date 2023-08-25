@@ -1,17 +1,18 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
-<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
-             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" xmlns:local="clr-namespace:BRB5.View"
-             x:Class="BRB5.View.DocsStandart"       
-             xmlns:forms="clr-namespace:ZXing.Net.Mobile.Forms;assembly=ZXing.Net.Mobile.Forms"                 
-             xmlns:controls="clr-namespace:BRB5.View">
+﻿<?xml version="1.0" encoding="utf-8"?>
+
+<local:BaseContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+                       xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" xmlns:local="clr-namespace:BRB5.View"
+                       x:Class="BRB5.View.DocsStandart"
+                       xmlns:forms="clr-namespace:ZXing.Net.Mobile.Forms;assembly=ZXing.Net.Mobile.Forms"
+                       xmlns:controls="clr-namespace:BRB5.View">
     <ContentPage.Resources>
         <ResourceDictionary>
             <DataTemplate x:Key="evenTemplate">
                 <ViewCell>
-                    <Grid  RowSpacing="1"
-                                   ColumnSpacing="1"  
-                                   Padding="1" 
-                                   BackgroundColor="#adaea7">
+                    <Grid RowSpacing="1"
+                          ColumnSpacing="1"
+                          Padding="1"
+                          BackgroundColor="#adaea7">
                         <Grid.GestureRecognizers>
                             <TapGestureRecognizer Tapped="OpenDoc" />
                         </Grid.GestureRecognizers>
@@ -20,36 +21,36 @@
                             <ColumnDefinition Width="1*" />
                         </Grid.ColumnDefinitions>
                         <Grid.RowDefinitions>
-                            <RowDefinition/>
-                            <RowDefinition/>
-                            <RowDefinition/>
+                            <RowDefinition />
+                            <RowDefinition />
+                            <RowDefinition />
                         </Grid.RowDefinitions>
 
                         <Label Text="{Binding DateDoc}"
-                                       BackgroundColor="{Binding GetColor}"/>
+                               BackgroundColor="{Binding GetColor}" />
 
                         <Label Text="{Binding NumberDoc}"
-                                       Grid.Column="1" 
-                                       BackgroundColor="{Binding GetColor}"/>
+                               Grid.Column="1"
+                               BackgroundColor="{Binding GetColor}" />
                         <Label Text="{Binding Description}"
-                                       Grid.ColumnSpan="2"
-                                       Grid.Row="1"
-                                       BackgroundColor="{Binding GetColor}"/>
+                               Grid.ColumnSpan="2"
+                               Grid.Row="1"
+                               BackgroundColor="{Binding GetColor}" />
 
                         <Label Text="{Binding NameUser}"
-                                       BackgroundColor="{Binding GetColor}"
-                                       Grid.ColumnSpan="2"
-                                       Grid.Row="2"/>
+                               BackgroundColor="{Binding GetColor}"
+                               Grid.ColumnSpan="2"
+                               Grid.Row="2" />
                     </Grid>
                 </ViewCell>
             </DataTemplate>
             <DataTemplate x:Key="unevenTemplate">
                 <ViewCell>
 
-                    <Grid  RowSpacing="1"
-                                   ColumnSpacing="1"  
-                                   Padding="1" 
-                                   BackgroundColor="#adaea7">
+                    <Grid RowSpacing="1"
+                          ColumnSpacing="1"
+                          Padding="1"
+                          BackgroundColor="#adaea7">
                         <Grid.GestureRecognizers>
                             <TapGestureRecognizer Tapped="OpenDoc" />
                         </Grid.GestureRecognizers>
@@ -58,113 +59,113 @@
                             <ColumnDefinition Width="1*" />
                         </Grid.ColumnDefinitions>
                         <Grid.RowDefinitions>
-                            <RowDefinition/>
-                            <RowDefinition/>
-                            <RowDefinition/>
+                            <RowDefinition />
+                            <RowDefinition />
+                            <RowDefinition />
                         </Grid.RowDefinitions>
 
                         <Label Text="{Binding DateDoc}"
-                                       BackgroundColor="{Binding GetLightColor}"/>
+                               BackgroundColor="{Binding GetLightColor}" />
 
                         <Label Text="{Binding NumberDoc}"
-                                       Grid.Column="1" 
-                                       BackgroundColor="{Binding GetLightColor}"/>
+                               Grid.Column="1"
+                               BackgroundColor="{Binding GetLightColor}" />
                         <Label Text="{Binding Description}"
-                                       Grid.ColumnSpan="2"
-                                       Grid.Row="1"
-                                       BackgroundColor="{Binding GetLightColor}"/>
+                               Grid.ColumnSpan="2"
+                               Grid.Row="1"
+                               BackgroundColor="{Binding GetLightColor}" />
 
                         <Label Text="{Binding NameUser}"
-                                       BackgroundColor="{Binding GetLightColor}"
-                                       Grid.ColumnSpan="2"
-                                       Grid.Row="2"/>
+                               BackgroundColor="{Binding GetLightColor}"
+                               Grid.ColumnSpan="2"
+                               Grid.Row="2" />
                     </Grid>
                 </ViewCell>
             </DataTemplate>
             <local:AlternateColorDataTemplateSelector x:Key="alternateColorDataTemplateSelector"
-                EvenTemplate="{StaticResource evenTemplate}"
-                UnevenTemplate="{StaticResource unevenTemplate}" />
+                                                      EvenTemplate="{StaticResource evenTemplate}"
+                                                      UnevenTemplate="{StaticResource unevenTemplate}" />
         </ResourceDictionary>
     </ContentPage.Resources>
     <ContentPage.Content>
         <StackLayout>
             <Grid IsVisible="{Binding IsVisOPKO}" HeightRequest="50">
-                <Frame Style="{StaticResource FrameStyle}"  >
+                <Frame Style="{StaticResource FrameStyle}">
                     <controls:CustomEntry Style="{StaticResource EntryStyle}"
                                           Placeholder="ОПКО"
-                                          Text="{Binding OPKOstr}" 
+                                          Text="{Binding OPKOstr}"
                                           Keyboard="Numeric"
-                                          Completed="FilterDocs"/>
+                                          Completed="FilterDocs" />
                 </Frame>
             </Grid>
 
             <Grid IsVisible="{Binding IsVisBarCode}" HeightRequest="150">
-                <forms:ZXingScannerView x:Name="zxing" 
-                                        HorizontalOptions="StartAndExpand" 
-                                        VerticalOptions="FillAndExpand" 
-                                        ScaleY="2"  
-                                        OnScanResult="FilterBarCode" 
+                <forms:ZXingScannerView x:Name="zxing"
+                                        HorizontalOptions="StartAndExpand"
+                                        VerticalOptions="FillAndExpand"
+                                        ScaleY="2"
+                                        OnScanResult="FilterBarCode"
                                         IsScanning="False">
                 </forms:ZXingScannerView>
             </Grid>
-            <ListView ItemsSource="{Binding MyDocsR}" 
+            <ListView ItemsSource="{Binding MyDocsR}"
                       SeparatorVisibility="None"
                       HasUnevenRows="True"
-                      ItemTemplate="{StaticResource alternateColorDataTemplateSelector}">               
+                      ItemTemplate="{StaticResource alternateColorDataTemplateSelector}">
             </ListView>
 
             <StackLayout VerticalOptions="EndAndExpand" Orientation="Horizontal">
 
 
-                <Label Text="8-" 
-                           VerticalOptions="Center"
-                           FontSize="16"
-                           TextColor = "#ff5c5c" />
+                <Label Text="8-"
+                       VerticalOptions="Center"
+                       FontSize="16"
+                       TextColor="#ff5c5c" />
                 <Label Text="↑"
-                           FontSize="18"
-                           TextColor="#816f20" >
+                       FontSize="18"
+                       TextColor="#816f20">
                 </Label>
-                <Label Text="2-" FontSize="16" 
-                           TextColor = "#ff5c5c"
-                           VerticalOptions="Center"  />
-                <Label Text="↓" 
-                           FontSize="18"       
-                           TextColor="#816f20"  >
+                <Label Text="2-" FontSize="16"
+                       TextColor="#ff5c5c"
+                       VerticalOptions="Center" />
+                <Label Text="↓"
+                       FontSize="18"
+                       TextColor="#816f20">
                 </Label>
-                <Label Text="ENT-" 
-                           FontSize="16"
-                           TextColor = "#ff5c5c"
-                           VerticalOptions="Center" />
-                <Label Text="вибір" 
-                           FontSize="18"
-                           TextColor="#816f20"  >                    
+                <Label Text="ENT-"
+                       FontSize="16"
+                       TextColor="#ff5c5c"
+                       VerticalOptions="Center" />
+                <Label Text="вибір"
+                       FontSize="18"
+                       TextColor="#816f20">
                 </Label>
-                <Label Text="F1-" 
+                <Label Text="F1-"
                        IsVisible="{Binding IsViewOut}"
-                           FontSize="16"
-                           TextColor = "#ff5c5c"
-                           VerticalOptions="Center" />
-                <Label Text="ОКПО" 
+                       FontSize="16"
+                       TextColor="#ff5c5c"
+                       VerticalOptions="Center" />
+                <Label Text="ОКПО"
                        IsVisible="{Binding IsViewOut}"
-                           FontSize="18"
-                           TextColor="#816f20"  >
+                       FontSize="18"
+                       TextColor="#816f20">
                     <Label.GestureRecognizers>
                         <TapGestureRecognizer Tapped="OKPO" />
                     </Label.GestureRecognizers>
                 </Label>
 
                 <Grid IsVisible="{Binding IsVisScan}">
-                    <Label  Text="штрихкод" 
-                       IsVisible="{Binding IsViewOut}"
+                    <Label Text="штрихкод"
+                           IsVisible="{Binding IsViewOut}"
                            FontSize="18"
-                           TextColor="#816f20"  >
+                           TextColor="#816f20">
                         <Label.GestureRecognizers>
                             <TapGestureRecognizer Tapped="TabBarCode" />
                         </Label.GestureRecognizers>
                     </Label>
                 </Grid>
-            
+
             </StackLayout>
         </StackLayout>
     </ContentPage.Content>
-</ContentPage>
+</local:BaseContentPage>

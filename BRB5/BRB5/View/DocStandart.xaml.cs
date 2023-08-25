@@ -2,19 +2,13 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
-using System.Windows.Input;
 using Xamarin.Forms;
-using Xamarin.Forms.Xaml;
 using Xamarin.CommunityToolkit.Extensions;
-using System.Collections.Specialized;
 
 namespace BRB5.View
 {
-    [XamlCompilation(XamlCompilationOptions.Compile)]
-    public partial class DocStandart : ContentPage
+    public partial class DocStandart
     {
         private readonly TypeDoc TypeDoc;
         

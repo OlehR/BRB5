@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Threading;
 using Xamarin.Essentials;
+using Xamarin.Forms;
 
 namespace BRB5.Model
 {
@@ -129,6 +130,8 @@ namespace BRB5.Model
 
         public static eTypeScaner GetTypeScaner()
         {
+            if(Device.RuntimePlatform == Device.iOS)
+                return eTypeScaner.Camera;
             if ( (Manufacturer.Contains("Zebra Technologies") || Manufacturer.Contains("Motorola Solutions")))
                 return eTypeScaner.Zebra;
             if (Model.Equals("PM550") && (Manufacturer.Contains("POINTMOBILE") || Manufacturer.Contains("Point Mobile Co., Ltd.")))

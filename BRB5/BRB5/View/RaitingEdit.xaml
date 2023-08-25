@@ -1,11 +1,13 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
-<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
-             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" xmlns:controls="clr-namespace:BRB5.View"
-             x:Class="BRB5.View.RaitingEdit">
+﻿<?xml version="1.0" encoding="utf-8"?>
+
+<controls:BaseContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+                          xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+                          xmlns:controls="clr-namespace:BRB5.View"
+                          x:Class="BRB5.View.RaitingEdit">
     <NavigationPage.TitleView>
-        <Button Text = "Зберегти" 
+        <Button Text="Зберегти"
                 Grid.Column="1"
-                Clicked="Save" 
+                Clicked="Save"
                 Style="{StaticResource ButtonStyle}" />
 
     </NavigationPage.TitleView>
@@ -13,29 +15,29 @@
         <StackLayout>
             <Label Text="{Binding RD.NumberDoc}" FontSize="Large" />
             <Label Text="Дата:" FontSize="Medium" />
-            <DatePicker Date="{Binding RD.DateDoc}" 
-                        Format="dd/MM/yyyy"/>
+            <DatePicker Date="{Binding RD.DateDoc}"
+                        Format="dd/MM/yyyy" />
 
             <Label Text="Назва:" FontSize="Medium" />
-            <Frame Style="{StaticResource FrameStyle}" 
-                           Grid.Column="1" >
+            <Frame Style="{StaticResource FrameStyle}"
+                   Grid.Column="1">
                 <controls:CustomEntry Style="{StaticResource EntryStyle}"
-                           Text="{Binding RD.Description}" />
+                                      Text="{Binding RD.Description}" />
             </Frame>
 
             <Label Text="Шаблон опитування:" FontSize="Medium" />
-            <Picker Title="Шаблони"  
+            <Picker Title="Шаблони"
                     ItemsSource="{Binding RT}"
                     ItemDisplayBinding="{Binding Text}"
-                    SelectedItem ="{Binding SelectedTemplate}"/>
+                    SelectedItem="{Binding SelectedTemplate}" />
 
             <Label Text="Магазин:" FontSize="Medium" />
-            <Picker Title="Магазини"        
-                        ItemsSource="{Binding ListWarehouse}"
-                        ItemDisplayBinding="{Binding Name}"
-                        SelectedItem="{Binding SelectedWarehouse}"
-                        HorizontalOptions="Fill"/>
+            <Picker Title="Магазини"
+                    ItemsSource="{Binding ListWarehouse}"
+                    ItemDisplayBinding="{Binding Name}"
+                    SelectedItem="{Binding SelectedWarehouse}"
+                    HorizontalOptions="Fill" />
 
         </StackLayout>
     </ContentPage.Content>
-</ContentPage>
+</controls:BaseContentPage>

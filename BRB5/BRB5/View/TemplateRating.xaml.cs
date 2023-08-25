@@ -3,17 +3,12 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Xamarin.Essentials;
 using Xamarin.Forms;
-using Xamarin.Forms.Xaml;
 
 namespace BRB5.View
 {
-    [XamlCompilation(XamlCompilationOptions.Compile)]
-    public partial class TemplateRaiting : ContentPage        
+    public partial class TemplateRating        
     {
 
         private ObservableCollection<RaitingTemplate> _RTemplate;
@@ -23,7 +18,7 @@ namespace BRB5.View
         BRB5.Connector.Connector c;
         private bool ShowHidden = false;
 
-        public TemplateRaiting()
+        public TemplateRating()
         {
             InitializeComponent();
             c = Connector.Connector.GetInstance();
@@ -50,7 +45,7 @@ namespace BRB5.View
             var s = b.Parent as Grid;
 
             var vRaitingTemplate = s.BindingContext as RaitingTemplate;
-            await Navigation.PushAsync(new CreateRaitingSample(vRaitingTemplate.Id));
+            await Navigation.PushAsync(new CreateRatingSample(vRaitingTemplate.Id));
         }
 
         private async void Import(object sender, EventArgs e)
