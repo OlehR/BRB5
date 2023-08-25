@@ -1,18 +1,11 @@
 ﻿using BRB5.Model;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 using Xamarin.Forms;
-using Xamarin.Forms.Xaml;
 
 namespace BRB5.View
 {
-	[XamlCompilation(XamlCompilationOptions.Compile)]
-	public partial class RaitingDocs : ContentPage
+	public partial class RaitingDocs
 	{
         private readonly TypeDoc TypeDoc;
         BRB5.Connector.Connector c;

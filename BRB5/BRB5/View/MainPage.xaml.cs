@@ -2,13 +2,11 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Threading.Tasks;
 using Xamarin.Forms;
 using BRB5.Connector;
 using BRB5.Model;
 using BRB5.View;
 using Xamarin.Essentials;
-using System.Threading;
 using Utils;
 using System.IO;
 
@@ -16,8 +14,7 @@ using System.IO;
 
 namespace BRB5
 {
-
-    public partial class MainPage : ContentPage
+    public partial class MainPage
     {
         public ObservableCollection<TypeDoc> OCTypeDoc { get; set; }
         BRB5.Connector.Connector c;
@@ -27,23 +24,23 @@ namespace BRB5
         public string Password { get; set; }
         public IEnumerable<LoginServer> LS { get; set; }
 
-        public int SelectedLS { get {  return LS == null || LS.Count()==1? 0 : LS.ToList().FindIndex(x => x.Code == Config.LoginServer); } set { Config.LoginServer = LS.ToList()[value].Code; } }
+        public int SelectedLS { get { return LS == null || LS.Count() == 1 ? 0 : LS.ToList().FindIndex(x => x.Code == Config.LoginServer); } set { Config.LoginServer = LS.ToList()[value].Code; } }
         public bool IsVisLS { get; set; } = true;
-        public string Ver { get { return "BRB5 (" + AppInfo.VersionString + ")"; } }
+        public string Ver { get { return"BRB5 (" + AppInfo.VersionString + ")"; } }
         public string Company { get { return Enum.GetName(typeof(eCompany), Config.Company); } }
         public MainPage()
         {
             OCTypeDoc = new ObservableCollection<TypeDoc>();
             c = Connector.Connector.GetInstance();
-            InitializeComponent();            
+            InitializeComponent();
             Init();
-            
+
             BindingContext = this;
         }
 
-        private  void OnButtonLogin(object sender, System.EventArgs e)
+        private void OnButtonLogin(object sender, System.EventArgs e)
         {
-            var r = c.Login(Login, Password,Config.LoginServer);
+            var r = c.Login(Login, Password, Config.LoginServer);
             if (r.State == 0)
             {
                 db.SetConfig<string>("Login", Login);
@@ -61,7 +58,7 @@ namespace BRB5
                 //OCTypeDoc = new ObservableCollection<TypeDoc>(Config.TypeDoc);
                 foreach (var i in Config.TypeDoc) OCTypeDoc.Add(i);
 
-                var Wh=c.LoadWarehouse();
+                var Wh = c.LoadWarehouse();
                 db.ReplaceWarehouse(Wh);
 
                 long SizeDel = 0, SizeUse = 0;
@@ -74,7 +71,7 @@ namespace BRB5
                     FileLogger.WriteLogMessage($"{Path.Combine(Config.PathFiles, "arx")} => SizeDel={SizeDel}, SizeUse=>{SizeUse}");
                 }
 
-                if(Config.DateLastLoadGuid.Date != DateTime.Today.Date)
+                if (Config.DateLastLoadGuid.Date != DateTime.Today.Date)
                 {
                     c.LoadGuidData(true);
                     Config.DateLastLoadGuid = DateTime.Now;
@@ -86,15 +83,28 @@ namespace BRB5
         }
 
         private async void OnButtonClicked(object sender, System.EventArgs e)
-        {           
+        {
             Button button = (Button)sender;
             Cell cc = button.Parent as Cell;
             var vTypeDoc = cc.BindingContext as TypeDoc;
 
+            var cameraStatus = await Permissions.CheckStatusAsync<Permissions.Camera>();
+
+            if (cameraStatus != PermissionStatus.Granted)
+            {
+                cameraStatus = await Permissions.RequestAsync<Permissions.Camera>();
+            }
+
+            if (cameraStatus != PermissionStatus.Granted)
+            {
+                await DisplayAlert("Error", "Need camera permission", "OK", FlowDirection.MatchParent);
+                return;
+            }
+
             switch (vTypeDoc.KindDoc)
             {
                 case eKindDoc.PriceCheck:
-                    await Navigation.PushAsync(new PriceCheck());//new CustomScanPage()); // 
+                    await Navigation.PushAsync(new PriceCheck()); //new CustomScanPage()); // 
                     break;
                 case eKindDoc.Normal:
                 case eKindDoc.Simple:
@@ -104,15 +114,15 @@ namespace BRB5
                     await Navigation.PushAsync(new Docs(vTypeDoc));
                     break;
                 case eKindDoc.TempateRaiting:
-                    await Navigation.PushAsync(new TemplateRaiting());
+                    await Navigation.PushAsync(new TemplateRating());
                     break;
                 case eKindDoc.RaitingCreate:
                     await Navigation.PushAsync(new RaitingDocs(vTypeDoc));
                     break;
-                default:                  
+                default:
                     break;
             }
-        }      
+        }
 
 
         void Init()
@@ -124,9 +134,9 @@ namespace BRB5
             if (Config.IsAutoLogin)
             {
                 Password = db.GetConfig<string>("Password");
-                OnButtonLogin(null,null);
+                OnButtonLogin(null, null);
             }
-            
+
             if (c != null)
             {
                 LS = c.LoginServer();
@@ -136,6 +146,7 @@ namespace BRB5
                     Config.LoginServer = LS.First().Code;
                 }
             }
+
             Config.IsVibration = db.GetConfig<bool>("IsVibration");
             Config.IsSound = db.GetConfig<bool>("IsSound");
             Config.IsTest = db.GetConfig<bool>("IsTest");
@@ -146,13 +157,13 @@ namespace BRB5
             Config.CodeWarehouse = db.GetConfig<int>("CodeWarehouse");
             Config.Company = db.GetConfig<eCompany>("Company");
             Config.TypeUsePrinter = db.GetConfig<eTypeUsePrinter>("TypeUsePrinter");
-            FileLogger.TypeLog = db.GetConfig<eTypeLog>("TypeLog");         
+            FileLogger.TypeLog = db.GetConfig<eTypeLog>("TypeLog");
 
         }
-       
+
 
         protected override void OnDisappearing()
-        {         
+        {
             base.OnDisappearing();
         }
 

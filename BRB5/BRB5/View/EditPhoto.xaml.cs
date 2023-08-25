@@ -5,13 +5,9 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
-using Xamarin.Essentials;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
-using static System.Net.WebRequestMethods;
 using File = System.IO.File;
 
 namespace BRB5.View
@@ -34,8 +30,7 @@ namespace BRB5.View
 
     }
 
-    [XamlCompilation(XamlCompilationOptions.Compile)]
-    public partial class EditPhoto : ContentPage
+    public partial class EditPhoto
     {
         DB db = DB.GetDB();
         public ObservableCollection<Pictures> MyFiles { get; set; }
