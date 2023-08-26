@@ -120,7 +120,7 @@ namespace BRB5.View
             var tempbool = await DisplayAlert("Завантаження", "Не збережені зміни можуть бути видалені", "OK" , "Cancel");
             if (tempbool)
             {
-                var temp = new ObservableCollection<RaitingTemplate>(c.GetRaitingTemplate());
+                var temp = new ObservableCollection<RaitingTemplate>(c.GetRaitingTemplate().Info);
                 db.ReplaceRaitingTemplate(temp);
 
                 RTemplate = new ObservableCollection<RaitingTemplate>(db.GetRaitingTemplate());

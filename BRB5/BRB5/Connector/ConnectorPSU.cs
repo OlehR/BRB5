@@ -96,7 +96,7 @@ namespace BRB5.Connector
         public override Result Login(string pLogin, string pPassWord, eLoginServer pLoginServer)
         {
             string data = JsonConvert.SerializeObject(new Api() { CodeData = 1, Login = pLogin, PassWord = pPassWord }); //"{\"CodeData\": \"1\"" + ", \"Login\": \"" + pLogin + "\"" + ", \"PassWord\": \"" + pPassWord + "\"}";
-            HttpResult result = Http.HTTPRequest(0, "", data, "application/json");//
+            HttpResult result = Http.HTTPRequest(0, "znp/", data, "application/json");//
 
             if (result.HttpState != eStateHTTP.HTTP_OK)
             {
@@ -210,7 +210,7 @@ namespace BRB5.Connector
             Config.OnProgress?.Invoke(0.3d);
             WaresPrice res;
             string data = JsonConvert.SerializeObject(new ApiPrice(154, pBC));
-            HttpResult result = Http.HTTPRequest(0, "", data, "application/json");
+            HttpResult result = Http.HTTPRequest(0, "znp/", data, "application/json");
             Config.OnProgress?.Invoke(0.8d);
             if (result.HttpState != eStateHTTP.HTTP_OK)
                 res = new WaresPrice(result);
@@ -240,7 +240,7 @@ namespace BRB5.Connector
                 return new Result(-1, "Відсутні дані на відправку");
             var Data = pLogPrice.Select(el => el.GetPSU());
             string data = JsonConvert.SerializeObject(new ApiLogPrice(Data));
-            HttpResult result = Http.HTTPRequest(0, "", data, "application/json");
+            HttpResult result = Http.HTTPRequest(0, "znp/", data, "application/json");
             return new Result(result);
         }
 
@@ -283,7 +283,7 @@ namespace BRB5.Connector
         public override Result LoadDocsData(int pTypeDoc, string pNumberDoc, bool pIsClear) 
         {
             string data = JsonConvert.SerializeObject(new ApiDoc() { CodeData = 150, TypeDoc = pTypeDoc });
-            HttpResult result = Http.HTTPRequest(0, "", data, "application/json");//
+            HttpResult result = Http.HTTPRequest(0, "znp/", data, "application/json");//
 
             if (result.HttpState == eStateHTTP.HTTP_OK)
             {
@@ -316,7 +316,7 @@ namespace BRB5.Connector
             String data = res.ToJSON();
             try
             {
-                HttpResult result = Http.HTTPRequest(0, "", data, "application/json", null, null);
+                HttpResult result = Http.HTTPRequest(0, "znp/", data, "application/json", null, null);
                 if (result.HttpState != eStateHTTP.HTTP_OK)
                 {
                     return new Result(result);
@@ -340,7 +340,7 @@ namespace BRB5.Connector
         public override IEnumerable<Warehouse> LoadWarehouse()
         {
             string data = JsonConvert.SerializeObject(new Api() { CodeData = 210 });
-            HttpResult result = Http.HTTPRequest(0, "", data, "application/json","brb","brb");//
+            HttpResult result = Http.HTTPRequest(0, "znp/", data, "application/json","brb","brb");//
 
             if (result.HttpState == eStateHTTP.HTTP_OK)
             {
@@ -365,7 +365,7 @@ namespace BRB5.Connector
             try
             {
                 string json = new ApiPrintHTTP(Data).ToJSON(); //Config.GetApiJson(999, BuildConfig.VERSION_CODE, "\"CodeWares\":\"" + sb.toString() + "\"");
-                HttpResult res = Http.HTTPRequest(1, "", json, "application/json;charset=UTF-8", null, null);//"http://znp.vopak.local:8088/Print"
+                HttpResult res = Http.HTTPRequest(0, "print/", json, "application/json;charset=UTF-8", null, null);//"http://znp.vopak.local:8088/Print"
                 if (res.HttpState == eStateHTTP.HTTP_OK)
                 {
                     return res.Result;
@@ -381,7 +381,7 @@ namespace BRB5.Connector
         }
 
         public override Result<int> GetIdRaitingTemplate() {
-            HttpResult result = Http.HTTPRequest(1, "DCT/Raitting/GetIdRaitingTemplate", null, "application/json", "brb", "brb");//
+            HttpResult result = Http.HTTPRequest(0, "api/DCT/Raitting/GetIdRaitingTemplate", null, "application/json", "brb", "brb");//
 
             if (result.HttpState == eStateHTTP.HTTP_OK)
             {
@@ -393,7 +393,7 @@ namespace BRB5.Connector
 
         public override Result GetNumberDocRaiting()
         {
-            HttpResult result = Http.HTTPRequest(1, "DCT/Raitting/GetNumberDocRaiting", null, "application/json", "brb", "brb");//
+            HttpResult result = Http.HTTPRequest(0, "api/DCT/Raitting/GetNumberDocRaiting", null, "application/json", "brb", "brb");//
 
             if (result.HttpState == eStateHTTP.HTTP_OK)
             {
@@ -405,7 +405,7 @@ namespace BRB5.Connector
 
         public override Result SaveTemplate(RaitingTemplate pRT)
         {
-            HttpResult result = Http.HTTPRequest(1, "DCT/Raitting/SaveTemplate", pRT.ToJSON("yyyy-MM-ddTHH:mm:ss"), "application/json", "brb", "brb");//
+            HttpResult result = Http.HTTPRequest(0, "api/DCT/Raitting/SaveTemplate", pRT.ToJSON("yyyy-MM-ddTHH:mm:ss"), "application/json", "brb", "brb");//
 
             if (result.HttpState == eStateHTTP.HTTP_OK)
             {
@@ -417,7 +417,7 @@ namespace BRB5.Connector
 
         public override Result SaveDocRaiting(Doc pDoc)
         {
-            HttpResult result = Http.HTTPRequest(1, "DCT/Raitting/SaveDocRaiting", pDoc.ToJSON("yyyy-MM-ddTHH:mm:ss"), "application/json", "brb", "brb");//
+            HttpResult result = Http.HTTPRequest(0, "api/DCT/Raitting/SaveDocRaiting", pDoc.ToJSON("yyyy-MM-ddTHH:mm:ss"), "application/json", "brb", "brb");//
 
             if (result.HttpState == eStateHTTP.HTTP_OK)
             {
@@ -426,27 +426,30 @@ namespace BRB5.Connector
             }
             return null;
         }
-        public override IEnumerable<RaitingTemplate> GetRaitingTemplate()
+        public override Result<IEnumerable<RaitingTemplate>> GetRaitingTemplate()
         {
-            HttpResult result = Http.HTTPRequest(1, "DCT/Raitting/GetRaitingTemplate", null, "application/json", "brb", "brb");//
+            HttpResult result = Http.HTTPRequest(0, "api/DCT/Raitting/GetRaitingTemplate", null, "application/json", "brb", "brb");//
 
             if (result.HttpState == eStateHTTP.HTTP_OK)
             {
                 var r = JsonConvert.DeserializeObject<IEnumerable<RaitingTemplate>>(result.Result);
-                return r;
+                return new Result<IEnumerable<RaitingTemplate>>() { Info = r };
             }
-            return null;
+            else
+                return new Result<IEnumerable<RaitingTemplate>>(result,null);
+           
         }
-        public override IEnumerable<Doc> GetRaitingDocs()
+        public override Result<IEnumerable<Doc>> GetRaitingDocs()
         {
-            HttpResult result = Http.HTTPRequest(1, "DCT/Raitting/GetRaitingDocs", null, "application/json", "brb", "brb");//
+            HttpResult result = Http.HTTPRequest(0, "api/DCT/Raitting/GetRaitingDocs", null, "application/json", "brb", "brb");//
 
             if (result.HttpState == eStateHTTP.HTTP_OK)
             {
                 var r = JsonConvert.DeserializeObject<IEnumerable<Doc>>(result.Result);
-                return r;
+                return new Result<IEnumerable<Doc>>() { Info = r };
             }
-            return null;
+            else
+                return new Result<IEnumerable<Doc>>(result, null);
         }
 
 
