@@ -22,7 +22,7 @@ namespace BRB5.View
         {
             InitializeComponent();
             c = Connector.Connector.GetInstance();
-            RTemplate = new ObservableCollection<RaitingTemplate>(c.GetRaitingTemplate());
+            RTemplate = new ObservableCollection<RaitingTemplate>(db.GetRaitingTemplate());
             this.BindingContext = this;
         }
 
@@ -97,12 +97,7 @@ namespace BRB5.View
                 var tdi = db.ReplaceRaitingSample(RS);
             }
         }
-
-        private void Save(object sender, EventArgs e)
-        {
-            db.ReplaceRaitingTemplate(RTemplate);
-        }
-
+                
         private void SaveRaiting(object sender, EventArgs e)
         {
             var b = sender as ImageButton;
@@ -113,11 +108,23 @@ namespace BRB5.View
             var DocId = new DocId();
             DocId.NumberDoc = vRaitingTemplate.Id.ToString();
             DocId.TypeDoc = -1;
+            db.ReplaceRaitingTemplate(new List<RaitingTemplate>() { vRaitingTemplate });
 
             vRaitingTemplate.Item = db.GetRaiting(DocId);
 
             _ = DisplayAlert("збереження", c.SaveTemplate(vRaitingTemplate).TextError, "OK");
-            
+        }
+
+        private async void Download(object sender, EventArgs e)
+        {
+            var tempbool = await DisplayAlert("Завантаження", "Не збережені зміни можуть бути видалені", "OK" , "Cancel");
+            if (tempbool)
+            {
+                var temp = new ObservableCollection<RaitingTemplate>(c.GetRaitingTemplate());
+                db.ReplaceRaitingTemplate(temp);
+
+                RTemplate = new ObservableCollection<RaitingTemplate>(db.GetRaitingTemplate());
+            }
         }
     }
 }

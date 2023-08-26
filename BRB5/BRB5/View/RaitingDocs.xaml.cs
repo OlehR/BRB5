@@ -1,11 +1,13 @@
 ﻿using BRB5.Model;
 using System;
 using System.Collections.ObjectModel;
+using System.Linq;
 using Xamarin.Forms;
 
 namespace BRB5.View
 {
-	public partial class RaitingDocs
+    
+    public partial class RaitingDocs
 	{
         private readonly TypeDoc TypeDoc;
         BRB5.Connector.Connector c;
@@ -21,6 +23,16 @@ namespace BRB5.View
             c = Connector.Connector.GetInstance();
 
             RD = new ObservableCollection<Doc>(c.GetRaitingDocs());
+            var tempWH = db.GetWarehouse()?.ToList();
+            var tempRT = db.GetRaitingTemplate()?.ToList();
+            if (tempWH != null)
+                foreach (Doc d in RD)
+                    try 
+                    { 
+                        d.CodeWarehouseName = tempWH.FirstOrDefault(t =>t.CodeWarehouse == d.CodeWarehouse).Name;
+                        d.RaitingTemplateName = tempRT.FirstOrDefault(t => t.Id == d.IdTemplate).Text;
+                    } catch(Exception ex) { }
+
             this.BindingContext = this;
         }
 

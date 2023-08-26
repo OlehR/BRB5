@@ -14,7 +14,7 @@ namespace BRB5.Model
         /// Номер в випадку Sim23 4 значний код 1104
         /// </summary>
         public string Number {get;set;}
-        public int CodeWarehouse { get { try { return Convert.ToInt32(Number); } catch { return 0; } }}
+        public int CodeWarehouse { get { try { return string.IsNullOrEmpty(Number)? Code: Convert.ToInt32(Number); } catch { return 0; } }}
         /// <summary>
         /// Назва складу
         /// </summary>
