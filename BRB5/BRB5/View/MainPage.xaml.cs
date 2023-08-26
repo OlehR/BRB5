@@ -62,7 +62,8 @@ namespace BRB5
                 db.ReplaceWarehouse(Wh);
 
                 long SizeDel = 0, SizeUse = 0;
-                if (Config.Company == eCompany.Sim23)
+
+                if  (Device.RuntimePlatform == Device.Android  && Config.Company == eCompany.Sim23)
                 {
                     var a = db.GetDoc(Config.GetDocSetting(11));
                     (SizeDel, SizeUse) = u.DelDir(Config.PathFiles, a.Select(el => el.NumberDoc));
