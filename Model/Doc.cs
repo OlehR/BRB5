@@ -58,10 +58,12 @@ namespace BRB5.Model
         /// Шаблон
         /// </summary>
         public int IdTemplate { get; set; }
+        public string RaitingTemplateName { get; set; } = string.Empty;
         /// <summary>
         /// Код складу
         /// </summary>
         public int CodeWarehouse { get; set; }
+        public string CodeWarehouseName { get; set; } = string.Empty;
         /// <summary>
         /// Додаткова інформація, яка може вплинути на обробку документа напиклад ЗКПО постачальника
         /// Для Анкет код складу магазина.
