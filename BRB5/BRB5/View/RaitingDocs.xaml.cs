@@ -3,6 +3,7 @@ using System;
 using System.Collections.ObjectModel;
 using System.Linq;
 using Xamarin.Forms;
+using ZXing;
 
 namespace BRB5.View
 {
@@ -22,7 +23,13 @@ namespace BRB5.View
             TypeDoc.CodeDoc = 11;
             c = Connector.Connector.GetInstance();
 
-            RD = new ObservableCollection<Doc>(c.GetRaitingDocs());
+            var temp = c.GetRaitingDocs();
+            if (temp.Info == null)
+            {
+                RD = new ObservableCollection<Doc>();
+                _ = DisplayAlert("Помилка", temp.TextError, "OK");
+            } else RD = new ObservableCollection<Doc>(temp.Info);
+
             var tempWH = db.GetWarehouse()?.ToList();
             var tempRT = db.GetRaitingTemplate()?.ToList();
             if (tempWH != null)
