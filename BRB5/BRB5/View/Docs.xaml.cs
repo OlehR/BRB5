@@ -29,7 +29,7 @@ namespace BRB5
             InitializeComponent();
             Routing.RegisterRoute(nameof(Item), typeof(Item));
             c.LoadDocsData(11, null, false);
-
+            NavigationPage.SetHasNavigationBar(this, Device.RuntimePlatform == Device.iOS);
             MyDoc = new ObservableCollection<Doc> ( db.GetDoc(TypeDoc).OrderByDescending(el=>el.NumberDoc));
             this.BindingContext = this;            
         }

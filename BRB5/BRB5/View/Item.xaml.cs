@@ -107,7 +107,7 @@ namespace BRB5
             });
 
             CountAll = R.Count(el => !el.IsHead);
-
+            NavigationPage.SetHasNavigationBar(this, Device.RuntimePlatform == Device.iOS);
             Questions = new ObservableCollection<Raiting>(R);
             RefreshHead();
             this.BindingContext = this;

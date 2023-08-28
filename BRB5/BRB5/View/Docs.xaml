@@ -4,7 +4,7 @@
                       xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
                       xmlns:Model="clr-namespace:BRB5.Model;assembly=BRB5.Model"
                       xmlns:view="clr-namespace:BRB5.View;assembly=BRB5"
-                      NavigationPage.HasNavigationBar="False"
+                      
                       x:Class="BRB5.Docs">
 
     <ContentPage.Content>

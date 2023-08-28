@@ -48,7 +48,7 @@ namespace BRB5.View
                 });
             }
             else Config.BarCode = BarCode;
-
+            NavigationPage.SetHasNavigationBar(this, Device.RuntimePlatform == Device.iOS);
             this.BindingContext = this;
         }
         void BarCode(string pBarCode)

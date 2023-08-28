@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Utils;
 using Xamarin.Essentials;
+using Xamarin.Forms;
 
 namespace BRB5.View
 {
@@ -71,7 +72,7 @@ namespace BRB5.View
         public Settings()
         {
             InitializeComponent();
-
+            NavigationPage.SetHasNavigationBar(this, Device.RuntimePlatform == Device.iOS);
 
             c = Connector.Connector.GetInstance();
 
