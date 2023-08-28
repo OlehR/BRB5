@@ -86,7 +86,7 @@ namespace BRB5
             var r = db.GetCountScanCode();
 
             if (Config.TypeUsePrinter == eTypeUsePrinter.StationaryWithCutAuto) PrintType = -1;
-
+            NavigationPage.SetHasNavigationBar(this, Device.RuntimePlatform == Device.iOS);
 
             if (r!=null)
             {

@@ -45,7 +45,7 @@ namespace BRB5.View
                 Directory.CreateDirectory(dir);
                 // Directory.CreateDirectory(Path.Combine(dir, "Send"));
             }
-
+            NavigationPage.SetHasNavigationBar(this, Device.RuntimePlatform == Device.iOS);
             Raiting = pRaiting;
             Mask = $"{pRaiting.Id}_*.*";
             InitializeComponent();
