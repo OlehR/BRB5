@@ -30,14 +30,14 @@ namespace BRB5.View
 
     }
 
-    public partial class EditPhoto
+    public partial class RaitingDocItemEditPhoto
     {
         DB db = DB.GetDB();
         public ObservableCollection<Pictures> MyFiles { get; set; }
         string Mask;
         Model.RaitingDocItem Raiting;
         string dir;
-        public EditPhoto(Model.RaitingDocItem pRaiting)
+        public RaitingDocItemEditPhoto(Model.RaitingDocItem pRaiting)
         {
             dir = Path.Combine(Config.PathFiles, pRaiting.NumberDoc);
             if (!Directory.Exists(dir))

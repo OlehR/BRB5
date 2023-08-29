@@ -33,6 +33,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Update="View\RaitingDocItemEditPhoto.xaml.cs">
+      <DependentUpon>RaitingDocItemEditPhoto.xaml</DependentUpon>
+    </Compile>
     <Compile Update="View\RaitingTemplateCreate.xaml.cs">
       <DependentUpon>RaitingTemplateCreate.xaml</DependentUpon>
     </Compile>
@@ -84,7 +87,7 @@
     <EmbeddedResource Update="View\RaitingDoc.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
-    <EmbeddedResource Update="View\EditPhoto.xaml">
+    <EmbeddedResource Update="View\RaitingDocItemEditPhoto.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
     <EmbeddedResource Update="View\RaitingTemplateEditQuestion.xaml">
