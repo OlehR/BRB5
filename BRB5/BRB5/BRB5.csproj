@@ -33,40 +33,64 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Update="View\DocStandart.xaml.cs">
-      <DependentUpon>DocStandart.xaml</DependentUpon>
+    <Compile Update="View\RaitingTemplateCreate.xaml.cs">
+      <DependentUpon>RaitingTemplateCreate.xaml</DependentUpon>
     </Compile>
-    <Compile Update="View\DocsStandart.xaml.cs">
-      <DependentUpon>DocsStandart.xaml</DependentUpon>
+    <Compile Update="View\RaitingTemplateItemCreate.xaml.cs">
+      <DependentUpon>CreateRatingTemplateItem.xaml</DependentUpon>
     </Compile>
-    <Compile Update="View\RaitingEdit.xaml.cs">
-      <DependentUpon>RaitingEdit.xaml</DependentUpon>
+    <Compile Update="View\RaitingDocItem.xaml.cs">
+      <DependentUpon>RaitingDocItem.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="View\RaitingTemplateEditQuestion.xaml.cs">
+      <DependentUpon>RaitingTemplateEditQuestion.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="View\RaitingDoc.xaml.cs">
+      <DependentUpon>RaitingDoc.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="View\DocItem.xaml.cs">
+      <DependentUpon>DocItem.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="View\Docs.xaml.cs">
+      <DependentUpon>Docs.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="View\RaitingDocEdit.xaml.cs">
+      <DependentUpon>RaitingDocEdit.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="View\RaitingDocsEdit.xaml.cs">
+      <DependentUpon>RaitingDocsEdit.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="View\RaitingTemplatesEdit.xaml.cs">
+      <DependentUpon>RaitingTemplatesEdit.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="View\DocScan.xaml.cs">
+      <DependentUpon>DocScan.xaml</DependentUpon>
     </Compile>
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Update="View\CreateRatingSample.xaml">
+    <EmbeddedResource Update="View\RaitingTemplateItemCreate.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
-    <EmbeddedResource Update="View\CreateRaitingTemplate.xaml">
+    <EmbeddedResource Update="View\RaitingTemplateCreate.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
-    <EmbeddedResource Update="View\DocStandart.xaml">
-      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
-    </EmbeddedResource>
-    <EmbeddedResource Update="View\DocsStandart.xaml">
+    <EmbeddedResource Update="View\DocItem.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
     <EmbeddedResource Update="View\Docs.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
+    <EmbeddedResource Update="View\RaitingDoc.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
     <EmbeddedResource Update="View\EditPhoto.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
-    <EmbeddedResource Update="View\EditQuestion.xaml">
+    <EmbeddedResource Update="View\RaitingTemplateEditQuestion.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
-    <EmbeddedResource Update="View\Item.xaml">
+    <EmbeddedResource Update="View\RaitingDocItem.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
     <EmbeddedResource Update="View\ManualInput.xaml">
@@ -75,19 +99,19 @@
     <EmbeddedResource Update="View\PriceCheck.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
-    <EmbeddedResource Update="View\RaitingEdit.xaml">
+    <EmbeddedResource Update="View\RaitingDocEdit.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
-    <EmbeddedResource Update="View\RaitingDocs.xaml">
+    <EmbeddedResource Update="View\RaitingDocsEdit.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
-    <EmbeddedResource Update="View\Scan.xaml">
+    <EmbeddedResource Update="View\DocScan.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
     <EmbeddedResource Update="View\Settings.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
-    <EmbeddedResource Update="View\TemplateRating.xaml">
+    <EmbeddedResource Update="View\RaitingTemplatesEdit.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
   </ItemGroup>

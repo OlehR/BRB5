@@ -8,7 +8,7 @@ using Xamarin.CommunityToolkit.Extensions;
 
 namespace BRB5.View
 {
-    public partial class DocStandart
+    public partial class DocItem
     {
         private readonly TypeDoc TypeDoc;
         
@@ -30,7 +30,7 @@ namespace BRB5.View
         bool _IsVisibleDocF6 = false;
         public bool IsVisibleDocF6 { get { return _IsVisibleDocF6; } set { _IsVisibleDocF6 = value; OnPropertyChanged("IsVisibleDocF6"); } } 
         public ObservableCollection<DocWaresEx> MyDocWares { get; set; } = new ObservableCollection<DocWaresEx>();
-        public DocStandart(DocId pDocId,  TypeDoc pTypeDoc)
+        public DocItem(DocId pDocId,  TypeDoc pTypeDoc)
         {
             TypeDoc = pTypeDoc;
             Doc = new Doc(pDocId);           
@@ -63,7 +63,7 @@ namespace BRB5.View
 
         private async void F3Scan(object sender, EventArgs e)
         {
-            await Navigation.PushAsync(new Scan(Doc, TypeDoc));
+            await Navigation.PushAsync(new DocScan(Doc, TypeDoc));
         }
 
         private async void F4WrOff(object sender, EventArgs e)

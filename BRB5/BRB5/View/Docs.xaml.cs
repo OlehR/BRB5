@@ -1,67 +1,82 @@
-﻿//using BRB5.Model;
-using BRB5.Model;
-using BRB5.View;
+﻿using BRB5.Model;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Utils;
 using Xamarin.Forms;
-using Xamarin.Forms.Xaml;
 
-namespace BRB5
+namespace BRB5.View
 {
     public partial class Docs
     {
-        Connector.Connector c;
+        private Connector.Connector c=Connector.Connector.GetInstance();
+        private TypeDoc TypeDoc;
         DB db = DB.GetDB();
-        private readonly TypeDoc TypeDoc;
-        public ObservableCollection<Doc> MyDoc { get; set; } = new ObservableCollection<Doc>();
-        //public string Help { get; set; } = "ERHHHHHHH54";
+        private ObservableCollection<Doc> _MyDocsR;
+        public ObservableCollection<Doc> MyDocsR { get { return _MyDocsR; } set { _MyDocsR = value; OnPropertyChanged("MyDocsR"); } }
+        bool _IsVisOPKO = false;
+        public bool IsVisOPKO { get { return _IsVisOPKO; } set { _IsVisOPKO = value; OnPropertyChanged("IsVisOPKO"); } }
+        string _OPKOstr = "";
+        public string OPKOstr { get { return _OPKOstr; } set { _OPKOstr = value; OnPropertyChanged("OPKOstr"); } }
+
+        bool _IsVisBarCode = false;
+        public bool IsVisBarCode { get { return _IsVisBarCode; } set { _IsVisBarCode = value; OnPropertyChanged("IsVisBarCode"); } }
+        public bool IsViewOut { get { return TypeDoc.IsViewOut; } }
+
+        public bool IsVisScan { get { return Config.TypeScaner == eTypeScaner.Camera; } }
+
         public Docs(TypeDoc pTypeDoc )
         {
-            TypeDoc= pTypeDoc;
-            _ = Config.GetCurrentLocation(db.GetWarehouse());
-            c = BRB5.Connector.Connector.GetInstance();
+            TypeDoc = pTypeDoc;
+            Config.BarCode = BarCode;
+            BindingContext = this;
             InitializeComponent();
-            Routing.RegisterRoute(nameof(Item), typeof(Item));
-            c.LoadDocsData(11, null, false);
-            NavigationPage.SetHasNavigationBar(this, Device.RuntimePlatform == Device.iOS);
-            MyDoc = new ObservableCollection<Doc> ( db.GetDoc(TypeDoc).OrderByDescending(el=>el.NumberDoc));
-            this.BindingContext = this;            
         }
 
         protected override void OnAppearing()
         {
             base.OnAppearing();
-            var r = db.GetDoc(TypeDoc).OrderByDescending(el => el.NumberDoc);
-            if (r != null)
-            {
-                MyDoc.Clear();
-                foreach (var item in r)
-                    MyDoc.Add(item);
-            }
+            c.LoadDocsData(TypeDoc.CodeDoc, null, false);
+            MyDocsR = new ObservableCollection<Doc>(db.GetDoc(TypeDoc));
+            OnPropertyChanged(nameof(MyDocsR));
         }
-
-        private async void OnButtonClicked(object sender, System.EventArgs e)
+        private async void OpenDoc(object sender, EventArgs e)
         {
-            /*var p = $"{nameof(Item)}?{nameof(Item.NumberDoc)}=\"{vDoc.NumberDoc}\"&TypeDoc={vDoc.TypeDoc}";
-             Shell.Current.GoToAsync(p);*/
-
             var s = sender as Grid;
+
             var vDoc = s.BindingContext as Doc;
-            await Navigation.PushAsync(new Item(vDoc));
+            
+            await Navigation.PushAsync(new DocItem(vDoc,TypeDoc));
         }
 
-        private async void Grid_Focused(object sender, FocusEventArgs e)
+        private void OKPO(object sender, EventArgs e)
         {
-            Grid cc = sender as Grid;
-            var vDoc = cc.BindingContext as Doc;
-            await Navigation.PushAsync(new Item(vDoc));
-           // await Shell.Current.GoToAsync($"{nameof(Item)}?{nameof(Item.NumberDoc)}={vDoc.NumberDoc}");//&TypeDoc={vDoc.TypeDoc}
+            IsVisOPKO = !IsVisOPKO;
+        }
+
+        private void FilterDocs(object sender, EventArgs e)
+        {
+            if (OPKOstr.Length > 2)
+                MyDocsR = new ObservableCollection<Doc>(db.GetDoc(TypeDoc, null, OPKOstr));
+        }
+
+        private void TabBarCode(object sender, EventArgs e)
+        {
+            IsVisBarCode= !IsVisBarCode;
+            zxing.IsScanning = IsVisBarCode;
+        }
+        void BarCode(string pBarCode)
+        {
+            MyDocsR = new ObservableCollection<Doc>(db.GetDoc(TypeDoc, pBarCode, null));
+        }
+        public void Dispose()
+        {
+            Config.BarCode -= BarCode;
+        }
+
+        private void FilterBarCode(ZXing.Result result)
+        {
+            zxing.IsAnalyzing = false;
+            MyDocsR = new ObservableCollection<Doc>(db.GetDoc(TypeDoc, result.Text, null));
+            zxing.IsAnalyzing = true;
         }
     }
 }

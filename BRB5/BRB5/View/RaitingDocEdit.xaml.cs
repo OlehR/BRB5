@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace BRB5.View
 {
-	public partial class RaitingEdit
+	public partial class RaitingDocEdit
 	{
         DB db = DB.GetDB();
         BRB5.Connector.Connector c;
@@ -37,13 +37,13 @@ namespace BRB5.View
             }
         }
         public int SelectedWarehouse { get; set; }
-        public RaitingEdit (Doc doc, TypeDoc vTypeDoc)
+        public RaitingDocEdit (Doc doc, TypeDoc vTypeDoc)
 		{
 			InitializeComponent ();
             c = Connector.Connector.GetInstance();
             RD = doc;
             TypeDoc = vTypeDoc;
-            SelectedTemplate = RT.FindIndex(t => t.Id == RD.IdTemplate);
+            SelectedTemplate = RT.FindIndex(t => t.IdTemplate == RD.IdTemplate);
             SelectedWarehouse = ListWarehouse.FindIndex(t => t.CodeWarehouse == RD.CodeWarehouse);
             this.BindingContext = this;
         }
@@ -52,12 +52,12 @@ namespace BRB5.View
         {
             if (SelectedWarehouse > 0 && SelectedTemplate > 0 && !string.IsNullOrEmpty(RD.Description))
             {
-                RD.IdTemplate = RT.ElementAt(SelectedTemplate).Id;
+                RD.IdTemplate = RT.ElementAt(SelectedTemplate).IdTemplate;
                 RD.CodeWarehouse = ListWarehouse.ElementAt(SelectedWarehouse).CodeWarehouse;
 
                 _ = DisplayAlert("збереження", c.SaveDocRaiting(RD).TextError, "OK");
 
-                await Navigation.PushAsync(new RaitingDocs(TypeDoc));
+                await Navigation.PushAsync(new RaitingDocsEdit(TypeDoc));
             } else _ = DisplayAlert("збереження", "заповніть всі дані", "OK");
         }
     }

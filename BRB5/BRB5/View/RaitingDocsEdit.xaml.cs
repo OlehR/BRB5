@@ -8,7 +8,7 @@ using ZXing;
 namespace BRB5.View
 {
     
-    public partial class RaitingDocs
+    public partial class RaitingDocsEdit
 	{
         private readonly TypeDoc TypeDoc;
         BRB5.Connector.Connector c;
@@ -16,7 +16,7 @@ namespace BRB5.View
         private ObservableCollection<Doc> _RD;
         public ObservableCollection<Doc> RD { get { return _RD; } set { _RD = value; OnPropertyChanged(nameof(RD)); } }
 
-        public RaitingDocs (TypeDoc vTypeDoc)
+        public RaitingDocsEdit (TypeDoc vTypeDoc)
 		{
 			InitializeComponent ();
             TypeDoc = vTypeDoc;
@@ -37,7 +37,7 @@ namespace BRB5.View
                     try 
                     { 
                         d.CodeWarehouseName = tempWH.FirstOrDefault(t =>t.CodeWarehouse == d.CodeWarehouse).Name;
-                        d.RaitingTemplateName = tempRT.FirstOrDefault(t => t.Id == d.IdTemplate).Text;
+                        d.RaitingTemplateName = tempRT.FirstOrDefault(t => t.IdTemplate == d.IdTemplate).Text;
                     } catch(Exception ex) { }
 
             this.BindingContext = this;
@@ -45,14 +45,14 @@ namespace BRB5.View
 
         private async void Create(object sender, EventArgs e)
         {
-            await Navigation.PushAsync(new RaitingEdit(new Doc() { DateDoc = DateTime.Today, NumberDoc = c.GetNumberDocRaiting().Info }, TypeDoc));
+            await Navigation.PushAsync(new RaitingDocEdit(new Doc() { DateDoc = DateTime.Today, NumberDoc = c.GetNumberDocRaiting().Info }, TypeDoc));
         }
 
         private async void Edit(object sender, EventArgs e)
         {
             ImageButton cc = sender as ImageButton;
             var vDoc = cc.BindingContext as Doc;
-            await Navigation.PushAsync(new RaitingEdit(vDoc, TypeDoc));
+            await Navigation.PushAsync(new RaitingDocEdit(vDoc, TypeDoc));
         }
     }
 }

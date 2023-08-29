@@ -8,11 +8,9 @@ using System.Text;
 
 namespace BRB5.Model
 {
-    public class Raiting : DocId
-    {
-        /// <summary>
-        /// 
-        /// </summary>
+    public class RaitingDocItem : DocId
+    {       
+        public int IdTemplate { get; set; }
         public int Id { get; set; }
         public int Parent { get; set; }
         //public int ParentEx { get { return Parent; } }

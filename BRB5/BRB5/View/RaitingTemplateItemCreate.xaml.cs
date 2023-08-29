@@ -7,17 +7,17 @@ using Xamarin.Forms;
 
 namespace BRB5.View
 {
-    public partial class CreateRatingSample
+    public partial class CreateRatingTemplateItem
     {
-        private ObservableCollection<Raiting> _RS;
-        public ObservableCollection<Raiting> RS { get { return _RS; } set { _RS = value; OnPropertyChanged(nameof(RS)); } }
-        private Raiting Draged;
+        private ObservableCollection<Model.RaitingDocItem> _RS;
+        public ObservableCollection<Model.RaitingDocItem> RS { get { return _RS; } set { _RS = value; OnPropertyChanged(nameof(RS)); } }
+        private Model.RaitingDocItem Draged;
         private bool ShowDeleted = false;
 
         private DocId DocId;
         DB db = DB.GetDB();
 
-        public CreateRatingSample(int id)
+        public CreateRatingTemplateItem(int id)
         {
             InitializeComponent();
             DocId = new DocId();
@@ -29,18 +29,18 @@ namespace BRB5.View
             this.BindingContext = this;
         }
 
-        private ObservableCollection<Raiting> SortRS (IEnumerable<Raiting> temp)
+        private ObservableCollection<Model.RaitingDocItem> SortRS (IEnumerable<Model.RaitingDocItem> temp)
         {
-            var res = new List<Raiting>();
+            var res = new List<Model.RaitingDocItem>();
 
-            foreach (Raiting r in temp.Where(rs => rs.Parent == 0).OrderBy(el => el.OrderRS))
+            foreach (Model.RaitingDocItem r in temp.Where(rs => rs.Parent == 0).OrderBy(el => el.OrderRS))
             {
                 res.Add(r);
                 res.AddRange(temp.Where(rs => rs.Parent == r.Id).OrderBy(el => el.OrderRS));                
             }
-            if (!ShowDeleted) foreach (Raiting r in temp)  r.IsVisible = !r.IsDelete;
+            if (!ShowDeleted) foreach (Model.RaitingDocItem r in temp)  r.IsVisible = !r.IsDelete;
 
-            return new ObservableCollection<Raiting>(res);
+            return new ObservableCollection<Model.RaitingDocItem>(res);
         }
 
 
@@ -48,7 +48,7 @@ namespace BRB5.View
         {
             var b = sender as DropGestureRecognizer;
             var s = b.Parent as Grid;
-            var Droped = s.BindingContext as Raiting;
+            var Droped = s.BindingContext as Model.RaitingDocItem;
 
             if(Draged.IsItem) DragDropItem(Droped);   
             else DragDropHead(Droped);
@@ -58,10 +58,10 @@ namespace BRB5.View
         {
             var b = sender as DragGestureRecognizer;
             var s = b.Parent as Grid;
-            Draged = s.BindingContext as Raiting;
+            Draged = s.BindingContext as Model.RaitingDocItem;
         }
 
-        private void DragDropHead(Raiting Droped)
+        private void DragDropHead(Model.RaitingDocItem Droped)
         {
             if(Droped.IsItem){
                 var temp=RS.Where(rs => rs.Parent == Droped.Id).FirstOrDefault();
@@ -73,36 +73,36 @@ namespace BRB5.View
             Draged.OrderRS = Droped.OrderRS + 1;
             RS = SortRS(RS);
         }
-        private void DragDropItem(Raiting Droped)
+        private void DragDropItem(Model.RaitingDocItem Droped)
         {
             var dropedIndex = RS.IndexOf(Droped);
 
             if (Droped.IsHead) Draged.Parent = Droped.Id;
             else Draged.Parent = Droped.Parent;
 
-            List<Raiting> temp = new List<Raiting>(RS);
+            List<Model.RaitingDocItem> temp = new List<Model.RaitingDocItem>(RS);
             temp.Remove(Draged);
             temp.Insert(dropedIndex, Draged);
             int i = 1;
-            foreach (Raiting r in temp)
+            foreach (Model.RaitingDocItem r in temp)
             {
                 r.OrderRS = i;
                 i++;
             }
             RS.Clear();
-            RS= new ObservableCollection<Raiting>(temp);
+            RS = new ObservableCollection<Model.RaitingDocItem>(temp);
 
         }
 
         private void Click(object sender, EventArgs e)
         {
             var ss = sender as Grid;
-            var rs = ss.BindingContext as Raiting;
+            var rs = ss.BindingContext as Model.RaitingDocItem;
 
             if (rs.IsHead)
             {
                 var temp = RS.Where(r => r.Parent == rs.Id);
-                foreach (Raiting r in temp) r.IsVisible = !r.IsVisible && !r.IsDelete;
+                foreach (Model.RaitingDocItem r in temp) r.IsVisible = !r.IsVisible && !r.IsDelete;
             }
         }
 
@@ -116,13 +116,13 @@ namespace BRB5.View
             var b = sender as ImageButton;
             var s = b.Parent as Grid;
 
-            var vRaiting = s.BindingContext as Raiting;
-            if(!vRaiting.IsDelete) await Navigation.PushAsync(new EditQuestion(vRaiting));
+            var vRaiting = s.BindingContext as Model.RaitingDocItem;
+            if(!vRaiting.IsDelete) await Navigation.PushAsync(new RaitingTemplateEditQuestion(vRaiting));
         }
 
         private async void AddHead(object sender, EventArgs e)
         {
-            var vRaiting = new Raiting
+            var vRaiting = new Model.RaitingDocItem
             {
                 Id = db.GetIdRaitingSample(DocId),
                 OrderRS = db.GetIdRaitingSample(DocId),
@@ -135,7 +135,7 @@ namespace BRB5.View
                 IsHead = true,
                 Parent = 0
             };
-            await Navigation.PushAsync(new EditQuestion(vRaiting));
+            await Navigation.PushAsync(new RaitingTemplateEditQuestion(vRaiting));
         }
 
         private async void AddItem(object sender, EventArgs e)
@@ -143,9 +143,9 @@ namespace BRB5.View
             var b = sender as ImageButton;
             var s = b.Parent as Grid;
 
-            var temp = s.BindingContext as Raiting;
+            var temp = s.BindingContext as Model.RaitingDocItem;
 
-            var vRaiting = new Raiting
+            var vRaiting = new Model.RaitingDocItem
             {
                 Id = db.GetIdRaitingSample(DocId),
                 OrderRS = db.GetIdRaitingSample(DocId),
@@ -157,14 +157,14 @@ namespace BRB5.View
                 IsEnableOk = true,
                 Parent = temp.Id
             };
-            if (!temp.IsDelete) await Navigation.PushAsync(new EditQuestion(vRaiting));
+            if (!temp.IsDelete) await Navigation.PushAsync(new RaitingTemplateEditQuestion(vRaiting));
         }
 
         private async void Delete(object sender, EventArgs e)
         {
             var b = sender as ImageButton;
             var s = b.Parent as Grid;
-            var vRaiting = s.BindingContext as Raiting;
+            var vRaiting = s.BindingContext as Model.RaitingDocItem;
 
             if(vRaiting.IsDelete)
             {
@@ -185,7 +185,7 @@ namespace BRB5.View
                 vRaiting.DTDelete = DateTime.Now;
 
                 if (vRaiting.IsHead)
-                    foreach (Raiting r in RS.Where(rs => rs.Parent == vRaiting.Id))
+                    foreach (Model.RaitingDocItem r in RS.Where(rs => rs.Parent == vRaiting.Id))
                     {
                         r.DTDelete = DateTime.Now;
                     }
@@ -200,7 +200,7 @@ namespace BRB5.View
         private void DeletedShow(object sender, EventArgs e)
         {
             ShowDeleted = !ShowDeleted;
-            foreach (Raiting r in RS)
+            foreach (Model.RaitingDocItem r in RS)
             {
                 if (ShowDeleted) r.IsVisible = true;
                 else r.IsVisible = !r.IsDelete;

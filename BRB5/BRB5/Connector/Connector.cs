@@ -74,7 +74,7 @@ namespace BRB5.Connector
         /// </summary>
         /// <param name="pR"></param>
         /// <returns></returns>
-        public virtual Result SendRaiting(IEnumerable< Raiting> pR, Doc pDoc)  { throw new NotImplementedException(); }
+        public virtual Result SendRaiting(IEnumerable<Model.RaitingDocItem> pR, Doc pDoc)  { throw new NotImplementedException(); }
 
         /// <summary>
         /// Вивантажеємо на сервер файли Рейтингів

@@ -3,7 +3,7 @@
 <view:BaseContentPage xmlns="http://xamarin.com/schemas/2014/forms"
                       xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
                       xmlns:view="clr-namespace:BRB5.View;assembly=BRB5"
-                      x:Class="BRB5.View.RaitingDocs">
+                      x:Class="BRB5.View.RaitingDocsEdit">
     <NavigationPage.TitleView>
         <Button Text="Створити"
                 Grid.Column="1"

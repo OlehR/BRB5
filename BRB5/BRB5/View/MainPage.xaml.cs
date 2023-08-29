@@ -108,16 +108,16 @@ namespace BRB5
                     break;
                 case eKindDoc.Normal:
                 case eKindDoc.Simple:
-                    await Navigation.PushAsync(new DocsStandart(vTypeDoc));
-                    break;
-                case eKindDoc.Raiting:
                     await Navigation.PushAsync(new Docs(vTypeDoc));
                     break;
+                case eKindDoc.Raiting:
+                    await Navigation.PushAsync(new RaitingDoc(vTypeDoc));
+                    break;
                 case eKindDoc.TempateRaiting:
-                    await Navigation.PushAsync(new TemplateRating());
+                    await Navigation.PushAsync(new RaitingTemplatesEdit());
                     break;
                 case eKindDoc.RaitingCreate:
-                    await Navigation.PushAsync(new RaitingDocs(vTypeDoc));
+                    await Navigation.PushAsync(new RaitingDocsEdit(vTypeDoc));
                     break;
                 default:
                     break;

@@ -197,7 +197,7 @@ namespace BRB5.Connector
                         var t = JsonConvert.DeserializeObject<Template>(result.Result);
                         var p = JsonConvert.DeserializeObject<Data>(result2.Result, new IsoDateTimeConverter { DateTimeFormat = "dd.MM.yyyy HH:mm:ss" });
                         var d = new List<Doc>();
-                        var r = new List<Raiting>();
+                        var r = new List<Model.RaitingDocItem>();
                         foreach (var elp in p.data)
                         {
                             var DocNumber = elp.planId.ToString();
@@ -212,12 +212,12 @@ namespace BRB5.Connector
                                 }
                                 if (elt.sections != null)
                                     foreach (var el in elt.sections)
-                                        r.Add(new Raiting() { TypeDoc = pTypeDoc, NumberDoc = DocNumber, Id = -el.sectionId, Parent = -el.parentId, Text = el.text, IsHead = true, RatingTemplate = 8, OrderRS = el.sectionId });
+                                        r.Add(new Model.RaitingDocItem() { TypeDoc = pTypeDoc, NumberDoc = DocNumber, Id = -el.sectionId, Parent = -el.parentId, Text = el.text, IsHead = true, RatingTemplate = 8, OrderRS = el.sectionId });
                                 if (elt.questions != null)
                                     foreach (var el in elt.questions)
-                                        r.Add(new Raiting() { TypeDoc = pTypeDoc, NumberDoc = DocNumber, Id = el.questionId, Parent = -el.sectionId, Text = el.text, IsHead = false, RatingTemplate = el.RatingTemplate, OrderRS = el.questionId });
+                                        r.Add(new Model.RaitingDocItem() { TypeDoc = pTypeDoc, NumberDoc = DocNumber, Id = el.questionId, Parent = -el.sectionId, Text = el.text, IsHead = false, RatingTemplate = el.RatingTemplate, OrderRS = el.questionId });
 
-                                r.Add(new Raiting() { TypeDoc = pTypeDoc, NumberDoc = DocNumber, Id = -1, Parent = 9999999, Text = "Всього", IsHead = false, RatingTemplate = 8, OrderRS = 9999999 });
+                                r.Add(new Model.RaitingDocItem() { TypeDoc = pTypeDoc, NumberDoc = DocNumber, Id = -1, Parent = 9999999, Text = "Всього", IsHead = false, RatingTemplate = 8, OrderRS = 9999999 });
                             }
                         }
                         db.ReplaceDoc(d);
@@ -336,7 +336,7 @@ namespace BRB5.Connector
         /// </summary>
         /// <param name="pR"></param>
         /// <returns></returns>
-        public override Result SendRaiting(IEnumerable<Raiting> pR, Doc pDoc)
+        public override Result SendRaiting(IEnumerable<Model.RaitingDocItem> pR, Doc pDoc)
         {
             OnSave?.Invoke($"StartSave NumberDoc=>{pDoc.NumberDoc}");
             var Res = new Result();
@@ -348,7 +348,7 @@ namespace BRB5.Connector
                     RD.Add(new Raitings() { questionId = el.Id, value = el.Rating, comment = el.Note });
                 }
 
-                Raiting e = pR.FirstOrDefault(d => d.Id == -1);
+                Model.RaitingDocItem e = pR.FirstOrDefault(d => d.Id == -1);
                 if (e == null || e.Id == 0)
                     e = pR.FirstOrDefault();
                 var r = new RequestSendRaiting() { userId = Config.CodeUser, action = "results", answers = RD, planId = int.Parse(e.NumberDoc), text = e.Note,

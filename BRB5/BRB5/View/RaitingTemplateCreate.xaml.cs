@@ -4,17 +4,17 @@ using System.Collections.Generic;
 
 namespace BRB5.View
 {
-	public partial class CreateRaitingTemplate
+	public partial class RaitingTemplateCreate
 	{
 		private RaitingTemplate _RT;
 		public RaitingTemplate RT { get { return _RT; } set { _RT = value; OnPropertyChanged(nameof(RT.Text)); } }
 
         DB db = DB.GetDB();
-        public CreateRaitingTemplate (int id)
+        public RaitingTemplateCreate (int id)
 		{
             InitializeComponent();
             RT = new RaitingTemplate();
-			RT.Id = id;
+			RT.IdTemplate = id;
 
             BindingContext = this;
         }
@@ -24,7 +24,7 @@ namespace BRB5.View
 			RT.IsActive = true;
 			db.ReplaceRaitingTemplate(new List<RaitingTemplate>() { RT });
 
-            await Navigation.PushAsync(new TemplateRating());
+            await Navigation.PushAsync(new RaitingTemplatesEdit());
         }
     }
 }

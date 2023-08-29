@@ -6,7 +6,7 @@ using Xamarin.Forms;
 
 namespace BRB5.View
 {
-    public partial class Scan
+    public partial class DocScan
     {
         private ObservableCollection<DocWaresEx> _ListWares;
         public ObservableCollection<DocWaresEx> ListWares { get { return _ListWares; } set { _ListWares = value; OnPropertyChanged("ListWares"); } }
@@ -27,7 +27,7 @@ namespace BRB5.View
         public string DisplayQuestion { get { return _DisplayQuestion; } set { _DisplayQuestion = value; OnPropertyChanged(nameof(DisplayQuestion)); } }
         private string TempBarcode;
 
-        public Scan(DocId pDocId, TypeDoc pTypeDoc = null)
+        public DocScan(DocId pDocId, TypeDoc pTypeDoc = null)
         {
             InitializeComponent();
             DocId = pDocId;

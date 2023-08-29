@@ -9,7 +9,7 @@ using System.Linq;
 
 namespace BRB5.Connector
 {
-    public class RaitingTemplateSE : Raiting
+    public class RaitingTemplateSE : Model.RaitingDocItem
     {
         /// <summary>
         /// Шаблон опитування.
@@ -114,7 +114,7 @@ namespace BRB5.Connector
         /// </summary>
         /// <param name="pR"></param>
         /// <returns></returns>
-        public override Result SendRaiting(IEnumerable<Raiting> pR, Doc pDoc)
+        public override Result SendRaiting(IEnumerable<Model.RaitingDocItem> pR, Doc pDoc)
         {
             var Res = new Result();
             try

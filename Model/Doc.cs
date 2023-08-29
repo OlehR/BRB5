@@ -42,7 +42,8 @@ namespace BRB5.Model
         /// </summary>
         public int State { get; set; }
 
-         
+        
+
         /// <summary>
         /// Дата документа
         /// </summary>

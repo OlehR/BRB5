@@ -16,7 +16,7 @@ namespace BRB5
     //[QueryProperty(nameof(NumberDoc), nameof(NumberDoc))]
     //[QueryProperty(nameof(TypeDoc), nameof(TypeDoc))]
     //[XamlCompilation(XamlCompilationOptions.Compile)]
-    public partial class Item
+    public partial class RaitingDocItem
     {
         Timer t;
         Utils u = Utils.GetUtils();
@@ -27,7 +27,7 @@ namespace BRB5
         Connector.Connector c = Connector.Connector.GetInstance();
         bool _IsVisBarCode = false;
         public bool IsVisBarCode { get { return _IsVisBarCode; } set { _IsVisBarCode = value; OnPropertyChanged("IsVisBarCode"); } }
-        public ObservableCollection<Raiting> Questions { get; set; }
+        public ObservableCollection<Model.RaitingDocItem> Questions { get; set; }
 
         int CountAll, CountChoice;
         public bool IsSave { get { return CountAll == CountChoice; } }
@@ -72,7 +72,7 @@ namespace BRB5
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }*/
-        public Item(Doc pDoc)
+        public RaitingDocItem(Doc pDoc)
         {
             cDoc = pDoc;
             InitializeComponent();
@@ -84,7 +84,7 @@ namespace BRB5
                 OnPropertyChanged("SizeWarehouse");
             };
             var Q = db.GetRaiting(cDoc);
-            var R = new List<Raiting>();
+            var R = new List<Model.RaitingDocItem>();
             foreach (var e in Q.Where(d => d.IsHead).OrderBy(d => d.OrderRS))
             {
                 R.Add(e);
@@ -108,7 +108,7 @@ namespace BRB5
 
             CountAll = R.Count(el => !el.IsHead);
             NavigationPage.SetHasNavigationBar(this, Device.RuntimePlatform == Device.iOS);
-            Questions = new ObservableCollection<Raiting>(R);
+            Questions = new ObservableCollection<Model.RaitingDocItem>(R);
             RefreshHead();
             this.BindingContext = this;
             StartTimer();
@@ -269,7 +269,7 @@ namespace BRB5
         async void TakePhotoAsync(object sender, EventArgs e)
         {
             ImageButton button = (ImageButton)sender;
-            var vQuestion = button.BindingContext as Raiting;
+            var vQuestion = button.BindingContext as Model.RaitingDocItem;
             var FileName = $"{vQuestion.Id}_{DateTime.Now.ToString("yyyyMMdd_HHmmssfff")}";
 
             try
@@ -316,7 +316,7 @@ namespace BRB5
             var s = sender as Grid;
             var cc = s.Parent as StackLayout;
 
-            var vRait = cc.BindingContext as Raiting;
+            var vRait = cc.BindingContext as Model.RaitingDocItem;
             var id = vRait.Id;
             foreach (var xx in Questions.Where(el => el.Parent == id))
             {
@@ -354,10 +354,10 @@ namespace BRB5
             zxing.IsAnalyzing = true;
         }
 
-        private Raiting GetRaiting(object sender)
+        private Model.RaitingDocItem GetRaiting(object sender)
         {
             Xamarin.Forms.View V = (Xamarin.Forms.View)sender;
-            return V.BindingContext as Raiting;
+            return V.BindingContext as Model.RaitingDocItem;
         }
     }
 }

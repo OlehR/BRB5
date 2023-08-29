@@ -53,6 +53,7 @@ CREATE TABLE DOC (
     TypeDoc           INTEGER   NOT NULL DEFAULT (0),
     NumberDoc         TEXT      NOT NULL,
     CodeWarehouse     INTEGER   NOT NULL DEFAULT (0),
+    IdTemplate INTEGER         NOT NULL DEFAULT (0),
     ExtInfo           TEXT,
     NameUser          TEXT,
     BarCode           TEXT,
@@ -148,6 +149,7 @@ CREATE UNIQUE INDEX WaresId ON Wares (CodeWares);
 CREATE TABLE RaitingSample(
     TypeDoc     INTEGER         NOT NULL DEFAULT (0),
     NumberDoc   TEXT,
+    IdTemplate INTEGER         NOT NULL DEFAULT (0),
     Id INTEGER  NOT NULL,
     Parent INTEGER  NOT NULL,
     IsHead INTEGER  NOT NULL DEFAULT(0),
@@ -356,9 +358,9 @@ CREATE UNIQUE INDEX UserLogin ON User (Login);
 
         public bool ReplaceDoc(IEnumerable<Doc> pDoc)
         {
-            string Sql = @"replace into Doc ( DateDoc, TypeDoc, NumberDoc, CodeWarehouse, ExtInfo, NameUser, BarCode, Description, State,
+            string Sql = @"replace into Doc ( DateDoc, TypeDoc, NumberDoc, CodeWarehouse, IdTemplate, ExtInfo, NameUser, BarCode, Description, State,
                                               IsControl, NumberDoc1C, DateOutInvoice, NumberOutInvoice, Color,DTStart,DTEnd) values 
-                                            (@DateDoc,@TypeDoc,@NumberDoc,@CodeWarehouse,@ExtInfo,@NameUser,@BarCode,@Description,max(@State, (select max(d.state) from Doc d where d.Typedoc=@TypeDoc and d.numberdoc=@NumberDoc )),
+                                            (@DateDoc,@TypeDoc,@NumberDoc,@CodeWarehouse,@IdTemplate,@ExtInfo,@NameUser,@BarCode,@Description,max(@State, (select max(d.state) from Doc d where d.Typedoc=@TypeDoc and d.numberdoc=@NumberDoc )),
                                              @IsControl,@NumberDoc1C,@DateOutInvoice,@NumberOutInvoice,@Color,
 (select max(d.DTStart) from Doc d where d.Typedoc=@TypeDoc and d.numberdoc=@NumberDoc ),
 (select max(d.DTEnd) from Doc d where d.Typedoc=@TypeDoc and d.numberdoc=@NumberDoc )
@@ -518,14 +520,16 @@ and bc.BarCode=@BarCode
             return res;
         }        
 
-        public IEnumerable<Raiting> GetRaiting(DocId pDoc)
+        public IEnumerable<Model.RaitingDocItem> GetRaiting(DocId pDoc)
         {
             string sql = @"select Rs.TypeDoc,Rs.NumberDoc,Rs.Id,Rs.Parent as Parent,Rs.IsHead,Rs.Text,Rs.RatingTemplate,R.Rating,R.QuantityPhoto,R.Note,Rs.OrderRS,Rs.DTDelete
-        from RaitingSample as Rs
-        left join Raiting R on Rs.TypeDoc=R.TypeDoc and  Rs.NumberDoc=R.NumberDoc and Rs.Id=R.id
-        where Rs.TypeDoc=@TypeDoc and  Rs.NumberDoc=@NumberDoc order by case when Rs.Id<0 then Rs.Id else Rs.Parent end ,  case when Rs.Id<0 then 0 else Rs.Id end
+        from Doc d 
+         join RaitingSample as Rs on ( d.IdTemplate=0 and d.TypeDoc=Rs.TypeDoc and d.NumberDoc=RS.NumberDoc) or  ( d.IdTemplate>0 and  d.IdTemplate=RS.IdTemplate=0 ) 
+         left join Raiting R on (d.TypeDoc=R.TypeDoc and d.NumberDoc=R.NumberDoc and Rs.Id=R.id)
+        where d.TypeDoc=@TypeDoc and  d.NumberDoc=@NumberDoc 
+        order by case when Rs.Id<0 then Rs.Id else Rs.Parent end ,  case when Rs.Id<0 then 0 else Rs.Id end
         --order by Rs.OrderRS,Rs.Id";
-            return db.Execute<DocId, Raiting>(sql, pDoc);
+            return db.Execute<DocId, Model.RaitingDocItem>(sql, pDoc);
             /*var l = db.Execute<DocId, Raiting>(sql, pDoc). ToList(); ///.OrderBy(x=>(-x.Parent)*1000000+x.Id)
             var r = l.Where(el => el.Parent != 0);
             foreach(var el in l.Where(el=>el.Parent==0))
@@ -537,27 +541,27 @@ and bc.BarCode=@BarCode
             return r;*/
         }
 
-        public bool ReplaceRaiting(Raiting pR)
+        public bool ReplaceRaiting(Model.RaitingDocItem pR)
         {
             string Sql = @"replace into Raiting ( TypeDoc, NumberDoc, Id, Rating, QuantityPhoto, Note) values 
                                                 (@TypeDoc,@NumberDoc,@Id,@Rating,@QuantityPhoto,@Note)";
-            var res= db.ExecuteNonQuery<Raiting>(Sql, pR) >= 0;
+            var res= db.ExecuteNonQuery<Model.RaitingDocItem>(Sql, pR) >= 0;
 
             Sql = @"update doc set  DTStart = case when DTStart is null then (DATETIME('NOW', 'LOCALTIME')) else DTStart end,
         DTEnd = (DATETIME('NOW', 'LOCALTIME')) where  Typedoc=@TypeDoc and numberdoc=@NumberDoc";
             try
             {
-              db.ExecuteNonQuery<Raiting>(Sql, pR);
+                db.ExecuteNonQuery<Model.RaitingDocItem>(Sql, pR);
             }catch (Exception ex) 
             { var s = ex.Message; }
             return res;
         }
 
-        public bool ReplaceRaitingSample(IEnumerable<Raiting> pR)
+        public bool ReplaceRaitingSample(IEnumerable<Model.RaitingDocItem> pR)
         {
-            string Sql = @"replace into RaitingSample ( TypeDoc, NumberDoc, Id, Parent, IsHead, Text, RatingTemplate, OrderRS,DTDelete ) values 
-                                                      (@TypeDoc,@NumberDoc,@Id,@Parent,@IsHead,@Text,@RatingTemplate,@OrderRS,@DTDelete)";                                                   
-            return db.BulkExecuteNonQuery<Raiting>(Sql, pR) >= 0;
+            string Sql = @"replace into RaitingSample ( TypeDoc, NumberDoc, IdTemplate, Id, Parent, IsHead, Text, RatingTemplate, OrderRS,DTDelete ) values 
+                                                      (@TypeDoc,@NumberDoc,@IdTemplate,@Id,@Parent,@IsHead,@Text,@RatingTemplate,@OrderRS,@DTDelete)";                                                   
+            return db.BulkExecuteNonQuery<Model.RaitingDocItem>(Sql, pR) >= 0;
         }
 
         public bool ReplaceRaitingTemplate(IEnumerable<RaitingTemplate> pR)

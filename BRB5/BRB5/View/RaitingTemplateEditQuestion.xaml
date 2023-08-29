@@ -3,7 +3,7 @@
 <controls:BaseContentPage xmlns="http://xamarin.com/schemas/2014/forms"
                           xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
                           xmlns:controls="clr-namespace:BRB5.View"
-                          x:Class="BRB5.View.EditQuestion">
+                          x:Class="BRB5.View.RaitingTemplateEditQuestion">
     <NavigationPage.TitleView>
         <Button Text="Зберегти"
                 Clicked="Save"

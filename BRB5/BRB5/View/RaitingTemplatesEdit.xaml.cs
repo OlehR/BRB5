@@ -8,7 +8,7 @@ using Xamarin.Forms;
 
 namespace BRB5.View
 {
-    public partial class TemplateRating        
+    public partial class RaitingTemplatesEdit        
     {
 
         private ObservableCollection<RaitingTemplate> _RTemplate;
@@ -18,7 +18,7 @@ namespace BRB5.View
         BRB5.Connector.Connector c;
         private bool ShowHidden = false;
 
-        public TemplateRating()
+        public RaitingTemplatesEdit()
         {
             InitializeComponent();
             c = Connector.Connector.GetInstance();
@@ -36,7 +36,7 @@ namespace BRB5.View
 
         private async void Create(object sender, EventArgs e)
         {
-            await Navigation.PushAsync(new CreateRaitingTemplate(c.GetIdRaitingTemplate().Info));
+            await Navigation.PushAsync(new RaitingTemplateCreate(c.GetIdRaitingTemplate().Info));
         }
 
         private async void Edit(object sender, EventArgs e)
@@ -45,7 +45,7 @@ namespace BRB5.View
             var s = b.Parent as Grid;
 
             var vRaitingTemplate = s.BindingContext as RaitingTemplate;
-            await Navigation.PushAsync(new CreateRatingSample(vRaitingTemplate.Id));
+            await Navigation.PushAsync(new CreateRatingTemplateItem(vRaitingTemplate.IdTemplate));
         }
 
         private async void Import(object sender, EventArgs e)
@@ -69,12 +69,12 @@ namespace BRB5.View
             {
                 var text = File.ReadAllText(result.FullPath);
                 var t = text.Split(new string[] { "\r\n" }, StringSplitOptions.None);
-                Raiting[] RS = new Raiting[t.Length];
+                Model.RaitingDocItem[] RS = new Model.RaitingDocItem[t.Length];
                 int i = 0;
                 foreach (var v in t)
                 {
                     var p = v.Split(',');
-                    RS[i] = new Raiting();
+                    RS[i] = new Model.RaitingDocItem();
                     int temp = 0;
 
                     Int32.TryParse(p[0], out temp);
@@ -89,7 +89,7 @@ namespace BRB5.View
                     RS[i].Text = p[3];
 
                     RS[i].TypeDoc = -1;
-                    RS[i].NumberDoc = vRaitingTemplate.Id.ToString();
+                    RS[i].NumberDoc = vRaitingTemplate.IdTemplate.ToString();
                     i++;
 
                 }
@@ -106,7 +106,7 @@ namespace BRB5.View
             var vRaitingTemplate = s.BindingContext as RaitingTemplate;
 
             var DocId = new DocId();
-            DocId.NumberDoc = vRaitingTemplate.Id.ToString();
+            DocId.NumberDoc = vRaitingTemplate.IdTemplate.ToString();
             DocId.TypeDoc = -1;
             db.ReplaceRaitingTemplate(new List<RaitingTemplate>() { vRaitingTemplate });
 

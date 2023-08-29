@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Text;
 using Utils;
 using System.Linq;
+using System.Collections.ObjectModel;
 
 namespace BRB5.Connector
 {
@@ -282,23 +283,43 @@ namespace BRB5.Connector
         /// <returns></returns>
         public override Result LoadDocsData(int pTypeDoc, string pNumberDoc, bool pIsClear) 
         {
-            string data = JsonConvert.SerializeObject(new ApiDoc() { CodeData = 150, TypeDoc = pTypeDoc });
-            HttpResult result = Http.HTTPRequest(0, "znp/", data, "application/json");//
 
-            if (result.HttpState == eStateHTTP.HTTP_OK)
+            if (pTypeDoc == 11)
             {
-                string[] lines = result.Result.Split(new String[] { ";;;" }, StringSplitOptions.None);
-                foreach (var el in lines)
-                    try
+                var temp = GetRaitingDocs();
+                if (temp.Info != null)
+                {
+                    foreach (var doc in temp.Info)
                     {
-                        db.db.ExecuteNonQuery(el.Replace("_",""));
+                        doc.TypeDoc = pTypeDoc;
                     }
-                    catch (Exception e)
-                    {
-                        Console.WriteLine(e);
-                    }
+                    db.ReplaceDoc(temp.Info);
+
+                    var RT=GetRaitingTemplate();
+
+                }
+                return new Result();
             }
-            return null;
+            else
+            {
+                string data = JsonConvert.SerializeObject(new ApiDoc() { CodeData = 150, TypeDoc = pTypeDoc });
+                HttpResult result = Http.HTTPRequest(0, "znp/", data, "application/json");//
+
+                if (result.HttpState == eStateHTTP.HTTP_OK)
+                {
+                    string[] lines = result.Result.Split(new String[] { ";;;" }, StringSplitOptions.None);
+                    foreach (var el in lines)
+                        try
+                        {
+                            db.db.ExecuteNonQuery(el.Replace("_", ""));
+                        }
+                        catch (Exception e)
+                        {
+                            Console.WriteLine(e);
+                        }
+                }
+                return null;
+            }
         }
 
 

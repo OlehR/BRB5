@@ -6,9 +6,8 @@ using System.Text;
 namespace BRB5.Model
 {
     public class RaitingTemplate : INotifyPropertyChanged
-    {
-        
-        public int Id { get; set; }
+    {        
+        public int IdTemplate { get; set; }
         public string Text { get; set; }
         public bool IsActive { get; set; }
 
@@ -20,6 +19,6 @@ namespace BRB5.Model
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
-        public IEnumerable<Raiting> Item { get;set; }
+        public IEnumerable<RaitingDocItem> Item { get;set; }
     }
 }
