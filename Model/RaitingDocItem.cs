@@ -14,10 +14,10 @@ namespace BRB5.Model
         public int Id { get; set; }
         public int Parent { get; set; }
         //public int ParentEx { get { return Parent; } }
-        [JsonIgnore]
 
         // заголовок групи
-        public bool IsHead { get; set; }
+        [JsonIgnore]
+        public bool IsHead { get { return Parent == 0; } }
         [JsonIgnore]
         public bool IsItem { get { return !IsHead; } }
         public bool IsTemplate { get; set; }=false;

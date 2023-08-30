@@ -83,7 +83,7 @@ namespace BRB5
                 OnPropertyChanged("NameWarehouse");
                 OnPropertyChanged("SizeWarehouse");
             };
-            var Q = db.GetRaiting(cDoc);
+            var Q = db.GetRaitingDocItem(cDoc);
             var R = new List<Model.RaitingDocItem>();
             foreach (var e in Q.Where(d => d.IsHead).OrderBy(d => d.OrderRS))
             {
@@ -175,11 +175,11 @@ namespace BRB5
                     if (el.Rating == 0 && vQuestion.Rating == 4)
                     {
                         el.Rating = 4;
-                        db.ReplaceRaiting(el);
+                        db.ReplaceRaitingDocItem(el);
                     }
                 }
             }
-            db.ReplaceRaiting(vQuestion);
+            db.ReplaceRaitingDocItem(vQuestion);
             RefreshHead();
         }
 
@@ -232,7 +232,7 @@ namespace BRB5
                     IsSaved = false;
                     OnPropertyChanged("IsSaved");
                     OnPropertyChanged("TextButtonSaved");
-                    var r = db.GetRaiting(cDoc);
+                    var r = db.GetRaitingDocItem(cDoc);
                     Doc d = db.GetDoc(cDoc);
                     res = c.SendRaiting(r, d);
                     if (res.State == 0)
@@ -296,7 +296,7 @@ namespace BRB5
                     using (var newStream = File.OpenWrite(newFile))
                         await stream.CopyToAsync(newStream);
                     vQuestion.QuantityPhoto++;
-                    db.ReplaceRaiting(vQuestion);
+                    db.ReplaceRaitingDocItem(vQuestion);
                 }
             }
             catch (Exception ex)
@@ -308,7 +308,7 @@ namespace BRB5
 
         private void Editor_Completed(object sender, EventArgs e)
         {
-            db.ReplaceRaiting(GetRaiting(sender));
+            db.ReplaceRaitingDocItem(GetRaiting(sender));
         }
 
         private void OnHeadTapped(object sender, EventArgs e)
@@ -349,7 +349,7 @@ namespace BRB5
 
             var temp = Questions.Where(el => el.Id==-1).FirstOrDefault();
             if (temp.Note == null || !temp.Note.StartsWith(result.Text)) { temp.Note = result.Text + temp.Note; }
-            db.ReplaceRaiting(temp);
+            db.ReplaceRaitingDocItem(temp);
             Questions[Questions.IndexOf(temp)] = temp;
             zxing.IsAnalyzing = true;
         }

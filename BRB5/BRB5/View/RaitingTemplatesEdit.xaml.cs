@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
+using System.Linq;
 using Xamarin.Essentials;
 using Xamarin.Forms;
 
@@ -69,12 +70,12 @@ namespace BRB5.View
             {
                 var text = File.ReadAllText(result.FullPath);
                 var t = text.Split(new string[] { "\r\n" }, StringSplitOptions.None);
-                Model.RaitingDocItem[] RS = new Model.RaitingDocItem[t.Length];
+                RaitingTemplateItem[] RS = new RaitingTemplateItem[t.Length];
                 int i = 0;
                 foreach (var v in t)
                 {
                     var p = v.Split(',');
-                    RS[i] = new Model.RaitingDocItem();
+                    RS[i] = new RaitingTemplateItem();
                     int temp = 0;
 
                     Int32.TryParse(p[0], out temp);
@@ -87,14 +88,12 @@ namespace BRB5.View
                     RS[i].Parent = temp;
 
                     RS[i].Text = p[3];
-
-                    RS[i].TypeDoc = -1;
-                    RS[i].NumberDoc = vRaitingTemplate.IdTemplate.ToString();
+                
+                    RS[i].IdTemplate = vRaitingTemplate.IdTemplate;
                     i++;
-
                 }
 
-                var tdi = db.ReplaceRaitingSample(RS);
+                var tdi = db.ReplaceRaitingTemplateItem(RS);
             }
         }
                 
@@ -104,14 +103,8 @@ namespace BRB5.View
             var s = b.Parent as Grid;
 
             var vRaitingTemplate = s.BindingContext as RaitingTemplate;
-
-            var DocId = new DocId();
-            DocId.NumberDoc = vRaitingTemplate.IdTemplate.ToString();
-            DocId.TypeDoc = -1;
             db.ReplaceRaitingTemplate(new List<RaitingTemplate>() { vRaitingTemplate });
-
-            vRaitingTemplate.Item = db.GetRaiting(DocId);
-
+            vRaitingTemplate.Item = db.GetRaitingTemplateItem(vRaitingTemplate);
             _ = DisplayAlert("збереження", c.SaveTemplate(vRaitingTemplate).TextError, "OK");
         }
 
@@ -126,6 +119,10 @@ namespace BRB5.View
                 else
                 {
                     db.ReplaceRaitingTemplate(temp.Info);
+                    foreach(var el in temp.Info) {
+                        if(el.Item.Any())
+                          db.ReplaceRaitingTemplateItem(el.Item);
+                    }
                     RTemplate = new ObservableCollection<RaitingTemplate>(db.GetRaitingTemplate());
                 }
             }

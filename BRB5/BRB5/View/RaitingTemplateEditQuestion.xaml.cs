@@ -7,19 +7,16 @@ namespace BRB5.View
     public partial class RaitingTemplateEditQuestion
     {
 
-        private Model.RaitingDocItem _RQ;
-        public Model.RaitingDocItem RQ { get { return _RQ; } set { _RQ = value; OnPropertyChanged(nameof(RQ)); } }
+        private Model.RaitingTemplateItem _RQ;
+        public RaitingTemplateItem RQ { get { return _RQ; } set { _RQ = value; OnPropertyChanged(nameof(RQ)); } }
 
         DB db = DB.GetDB();
-        private DocId DocId;
+        private RaitingTemplateItem RT;
 
-        public RaitingTemplateEditQuestion(Model.RaitingDocItem rq)
+        public RaitingTemplateEditQuestion(RaitingTemplateItem rq)
         {
-            DocId = new DocId();
-            DocId.NumberDoc = rq.NumberDoc;
-            DocId.TypeDoc = rq.TypeDoc;
-            RQ = rq;
-            RQ.IsTemplate = true;
+          
+            RQ = rq;           
 
             this.BindingContext = this;
             InitializeComponent();
@@ -27,8 +24,8 @@ namespace BRB5.View
 
         private async void Save(object sender, EventArgs e)
         {
-            db.ReplaceRaitingSample(new List<Model.RaitingDocItem>() { RQ });
-            await Navigation.PushAsync(new CreateRatingTemplateItem(int.Parse(RQ.NumberDoc)));
+            db.ReplaceRaitingTemplateItem(new List<RaitingTemplateItem>() { RQ });
+            await Navigation.PushAsync(new CreateRatingTemplateItem(RQ.IdTemplate));
         }
 
         private void OnButtonClicked(object sender, EventArgs e)

@@ -124,7 +124,7 @@ namespace BRB5.View
                     break;
                 case eCompany.VPSU:
                 case eCompany.SparPSU:
-                    ApiUrl1 = "http://api.spar.uz.ua/";
+                    ApiUrl1 = "http://apitest.spar.uz.ua/";
                     ApiUrl2 = "";
                     ApiUrl3 = "";
                     break;

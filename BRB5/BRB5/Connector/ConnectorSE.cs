@@ -38,9 +38,9 @@ namespace BRB5.Connector
                 Res.Add( new TypeDoc() { CodeDoc = 0, KindDoc = eKindDoc.PriceCheck, NameDoc = "Прайсчекер" });
             if (pLS == eLoginServer.Bitrix)
             {
-                Res.Add(new TypeDoc() { CodeDoc = 11, KindDoc = eKindDoc.Raiting, NameDoc = "Опитування", DayBefore = 4 });
-                Res.Add(new TypeDoc() { CodeDoc = -1, KindDoc = eKindDoc.TempateRaiting, NameDoc = "Шаблони Опитування" });
-                Res.Add(new TypeDoc() { CodeDoc = 12, KindDoc = eKindDoc.RaitingCreate, NameDoc = "Керування Опитуваннями" });
+                Res.Add(new TypeDoc() { CodeDoc = 11, KindDoc = eKindDoc.RaitingDoc, NameDoc = "Опитування", DayBefore = 4 });
+                Res.Add(new TypeDoc() { CodeDoc = -1, KindDoc = eKindDoc.RaitingTempate, NameDoc = "Шаблони Опитування" });
+                Res.Add(new TypeDoc() { CodeDoc = 12, KindDoc = eKindDoc.RaitingTemplateCreate, NameDoc = "Керування Опитуваннями" });
             }
             return Res;
         }
@@ -212,16 +212,16 @@ namespace BRB5.Connector
                                 }
                                 if (elt.sections != null)
                                     foreach (var el in elt.sections)
-                                        r.Add(new Model.RaitingDocItem() { TypeDoc = pTypeDoc, NumberDoc = DocNumber, Id = -el.sectionId, Parent = -el.parentId, Text = el.text, IsHead = true, RatingTemplate = 8, OrderRS = el.sectionId });
+                                        r.Add(new Model.RaitingDocItem() { TypeDoc = pTypeDoc, NumberDoc = DocNumber, Id = -el.sectionId, Parent = -el.parentId, Text = el.text,  RatingTemplate = 8, OrderRS = el.sectionId });
                                 if (elt.questions != null)
                                     foreach (var el in elt.questions)
-                                        r.Add(new Model.RaitingDocItem() { TypeDoc = pTypeDoc, NumberDoc = DocNumber, Id = el.questionId, Parent = -el.sectionId, Text = el.text, IsHead = false, RatingTemplate = el.RatingTemplate, OrderRS = el.questionId });
+                                        r.Add(new Model.RaitingDocItem() { TypeDoc = pTypeDoc, NumberDoc = DocNumber, Id = el.questionId, Parent = -el.sectionId, Text = el.text,  RatingTemplate = el.RatingTemplate, OrderRS = el.questionId });
 
-                                r.Add(new Model.RaitingDocItem() { TypeDoc = pTypeDoc, NumberDoc = DocNumber, Id = -1, Parent = 9999999, Text = "Всього", IsHead = false, RatingTemplate = 8, OrderRS = 9999999 });
+                                r.Add(new Model.RaitingDocItem() { TypeDoc = pTypeDoc, NumberDoc = DocNumber, Id = -1, Parent = 9999999, Text = "Всього",  RatingTemplate = 8, OrderRS = 9999999 });
                             }
                         }
                         db.ReplaceDoc(d);
-                        db.ReplaceRaitingSample(r);
+                       //TMP!!! Треба переробити на нову схему db.ReplaceRaitingTemplateItem(r);
                         FileLogger.WriteLogMessage($"ConnectorPSU.LoadDocsData=>(pTypeDoc=>{pTypeDoc}, pNumberDoc=>{pNumberDoc},pIsClear=>{pIsClear}) Res=>(Doc=>{d.Count()},RS=>{r.Count()},{Res.State},{Res.Info},{Res.TextError})", eTypeLog.Full);
 
                         return Res;

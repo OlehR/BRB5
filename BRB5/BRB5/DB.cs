@@ -146,39 +146,6 @@ CREATE TABLE Wares (
     DateINSERT         DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP);
 CREATE UNIQUE INDEX WaresId ON Wares (CodeWares);
 
-CREATE TABLE RaitingSample(
-    TypeDoc     INTEGER         NOT NULL DEFAULT (0),
-    NumberDoc   TEXT,
-    IdTemplate INTEGER         NOT NULL DEFAULT (0),
-    Id INTEGER  NOT NULL,
-    Parent INTEGER  NOT NULL,
-    IsHead INTEGER  NOT NULL DEFAULT(0),
-    Text TEXT,
-    RatingTemplate INTEGER         NOT NULL DEFAULT (0),
-    OrderRS INTEGER,
-    DTInsert    TIMESTAMP  DEFAULT (DATETIME('NOW', 'LOCALTIME')),
-    DTDelete    TIMESTAMP
-);
-CREATE UNIQUE INDEX RaitingSampleId ON RaitingSample (TypeDoc,NumberDoc,Id);
-
-CREATE TABLE Raiting(
-    TypeDoc     INTEGER         NOT NULL DEFAULT (0),
-    NumberDoc   TEXT,
-    Id           INTEGER  NOT NULL,   
-    Rating       INTEGER NOT NULL DEFAULT (0),   
-    QuantityPhoto INTEGER NOT NULL DEFAULT (0),
-    Note TEXT,
-    DTInsert    TIMESTAMP  DEFAULT (DATETIME('NOW', 'LOCALTIME'))
-);
-CREATE UNIQUE INDEX RaitingId ON Raiting (TypeDoc,NumberDoc,Id);
-
-CREATE TABLE RaitingTemplate(
-Id           INTEGER  NOT NULL, 
- Text TEXT,
-IsActive  INTEGER  NOT NULL DEFAULT (0) 
-);
-CREATE UNIQUE INDEX RaitingTemplateId ON RaitingTemplate (Id);
-
 CREATE TABLE User (
     CodeUser   INTEGER NOT NULL,
     NameUser   TEXT NOT NULL,
@@ -189,6 +156,37 @@ CREATE TABLE User (
 );
 CREATE UNIQUE INDEX UserId ON User (CodeUser);
 CREATE UNIQUE INDEX UserLogin ON User (Login);
+
+CREATE TABLE RaitingTemplate(
+ IdTemplate    INTEGER  NOT NULL, 
+ Text TEXT,
+ IsActive  INTEGER  NOT NULL DEFAULT (0) 
+);
+CREATE UNIQUE INDEX RaitingTemplateId ON RaitingTemplate (IdTemplate);
+
+CREATE TABLE RaitingTemplateItem(    
+    IdTemplate INTEGER         NOT NULL DEFAULT (0),
+    Id INTEGER  NOT NULL,
+    Parent INTEGER  NOT NULL,
+    IsHead INTEGER  NOT NULL DEFAULT(0),
+    Text TEXT,
+    RatingTemplate INTEGER         NOT NULL DEFAULT (0),
+    OrderRS INTEGER,
+    DTInsert    TIMESTAMP  DEFAULT (DATETIME('NOW', 'LOCALTIME')),
+    DTDelete    TIMESTAMP
+);
+CREATE UNIQUE INDEX RaitingTemplateItemId ON RaitingTemplateItem (IdTemplate,Id);
+
+CREATE TABLE RaitingDocItem(
+    TypeDoc     INTEGER         NOT NULL DEFAULT (0),
+    NumberDoc   TEXT,
+    Id           INTEGER  NOT NULL,   
+    Rating       INTEGER NOT NULL DEFAULT (0),   
+    QuantityPhoto INTEGER NOT NULL DEFAULT (0),
+    Note TEXT,
+    DTInsert    TIMESTAMP  DEFAULT (DATETIME('NOW', 'LOCALTIME'))
+);
+CREATE UNIQUE INDEX RaitingDocItemId ON RaitingDocItem (TypeDoc,NumberDoc,Id);
 ";
 
         public SQLite db;
@@ -482,7 +480,6 @@ and bc.BarCode=@BarCode
                     {
                         // @TypeDoc as TypeDoc, @NumberDoc as NumberDoc,
                         res = r.First();
-                       
                     }
                     
                 }
@@ -518,32 +515,30 @@ and bc.BarCode=@BarCode
                 res.TypeDoc = pDocId.TypeDoc;
             }
             return res;
-        }        
-
-        public IEnumerable<Model.RaitingDocItem> GetRaiting(DocId pDoc)
+        }
+        
+        public IEnumerable<RaitingTemplateItem> GetRaitingTemplateItem(RaitingTemplate pRT)
         {
-            string sql = @"select Rs.TypeDoc,Rs.NumberDoc,Rs.Id,Rs.Parent as Parent,Rs.IsHead,Rs.Text,Rs.RatingTemplate,R.Rating,R.QuantityPhoto,R.Note,Rs.OrderRS,Rs.DTDelete
-        from Doc d 
-         join RaitingSample as Rs on ( d.IdTemplate=0 and d.TypeDoc=Rs.TypeDoc and d.NumberDoc=RS.NumberDoc) or  ( d.IdTemplate>0 and  d.IdTemplate=RS.IdTemplate=0 ) 
-         left join Raiting R on (d.TypeDoc=R.TypeDoc and d.NumberDoc=R.NumberDoc and Rs.Id=R.id)
-        where d.TypeDoc=@TypeDoc and  d.NumberDoc=@NumberDoc 
-        order by case when Rs.Id<0 then Rs.Id else Rs.Parent end ,  case when Rs.Id<0 then 0 else Rs.Id end
-        --order by Rs.OrderRS,Rs.Id";
-            return db.Execute<DocId, Model.RaitingDocItem>(sql, pDoc);
-            /*var l = db.Execute<DocId, Raiting>(sql, pDoc). ToList(); ///.OrderBy(x=>(-x.Parent)*1000000+x.Id)
-            var r = l.Where(el => el.Parent != 0);
-            foreach(var el in l.Where(el=>el.Parent==0))
-            {
-                var index = l.FindIndex(x => x.Parent == el.Id);
-                if (index > 0) index--;
-                l.Insert(index, el);
-            }
-            return r;*/
+            string sql = @"select * from RaitingTemplateItem rti where IdTemplate=@IdTemplate
+        order by case when rti.Id<0 then rti.Id else rti.Parent end,  case when rti.Id<0 then 0 else rti.Id end";
+            return db.Execute<RaitingTemplate, RaitingTemplateItem>(sql, pRT);            
         }
 
-        public bool ReplaceRaiting(Model.RaitingDocItem pR)
+        public IEnumerable<Model.RaitingDocItem> GetRaitingDocItem(DocId pDoc)
         {
-            string Sql = @"replace into Raiting ( TypeDoc, NumberDoc, Id, Rating, QuantityPhoto, Note) values 
+            string sql = @"select d.TypeDoc,d.NumberDoc,Rs.Id,Rs.Parent as Parent,Rs.IsHead,Rs.Text,Rs.RatingTemplate,R.Rating,R.QuantityPhoto,R.Note,Rs.OrderRS,Rs.DTDelete
+        from Doc d 
+         join RaitingTemplateItem as Rs on (d.IdTemplate=RS.IdTemplate ) 
+         left join RaitingDocItem R on (d.TypeDoc=R.TypeDoc and d.NumberDoc=R.NumberDoc and Rs.Id=R.id)
+        where d.TypeDoc=@TypeDoc and  d.NumberDoc=@NumberDoc 
+        order by case when Rs.Id<0 then Rs.Id else Rs.Parent end ,  case when Rs.Id<0 then 0 else Rs.Id end
+        ";
+            return db.Execute<DocId, Model.RaitingDocItem>(sql, pDoc);            
+        }
+
+        public bool ReplaceRaitingDocItem(Model.RaitingDocItem pR)
+        {
+            string Sql = @"replace into RaitingDocItem ( TypeDoc, NumberDoc, Id, Rating, QuantityPhoto, Note) values 
                                                 (@TypeDoc,@NumberDoc,@Id,@Rating,@QuantityPhoto,@Note)";
             var res= db.ExecuteNonQuery<Model.RaitingDocItem>(Sql, pR) >= 0;
 
@@ -557,36 +552,34 @@ and bc.BarCode=@BarCode
             return res;
         }
 
-        public bool ReplaceRaitingSample(IEnumerable<Model.RaitingDocItem> pR)
+        public bool ReplaceRaitingTemplateItem(IEnumerable<RaitingTemplateItem> pR)
         {
-            string Sql = @"replace into RaitingSample ( TypeDoc, NumberDoc, IdTemplate, Id, Parent, IsHead, Text, RatingTemplate, OrderRS,DTDelete ) values 
-                                                      (@TypeDoc,@NumberDoc,@IdTemplate,@Id,@Parent,@IsHead,@Text,@RatingTemplate,@OrderRS,@DTDelete)";                                                   
-            return db.BulkExecuteNonQuery<Model.RaitingDocItem>(Sql, pR) >= 0;
+            string Sql = @"replace into RaitingTemplateItem (  IdTemplate, Id, Parent, IsHead, Text, RatingTemplate, OrderRS,DTDelete ) values 
+                                                      (@IdTemplate,@Id,@Parent,@IsHead,@Text,@RatingTemplate,@OrderRS,@DTDelete)";                                                   
+            return db.BulkExecuteNonQuery<RaitingTemplateItem>(Sql, pR) >= 0;
         }
 
         public bool ReplaceRaitingTemplate(IEnumerable<RaitingTemplate> pR)
         {
-            string Sql = @"replace into RaitingTemplate ( Id, Text, IsActive ) values 
-                                                      (@Id,@Text,@IsActive)";
+            string Sql = @"replace into RaitingTemplate ( IdTemplate, Text, IsActive ) values 
+                                                      (@IdTemplate,@Text,@IsActive)";
             return db.BulkExecuteNonQuery<RaitingTemplate>(Sql, pR) >= 0;
         }
-        public int GetIdRaitingTemplate()
+        /*public int GetIdRaitingTemplate()
         {
-            string Sql = @"select coalesce(max(Id),0)+1 from RaitingTemplate ";
+            string Sql = @"select coalesce(max(IdTemplate),0)+1 from RaitingTemplate ";
             return db.ExecuteScalar<int>(Sql);
-        }
-        public int GetIdRaitingSample(DocId pD)
+        }*/
+        
+        public int GetIdRaitingTemplateItem(RaitingTemplate pD)
         {
-            string Sql = @"select coalesce(max(Id),0)+1 from RaitingSample rs where rs.Typedoc=@TypeDoc and rs.numberdoc=@NumberDoc";
-            // rs where rs.Typedoc=@TypeDoc and rs.numberdoc=@NumberDoc
-            return db.ExecuteScalar<DocId, int>(Sql,pD);
+            string Sql = @"select coalesce(max(Id),0)+1 from RaitingTemplateItem rs where rs.IdTemplate=@IdTemplate";
+            return db.ExecuteScalar<RaitingTemplate, int>(Sql,pD);
         }
         public IEnumerable<RaitingTemplate> GetRaitingTemplate()
         {
             string Sql = @"select * from RaitingTemplate";
-
-            return db.Execute<RaitingTemplate>(Sql);
-            
+            return db.Execute<RaitingTemplate>(Sql);            
         }
 
         public bool ReplaceDocWaresSample(IEnumerable<DocWaresSample> pDWS)

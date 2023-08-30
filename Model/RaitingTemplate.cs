@@ -19,6 +19,6 @@ namespace BRB5.Model
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
-        public IEnumerable<RaitingDocItem> Item { get;set; }
+        public IEnumerable<RaitingTemplateItem> Item { get;set; }
     }
 }

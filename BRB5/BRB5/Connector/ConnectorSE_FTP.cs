@@ -31,7 +31,7 @@ namespace BRB5.Connector
         public override IEnumerable<TypeDoc> GetTypeDoc(eRole pRole, eLoginServer pLS)
         {
             var Res = new List<TypeDoc>()
-            {    new TypeDoc() { CodeDoc = 11, KindDoc = eKindDoc.Raiting, NameDoc = "Опитування" }, };
+            {    new TypeDoc() { CodeDoc = 11, KindDoc = eKindDoc.RaitingDoc, NameDoc = "Опитування" }, };
             return Res;
         }
 
@@ -92,7 +92,7 @@ namespace BRB5.Connector
                                 e.NumberDoc = el.NumberDoc;
                                 e.TypeDoc = el.TypeDoc;
                             }
-                            db.ReplaceRaitingSample(RS);
+                            //db.ReplaceRaitingTemplateItem(RS);
                         }                      
                     }
                                          

@@ -102,7 +102,7 @@ namespace BRB5.View
                 File.Delete(el.FileName);
                 MyFiles.Remove(el);
                 Raiting.QuantityPhoto--;
-                db.ReplaceRaiting(Raiting);
+                db.ReplaceRaitingDocItem(Raiting);
             }
         }
 
@@ -154,7 +154,7 @@ namespace BRB5.View
                     await stream.CopyToAsync(newStream);
 
                 Raiting.QuantityPhoto++;
-                db.ReplaceRaiting(Raiting);
+                db.ReplaceRaitingDocItem(Raiting);
                 MyFiles.Insert(0, new Pictures(newFile));
             }
         }
