@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SQLite;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -45,6 +46,7 @@ namespace BRB5.Model
         /// <summary>
         /// Дистанція
         /// </summary>
+        [Ignore]
         public double Distance { get; set; }
 
     }

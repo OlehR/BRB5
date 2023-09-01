@@ -311,7 +311,7 @@ namespace BRB5.Connector
                     foreach (var el in lines)
                         try
                         {
-                            db.db.ExecuteNonQuery(el.Replace("_", ""));
+                            db.db.Execute(el.Replace("_", ""));
                         }
                         catch (Exception e)
                         {

@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using SQLite;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -29,23 +30,30 @@ namespace BRB5.Model
         public DateTime DTDelete { get; set; }
 
         public bool IsItem { get { return !IsHead; } }
+        [Ignore]
         public bool IsTemplate { get; set; } = false;
 
         bool _IsVisible = true;       
 
         [JsonIgnore]
+        [Ignore]
         public bool IsVisible { get { return _IsVisible; } set { _IsVisible = value; OnPropertyChanged("IsVisible"); OnPropertyChanged("HeightRequest"); } }
 
         [JsonIgnore]
         public bool IsDelete { get { return DTDelete != default; }  }
 
         [JsonIgnore]
+        [Ignore]
         public bool IsEnableOk { get { return (RatingTemplate & 1) == 1; } set { RatingTemplate = value ? RatingTemplate | 1 : RatingTemplate & (8 + 4 + 2); OnPropertyChanged(nameof(OpacityOk)); } }
         [JsonIgnore]
+        [Ignore]
         public bool IsEnableSoSo { get { return (RatingTemplate & 2) == 2; } set { RatingTemplate = value ? RatingTemplate | 2 : RatingTemplate & (8 + 4 + 1); OnPropertyChanged(nameof(OpacitySoSo)); } }
         [JsonIgnore]
+        [Ignore]
         public bool IsEnableBad { get { return (RatingTemplate & 4) == 4; } set { RatingTemplate = value ? RatingTemplate | 4 : RatingTemplate & (8 + 2 + 1); OnPropertyChanged(nameof(OpacityBad)); } }
+        
         [JsonIgnore]
+        [Ignore]
         public bool IsEnableNotKnow { get { return (RatingTemplate & 8) == 8; } set { RatingTemplate = value ? RatingTemplate | 8 : RatingTemplate & (4 + 2 + 1); OnPropertyChanged(nameof(OpacityNotKnow)); } }
 
         [JsonIgnore]

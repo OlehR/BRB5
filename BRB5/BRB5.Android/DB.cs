@@ -1,9 +1,6 @@
 ﻿//using BRB5.Model;
 using BRB5.Model;
-using Newtonsoft.Json;
-using SQLite;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
@@ -14,27 +11,8 @@ using Utils;
 using Xamarin.Essentials;
 using Xamarin.Forms;
 
-
-public static class ProtoDB
-{
- 
-    public static int ReplaceAll(this SQLiteConnection SQL, IEnumerable objects)
-    {
-        int c = 0;
-
-        SQL.RunInTransaction(delegate
-            {
-                foreach (object @object in objects)
-                {
-                    c += SQL.InsertOrReplace(@object);
-                }
-            });        
-        return c;
-    }
-}
 namespace BRB5
 {
-    
     public class DB
     {
         static DB Db = null;
@@ -44,7 +22,7 @@ namespace BRB5
                 Db = new DB();
             return Db;
         }
-        
+
         const string NameDB = "BRB5.db";
         const string SqlCreateDB = @"
 CREATE TABLE AdditionUnit (
@@ -70,7 +48,7 @@ CREATE TABLE Config (
     UserCreate TIMESTAMP NOT NULL  DEFAULT CURRENT_TIMESTAMP);
 CREATE UNIQUE INDEX ConfigId ON Config ( NameVar);
 
-CREATE TABLE Doc (
+CREATE TABLE DOC (
     DateDoc           DATE      NOT NULL,
     TypeDoc           INTEGER   NOT NULL DEFAULT (0),
     NumberDoc         TEXT      NOT NULL,
@@ -147,7 +125,6 @@ CREATE TABLE Warehouse (
     Number     TEXT,
     Name       TEXT,
     Url        TEXT,
-    Address    TEXT,
     InternalIP TEXT,
     ExternalIP TEXT,
     Location TEXT);
@@ -212,8 +189,7 @@ CREATE TABLE RaitingDocItem(
 CREATE UNIQUE INDEX RaitingDocItemId ON RaitingDocItem (TypeDoc,NumberDoc,Id);
 ";
 
-        public SQLiteConnection db;
-
+        public SQLite db;
         public string PathNameDB;
         public DB()
         {
@@ -237,10 +213,8 @@ CREATE UNIQUE INDEX RaitingDocItemId ON RaitingDocItem (TypeDoc,NumberDoc,Id);
                 //if (!Directory.Exists(receiptFilePath))
                 //    Directory.CreateDirectory(receiptFilePath);
                 //Створюємо базу
-                db = new SQLiteConnection(PathNameDB);
-                foreach (var el in SqlCreateDB.Split(';'))
-                    if (el.Length > 4) 
-                db.Execute(el);
+                db = new SQLite(PathNameDB);
+                db.ExecuteNonQuery(SqlCreateDB);
                // db.Close();
                // db = null;
             }
@@ -248,31 +222,31 @@ CREATE UNIQUE INDEX RaitingDocItemId ON RaitingDocItem (TypeDoc,NumberDoc,Id);
             {
                 //var pst= Environment.GetFolderPath(Environment.SpecialFolder.MyPictures);
                 //string path1 = Path.Combine(Android.OS.Environment.ExternalStorageDirectory.AbsolutePath, Android.OS.Environment.DirectoryDownloads);
-                db = new SQLiteConnection(PathNameDB);
+                db = new SQLite(PathNameDB);
             }
         }
         
         public bool SetConfig<T>(string pName, T pValue)
         {
             string Value = (typeof(T) == typeof(DateTime) ? ((DateTime)(object)pValue).ToString("yyyy-MM-dd HH:mm:ss") : pValue.ToString());
-            string SqlReplaceConfig  = "replace into CONFIG(NameVar, DataVar, TypeVar) values(?, ?, ?)";            
-            return db.Execute(SqlReplaceConfig,  pName, pValue  ,  pValue.GetType().ToString())>0;
+            string SqlReplaceConfig  = "replace into CONFIG(NameVar, DataVar, TypeVar) values(@NameVar, @DataVar, @TypeVar)";            
+            return db.ExecuteNonQuery<object>(SqlReplaceConfig, new { NameVar = pName, DataVar = Value  , @TypeVar = pValue.GetType().ToString() })>0;
         }
 
         public T GetConfig<T>(string pStr)
         {
             T Res = default(T);
-            string SqlConfig= "SELECT DataVar FROM CONFIG WHERE UPPER(NameVar) = UPPER(trim(?))";
+            string SqlConfig= "SELECT DataVar FROM CONFIG WHERE UPPER(NameVar) = UPPER(trim(@NameVar))";
             try
             {
                 if (typeof(T).BaseType == typeof(Enum))
                 { 
-                    var r= db.ExecuteScalar< string>(SqlConfig,  pStr );
+                    var r= db.ExecuteScalar<object, string>(SqlConfig, new { NameVar = pStr });
                     Res = (T)Enum.Parse(typeof(T), r, true);                   
                 }
                 else                       
                 {
-                    Res = db.ExecuteScalar< T>(SqlConfig,  pStr );
+                    Res = db.ExecuteScalar<object, T>(SqlConfig, new { NameVar = pStr });
                 }
             }
             catch (Exception e) 
@@ -300,12 +274,9 @@ CREATE UNIQUE INDEX RaitingDocItemId ON RaitingDocItem (TypeDoc,NumberDoc,Id);
                                 when coalesce(dws.quantity,0) - coalesce(dw1.quantityinput,0)=0 and quantityreason>0 then 1
                            else 0 end as Ord\n";
             }
-            try
-            {
 
-                if (pTypeResult == 1)
-                {
-                    Sql = $@"select d.TypeDoc as TypeDoc, d.numberdoc as NumberDoc, dw1.orderdoc as OrderDoc, dw1.CODEWARES as CodeWares,coalesce(dws.name,w.NAMEWARES) as NameWares,
+            if (pTypeResult == 1)
+                Sql = $@"select d.TypeDoc as TypeDoc, d.numberdoc as NumberDoc, dw1.orderdoc as OrderDoc, dw1.CODEWARES as CodeWares,coalesce(dws.name,w.NAMEWARES) as NameWares,
                          coalesce(dws.quantity,0) as QuantityOrderStr,coalesce(dw1.quantityinput,0) as InputQuantityStr, coalesce(dws.quantitymin,0) as QuantityMin, 
                         coalesce(dws.quantitymax,0) as QuantityMax ,coalesce(d.IsControl,0) as IsControl, coalesce(dw1.quantityold,0) as QuantityOldStr
                       ,dw1.quantityreason as QuantityReason
@@ -320,7 +291,7 @@ CREATE UNIQUE INDEX RaitingDocItemId ON RaitingDocItem (TypeDoc,NumberDoc,Id);
                             select  dws.typedoc ,dws.numberdoc, dws.codewares,dws.name, sum(dws.quantity) as quantity,  min(dws.quantitymin) as quantitymin, max(dws.quantitymax) as quantitymax  
                                     from   DocWaresSample dws   group by dws.typedoc ,dws.numberdoc,dws.codewares,dws.name
                             ) as dws on d.numberdoc = dws.numberdoc and d.typedoc=dws.typedoc and dws.codewares = dw1.codewares
-                          where d.typedoc={pDocId.TypeDoc} and  d.numberdoc = {pDocId.NumberDoc}
+                          where d.typedoc=@TypeDoc and  d.numberdoc = @NumberDoc
                        union all
                        select d.TypeDoc as TypeDoc, d.numberdoc as NumberDoc, dws.orderdoc+100000, dws.CODEWARES,coalesce(dws.name,w.NAMEWARES) as NAMEWARES,coalesce(dws.quantity,0) as quantityorder,coalesce(dw1.quantityinput,0) as quantityinput, coalesce(dws.quantitymin,0) as quantitymin, coalesce(dws.quantitymax,0) as quantitymax ,coalesce(d.IsControl,0) as IsControl, coalesce(dw1.quantityold,0) as quantityold
                            ,0 as  quantityreason
@@ -332,14 +303,11 @@ CREATE UNIQUE INDEX RaitingDocItemId ON RaitingDocItem (TypeDoc,NumberDoc,Id);
                           left join (select dw.typedoc ,dw.numberdoc, dw.codewares, sum(dw.quantity) as quantityinput,sum(dw.quantityold) as quantityold 
                                         from DocWares dw group by dw.typedoc ,dw.numberdoc,codewares) dw1 
                                  on (dw1.numberdoc = d.numberdoc and d.typedoc=dw1.typedoc and dw1.codewares = dws.codewares)
-                          where dw1.TypeDoc is null and d.typedoc={pDocId.TypeDoc} and  d.numberdoc = {pDocId.NumberDoc}
-                       order by {OrderQuery}";
-                    var r = db.Query<DocWaresEx>(Sql, pDocId.TypeDoc, pDocId.NumberDoc, pDocId.TypeDoc, pDocId.NumberDoc);
-                    return r;
-                }
-                if (pTypeResult == 2)
-                {
-                    Sql = $@"select d.TypeDoc as TypeDoc, d.numberdoc as NumberDoc, dw1.orderdoc as OrderDoc, dw1.CODEWARES as CodeWares,coalesce(dws.name,w.NAMEWARES) as NameWares,
+                          where dw1.TypeDoc is null and d.typedoc=@TypeDoc and  d.numberdoc = @NumberDoc
+                       order by {OrderQuery}"  ;
+
+            if (pTypeResult == 2)
+                Sql = $@"select d.TypeDoc as TypeDoc, d.numberdoc as NumberDoc, dw1.orderdoc as OrderDoc, dw1.CODEWARES as CodeWares,coalesce(dws.name,w.NAMEWARES) as NameWares,
                         coalesce(dws.quantity,0) as QuantityOrderStr,
                         coalesce(dw1.quantity,0) as InputQuantityStr,
 --coalesce(dw1.quantity,0) as InputQuantity,
@@ -353,12 +321,16 @@ CREATE UNIQUE INDEX RaitingDocItemId ON RaitingDocItem (TypeDoc,NumberDoc,Id);
                             select  dws.typedoc ,dws.numberdoc, dws.codewares,dws.name, sum(dws.quantity) as quantity,  min(dws.quantitymin) as quantitymin, max(dws.quantitymax) as quantitymax  
                                     from   DocWaresSample dws   group by dws.typedoc ,dws.numberdoc,dws.codewares,dws.name
                             ) as dws on d.numberdoc = dws.numberdoc and d.typedoc=dws.typedoc and dws.codewares = dw1.codewares
-                            where d.typedoc={pDocId.TypeDoc} and  d.numberdoc = {pDocId.NumberDoc}
+                            where d.typedoc=@TypeDoc and  d.numberdoc = @NumberDoc
                          order by dw1.orderdoc desc";
-                    var r = db.Query<DocWaresEx>(Sql);
-                    return r;
-                }
+
+            try
+            {
                 
+                decimal aa = Convert.ToDecimal("0.999");
+
+                var r= db.Execute<DocId, DocWaresEx>(Sql, pDocId);
+                return r;
             }
             catch (Exception e)
             {
@@ -366,6 +338,20 @@ CREATE UNIQUE INDEX RaitingDocItemId ON RaitingDocItem (TypeDoc,NumberDoc,Id);
                 //Utils.WriteLog("e", TAG, "GetDocWares >>", e);
             }
             return null;
+        }
+
+        public bool UpdateDocState(int pState, int pTypeDoc, string pNumberDoc)
+        {
+            try
+            {
+                string Sql = "Update DOC state =@State  where Type_doc = @TypeDoc  and number_doc = @NumberDoc";
+                return db.ExecuteNonQuery(Sql,new Doc(){TypeDoc=pTypeDoc,NumberDoc=pNumberDoc,State=pState } )>0;
+            }
+            catch (Exception e)
+            {
+               // Utils.WriteLog("e", TAG, "UpdateDocState >>", e);
+            }
+            return false;
         }
 
         public bool ReplaceDoc(IEnumerable<Doc> pDoc)
@@ -377,19 +363,19 @@ CREATE UNIQUE INDEX RaitingDocItemId ON RaitingDocItem (TypeDoc,NumberDoc,Id);
 (select max(d.DTStart) from Doc d where d.Typedoc=@TypeDoc and d.numberdoc=@NumberDoc ),
 (select max(d.DTEnd) from Doc d where d.Typedoc=@TypeDoc and d.numberdoc=@NumberDoc )
 )";
-            return db.ReplaceAll( pDoc) >= 0;
+            return db.BulkExecuteNonQuery<Doc>(Sql, pDoc) >= 0;
         }
 
         public IEnumerable<Doc> GetDoc(TypeDoc pTypeDoc, string pBarCode = null, string pExFilrer = null)
         {
             string Sql = $@"select d.*, Wh.Name as Address,d.State as Color from Doc d 
  left join Warehouse  Wh on d.CodeWarehouse = wh.number 
-                                where TypeDoc = {pTypeDoc.CodeDoc} and DateDoc >= date(datetime(CURRENT_TIMESTAMP,'-{pTypeDoc.DayBefore} day'))" +
+                                where TypeDoc = @TypeDoc and DateDoc >= date(datetime(CURRENT_TIMESTAMP,'-{pTypeDoc.DayBefore} day'))" +
                                 (string.IsNullOrEmpty(pBarCode)?"": $" and BarCode like'%{pBarCode}%'") +
                                 (string.IsNullOrEmpty(pExFilrer) ? "" : $" and ExtInfo like'%{pExFilrer}%'") +
 " order by DateDoc DESC";
 
-            var res = db.Query< Doc>(Sql);
+            var res = db.Execute<object, Doc>(Sql, new  { TypeDoc = pTypeDoc.CodeDoc });
             if(!res.Any() && !string.IsNullOrEmpty(pBarCode))
             {
                 Sql = $@"select d.*, Wh.Name as Address,d.State as Color  
@@ -397,10 +383,10 @@ from Doc d
  left join Warehouse  Wh on d.CodeWarehouse = wh.number 
  Join DOCWARESSAMPLE dw on dw.numberdoc=d.numberdoc and dw.TypeDoc=d.TypeDoc
  join barcode bc on dw.codewares=bc.CODEWARES 
-   where d.TypeDoc = {pTypeDoc.CodeDoc} and DateDoc >= date(datetime(CURRENT_TIMESTAMP,'-{pTypeDoc.DayBefore} day'))
-and bc.BarCode=?
+   where d.TypeDoc = @TypeDoc and DateDoc >= date(datetime(CURRENT_TIMESTAMP,'-{pTypeDoc.DayBefore} day'))
+and bc.BarCode=@BarCode
  order by DateDoc DESC";
-                res = db.Query< Doc>(Sql, pBarCode );
+                res = db.Execute<object, Doc>(Sql, new { TypeDoc = pTypeDoc.CodeDoc, BarCode = pBarCode });
             }
            
             return res;
@@ -408,10 +394,10 @@ and bc.BarCode=?
 
         public Doc GetDoc(DocId pDocId)
         {
-            string Sql = $@"select d.* , Wh.Name as Address from Doc d 
+            string Sql = @"select d.* , Wh.Name as Address from Doc d 
    left join Warehouse Wh on d.CodeWarehouse = wh.number 
-   where d.TypeDoc = {pDocId.TypeDoc} and d.numberdoc = pDocId.NumberDoc";
-            var r= db.Query< Doc>(Sql);
+   where d.TypeDoc = @TypeDoc and d.numberdoc = @NumberDoc";
+            var r= db.Execute<DocId, Doc>(Sql,pDocId);
             if(r!=null&&r.Any())
                 return r.First();
             return null;
@@ -432,12 +418,11 @@ and bc.BarCode=?
                     IsSimpleDoc = Config.GetDocSetting(pDocId.TypeDoc).IsSimpleDoc;
                 if (IsSimpleDoc)
                 {
-                    sql = $@"select dws.TypeDoc as TypeDoc, dws.NumberDoc as NumberDoc, dws.CODEWARES as CodeWares,dws.NAME as NameWares,1 as Coefficient,{Config.GetCodeUnitPiece} as CodeUnit, 'шт' as NameUnit ,
+                    sql = $@"select @TypeDoc as TypeDoc, @NumberDoc as NumberDoc, dws.CODEWARES as CodeWares,dws.NAME as NameWares,1 as Coefficient,{Config.GetCodeUnitPiece} as CodeUnit, 'шт' as NameUnit ,
                              dws.BarCode as BarCode  ,{Config.GetCodeUnitPiece} as BaseCodeUnit  
                             from DocWaresSample dws
-                         where  dws.Typedoc={pDocId.TypeDoc}  and dws.numberdoc=pDocId.NumberDoc and " + 
-                                (pParseBarCode.CodeWares > 0 ? $"dws.CODEWARES={pParseBarCode.CodeWares}" : $"dws.BarCode= {pParseBarCode.BarCode}");
-                    var r = db.Query< DocWaresEx>(sql);
+                         where  dws.Typedoc=@TypeDoc  and dws.numberdoc=@DocNumber and " + (pParseBarCode.CodeWares > 0 ? $"dws.CODEWARES={pParseBarCode.CodeWares}" : $"dws.BarCode= {pParseBarCode.BarCode}");
+                    var r = db.Execute<DocId, DocWaresEx>(sql, pDocId);
                     if (r != null && r.Count() == 1)
                         res = r.First();
                 }
@@ -452,17 +437,17 @@ and bc.BarCode=?
                                 join ADDITIONUNIT au on bc.CODEWARES=au.CODEWARES and au.CODEUNIT=bc.CODEUNIT 
                                 join wares w on w.CODEWARES=bc.CODEWARES 
                                 join UNITDIMENSION ud on bc.CODEUNIT=ud.CODEUNIT 
-                                where bc.BARCODE=?";
-                        var r = db.Query<DocWaresEx>(sql, pParseBarCode.BarCode);          
-                            if (r != null && r.Count() == 1)
+                                where bc.BARCODE=@BarCode";
+                        var r = db.Execute<object, DocWaresEx>(sql, new { BarCode = pParseBarCode.BarCode });
+                        if (r != null && r.Count() == 1)
                             res = r.First();
                         // Пошук по штрихкоду виробника
                         if (pParseBarCode.BarCode.Length == 13 && res == null)
                         {
                             sql = $@"select bc.codewares as CodeWares,bc.BARCODE as BarCode from BARCODE bc 
                                      join wares w on bc.codewares=w.codewares and w.codeunit={Config.GetCodeUnitWeight}
-                                     where substr(bc.BARCODE,1,6)=?";
-                            var rr = db.Query< DocWaresEx>(sql, pParseBarCode.BarCode.Substring(0, 6) );
+                                     where substr(bc.BARCODE,1,6)=@BarCode";
+                            var rr = db.Execute<object, DocWaresEx>(sql, new { BarCode = pParseBarCode.BarCode.Substring(0, 6) });
 
                             foreach (var el in rr)
                             {
@@ -490,7 +475,7 @@ and bc.BarCode=?
                                 join ADDITIONUNIT au on w.CODEWARES=au.CODEWARES and au.CODEUNIT=w.CODEUNIT 
                                 join UNITDIMENSION ud on w.CODEUNIT=ud.CODEUNIT 
                                 where " + Find;
-                    var r = db.Query<DocWaresEx>(sql);
+                    var r = db.Execute<DocWaresEx>(sql);
                     if (r != null && r.Count() == 1)
                     {
                         // @TypeDoc as TypeDoc, @NumberDoc as NumberDoc,
@@ -508,11 +493,11 @@ and bc.BarCode=?
             {
                 res.ParseBarCode=pParseBarCode;
                 //res.QuantityBarCode = pParseBarCode.Quantity;
-                sql = $@"select coalesce(d.IsControl,0) as IsControl, coalesce(QuantityMax,0) as QuantityMax, coalesce(quantity,0) as QuantityOrder, 
+                sql = @"select coalesce(d.IsControl,0) as IsControl, coalesce(QuantityMax,0) as QuantityMax, coalesce(quantity,0) as QuantityOrder, 
                         case when dws.Typedoc is null then 0 else 1 end as IsRecord from DOC d
-                         left join DOCWARESsample dws on d.Typedoc=dws.Typedoc and d.NumberDoc=dws.NumberDoc and dws.codewares={res.CodeWares}
-                         where  d.Typedoc={pDocId.TypeDoc} and d.NumberDoc={pDocId.NumberDoc}";
-                var r = db.Query<DocWaresEx>(sql);
+                         left join DOCWARESsample dws on d.Typedoc=dws.Typedoc and d.numberdoc=dws.numberdoc and dws.codewares=@CodeWares
+                         where  d.Typedoc=@TypeDoc and d.numberdoc=@NumberDoc";
+                var r = db.Execute<DocWaresId, DocWaresEx>(sql, new DocWaresId() { TypeDoc=pDocId.TypeDoc,NumberDoc=pDocId.NumberDoc,CodeWares=res.CodeWares});
                 if (r != null && r.Count() == 1)
                 {
                     var el= r.First();
@@ -534,34 +519,34 @@ and bc.BarCode=?
         
         public IEnumerable<RaitingTemplateItem> GetRaitingTemplateItem(RaitingTemplate pRT)
         {
-            string sql = @"select * from RaitingTemplateItem rti where IdTemplate=?
+            string sql = @"select * from RaitingTemplateItem rti where IdTemplate=@IdTemplate
         order by case when rti.Id<0 then rti.Id else rti.Parent end,  case when rti.Id<0 then 0 else rti.Id end";
-            return db.Query<RaitingTemplateItem>(sql, pRT.IdTemplate);            
+            return db.Execute<RaitingTemplate, RaitingTemplateItem>(sql, pRT);            
         }
 
         public IEnumerable<Model.RaitingDocItem> GetRaitingDocItem(DocId pDoc)
         {
-            string sql = $@"select d.TypeDoc,d.NumberDoc,Rs.Id,Rs.Parent as Parent,Rs.IsHead,Rs.Text,Rs.RatingTemplate,R.Rating,R.QuantityPhoto,R.Note,Rs.OrderRS,Rs.DTDelete
+            string sql = @"select d.TypeDoc,d.NumberDoc,Rs.Id,Rs.Parent as Parent,Rs.IsHead,Rs.Text,Rs.RatingTemplate,R.Rating,R.QuantityPhoto,R.Note,Rs.OrderRS,Rs.DTDelete
         from Doc d 
          join RaitingTemplateItem as Rs on (d.IdTemplate=RS.IdTemplate ) 
          left join RaitingDocItem R on (d.TypeDoc=R.TypeDoc and d.NumberDoc=R.NumberDoc and Rs.Id=R.id)
-        where d.TypeDoc={pDoc.TypeDoc} and  d.NumberDoc={pDoc.NumberDoc}
+        where d.TypeDoc=@TypeDoc and  d.NumberDoc=@NumberDoc 
         order by case when Rs.Id<0 then Rs.Id else Rs.Parent end ,  case when Rs.Id<0 then 0 else Rs.Id end
         ";
-            return db.Query< Model.RaitingDocItem>(sql, pDoc);            
+            return db.Execute<DocId, Model.RaitingDocItem>(sql, pDoc);            
         }
 
         public bool ReplaceRaitingDocItem(Model.RaitingDocItem pR)
         {
             string Sql = @"replace into RaitingDocItem ( TypeDoc, NumberDoc, Id, Rating, QuantityPhoto, Note) values 
                                                 (@TypeDoc,@NumberDoc,@Id,@Rating,@QuantityPhoto,@Note)";
-            var res= db.Insert(pR) >= 0;
+            var res= db.ExecuteNonQuery<Model.RaitingDocItem>(Sql, pR) >= 0;
 
-            Sql = $@"update doc set  DTStart = case when DTStart is null then (DATETIME('NOW', 'LOCALTIME')) else DTStart end,
-        DTEnd = (DATETIME('NOW', 'LOCALTIME')) where  Typedoc={pR.TypeDoc} and numberdoc={pR.NumberDoc}";
+            Sql = @"update doc set  DTStart = case when DTStart is null then (DATETIME('NOW', 'LOCALTIME')) else DTStart end,
+        DTEnd = (DATETIME('NOW', 'LOCALTIME')) where  Typedoc=@TypeDoc and numberdoc=@NumberDoc";
             try
             {
-                db.Execute(Sql);
+                db.ExecuteNonQuery<Model.RaitingDocItem>(Sql, pR);
             }catch (Exception ex) 
             { var s = ex.Message; }
             return res;
@@ -571,15 +556,14 @@ and bc.BarCode=?
         {
             string Sql = @"replace into RaitingTemplateItem (  IdTemplate, Id, Parent, IsHead, Text, RatingTemplate, OrderRS,DTDelete ) values 
                                                       (@IdTemplate,@Id,@Parent,@IsHead,@Text,@RatingTemplate,@OrderRS,@DTDelete)";                                                   
-            return db.ReplaceAll(pR) >= 0;
+            return db.BulkExecuteNonQuery<RaitingTemplateItem>(Sql, pR) >= 0;
         }
 
         public bool ReplaceRaitingTemplate(IEnumerable<RaitingTemplate> pR)
         {
             string Sql = @"replace into RaitingTemplate ( IdTemplate, Text, IsActive ) values 
                                                       (@IdTemplate,@Text,@IsActive)";
-            
-            return db.ReplaceAll(pR) >= 0;
+            return db.BulkExecuteNonQuery<RaitingTemplate>(Sql, pR) >= 0;
         }
         /*public int GetIdRaitingTemplate()
         {
@@ -589,61 +573,60 @@ and bc.BarCode=?
         
         public int GetIdRaitingTemplateItem(RaitingTemplate pD)
         {
-            string Sql = $@"select coalesce(max(Id),0)+1 from RaitingTemplateItem rs where rs.IdTemplate={pD.IdTemplate}";
-            return db.ExecuteScalar<int>(Sql);
+            string Sql = @"select coalesce(max(Id),0)+1 from RaitingTemplateItem rs where rs.IdTemplate=@IdTemplate";
+            return db.ExecuteScalar<RaitingTemplate, int>(Sql,pD);
         }
         public IEnumerable<RaitingTemplate> GetRaitingTemplate()
         {
             string Sql = @"select * from RaitingTemplate";
-            return db.Query<RaitingTemplate>(Sql);            
+            return db.Execute<RaitingTemplate>(Sql);            
         }
 
         public bool ReplaceDocWaresSample(IEnumerable<DocWaresSample> pDWS)
         {
             string Sql = @"replace into DocWaresSample ( TypeDoc, NumberDoc, OrderDoc, CodeWares, Quantity, QuantityMin, QuantityMax, Name, BarCode) values 
                                                        (@TypeDoc,@NumberDoc,@OrderDoc,@CodeWares,@Quantity,@QuantityMin,@QuantityMax,@Name,@BarCode)";
-            return db.ReplaceAll(pDWS) >= 0;
+            return db.BulkExecuteNonQuery<DocWaresSample>(Sql, pDWS) >= 0;
         }
 
         public bool ReplaceDocWares(DocWares pDW)
         {
             string Sql = @"replace into DocWares ( TypeDoc, NumberDoc, OrderDoc, CodeWares, Quantity, QuantityOld, CodeReason) values 
                                                  (@TypeDoc,@NumberDoc,@OrderDoc,@CodeWares,@Quantity,@QuantityOld,@CodeReason)";
-            return db.InsertOrReplace( pDW) >= 0;
+            return db.ExecuteNonQuery<DocWares>(Sql, pDW) >= 0;
         }
 
         public IEnumerable<Warehouse> GetWarehouse()
         {
             string Sql = "select * from Warehouse";
-            //db.ExecuteScalar<int>("select count(*) from Warehouse");
-            return db.Query<Warehouse>(Sql);
+            return db.Execute<Warehouse>(Sql);
         }
 
         public bool SetStateDoc(Doc pDoc)
         {
-            string Sql = $@"Update Doc set State={pDoc.State}  where TypeDoc = {pDoc.TypeDoc} and NumberDoc = {pDoc.NumberDoc}";
-            return db.Execute(Sql) >= 0;
+            string Sql = @"Update Doc set State=@State  where NumberDoc= @NumberDoc and TypeDoc=@TypeDoc";
+            return db.ExecuteNonQuery<Doc>(Sql, pDoc) >= 0;
         }
 
         public bool ReplaceWarehouse(IEnumerable<Warehouse> pWh)
         {
-            db.Execute("delete from warehouse");
+            db.ExecuteNonQuery("delete from warehouse");
             string Sql = @"replace into Warehouse ( Code, Number, Name, Url, InternalIP, ExternalIP, Location ) values 
                                                   (@Code,@Number,@Name,@Url,@InternalIP,@ExternalIP,@Location )";
-            return db.ReplaceAll(pWh) >= 0;
+            return db.BulkExecuteNonQuery<Warehouse>(Sql, pWh) >= 0;
         }
 
         public bool ReplaceUser(IEnumerable<User> pUser)
         {
             string Sql = @"replace into User ( CodeUser, NameUser, BarCode, Login, PassWord, TypeUser) values 
                                              (@CodeUser,@NameUser,@BarCode,@Login,@PassWord,@TypeUser)";
-            return db.ReplaceAll(pUser) >= 0;
+            return db.BulkExecuteNonQuery<User>(Sql, pUser) >= 0;
         }
 
         public User GetUserLogin(User pUser)
         {
-            string sql = $@"select CodeUser, NameUser, BarCode, Login, PassWord, TypeUser from User where Login={pUser.Login} and PassWord={pUser.PassWord}";
-            return db.Query<User>(sql)?.First();
+            string sql = @"select CodeUser, NameUser, BarCode, Login, PassWord, TypeUser from User where Login=@Login and PassWord=@PassWord";
+            return db.Execute<User, User>(sql, pUser)?.First();
         }
 
         public void InsLogPrice(LogPrice pLP)// String pBarCode, Integer pStatus, Integer pActionType, Integer pPackageNumber, Integer pCodeWarees, String pArticle, Integer pLineNumber)
@@ -652,7 +635,7 @@ and bc.BarCode=?
                                           values (@BarCode,@Status, @ActionType,@PackageNumber,@CodeWares,@LineNumber,@Article)";
             try
             {
-                db.Insert( pLP);
+                db.ExecuteNonQuery(Sql, pLP);
             }
             catch (Exception e)
             {
@@ -669,13 +652,14 @@ and bc.BarCode=?
         {
             try
             {
-                string Sql = $"Update LogPrice set NumberOfReplenishment={pNumberOfReplenishment} where  date('now', '-1 day') and is_send = 0 and LineNumber ={pLineNumber}";
-                db.Execute(Sql);
+                string Sql = "Update LogPrice set NumberOfReplenishment=@NumberOfReplenishment where  date('now', '-1 day') and is_send = 0 and LineNumber =@LineNumber";
+                db.ExecuteNonQuery<object>(Sql, new { NumberOfReplenishment = pNumberOfReplenishment, LineNumber = pLineNumber });
             }
             catch (Exception e)
             {
                 //Utils.WriteLog("e", TAG, "UpdateReplenishment >>" + e.toString());
             }
+
         }
 
         public IEnumerable<LogPrice> GetSendData(int pLimit)
@@ -689,10 +673,10 @@ and bc.BarCode=?
                 if (varN < pLimit)
                 {
                     sql = $"Update LogPrice set IsSend=-1 where rowid  IN (SELECT rowid FROM LogPrice WHERE IsSend=0 LIMIT {pLimit - varN})";
-                    db.Execute(sql);
+                    db.ExecuteNonQuery(sql);
                 }
                 sql = "select * from LogPrice where IsSend=-1";
-                return db.Query<LogPrice>(sql);
+                return db.Execute<LogPrice>(sql);
             }
             catch (Exception e) { }
             return null;
@@ -708,12 +692,12 @@ and bc.BarCode=?
                 ActionType = " AND ActionType IN (1,2)";
 
             string Sql = $"SELECT {(pIsMultyLabel ? "" : "DISTINCT")} CodeWares FROM LogPrice WHERE CodeWares>0 and PackageNumber = {pPackageNumber } AND Status < 0 AND date(DTInsert) > date('now','-1 day') {ActionType}";
-            return db.Query<int>(Sql);            
+            return db.Execute<int>(Sql);            
         }
 
         public void AfterSendData()
         {
-            db.Execute("Update LogPrice set IsSend=1 where IsSend=-1");            
+            db.ExecuteNonQuery("Update LogPrice set IsSend=1 where IsSend=-1");            
         }
 
         public InitDataPriceCheck GetCountScanCode()
@@ -725,7 +709,7 @@ and bc.BarCode=?
                                       max(case when date(DTInsert) > date('now','-1 day') then PackageNumber else 0 end) as PackageNumber,
                                       max(case when date(DTInsert) > date('now','-1 day') then LineNumber else 0 end) as LineNumber
                                 from LogPrice";
-                var res=db.Query<InitDataPriceCheck>(sql);
+                var res=db.Execute<InitDataPriceCheck>(sql);
                 //return res;
                 if (res != null && res.Count() > 0)
                     return res.First();
@@ -744,7 +728,7 @@ and bc.BarCode=?
                                   count(DISTINCT case when ActionType in (1,2) then CodeWares end) as Yellow 
                     from LogPrice WHERE  Status>= 0 AND date(DTInsert) > date('now','-1 day') 
                     GROUP BY PackageNumber";            
-            return db.Query<PrintBlockItems>(Sql);
+            return db.Execute<PrintBlockItems>(Sql);
         }
     }
 }

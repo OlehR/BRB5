@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using SQLite;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -59,11 +60,13 @@ namespace BRB5.Model
         /// Шаблон
         /// </summary>
         public int IdTemplate { get; set; }
+        [Ignore]
         public string RaitingTemplateName { get; set; } = string.Empty;
         /// <summary>
         /// Код складу
         /// </summary>
         public int CodeWarehouse { get; set; }
+        [Ignore]
         public string CodeWarehouseName { get; set; } = string.Empty;
         /// <summary>
         /// Додаткова інформація, яка може вплинути на обробку документа напиклад ЗКПО постачальника
@@ -74,8 +77,10 @@ namespace BRB5.Model
         /// <summary>
         /// Адреса
         /// </summary>
+        [Ignore]
         public string Address { get; set; } // 
         [JsonIgnore]
+        [Ignore]
         public string ShortAddress { 
             get {
                 if (Address == null) return null;
