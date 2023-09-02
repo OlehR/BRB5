@@ -50,7 +50,7 @@ namespace BRB5.View
 
         private async void Save(object sender, EventArgs e)
         {
-            if (SelectedWarehouse > 0 && SelectedTemplate > 0 && !string.IsNullOrEmpty(RD.Description))
+            if (SelectedWarehouse >= 0 && SelectedTemplate >= 0 && !string.IsNullOrEmpty(RD.Description))
             {
                 RD.IdTemplate = RT.ElementAt(SelectedTemplate).IdTemplate;
                 RD.CodeWarehouse = ListWarehouse.ElementAt(SelectedWarehouse).CodeWarehouse;
