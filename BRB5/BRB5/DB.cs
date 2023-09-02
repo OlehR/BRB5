@@ -607,9 +607,14 @@ and bc.BarCode=?
 
         public bool ReplaceDocWares(DocWares pDW)
         {
+            //if(!pDW.GetType().Name.Equals("DocWares"))
             string Sql = @"replace into DocWares ( TypeDoc, NumberDoc, OrderDoc, CodeWares, Quantity, QuantityOld, CodeReason) values 
                                                  (@TypeDoc,@NumberDoc,@OrderDoc,@CodeWares,@Quantity,@QuantityOld,@CodeReason)";
-            return db.InsertOrReplace( pDW) >= 0;
+            try
+            {
+                return db.InsertOrReplace(new DocWares(pDW)) >= 0;
+            }catch(Exception e) 
+            { Console.WriteLine(e.ToString()); return false; }
         }
 
         public IEnumerable<Warehouse> GetWarehouse()
