@@ -302,21 +302,26 @@ namespace BRB5.Connector
             }
             else
             {
-                string data = JsonConvert.SerializeObject(new ApiDoc() { CodeData = 150, TypeDoc = pTypeDoc });
+                string data = JsonConvert.SerializeObject(new ApiDoc() { CodeData = 150, TypeDoc = pTypeDoc,CodeWarehouse=Config.CodeWarehouse,Ver=5136 });
                 HttpResult result = Http.HTTPRequest(0, "znp/", data, "application/json");//
 
                 if (result.HttpState == eStateHTTP.HTTP_OK)
                 {
-                    string[] lines = result.Result.Split(new String[] { ";;;" }, StringSplitOptions.None);
+                    string[] lines = result.Result.Split(new String[] { ";;;" }, StringSplitOptions.RemoveEmptyEntries);
                     foreach (var el in lines)
+                    {
+                        string Sql = el.Replace("_", "").Replace(";;", "");
+                        if(Sql.Length>20)
                         try
                         {
-                            db.db.Execute(el.Replace("_", ""));
+                                Console.WriteLine(Sql.Substring(0, 20) + $" Length=>{Sql.Length}") ;
+                            db.db.Execute(Sql);
                         }
                         catch (Exception e)
                         {
-                            Console.WriteLine(e);
+                            Console.WriteLine(Sql +Environment.NewLine+ e.Message);
                         }
+                    }
                 }
                 return null;
             }
