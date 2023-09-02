@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SQLite;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -7,15 +8,19 @@ namespace BRB5.Model
 {
     public class LogPrice
     {
+        //BarCode, Status,  ActionType, PackageNumber, CodeWares, LineNumber, Article
         public string BarCode { get; set; }
         public int Status { get; set; }
+        [Ignore]
         public DateTime DTInsert { get; set; }
+        [Ignore]
         public int IsSend { get; set; }
         public int ActionType { get; set; }
         public int PackageNumber { get; set; }
         public int CodeWares { get; set; }
         public string Article { get; set; }
         public int LineNumber { get; set; }
+        [Ignore]
         public double NumberOfReplenishment { get; set; }
         //DateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         //public string GetJsonPSU() { return "[\"" + BarCode + "\"," + Status + ",\"" + format.format(DTInsert) + "\"," + PackageNumber + "," + CodeWares + "]"; }
@@ -44,5 +49,5 @@ namespace BRB5.Model
         public bool IsGoodBarCode { get { return BarCode != null && BarCode.Trim().Length > 2 && rg.IsMatch(BarCode.Trim().Replace("-", "")); } }
     }
 
-
+    
 }
