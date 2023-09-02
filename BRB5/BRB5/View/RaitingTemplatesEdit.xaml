@@ -63,7 +63,7 @@
                                         </Grid.ColumnDefinitions>
 
 
-                                        <Label Text="{Binding Id}" Grid.Column="0" FontSize="Medium" />
+                                        <Label Text="{Binding IdTemplate}" Grid.Column="0" FontSize="Medium" />
                                         <Label Text="{Binding Text}" Grid.Column="1" FontSize="Medium" />
                                         <ImageButton Source="save.png"
                                                      Grid.Column="2"
