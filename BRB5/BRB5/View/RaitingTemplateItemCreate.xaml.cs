@@ -7,7 +7,7 @@ using Xamarin.Forms;
 
 namespace BRB5.View
 {
-    public partial class CreateRatingTemplateItem
+    public partial class RaitingTemplateItemCreate
     {
         private ObservableCollection<RaitingTemplateItem> _RS;
         public ObservableCollection<RaitingTemplateItem> RS { get { return _RS; } set { _RS = value; OnPropertyChanged(nameof(RS)); } }
@@ -19,7 +19,7 @@ namespace BRB5.View
         RaitingTemplate RT;
         DB db = DB.GetDB();
 
-        public CreateRatingTemplateItem(int pId)
+        public RaitingTemplateItemCreate(int pId)
         {
             InitializeComponent();            
             RT= new RaitingTemplate() { IdTemplate = pId };
@@ -124,12 +124,11 @@ namespace BRB5.View
             {
                 Id = db.GetIdRaitingTemplateItem(RT),
                 OrderRS = db.GetIdRaitingTemplateItem(RT),
-                
+                IdTemplate = RT.IdTemplate,                
                 IsEnableBad = true,
                 IsEnableSoSo = true,
                 IsEnableNotKnow = true,
                 IsEnableOk = true,
-                IsHead = true,
                 Parent = 0
             };
             await Navigation.PushAsync(new RaitingTemplateEditQuestion(vRaiting));
@@ -145,7 +144,8 @@ namespace BRB5.View
             var vRaiting = new RaitingTemplateItem
             {
                 Id = db.GetIdRaitingTemplateItem(RT),
-                OrderRS = db.GetIdRaitingTemplateItem(RT),                
+                OrderRS = db.GetIdRaitingTemplateItem(RT),
+                IdTemplate = RT.IdTemplate,
                 IsEnableBad = true,
                 IsEnableSoSo = true,
                 IsEnableNotKnow = true,
