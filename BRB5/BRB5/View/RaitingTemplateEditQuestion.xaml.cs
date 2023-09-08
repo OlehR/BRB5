@@ -14,9 +14,9 @@ namespace BRB5.View
         private RaitingTemplateItem RT;
 
         public RaitingTemplateEditQuestion(RaitingTemplateItem rq)
-        {
-          
-            RQ = rq;           
+        {          
+            RQ = rq;  
+            RQ.IsTemplate=true;
 
             this.BindingContext = this;
             InitializeComponent();

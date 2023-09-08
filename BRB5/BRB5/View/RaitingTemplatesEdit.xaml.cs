@@ -87,6 +87,11 @@ namespace BRB5.View
                     RS[i].Text = p[2];
                 
                     RS[i].IdTemplate = vRaitingTemplate.IdTemplate;
+
+                    RS[i].IsEnableBad = true;
+                    RS[i].IsEnableSoSo = true;
+                    RS[i].IsEnableNotKnow = true;
+                    RS[i].IsEnableOk = true;
                     i++;
                 }
 
