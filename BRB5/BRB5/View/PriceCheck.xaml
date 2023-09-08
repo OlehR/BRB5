@@ -21,7 +21,7 @@
                 <Button Text="{Binding NamePrintColorType}"
                         IsEnabled="{Binding IsEnabledPrintType}"
                         HorizontalOptions="Fill"
-                        Clicked="OnClickChangePrintColorType" />
+                        Clicked="OnClickWareInfo" />
 
                 <Button
                     Grid.Column="1"
