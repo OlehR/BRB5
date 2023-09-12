@@ -14,9 +14,9 @@ namespace BRB5.View
         private RaitingTemplateItem RT;
 
         public RaitingTemplateEditQuestion(RaitingTemplateItem rq)
-        {
-          
-            RQ = rq;           
+        {          
+            RQ = rq;  
+            RQ.IsTemplate=true;
 
             this.BindingContext = this;
             InitializeComponent();
@@ -25,7 +25,7 @@ namespace BRB5.View
         private async void Save(object sender, EventArgs e)
         {
             db.ReplaceRaitingTemplateItem(new List<RaitingTemplateItem>() { RQ });
-            await Navigation.PushAsync(new CreateRatingTemplateItem(RQ.IdTemplate));
+            await Navigation.PushAsync(new RaitingTemplateItemCreate(RQ.IdTemplate));
         }
 
         private void OnButtonClicked(object sender, EventArgs e)

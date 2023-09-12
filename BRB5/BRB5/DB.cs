@@ -191,7 +191,6 @@ CREATE TABLE RaitingTemplateItem(
     IdTemplate INTEGER         NOT NULL DEFAULT (0),
     Id INTEGER  NOT NULL,
     Parent INTEGER  NOT NULL,
-    IsHead INTEGER  NOT NULL DEFAULT(0),
     Text TEXT,
     RatingTemplate INTEGER         NOT NULL DEFAULT (0),
     OrderRS INTEGER,
@@ -541,7 +540,7 @@ and bc.BarCode=?
 
         public IEnumerable<Model.RaitingDocItem> GetRaitingDocItem(DocId pDoc)
         {
-            string sql = $@"select d.TypeDoc,d.NumberDoc,Rs.Id,Rs.Parent as Parent,Rs.IsHead,Rs.Text,Rs.RatingTemplate,R.Rating,R.QuantityPhoto,R.Note,Rs.OrderRS,Rs.DTDelete
+            string sql = $@"select d.TypeDoc,d.NumberDoc,Rs.Id,Rs.Parent as Parent,Rs.Text,Rs.RatingTemplate,R.Rating,R.QuantityPhoto,R.Note,Rs.OrderRS,Rs.DTDelete
         from Doc d 
          join RaitingTemplateItem as Rs on (d.IdTemplate=RS.IdTemplate ) 
          left join RaitingDocItem R on (d.TypeDoc=R.TypeDoc and d.NumberDoc=R.NumberDoc and Rs.Id=R.id)
@@ -569,8 +568,8 @@ and bc.BarCode=?
 
         public bool ReplaceRaitingTemplateItem(IEnumerable<RaitingTemplateItem> pR)
         {
-            string Sql = @"replace into RaitingTemplateItem (  IdTemplate, Id, Parent, IsHead, Text, RatingTemplate, OrderRS,DTDelete ) values 
-                                                      (@IdTemplate,@Id,@Parent,@IsHead,@Text,@RatingTemplate,@OrderRS,@DTDelete)";                                                   
+            string Sql = @"replace into RaitingTemplateItem (  IdTemplate, Id, Parent, Text, RatingTemplate, OrderRS,DTDelete ) values 
+                                                      (@IdTemplate,@Id,@Parent,@Text,@RatingTemplate,@OrderRS,@DTDelete)";                                                   
             return db.ReplaceAll(pR) >= 0;
         }
 

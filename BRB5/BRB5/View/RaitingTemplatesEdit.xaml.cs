@@ -46,7 +46,7 @@ namespace BRB5.View
             var s = b.Parent as Grid;
 
             var vRaitingTemplate = s.BindingContext as RaitingTemplate;
-            await Navigation.PushAsync(new CreateRatingTemplateItem(vRaitingTemplate.IdTemplate));
+            await Navigation.PushAsync(new RaitingTemplateItemCreate(vRaitingTemplate.IdTemplate));
         }
 
         private async void Import(object sender, EventArgs e)
@@ -82,14 +82,16 @@ namespace BRB5.View
                     RS[i].Id = temp;
 
                     Int32.TryParse(p[1], out temp);
-                    RS[i].IsHead = !(temp == 0);
-
-                    Int32.TryParse(p[2], out temp);
                     RS[i].Parent = temp;
 
-                    RS[i].Text = p[3];
+                    RS[i].Text = p[2];
                 
                     RS[i].IdTemplate = vRaitingTemplate.IdTemplate;
+
+                    RS[i].IsEnableBad = true;
+                    RS[i].IsEnableSoSo = true;
+                    RS[i].IsEnableNotKnow = true;
+                    RS[i].IsEnableOk = true;
                     i++;
                 }
 

@@ -16,7 +16,7 @@ namespace BRB5.Model
         
         [JsonIgnore]
         // заголовок групи
-        public bool IsHead { get; set; }
+        public bool IsHead { get { return Parent==0; } }
       
         public string Text { get; set; }        
         /// <summary>

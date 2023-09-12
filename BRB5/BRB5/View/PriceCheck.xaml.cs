@@ -12,12 +12,13 @@ using ZXing.Net.Mobile.Forms;
 using Xamarin.Essentials;
 using ZXing;
 using ZXing.Mobile;
+using BRB5.View;
 
 //using BRB5.Connector;
 namespace BRB5
 {
     public partial class PriceCheck : IDisposable
-{
+    {
     
         Connector.Connector c;    
         DB db = DB.GetDB();
@@ -187,10 +188,10 @@ namespace BRB5
             ListPrintBlockItems.Add(new PrintBlockItems() { PackageNumber = PackageNumber });
         }
 
-        private void OnClickChangePrintColorType(object sender, EventArgs e)
-        {
-            if (PrintType == 0) PrintType = 1; else if (PrintType == 1) PrintType = 0;
-        }
+        //private void OnClickChangePrintColorType(object sender, EventArgs e)
+        //{
+        //    if (PrintType == 0) PrintType = 1; else if (PrintType == 1) PrintType = 0;
+        //}
 
         private void OnClickPrintBlock(object sender, EventArgs e)
         {
@@ -211,6 +212,11 @@ namespace BRB5
         {
             //IsVisRepl = !IsVisRepl;
             IsMultyLabel= !IsMultyLabel;
+        }
+
+        private async void OnClickWareInfo(object sender, EventArgs e)
+        {
+            await Navigation.PushAsync(new WareInfo());
         }
     }
 }
