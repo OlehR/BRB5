@@ -20,5 +20,6 @@ namespace BRB5.Model
         public int Article { get; set; }
         [JsonIgnore]
         public decimal Quantity { get; set; } = 0m;
+        public eTypePriceInfo TypePriceInfo { get; set; }
     }
 }

@@ -56,5 +56,22 @@ namespace BRB5.Model
         public ParseBarCode ParseBarCode { get; set; }
         public string StrHttpResult { get { return StateHTTP.ToString(); } }
         public bool IsPriceOk { get { return PriceOld == Price && PriceOptOld == PriceOpt; } }
+
+        //Датa останнього приходу товару на склад торговий зал
+        public DateTime LastArrivalDate { get; set; }
+        //Кількість останнього приходу товару на склад торговий зал
+        public decimal LastArrivalQuantity { get; set; }
+        //Статус товару (відкритий 1 або закритий 0 в асортиментній матриці магазину)
+        public int StateWare { get; set; }
+        //Умови роботи з неліквідним товаром (100% повернення, списання)
+        public eTermsForIlliquidWare TermsForIlliquidWare { get; set; }
+        //Залишок по складу браку
+        public List<DefectBalance> BalanceDefects { get; set; }
+    }
+    public struct DefectBalance
+    {
+        public Warehouse Warehouse { get; set; }
+        public decimal Quantity { get; set; }
+        public DateTime Date { get; set; }
     }
 }

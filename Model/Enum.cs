@@ -300,4 +300,20 @@ namespace BRB5
         BitaHC61,
         KeyBoard
     }
+    public enum eTermsForIlliquidWare
+    {
+        [Description("100% повернення")]
+        FullRefund = 1,
+        [Description("списання")]
+        WriteOff = 2
+    }
+    public enum eTypePriceInfo
+    {
+        //[Description("скорочена")]
+        Short = 0,
+        //[Description("повна")]
+        Normal = 1,
+        //[Description("розширена")]
+        Full = 2
+    }
 }

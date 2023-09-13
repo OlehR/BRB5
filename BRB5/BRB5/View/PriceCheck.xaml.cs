@@ -216,7 +216,7 @@ namespace BRB5
 
         private async void OnClickWareInfo(object sender, EventArgs e)
         {
-            await Navigation.PushAsync(new WareInfo());
+            await Navigation.PushAsync(new WareInfo(WP.ParseBarCode));
         }
     }
 }
