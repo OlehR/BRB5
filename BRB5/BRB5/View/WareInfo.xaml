@@ -4,7 +4,83 @@
              x:Class="BRB5.View.WareInfo">
     <ContentPage.Content>
         <StackLayout>
-            
+            <StackLayout Orientation="Horizontal">
+                <Label Text="Ціна:"/>
+                <Label Text="{Binding WP.Price}" FontSize="Large"/>
+                <Label Text="{Binding WP.PriceOld}" FontSize="Large" HorizontalOptions="End"/>
+            </StackLayout>
+
+            <Label Text="{Binding Promotion}" FontSize="Medium" TextColor="DarkBlue"/>
+
+            <Label Text="{Binding WP.Name}" FontSize="Large"/>
+
+            <StackLayout Orientation="Horizontal">
+                <Label Text="Арт.:"/>
+                <Label Text="{Binding WP.Article}" TextColor="DarkBlue"/>
+                <Label Text="Од:"/>
+                <Label Text="{Binding WP.Unit}" TextColor="DarkBlue"/>
+            </StackLayout>
+            <StackLayout Orientation="Horizontal">
+                <Label Text="ШК:"/>
+                <Label Text="{Binding WP.BarCodes}" TextColor="DarkBlue"/>
+            </StackLayout>
+
+            <StackLayout Orientation="Horizontal">
+                <Label Text="Залишок торговий зал:"/>
+                <Label Text="{Binding WP.Rest}" FontAttributes="Bold"/>
+            </StackLayout>
+            <StackLayout Orientation="Horizontal">
+                <Label Text="Дата ост.приходу:"/>
+                <Label Text="{Binding WP.LastArrivalDate}" FontAttributes="Bold"/>
+            </StackLayout>
+            <StackLayout Orientation="Horizontal">
+                <Label Text="Кіл-ть ост.приходу:"/>
+                <Label Text="{Binding WP.LastArrivalQuantity}" FontAttributes="Bold"/>
+            </StackLayout>
+            <StackLayout Orientation="Horizontal">
+                <Label Text="Статус товару:"/>
+                <Label Text="{Binding WP.StateWare}" FontAttributes="Bold"/>
+            </StackLayout>
+
+            <ListView HasUnevenRows="True"
+                      ItemsSource="{Binding WP.BalanceDefects}">
+                <ListView.Header>
+                    <StackLayout>
+                        <Label Text="Брак" FontSize="Medium"/>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition/>
+                                <ColumnDefinition/>
+                                <ColumnDefinition/>
+                            </Grid.ColumnDefinitions>
+                            <Label Text="Склад" Grid.Column="0"/>
+                            <Label Text="Кількість" Grid.Column="1"/>
+                            <Label Text="Дата" Grid.Column="2"/>
+                        </Grid>
+                    </StackLayout>
+                </ListView.Header>
+                
+                <ListView.ItemTemplate>
+                    <DataTemplate xmlns:brb5="clr-namespace:BRB5">
+                        <ViewCell>
+                            <ViewCell.View>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition/>
+                                        <ColumnDefinition/>
+                                        <ColumnDefinition/>
+                                    </Grid.ColumnDefinitions>
+                                    <Label Text="{Binding WH.Name}" Grid.Column="0"/>
+                                    <Label Text="{Binding Quantity}" Grid.Column="1"/>
+                                    <Label Text="{Binding Date}" Grid.Column="2"/>
+                                </Grid>
+                            </ViewCell.View>
+                        </ViewCell>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+
+
         </StackLayout>
     </ContentPage.Content>
 </ContentPage>

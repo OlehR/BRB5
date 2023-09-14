@@ -18,8 +18,7 @@
                     <ColumnDefinition />
                 </Grid.ColumnDefinitions>
 
-                <Button Text="{Binding NamePrintColorType}"
-                        IsEnabled="{Binding IsEnabledPrintType}"
+                <Button Text="Інформація"
                         HorizontalOptions="Fill"
                         Clicked="OnClickWareInfo" />
 

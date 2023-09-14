@@ -45,8 +45,7 @@ namespace BRB5
         //ZXingDefaultOverlay overlay;
 
         int _PrintType = 0;//Колір чека 0-звичайний 1-жовтий, -1 не розділяти.        
-        public int PrintType { get { return _PrintType; } set { _PrintType = value; OnPropertyChanged("PrintType"); OnPropertyChanged("NamePrintColorType"); OnPropertyChanged("ColorPrintColorType"); } }
-        public bool IsEnabledPrintType { get { return Config.TypeUsePrinter != eTypeUsePrinter.NotDefined && Config.TypeUsePrinter != eTypeUsePrinter.StationaryWithCutAuto; }  }
+        public int PrintType { get { return _PrintType; } set { _PrintType = value; OnPropertyChanged("PrintType");  OnPropertyChanged("ColorPrintColorType"); } }
         public bool IsEnabledPrint { get { return Config.TypeUsePrinter != eTypeUsePrinter.NotDefined; } }
         public bool IsOnline { get; set; } = true;
 
@@ -66,7 +65,7 @@ namespace BRB5
 
 
         //public int ColorPrintColorType() { return Color.parseColor(HttpState != eStateHTTP.HTTP_OK ? "#ffb3b3" : (PrintType == 0 ? "#ffffff" : "#3fffff00")); }
-        public string NamePrintColorType { get { return PrintType == 0 ? "Звичайний" : PrintType == 1 ? "Жовтий" : "Авто"; } }//
+       
         public string ColorPrintColorType { get { return PrintType == 0 ? "#ffffff" : PrintType == 1 ? "#ffffa8" : "#ffffff"; } }
 
         public string TextColorPrice { get { return (WP!=null && (WP.Price != WP.PriceOld || WP.Price == 0) && WP.PriceOpt != WP.PriceOptOld) ? "#009800" : "#ff5c5c";  } }
@@ -79,6 +78,7 @@ namespace BRB5
         public string F5Text { get { return IsMultyLabel  ? "Дублювати" : "Унікальні"; } }
 
         public bool IsVisScan { get { return Config.TypeScaner == eTypeScaner.Camera; } }
+        
 
         public PriceCheck()
         {
@@ -216,7 +216,8 @@ namespace BRB5
 
         private async void OnClickWareInfo(object sender, EventArgs e)
         {
-            await Navigation.PushAsync(new WareInfo(WP.ParseBarCode));
+            if(WP!=null) 
+                await Navigation.PushAsync(new WareInfo(WP.ParseBarCode));
         }
     }
 }
