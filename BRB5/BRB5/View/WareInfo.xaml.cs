@@ -44,5 +44,20 @@ namespace BRB5.View
             InitializeComponent();
             this.BindingContext = this;
         }
+
+        private void OnClickPrint(object sender, EventArgs e)
+        {
+
+        }
+
+        private void OnClickMenu(object sender, EventArgs e)
+        {
+
+        }
+
+        private void BarCode(object sender, EventArgs e)
+        {
+
+        }
     }
 }

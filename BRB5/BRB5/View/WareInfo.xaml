@@ -87,7 +87,21 @@
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
+
+                <ImageButton Source="BarcodeScanning.png"
+                             Clicked="BarCode" Grid.Column="1"
+                             BackgroundColor="Transparent"
+                             Aspect="AspectFill"
+                             Margin="0" Padding="0" />
                 
+                <StackLayout Grid.Column="2">
+                    <Button Text="Друк"
+                            HorizontalOptions="Fill"
+                            Clicked="OnClickPrint" />
+                    <Button Text="Меню"
+                            HorizontalOptions="Fill"
+                            Clicked="OnClickMenu" />
+                </StackLayout>
                 
             </Grid>
 
