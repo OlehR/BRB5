@@ -18,6 +18,7 @@ using Android.Widget;
 using static Android.Renderscripts.ScriptGroup;
 using System.Runtime.Remoting.Contexts;
 //using Xamarin.Essentials;
+using AndroidX.AppCompat.App;
 
 namespace BRB5.Droid
 {
@@ -28,6 +29,7 @@ namespace BRB5.Droid
         //public static string SerialNumber = "None";
         protected override void OnCreate(Bundle savedInstanceState)
         {
+            AppCompatDelegate.DefaultNightMode = AppCompatDelegate.ModeNightNo;
             base.OnCreate(savedInstanceState);
             BR = new MyBroadcastReceiver();
             global::Xamarin.Forms.Forms.Init(this, savedInstanceState);
