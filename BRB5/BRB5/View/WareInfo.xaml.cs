@@ -18,6 +18,8 @@ namespace BRB5.View
         public WaresPrice WP { get; set; }
         private string _Promotion;
         public string Promotion { get { return _Promotion; } set { _Promotion = value; OnPropertyChanged(nameof(Promotion)); } }
+        public bool IsVisPromotion {  get; set; }  = false;
+        public string ImageUri { get; set; } = "Photo.png";
         public WareInfo(ParseBarCode parseBarCode)
         {
             c = Connector.Connector.GetInstance();
@@ -31,8 +33,13 @@ namespace BRB5.View
             var t = new DefectBalance { Date = WP.LastArrivalDate , Quantity=100 ,  WH=new Warehouse { Name="aisbcild"} };
             WP.BalanceDefects = new List<DefectBalance> { t,  t  };
             //
-            if (WP.ActionType == 0)
-                Promotion = "Акція діє: з " +WP.PromotionBegin + " по "+WP.PromotionEnd;
+            if (WP.ActionType == 1) 
+            {
+                Promotion = "Акція діє: з " + WP.PromotionBegin.ToString("dd.MM") + " по " + WP.PromotionEnd.ToString("dd.MM");
+                IsVisPromotion = true;
+            }
+
+            ImageUri = "http://api.spar.uz.ua/Wares/" + WP.CodeWares.ToString("D9") + ".png";
 
             InitializeComponent();
             this.BindingContext = this;

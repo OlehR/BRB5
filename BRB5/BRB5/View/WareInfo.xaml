@@ -4,13 +4,14 @@
              x:Class="BRB5.View.WareInfo">
     <ContentPage.Content>
         <StackLayout>
+            <Image Source="{Binding ImageUri}" HeightRequest="180"/>
             <StackLayout Orientation="Horizontal">
                 <Label Text="Ціна:"/>
                 <Label Text="{Binding WP.Price}" FontSize="Large"/>
                 <Label Text="{Binding WP.PriceOld}" FontSize="Large" HorizontalOptions="End"/>
             </StackLayout>
 
-            <Label Text="{Binding Promotion}" FontSize="Medium" TextColor="DarkBlue"/>
+            <Label Text="{Binding Promotion}" IsVisible="{Binding IsVisPromotion}" FontSize="Medium" TextColor="DarkBlue"/>
 
             <Label Text="{Binding WP.Name}" FontSize="Large"/>
 
@@ -31,7 +32,7 @@
             </StackLayout>
             <StackLayout Orientation="Horizontal">
                 <Label Text="Дата ост.приходу:"/>
-                <Label Text="{Binding WP.LastArrivalDate}" FontAttributes="Bold"/>
+                <Label Text="{Binding WP.LastArrivalDate,StringFormat='{0:dd.MM.yyyy}'}"  FontAttributes="Bold"/>
             </StackLayout>
             <StackLayout Orientation="Horizontal">
                 <Label Text="Кіл-ть ост.приходу:"/>
@@ -72,7 +73,7 @@
                                     </Grid.ColumnDefinitions>
                                     <Label Text="{Binding WH.Name}" Grid.Column="0"/>
                                     <Label Text="{Binding Quantity}" Grid.Column="1"/>
-                                    <Label Text="{Binding Date}" Grid.Column="2"/>
+                                    <Label Text="{Binding Date,StringFormat='{0:dd.MM.yyyy}'}" Grid.Column="2"/>
                                 </Grid>
                             </ViewCell.View>
                         </ViewCell>
@@ -80,6 +81,15 @@
                 </ListView.ItemTemplate>
             </ListView>
 
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                
+                
+            </Grid>
 
         </StackLayout>
     </ContentPage.Content>
