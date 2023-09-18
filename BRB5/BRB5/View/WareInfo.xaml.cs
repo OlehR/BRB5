@@ -19,11 +19,12 @@ namespace BRB5.View
         private string _Promotion;
         public string Promotion { get { return _Promotion; } set { _Promotion = value; OnPropertyChanged(nameof(Promotion)); } }
         public bool IsVisPromotion {  get; set; }  = false;
-        public string ImageUri { get; set; } = "Photo.png";
+        public string ImageUri { get; set; } = "Photo.png"; 
+        public bool IsEnabledPrint { get { return Config.TypeUsePrinter != eTypeUsePrinter.NotDefined; } }
         public WareInfo(ParseBarCode parseBarCode)
         {
             c = Connector.Connector.GetInstance();
-            
+            NavigationPage.SetHasNavigationBar(this, Device.RuntimePlatform == Device.iOS);
             //
             WP = c.GetPrice(parseBarCode);
             WP.LastArrivalDate= DateTime.Now;
@@ -47,7 +48,7 @@ namespace BRB5.View
 
         private void OnClickPrint(object sender, EventArgs e)
         {
-
+            if (IsEnabledPrint) c.PrintHTTP(new[] { WP.CodeWares });
         }
 
         private void OnClickMenu(object sender, EventArgs e)
@@ -55,9 +56,9 @@ namespace BRB5.View
 
         }
 
-        private void BarCode(object sender, EventArgs e)
+        private async void BarCode(object sender, EventArgs e)
         {
-
+            await Navigation.PushAsync(new PriceCheck());
         }
     }
 }
