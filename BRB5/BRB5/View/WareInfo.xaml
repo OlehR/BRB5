@@ -32,11 +32,11 @@
             </StackLayout>
             <StackLayout Orientation="Horizontal">
                 <Label Text="Дата ост.приходу:"/>
-                <Label Text="{Binding WP.LastArrivalDate,StringFormat='{0:dd.MM.yyyy}'}"  FontAttributes="Bold"/>
+                <Label Text="{Binding WP.LastIncomeDate,StringFormat='{0:dd.MM.yyyy}'}"  FontAttributes="Bold"/>
             </StackLayout>
             <StackLayout Orientation="Horizontal">
                 <Label Text="Кіл-ть ост.приходу:"/>
-                <Label Text="{Binding WP.LastArrivalQuantity}" FontAttributes="Bold"/>
+                <Label Text="{Binding WP.LastIncomeQuantity}" FontAttributes="Bold"/>
             </StackLayout>
             <StackLayout Orientation="Horizontal">
                 <Label Text="Статус товару:"/>
@@ -44,7 +44,7 @@
             </StackLayout>
 
             <ListView HasUnevenRows="True"
-                      ItemsSource="{Binding WP.BalanceDefects}">
+                      ItemsSource="{Binding WP.RestWarehouse}">
                 <ListView.Header>
                     <StackLayout>
                         <Label Text="Брак" FontSize="Medium"/>
