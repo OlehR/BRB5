@@ -51,7 +51,7 @@ namespace BRB5.Droid
 
             FileLogger.PathLog = Path.Combine(Config.PathDownloads, "Log");            
             FileLogger.WriteLogMessage("Start", eTypeLog.Expanded);
-            
+            ///!!!!=TMP копіювання бази
             try
             {
                 string CopyTo = Path.Combine(Config.PathDownloads, "brb5.db");
