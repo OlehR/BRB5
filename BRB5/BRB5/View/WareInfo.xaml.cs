@@ -19,11 +19,13 @@ namespace BRB5.View
         private string _Promotion;
         public string Promotion { get { return _Promotion; } set { _Promotion = value; OnPropertyChanged(nameof(Promotion)); } }
         public bool IsVisPromotion {  get; set; }  = false;
-        public string ImageUri { get; set; } = "Photo.png";
+        public string ImageUri { get; set; } = "Photo.png"; 
+        public bool IsEnabledPrint { get { return Config.TypeUsePrinter != eTypeUsePrinter.NotDefined; } }
         public WareInfo(ParseBarCode parseBarCode)
         {
+            InitializeComponent();
             c = Connector.Connector.GetInstance();
-            
+            NavigationPage.SetHasNavigationBar(this, Device.RuntimePlatform == Device.iOS);
             //
             WP = c.GetPrice(parseBarCode);
             WP.LastArrivalDate= DateTime.Now;
@@ -38,16 +40,22 @@ namespace BRB5.View
                 Promotion = "Акція діє: з " + WP.PromotionBegin.ToString("dd.MM") + " по " + WP.PromotionEnd.ToString("dd.MM");
                 IsVisPromotion = true;
             }
-
+            // 
             ImageUri = "http://api.spar.uz.ua/Wares/" + WP.CodeWares.ToString("D9") + ".png";
+            WareImage.Source = new UriImageSource
+            {
+                Uri = new Uri(ImageUri),
+                CachingEnabled = true,
+                CacheValidity = new TimeSpan(7, 0, 0, 0)
+            };
 
-            InitializeComponent();
             this.BindingContext = this;
         }
 
         private void OnClickPrint(object sender, EventArgs e)
         {
-
+            if (IsEnabledPrint) 
+                _ = DisplayAlert("Друк", c.PrintHTTP(new[] { WP.CodeWares }), "OK");            
         }
 
         private void OnClickMenu(object sender, EventArgs e)
@@ -55,9 +63,9 @@ namespace BRB5.View
 
         }
 
-        private void BarCode(object sender, EventArgs e)
+        private async void BarCode(object sender, EventArgs e)
         {
-
+            await Navigation.PushAsync(new PriceCheck());
         }
     }
 }

@@ -4,16 +4,16 @@
              x:Class="BRB5.View.WareInfo">
     <ContentPage.Content>
         <StackLayout>
-            <Image Source="{Binding ImageUri}" HeightRequest="180"/>
+            <Image x:Name="WareImage"  HeightRequest="230"/>
             <StackLayout Orientation="Horizontal">
-                <Label Text="Ціна:"/>
-                <Label Text="{Binding WP.Price}" FontSize="Large"/>
-                <Label Text="{Binding WP.PriceOld}" FontSize="Large" HorizontalOptions="End"/>
+                <Label Text="Ціна:" VerticalOptions="End"/>
+                <Label Text="{Binding WP.Price}" FontSize="24" TextColor="Green"/>
+                <Label Text="{Binding WP.PriceOld}" FontSize="24" HorizontalOptions="EndAndExpand" Margin="0,0,20,0" TextDecorations ="Strikethrough" TextColor="Red"/>
             </StackLayout>
 
             <Label Text="{Binding Promotion}" IsVisible="{Binding IsVisPromotion}" FontSize="Medium" TextColor="DarkBlue"/>
 
-            <Label Text="{Binding WP.Name}" FontSize="Large"/>
+            <Label Text="{Binding WP.Name}" FontSize="24"/>
 
             <StackLayout Orientation="Horizontal">
                 <Label Text="Арт.:"/>
@@ -81,29 +81,26 @@
                 </ListView.ItemTemplate>
             </ListView>
 
-            <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="*"/>
-                </Grid.ColumnDefinitions>
+            <StackLayout Orientation="Horizontal">
 
                 <ImageButton Source="BarcodeScanning.png"
-                             Clicked="BarCode" Grid.Column="1"
+                             Clicked="BarCode"
                              BackgroundColor="Transparent"
-                             Aspect="AspectFill"
-                             Margin="0" Padding="0" />
+                             WidthRequest="100"
+                             Margin="0" Padding="0" 
+                             HorizontalOptions="EndAndExpand"/>
                 
-                <StackLayout Grid.Column="2">
+                <StackLayout HorizontalOptions="FillAndExpand" >
                     <Button Text="Друк"
                             HorizontalOptions="Fill"
-                            Clicked="OnClickPrint" />
+                            Clicked="OnClickPrint"
+                            IsEnabled="{Binding IsEnabledPrint}"/>
                     <Button Text="Меню"
                             HorizontalOptions="Fill"
                             Clicked="OnClickMenu" />
                 </StackLayout>
                 
-            </Grid>
+            </StackLayout>
 
         </StackLayout>
     </ContentPage.Content>

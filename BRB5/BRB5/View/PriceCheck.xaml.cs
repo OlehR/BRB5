@@ -195,7 +195,8 @@ namespace BRB5
 
         private void OnClickPrintBlock(object sender, EventArgs e)
         {
-            if (IsEnabledPrint) bl.PrintPackage(PrintType, SelectedPrintBlockItems, IsMultyLabel);
+            if (IsEnabledPrint) 
+                _ = DisplayAlert("Друк", bl.PrintPackage(PrintType, SelectedPrintBlockItems, IsMultyLabel), "OK");
         }
         
         private void OnF2(object sender, EventArgs e)

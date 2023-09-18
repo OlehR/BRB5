@@ -64,17 +64,17 @@ namespace BRB5
              return c.SyncDocsData(pTypeDoc, pNumberDoc, wares, pDateOutInvoice, pNumberOutInvoice, pIsClose);
 
          }*/
-        public void PrintPackage(int actionType, int packageNumber, bool IsMultyLabel)
+        public string PrintPackage(int actionType, int packageNumber, bool IsMultyLabel)
         {
             var codeWares = db.GetPrintPackageCodeWares(Config.TypeUsePrinter == eTypeUsePrinter.StationaryWithCutAuto ? -1 : actionType, packageNumber, IsMultyLabel);
             //    SetProgress(5);//priceCheckerActivity.loader.setVisibility(View.VISIBLE);
             if (Config.TypeUsePrinter == eTypeUsePrinter.StationaryWithCut || Config.TypeUsePrinter == eTypeUsePrinter.StationaryWithCutAuto)
-                c.PrintHTTP(codeWares);
+               return c.PrintHTTP(codeWares);
             else
                 foreach (int CodeWares in codeWares) {
                     PrintLabel(CodeWares);
                 }
-
+            return null;
             //SetProgress(100);
            
         }
