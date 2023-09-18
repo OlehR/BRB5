@@ -19,6 +19,7 @@ using static Android.Renderscripts.ScriptGroup;
 using System.Runtime.Remoting.Contexts;
 //using Xamarin.Essentials;
 using AndroidX.AppCompat.App;
+using Xamarin.Essentials;
 
 namespace BRB5.Droid
 {
@@ -84,6 +85,7 @@ namespace BRB5.Droid
             global::Xamarin.Forms.Forms.Init(this, savedInstanceState);
             global::ZXing.Net.Mobile.Forms.Android.Platform.Init();
             Config.SN = GetDeviceId();
+            Config.Ver = int.Parse(AppInfo.VersionString.Replace(".", ""));
             Config.Manufacturer= Xamarin.Essentials.DeviceInfo.Manufacturer;
             Config.Model = Xamarin.Essentials.DeviceInfo.Model;
 

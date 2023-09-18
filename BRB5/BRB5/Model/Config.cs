@@ -41,7 +41,7 @@ namespace BRB5.Model
 
         public static string SN;
         public static DateTime DateLastLoadGuid { get; set; }
-        public static int Ver { get { return int.Parse(AppInfo.VersionString.Replace(".", "")); } }
+        public static int Ver { get; set; }
         public static bool IsAutoLogin { get; set; } = false;
         public static bool IsVibration { get; set; } = false;
         public static bool IsSound { get; set; } = false;
