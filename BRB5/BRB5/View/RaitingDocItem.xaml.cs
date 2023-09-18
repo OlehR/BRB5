@@ -76,8 +76,8 @@ namespace BRB5
         {
             cDoc = pDoc;
             InitializeComponent();
-            _ = Config.GetCurrentLocation(db.GetWarehouse());
-            Config.OnLocation += (Location) =>
+            _ = LocationBrb.GetCurrentLocation(db.GetWarehouse());
+            LocationBrb.OnLocation += (Location) =>
             {
                 OnPropertyChanged("GetGPSColor");
                 OnPropertyChanged("NameWarehouse");
@@ -257,7 +257,7 @@ namespace BRB5
 
         private void OnFindGPS(object sender, System.EventArgs e)
         {
-            _ = Config.GetCurrentLocation(db.GetWarehouse());
+            _ = LocationBrb.GetCurrentLocation(db.GetWarehouse());
         }
 
         private void EditPhoto(object sender, System.EventArgs e)

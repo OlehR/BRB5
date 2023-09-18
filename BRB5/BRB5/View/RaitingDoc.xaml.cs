@@ -24,7 +24,7 @@ namespace BRB5
         public RaitingDoc(TypeDoc pTypeDoc )
         {
             TypeDoc= pTypeDoc;
-            _ = Config.GetCurrentLocation(db.GetWarehouse());
+            _ = LocationBrb.GetCurrentLocation(db.GetWarehouse());
             c = BRB5.Connector.Connector.GetInstance();
             InitializeComponent();
             Routing.RegisterRoute(nameof(RaitingDocItem), typeof(RaitingDocItem));

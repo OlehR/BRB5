@@ -20,6 +20,7 @@ using System.Runtime.Remoting.Contexts;
 //using Xamarin.Essentials;
 using AndroidX.AppCompat.App;
 using Xamarin.Essentials;
+using Xamarin.Forms;
 
 namespace BRB5.Droid
 {
@@ -38,28 +39,21 @@ namespace BRB5.Droid
             Thread.CurrentThread.CurrentCulture = CultureInfo.InvariantCulture;
             Thread.CurrentThread.CurrentUICulture = CultureInfo.InvariantCulture;
 
+            DB db = DB.GetDB();
+            // Path.Combine(Android.OS.Environment.ExternalStorageDirectory.AbsolutePath, Android.OS.Environment.DirectoryDownloads);
             Config.PathDownloads = Path.Combine(Android.App.Application.Context.GetExternalFilesDir("").AbsolutePath, Android.OS.Environment.DirectoryDownloads);
-           // Path.Combine(Android.OS.Environment.ExternalStorageDirectory.AbsolutePath, Android.OS.Environment.DirectoryDownloads);
-            FileLogger.PathLog = Path.Combine(Config.PathDownloads, "Log");
-            //FileLogger.
+            Config.SN = GetDeviceId();
+            Config.Ver = int.Parse(AppInfo.VersionString.Replace(".", ""));
+            Config.Manufacturer = DeviceInfo.Manufacturer;
+            Config.Model = DeviceInfo.Model;
+            Config.Company = db.GetConfig<eCompany>("Company");
+           
+
+            FileLogger.PathLog = Path.Combine(Config.PathDownloads, "Log");            
             FileLogger.WriteLogMessage("Start", eTypeLog.Expanded);
-
-            //TMP!!!!
-            DB db =  DB.GetDB();
-
-            //db.SetConfig<eCompany>("Company", eCompany.Sim23);
-           /* db.SetConfig<eCompany>("Company", eCompany.VPSU);
-            db.SetConfig<string>("ApiUrl1", "http://api.spar.uz.ua/znp/"); //723 http://93.183.216.37:80/dev1/hs/TSD/
-            db.SetConfig<string>("ApiUrl2", "http://api.spar.uz.ua/print/"); //723 "http://93.183.216.37/TK/hs/TSD/;http://37.53.84.148/TK/hs/TSD/"
-            db.SetConfig<string>("ApiUrl3", "https://bitrix.sim23.ua/rest/233/ax02yr7l9hia35vj/");
             
-            //db.SetConfig<string>("ApiUrl1", "http://znp.vopak.local/api/api_v1_utf8.php");
-            db.SetConfig<string>("CodeWarehouse", "9");
-            */
-            //!!!TMP
             try
             {
-
                 string CopyTo = Path.Combine(Config.PathDownloads, "brb5.db");
                 if (File.Exists(CopyTo))
                     File.Delete(CopyTo);
@@ -71,11 +65,7 @@ namespace BRB5.Droid
             {
                 FileLogger.WriteLogMessage(e.Message);
             }
-           
-            
-            //Utils Util = Utils.GetInstance();
-            //Config.Company = db.GetConfig<eCompany>("Company");
-            //Config.CodeWarehouse = db.GetConfig<int>("CodeWarehouse");
+                        
             if ( LoadAPK($"https://github.com/OlehR/BRB5/raw/master/Apk/{Config.Company}/", "ua.UniCS.TM.brb5.apk", null, VerCode))
                          InstallAPK(Path.Combine(Config.PathDownloads, "ua.UniCS.TM.brb5.apk"));
 
@@ -83,14 +73,12 @@ namespace BRB5.Droid
             Xamarin.Essentials.Platform.Init(this, savedInstanceState);
             ZXing.Net.Mobile.Forms.Android.Platform.Init();
             global::Xamarin.Forms.Forms.Init(this, savedInstanceState);
-            global::ZXing.Net.Mobile.Forms.Android.Platform.Init();
-            Config.SN = GetDeviceId();
-            Config.Ver = int.Parse(AppInfo.VersionString.Replace(".", ""));
-            Config.Manufacturer= Xamarin.Essentials.DeviceInfo.Manufacturer;
-            Config.Model = Xamarin.Essentials.DeviceInfo.Model;
+            global::ZXing.Net.Mobile.Forms.Android.Platform.Init();            
 
             LoadApplication(new App());
         }
+
+      
 
         protected override void OnResume()
         {
@@ -123,7 +111,7 @@ namespace BRB5.Droid
         }
         void InstallAPK(string filepath)
         {
-            try
+            /*try
             {
                 Java.IO.File file = new Java.IO.File(filepath);
                 if (Build.VERSION.SdkInt >= BuildVersionCodes.N)
@@ -132,7 +120,7 @@ namespace BRB5.Droid
                         InstallPackageAndroidQAndAbove(Application.Context, filepath);
                     else
                     {
-                        Android.Net.Uri URIAPK = FileProvider.GetUriForFile(Android.App.Application.Context, Android.App.Application.Context.ApplicationContext.PackageName + ".provider", file);
+                        Android.Net.Uri URIAPK = AndroidX.Core.Content.FileProvider.GetUriForFile(Android.App.Application.Context, Android.App.Application.Context.ApplicationContext.PackageName + ".provider", file);
                         Intent intS = new Intent(Intent.ActionInstallPackage);
                         intS.SetData(URIAPK);
                         intS.SetFlags(ActivityFlags.GrantReadUriPermission);
@@ -152,7 +140,7 @@ namespace BRB5.Droid
             {
                 FileLogger.WriteLogMessage(e.Message, eTypeLog.Error);
                 e = e.InnerException;
-            }
+            }*/
         }
         
         const string PACKAGE_INSTALLED_ACTION =

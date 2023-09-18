@@ -127,7 +127,7 @@ namespace BRB5
 
         void Init()
         {
-            _ = Config.GetCurrentLocation(db.GetWarehouse());
+            _ = LocationBrb.GetCurrentLocation(db.GetWarehouse());
             Config.IsAutoLogin = db.GetConfig<bool>("IsAutoLogin");
             Config.LoginServer = db.GetConfig<eLoginServer>("LoginServer");
             Login = db.GetConfig<string>("Login");
