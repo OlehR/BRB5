@@ -65,7 +65,7 @@ namespace BRB5.View
 
         private async void BarCode(object sender, EventArgs e)
         {
-            await Navigation.PushAsync(new PriceCheck());
+            await Navigation.PopAsync();
         }
     }
 }
