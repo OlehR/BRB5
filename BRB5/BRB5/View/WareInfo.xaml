@@ -46,19 +46,16 @@
             <ListView HasUnevenRows="True"
                       ItemsSource="{Binding WP.RestWarehouse}">
                 <ListView.Header>
-                    <StackLayout>
-                        <Label Text="Брак" FontSize="Medium"/>
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition/>
-                                <ColumnDefinition/>
-                                <ColumnDefinition/>
-                            </Grid.ColumnDefinitions>
-                            <Label Text="Склад" Grid.Column="0"/>
-                            <Label Text="Кількість" Grid.Column="1"/>
-                            <Label Text="Дата" Grid.Column="2"/>
-                        </Grid>
-                    </StackLayout>
+                     <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition/>
+                            <ColumnDefinition/>
+                            <ColumnDefinition/>
+                        </Grid.ColumnDefinitions>
+                        <Label FontAttributes="Bold" Text="Склад" Grid.Column="0"/>
+                        <Label FontAttributes="Bold" Text="Кількість" Grid.Column="1"/>
+                        <Label FontAttributes="Bold" Text="Дата" Grid.Column="2"/>
+                    </Grid>
                 </ListView.Header>
                 
                 <ListView.ItemTemplate>
