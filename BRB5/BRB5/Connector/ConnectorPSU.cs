@@ -391,7 +391,7 @@ namespace BRB5.Connector
             try
             {
                 string json = new ApiPrintHTTP(Data).ToJSON(); //Config.GetApiJson(999, BuildConfig.VERSION_CODE, "\"CodeWares\":\"" + sb.toString() + "\"");
-                HttpResult res = Http.HTTPRequest(0, "print/", json, "application/json;charset=UTF-8", null, null);//"http://znp.vopak.local:8088/Print"
+                HttpResult res = Http.HTTPRequest(0, "print/", json, "application/json", null, null);//"http://znp.vopak.local:8088/Print"
                 if (res.HttpState == eStateHTTP.HTTP_OK)
                 {
                     return res.Result;

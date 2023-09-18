@@ -23,6 +23,7 @@ namespace BRB5.View
         public bool IsEnabledPrint { get { return Config.TypeUsePrinter != eTypeUsePrinter.NotDefined; } }
         public WareInfo(ParseBarCode parseBarCode)
         {
+            InitializeComponent();
             c = Connector.Connector.GetInstance();
             NavigationPage.SetHasNavigationBar(this, Device.RuntimePlatform == Device.iOS);
             //
@@ -39,16 +40,22 @@ namespace BRB5.View
                 Promotion = "Акція діє: з " + WP.PromotionBegin.ToString("dd.MM") + " по " + WP.PromotionEnd.ToString("dd.MM");
                 IsVisPromotion = true;
             }
-
+            // 
             ImageUri = "http://api.spar.uz.ua/Wares/" + WP.CodeWares.ToString("D9") + ".png";
+            WareImage.Source = new UriImageSource
+            {
+                Uri = new Uri(ImageUri),
+                CachingEnabled = true,
+                CacheValidity = new TimeSpan(7, 0, 0, 0)
+            };
 
-            InitializeComponent();
             this.BindingContext = this;
         }
 
         private void OnClickPrint(object sender, EventArgs e)
         {
-            if (IsEnabledPrint) c.PrintHTTP(new[] { WP.CodeWares });
+            if (IsEnabledPrint) 
+                _ = DisplayAlert("Друк", c.PrintHTTP(new[] { WP.CodeWares }), "OK");            
         }
 
         private void OnClickMenu(object sender, EventArgs e)

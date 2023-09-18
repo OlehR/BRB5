@@ -4,7 +4,7 @@
              x:Class="BRB5.View.WareInfo">
     <ContentPage.Content>
         <StackLayout>
-            <Image Source="{Binding ImageUri}" HeightRequest="230"/>
+            <Image x:Name="WareImage"  HeightRequest="230"/>
             <StackLayout Orientation="Horizontal">
                 <Label Text="Ціна:" VerticalOptions="End"/>
                 <Label Text="{Binding WP.Price}" FontSize="24" TextColor="Green"/>
