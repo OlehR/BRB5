@@ -28,12 +28,12 @@ namespace BRB5.View
             NavigationPage.SetHasNavigationBar(this, Device.RuntimePlatform == Device.iOS);
             //
             WP = c.GetPrice(parseBarCode);
-            WP.LastArrivalDate= DateTime.Now;
-            WP.LastArrivalQuantity= 20.9M;
+            WP.LastIncomeDate= DateTime.Now;
+            WP.LastIncomeQuantity= 20.9M;
             WP.StateWare = 1;
             WP.TermsForIlliquidWare = eTermsForIlliquidWare.FullRefund;
-            var t = new DefectBalance { Date = WP.LastArrivalDate , Quantity=100 ,  WH=new Warehouse { Name="aisbcild"} };
-            WP.BalanceDefects = new List<DefectBalance> { t,  t  };
+            var t = new RestWarehouse { Date = WP.LastIncomeDate , Quantity=100 ,  WH=new Warehouse { Name="aisbcild"} };
+            WP.RestWarehouse = new List<RestWarehouse> { t,  t  };
             //
             if (WP.ActionType == 1) 
             {

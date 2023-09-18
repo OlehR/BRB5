@@ -58,17 +58,17 @@ namespace BRB5.Model
         public bool IsPriceOk { get { return PriceOld == Price && PriceOptOld == PriceOpt; } }
 
         //Датa останнього приходу товару на склад торговий зал
-        public DateTime LastArrivalDate { get; set; }
+        public DateTime LastIncomeDate { get; set; }
         //Кількість останнього приходу товару на склад торговий зал
-        public decimal LastArrivalQuantity { get; set; }
+        public decimal LastIncomeQuantity { get; set; }
         //Статус товару (відкритий 1 або закритий 0 в асортиментній матриці магазину)
         public int StateWare { get; set; }
         //Умови роботи з неліквідним товаром (100% повернення, списання)
         public eTermsForIlliquidWare TermsForIlliquidWare { get; set; }
         //Залишок по складу браку
-        public List<DefectBalance> BalanceDefects { get; set; }
+        public IEnumerable<RestWarehouse> RestWarehouse { get; set; }
     }
-    public struct DefectBalance
+    public class RestWarehouse
     {
         public Warehouse WH { get; set; }
         public decimal Quantity { get; set; }
