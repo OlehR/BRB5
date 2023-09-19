@@ -52,6 +52,8 @@ namespace BRB5.Model
         public DateTime PromotionEnd { get; set; }
 
         public bool Is100g { get; set; }
+        public bool IsOnlyCard { get; set; }
+        public decimal PriceNormal { get; set; }
 
         public ParseBarCode ParseBarCode { get; set; }
         public string StrHttpResult { get { return StateHTTP.ToString(); } }

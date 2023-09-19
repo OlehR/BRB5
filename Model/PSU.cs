@@ -36,6 +36,7 @@ namespace BRB5.Model
             CodeWares = pPBC.CodeWares;
             Article = pPBC.Article;
         }
+        public eTypePriceInfo TypePriceInfo { get; set; } = eTypePriceInfo.Short;
         public string BarCode { get; set; }
         public int CodeWares { get; set; }
         public int Article { get; set; }
