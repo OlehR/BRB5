@@ -237,7 +237,7 @@ CREATE UNIQUE INDEX RaitingDocItemId ON RaitingDocItem (TypeDoc,NumberDoc,Id);
                 //if (!Directory.Exists(receiptFilePath))
                 //    Directory.CreateDirectory(receiptFilePath);
                 //Створюємо базу
-                db = new SQLiteConnection(PathNameDB);
+                db = new SQLiteConnection(PathNameDB, false);
                 foreach (var el in SqlCreateDB.Split(';'))
                     if (el.Length > 4) 
                 db.Execute(el);

@@ -37,6 +37,7 @@ namespace BRB5
         protected override void OnAppearing()
         {
             base.OnAppearing();
+            c.LoadDocsData(11,null, false);
             var r = db.GetDoc(TypeDoc).OrderByDescending(el => el.NumberDoc);
             if (r != null)
             {

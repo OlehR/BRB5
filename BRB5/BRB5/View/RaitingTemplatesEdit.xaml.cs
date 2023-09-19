@@ -89,7 +89,9 @@ namespace BRB5.View
                     RS[i].Parent = temp;
 
                     RS[i].Text = p[2];
-                
+                    //if ()
+                    RS[i].ValueRating = Convert.ToDecimal(p[3]);
+
                     RS[i].IdTemplate = vRaitingTemplate.IdTemplate;
 
                     RS[i].IsEnableBad = true;
