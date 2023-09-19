@@ -231,25 +231,15 @@ CREATE UNIQUE INDEX RaitingDocItemId ON RaitingDocItem (TypeDoc,NumberDoc,Id);
             PathNameDB=Path.Combine(Dir, NameDB);
 
             FileLogger.WriteLogMessage($"Platform=>{Device.RuntimePlatform}  PathNameDB=>{PathNameDB}");
+            db = new SQLiteConnection(PathNameDB, false);
             if (!File.Exists(PathNameDB))
             {
-                //var receiptFilePath = Path.GetDirectoryName(ReceiptFile);
-                //if (!Directory.Exists(receiptFilePath))
-                //    Directory.CreateDirectory(receiptFilePath);
-                //Створюємо базу
-                db = new SQLiteConnection(PathNameDB, false);
+                //Створюємо базу       
                 foreach (var el in SqlCreateDB.Split(';'))
                     if (el.Length > 4) 
-                db.Execute(el);
-               // db.Close();
-               // db = null;
+                db.Execute(el);               
             }
-            else
-            {
-                //var pst= Environment.GetFolderPath(Environment.SpecialFolder.MyPictures);
-                //string path1 = Path.Combine(Android.OS.Environment.ExternalStorageDirectory.AbsolutePath, Android.OS.Environment.DirectoryDownloads);
-                db = new SQLiteConnection(PathNameDB);
-            }
+            
         }
         
         public bool SetConfig<T>(string pName, T pValue)
