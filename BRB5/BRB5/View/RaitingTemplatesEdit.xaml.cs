@@ -23,8 +23,12 @@ namespace BRB5.View
         {
             InitializeComponent();
             c = Connector.Connector.GetInstance();
-            RTemplate = new ObservableCollection<RaitingTemplate>(db.GetRaitingTemplate());
             this.BindingContext = this;
+        }
+        protected override void OnAppearing()
+        {
+            base.OnAppearing();
+            RTemplate = new ObservableCollection<RaitingTemplate>(db.GetRaitingTemplate());
         }
 
         private void OnHiddenClick(object sender, EventArgs e)

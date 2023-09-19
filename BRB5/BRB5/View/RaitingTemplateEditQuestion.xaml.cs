@@ -25,7 +25,7 @@ namespace BRB5.View
         private async void Save(object sender, EventArgs e)
         {
             db.ReplaceRaitingTemplateItem(new List<RaitingTemplateItem>() { RQ });
-            await Navigation.PushAsync(new RaitingTemplateItemCreate(RQ.IdTemplate));
+            await Navigation.PopAsync();
         }
 
         private void OnButtonClicked(object sender, EventArgs e)

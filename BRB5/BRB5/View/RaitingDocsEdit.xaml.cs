@@ -21,26 +21,32 @@ namespace BRB5.View
 			InitializeComponent ();
             TypeDoc = vTypeDoc;
             TypeDoc.CodeDoc = 11;
-            c = Connector.Connector.GetInstance();
+            c = Connector.Connector.GetInstance();           
 
+            this.BindingContext = this;
+        }
+        protected override void OnAppearing()
+        {
+            base.OnAppearing();
             var temp = c.GetRaitingDocs();
             if (temp.Info == null)
             {
                 RD = new ObservableCollection<Doc>();
                 _ = DisplayAlert("Помилка", temp.TextError, "OK");
-            } else RD = new ObservableCollection<Doc>(temp.Info);
+            }
+            else RD = new ObservableCollection<Doc>(temp.Info);
 
             var tempWH = db.GetWarehouse()?.ToList();
             var tempRT = db.GetRaitingTemplate()?.ToList();
             if (tempWH != null)
                 foreach (Doc d in RD)
-                    try 
-                    { 
-                        d.CodeWarehouseName = tempWH.FirstOrDefault(t =>t.CodeWarehouse == d.CodeWarehouse).Name;
+                    try
+                    {
+                        d.CodeWarehouseName = tempWH.FirstOrDefault(t => t.CodeWarehouse == d.CodeWarehouse).Name;
                         d.RaitingTemplateName = tempRT.FirstOrDefault(t => t.IdTemplate == d.IdTemplate).Text;
-                    } catch(Exception ex) { }
+                    }
+                    catch (Exception ex) { }
 
-            this.BindingContext = this;
         }
 
         private async void Create(object sender, EventArgs e)

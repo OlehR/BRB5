@@ -23,10 +23,15 @@ namespace BRB5.View
         {
             InitializeComponent();            
             RT= new RaitingTemplate() { IdTemplate = pId };
-            RS = SortRS(db.GetRaitingTemplateItem(RT));
+            
             this.BindingContext = this;
         }
 
+        protected override void OnAppearing()
+        {
+            base.OnAppearing();
+            RS = SortRS(db.GetRaitingTemplateItem(RT));
+        }
         private ObservableCollection<RaitingTemplateItem> SortRS (IEnumerable<RaitingTemplateItem> temp)
         {
             var res = new List<RaitingTemplateItem>();

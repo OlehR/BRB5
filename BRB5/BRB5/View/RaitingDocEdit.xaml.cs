@@ -57,7 +57,7 @@ namespace BRB5.View
 
                 _ = DisplayAlert("збереження", c.SaveDocRaiting(RD).TextError, "OK");
 
-                await Navigation.PushAsync(new RaitingDocsEdit(TypeDoc));
+                await Navigation.PopAsync();
             } else _ = DisplayAlert("збереження", "заповніть всі дані", "OK");
         }
     }

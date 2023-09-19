@@ -24,7 +24,7 @@ namespace BRB5.View
 			RT.IsActive = true;
 			db.ReplaceRaitingTemplate(new List<RaitingTemplate>() { RT });
 
-            await Navigation.PushAsync(new RaitingTemplatesEdit());
+            await Navigation.PopAsync();
         }
     }
 }
