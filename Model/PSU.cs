@@ -10,7 +10,7 @@ namespace BRB5.Model
         public string Login { get; set; }
         public string PassWord { get; set; }
         public string SerialNumber { get; set; }
-        public string BarCode { get; set; }
+        public string BarCodeUser { get; set; }
         public string NameDCT { get; set; }
         public int Ver { get; set; }
         public int CodeWarehouse { get; set; }

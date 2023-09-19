@@ -11,7 +11,7 @@ namespace BRB5.Model
         public string Info { get; set; }
         public eStateHTTP StateHTTP { get; set; }
 
-        public Result() { }
+        public Result() { }        
 
         public Result(int pState = 0, string pTextError = "Ok", string pInfo = "")
         {
@@ -50,6 +50,12 @@ namespace BRB5.Model
         public eStateHTTP StateHTTP { get; set; }
 
         public Result() { }
+
+        public Result(Result pR)
+         {
+            State = pR.State;
+            TextError = pR.TextError;
+        }
 
         public Result(int pState = 0, string pTextError = "Ok")
         {
