@@ -17,6 +17,14 @@
                 <controls:CustomEntry Style="{StaticResource EntryStyle}"
                                       Text="{Binding RQ.Text}" />
             </Frame>
+            
+            <Label Text="Бал" />
+            <Frame Style="{StaticResource FrameStyle}">
+                <controls:CustomEntry Style="{StaticResource EntryStyle}"
+                          Text="{Binding RQ.ValueRating}" 
+                          Keyboard="Numeric"/>
+            </Frame>
+            
             <Label Text="Оцінки" />
             <Grid Margin="0" Padding="0">
                 <Grid.ColumnDefinitions>
