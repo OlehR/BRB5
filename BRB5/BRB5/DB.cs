@@ -194,6 +194,7 @@ CREATE TABLE RaitingTemplateItem(
     Text TEXT,
     RatingTemplate INTEGER         NOT NULL DEFAULT (0),
     OrderRS INTEGER,
+    ValueRating         NUMBER   NOT NULL DEFAULT (0),
     DTInsert    TIMESTAMP  DEFAULT (DATETIME('NOW', 'LOCALTIME')),
     DTDelete    TIMESTAMP
 );
