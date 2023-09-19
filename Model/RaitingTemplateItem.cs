@@ -14,6 +14,7 @@ namespace BRB5.Model
         public int Id { get; set; }
         public int Parent { get; set; }
         
+        public decimal ValueRating { get; set; }
         [JsonIgnore]
         // заголовок групи
         public bool IsHead { get { return Parent==0; } }
