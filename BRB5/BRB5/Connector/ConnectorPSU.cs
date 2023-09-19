@@ -130,14 +130,15 @@ namespace BRB5.Connector
             Config.OnProgress?.Invoke(0.3d);
             WaresPrice res;
             string data = JsonConvert.SerializeObject(new ApiPrice(154, pBC));
-            HttpResult result = Http.HTTPRequest(0, "znp/", data, "application/json");
+            HttpResult result = Http.HTTPRequest(0, "DCT/GetPrice/", data, "application/json");
             Config.OnProgress?.Invoke(0.8d);
             if (result.HttpState != eStateHTTP.HTTP_OK)
                 res = new WaresPrice(result);
             else
                 try
                 {
-                    res = JsonConvert.DeserializeObject<WaresPrice>(result.Result);                   
+                    var r = JsonConvert.DeserializeObject<Result<WaresPrice>>(result.Result);
+                    res = r.Info;
                     res.StateHTTP = result.HttpState;                    
                 }
                 catch (Exception e)

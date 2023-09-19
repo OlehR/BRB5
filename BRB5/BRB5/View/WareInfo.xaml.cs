@@ -26,22 +26,15 @@ namespace BRB5.View
             InitializeComponent();
             c = Connector.Connector.GetInstance();
             NavigationPage.SetHasNavigationBar(this, Device.RuntimePlatform == Device.iOS);
-            //
+            
             WP = c.GetPrice(parseBarCode);
-            WP.LastIncomeDate= DateTime.Now;
-            WP.LastIncomeQuantity= 20.9M;
-            WP.StateWare = 1;
-            WP.TermsForIlliquidWare = eTermsForIlliquidWare.FullRefund;
-            var t = new RestWarehouse { Date = WP.LastIncomeDate , Quantity=100 ,  WH=new Warehouse { Name="aisbcild"} };
-            WP.RestWarehouse = new List<RestWarehouse> { t,  t  };
-            //
-            if (WP.ActionType == 1) 
+            if (WP.ActionType == 0) 
             {
-                Promotion = "Акція діє: з " + WP.PromotionBegin.ToString("dd.MM") + " по " + WP.PromotionEnd.ToString("dd.MM");
+                Promotion = $"Акція діє: з {WP.PromotionBegin:dd.MM}  по {WP.PromotionEnd:dd.MM}";
                 IsVisPromotion = true;
             }
-            // 
-            ImageUri = "http://api.spar.uz.ua/Wares/" + WP.CodeWares.ToString("D9") + ".png";
+
+            ImageUri = Config.ApiUrl1+$"Wares/{WP.CodeWares:D9}.png";
             WareImage.Source = new UriImageSource
             {
                 Uri = new Uri(ImageUri),
