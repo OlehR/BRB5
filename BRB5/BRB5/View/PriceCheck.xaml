@@ -8,9 +8,9 @@
     <ContentPage.Content>
         <StackLayout BackgroundColor="{Binding ColorPrintColorType}">
 
-            <Grid IsVisible="{Binding IsVisScan}" 
+            <Grid x:Name="GridZxing" IsVisible="{Binding IsVisScan}" 
                   HeightRequest="200">
-                <forms:ZXingScannerView x:Name="zxing" />
+                <!---<forms:ZXingScannerView x:Name="zxing" /> -->
             </Grid>
             <Grid>
                 <Grid.ColumnDefinitions>

@@ -13,22 +13,23 @@ using Xamarin.Essentials;
 using ZXing;
 using ZXing.Mobile;
 using BRB5.View;
+using System.Net.NetworkInformation;
 
 //using BRB5.Connector;
 namespace BRB5
 {
     public partial class PriceCheck : IDisposable
     {
-    
-        Connector.Connector c;    
+
+        Connector.Connector c;
         DB db = DB.GetDB();
         BL bl = BL.GetBL();
 
         public List<PrintBlockItems> ListPrintBlockItems { get { return db.GetPrintBlockItemsCount().ToList(); } }
 
-        public int SelectedPrintBlockItems { get { return ListPrintBlockItems.Count>0? ListPrintBlockItems.Last().PackageNumber:-1; } }
+        public int SelectedPrintBlockItems { get { return ListPrintBlockItems.Count > 0 ? ListPrintBlockItems.Last().PackageNumber : -1; } }
 
-        public bool IsVisPriceOpt { get { return WP != null && (WP.PriceOpt != 0 || WP.PriceOptOld != 0); }  }
+        public bool IsVisPriceOpt { get { return WP != null && (WP.PriceOpt != 0 || WP.PriceOptOld != 0); } }
 
         bool _IsVisF4 = false;
         public bool IsVisF4 { get { return _IsVisF4; } set { _IsVisF4 = value; OnPropertyChanged("IsVisF4"); } }
@@ -41,11 +42,11 @@ namespace BRB5
 
         WaresPrice _WP;
         public WaresPrice WP { get { return _WP; } set { _WP = value; OnPropertyChanged("WP"); OnPropertyChanged("TextColorPrice"); OnPropertyChanged("IsVisPriceOpt"); OnPropertyChanged("TextColorHttp"); } }
-        //ZXingScannerView zxing;
+        ZXingScannerView zxing;
         //ZXingDefaultOverlay overlay;
 
         int _PrintType = 0;//Колір чека 0-звичайний 1-жовтий, -1 не розділяти.        
-        public int PrintType { get { return _PrintType; } set { _PrintType = value; OnPropertyChanged("PrintType");  OnPropertyChanged("ColorPrintColorType"); } }
+        public int PrintType { get { return _PrintType; } set { _PrintType = value; OnPropertyChanged("PrintType"); OnPropertyChanged("ColorPrintColorType"); } }
         public bool IsEnabledPrint { get { return Config.TypeUsePrinter != eTypeUsePrinter.NotDefined; } }
         public bool IsOnline { get; set; } = true;
 
@@ -61,61 +62,44 @@ namespace BRB5
         /// <summary>
         /// Номер пакета цінників за день !!!TMP Треба зберігати в базі.
         /// </summary>
-        public int PackageNumber { get { return _PackageNumber; } set { _PackageNumber = value; OnPropertyChanged("PackageNumber"); OnPropertyChanged("ListPrintBlockItems"); OnPropertyChanged("SelectedPrintBlockItems"); } } 
+        public int PackageNumber { get { return _PackageNumber; } set { _PackageNumber = value; OnPropertyChanged("PackageNumber"); OnPropertyChanged("ListPrintBlockItems"); OnPropertyChanged("SelectedPrintBlockItems"); } }
 
 
         //public int ColorPrintColorType() { return Color.parseColor(HttpState != eStateHTTP.HTTP_OK ? "#ffb3b3" : (PrintType == 0 ? "#ffffff" : "#3fffff00")); }
-       
+
         public string ColorPrintColorType { get { return PrintType == 0 ? "#ffffff" : PrintType == 1 ? "#ffffa8" : "#ffffff"; } }
 
-        public string TextColorPrice { get { return (WP!=null && (WP.Price != WP.PriceOld || WP.Price == 0) && WP.PriceOpt != WP.PriceOptOld) ? "#009800" : "#ff5c5c";  } }
+        public string TextColorPrice { get { return (WP != null && (WP.Price != WP.PriceOld || WP.Price == 0) && WP.PriceOpt != WP.PriceOptOld) ? "#009800" : "#ff5c5c"; } }
 
-        public string TextColorHttp { get { return (WP != null && WP.StateHTTP==eStateHTTP.HTTP_OK) ? "#009800" : "#ff5c5c"; } }
+        public string TextColorHttp { get { return (WP != null && WP.StateHTTP == eStateHTTP.HTTP_OK) ? "#009800" : "#ff5c5c"; } }
 
         public bool _IsMultyLabel = false;
         public bool IsMultyLabel { get { return _IsMultyLabel; } set { _IsMultyLabel = value; OnPropertyChanged("IsMultyLabel"); OnPropertyChanged("F5Text"); } }
 
-        public string F5Text { get { return IsMultyLabel  ? "Дублювати" : "Унікальні"; } }
+        public string F5Text { get { return IsMultyLabel ? "Дублювати" : "Унікальні"; } }
 
         public bool IsVisScan { get { return Config.TypeScaner == eTypeScaner.Camera; } }
-        
+
 
         public PriceCheck()
         {
             InitializeComponent();
+            
             c = Connector.Connector.GetInstance();
             var r = db.GetCountScanCode();
 
             if (Config.TypeUsePrinter == eTypeUsePrinter.StationaryWithCutAuto) PrintType = -1;
             NavigationPage.SetHasNavigationBar(this, Device.RuntimePlatform == Device.iOS);
 
-            if (r!=null)
+            if (r != null)
             {
                 AllScan = r.AllScan;
                 BadScan = r.BadScan;
                 LineNumber = r.LineNumber;
                 PackageNumber = r.PackageNumber;
             }
-            if(IsVisScan)
-            {
-                zxing.Options = new MobileBarcodeScanningOptions
-                {
-                    PossibleFormats = new List<BarcodeFormat>
-                    {
-                        BarcodeFormat.All_1D,
-                        BarcodeFormat.QR_CODE,
-                    },
-                    UseNativeScanning = true,
-                };
-                zxing.OnScanResult += (result) =>
-                    Device.BeginInvokeOnMainThread(async () =>
-                    // Stop analysis until we navigate away so we don't keep reading barcodes
-                    {
-                        zxing.IsAnalyzing = false;
-                        FoundWares(result.Text, false);
-                        zxing.IsAnalyzing = true;
-                    });
-            } else Config.BarCode = BarCode;
+            if (!IsVisScan)
+             Config.BarCode = BarCode;
 
             NumberOfReplenishment.Unfocused += (object sender, FocusEventArgs e) =>
             {
@@ -124,10 +108,10 @@ namespace BRB5
                     db.UpdateReplenishment(LineNumber, d);
             };
 
-            Config.OnProgress += (pProgress)=>{ PB = pProgress; };
+            Config.OnProgress += (pProgress) => { PB = pProgress; };
             this.BindingContext = this;
         }
-        
+
         void BarCode(string pBarCode)
         {
             FoundWares(pBarCode, false);
@@ -136,8 +120,8 @@ namespace BRB5
         void FoundWares(string pBarCode, bool pIsHandInput = false)
         {
             LineNumber++;
-            PB = 0.2d;          
-            
+            PB = 0.2d;
+
             if (IsOnline)
             {
                 WP = c.GetPrice(c.ParsedBarCode(pBarCode, true));
@@ -146,7 +130,7 @@ namespace BRB5
             else
             {
                 var data = bl.GetWaresFromBarcode(0, null, pBarCode, pIsHandInput);
-                WP = new WaresPrice(data);  
+                WP = new WaresPrice(data);
             }
             if (WP != null)
             {
@@ -154,20 +138,59 @@ namespace BRB5
                 if (!WP.IsPriceOk)
                     BadScan++;
             }
-            var duration = TimeSpan.FromMilliseconds(WP?.IsPriceOk==true?50:250);
+            var duration = TimeSpan.FromMilliseconds(WP?.IsPriceOk == true ? 50 : 250);
             Vibration.Vibrate(duration);
             //if (Config.Company == eCompany.Sim23)
-             //   utils.PlaySound();
+            //   utils.PlaySound();
             var l = new LogPrice(WP, IsOnline, PackageNumber, LineNumber);
             db.InsLogPrice(l);
-           
+
             PB = 1;
         }
 
         protected override void OnAppearing()
         {
             base.OnAppearing();
-            zxing.IsScanning = true;
+            if (IsVisScan)
+            {
+                zxing = SetZxing(GridZxing, zxing);
+                zxing.IsScanning = true;
+                zxing.IsAnalyzing = true;
+            }
+        }
+
+        /// <summary>
+        /// Костиль через баг https://github.com/Redth/ZXing.Net.Mobile/issues/710
+        /// </summary>
+        ZXingScannerView SetZxing(Grid pV, ZXingScannerView pZxing)
+        {
+            if (pZxing != null)
+            {
+                if (Device.RuntimePlatform == Device.iOS)
+                    return pZxing;
+                pV.Children.Remove(pZxing);
+            }
+            pZxing = new ZXingScannerView();
+            pV.Children.Add(pZxing);
+
+            pZxing.Options = new MobileBarcodeScanningOptions
+            {
+                PossibleFormats = new List<BarcodeFormat>
+                    {
+                        BarcodeFormat.All_1D,
+                        BarcodeFormat.QR_CODE,
+                    },
+                UseNativeScanning = true,
+            };
+            pZxing.OnScanResult += (result) =>
+                Device.BeginInvokeOnMainThread(async () =>
+                // Stop analysis until we navigate away so we don't keep reading barcodes
+                {
+                    pZxing.IsAnalyzing = false;
+                    FoundWares(result.Text, false);
+                    pZxing.IsAnalyzing = true;
+                });            
+            return pZxing;
         }
 
         protected override void OnDisappearing()
@@ -181,24 +204,20 @@ namespace BRB5
             bl.SendLogPrice();
             Config.BarCode -= BarCode;
         }
-                      
+
         private void OnClickAddPrintBlock(object sender, EventArgs e)
         {
             PackageNumber++;
             ListPrintBlockItems.Add(new PrintBlockItems() { PackageNumber = PackageNumber });
         }
 
-        //private void OnClickChangePrintColorType(object sender, EventArgs e)
-        //{
-        //    if (PrintType == 0) PrintType = 1; else if (PrintType == 1) PrintType = 0;
-        //}
-
+        
         private void OnClickPrintBlock(object sender, EventArgs e)
         {
-            if (IsEnabledPrint) 
+            if (IsEnabledPrint)
                 _ = DisplayAlert("Друк", bl.PrintPackage(PrintType, SelectedPrintBlockItems, IsMultyLabel), "OK");
         }
-        
+
         private void OnF2(object sender, EventArgs e)
         {
             IsVisRepl = !IsVisRepl;
@@ -210,14 +229,14 @@ namespace BRB5
         }
 
         private void OnF5(object sender, EventArgs e)
-        {
-            //IsVisRepl = !IsVisRepl;
-            IsMultyLabel= !IsMultyLabel;
+        {            
+            IsMultyLabel = !IsMultyLabel;
         }
 
         private async void OnClickWareInfo(object sender, EventArgs e)
         {
-            if(WP!=null) 
+            zxing.IsAnalyzing = false;
+            if (WP != null)
                 await Navigation.PushAsync(new WareInfo(WP.ParseBarCode));
         }
     }
