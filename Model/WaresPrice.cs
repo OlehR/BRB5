@@ -14,8 +14,6 @@ namespace BRB5.Model
             BarCodes = pW.BarCode;
             Unit = pW.NameUnit;
             ParseBarCode=pW.ParseBarCode;
-
-
         }
         public WaresPrice(HttpResult pHttp, string pInfo=null) : base(pHttp, pInfo) { }
         public WaresPrice(int pState = 0, string pTextError = "Ok", string pInfo = "") : base(pState, pTextError, pInfo) { }
@@ -63,8 +61,8 @@ namespace BRB5.Model
         public DateTime LastIncomeDate { get; set; }
         //Кількість останнього приходу товару на склад торговий зал
         public decimal LastIncomeQuantity { get; set; }
-        //Статус товару (відкритий 1 або закритий 0 в асортиментній матриці магазину)
-        public int StateWare { get; set; }
+        // Кількість АМ
+        public int MinQuantity { get; set; }
         //Умови роботи з неліквідним товаром (100% повернення, списання)
         public eTermsForIlliquidWare TermsForIlliquidWare { get; set; }
         //Залишок по складу браку
@@ -72,7 +70,7 @@ namespace BRB5.Model
     }
     public class RestWarehouse
     {
-        public Warehouse WH { get; set; }
+        public string NameWarehouse  { get; set; }
         public decimal Quantity { get; set; }
         public DateTime Date { get; set; }
     }
