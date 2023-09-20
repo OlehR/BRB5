@@ -324,7 +324,7 @@ CREATE UNIQUE INDEX RaitingDocItemId ON RaitingDocItem (TypeDoc,NumberDoc,Id);
                                  on (dw1.numberdoc = d.numberdoc and d.typedoc=dw1.typedoc and dw1.codewares = dws.codewares)
                           where dw1.TypeDoc is null and d.typedoc={pDocId.TypeDoc} and  d.numberdoc = {pDocId.NumberDoc}
                        order by {OrderQuery}";
-                    var r = db.Query<DocWaresEx>(Sql, pDocId.TypeDoc, pDocId.NumberDoc, pDocId.TypeDoc, pDocId.NumberDoc);
+                    var r = db.Query<DocWaresEx>(Sql);
                     return r;
                 }
                 if (pTypeResult == 2)
@@ -538,7 +538,7 @@ and bc.BarCode=?
         where d.TypeDoc={pDoc.TypeDoc} and  d.NumberDoc={pDoc.NumberDoc}
         order by case when Rs.Id<0 then Rs.Id else Rs.Parent end ,  case when Rs.Id<0 then 0 else Rs.Id end
         ";
-            return db.Query<Model.RaitingDocItem>(sql, pDoc);            
+            return db.Query<Model.RaitingDocItem>(sql);            
         }
 
         public bool ReplaceRaitingDocItem(Model.RaitingDocItem pR)
