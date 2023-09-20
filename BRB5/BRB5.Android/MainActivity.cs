@@ -54,13 +54,8 @@ namespace BRB5.Droid
             ///!!!!=TMP копіювання бази
             try
             {
-                //string CopyTo = Path.Combine(Config.PathDownloads, "brb5.db");
-                //if (File.Exists(CopyTo)) File.Delete(CopyTo);
-               // File.Copy(db.PathNameDB, CopyTo, true);
-
-                  string path1 = Path.Combine(Android.OS.Environment.ExternalStorageDirectory.AbsolutePath, Android.OS.Environment.DirectoryDownloads);
+                string path1 = Path.Combine(Android.OS.Environment.ExternalStorageDirectory.AbsolutePath, Android.OS.Environment.DirectoryDownloads);
                 File.Copy(db.PathNameDB, Path.Combine(path1, "brb5.db") , true);
-                
             }
             catch (Exception e)
             {
@@ -79,8 +74,6 @@ namespace BRB5.Droid
 
             LoadApplication(new App());
         }
-
-      
 
         protected override void OnResume()
         {
@@ -202,7 +195,6 @@ namespace BRB5.Droid
             GC.Collect();
             GC.WaitForPendingFinalizers();
             GC.Collect();
-
         }
 
 
@@ -257,7 +249,6 @@ namespace BRB5.Droid
                 deviceID = Android.Provider.Settings.Secure.GetString(ContentResolver, Android.Provider.Settings.Secure.AndroidId);
             }
             return deviceID;
-
         }
 
         public int VerCode
