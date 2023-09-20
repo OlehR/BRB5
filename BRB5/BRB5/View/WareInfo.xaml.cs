@@ -28,7 +28,8 @@ namespace BRB5.View
             NavigationPage.SetHasNavigationBar(this, Device.RuntimePlatform == Device.iOS);
             
             WP = c.GetPrice(parseBarCode);
-            if (WP.ActionType == 0) 
+
+            if (WP.ActionType == 1) 
             {
                 Promotion = $"Акція діє: з {WP.PromotionBegin:dd.MM}  по {WP.PromotionEnd:dd.MM}";
                 IsVisPromotion = true;
@@ -54,11 +55,6 @@ namespace BRB5.View
         private void OnClickMenu(object sender, EventArgs e)
         {
 
-        }
-
-        private async void BarCode(object sender, EventArgs e)
-        {
-            await Navigation.PopAsync();
         }
     }
 }

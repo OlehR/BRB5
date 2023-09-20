@@ -3,16 +3,29 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="BRB5.View.WareInfo">
     <ContentPage.Content>
-        <StackLayout>
-            <Image x:Name="WareImage"  HeightRequest="230"/>
+        <StackLayout Margin="5,0,5,0" Spacing="0">
+            <Image x:Name="WareImage"  HeightRequest="190"/>
+
             <StackLayout Orientation="Horizontal">
-                <Label Text="Ціна:" VerticalOptions="End"/>
+                <Button Text="Друк"
+                        Clicked="OnClickPrint"                        
+                        IsEnabled="{Binding IsEnabledPrint}"/>
+                <Button Text="Меню"
+                        HorizontalOptions="EndAndExpand"
+                        Clicked="OnClickMenu" />
+            </StackLayout>
+
+            <StackLayout  Orientation="Horizontal">
+                <Label Text="Ціна:" VerticalOptions="Center"/>
                 <Label Text="{Binding WP.Price}" FontSize="24" TextColor="Green"/>
-                <Label Text="{Binding WP.PriceOld}" FontSize="24" HorizontalOptions="EndAndExpand" Margin="0,0,20,0" TextDecorations ="Strikethrough" TextColor="Red"/>
+                <StackLayout IsVisible="{Binding IsVisPromotion}" Orientation="Horizontal" HorizontalOptions="EndAndExpand" >
+                    <Label Text="Роздрібна ціна:" VerticalOptions="Center" TextColor="DarkBlue"/>
+                    <Label Text="{Binding WP.PriceNormal}" FontSize="Medium" TextColor="DarkBlue" VerticalOptions="Center"/>
+                </StackLayout>
             </StackLayout>
 
             <Label Text="{Binding Promotion}" IsVisible="{Binding IsVisPromotion}" FontSize="Medium" TextColor="DarkBlue"/>
-
+            
             <Label Text="{Binding WP.Name}" FontSize="24"/>
 
             <StackLayout Orientation="Horizontal">
@@ -31,12 +44,9 @@
                 <Label Text="{Binding WP.Rest}" FontAttributes="Bold"/>
             </StackLayout>
             <StackLayout Orientation="Horizontal">
-                <Label Text="Дата ост.приходу:"/>
-                <Label Text="{Binding WP.LastIncomeDate,StringFormat='{0:dd.MM.yyyy}'}"  FontAttributes="Bold"/>
-            </StackLayout>
-            <StackLayout Orientation="Horizontal">
-                <Label Text="Кіл-ть ост.приходу:"/>
+                <Label Text="Останій прихід:"/>
                 <Label Text="{Binding WP.LastIncomeQuantity}" FontAttributes="Bold"/>
+                <Label Text="{Binding WP.LastIncomeDate,StringFormat='{0:dd.MM.yyyy}'}" HorizontalOptions="EndAndExpand" Margin="0,0,10,0" FontAttributes="Bold"/>
             </StackLayout>
             <StackLayout Orientation="Horizontal">
                 <Label Text="Статус товару:"/>
@@ -46,27 +56,27 @@
             <ListView HasUnevenRows="True"
                       ItemsSource="{Binding WP.RestWarehouse}">
                 <ListView.Header>
-                     <Grid>
+                    <Grid>
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition/>
-                            <ColumnDefinition/>
-                            <ColumnDefinition/>
+                            <ColumnDefinition Width="7*"/>
+                            <ColumnDefinition Width="3*"/>
+                            <ColumnDefinition Width="3*"/>
                         </Grid.ColumnDefinitions>
                         <Label FontAttributes="Bold" Text="Склад" Grid.Column="0"/>
                         <Label FontAttributes="Bold" Text="Кількість" Grid.Column="1"/>
                         <Label FontAttributes="Bold" Text="Дата" Grid.Column="2"/>
                     </Grid>
                 </ListView.Header>
-                
+
                 <ListView.ItemTemplate>
                     <DataTemplate xmlns:brb5="clr-namespace:BRB5">
                         <ViewCell>
                             <ViewCell.View>
                                 <Grid>
                                     <Grid.ColumnDefinitions>
-                                        <ColumnDefinition/>
-                                        <ColumnDefinition/>
-                                        <ColumnDefinition/>
+                                        <ColumnDefinition Width="7*"/>
+                                        <ColumnDefinition Width="2*"/>
+                                        <ColumnDefinition Width="3*"/>
                                     </Grid.ColumnDefinitions>
                                     <Label Text="{Binding WH.Name}" Grid.Column="0"/>
                                     <Label Text="{Binding Quantity}" Grid.Column="1"/>
@@ -77,28 +87,6 @@
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>
-
-            <StackLayout Orientation="Horizontal">
-
-                <ImageButton Source="BarcodeScanning.png"
-                             Clicked="BarCode"
-                             BackgroundColor="Transparent"
-                             WidthRequest="100"
-                             Margin="0" Padding="0" 
-                             HorizontalOptions="EndAndExpand"/>
-                
-                <StackLayout HorizontalOptions="FillAndExpand" >
-                    <Button Text="Друк"
-                            HorizontalOptions="Fill"
-                            Clicked="OnClickPrint"
-                            IsEnabled="{Binding IsEnabledPrint}"/>
-                    <Button Text="Меню"
-                            HorizontalOptions="Fill"
-                            Clicked="OnClickMenu" />
-                </StackLayout>
-                
-            </StackLayout>
-
         </StackLayout>
     </ContentPage.Content>
 </ContentPage>

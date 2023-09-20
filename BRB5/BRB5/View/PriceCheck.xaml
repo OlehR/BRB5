@@ -17,11 +17,9 @@
                     <ColumnDefinition />
                     <ColumnDefinition />
                 </Grid.ColumnDefinitions>
-
                 <Button Text="Інформація"
                         HorizontalOptions="Fill"
                         Clicked="OnClickWareInfo" />
-
                 <Button
                     Grid.Column="1"
                     Text="{Binding PackageNumber}"

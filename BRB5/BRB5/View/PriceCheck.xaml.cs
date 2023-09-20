@@ -195,7 +195,7 @@ namespace BRB5
 
         protected override void OnDisappearing()
         {
-            zxing.IsScanning = false;
+            if (IsVisScan) zxing.IsScanning = false;
             base.OnDisappearing();
         }
 
@@ -234,10 +234,12 @@ namespace BRB5
         }
 
         private async void OnClickWareInfo(object sender, EventArgs e)
-        {
-            zxing.IsAnalyzing = false;
+        {            
             if (WP != null)
+            {
+                if (IsVisScan) zxing.IsAnalyzing = false;
                 await Navigation.PushAsync(new WareInfo(WP.ParseBarCode));
+            }
         }
     }
 }
