@@ -151,7 +151,7 @@ namespace BRB5.Connector
             return Res;
         }
 
-        public override WaresPrice GetPrice(ParseBarCode pBC)
+        public override WaresPrice GetPrice(ParseBarCode pBC, eTypePriceInfo pTP = eTypePriceInfo.Short)
         {
             string vCode = pBC.CodeWares > 0 ? $"code={pBC.CodeWares}" : $"BarCode = {pBC.BarCode}";
             HttpResult result = Http.HTTPRequest(0, $"PriceTagInfo?{vCode}", null, null, null, null);

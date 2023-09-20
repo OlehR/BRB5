@@ -125,11 +125,11 @@ namespace BRB5.Connector
             return res;
         }
 
-        public override WaresPrice GetPrice(ParseBarCode pBC)
+        public override WaresPrice GetPrice(ParseBarCode pBC, eTypePriceInfo pTP=eTypePriceInfo.Short)
         {
             Config.OnProgress?.Invoke(0.3d);
             WaresPrice res;
-            string data = JsonConvert.SerializeObject(new ApiPrice(154, pBC));
+            string data = JsonConvert.SerializeObject(new ApiPrice(154, pBC) { TypePriceInfo= pTP });
             HttpResult result = Http.HTTPRequest(0, "DCT/GetPrice/", data, "application/json");
             Config.OnProgress?.Invoke(0.8d);
             if (result.HttpState != eStateHTTP.HTTP_OK)

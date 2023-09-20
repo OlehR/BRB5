@@ -103,7 +103,7 @@ namespace BRB5.Connector
         /// </summary>
         /// <param name="pBC"></param>
         /// <returns></returns>
-        public virtual WaresPrice GetPrice(ParseBarCode pBC) { throw new NotImplementedException(); }
+        public virtual WaresPrice GetPrice(ParseBarCode pBC, eTypePriceInfo pTP = eTypePriceInfo.Short) { throw new NotImplementedException(); }
 
         /// <summary>
         /// Список Документів доступних по ролі
