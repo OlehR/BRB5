@@ -1,4 +1,5 @@
 ﻿//using BRB5.Model;
+using BRB5.Connector;
 using BRB5.Model;
 using BRB5.View;
 using System;
@@ -31,6 +32,16 @@ namespace BRB5
             c.LoadDocsData(pTypeDoc.CodeDoc, null, false);
             NavigationPage.SetHasNavigationBar(this, Device.RuntimePlatform == Device.iOS);
             MyDoc = new ObservableCollection<Doc> ( db.GetDoc(TypeDoc).OrderByDescending(el=>el.NumberDoc));
+            var temp = c.GetRaitingTemplate();
+            if (temp.Info != null)
+            {
+                db.ReplaceRaitingTemplate(temp.Info);
+                foreach (var el in temp.Info)
+                {
+                    if (el.Item.Any())
+                        db.ReplaceRaitingTemplateItem(el.Item);
+                }
+            }
             this.BindingContext = this;            
         }
 

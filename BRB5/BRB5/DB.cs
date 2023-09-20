@@ -531,14 +531,14 @@ and bc.BarCode=?
 
         public IEnumerable<Model.RaitingDocItem> GetRaitingDocItem(DocId pDoc)
         {
-            string sql = $@"select d.TypeDoc,d.NumberDoc,Rs.Id,Rs.Parent as Parent,Rs.Text,Rs.RatingTemplate,R.Rating,R.QuantityPhoto,R.Note,Rs.OrderRS,Rs.DTDelete
+            string sql = $@"select d.TypeDoc,d.NumberDoc,Rs.Id,Rs.Parent as Parent,Rs.Text,Rs.RatingTemplate,R.Rating,R.QuantityPhoto,R.Note,Rs.OrderRS,Rs.DTDelete,Rs.ValueRating
         from Doc d 
          join RaitingTemplateItem as Rs on (d.IdTemplate=RS.IdTemplate ) 
          left join RaitingDocItem R on (d.TypeDoc=R.TypeDoc and d.NumberDoc=R.NumberDoc and Rs.Id=R.id)
         where d.TypeDoc={pDoc.TypeDoc} and  d.NumberDoc={pDoc.NumberDoc}
         order by case when Rs.Id<0 then Rs.Id else Rs.Parent end ,  case when Rs.Id<0 then 0 else Rs.Id end
         ";
-            return db.Query< Model.RaitingDocItem>(sql, pDoc);            
+            return db.Query<Model.RaitingDocItem>(sql, pDoc);            
         }
 
         public bool ReplaceRaitingDocItem(Model.RaitingDocItem pR)
