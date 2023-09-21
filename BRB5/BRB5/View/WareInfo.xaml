@@ -40,10 +40,6 @@
             </StackLayout>
 
             <StackLayout Orientation="Horizontal">
-                <Label Text="Залишок торговий зал:"/>
-                <Label Text="{Binding WP.Rest}" FontAttributes="Bold"/>
-            </StackLayout>
-            <StackLayout Orientation="Horizontal">
                 <Label Text="Останій прихід:"/>
                 <Label Text="{Binding WP.LastIncomeQuantity}" FontAttributes="Bold"/>
                 <Label Text="{Binding WP.LastIncomeDate,StringFormat='{0:dd.MM.yyyy}'}" HorizontalOptions="EndAndExpand" Margin="0,0,10,0" FontAttributes="Bold"/>
@@ -79,7 +75,7 @@
                                         <ColumnDefinition Width="3*"/>
                                     </Grid.ColumnDefinitions>
                                     <Label Text="{Binding NameWarehouse}" Grid.Column="0"/>
-                                    <Label Text="{Binding Quantity}" Grid.Column="1"/>
+                                    <Label Text="{Binding Quantity}" Grid.Column="1" FontAttributes="Bold"/>
                                     <Label Text="{Binding Date,StringFormat='{0:dd.MM.yyyy}'}" Grid.Column="2"/>
                                 </Grid>
                             </ViewCell.View>
