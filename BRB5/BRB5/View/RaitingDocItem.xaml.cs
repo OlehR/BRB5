@@ -84,6 +84,7 @@ namespace BRB5
                 OnPropertyChanged("SizeWarehouse");
             };
             var Q = db.GetRaitingDocItem(cDoc);
+            foreach (var e in Q) e.List = Q;
             var R = new List<Model.RaitingDocItem>();
             foreach (var e in Q.Where(d => d.IsHead).OrderBy(d => d.OrderRS))
             {
@@ -341,17 +342,17 @@ namespace BRB5
         private void BarCode(object sender, EventArgs e)
         {
             IsVisBarCode = !IsVisBarCode;
-            zxing.IsScanning = IsVisBarCode;
+            //zxing.IsScanning = IsVisBarCode;
         }
         private void OnScanBarCode(ZXing.Result result)
         {
-            zxing.IsAnalyzing = false;
+        //    zxing.IsAnalyzing = false;
 
-            var temp = Questions.Where(el => el.Id==-1).FirstOrDefault();
-            if (temp.Note == null || !temp.Note.StartsWith(result.Text)) { temp.Note = result.Text + temp.Note; }
-            db.ReplaceRaitingDocItem(temp);
-            Questions[Questions.IndexOf(temp)] = temp;
-            zxing.IsAnalyzing = true;
+        //    var temp = Questions.Where(el => el.Id==-1).FirstOrDefault();
+        //    if (temp.Note == null || !temp.Note.StartsWith(result.Text)) { temp.Note = result.Text + temp.Note; }
+        //    db.ReplaceRaitingDocItem(temp);
+        //    Questions[Questions.IndexOf(temp)] = temp;
+        //    zxing.IsAnalyzing = true;
         }
 
         private Model.RaitingDocItem GetRaiting(object sender)

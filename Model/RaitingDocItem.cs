@@ -1,27 +1,53 @@
 ﻿using Newtonsoft.Json;
+using SQLite;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 
 namespace BRB5.Model
 {
     public class RaitingDocItem : DocId
-    {       
-        public int IdTemplate { get; set; }
+    {
+        public IEnumerable<RaitingDocItem> List {get;set;}
         public int Id { get; set; }
         public int Parent { get; set; }
         //public int ParentEx { get { return Parent; } }
 
+        public decimal CalcValueRating { get { return Parent == 0 ? List?.Where(el=> el.Parent==Id).Sum(el => el.ValueRating)??0 : ValueRating; } }
         public decimal ValueRating { get; set; }
+
+        public decimal SumValueRating {
+            get {
+                decimal res;
+                if (Parent == 0)
+                    res = List?.Where(el => el.Parent == Id).Sum(el => el.SumValueRating) ?? 0;
+                else {
+                    switch (Rating)
+                    {
+                        case 1:
+                            res = ValueRating;
+                            break;
+                        case 2:
+                            res = ValueRating/2;
+                            break;
+
+                        default:
+                            res = 0;
+                            break;
+                    }
+                }
+                return res;
+            } 
+        }
         // заголовок групи
         [JsonIgnore]
         public bool IsHead { get { return Parent == 0; } }
         [JsonIgnore]
         public bool IsItem { get { return !IsHead; } }
-        public bool IsTemplate { get; set; }=false;
         public string Text { get; set; }
         [JsonIgnore]
         public Color BackgroundColor { get { return IsHead ? Color.FromArgb(200, 200, 200)  : Color.FromArgb(230, 230, 230); } }
@@ -61,13 +87,13 @@ namespace BRB5.Model
         public bool IsDelete { get { return DTDelete != default; } set {  OnPropertyChanged(nameof(OpacityDelete)); } }
         public double OpacityDelete { get { return IsDelete ? 0.3d : 1d; } }
         [JsonIgnore]
-        public double OpacityOk { get { if (IsTemplate) return IsEnableOk ? 1d : 0.4d; return Rating == 1 ? 1d : 0.4d; } }
+        public double OpacityOk { get { return Rating == 1 ? 1d : 0.4d; } }
         [JsonIgnore]
-        public double OpacitySoSo { get { if (IsTemplate) return IsEnableSoSo ? 1d : 0.4d; return Rating == 2 ? 1d : 0.4d; } }
+        public double OpacitySoSo { get { return Rating == 2 ? 1d : 0.4d; } }
         [JsonIgnore]
-        public double OpacityBad { get { if (IsTemplate) return IsEnableBad ? 1d : 0.4d; return Rating == 3 ? 1d : 0.4d; } }
+        public double OpacityBad { get { return Rating == 3 ? 1d : 0.4d; } }
         [JsonIgnore]
-        public double OpacityNotKnow { get { if (IsTemplate) return IsEnableNotKnow ? 1d : 0.4d; return Rating == 4 ? 1d : 0.4d; } }
+        public double OpacityNotKnow { get { return Rating == 4 ? 1d : 0.4d; } }
 
         [JsonIgnore]
         public bool IsEnableOk { get { return (RatingTemplate & 1) == 1; } set { RatingTemplate = value ? RatingTemplate | 1 : RatingTemplate & (8 + 4 + 2); OnPropertyChanged(nameof(OpacityOk)); } }

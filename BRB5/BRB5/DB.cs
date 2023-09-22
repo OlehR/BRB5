@@ -1,6 +1,7 @@
 ﻿//using BRB5.Model;
 using BRB5.Model;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using SQLite;
 using System;
 using System.Collections;
@@ -231,15 +232,18 @@ CREATE UNIQUE INDEX RaitingDocItemId ON RaitingDocItem (TypeDoc,NumberDoc,Id);
             PathNameDB=Path.Combine(Dir, NameDB);
 
             FileLogger.WriteLogMessage($"Platform=>{Device.RuntimePlatform}  PathNameDB=>{PathNameDB}");
-            db = new SQLiteConnection(PathNameDB, false);
+            
             if (!File.Exists(PathNameDB))
             {
+                db = new SQLiteConnection(PathNameDB, false);
                 //Створюємо базу       
                 foreach (var el in SqlCreateDB.Split(';'))
                     if (el.Length > 4) 
                 db.Execute(el);               
             }
-            
+            else
+                db = new SQLiteConnection(PathNameDB, false);
+
         }
         
         public bool SetConfig<T>(string pName, T pValue)
@@ -531,7 +535,8 @@ and bc.BarCode=?
 
         public IEnumerable<Model.RaitingDocItem> GetRaitingDocItem(DocId pDoc)
         {
-            string sql = $@"select d.TypeDoc,d.NumberDoc,Rs.Id,Rs.Parent as Parent,Rs.Text,Rs.RatingTemplate,R.Rating,R.QuantityPhoto,R.Note,Rs.OrderRS,Rs.DTDelete,Rs.ValueRating
+            string sql = $@"select d.TypeDoc,d.NumberDoc,Rs.Id,Rs.Parent as Parent,Rs.Text,Rs.RatingTemplate,R.Rating,R.QuantityPhoto,R.Note,
+                            Rs.OrderRS,Rs.DTDelete,Rs.ValueRating as ValueRating
         from Doc d 
          join RaitingTemplateItem as Rs on (d.IdTemplate=RS.IdTemplate ) 
          left join RaitingDocItem R on (d.TypeDoc=R.TypeDoc and d.NumberDoc=R.NumberDoc and Rs.Id=R.id)
@@ -543,9 +548,9 @@ and bc.BarCode=?
 
         public bool ReplaceRaitingDocItem(Model.RaitingDocItem pR)
         {
-            string Sql = @"replace into RaitingDocItem ( TypeDoc, NumberDoc, Id, Rating, QuantityPhoto, Note) values 
-                                                (@TypeDoc,@NumberDoc,@Id,@Rating,@QuantityPhoto,@Note)";
-            var res= db.Insert(pR) >= 0;
+            string Sql = @"replace into RaitingDocItem ( TypeDoc, NumberDoc, Id, Rating, QuantityPhoto, Note) values (?, ?, ?, ?, ?, ?)";
+                       
+            var res= db.Execute(Sql, pR.TypeDoc, pR.NumberDoc, pR.Id, pR.Rating, pR.QuantityPhoto, pR.Note) >= 0;
 
             Sql = $@"update doc set  DTStart = case when DTStart is null then (DATETIME('NOW', 'LOCALTIME')) else DTStart end,
         DTEnd = (DATETIME('NOW', 'LOCALTIME')) where  Typedoc={pR.TypeDoc} and numberdoc={pR.NumberDoc}";

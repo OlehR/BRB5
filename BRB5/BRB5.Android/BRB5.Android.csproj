@@ -39,7 +39,7 @@
     <BundleAssemblies>false</BundleAssemblies>
     <EmbedAssembliesIntoApk>true</EmbedAssembliesIntoApk>
     <AndroidCreatePackagePerAbi>true</AndroidCreatePackagePerAbi>
-    <MandroidI18n />
+    <MandroidI18n>CJK;Mideast;Rare;West;Other</MandroidI18n>
     <AndroidKeyStore>false</AndroidKeyStore>
     <AndroidSigningKeyStore>D:\Users\O.Rutkovskyj\AppData\Local\Xamarin\Mono for Android\Keystore\Unics.TM\Unics.TM.keystore</AndroidSigningKeyStore>
     <AndroidSigningStorePass>Nataly75</AndroidSigningStorePass>

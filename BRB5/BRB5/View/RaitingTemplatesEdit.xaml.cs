@@ -4,8 +4,10 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
+using System.Text;
 using Xamarin.Essentials;
 using Xamarin.Forms;
+using static Xamarin.Essentials.Permissions;
 
 namespace BRB5.View
 {
@@ -72,32 +74,39 @@ namespace BRB5.View
             var result = await FilePicker.PickAsync(options);
             if (result != null) 
             {
-                var text = File.ReadAllText(result.FullPath);
+                var B = File.ReadAllBytes(result.FullPath);
+
+                var cp1251 = Encoding.GetEncoding(1251);
+                var textBytes=Encoding.Convert(cp1251, Encoding.UTF8, B);
+                var text = Encoding.UTF8.GetString(textBytes);
+
                 var t = text.Split(new string[] { "\r\n" }, StringSplitOptions.None);
-                RaitingTemplateItem[] RS = new RaitingTemplateItem[t.Length];
-                int i = 0;
+                List<RaitingTemplateItem> RS = new List<RaitingTemplateItem>();
+                
                 foreach (var v in t)
-                {
-                    var p = v.Split(',');
-                    RS[i] = new RaitingTemplateItem();
+                {                   
+                    var p = v.Split(';');
+                    if (p.Count() < 4)
+                        break;
+                    var el = new RaitingTemplateItem();
                     int temp = 0;
 
                     Int32.TryParse(p[0], out temp);
-                    RS[i].Id = temp;
+                    el.Id = temp;
 
                     Int32.TryParse(p[1], out temp);
-                    RS[i].Parent = temp;
+                    el.Parent = temp;
 
-                    RS[i].Text = p[2];
-                    if (!String.IsNullOrEmpty(p[3])) RS[i].ValueRating = Convert.ToDecimal(p[3]);
+                    el.Text = p[3];
+                    if (!String.IsNullOrEmpty(p[2])) el.ValueRating = Convert.ToDecimal(p[2]);
 
-                    RS[i].IdTemplate = vRaitingTemplate.IdTemplate;
+                    el.IdTemplate = vRaitingTemplate.IdTemplate;
 
-                    RS[i].IsEnableBad = true;
-                    RS[i].IsEnableSoSo = true;
-                    RS[i].IsEnableNotKnow = true;
-                    RS[i].IsEnableOk = true;
-                    i++;
+                    el.IsEnableBad = true;
+                    el.IsEnableSoSo = true;
+                    el.IsEnableNotKnow = true;
+                    el.IsEnableOk = true;
+                    RS.Add(el);                    
                 }
 
                 var tdi = db.ReplaceRaitingTemplateItem(RS);
