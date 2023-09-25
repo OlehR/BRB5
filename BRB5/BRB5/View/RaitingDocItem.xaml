@@ -55,14 +55,14 @@
                                                 <TapGestureRecognizer Tapped="OnHeadTapped" />
                                             </Grid.GestureRecognizers>
                                             <Grid.ColumnDefinitions>
-                                                <ColumnDefinition Width="4*" />
-                                                <ColumnDefinition Width="1*" />
                                                 <ColumnDefinition Width="2*" />
+                                                <ColumnDefinition Width="*" />
+                                                <ColumnDefinition Width="*" />
                                             </Grid.ColumnDefinitions>
 
                                             <Label Text="{Binding Text}" FontSize="22" />
 
-                                            <StackLayout Spacing="0" Grid.Column="1" Orientation="Horizontal">
+                                            <StackLayout Spacing="0" Grid.Column="1" Orientation="Horizontal"  IsVisible="{Binding IsVisPSU}">
                                                 <Label Text="{Binding SumValueRating}" FontSize="22" />
                                                 <Label Text="/" FontSize="22" />
                                                 <Label Text="{Binding CalcValueRating}" FontSize="22" />

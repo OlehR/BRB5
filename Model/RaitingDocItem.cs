@@ -70,6 +70,7 @@ namespace BRB5.Model
                 OnPropertyChanged("OpacitySoSo");
                 OnPropertyChanged("OpacityBad");
                 OnPropertyChanged("OpacityNotKnow");
+                OnPropertyChanged(nameof(SumValueRating));
                 //OnPropertyChanged(nameof(Rating));
             } } 
         public string Note { get; set; }        
@@ -77,6 +78,9 @@ namespace BRB5.Model
         int _QuantityPhoto;
        
         public int QuantityPhoto { get { return _QuantityPhoto; } set { _QuantityPhoto = value; OnPropertyChanged("QuantityPhoto"); } }
+
+        [JsonIgnore]
+        public bool IsVisPSU { get { return Config.Company != eCompany.Sim23; } }
 
         bool _IsVisible = true;
         [JsonIgnore]
