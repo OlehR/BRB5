@@ -96,10 +96,13 @@ namespace BRB5
                     R.Add(el);
                 }
             }
+            R.Add(Q.Where(d => d.Id == -1).FirstOrDefault());
             //Костиль заради Всього
-            var Total = Q.Where(d => d.Id == -1);
-            if (Total.Count() == 1)
-                R.Add(Total.FirstOrDefault());
+            //var Total = Q.Where(d => d.Id == -1);
+            //if (Total.Count() == 1)
+            //   R.Add(Total.FirstOrDefault());
+            //R.Add(new Model.RaitingDocItem() { TypeDoc = pDoc.TypeDoc, NumberDoc = pDoc.NumberDoc, Id = -1, Parent = 9999999, Text = "Всього", RatingTemplate = 8, OrderRS = 9999999 });
+
 
             c.OnSave += (Res) => Device.BeginInvokeOnMainThread(() => 
             {

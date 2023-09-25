@@ -5,12 +5,17 @@
                           xmlns:controls="clr-namespace:BRB5.View"
                           x:Class="BRB5.View.RaitingTemplateCreate">
     <ContentPage.Content>
-        <StackLayout>
+        <StackLayout Margin="5">
             <Label Text="Назва" />
             <Frame Style="{StaticResource FrameStyle}">
                 <controls:CustomEntry Style="{StaticResource EntryStyle}"
                                       Text="{Binding RT.Text}" />
             </Frame>
+
+            <StackLayout Orientation="Horizontal">
+                <Label Text="Всього"  VerticalOptions="Center" />
+                <CheckBox IsChecked="{Binding  AddTotal}"/>
+            </StackLayout>
 
             <Button Text="Зберегти"
                     FontSize="Medium"

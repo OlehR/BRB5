@@ -8,6 +8,7 @@ namespace BRB5.View
 	{
 		private RaitingTemplate _RT;
 		public RaitingTemplate RT { get { return _RT; } set { _RT = value; OnPropertyChanged(nameof(RT.Text)); } }
+        public bool AddTotal { get; set; }
 
         DB db = DB.GetDB();
         public RaitingTemplateCreate (int id)
@@ -23,6 +24,12 @@ namespace BRB5.View
         {
 			RT.IsActive = true;
 			db.ReplaceRaitingTemplate(new List<RaitingTemplate>() { RT });
+
+            if (AddTotal)
+            {
+                var temp = new Model.RaitingTemplateItem() { IdTemplate = RT.IdTemplate, Id = -1, Parent = 9999999, Text = "Всього", RatingTemplate = 8, OrderRS = 9999999 };
+                db.ReplaceRaitingTemplateItem(new List<RaitingTemplateItem>() { temp });
+            }
 
             await Navigation.PopAsync();
         }
