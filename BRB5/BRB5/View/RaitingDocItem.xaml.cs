@@ -1,4 +1,5 @@
-﻿using BRB5.Model;
+﻿using BRB5.Connector;
+using BRB5.Model;
 using BRB5.View;
 using System;
 using System.Collections.Generic;
@@ -84,7 +85,7 @@ namespace BRB5
                 OnPropertyChanged("SizeWarehouse");
             };
             var Q = db.GetRaitingDocItem(cDoc);
-            foreach (var e in Q) e.List = Q;
+            //foreach (var e in Q) e.List = Q;
             var R = new List<Model.RaitingDocItem>();
             foreach (var e in Q.Where(d => d.IsHead).OrderBy(d => d.OrderRS))
             {
@@ -97,12 +98,6 @@ namespace BRB5
                 }
             }
             R.Add(Q.Where(d => d.Id == -1).FirstOrDefault());
-            //Костиль заради Всього
-            //var Total = Q.Where(d => d.Id == -1);
-            //if (Total.Count() == 1)
-            //   R.Add(Total.FirstOrDefault());
-            //R.Add(new Model.RaitingDocItem() { TypeDoc = pDoc.TypeDoc, NumberDoc = pDoc.NumberDoc, Id = -1, Parent = 9999999, Text = "Всього", RatingTemplate = 8, OrderRS = 9999999 });
-
 
             c.OnSave += (Res) => Device.BeginInvokeOnMainThread(() => 
             {
@@ -113,6 +108,7 @@ namespace BRB5
             CountAll = R.Count(el => !el.IsHead);
             NavigationPage.SetHasNavigationBar(this, Device.RuntimePlatform == Device.iOS);
             Questions = new ObservableCollection<Model.RaitingDocItem>(R);
+            CalcValueRating();
             RefreshHead();
             this.BindingContext = this;
             StartTimer();
@@ -184,6 +180,7 @@ namespace BRB5
                 }
             }
             db.ReplaceRaitingDocItem(vQuestion);
+            CalcSumValueRating(vQuestion);
             RefreshHead();
         }
 
@@ -194,6 +191,34 @@ namespace BRB5
             OnPropertyChanged("IsSave");
         }
 
+        void CalcSumValueRating(Model.RaitingDocItem pRDI)
+        {
+            var Total = Questions.Where(el => el.Id == -1).FirstOrDefault();           
+            var res = Questions?.Where(el => el.Parent != 0 && el.Id != -1)?.Sum(el => el.SumValueRating) ?? 0;
+            Total.SumValueRating = res;
+            Total.Rating = Total.Rating;
+
+            var Head = Questions.Where(el => el.Id == pRDI.Parent).FirstOrDefault();
+            res = Questions?.Where(el => el.Parent == Head.Id )?.Sum(el => el.SumValueRating) ?? 0;
+            Head.SumValueRating = res;
+            Head.Rating = Head.Rating;
+        }
+        void CalcValueRating()
+        {
+            var Total = Questions.Where(el => el.Id == -1).FirstOrDefault();
+            var res = Questions?.Where(el => el.Parent != 0 && el.Id != -1)?.Sum(el => el.ValueRating) ?? 0;
+            Total.ValueRating = res; 
+            res = Questions?.Where(el => el.Parent != 0 && el.Id != -1)?.Sum(el => el.SumValueRating) ?? 0;
+            Total.SumValueRating = res;
+
+            foreach (var q in Questions.Where(el => el.Parent == 0))
+            {
+                res = Questions?.Where(e => e.Parent == q.Id)?.Sum(el => el.ValueRating) ?? 0;
+                q.ValueRating = res;
+                res = Questions?.Where(e => e.Parent == q.Id)?.Sum(el => el.SumValueRating) ?? 0;
+                q.SumValueRating = res;
+            }           
+        }
         private void OnSetView(object sender, System.EventArgs e)
         {
             IsAll = !IsAll;

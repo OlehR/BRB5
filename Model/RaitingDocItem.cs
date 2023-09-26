@@ -12,36 +12,35 @@ namespace BRB5.Model
 {
     public class RaitingDocItem : DocId
     {
-        public IEnumerable<RaitingDocItem> List {get;set;}
         public int Id { get; set; }
         public int Parent { get; set; }
-        //public int ParentEx { get { return Parent; } }
-
-        public decimal CalcValueRating { get { return Parent == 0 ? List?.Where(el=> el.Parent==Id).Sum(el => el.ValueRating)??0 : ValueRating; } }
         public decimal ValueRating { get; set; }
 
+        decimal _SumValueRating=0;
         public decimal SumValueRating {
             get {
                 decimal res;
-                if (Parent == 0)
-                    res = List?.Where(el => el.Parent == Id).Sum(el => el.SumValueRating) ?? 0;
-                else {
+                if (Parent == 0 || Id==-1)
+                   return  _SumValueRating;
+                else
+                {
                     switch (Rating)
                     {
                         case 1:
                             res = ValueRating;
                             break;
                         case 2:
-                            res = ValueRating/2;
+                            res = ValueRating / 2;
                             break;
 
                         default:
                             res = 0;
                             break;
-                    }
+                    }                    
                 }
                 return res;
             } 
+            set { _SumValueRating= value; } 
         }
         // заголовок групи
         [JsonIgnore]
@@ -81,6 +80,7 @@ namespace BRB5.Model
 
         [JsonIgnore]
         public bool IsVisPSU { get { return Config.Company != eCompany.Sim23; } }
+        public bool IsVisTotal { get { return Id == -1 ; } }
 
         bool _IsVisible = true;
         [JsonIgnore]

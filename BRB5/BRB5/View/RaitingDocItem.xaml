@@ -65,7 +65,7 @@
                                             <StackLayout Spacing="0" Grid.Column="1" Orientation="Horizontal"  IsVisible="{Binding IsVisPSU}">
                                                 <Label Text="{Binding SumValueRating}" FontSize="22" />
                                                 <Label Text="/" FontSize="22" />
-                                                <Label Text="{Binding CalcValueRating}" FontSize="22" />
+                                                <Label Text="{Binding ValueRating}" FontSize="22" />
                                             </StackLayout>
                                             <ImageButton IsVisible="{Binding IsEnableNotKnow}"
                                                          Source="NotKnow.png"
@@ -85,6 +85,12 @@
                                                          HeightRequest="{Binding HeightRequest}">
 
                                                 <Label Text="{Binding Text}" FontSize="22" />
+
+                                                <StackLayout Spacing="0" Orientation="Horizontal"  IsVisible="{Binding IsVisTotal}">
+                                                    <Label Text="{Binding SumValueRating}" FontSize="22" />
+                                                    <Label Text="/" FontSize="22" />
+                                                    <Label Text="{Binding ValueRating}" FontSize="22" />
+                                                </StackLayout>
                                                 <Grid Margin="0" Padding="0">
                                                     <Grid.ColumnDefinitions>
                                                         <ColumnDefinition Width="1*" />
