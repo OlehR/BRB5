@@ -84,12 +84,14 @@
                                                          IsVisible="{Binding IsItem}"
                                                          HeightRequest="{Binding HeightRequest}">
 
-                                                <Label Text="{Binding Text}" FontSize="22" />
+                                                <StackLayout Orientation="Horizontal">
+                                                    <Label Text="{Binding Text}" FontSize="22" />
 
-                                                <StackLayout Spacing="0" Orientation="Horizontal"  IsVisible="{Binding IsVisTotal}">
-                                                    <Label Text="{Binding SumValueRating}" FontSize="22" />
-                                                    <Label Text="/" FontSize="22" />
-                                                    <Label Text="{Binding ValueRating}" FontSize="22" />
+                                                    <StackLayout Spacing="0" Orientation="Horizontal" HorizontalOptions="EndAndExpand" IsVisible="{Binding IsVisTotal}">
+                                                        <Label Text="{Binding SumValueRating}" FontSize="22" />
+                                                        <Label Text="/" FontSize="22" />
+                                                        <Label Text="{Binding ValueRating}" FontSize="22" />
+                                                    </StackLayout>
                                                 </StackLayout>
                                                 <Grid Margin="0" Padding="0">
                                                     <Grid.ColumnDefinitions>
