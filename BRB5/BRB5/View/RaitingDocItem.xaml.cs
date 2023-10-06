@@ -85,7 +85,6 @@ namespace BRB5
                 OnPropertyChanged("SizeWarehouse");
             };
             var Q = db.GetRaitingDocItem(cDoc);
-            //foreach (var e in Q) e.List = Q;
             var R = new List<Model.RaitingDocItem>();
             foreach (var e in Q.Where(d => d.IsHead).OrderBy(d => d.OrderRS))
             {
@@ -97,7 +96,8 @@ namespace BRB5
                     R.Add(el);
                 }
             }
-            R.Add(Q.Where(d => d.Id == -1).FirstOrDefault());
+            var Tottal = Q.Where(d => d.Id == -1).FirstOrDefault();
+            if(Tottal != null)  R.Add(Tottal);
 
             c.OnSave += (Res) => Device.BeginInvokeOnMainThread(() => 
             {
@@ -193,10 +193,15 @@ namespace BRB5
 
         void CalcSumValueRating(Model.RaitingDocItem pRDI)
         {
-            var Total = Questions.Where(el => el.Id == -1).FirstOrDefault();           
-            var res = Questions?.Where(el => el.Parent != 0 && el.Id != -1)?.Sum(el => el.SumValueRating) ?? 0;
-            Total.SumValueRating = res;
-            Total.Rating = Total.Rating;
+
+            decimal res = 0;
+            var Total = Questions.Where(el => el.Id == -1).FirstOrDefault();
+            if (Total != null)
+            {
+                res = Questions?.Where(el => el.Parent != 0 && el.Id != -1)?.Sum(el => el.SumValueRating) ?? 0;
+                Total.SumValueRating = res;
+                Total.Rating = Total.Rating;
+            }
 
             var Head = Questions.Where(el => el.Id == pRDI.Parent).FirstOrDefault();
             res = Questions?.Where(el => el.Parent == Head.Id )?.Sum(el => el.SumValueRating) ?? 0;
@@ -205,12 +210,15 @@ namespace BRB5
         }
         void CalcValueRating()
         {
+            decimal res=0;
             var Total = Questions.Where(el => el.Id == -1).FirstOrDefault();
-            var res = Questions?.Where(el => el.Parent != 0 && el.Id != -1)?.Sum(el => el.ValueRating) ?? 0;
-            Total.ValueRating = res; 
-            res = Questions?.Where(el => el.Parent != 0 && el.Id != -1)?.Sum(el => el.SumValueRating) ?? 0;
-            Total.SumValueRating = res;
-
+            if (Total != null)
+            {
+                res = Questions?.Where(el => el.Parent != 0 && el.Id != -1)?.Sum(el => el.ValueRating) ?? 0;
+                Total.ValueRating = res;
+                res = Questions?.Where(el => el.Parent != 0 && el.Id != -1)?.Sum(el => el.SumValueRating) ?? 0;
+                Total.SumValueRating = res;
+            }
             foreach (var q in Questions.Where(el => el.Parent == 0))
             {
                 res = Questions?.Where(e => e.Parent == q.Id)?.Sum(el => el.ValueRating) ?? 0;
