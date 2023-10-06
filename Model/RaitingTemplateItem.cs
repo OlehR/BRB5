@@ -42,6 +42,9 @@ namespace BRB5.Model
 
         [JsonIgnore]
         public bool IsDelete { get { return DTDelete != default; }  }
+        [JsonIgnore]
+        [Ignore]
+        public double OpacityDelete { get { return IsDelete ? 0.4d : 1d; } }
 
         [JsonIgnore]
         [Ignore]

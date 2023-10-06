@@ -168,6 +168,8 @@ namespace BRB5.View
 
             if(vRaiting.IsDelete)
             {
+                if (vRaiting.IsItem && RS.Where(rs => rs.Id == vRaiting.Parent).FirstOrDefault().IsDelete) return;
+
                 vRaiting.DTDelete = default;
                 db.ReplaceRaitingTemplateItem(RS);
                 RS.Clear();
