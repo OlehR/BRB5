@@ -194,38 +194,58 @@ namespace BRB5
         void CalcSumValueRating(Model.RaitingDocItem pRDI)
         {
 
-            decimal res = 0;
+            decimal res = 0;            
+
+            var Head = Questions.Where(el => el.Id == pRDI.Parent).FirstOrDefault();
+            if (Head != null)
+            {
+                res = Questions?.Where(el => el.Parent == Head.Id)?.Sum(el => el.SumValueRating) ?? 0;
+                Head.SumValueRating = res;
+                Head.Rating = Head.Rating;
+            } else
+            {
+                if (pRDI.Rating == 4)
+                {
+                    pRDI.SumValueRating = 0;
+                    pRDI.Rating = pRDI.Rating;
+                }
+                if (pRDI.Rating == 0)
+                {
+                    pRDI.SumValueRating = Questions?.Where(el => el.Parent == pRDI.Id)?.Sum(el => el.SumValueRating) ?? 0;
+                    pRDI.Rating = pRDI.Rating;
+                }
+            }
+
             var Total = Questions.Where(el => el.Id == -1).FirstOrDefault();
             if (Total != null)
             {
-                res = Questions?.Where(el => el.Parent != 0 && el.Id != -1)?.Sum(el => el.SumValueRating) ?? 0;
+                res = Questions?.Where(el => el.Parent == 0 && el.Id != -1)?.Sum(el => el.SumValueRating) ?? 0;
                 Total.SumValueRating = res;
                 Total.Rating = Total.Rating;
             }
-
-            var Head = Questions.Where(el => el.Id == pRDI.Parent).FirstOrDefault();
-            res = Questions?.Where(el => el.Parent == Head.Id )?.Sum(el => el.SumValueRating) ?? 0;
-            Head.SumValueRating = res;
-            Head.Rating = Head.Rating;
         }
         void CalcValueRating()
         {
             decimal res=0;
-            var Total = Questions.Where(el => el.Id == -1).FirstOrDefault();
-            if (Total != null)
-            {
-                res = Questions?.Where(el => el.Parent != 0 && el.Id != -1)?.Sum(el => el.ValueRating) ?? 0;
-                Total.ValueRating = res;
-                res = Questions?.Where(el => el.Parent != 0 && el.Id != -1)?.Sum(el => el.SumValueRating) ?? 0;
-                Total.SumValueRating = res;
-            }
             foreach (var q in Questions.Where(el => el.Parent == 0))
             {
                 res = Questions?.Where(e => e.Parent == q.Id)?.Sum(el => el.ValueRating) ?? 0;
                 q.ValueRating = res;
-                res = Questions?.Where(e => e.Parent == q.Id)?.Sum(el => el.SumValueRating) ?? 0;
-                q.SumValueRating = res;
-            }           
+                if (q.Rating != 4)
+                {
+                    res = Questions?.Where(e => e.Parent == q.Id)?.Sum(el => el.SumValueRating) ?? 0;
+                    q.SumValueRating = res;
+                } else  q.SumValueRating = 0;
+            }
+
+            var Total = Questions.Where(el => el.Id == -1).FirstOrDefault();
+            if (Total != null)
+            {
+                res = Questions?.Where(el => el.Parent == 0 && el.Id != -1)?.Sum(el => el.ValueRating) ?? 0;
+                Total.ValueRating = res;
+                res = Questions?.Where(el => el.Parent == 0 && el.Id != -1)?.Sum(el => el.SumValueRating) ?? 0;
+                Total.SumValueRating = res;
+            }
         }
         private void OnSetView(object sender, System.EventArgs e)
         {
