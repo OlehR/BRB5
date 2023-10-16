@@ -34,10 +34,10 @@
                 <Label Text="Од:"/>
                 <Label Text="{Binding WP.Unit}" TextColor="DarkBlue"/>
             </StackLayout>
-            <StackLayout Orientation="Horizontal">
+            <FlexLayout Wrap="Wrap" JustifyContent="Start" Direction="Row" AlignItems="Start" AlignContent="Start">
                 <Label Text="ШК:"/>
                 <Label Text="{Binding WP.BarCodes}" TextColor="DarkBlue"/>
-            </StackLayout>
+            </FlexLayout>
 
             <StackLayout Orientation="Horizontal">
                 <Label Text="Останій прихід:"/>
