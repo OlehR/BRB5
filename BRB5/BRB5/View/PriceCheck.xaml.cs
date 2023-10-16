@@ -241,5 +241,11 @@ namespace BRB5
                 await Navigation.PushAsync(new WareInfo(WP.ParseBarCode));
             }
         }
+
+        private void BarCodeHandInput(object sender, EventArgs e)
+        {
+            var text = ((Entry)sender).Text;
+            FoundWares(text, true);
+        }
     }
 }
