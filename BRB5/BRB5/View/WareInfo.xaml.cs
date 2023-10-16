@@ -28,11 +28,8 @@ namespace BRB5.View
             NavigationPage.SetHasNavigationBar(this, Device.RuntimePlatform == Device.iOS);
             
             WP = c.GetPrice(parseBarCode, eTypePriceInfo.Full);
-            //
-            //var t = new RestWarehouse { Date = WP.LastIncomeDate, Quantity = 100, NameWarehouse = "aisbcild"  };
-            //WP.RestWarehouse = new List<RestWarehouse> { t, t };
-            //
-            if (WP.ActionType == 1) 
+           
+            if (WP.ActionType >=0) 
             {
                 Promotion = $"Акція діє: з {WP.PromotionBegin:dd.MM}  по {WP.PromotionEnd:dd.MM}";
                 IsVisPromotion = true;

@@ -20,7 +20,7 @@
                 <Label Text="{Binding WP.Price}" FontSize="24" TextColor="Green"/>
                 <StackLayout IsVisible="{Binding IsVisPromotion}" Orientation="Horizontal" HorizontalOptions="EndAndExpand" >
                     <Label Text="Роздрібна ціна:" VerticalOptions="Center" TextColor="DarkBlue"/>
-                    <Label Text="{Binding WP.PriceNormal}" FontSize="Medium" TextColor="DarkBlue" VerticalOptions="Center"/>
+                    <Label Text="{Binding WP.PriceNormal}" FontSize="Medium" TextColor="DarkBlue" TextDecorations="Strikethrough" VerticalOptions="Center"/>
                 </StackLayout>
             </StackLayout>
 
