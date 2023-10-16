@@ -117,6 +117,7 @@
                     <controls:CustomEntry Keyboard="Numeric" Style="{StaticResource EntryStyle}"
                                           Text="{Binding WP.BarCodes}" 
                                           x:Name="BarCodeInput"
+                                          Focused="BarCodeFocused"
                                           Completed="BarCodeHandInput"/>
                 </Frame>
             </Grid>

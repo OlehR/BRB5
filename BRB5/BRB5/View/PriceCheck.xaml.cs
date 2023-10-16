@@ -247,5 +247,16 @@ namespace BRB5
             var text = ((Entry)sender).Text;
             FoundWares(text, true);
         }
+
+        private void BarCodeFocused(object sender, FocusEventArgs e)
+        {
+            Device.BeginInvokeOnMainThread(() =>
+            {
+                var entry = sender as Entry;
+
+                entry.CursorPosition = 0;
+                entry.SelectionLength = entry.Text == null ? 0 : entry.Text.Length;
+            });
+        }
     }
 }
