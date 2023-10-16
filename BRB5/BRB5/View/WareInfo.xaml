@@ -25,8 +25,8 @@
             </StackLayout>
 
             <Label Text="{Binding Promotion}" IsVisible="{Binding IsVisPromotion}" FontSize="Medium" TextColor="DarkBlue"/>
-            
-            <Label Text="{Binding WP.Name}" FontSize="24"/>
+
+            <Label Text="{Binding WP.Name}" FontSize="24" TextColor="Black" FontAttributes="Bold"/>
 
             <StackLayout Orientation="Horizontal">
                 <Label Text="Арт.:"/>
@@ -41,12 +41,16 @@
 
             <StackLayout Orientation="Horizontal">
                 <Label Text="Останій прихід:"/>
-                <Label Text="{Binding WP.LastIncomeQuantity}" FontAttributes="Bold"/>
-                <Label Text="{Binding WP.LastIncomeDate,StringFormat='{0:dd.MM.yyyy}'}" HorizontalOptions="EndAndExpand" Margin="0,0,10,0" FontAttributes="Bold"/>
+                <Label Text="{Binding WP.LastIncomeQuantity}" FontAttributes="Bold" TextColor="Blue"/>
+                <Label Text="{Binding WP.LastIncomeDate,StringFormat='{0:dd.MM.yyyy}'}" TextColor="Blue" HorizontalOptions="EndAndExpand" Margin="0,0,10,0" FontAttributes="Bold"/>
             </StackLayout>
             <StackLayout Orientation="Horizontal">
                 <Label Text="Статус товару:"/>
-                <Label Text="{Binding WP.MinQuantity}" FontAttributes="Bold"/>
+                <Label Text="{Binding WP.MinQuantity}" TextColor="Blue" FontAttributes="Bold"/>
+            </StackLayout>
+            <StackLayout Orientation="Horizontal">
+                <Label Text="Умови роботи:"/>
+                <Label Text="{Binding WP.TermsForIlliquidWare}" TextColor="Blue" FontAttributes="Bold"/>
             </StackLayout>
 
             <ListView HasUnevenRows="True"
