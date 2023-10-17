@@ -96,7 +96,7 @@ namespace BRB5.Connector
         /// <param name="pBarCode"></param>
         /// <param name="pIsOnlyBarCode"></param>
         /// <returns></returns>
-        public virtual ParseBarCode ParsedBarCode(string pBarCode, bool pIsOnlyBarCode) { throw new NotImplementedException(); }
+        public virtual ParseBarCode ParsedBarCode(string pBarCode, bool pIsHandInput) { throw new NotImplementedException(); }
 
         /// <summary>
         /// Ціна on-line

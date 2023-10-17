@@ -124,7 +124,7 @@ namespace BRB5
 
             if (IsOnline)
             {
-                WP = c.GetPrice(c.ParsedBarCode(pBarCode, true));
+                WP = c.GetPrice(c.ParsedBarCode(pBarCode, pIsHandInput));
                 //if(WP.State>0)
             }
             else
