@@ -21,6 +21,7 @@ namespace BRB5.iOS
             ZXing.Net.Mobile.Forms.iOS.Platform.Init();
             SQLitePCL.Batteries.Init();
             global::Xamarin.Forms.Forms.Init();
+            FFImageLoading.Forms.Platform.CachedImageRenderer.Init();
             LoadApplication(new App());
 
             return base.FinishedLaunching(app, options);

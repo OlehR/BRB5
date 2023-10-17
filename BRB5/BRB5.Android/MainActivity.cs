@@ -70,7 +70,8 @@ namespace BRB5.Droid
             ZXing.Net.Mobile.Forms.Android.Platform.Init();
             ZXing.Mobile.MobileBarcodeScanner.Initialize(Application);
             global::Xamarin.Forms.Forms.Init(this, savedInstanceState);
-            global::ZXing.Net.Mobile.Forms.Android.Platform.Init();            
+            global::ZXing.Net.Mobile.Forms.Android.Platform.Init();
+            FFImageLoading.Forms.Platform.CachedImageRenderer.Init(enableFastRenderer: true );
 
             LoadApplication(new App());
         }

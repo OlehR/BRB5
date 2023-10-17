@@ -29,7 +29,7 @@ namespace BRB5.View
             
             WP = c.GetPrice(parseBarCode, eTypePriceInfo.Full);
            
-            if (WP.ActionType >=0) 
+            if (WP.ActionType >0) 
             {
                 Promotion = $"Акція діє: з {WP.PromotionBegin:dd.MM}  по {WP.PromotionEnd:dd.MM}";
                 IsVisPromotion = true;

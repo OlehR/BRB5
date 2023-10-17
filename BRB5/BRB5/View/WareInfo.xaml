@@ -1,10 +1,11 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
-             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" 
+             xmlns:forms="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms"
              x:Class="BRB5.View.WareInfo">
     <ContentPage.Content>
         <StackLayout Margin="5,0,5,0" Spacing="0">
-            <Image x:Name="WareImage"  HeightRequest="190"/>
+            <forms:CachedImage  x:Name="WareImage" ErrorPlaceholder="Photo.png" HeightRequest="190"/>            
 
             <StackLayout Orientation="Horizontal">
                 <Button Text="Друк"
@@ -25,6 +26,7 @@
             </StackLayout>
 
             <Label Text="{Binding Promotion}" IsVisible="{Binding IsVisPromotion}" FontSize="Medium" TextColor="DarkBlue"/>
+            <Label Text="{Binding WP.PromotionName}" IsVisible="{Binding IsVisPromotion}" FontSize="Medium" TextColor="DarkBlue"/>
 
             <Label Text="{Binding WP.Name}" FontSize="24" TextColor="Black" FontAttributes="Bold"/>
 
@@ -45,7 +47,7 @@
                 <Label Text="{Binding WP.LastIncomeDate,StringFormat='{0:dd.MM.yyyy}'}" TextColor="Blue" HorizontalOptions="EndAndExpand" Margin="0,0,10,0" FontAttributes="Bold"/>
             </StackLayout>
             <StackLayout Orientation="Horizontal">
-                <Label Text="Статус товару:"/>
+                <Label Text="АМ к-ть:"/>
                 <Label Text="{Binding WP.MinQuantity}" TextColor="Blue" FontAttributes="Bold"/>
             </StackLayout>
             <StackLayout Orientation="Horizontal">
