@@ -6,13 +6,14 @@
                           xmlns:controls="clr-namespace:BRB5.View"
                           NavigationPage.HasNavigationBar="True">
     <NavigationPage.TitleView>
-        <Grid>
+        <StackLayout Spacing="10" Orientation="Horizontal">
             <Label Text="{Binding Ver}"
                    VerticalOptions="Center" />
-            <Label HorizontalOptions="Center"
-                   Text="{Binding Company}"
-                   FontSize="28" />
-        </Grid>
+            <Label VerticalOptions="Center"
+                   Text="{Binding Company}"/>
+            <Label Text="{Binding Login}" 
+                   VerticalOptions="Center" FontSize="24" />
+        </StackLayout>
     </NavigationPage.TitleView>
     <ContentPage.ToolbarItems>
         <ToolbarItem Text="Налаштування"

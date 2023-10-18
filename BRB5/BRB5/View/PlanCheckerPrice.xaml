@@ -5,8 +5,7 @@
     <ContentPage.Content>
         <StackLayout>
             <Grid x:Name="GridZxing" IsVisible="{Binding IsVisScan}" 
-                    HeightRequest="200">
-                <!---<forms:ZXingScannerView x:Name="zxing" /> -->
+                    HeightRequest="140">
             </Grid>
         </StackLayout>
     </ContentPage.Content>

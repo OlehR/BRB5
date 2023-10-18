@@ -59,7 +59,8 @@ namespace BRB5.View
         public int SelectedTypePrinter { get { return Enum.GetNames(typeof(eTypeUsePrinter)).ToList().FindIndex(x => x == Enum.GetName(typeof(eTypeUsePrinter), Config.TypeUsePrinter)); } set { Config.TypeUsePrinter = (eTypeUsePrinter)value; } }
         public int SelectedTypeLog { get { return ListTypeLog.FindIndex(x => x == Enum.GetName(typeof(eTypeLog), FileLogger.TypeLog)); } set { FileLogger.TypeLog = (eTypeLog)value; } }
 
-        public bool IsVisApi3 { get { return Config.Company == eCompany.Sim23; } } 
+        public bool IsVisApi3 { get { return Config.Company == eCompany.Sim23; } }
+        public bool IsViewAllWH { get { return Config.IsViewAllWH; } set { Config.IsViewAllWH = value; } }
         public bool IsAutoLogin { get { return Config.IsAutoLogin; } set { Config.IsAutoLogin = value; } }
         public bool IsVibration { get { return Config.IsVibration; } set { Config.IsVibration = value; } }
         public bool IsSound { get { return Config.IsSound; } set { Config.IsSound = value; } }
@@ -141,6 +142,7 @@ namespace BRB5.View
 
             db.SetConfig<bool>("IsAutoLogin", IsAutoLogin);
             db.SetConfig<bool>("IsVibration", IsVibration);
+            db.SetConfig<bool>("IsViewAllWH", IsViewAllWH);
             db.SetConfig<bool>("IsSound", IsSound);
             db.SetConfig<bool>("IsTest", IsTest);
 

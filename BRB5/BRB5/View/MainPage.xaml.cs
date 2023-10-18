@@ -150,6 +150,7 @@ namespace BRB5
                 }
             }
 
+            Config.IsViewAllWH = db.GetConfig<bool>("IsViewAllWH");
             Config.IsVibration = db.GetConfig<bool>("IsVibration");
             Config.IsSound = db.GetConfig<bool>("IsSound");
             Config.IsTest = db.GetConfig<bool>("IsTest");

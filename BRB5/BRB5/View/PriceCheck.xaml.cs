@@ -69,7 +69,9 @@ namespace BRB5
 
         public string ColorPrintColorType { get { return PrintType == 0 ? "#ffffff" : PrintType == 1 ? "#ffffa8" : "#ffffff"; } }
 
-        public string TextColorPrice { get { return (WP != null && (WP.Price != WP.PriceOld || WP.Price == 0) && WP.PriceOpt != WP.PriceOptOld) ? "#009800" : "#ff5c5c"; } }
+        public string TextColorPrice { get {
+                var temp = Math.Round(WP.Price, 2) != Math.Round(WP.PriceOld, 2);
+                return (WP != null && (Math.Round(WP.Price, 2) != Math.Round(WP.PriceOld, 2) || WP.Price == 0) && Math.Round(WP.PriceOpt,2) != Math.Round(WP.PriceOptOld,2)) ? "#009800" : "#ff5c5c"; } set { OnPropertyChanged(nameof(TextColorPrice)); } }
 
         public string TextColorHttp { get { return (WP != null && WP.StateHTTP == eStateHTTP.HTTP_OK) ? "#009800" : "#ff5c5c"; } }
 

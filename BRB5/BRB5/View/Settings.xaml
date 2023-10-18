@@ -25,6 +25,10 @@
                         ItemDisplayBinding="{Binding Name}"
                         SelectedIndex="{Binding SelectedWarehouse}"
                         HorizontalOptions="Fill" />
+                <StackLayout Orientation="Horizontal" >
+                    <CheckBox IsChecked="{Binding IsViewAllWH}" />
+                    <Label Text="Показувати всі склади"  />
+                </StackLayout>
 
                 <Picker Title="Принтер"
                         ItemsSource="{Binding ListTypeUsePrinter}"

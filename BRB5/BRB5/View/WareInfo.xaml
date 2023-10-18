@@ -20,8 +20,8 @@
                 <Label Text="Ціна:" VerticalOptions="Center"/>
                 <Label Text="{Binding WP.Price}" FontSize="24" TextColor="Green"/>
                 <StackLayout IsVisible="{Binding IsVisPromotion}" Orientation="Horizontal" HorizontalOptions="EndAndExpand" >
-                    <Label Text="Роздрібна ціна:" VerticalOptions="Center" TextColor="DarkBlue"/>
-                    <Label Text="{Binding WP.PriceNormal}" FontSize="Medium" TextColor="DarkBlue" TextDecorations="Strikethrough" VerticalOptions="Center"/>
+                    <Label Text="Роздрібна ціна:" VerticalOptions="Center" />
+                    <Label Text="{Binding WP.PriceNormal}" FontSize="Medium" TextColor="Red" FontAttributes="Bold" TextDecorations="Strikethrough" VerticalOptions="Center"/>
                 </StackLayout>
             </StackLayout>
 
@@ -43,16 +43,16 @@
 
             <StackLayout Orientation="Horizontal">
                 <Label Text="Останій прихід:"/>
-                <Label Text="{Binding WP.LastIncomeQuantity}" FontAttributes="Bold" TextColor="Blue"/>
-                <Label Text="{Binding WP.LastIncomeDate,StringFormat='{0:dd.MM.yyyy}'}" TextColor="Blue" HorizontalOptions="EndAndExpand" Margin="0,0,10,0" FontAttributes="Bold"/>
+                <Label Text="{Binding WP.LastIncomeQuantity}" FontAttributes="Bold" TextColor="DarkBlue"/>
+                <Label Text="{Binding WP.LastIncomeDate,StringFormat='{0:dd.MM.yyyy}'}" TextColor="DarkBlue" HorizontalOptions="EndAndExpand" Margin="0,0,10,0" FontAttributes="Bold"/>
             </StackLayout>
             <StackLayout Orientation="Horizontal">
                 <Label Text="АМ к-ть:"/>
-                <Label Text="{Binding WP.MinQuantity}" TextColor="Blue" FontAttributes="Bold"/>
+                <Label Text="{Binding WP.MinQuantity}" TextColor="DarkBlue" FontAttributes="Bold"/>
             </StackLayout>
             <StackLayout Orientation="Horizontal">
                 <Label Text="Умови роботи:"/>
-                <Label Text="{Binding WP.TermsForIlliquidWare}" TextColor="Blue" FontAttributes="Bold"/>
+                <Label Text="{Binding WP.TermsForIlliquidWare}" TextColor="DarkBlue" FontAttributes="Bold"/>
             </StackLayout>
 
             <ListView HasUnevenRows="True"
@@ -80,8 +80,8 @@
                                         <ColumnDefinition Width="2*"/>
                                         <ColumnDefinition Width="3*"/>
                                     </Grid.ColumnDefinitions>
-                                    <Label Text="{Binding NameWarehouse}" Grid.Column="0"/>
-                                    <Label Text="{Binding Quantity}" Grid.Column="1" FontAttributes="Bold"/>
+                                    <Label Text="{Binding NameWarehouse}" TextColor="Black" Grid.Column="0"/>
+                                    <Label Text="{Binding Quantity}" Grid.Column="1" TextColor="Black" FontAttributes="Bold"/>
                                     <Label Text="{Binding Date,StringFormat='{0:dd.MM.yyyy}'}" Grid.Column="2"/>
                                 </Grid>
                             </ViewCell.View>
