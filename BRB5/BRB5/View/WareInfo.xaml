@@ -25,7 +25,16 @@
                 </StackLayout>
             </StackLayout>
 
-            <Label Text="{Binding Promotion}" IsVisible="{Binding IsVisPromotion}" FontSize="Medium" TextColor="DarkBlue"/>
+            <StackLayout IsVisible="{Binding IsVisPromotion}" Orientation="Horizontal" Spacing="0">
+                <Label Text="Акція діє: з "  FontSize="Medium" TextColor="DarkBlue"/>
+                <Label Text="{Binding WP.PromotionBegin, StringFormat='{0:dd.MM}'}" 
+                       TextColor="DarkBlue" FontSize="Medium"
+                       FontAttributes="Bold"/>
+                <Label Text=" по "  FontSize="Medium" TextColor="DarkBlue"/>
+                <Label Text="{Binding WP.PromotionEnd, StringFormat='{0:dd.MM}'}" 
+                       TextColor="DarkBlue" FontSize="Medium"
+                       FontAttributes="Bold"/>
+            </StackLayout>
             <Label Text="{Binding WP.PromotionName}" IsVisible="{Binding IsVisPromotion}" FontSize="Medium" TextColor="DarkBlue"/>
 
             <Label Text="{Binding WP.Name}" FontSize="24" TextColor="Black" FontAttributes="Bold"/>
