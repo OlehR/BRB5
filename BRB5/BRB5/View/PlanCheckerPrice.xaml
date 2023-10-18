@@ -4,7 +4,10 @@
              x:Class="BRB5.View.PlanCheckerPrice">
     <ContentPage.Content>
         <StackLayout>
-            
+            <Grid x:Name="GridZxing" IsVisible="{Binding IsVisScan}" 
+                    HeightRequest="200">
+                <!---<forms:ZXingScannerView x:Name="zxing" /> -->
+            </Grid>
         </StackLayout>
     </ContentPage.Content>
 </ContentPage>

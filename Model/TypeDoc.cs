@@ -4,7 +4,7 @@ using System.Text;
 
 namespace BRB5
 {
-    public enum eKindDoc {Normal,Simple, PriceCheck, RaitingDoc, RaitingTempate, RaitingTemplateCreate }
+    public enum eKindDoc {Normal,Simple, PriceCheck, RaitingDoc, RaitingTempate, RaitingTemplateCreate, PlanCheck }
     public class TypeDoc
     {
         public int CodeDoc { get; set; }

@@ -119,6 +119,9 @@ namespace BRB5
                 case eKindDoc.RaitingTemplateCreate:
                     await Navigation.PushAsync(new RaitingDocsEdit(vTypeDoc));
                     break;
+                case eKindDoc.PlanCheck:
+                    await Navigation.PushAsync(new PlanCheckPrice());
+                    break;
                 default:
                     break;
             }
