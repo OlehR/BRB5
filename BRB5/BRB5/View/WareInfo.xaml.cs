@@ -17,6 +17,8 @@ namespace BRB5.View
         Connector.Connector c;
         public WaresPrice WP { get; set; }
         public bool IsVisPromotion {  get; set; }  = false;
+        public bool IsNotFullScreenImg { get; set; } = true;
+        public bool IsFullScreenImg { get; set; } = false;
         public string ImageUri { get; set; } = "Photo.png"; 
         public bool IsEnabledPrint { get { return Config.TypeUsePrinter != eTypeUsePrinter.NotDefined; } }
         public WareInfo(ParseBarCode parseBarCode)
@@ -36,6 +38,12 @@ namespace BRB5.View
                 CachingEnabled = true,
                 CacheValidity = new TimeSpan(7, 0, 0, 0)
             };
+            WareImageFull.Source = new UriImageSource
+            {
+                Uri = new Uri(ImageUri),
+                CachingEnabled = true,
+                CacheValidity = new TimeSpan(7, 0, 0, 0)
+            };
 
             this.BindingContext = this;
         }
@@ -49,6 +57,12 @@ namespace BRB5.View
         private void OnClickMenu(object sender, EventArgs e)
         {
 
+        }
+
+        private void OnImageTapped(object sender, EventArgs e)
+        {
+            WareImageFull.IsVisible = !WareImageFull.IsVisible;
+            WareInfoMain.IsVisible = !WareInfoMain.IsVisible;
         }
     }
 }
