@@ -25,7 +25,7 @@ namespace BRB5
         DB db = DB.GetDB();
         BL bl = BL.GetBL();
 
-        public List<PrintBlockItems> ListPrintBlockItems { get { return db.GetPrintBlockItemsCount().ToList(); } }
+        public List<PrintBlockItems> ListPrintBlockItems { get { return db.GetPrintBlockItemsCount().ToList(); } set { OnPropertyChanged("ListPrintBlockItems"); } }
 
         public int SelectedPrintBlockItems { get { return ListPrintBlockItems.Count > 0 ? ListPrintBlockItems.Last().PackageNumber : -1; } }
 
