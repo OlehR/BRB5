@@ -55,7 +55,11 @@ namespace BRB5.Droid
             try
             {
                 string path1 = Path.Combine(Android.OS.Environment.ExternalStorageDirectory.AbsolutePath, Android.OS.Environment.DirectoryDownloads);
-                File.Copy(db.PathNameDB, Path.Combine(path1, "brb5.db") , true);
+
+                var FileDestination = Path.Combine(path1, "brb5.db");
+                if( File.Exists(FileDestination)) File.Delete(FileDestination); 
+
+                File.Copy(db.PathNameDB, FileDestination, true);
             }
             catch (Exception e)
             {

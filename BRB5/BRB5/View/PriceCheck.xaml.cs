@@ -25,9 +25,9 @@ namespace BRB5
         DB db = DB.GetDB();
         BL bl = BL.GetBL();
 
-        public List<PrintBlockItems> ListPrintBlockItems { get { return db.GetPrintBlockItemsCount().ToList(); } }
+        public List<PrintBlockItems> ListPrintBlockItems { get { return db.GetPrintBlockItemsCount().ToList(); }  }
 
-        public int SelectedPrintBlockItems { get { return ListPrintBlockItems.Count > 0 ? ListPrintBlockItems.Last().PackageNumber : -1; } }
+        public int SelectedPrintBlockItems { get { return ListPrintBlockItems.Count > 0 ? ListPrintBlockItems.Last().PackageNumber : -1; }  }
 
         public bool IsVisPriceOpt { get { return WP != null && (WP.PriceOpt != 0 || WP.PriceOptOld != 0); } }
 
@@ -214,8 +214,9 @@ namespace BRB5
         
         private void OnClickPrintBlock(object sender, EventArgs e)
         {
-            if (IsEnabledPrint)
-                _ = DisplayAlert("Друк", bl.PrintPackage(PrintType, SelectedPrintBlockItems, IsMultyLabel), "OK");
+            var temp = PrintBlockItemsXaml.SelectedItem as PrintBlockItems;
+            if (IsEnabledPrint) 
+                _ = DisplayAlert("Друк", bl.PrintPackage(PrintType, temp.PackageNumber, IsMultyLabel), "OK");
         }
 
         private void OnF2(object sender, EventArgs e)

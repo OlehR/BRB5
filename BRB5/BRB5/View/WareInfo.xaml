@@ -4,100 +4,118 @@
              xmlns:forms="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms"
              x:Class="BRB5.View.WareInfo">
     <ContentPage.Content>
-        <StackLayout Margin="5,0,5,0" Spacing="0">
-            <forms:CachedImage  x:Name="WareImage" ErrorPlaceholder="Photo.png" HeightRequest="190"/>            
+        <StackLayout>
 
-            <StackLayout Orientation="Horizontal">
-                <Button Text="Друк"
-                        Clicked="OnClickPrint"                        
-                        IsEnabled="{Binding IsEnabledPrint}"/>
-                <Button Text="Меню"
-                        HorizontalOptions="EndAndExpand"
-                        Clicked="OnClickMenu" />
-            </StackLayout>
+            <forms:CachedImage x:Name="WareImageFull" ErrorPlaceholder="Photo.png"
+                               HorizontalOptions="FillAndExpand" 
+                               VerticalOptions="FillAndExpand" IsVisible="false" >
 
-            <StackLayout  Orientation="Horizontal">
-                <Label Text="Ціна:" VerticalOptions="Center"/>
-                <Label Text="{Binding WP.Price}" FontSize="24" TextColor="Green"/>
-                <StackLayout IsVisible="{Binding IsVisPromotion}" Orientation="Horizontal" HorizontalOptions="EndAndExpand" >
-                    <Label Text="Роздрібна ціна:" VerticalOptions="Center" />
-                    <Label Text="{Binding WP.PriceNormal}" FontSize="Medium" TextColor="Red" FontAttributes="Bold" TextDecorations="Strikethrough" VerticalOptions="Center"/>
+                <forms:CachedImage.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="OnImageTapped"
+                                          NumberOfTapsRequired="2" />
+                </forms:CachedImage.GestureRecognizers>
+            </forms:CachedImage>
+
+            <StackLayout Margin="5,0,5,0" Spacing="0" x:Name="WareInfoMain">
+                <forms:CachedImage  x:Name="WareImage" ErrorPlaceholder="Photo.png" HeightRequest="190">
+                    <forms:CachedImage.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="OnImageTapped" 
+                                              NumberOfTapsRequired="2" />
+                    </forms:CachedImage.GestureRecognizers>
+                </forms:CachedImage>
+
+                <StackLayout Orientation="Horizontal">
+                    <Button Text="Друк"
+                Clicked="OnClickPrint"                        
+                IsEnabled="{Binding IsEnabledPrint}"/>
+                    <Button Text="Меню"
+                HorizontalOptions="EndAndExpand"
+                Clicked="OnClickMenu" />
                 </StackLayout>
-            </StackLayout>
 
-            <StackLayout IsVisible="{Binding IsVisPromotion}" Orientation="Horizontal" Spacing="0">
-                <Label Text="Акція діє: з "  FontSize="Medium" TextColor="DarkBlue"/>
-                <Label Text="{Binding WP.PromotionBegin, StringFormat='{0:dd.MM}'}" 
-                       TextColor="DarkBlue" FontSize="Medium"
-                       FontAttributes="Bold"/>
-                <Label Text=" по "  FontSize="Medium" TextColor="DarkBlue"/>
-                <Label Text="{Binding WP.PromotionEnd, StringFormat='{0:dd.MM}'}" 
-                       TextColor="DarkBlue" FontSize="Medium"
-                       FontAttributes="Bold"/>
-            </StackLayout>
-            <Label Text="{Binding WP.PromotionName}" IsVisible="{Binding IsVisPromotion}" FontSize="Medium" TextColor="DarkBlue"/>
+                <StackLayout  Orientation="Horizontal">
+                    <Label Text="Ціна:" VerticalOptions="Center"/>
+                    <Label Text="{Binding WP.Price}" FontSize="24" TextColor="Green"/>
+                    <StackLayout IsVisible="{Binding IsVisPromotion}" Orientation="Horizontal" HorizontalOptions="EndAndExpand" >
+                        <Label Text="Роздрібна ціна:" VerticalOptions="Center" />
+                        <Label Text="{Binding WP.PriceNormal}" FontSize="Medium" TextColor="Red" FontAttributes="Bold" TextDecorations="Strikethrough" VerticalOptions="Center"/>
+                    </StackLayout>
+                </StackLayout>
 
-            <Label Text="{Binding WP.Name}" FontSize="24" TextColor="Black" FontAttributes="Bold"/>
+                <StackLayout IsVisible="{Binding IsVisPromotion}" Orientation="Horizontal" Spacing="0">
+                    <Label Text="Акція діє: з "  FontSize="Medium" TextColor="DarkBlue"/>
+                    <Label Text="{Binding WP.PromotionBegin, StringFormat='{0:dd.MM}'}" 
+               TextColor="DarkBlue" FontSize="Medium"
+               FontAttributes="Bold"/>
+                    <Label Text=" по "  FontSize="Medium" TextColor="DarkBlue"/>
+                    <Label Text="{Binding WP.PromotionEnd, StringFormat='{0:dd.MM}'}" 
+               TextColor="DarkBlue" FontSize="Medium"
+               FontAttributes="Bold"/>
+                </StackLayout>
+                <Label Text="{Binding WP.PromotionName}" IsVisible="{Binding IsVisPromotion}" FontSize="Medium" TextColor="DarkBlue"/>
 
-            <StackLayout Orientation="Horizontal">
-                <Label Text="Арт.:"/>
-                <Label Text="{Binding WP.Article}" TextColor="DarkBlue"/>
-                <Label Text="Од:"/>
-                <Label Text="{Binding WP.Unit}" TextColor="DarkBlue"/>
-            </StackLayout>
-            <FlexLayout Wrap="Wrap" JustifyContent="Start" Direction="Row" AlignItems="Start" AlignContent="Start">
-                <Label Text="ШК:"/>
-                <Label Text="{Binding WP.BarCodes}" TextColor="DarkBlue"/>
-            </FlexLayout>
+                <Label Text="{Binding WP.Name}" FontSize="24" TextColor="Black" FontAttributes="Bold"/>
 
-            <StackLayout Orientation="Horizontal">
-                <Label Text="Останій прихід:"/>
-                <Label Text="{Binding WP.LastIncomeQuantity}" FontAttributes="Bold" TextColor="DarkBlue"/>
-                <Label Text="{Binding WP.LastIncomeDate,StringFormat='{0:dd.MM.yyyy}'}" TextColor="DarkBlue" HorizontalOptions="EndAndExpand" Margin="0,0,10,0" FontAttributes="Bold"/>
-            </StackLayout>
-            <StackLayout Orientation="Horizontal">
-                <Label Text="АМ к-ть:"/>
-                <Label Text="{Binding WP.MinQuantity}" TextColor="DarkBlue" FontAttributes="Bold"/>
-            </StackLayout>
-            <StackLayout Orientation="Horizontal">
-                <Label Text="Умови роботи:"/>
-                <Label Text="{Binding WP.TermsForIlliquidWare}" TextColor="DarkBlue" FontAttributes="Bold"/>
-            </StackLayout>
+                <StackLayout Orientation="Horizontal">
+                    <Label Text="Арт.:"/>
+                    <Label Text="{Binding WP.Article}" TextColor="DarkBlue"/>
+                    <Label Text="Од:"/>
+                    <Label Text="{Binding WP.Unit}" TextColor="DarkBlue"/>
+                </StackLayout>
+                <FlexLayout Wrap="Wrap" JustifyContent="Start" Direction="Row" AlignItems="Start" AlignContent="Start">
+                    <Label Text="ШК:"/>
+                    <Label Text="{Binding WP.BarCodes}" TextColor="DarkBlue"/>
+                </FlexLayout>
 
-            <ListView HasUnevenRows="True"
-                      ItemsSource="{Binding WP.RestWarehouse}">
-                <ListView.Header>
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="7*"/>
-                            <ColumnDefinition Width="3*"/>
-                            <ColumnDefinition Width="3*"/>
-                        </Grid.ColumnDefinitions>
-                        <Label FontAttributes="Bold" Text="Склад" Grid.Column="0"/>
-                        <Label FontAttributes="Bold" Text="Кількість" Grid.Column="1"/>
-                        <Label FontAttributes="Bold" Text="Дата" Grid.Column="2"/>
-                    </Grid>
-                </ListView.Header>
+                <StackLayout Orientation="Horizontal">
+                    <Label Text="Останій прихід:"/>
+                    <Label Text="{Binding WP.LastIncomeQuantity}" FontAttributes="Bold" TextColor="DarkBlue"/>
+                    <Label Text="{Binding WP.LastIncomeDate,StringFormat='{0:dd.MM.yyyy}'}" TextColor="DarkBlue" HorizontalOptions="EndAndExpand" Margin="0,0,10,0" FontAttributes="Bold"/>
+                </StackLayout>
+                <StackLayout Orientation="Horizontal">
+                    <Label Text="АМ к-ть:"/>
+                    <Label Text="{Binding WP.MinQuantity}" TextColor="DarkBlue" FontAttributes="Bold"/>
+                </StackLayout>
+                <StackLayout Orientation="Horizontal">
+                    <Label Text="Умови роботи:"/>
+                    <Label Text="{Binding WP.TermsForIlliquidWare}" TextColor="DarkBlue" FontAttributes="Bold"/>
+                </StackLayout>
 
-                <ListView.ItemTemplate>
-                    <DataTemplate xmlns:brb5="clr-namespace:BRB5">
-                        <ViewCell>
-                            <ViewCell.View>
-                                <Grid>
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="7*"/>
-                                        <ColumnDefinition Width="2*"/>
-                                        <ColumnDefinition Width="3*"/>
-                                    </Grid.ColumnDefinitions>
-                                    <Label Text="{Binding NameWarehouse}" TextColor="Black" Grid.Column="0"/>
-                                    <Label Text="{Binding Quantity}" Grid.Column="1" TextColor="Black" FontAttributes="Bold"/>
-                                    <Label Text="{Binding Date,StringFormat='{0:dd.MM.yyyy}'}" Grid.Column="2"/>
-                                </Grid>
-                            </ViewCell.View>
-                        </ViewCell>
-                    </DataTemplate>
-                </ListView.ItemTemplate>
-            </ListView>
+                <ListView HasUnevenRows="True"
+              ItemsSource="{Binding WP.RestWarehouse}">
+                    <ListView.Header>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="7*"/>
+                                <ColumnDefinition Width="3*"/>
+                                <ColumnDefinition Width="3*"/>
+                            </Grid.ColumnDefinitions>
+                            <Label FontAttributes="Bold" Text="Склад" Grid.Column="0"/>
+                            <Label FontAttributes="Bold" Text="Кількість" Grid.Column="1"/>
+                            <Label FontAttributes="Bold" Text="Дата" Grid.Column="2"/>
+                        </Grid>
+                    </ListView.Header>
+
+                    <ListView.ItemTemplate>
+                        <DataTemplate xmlns:brb5="clr-namespace:BRB5">
+                            <ViewCell>
+                                <ViewCell.View>
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="7*"/>
+                                            <ColumnDefinition Width="2*"/>
+                                            <ColumnDefinition Width="3*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <Label Text="{Binding NameWarehouse}" TextColor="Black" Grid.Column="0"/>
+                                        <Label Text="{Binding Quantity}" Grid.Column="1" TextColor="Black" FontAttributes="Bold"/>
+                                        <Label Text="{Binding Date,StringFormat='{0:dd.MM.yyyy}'}" Grid.Column="2"/>
+                                    </Grid>
+                                </ViewCell.View>
+                            </ViewCell>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+            </StackLayout>
         </StackLayout>
     </ContentPage.Content>
 </ContentPage>

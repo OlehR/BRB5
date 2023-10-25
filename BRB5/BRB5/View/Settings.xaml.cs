@@ -39,7 +39,7 @@ namespace BRB5.View
                 List<Warehouse> wh = null;
                 try
                 {
-                    wh = db.GetWarehouse()?.ToList();
+                    wh = db.GetWarehouse()?.OrderBy(q => q.Name).ToList();
 
                 }
                 catch (Exception ex)

@@ -144,7 +144,7 @@
                     <ColumnDefinition />
                 </Grid.ColumnDefinitions>
 
-                <Picker Title="пакети"
+                <Picker Title="пакети" x:Name="PrintBlockItemsXaml"
                         ItemsSource="{Binding ListPrintBlockItems}"
                         ItemDisplayBinding="{Binding stringPrintBlockItem}"
                         SelectedIndex="{Binding SelectedPrintBlockItems}" />
