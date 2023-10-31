@@ -25,6 +25,7 @@ namespace BRB5.View
             InitializeComponent();
             c = Connector.Connector.GetInstance();
 
+            //
             PromotionList = new ObservableCollection<Doc>
             {
                 new Doc() { TypeDoc = 13, NumberDoc = "1234589", Description = "action" },
@@ -35,7 +36,7 @@ namespace BRB5.View
                 new Doc() { TypeDoc = 13, NumberDoc = "1234589", Description = "action5" },
                 new Doc() { TypeDoc = 13, NumberDoc = "1234589", Description = "action6" }
             };
-
+            //
 
             this.BindingContext = this;
         }

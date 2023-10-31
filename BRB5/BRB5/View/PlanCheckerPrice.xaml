@@ -1,12 +1,48 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
-             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" xmlns:controls="clr-namespace:BRB5.View"
              x:Class="BRB5.View.PlanCheckerPrice">
     <ContentPage.Content>
         <StackLayout>
             <Grid x:Name="GridZxing" IsVisible="{Binding IsVisScan}" 
                     HeightRequest="140">
             </Grid>
+
+
+
+            <ListView ItemsSource="{Binding WaresList}"
+                      HasUnevenRows="True">
+                <ListView.ItemTemplate>
+                    <DataTemplate xmlns:brb5="clr-namespace:BRB5">
+                        <ViewCell>
+                            <ViewCell.View>
+                                <Grid  >
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="1*" />
+                                        <ColumnDefinition Width="4*" />
+                                    </Grid.ColumnDefinitions>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition/>
+                                        <RowDefinition/>
+                                    </Grid.RowDefinitions>
+
+                                    <Label Text="{Binding Name}" Grid.ColumnSpan="2" FontSize="Medium" />
+                                    <Label Text="{Binding CodeWares}" Grid.Row="1" FontSize="Medium" />
+
+                                    <Frame Style="{StaticResource FrameStyle}"  Grid.Column="1"  Grid.Row="1">
+                                        <controls:CustomEntry Style="{StaticResource EntryStyle}" 
+                                                              
+                                                              Text="{Binding Rest}" Keyboard="Numeric" />
+                                    </Frame>
+
+                                </Grid>
+                            </ViewCell.View>
+                        </ViewCell>
+                    </DataTemplate>
+
+                </ListView.ItemTemplate>
+            </ListView>
+
         </StackLayout>
     </ContentPage.Content>
 </ContentPage>
