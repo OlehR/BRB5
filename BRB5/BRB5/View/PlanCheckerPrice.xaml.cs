@@ -17,13 +17,14 @@ namespace BRB5.View
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class PlanCheckerPrice : ContentPage
     {
+        Connector.Connector c;
         ZXingScannerView zxing;
         public bool IsVisScan { get { return Config.TypeScaner == eTypeScaner.Camera; } }
         public ObservableCollection<WaresPrice> WaresList { get; set; }
 
         public PlanCheckerPrice(DocId pDocId, int Selection)
         {
-
+            c = Connector.Connector.GetInstance();
             NavigationPage.SetHasNavigationBar(this, Device.RuntimePlatform == Device.iOS);
             InitializeComponent();
 
@@ -45,9 +46,14 @@ namespace BRB5.View
             };
             //
 
+            if (!IsVisScan)
+                Config.BarCode = BarCode;
             this.BindingContext = this;
         }
-
+        void BarCode(string pBarCode)
+        {
+            WareFocus(pBarCode);
+        }
 
         protected override void OnAppearing()
         {
@@ -65,6 +71,10 @@ namespace BRB5.View
             base.OnDisappearing();
         }
 
+        public void Dispose()
+        {
+            Config.BarCode -= BarCode;
+        }
         ZXingScannerView SetZxing(Grid pV, ZXingScannerView pZxing)
         {
             if (pZxing != null)
@@ -89,14 +99,16 @@ namespace BRB5.View
                 Device.BeginInvokeOnMainThread(async () =>
                 // Stop analysis until we navigate away so we don't keep reading barcodes
                 {
-                    pZxing.IsAnalyzing = false;
-                    //
-
-
-                    //
+                    pZxing.IsAnalyzing = false; 
+                    WareFocus(result.Text);
                     pZxing.IsAnalyzing = true;
                 });
             return pZxing;
         }
+        void WareFocus(string pBarCode)
+        {
+
+        }
+    
     }
 }
