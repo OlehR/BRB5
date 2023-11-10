@@ -126,6 +126,8 @@ namespace BRB5.Connector
 
         public virtual Result<IEnumerable<RaitingTemplate>> GetRaitingTemplate() { throw new NotImplementedException(); }
         public virtual Result<IEnumerable<Doc>> GetRaitingDocs() { throw new NotImplementedException(); }
+        public virtual Result<IEnumerable<Doc>> GetPromotion(int pCodeWarehouse) { throw new NotImplementedException(); }
+        public virtual Result<IEnumerable<DocWares>> GetPromotionData(string pNumberDoc) { throw new NotImplementedException(); }
     }
 
     public class LoginServer

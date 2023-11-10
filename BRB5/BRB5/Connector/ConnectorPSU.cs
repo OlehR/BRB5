@@ -400,6 +400,26 @@ namespace BRB5.Connector
         }
 
 
+        public override Result<IEnumerable<Doc>> GetPromotion(int pCodeWarehouse) {
+            HttpResult result = Http.HTTPRequest(0, "DCT/CheckPromotion/Doc", pCodeWarehouse.ToJSON(), "application/json", "brb", "brb");
+
+            if (result.HttpState == eStateHTTP.HTTP_OK)
+            {
+                var r = JsonConvert.DeserializeObject<Result<IEnumerable<Doc>>>(result.Result);
+                return r;
+            }
+            return null;
+        }
+        public override Result<IEnumerable<DocWares>> GetPromotionData(string pNumberDoc) {
+            HttpResult result = Http.HTTPRequest(0, "DCT/CheckPromotion/Doc", pNumberDoc, "application/json", "brb", "brb");
+
+            if (result.HttpState == eStateHTTP.HTTP_OK)
+            {
+                var r = JsonConvert.DeserializeObject<Result<IEnumerable<DocWares>>>(result.Result);
+                return r;
+            }
+            return null;
+        }
     }
 
 }
