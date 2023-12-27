@@ -26,12 +26,12 @@
                                         <RowDefinition/>
                                     </Grid.RowDefinitions>
 
-                                    <Label Text="{Binding Name}" Grid.ColumnSpan="2" FontSize="Medium" />
+                                    <Label Text="{Binding NameWares}" Grid.ColumnSpan="2" FontSize="Medium" />
                                     <Label Text="{Binding CodeWares}" Grid.Row="1" FontSize="Medium" />
 
                                     <Frame Style="{StaticResource FrameStyle}"  Grid.Column="1"  Grid.Row="1">
                                         <controls:CustomEntry Style="{StaticResource EntryStyle}" 
-                                                              
+                                                              AutomationId="{Binding CodeWares}"
                                                               Text="{Binding Rest}" Keyboard="Numeric" />
                                     </Frame>
 

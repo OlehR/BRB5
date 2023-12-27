@@ -347,7 +347,7 @@ CREATE UNIQUE INDEX RaitingDocItemId ON RaitingDocItem (TypeDoc,NumberDoc,Id);
                             select  dws.typedoc ,dws.numberdoc, dws.codewares,dws.name, sum(dws.quantity) as quantity,  min(dws.quantitymin) as quantitymin, max(dws.quantitymax) as quantitymax  
                                     from   DocWaresSample dws   group by dws.typedoc ,dws.numberdoc,dws.codewares,dws.name
                             ) as dws on d.numberdoc = dws.numberdoc and d.typedoc=dws.typedoc and dws.codewares = dw1.codewares
-                            where d.typedoc={pDocId.TypeDoc} and  d.numberdoc = {pDocId.NumberDoc}
+                            where d.typedoc={pDocId.TypeDoc} and  d.numberdoc = '{pDocId.NumberDoc}'
                          order by dw1.orderdoc desc";
                     var r = db.Query<DocWaresEx>(Sql);
                     return r;

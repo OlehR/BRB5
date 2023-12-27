@@ -25,18 +25,21 @@ namespace BRB5.View
             InitializeComponent();
             c = Connector.Connector.GetInstance();
 
-            //
-            PromotionList = new ObservableCollection<Doc>
+            var temp = c.GetPromotion(Config.CodeWarehouse);
+            if (temp.Info == null)
             {
-                new Doc() { TypeDoc = 13, NumberDoc = "1234589", Description = "action" },
-                new Doc() { TypeDoc = 13, NumberDoc = "1234589", Description = "action1" },
-                new Doc() { TypeDoc = 13, NumberDoc = "1234589", Description = "action2" },
-                new Doc() { TypeDoc = 13, NumberDoc = "1234589", Description = "action3" },
-                new Doc() { TypeDoc = 13, NumberDoc = "1234589", Description = "action4" },
-                new Doc() { TypeDoc = 13, NumberDoc = "1234589", Description = "action5" },
-                new Doc() { TypeDoc = 13, NumberDoc = "1234589", Description = "action6" }
-            };
-            //
+                PromotionList = new ObservableCollection<Doc>();
+                _ = DisplayAlert("Помилка", temp.TextError, "OK");
+            }
+            else
+            {
+                PromotionList = new ObservableCollection<Doc>(temp.Info);
+                foreach (var doc in temp.Info)
+                {
+                    doc.TypeDoc = 13;
+                }
+                db.ReplaceDoc(temp.Info);
+            }
 
             this.BindingContext = this;
         }
