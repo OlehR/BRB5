@@ -11,6 +11,7 @@ using ZXing.Mobile;
 using ZXing;
 using ZXing.Net.Mobile.Forms;
 using System.Collections.ObjectModel;
+using static SQLite.SQLite3;
 
 namespace BRB5.View
 {
@@ -112,10 +113,26 @@ namespace BRB5.View
                 });
             return pZxing;
         }
-        void WareFocus(string pBarCode)
+        private void WareFocus(string pBarCode)
         {
+            var parseBarCode = c.ParsedBarCode(pBarCode, true);
+            var temp = db.GetScanData(Doc, parseBarCode);
 
+            var tempSelected = WaresList.FirstOrDefault(item => item.CodeWares == temp.CodeWares);
+            Device.BeginInvokeOnMainThread(async () =>
+            {
+                if (tempSelected != null)
+                {
+                    ListWares.ScrollTo(tempSelected, ScrollToPosition.Start, false);                    
+                    var index = WaresList.IndexOf(tempSelected);
+                    var list = ListWares.TemplatedItems.ToList();
+                    var Scaned = (((list[index] as ViewCell).View as Grid).Children.ElementAt(2) as Frame).Content as Entry;
+                    await Task.Delay(10);
+                    Scaned.Focus();
+                }
+            });
+            
         }
-    
+
     }
 }

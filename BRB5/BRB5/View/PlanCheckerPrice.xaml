@@ -10,7 +10,7 @@
 
 
 
-            <ListView ItemsSource="{Binding WaresList}"
+            <ListView ItemsSource="{Binding WaresList}" x:Name="ListWares"
                       HasUnevenRows="True">
                 <ListView.ItemTemplate>
                     <DataTemplate xmlns:brb5="clr-namespace:BRB5">
@@ -22,7 +22,7 @@
                                         <ColumnDefinition Width="4*" />
                                     </Grid.ColumnDefinitions>
                                     <Grid.RowDefinitions>
-                                        <RowDefinition/>
+                                        <RowDefinition Height="auto"/>
                                         <RowDefinition/>
                                     </Grid.RowDefinitions>
 
