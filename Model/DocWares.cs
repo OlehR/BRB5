@@ -42,7 +42,7 @@ namespace BRB5.Model
 
         private decimal _InputQuantity;
        
-        public decimal InputQuantity { get { return _InputQuantity; } set { _InputQuantity = value; OnPropertyChanged("InputQuantity"); OnPropertyChanged(nameof(Scaned)); } }
+        public decimal InputQuantity { get { return _InputQuantity; } set { _InputQuantity = value; OnPropertyChanged("InputQuantity"); OnPropertyChanged(nameof(Scaned)); OnPropertyChanged(nameof(GetBackgroundColorDocWares)); } }
         //public string InputQuantityStr { private get { return _InputQuantity.ToString(); } set { 
         //        _InputQuantity = Convert.ToDecimal(value); } }
         public int CodeReason { get; set; }

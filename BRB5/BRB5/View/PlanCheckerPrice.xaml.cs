@@ -24,8 +24,7 @@ namespace BRB5.View
         ZXingScannerView zxing;
         private Doc Doc;
         public bool IsVisScan { get { return Config.TypeScaner == eTypeScaner.Camera; } }
-        public ObservableCollection<DocWaresEx> WaresList { get; set; }
-
+        public ObservableCollection<DocWaresEx> WaresList { get; set; } 
         public PlanCheckerPrice(Doc pDoc, int Selection)
         {
             Doc = pDoc;
