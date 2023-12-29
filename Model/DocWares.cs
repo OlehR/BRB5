@@ -7,6 +7,15 @@ namespace BRB5.Model
 {
     public class DocWaresId : DocId
     {
+        public DocWaresId() { }
+        public DocWaresId(DocWaresId pDW)
+        {
+            TypeDoc = pDW.TypeDoc;
+            NumberDoc = pDW.NumberDoc;
+            OrderDoc = pDW.OrderDoc;
+            CodeWares = pDW.CodeWares;
+            Quantity = pDW.Quantity;
+        }
         /// <summary>
         /// порядок по порядку в документі
         /// </summary>
@@ -32,9 +41,10 @@ namespace BRB5.Model
         public string QuantityOldStr { set { _QuantityOld = Convert.ToDecimal(value); } }
 
         private decimal _InputQuantity;
-        [Ignore]
+       
         public decimal InputQuantity { get { return _InputQuantity; } set { _InputQuantity = value; OnPropertyChanged("InputQuantity"); } }
-        public string InputQuantityStr { set { _InputQuantity = Convert.ToDecimal(value); } }
+        //public string InputQuantityStr { private get { return _InputQuantity.ToString(); } set { 
+        //        _InputQuantity = Convert.ToDecimal(value); } }
         public int CodeReason { get; set; }
         public DateTime DTInsert { get; set; }
     }

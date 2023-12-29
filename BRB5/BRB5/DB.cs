@@ -300,7 +300,7 @@ CREATE UNIQUE INDEX RaitingDocItemId ON RaitingDocItem (TypeDoc,NumberDoc,Id);
                 if (pTypeResult == 1)
                 {
                     Sql = $@"select d.TypeDoc as TypeDoc, d.numberdoc as NumberDoc, dw1.orderdoc as OrderDoc, dw1.CODEWARES as CodeWares,coalesce(dws.name,w.NAMEWARES) as NameWares,
-                         coalesce(dws.quantity,0) as QuantityOrderStr,coalesce(dw1.quantityinput,0) as InputQuantityStr, coalesce(dws.quantitymin,0) as QuantityMin, 
+                         coalesce(dws.quantity,0) as QuantityOrderStr,coalesce(dw1.quantityinput,0) as InputQuantity, coalesce(dws.quantitymin,0) as QuantityMin, 
                         coalesce(dws.quantitymax,0) as QuantityMax ,coalesce(d.IsControl,0) as IsControl, coalesce(dw1.quantityold,0) as QuantityOldStr
                       ,dw1.quantityreason as QuantityReason
                         {Color}
@@ -314,7 +314,7 @@ CREATE UNIQUE INDEX RaitingDocItemId ON RaitingDocItem (TypeDoc,NumberDoc,Id);
                             select  dws.typedoc ,dws.numberdoc, dws.codewares,dws.name, sum(dws.quantity) as quantity,  min(dws.quantitymin) as quantitymin, max(dws.quantitymax) as quantitymax  
                                     from   DocWaresSample dws   group by dws.typedoc ,dws.numberdoc,dws.codewares,dws.name
                             ) as dws on d.numberdoc = dws.numberdoc and d.typedoc=dws.typedoc and dws.codewares = dw1.codewares
-                          where d.typedoc={pDocId.TypeDoc} and  d.numberdoc = {pDocId.NumberDoc}
+                          where d.typedoc={pDocId.TypeDoc} and  d.numberdoc = '{pDocId.NumberDoc}'
                        union all
                        select d.TypeDoc as TypeDoc, d.numberdoc as NumberDoc, dws.orderdoc+100000, dws.CODEWARES,coalesce(dws.name,w.NAMEWARES) as NAMEWARES,coalesce(dws.quantity,0) as quantityorder,coalesce(dw1.quantityinput,0) as quantityinput, coalesce(dws.quantitymin,0) as quantitymin, coalesce(dws.quantitymax,0) as quantitymax ,coalesce(d.IsControl,0) as IsControl, coalesce(dw1.quantityold,0) as quantityold
                            ,0 as  quantityreason
@@ -326,7 +326,7 @@ CREATE UNIQUE INDEX RaitingDocItemId ON RaitingDocItem (TypeDoc,NumberDoc,Id);
                           left join (select dw.typedoc ,dw.numberdoc, dw.codewares, sum(dw.quantity) as quantityinput,sum(dw.quantityold) as quantityold 
                                         from DocWares dw group by dw.typedoc ,dw.numberdoc,codewares) dw1 
                                  on (dw1.numberdoc = d.numberdoc and d.typedoc=dw1.typedoc and dw1.codewares = dws.codewares)
-                          where dw1.TypeDoc is null and d.typedoc={pDocId.TypeDoc} and  d.numberdoc = {pDocId.NumberDoc}
+                          where dw1.TypeDoc is null and d.typedoc={pDocId.TypeDoc} and  d.numberdoc = '{pDocId.NumberDoc}'
                        order by {OrderQuery}";
                     var r = db.Query<DocWaresEx>(Sql);
                     return r;
@@ -505,7 +505,7 @@ and bc.BarCode=?
                 sql = $@"select coalesce(d.IsControl,0) as IsControl, coalesce(QuantityMax,0) as QuantityMax, coalesce(quantity,0) as QuantityOrder, 
                         case when dws.Typedoc is null then 0 else 1 end as IsRecord from DOC d
                          left join DOCWARESsample dws on d.Typedoc=dws.Typedoc and d.NumberDoc=dws.NumberDoc and dws.codewares={res.CodeWares}
-                         where  d.Typedoc={pDocId.TypeDoc} and d.NumberDoc={pDocId.NumberDoc}";
+                         where  d.Typedoc={pDocId.TypeDoc} and d.NumberDoc='{pDocId.NumberDoc}'";
                 var r = db.Query<DocWaresEx>(sql);
                 if (r != null && r.Count() == 1)
                 {
@@ -603,11 +603,11 @@ and bc.BarCode=?
         public bool ReplaceDocWares(DocWares pDW)
         {
             //if(!pDW.GetType().Name.Equals("DocWares"))
-            string Sql = @"replace into DocWares ( TypeDoc, NumberDoc, OrderDoc, CodeWares, Quantity, QuantityOld, CodeReason) values 
-                                                 (@TypeDoc,@NumberDoc,@OrderDoc,@CodeWares,@Quantity,@QuantityOld,@CodeReason)";
+            string Sql = $@"replace into DocWares ( TypeDoc, NumberDoc, OrderDoc, CodeWares, Quantity, QuantityOld, CodeReason) values 
+                                                 ({pDW.TypeDoc},'{pDW.NumberDoc}',{pDW.OrderDoc},{pDW.CodeWares},{pDW.Quantity},{pDW.QuantityOld},{pDW.CodeReason})";
             try
             {
-                return db.InsertOrReplace(new DocWares(pDW)) >= 0;
+                return db.Execute(Sql) >= 0;
             }catch(Exception e) 
             { Console.WriteLine(e.ToString()); return false; }
         }

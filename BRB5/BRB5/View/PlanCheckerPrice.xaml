@@ -5,10 +5,7 @@
     <ContentPage.Content>
         <StackLayout>
             <Grid x:Name="GridZxing" IsVisible="{Binding IsVisScan}" 
-                    HeightRequest="140">
-            </Grid>
-
-
+                    HeightRequest="140"/>
 
             <ListView ItemsSource="{Binding WaresList}" x:Name="ListWares"
                       HasUnevenRows="True">
@@ -32,7 +29,8 @@
                                     <Frame Style="{StaticResource FrameStyle}"  Grid.Column="1"  Grid.Row="1">
                                         <controls:CustomEntry Style="{StaticResource EntryStyle}" 
                                                               AutomationId="{Binding CodeWares}"
-                                                              Text="{Binding Rest}" Keyboard="Numeric" />
+                                                              Completed="SaveItem"
+                                                              Text="{Binding InputQuantity}" Keyboard="Telephone" />
                                     </Frame>
 
                                 </Grid>
@@ -42,6 +40,15 @@
 
                 </ListView.ItemTemplate>
             </ListView>
+
+            <Grid VerticalOptions="EndAndExpand" >
+                <Label HorizontalOptions="Center" Text="Зберегти" FontSize="24">
+                    <Label.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="Save" />
+                    </Label.GestureRecognizers>
+                </Label>
+            </Grid>
+
 
         </StackLayout>
     </ContentPage.Content>

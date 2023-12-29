@@ -3,6 +3,9 @@ namespace BRB5.Model
 {
     public class DocWaresSample : DocWaresId
     {
+        public DocWaresSample() { }
+        public DocWaresSample(DocWaresId pDW):base(pDW) 
+        { }
         /// <summary>
         /// не використовується
         /// </summary>

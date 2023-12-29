@@ -52,9 +52,11 @@ namespace BRB5.View
                 int i=0;
                 foreach (var item in temp.Info) {
                     item.TypeDoc = 13;
-                    item.OrderDoc = i++;
-                    db.ReplaceDocWares(item); }
-                WaresList = new ObservableCollection<DocWaresEx>(db.GetDocWares(Doc, 2, eTypeOrder.Name));
+                    item.OrderDoc = i++; }
+                               
+                db.ReplaceDocWaresSample(temp.Info.Select(el=> new DocWaresSample(el)));
+
+                WaresList = new ObservableCollection<DocWaresEx>(db.GetDocWares(Doc, 1, eTypeOrder.Name));
             }            
         }
 
@@ -123,16 +125,33 @@ namespace BRB5.View
             {
                 if (tempSelected != null)
                 {
-                    ListWares.ScrollTo(tempSelected, ScrollToPosition.Start, false);                    
+                    ListWares.ScrollTo(tempSelected, ScrollToPosition.Start, false);
                     var index = WaresList.IndexOf(tempSelected);
                     var list = ListWares.TemplatedItems.ToList();
                     var Scaned = (((list[index] as ViewCell).View as Grid).Children.ElementAt(2) as Frame).Content as Entry;
                     await Task.Delay(10);
                     Scaned.Focus();
                 }
+                else _ = DisplayAlert("", "Товар відсутній", "ok");
             });
             
         }
 
+        private void Save(object sender, EventArgs e)
+        {
+            var res = c.SendDocsData(Doc, WaresList);
+            _ = DisplayAlert("Збереження", res.TextError, "ok");            
+        }
+
+        private void SaveItem(object sender, EventArgs e)
+        {
+            var temp = sender as Entry;
+            var codeWares = temp.AutomationId;
+
+            var tempSelected = WaresList.FirstOrDefault(item => item.CodeWares.ToString() == codeWares);
+            tempSelected.Quantity = tempSelected.InputQuantity;
+
+            db.ReplaceDocWares(tempSelected);
+        }
     }
 }
