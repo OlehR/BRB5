@@ -12,6 +12,7 @@ using ZXing;
 using ZXing.Net.Mobile.Forms;
 using System.Collections.ObjectModel;
 using static SQLite.SQLite3;
+using System.Reflection;
 
 namespace BRB5.View
 {
@@ -147,11 +148,26 @@ namespace BRB5.View
         {
             var temp = sender as Entry;
             var codeWares = temp.AutomationId;
-
             var tempSelected = WaresList.FirstOrDefault(item => item.CodeWares.ToString() == codeWares);
             tempSelected.Quantity = tempSelected.InputQuantity;
-
             db.ReplaceDocWares(tempSelected);
+
+            var list = ListWares.TemplatedItems.ToList();
+            var index = WaresList.IndexOf(tempSelected); ;
+            var nextIndex = (index + 1) >= list.Count ? 0 : index + 1;
+            var next = (((list[nextIndex] as ViewCell).View as Grid).Children.ElementAt(2) as Frame).Content as Entry;
+            next.Focus();
+        }
+
+        private void EntryFocused(object sender, FocusEventArgs e)
+        {
+            Device.BeginInvokeOnMainThread(() =>
+            {
+                var entry = sender as Entry;
+
+                entry.CursorPosition = 0;
+                entry.SelectionLength = entry.Text == null ? 0 : entry.Text.Length;
+            });
         }
     }
 }

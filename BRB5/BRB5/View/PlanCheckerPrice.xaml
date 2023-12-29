@@ -7,13 +7,16 @@
             <Grid x:Name="GridZxing" IsVisible="{Binding IsVisScan}" 
                     HeightRequest="140"/>
 
-            <ListView ItemsSource="{Binding WaresList}" x:Name="ListWares"
+            <ListView ItemsSource="{Binding WaresList}"
+                      x:Name="ListWares" 
+                      BackgroundColor="LightGray"
+                      SeparatorVisibility="None"
                       HasUnevenRows="True">
                 <ListView.ItemTemplate>
                     <DataTemplate xmlns:brb5="clr-namespace:BRB5">
                         <ViewCell>
                             <ViewCell.View>
-                                <Grid  >
+                                <Grid Margin="2,2,2,0" BackgroundColor="{Binding GetBackgroundColorDocWares}" >
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="1*" />
                                         <ColumnDefinition Width="4*" />
@@ -23,16 +26,16 @@
                                         <RowDefinition/>
                                     </Grid.RowDefinitions>
 
-                                    <Label Text="{Binding NameWares}" Grid.ColumnSpan="2" FontSize="Medium" />
-                                    <Label Text="{Binding CodeWares}" Grid.Row="1" FontSize="Medium" />
+                                    <Label   Text="{Binding NameWares}" Grid.ColumnSpan="2" FontSize="Medium" />
+                                    <Label   Text="{Binding CodeWares}" Grid.Row="1" FontSize="Medium" />
 
-                                    <Frame Style="{StaticResource FrameStyle}"  Grid.Column="1"  Grid.Row="1">
+                                    <Frame  Style="{StaticResource FrameStyle}"  Grid.Column="1"  Grid.Row="1">
                                         <controls:CustomEntry Style="{StaticResource EntryStyle}" 
                                                               AutomationId="{Binding CodeWares}"
                                                               Completed="SaveItem"
+                                                              Focused="EntryFocused"
                                                               Text="{Binding InputQuantity}" Keyboard="Telephone" />
                                     </Frame>
-
                                 </Grid>
                             </ViewCell.View>
                         </ViewCell>

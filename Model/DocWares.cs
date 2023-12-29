@@ -42,10 +42,26 @@ namespace BRB5.Model
 
         private decimal _InputQuantity;
        
-        public decimal InputQuantity { get { return _InputQuantity; } set { _InputQuantity = value; OnPropertyChanged("InputQuantity"); } }
+        public decimal InputQuantity { get { return _InputQuantity; } set { _InputQuantity = value; OnPropertyChanged("InputQuantity"); OnPropertyChanged(nameof(Scaned)); } }
         //public string InputQuantityStr { private get { return _InputQuantity.ToString(); } set { 
         //        _InputQuantity = Convert.ToDecimal(value); } }
         public int CodeReason { get; set; }
         public DateTime DTInsert { get; set; }
+        public int Scaned { get { return InputQuantity > 0 ? 2 : 0; } set { OnPropertyChanged(nameof(GetBackgroundColorDocWares)); } }
+        public string GetBackgroundColorDocWares
+        {
+            get
+            {
+                switch (Scaned)
+                {
+                    case 2:
+                        return "#c4ffc4";
+                    case 1:
+                        return "#ffdd8a";
+                    default:
+                        return "#ffffff";
+                }
+            }
+        }
     }
 }

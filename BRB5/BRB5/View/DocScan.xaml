@@ -66,7 +66,7 @@
                                                       x:Name="inputQ"
                                                       TextChanged="CalcQuantity"
                                                       Placeholder="к-сть"
-                                                      Keyboard="Numeric" />
+                                                      Keyboard="Telephone" />
                             </Frame>
 
                             <Label Text="{Binding ScanData.NameUnit}" Grid.Column="1" />
