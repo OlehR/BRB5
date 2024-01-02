@@ -38,7 +38,7 @@ namespace BRB5.Model
                 }
         private decimal _QuantityOld;
         public decimal QuantityOld { get { return _QuantityOld; } set { _QuantityOld = value; OnPropertyChanged("QuantityOld"); } }
-        public string QuantityOldStr { set { _QuantityOld = Convert.ToDecimal(value); } }
+        //public string QuantityOldStr { set { _QuantityOld = Convert.ToDecimal(value); } }
 
         private decimal _InputQuantity;
        

@@ -302,7 +302,7 @@ CREATE UNIQUE INDEX RaitingDocItemId ON RaitingDocItem (TypeDoc,NumberDoc,Id);
                 {
                     Sql = $@"select d.TypeDoc as TypeDoc, d.numberdoc as NumberDoc, dw1.orderdoc as OrderDoc, dw1.CODEWARES as CodeWares,coalesce(dws.name,w.NAMEWARES) as NameWares,
                          coalesce(dws.quantity,0) as QuantityOrderStr,coalesce(dw1.quantityinput,0) as InputQuantity, coalesce(dws.quantitymin,0) as QuantityMin, 
-                        coalesce(dws.quantitymax,0) as QuantityMax ,coalesce(d.IsControl,0) as IsControl, coalesce(dw1.quantityold,0) as QuantityOldStr
+                        coalesce(dws.quantitymax,0) as QuantityMax ,coalesce(d.IsControl,0) as IsControl, coalesce(dw1.quantityold,0) as QuantityOld
                       ,dw1.quantityreason as QuantityReason
                         {Color}
                         ,w.codeunit as CodeUnit
@@ -339,7 +339,7 @@ CREATE UNIQUE INDEX RaitingDocItemId ON RaitingDocItem (TypeDoc,NumberDoc,Id);
                         coalesce(dw1.quantity,0) as InputQuantityStr,
 --coalesce(dw1.quantity,0) as InputQuantity,
                         coalesce(dws.quantitymin,0) as QuantityMin, coalesce(dws.quantitymax,0) as QuantityMax ,
-                        coalesce(d.IsControl,0) as IsControl, coalesce(dw1.quantityold,0) as QuantityOldStr,dw1.CODEReason as  CodeReason
+                        coalesce(d.IsControl,0) as IsControl, coalesce(dw1.quantityold,0) as QuantityOld,dw1.CODEReason as  CodeReason
                         ,0 as Ord,w.codeunit
                             from Doc d 
                             join DocWares dw1 on (dw1.numberdoc = d.numberdoc and d.typedoc=dw1.typedoc)

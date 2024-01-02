@@ -33,7 +33,8 @@
                                     <Frame  Style="{StaticResource FrameStyle}"  Grid.Column="1"  Grid.Row="1">
                                         <controls:CustomEntry Style="{StaticResource EntryStyle}" 
                                                               AutomationId="{Binding CodeWares}"
-                                                              Completed="SaveItem"
+                                                              Completed="SaveItemAvailable"
+                                                              Unfocused="SaveItem"
                                                               Focused="EntryFocused"
                                                               Text="{Binding InputQuantity}" Keyboard="Telephone" />
                                     </Frame>
@@ -41,6 +42,7 @@
                                         <controls:CustomEntry Style="{StaticResource EntryStyle}"                                                               
                                                               AutomationId="{Binding CodeWares}"
                                                               Completed="SaveItemAdd"
+                                                              Unfocused="SaveItem"
                                                               Focused="EntryFocused"
                                                               Text="{Binding QuantityOld}" Keyboard="Telephone" />
                                     </Frame>

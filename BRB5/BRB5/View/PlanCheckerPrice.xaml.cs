@@ -24,7 +24,9 @@ namespace BRB5.View
         ZXingScannerView zxing;
         private Doc Doc;
         public bool IsVisScan { get { return Config.TypeScaner == eTypeScaner.Camera; } }
-        public ObservableCollection<DocWaresEx> WaresList { get; set; } 
+        public ObservableCollection<DocWaresEx> WaresList { get; set; }
+        private object Sender;
+
         public PlanCheckerPrice(Doc pDoc, int Selection)
         {
             Doc = pDoc;
@@ -143,21 +145,23 @@ namespace BRB5.View
             _ = DisplayAlert("Збереження", res.TextError, "ok");            
         }
 
-        private void SaveItem(object sender, EventArgs e)
+        private void SaveItemAvailable(object sender, EventArgs e)
         {
-            var temp = sender as Entry;
-            var codeWares = temp.AutomationId;
-            var tempSelected = WaresList.FirstOrDefault(item => item.CodeWares.ToString() == codeWares);
-            tempSelected.Quantity = tempSelected.InputQuantity;
-            db.ReplaceDocWares(tempSelected);
-
-            var list = ListWares.TemplatedItems.ToList();
-            var index = WaresList.IndexOf(tempSelected); 
-            var next = (((list[index] as ViewCell).View as Grid).Children.ElementAt(3) as Frame).Content as Entry;
-            next.Focus();
+            SaveAndFocusNext(sender, 1);
         }
         private void EntryFocused(object sender, FocusEventArgs e)
         {
+            //var t = sender.GetHashCode();
+            //int tw;
+            //if (Sender != null)
+            //{
+            //    tw = Sender.GetHashCode();
+            //    if (sender.GetHashCode().Equals(Sender.GetHashCode())) 
+            //        return;                
+            //}
+            //Sender = sender;
+
+            if (IsVisScan)
             Device.BeginInvokeOnMainThread(() =>
             {
                 var entry = sender as Entry;
@@ -168,17 +172,30 @@ namespace BRB5.View
 
         private void SaveItemAdd(object sender, EventArgs e)
         {
+            SaveAndFocusNext(sender, 2);
+        }
+
+        private void SaveItem(object sender, FocusEventArgs e)
+        {
+            SaveAndFocusNext(sender, 3);
+        }
+
+        private void SaveAndFocusNext(object sender, int Type)
+        {
             var temp = sender as Entry;
             var codeWares = temp.AutomationId;
             var tempSelected = WaresList.FirstOrDefault(item => item.CodeWares.ToString() == codeWares);
             tempSelected.Quantity = tempSelected.InputQuantity;
             db.ReplaceDocWares(tempSelected);
 
+            if (Type == 3) return;
+
             var list = ListWares.TemplatedItems.ToList();
             var index = WaresList.IndexOf(tempSelected); ;
             var nextIndex = (index + 1) >= list.Count ? 0 : index + 1;
-            var next = (((list[nextIndex] as ViewCell).View as Grid).Children.ElementAt(2) as Frame).Content as Entry;
+            var next = (((list[Type == 1? index: nextIndex] as ViewCell).View as Grid).Children.ElementAt(Type == 1 ? 3 : 2) as Frame).Content as Entry;
             next.Focus();
         }
+
     }
 }
