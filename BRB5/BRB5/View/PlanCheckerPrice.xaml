@@ -19,14 +19,15 @@
                                 <Grid Margin="2,2,2,0" BackgroundColor="{Binding GetBackgroundColorDocWares}" >
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="1*" />
-                                        <ColumnDefinition Width="4*" />
+                                        <ColumnDefinition Width="2*" />
+                                        <ColumnDefinition Width="2*" />
                                     </Grid.ColumnDefinitions>
                                     <Grid.RowDefinitions>
                                         <RowDefinition Height="auto"/>
                                         <RowDefinition/>
                                     </Grid.RowDefinitions>
 
-                                    <Label   Text="{Binding NameWares}" Grid.ColumnSpan="2" FontSize="Medium" />
+                                    <Label   Text="{Binding NameWares}" Grid.ColumnSpan="3" FontSize="Medium" />
                                     <Label   Text="{Binding CodeWares}" Grid.Row="1" FontSize="Medium" />
 
                                     <Frame  Style="{StaticResource FrameStyle}"  Grid.Column="1"  Grid.Row="1">
@@ -35,6 +36,13 @@
                                                               Completed="SaveItem"
                                                               Focused="EntryFocused"
                                                               Text="{Binding InputQuantity}" Keyboard="Telephone" />
+                                    </Frame>
+                                    <Frame  Style="{StaticResource FrameStyle}"  Grid.Column="2"  Grid.Row="1">
+                                        <controls:CustomEntry Style="{StaticResource EntryStyle}"                                                               
+                                                              AutomationId="{Binding CodeWares}"
+                                                              Completed="SaveItemAdd"
+                                                              Focused="EntryFocused"
+                                                              Text="{Binding QuantityOld}" Keyboard="Telephone" />
                                     </Frame>
                                 </Grid>
                             </ViewCell.View>

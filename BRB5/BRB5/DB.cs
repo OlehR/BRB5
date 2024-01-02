@@ -117,6 +117,7 @@ CREATE TABLE DocWaresSample (
     Name         TEXT,
     BarCode      TEXT);
 CREATE INDEX DOCWaresSampleBC ON DocWaresSample (BarCode);
+CREATE UNIQUE INDEX DOCWaresSampleTNC ON DocWaresSample (TypeDoc, NumberDoc, CodeWares);
 
 CREATE TABLE LogPrice (
     BarCode                TEXT,
