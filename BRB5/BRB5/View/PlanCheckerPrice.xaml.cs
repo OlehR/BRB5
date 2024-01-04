@@ -25,11 +25,13 @@ namespace BRB5.View
         private Doc Doc;
         public bool IsVisScan { get { return Config.TypeScaner == eTypeScaner.Camera; } }
         public ObservableCollection<DocWaresEx> WaresList { get; set; }
-        private object Sender;
+        //private object Sender;
+        private int ShelfType;
 
         public PlanCheckerPrice(Doc pDoc, int Selection)
         {
             Doc = pDoc;
+            ShelfType = Selection;
             c = Connector.Connector.GetInstance();
             NavigationPage.SetHasNavigationBar(this, Device.RuntimePlatform == Device.iOS);
             InitializeComponent();
@@ -186,15 +188,19 @@ namespace BRB5.View
             var codeWares = temp.AutomationId;
             var tempSelected = WaresList.FirstOrDefault(item => item.CodeWares.ToString() == codeWares);
             tempSelected.Quantity = tempSelected.InputQuantity;
+            tempSelected.CodeReason = ShelfType;
             db.ReplaceDocWares(tempSelected);
 
             if (Type == 3) return;
 
             var list = ListWares.TemplatedItems.ToList();
-            var index = WaresList.IndexOf(tempSelected); ;
-            var nextIndex = (index + 1) >= list.Count ? 0 : index + 1;
-            var next = (((list[Type == 1? index: nextIndex] as ViewCell).View as Grid).Children.ElementAt(Type == 1 ? 3 : 2) as Frame).Content as Entry;
-            next.Focus();
+            var index = WaresList.IndexOf(tempSelected); 
+            var nextIndex = (index + 1) >= list.Count ? -1 : index + 1;
+            if ( Type == 1 || nextIndex >= 0)
+            {
+                var next = (((list[Type == 1 ? index : nextIndex] as ViewCell).View as Grid).Children.ElementAt(Type == 1 ? 3 : 2) as Frame).Content as Entry;
+                next.Focus();
+            }
         }
 
     }
