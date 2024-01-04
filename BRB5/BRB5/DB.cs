@@ -103,7 +103,7 @@ CREATE TABLE DocWares (
     CodeReason  INTEGER,
     DTInsert    TIMESTAMP       DEFAULT (DATETIME('NOW', 'LOCALTIME') )
 );
-CREATE UNIQUE INDEX DocWaresTNO ON DocWares ( TypeDoc, NumberDoc, OrderDoc);
+CREATE UNIQUE INDEX DocWaresTNO ON DocWares ( TypeDoc, NumberDoc, OrderDoc, CodeReason);
 CREATE INDEX DocWaresTNW ON DocWares (TypeDoc ASC, NumberDoc ASC, CodeWares ASC);
 
 CREATE TABLE DocWaresSample (
