@@ -60,7 +60,7 @@ namespace BRB5.View
                                
                 db.ReplaceDocWaresSample(temp.Info.Select(el=> new DocWaresSample(el)));
 
-                WaresList = new ObservableCollection<DocWaresEx>(db.GetDocWares(Doc, 1, eTypeOrder.Name));
+                WaresList = new ObservableCollection<DocWaresEx>(db.GetDocWares(Doc, 1, eTypeOrder.Name, ShelfType));
             }            
         }
 

@@ -276,12 +276,12 @@ CREATE UNIQUE INDEX RaitingDocItemId ON RaitingDocItem (TypeDoc,NumberDoc,Id);
             return Res ;
         }
 
-        public IEnumerable<DocWaresEx> GetDocWares(DocId pDocId, int pTypeResult, eTypeOrder pTypeOrder)
+        public IEnumerable<DocWaresEx> GetDocWares(DocId pDocId, int pTypeResult, eTypeOrder pTypeOrder,int pCodeReason=0)
         {
             var DS = Config.GetDocSetting(pDocId.TypeDoc);
             string Sql = "";
-            string OrderQuery = pTypeOrder == eTypeOrder.Name? "13 desc,3" :"11 desc,1";            
-
+            string OrderQuery = pTypeOrder == eTypeOrder.Name? "13 desc,3" :"11 desc,1";
+            string Reason = pCodeReason > 0 ? $" and CodeReason={pCodeReason}" : "";
             string Color = " ,0 as Ord";
             if (DS.TypeColor == 1)
             {
@@ -308,7 +308,7 @@ CREATE UNIQUE INDEX RaitingDocItemId ON RaitingDocItem (TypeDoc,NumberDoc,Id);
                         ,w.codeunit as CodeUnit
                             from Doc d  
                           join (select dw.typedoc ,dw.numberdoc, dw.codewares, sum(dw.quantity) as quantityinput,max(dw.orderdoc) as orderdoc,sum(quantityold) as quantityold,  sum(case when dw.CODEReason>0 then  dw.quantity else 0 end) as quantityreason  
-                                        from docwares dw group by dw.typedoc ,dw.numberdoc,codewares) dw1 
+                                        from docwares dw where 1=1 {Reason} group by dw.typedoc ,dw.numberdoc,codewares ) dw1 
                             on (dw1.numberdoc = d.numberdoc and d.typedoc=dw1.typedoc)
                           Left join Wares w on dw1.codewares = w.codewares 
                           left join (
@@ -325,7 +325,7 @@ CREATE UNIQUE INDEX RaitingDocItemId ON RaitingDocItem (TypeDoc,NumberDoc,Id);
                           join DocWaresSample dws on d.numberdoc = dws.numberdoc and d.typedoc=dws.typedoc --and dws.codewares = w.codewares
                           left join Wares w on dws.codewares = w.codewares 
                           left join (select dw.typedoc ,dw.numberdoc, dw.codewares, sum(dw.quantity) as quantityinput,sum(dw.quantityold) as quantityold 
-                                        from DocWares dw group by dw.typedoc ,dw.numberdoc,codewares) dw1 
+                                        from DocWares dw where 1=1  {Reason} group by dw.typedoc ,dw.numberdoc,codewares) dw1 
                                  on (dw1.numberdoc = d.numberdoc and d.typedoc=dw1.typedoc and dw1.codewares = dws.codewares)
                           where dw1.TypeDoc is null and d.typedoc={pDocId.TypeDoc} and  d.numberdoc = '{pDocId.NumberDoc}'
                        order by {OrderQuery}";
