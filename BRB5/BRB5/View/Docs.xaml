@@ -92,7 +92,7 @@
             <Grid IsVisible="{Binding IsVisOPKO}" HeightRequest="50">
                 <Frame Style="{StaticResource FrameStyle}">
                     <controls:CustomEntry Style="{StaticResource EntryStyle}"
-                                          Placeholder="ОПКО"
+                                          Placeholder="ЗКПО"
                                           Text="{Binding OPKOstr}"
                                           Keyboard="Numeric"
                                           Completed="FilterDocs" />
@@ -145,7 +145,7 @@
                        FontSize="16"
                        TextColor="#ff5c5c"
                        VerticalOptions="Center" />
-                <Label Text="ОКПО"
+                <Label Text="ЗКПО"
                        IsVisible="{Binding IsViewOut}"
                        FontSize="18"
                        TextColor="#816f20">

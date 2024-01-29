@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-//using Xamarin.Forms;
+using Xamarin.Forms;
 
 namespace BRB5.Model
 {
@@ -36,8 +36,8 @@ namespace BRB5.Model
         // Ревізія. // 0- Зеленим кольором пораховані, 2- оранжевим додані вручну, 0- жовтим непораховані.
         private int _Ord;
         public int Ord{ get { return _Ord; } set { _Ord = value; OnPropertyChanged("GetLightBackgroundColor"); } }
+        public Keyboard Keyboard { get { return CodeUnit == 7 ? Keyboard.Telephone : Keyboard.Numeric; } }
 
-        
         public ParseBarCode ParseBarCode { get; set; }
 
         //public boolean IsRecord = false;
