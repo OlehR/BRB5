@@ -81,7 +81,7 @@
                     <Label Text="{Binding WP.TermsForIlliquidWare}" TextColor="DarkBlue" FontAttributes="Bold"/>
                 </StackLayout>
 
-                <ListView HasUnevenRows="True"
+                <ListView HasUnevenRows="True" IsEnabled="False" 
               ItemsSource="{Binding WP.RestWarehouse}">
                     <ListView.Header>
                         <Grid>

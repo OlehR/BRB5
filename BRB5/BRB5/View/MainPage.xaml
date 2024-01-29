@@ -50,7 +50,7 @@
                     HorizontalOptions="Center" VerticalOptions="CenterAndExpand"
                     Clicked="OnButtonLogin" />
         </StackLayout>
-        <ListView x:Name="ListDocs" IsVisible="false"
+        <ListView x:Name="ListDocs" IsVisible="false" IsEnabled="False"
                   HasUnevenRows="True"
                   ItemsSource="{Binding OCTypeDoc}">
             <ListView.Header>
