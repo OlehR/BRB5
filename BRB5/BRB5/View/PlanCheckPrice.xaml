@@ -10,7 +10,7 @@
                 <RadioButton Content="Торець" Value="2" />
             </StackLayout>
 
-            <ListView HasUnevenRows="True" IsEnabled="False"
+            <ListView HasUnevenRows="True" 
                   ItemsSource="{Binding PromotionList}">
                 <ListView.ItemTemplate>
                     <DataTemplate xmlns:brb5="clr-namespace:BRB5">

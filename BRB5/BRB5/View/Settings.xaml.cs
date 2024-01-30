@@ -79,6 +79,10 @@ namespace BRB5.View
             c = Connector.Connector.GetInstance();
 
             Warehouses = new ObservableCollection<Warehouse>(ListWarehouse);
+            foreach(int i in Config.CodesWarehouses) {
+                var temp = Warehouses.FirstOrDefault(x => x.CodeWarehouse == i);
+                if(temp!=null) temp.IsChecked = true;
+            }
             LWH.ItemTapped += (object sender, ItemTappedEventArgs e) => {
                 if (e.Item == null) return;
                 var temp = e.Item as Warehouse;
@@ -150,6 +154,18 @@ namespace BRB5.View
             db.SetConfig<eTypeUsePrinter>("TypeUsePrinter", (eTypeUsePrinter)SelectedTypePrinter);
             if(SelectedWarehouse>-1) db.SetConfig<int>("CodeWarehouse", ListWarehouse[SelectedWarehouse].Code);
             db.SetConfig<string>("CodesWarehouses", Warehouses.Where(el => el.IsChecked == true).Select(el=>el.CodeWarehouse).ToList().ToJSON() );
+        }
+        private void RefreshWarehouses(object sender, CheckedChangedEventArgs e)
+        {
+            var temp = sender as CheckBox;
+            if( int.TryParse(temp.AutomationId, out int code))
+            {
+                if (temp.IsChecked)
+                {
+                    if (!Config.CodesWarehouses.Contains(code)) Config.CodesWarehouses.Add(code);
+                }
+                else if (Config.CodesWarehouses.Contains(code)) Config.CodesWarehouses.Remove(code);
+            }
         }
     }
 }

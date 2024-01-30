@@ -193,7 +193,7 @@
                             <ViewCell>
                                 <ViewCell.View>
                                     <StackLayout Orientation="Horizontal" >
-                                        <CheckBox IsChecked="{Binding IsChecked}" />
+                                        <CheckBox IsChecked="{Binding IsChecked}" AutomationId="{Binding CodeWarehouse}"  CheckedChanged="RefreshWarehouses" />
                                         <Label Text="{Binding Name}" FontSize="Large" TextColor="Black"/>
                                     </StackLayout>
 

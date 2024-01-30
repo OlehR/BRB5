@@ -15,6 +15,7 @@ namespace BRB5.Model
         public static string Manufacturer;
         public static string Model;     
         public static int CodeWarehouse;
+        public static List<int> CodesWarehouses { get; set; }
         //static eCompany _Company = eCompany.NotDefined;
         public static eTypeScaner TypeScaner;
         public static eCompany Company { get; set; } = eCompany.NotDefined;
@@ -65,10 +66,5 @@ namespace BRB5.Model
 
         public static Warehouse LocationWarehouse = null;
         //static object Lock= new object();
-    
-        public List<int> CodesWarehouses { get; set; }
-
-
-
     }
 }

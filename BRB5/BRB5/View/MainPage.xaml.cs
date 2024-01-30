@@ -9,6 +9,7 @@ using BRB5.View;
 using Xamarin.Essentials;
 using Utils;
 using System.IO;
+using Newtonsoft.Json;
 
 //[assembly: Xamarin.Forms.Dependency(typeof(AndroidStorageManager))]
 
@@ -161,6 +162,8 @@ namespace BRB5
             Config.CodeWarehouse = db.GetConfig<int>("CodeWarehouse");
             Config.Company = db.GetConfig<eCompany>("Company");
             Config.TypeUsePrinter = db.GetConfig<eTypeUsePrinter>("TypeUsePrinter");
+            var tempstr = db.GetConfig<string>("CodesWarehouses");
+            if (!string.IsNullOrEmpty(tempstr)) Config.CodesWarehouses = JsonConvert.DeserializeObject<List<int>>(tempstr);
             FileLogger.TypeLog = db.GetConfig<eTypeLog>("TypeLog");
 
         }

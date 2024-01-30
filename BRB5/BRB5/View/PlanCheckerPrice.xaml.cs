@@ -36,7 +36,14 @@ namespace BRB5.View
             NavigationPage.SetHasNavigationBar(this, Device.RuntimePlatform == Device.iOS);
             InitializeComponent();
 
-            GetData();           
+            GetData();
+
+            ListWares.ItemTapped += (object sender, ItemTappedEventArgs e) => {
+                if (e.Item == null) return;
+                var temp = e.Item as DocWaresEx;
+                ((ListView)sender).SelectedItem = null;
+                _ = Navigation.PushAsync(new WareInfo(new ParseBarCode() { CodeWares = temp.CodeWares}));
+            };
 
             if (!IsVisScan)
                 Config.BarCode = BarCode;
