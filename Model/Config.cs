@@ -66,8 +66,9 @@ namespace BRB5.Model
         public static Warehouse LocationWarehouse = null;
         //static object Lock= new object();
     
-       
-       
-       
+        public List<int> CodesWarehouses { get; set; }
+
+
+
     }
 }

@@ -1,11 +1,12 @@
 ﻿using SQLite;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Text;
 
 namespace BRB5.Model
 {
-    public class Warehouse
+    public class Warehouse : INotifyPropertyChanged
     {
         /// <summary>
         /// Унікальний Код може бути такий же як і Number
@@ -49,5 +50,15 @@ namespace BRB5.Model
         [Ignore]
         public double Distance { get; set; }
 
+
+        private bool _IsChecked;
+        [Ignore]
+        public bool IsChecked { get { return _IsChecked; } set { _IsChecked = value; OnPropertyChanged(nameof(IsChecked)); } }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+        protected virtual void OnPropertyChanged(string propertyName)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
     }
 }

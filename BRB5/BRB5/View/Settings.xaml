@@ -176,7 +176,6 @@
                 </Grid>
 
                 <Button Text="Зберегти"
-                        Grid.Column="1"
                         HorizontalOptions="Fill"
                         VerticalOptions="EndAndExpand"
                         Clicked="OnClickSave" />
@@ -184,5 +183,31 @@
             </StackLayout>
         </ContentPage.Content>
     </controls:BaseContentPage>
+    <controls:BaseContentPage Title="Склади">
+        <ContentPage.Content>
+            <StackLayout>
 
+                <ListView HasUnevenRows="True" ItemsSource="{Binding Warehouses}" x:Name="LWH">
+                    <ListView.ItemTemplate>
+                        <DataTemplate xmlns:brb5="clr-namespace:BRB5">
+                            <ViewCell>
+                                <ViewCell.View>
+                                    <StackLayout Orientation="Horizontal" >
+                                        <CheckBox IsChecked="{Binding IsChecked}" />
+                                        <Label Text="{Binding Name}" FontSize="Large" TextColor="Black"/>
+                                    </StackLayout>
+
+                                </ViewCell.View>
+                            </ViewCell>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+
+                <Button Text="Зберегти"
+                        HorizontalOptions="Fill"
+                        VerticalOptions="EndAndExpand"
+                        Clicked="OnClickSave" />
+            </StackLayout>
+        </ContentPage.Content>
+    </controls:BaseContentPage>
 </TabbedPage>

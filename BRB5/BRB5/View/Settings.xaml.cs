@@ -1,6 +1,7 @@
 ﻿using BRB5.Model;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using Utils;
 using Xamarin.Essentials;
@@ -49,7 +50,6 @@ namespace BRB5.View
                 if (wh == null || !wh.Any())
                     wh = new List<Warehouse>() { new Warehouse() { Code = 0, Name = "ddd" } };
                 return wh;
-
             }
         }        
 
@@ -69,6 +69,7 @@ namespace BRB5.View
         public string ApiUrl1 { get { return Config.ApiUrl1; } set { Config.ApiUrl1 = value; OnPropertyChanged("ApiUrl1"); } }
         public string ApiUrl2 { get { return Config.ApiUrl2; } set { Config.ApiUrl2 = value; OnPropertyChanged("ApiUrl2"); } }
         public string ApiUrl3 { get { return Config.ApiUrl3; } set { Config.ApiUrl3 = value; OnPropertyChanged("ApiUrl3"); } }
+        public ObservableCollection<Warehouse> Warehouses { get; set; }
 
         public Settings()
         {
@@ -76,6 +77,14 @@ namespace BRB5.View
             NavigationPage.SetHasNavigationBar(this, Device.RuntimePlatform == Device.iOS);
 
             c = Connector.Connector.GetInstance();
+
+            Warehouses = new ObservableCollection<Warehouse>(ListWarehouse);
+            LWH.ItemTapped += (object sender, ItemTappedEventArgs e) => {
+                if (e.Item == null) return;
+                var temp = e.Item as Warehouse;
+                temp.IsChecked = !temp.IsChecked;
+                ((ListView)sender).SelectedItem = null;
+            };
 
             this.BindingContext = this;
         }
@@ -87,21 +96,11 @@ namespace BRB5.View
             db.SetConfig<DateTime>("DateLastLoadGuid", Config.DateLastLoadGuid);
         }
 
-        private void OnClickLoadDoc(object sender, EventArgs e)
-        {
+        private void OnClickLoadDoc(object sender, EventArgs e) { c.LoadDocsData(0, null, false); }
 
-            c.LoadDocsData(0, null, false);
-        }
+        private void OnCopyDB(object sender, EventArgs e) {  }
 
-        private void OnCopyDB(object sender, EventArgs e)
-        {
-
-        }
-
-        private void OnRestoreDB(object sender, EventArgs e)
-        {
-
-        }
+        private void OnRestoreDB(object sender, EventArgs e) {   }
 
         private void OnClickGen(object sender, EventArgs e)
         {
@@ -132,14 +131,10 @@ namespace BRB5.View
             }            
         }
 
-        private void OnClickIP(object sender, EventArgs e)
-        {
-
-        }
+        private void OnClickIP(object sender, EventArgs e)  {   }
 
         private void OnClickSave(object sender, EventArgs e)
         {
-
             db.SetConfig<bool>("IsAutoLogin", IsAutoLogin);
             db.SetConfig<bool>("IsVibration", IsVibration);
             db.SetConfig<bool>("IsViewAllWH", IsViewAllWH);
@@ -154,6 +149,7 @@ namespace BRB5.View
             db.SetConfig<eTypeLog>("TypeLog", (eTypeLog)SelectedTypeLog);
             db.SetConfig<eTypeUsePrinter>("TypeUsePrinter", (eTypeUsePrinter)SelectedTypePrinter);
             if(SelectedWarehouse>-1) db.SetConfig<int>("CodeWarehouse", ListWarehouse[SelectedWarehouse].Code);
+            db.SetConfig<string>("CodesWarehouses", Warehouses.Where(el => el.IsChecked == true).Select(el=>el.CodeWarehouse).ToList().ToJSON() );
         }
     }
 }
