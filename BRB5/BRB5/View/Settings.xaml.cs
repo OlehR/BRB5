@@ -79,10 +79,11 @@ namespace BRB5.View
             c = Connector.Connector.GetInstance();
 
             Warehouses = new ObservableCollection<Warehouse>(ListWarehouse);
-            foreach(int i in Config.CodesWarehouses) {
-                var temp = Warehouses.FirstOrDefault(x => x.CodeWarehouse == i);
-                if(temp!=null) temp.IsChecked = true;
-            }
+            if (Config.CodesWarehouses != null) {
+                foreach (int i in Config.CodesWarehouses) {
+                    var temp = Warehouses.FirstOrDefault(x => x.CodeWarehouse == i);
+                    if (temp != null) temp.IsChecked = true;
+                } }
             LWH.ItemTapped += (object sender, ItemTappedEventArgs e) => {
                 if (e.Item == null) return;
                 var temp = e.Item as Warehouse;

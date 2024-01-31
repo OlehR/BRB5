@@ -196,8 +196,8 @@ namespace BRB5
 
         protected override void OnDisappearing()
         {
-            if (IsVisScan) zxing.IsScanning = false;
             base.OnDisappearing();
+            if (IsVisScan) zxing.IsScanning = false;
         }
 
         public void Dispose()

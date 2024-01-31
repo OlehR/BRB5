@@ -223,7 +223,7 @@
                         <TapGestureRecognizer Tapped="OnF5" />
                     </Label.GestureRecognizers>
                 </Label>
-                <Label Text="f7-"
+                <Label Text="f6-"
                        VerticalOptions="Center"
                        FontSize="16"
                        TextColor="#ff5c5c" />

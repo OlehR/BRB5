@@ -95,6 +95,7 @@
     <Compile Include="CustomEntryRenderer.cs" />
     <None Include="DB.cs" />
     <Compile Include="MainActivity.cs" />
+    <Compile Include="Renderers\PriceCheckRenderer.cs" />
     <Compile Include="Resources\Resource.designer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <None Include="SQLite.cs" />
@@ -179,6 +180,7 @@
       <Generator>MSBuild:UpdateGeneratedFiles</Generator>
     </AndroidResource>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />
   <ProjectExtensions>
     <VisualStudio>
