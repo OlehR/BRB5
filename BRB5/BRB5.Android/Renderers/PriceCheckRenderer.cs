@@ -14,25 +14,28 @@ namespace BRB5.Droid.Renderers
 
         public override bool DispatchKeyEvent(KeyEvent e)
         {
-            if (e.KeyCode == Keycode.F1)
+            if (e.Action == KeyEventActions.Down)
             {
-                MessagingCenter.Send(new KeyEventMessage { Key = "F1Pressed" }, "F1Pressed");
-                return true; // Event handled
-            }
-            else if (e.KeyCode == Keycode.F2)
-            {
-                MessagingCenter.Send(new KeyEventMessage { Key = "F2Pressed" }, "F2Pressed");
-                return true; // Event handled
-            }
-            else if (e.KeyCode == Keycode.F5)
-            {
-                MessagingCenter.Send(new KeyEventMessage { Key = "F5Pressed" }, "F5Pressed");
-                return true; // Event handled
-            }
-            else if (e.KeyCode == Keycode.F6)
-            {
-                MessagingCenter.Send(new KeyEventMessage { Key = "F6Pressed" }, "F6Pressed");
-                return true; // Event handled
+                if (e.KeyCode == Keycode.F1)
+                {
+                    MessagingCenter.Send(new KeyEventMessage { Key = "F1Pressed" }, "F1Pressed");
+                    return true; // Event handled
+                }
+                else if (e.KeyCode == Keycode.F2)
+                {
+                    MessagingCenter.Send(new KeyEventMessage { Key = "F2Pressed" }, "F2Pressed");
+                    return true; // Event handled
+                }
+                else if (e.KeyCode == Keycode.F5)
+                {
+                    MessagingCenter.Send(new KeyEventMessage { Key = "F5Pressed" }, "F5Pressed");
+                    return true; // Event handled
+                }
+                else if (e.KeyCode == Keycode.F6)
+                {
+                    MessagingCenter.Send(new KeyEventMessage { Key = "F6Pressed" }, "F6Pressed");
+                    return true; // Event handled
+                }
             }
 
             return base.DispatchKeyEvent(e);
