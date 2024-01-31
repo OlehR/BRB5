@@ -47,13 +47,17 @@
                        Grid.Column="4" />
             </Grid>
 
-            <Grid>
+            <Grid >
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="2*" />
                     <ColumnDefinition Width="3*" />
                     <ColumnDefinition Width="2*" />
                     <ColumnDefinition Width="3*" />
                 </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                </Grid.RowDefinitions>
 
                 <Label Text="Ціна с:"
                        VerticalOptions="Center"
@@ -71,6 +75,18 @@
                 <Label Text="{Binding WP.Price}"
                        FontSize="24"
                        Grid.Column="3"
+                       TextColor="{Binding TextColorPrice}" />
+                <Label Text="Роз.ціна:"
+                       IsVisible="{Binding IsVisPriceNormal}"
+                       VerticalOptions="Center"
+                       FontSize="16"                       
+                       Grid.Row="1"
+                       TextColor="{Binding TextColorPrice}" />
+                <Label Text="{Binding WP.PriceNormal}"
+                       IsVisible="{Binding IsVisPriceNormal}"
+                       Grid.Column="1"
+                       Grid.Row="1"
+                       FontSize="24"
                        TextColor="{Binding TextColorPrice}" />
             </Grid>
 
@@ -172,29 +188,13 @@
                        Grid.Column="2" />
             </Grid>
 
-            <StackLayout VerticalOptions="End" Orientation="Horizontal">
-
-                <Label Text="f1-"
-                       VerticalOptions="Center"
-                       FontSize="16"
-                       TextColor="#ff5c5c" />
-                <Label Text="Друк"
-                       FontSize="18"
-                       Grid.Column="1"
-                       TextColor="#816f20">
-                    <Label.GestureRecognizers>
-                        <TapGestureRecognizer Tapped="OnClickPrintBlock" />
-                    </Label.GestureRecognizers>
-                </Label>
-
+            <StackLayout VerticalOptions="End" Orientation="Horizontal">                
                 <Label Text="f2-"
                        VerticalOptions="Center"
                        FontSize="16"
-                       Grid.Column="2"
                        TextColor="#ff5c5c" />
                 <Label Text="Підбір"
                        FontSize="18"
-                       Grid.Column="3"
                        TextColor="#816f20">
                     <Label.GestureRecognizers>
                         <TapGestureRecognizer Tapped="OnF2" />
@@ -203,12 +203,10 @@
                 <Label Text="f4-" FontSize="16"
                        IsVisible="{Binding IsVisF4}"
                        TextColor="#ff5c5c"
-                       Grid.Column="4"
                        VerticalOptions="Center" />
                 <Label Text=""
                        FontSize="18"
                        IsVisible="{Binding IsVisF4}"
-                       Grid.Column="5"
                        TextColor="#816f20">
                     <Label.GestureRecognizers>
                         <TapGestureRecognizer Tapped="OnF4" />
@@ -216,17 +214,27 @@
                 </Label>
                 <Label Text="f5-"
                        FontSize="16"
-                       Grid.Column="6"
                        TextColor="#ff5c5c"
                        VerticalOptions="Center" />
                 <Label Text="{Binding F5Text}"
                        FontSize="18"
-                       Grid.Column="7"
                        TextColor="#816f20">
                     <Label.GestureRecognizers>
                         <TapGestureRecognizer Tapped="OnF5" />
                     </Label.GestureRecognizers>
                 </Label>
+                <Label Text="f7-"
+                       VerticalOptions="Center"
+                       FontSize="16"
+                       TextColor="#ff5c5c" />
+                <Label Text="Др.поточ."
+                       FontSize="18"
+                       TextColor="#816f20">
+                    <Label.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="OnClickPrintOne" />
+                    </Label.GestureRecognizers>
+                </Label>
+
             </StackLayout>
 
             <Grid VerticalOptions="End">

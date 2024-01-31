@@ -28,7 +28,7 @@ namespace BRB5
         public List<PrintBlockItems> ListPrintBlockItems { get { return db.GetPrintBlockItemsCount().ToList(); }  }
 
         public int SelectedPrintBlockItems { get { return ListPrintBlockItems.Count > 0 ? ListPrintBlockItems.Last().PackageNumber : -1; }  }
-
+        public bool IsVisPriceNormal { get { return WP != null && (WP.PriceOld != WP.PriceNormal); } }
         public bool IsVisPriceOpt { get { return WP != null && (WP.PriceOpt != 0 || WP.PriceOptOld != 0); } }
 
         bool _IsVisF4 = false;
@@ -41,7 +41,8 @@ namespace BRB5
         public double PB { get { return _PB; } set { _PB = value; OnPropertyChanged("PB"); } }
 
         WaresPrice _WP;
-        public WaresPrice WP { get { return _WP; } set { _WP = value; OnPropertyChanged("WP"); OnPropertyChanged("TextColorPrice"); OnPropertyChanged("IsVisPriceOpt"); OnPropertyChanged("TextColorHttp"); } }
+        public WaresPrice WP { get { return _WP; } set { _WP = value; OnPropertyChanged("WP"); OnPropertyChanged("TextColorPrice");
+                OnPropertyChanged("IsVisPriceOpt"); OnPropertyChanged(nameof(IsVisPriceNormal)); OnPropertyChanged("TextColorHttp"); } }
         ZXingScannerView zxing;
         //ZXingDefaultOverlay overlay;
 
@@ -258,6 +259,12 @@ namespace BRB5
                 entry.CursorPosition = 0;
                 entry.SelectionLength = entry.Text == null ? 0 : entry.Text.Length;
             });
+        }
+
+        private void OnClickPrintOne(object sender, EventArgs e)
+        {
+            if (IsEnabledPrint && WP!=null)
+                _ = DisplayAlert("Друк", c.PrintHTTP(new[] { WP.CodeWares }), "OK");
         }
     }
 }
