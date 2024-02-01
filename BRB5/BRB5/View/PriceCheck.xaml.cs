@@ -95,7 +95,7 @@ namespace BRB5
             var r = db.GetCountScanCode();
 
             if (Config.TypeUsePrinter == eTypeUsePrinter.StationaryWithCutAuto) PrintType = -1;
-            NavigationPage.SetHasNavigationBar(this, Device.RuntimePlatform == Device.iOS);
+            NavigationPage.SetHasNavigationBar(this, Device.RuntimePlatform == Device.iOS|| Config.TypeScaner==eTypeScaner.BitaHC61 || Config.TypeScaner == eTypeScaner.Zebra || Config.TypeScaner == eTypeScaner.PM550 || Config.TypeScaner == eTypeScaner.PM351);
 
             if (r != null)
             {
@@ -152,6 +152,7 @@ namespace BRB5
             db.InsLogPrice(l);
 
             PB = 1;
+            BarCodeInput.Focus();
         }
 
         protected override void OnAppearing()
@@ -163,6 +164,7 @@ namespace BRB5
                 zxing.IsScanning = true;
                 zxing.IsAnalyzing = true;
             }
+            BarCodeInput.Focus();
         }
 
         /// <summary>

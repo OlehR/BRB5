@@ -33,7 +33,7 @@ namespace BRB5.View
             Doc = pDoc;
             ShelfType = Selection;
             c = Connector.Connector.GetInstance();
-            NavigationPage.SetHasNavigationBar(this, Device.RuntimePlatform == Device.iOS);
+            NavigationPage.SetHasNavigationBar(this, Device.RuntimePlatform == Device.iOS || Config.TypeScaner == eTypeScaner.BitaHC61 || Config.TypeScaner == eTypeScaner.Zebra || Config.TypeScaner == eTypeScaner.PM550 || Config.TypeScaner == eTypeScaner.PM351);
             InitializeComponent();
 
             GetData();

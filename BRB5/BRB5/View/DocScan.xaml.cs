@@ -48,7 +48,7 @@ namespace BRB5.View
                 });
             }
             else Config.BarCode = BarCode;
-            NavigationPage.SetHasNavigationBar(this, Device.RuntimePlatform == Device.iOS);
+            NavigationPage.SetHasNavigationBar(this, Device.RuntimePlatform == Device.iOS || Config.TypeScaner == eTypeScaner.BitaHC61 || Config.TypeScaner == eTypeScaner.Zebra || Config.TypeScaner == eTypeScaner.PM550 || Config.TypeScaner == eTypeScaner.PM351);
             this.BindingContext = this;
         }
         void BarCode(string pBarCode)
