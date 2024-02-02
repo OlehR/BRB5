@@ -9,7 +9,6 @@
             <forms:CachedImage x:Name="WareImageFull" ErrorPlaceholder="Photo.png"
                                HorizontalOptions="FillAndExpand" 
                                VerticalOptions="FillAndExpand" IsVisible="false" >
-
                 <forms:CachedImage.GestureRecognizers>
                     <TapGestureRecognizer Tapped="OnImageTapped"
                                           NumberOfTapsRequired="2" />
@@ -24,14 +23,9 @@
                     </forms:CachedImage.GestureRecognizers>
                 </forms:CachedImage>
 
-                <StackLayout Orientation="Horizontal">
-                    <Button Text="Друк"
+                <Button Text="Друк" HorizontalOptions="Start"
                 Clicked="OnClickPrint"                        
                 IsEnabled="{Binding IsEnabledPrint}"/>
-                    <Button Text="Меню"
-                HorizontalOptions="EndAndExpand"
-                Clicked="OnClickMenu" />
-                </StackLayout>
 
                 <StackLayout  Orientation="Horizontal">
                     <Label Text="Ціна:" VerticalOptions="Center"/>

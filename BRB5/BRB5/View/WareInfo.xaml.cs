@@ -54,11 +54,6 @@ namespace BRB5.View
                 _ = DisplayAlert("Друк", c.PrintHTTP(new[] { WP.CodeWares }), "OK");            
         }
 
-        private void OnClickMenu(object sender, EventArgs e)
-        {
-
-        }
-
         private void OnImageTapped(object sender, EventArgs e)
         {
             WareImageFull.IsVisible = !WareImageFull.IsVisible;

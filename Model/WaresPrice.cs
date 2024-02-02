@@ -45,6 +45,19 @@ namespace BRB5.Model
         public decimal PriceIndicative { get; set; }
 
         public string PromotionName { get; set; }
+
+        public string PromotionShotName { get
+            {
+                string[] parts = PromotionName.Split(new[] { ' ' }, 2);
+                return parts[1];
+            } 
+        }
+        public string PromotionNumber { get
+            {
+                string[] parts = PromotionName.Split(new[] { ' ' }, 2);
+                return parts[0].TrimStart('0');
+            } }
+
         public decimal PriceMain { get; set; }
         public DateTime PromotionBegin { get; set; }
         public DateTime PromotionEnd { get; set; }
