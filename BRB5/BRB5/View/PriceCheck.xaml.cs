@@ -153,6 +153,7 @@ namespace BRB5
 
             PB = 1;
             BarCodeInput.Focus();
+            BarCodeFocused(null, null);
         }
 
         protected override void OnAppearing()
@@ -266,10 +267,8 @@ namespace BRB5
         {
             Device.BeginInvokeOnMainThread(() =>
             {
-                var entry = sender as Entry;
-
-                entry.CursorPosition = 0;
-                entry.SelectionLength = entry.Text == null ? 0 : entry.Text.Length;
+                BarCodeInput.CursorPosition = 0;
+                BarCodeInput.SelectionLength = BarCodeInput.Text == null ? 0 : BarCodeInput.Text.Length;
             });
         }
 
