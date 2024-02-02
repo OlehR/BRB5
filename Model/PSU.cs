@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Linq;
 
 namespace BRB5.Model
 {
@@ -42,6 +43,7 @@ namespace BRB5.Model
         public int CodeWares { get; set; }
         public int Article { get; set; }
         public IEnumerable<int> WareHouses { get; set; }
+        public string StrWareHouses { get { return WareHouses?.Any() == true ? "," + string.Join(",", WareHouses) + "," : null; } }
     }
 
     public class ApiDoc : Api
