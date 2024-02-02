@@ -16,16 +16,22 @@
             </forms:CachedImage>
 
             <StackLayout Margin="5,0,5,0" Spacing="0" x:Name="WareInfoMain">
-                <forms:CachedImage  x:Name="WareImage" ErrorPlaceholder="Photo.png" HeightRequest="190">
-                    <forms:CachedImage.GestureRecognizers>
-                        <TapGestureRecognizer Tapped="OnImageTapped" 
-                                              NumberOfTapsRequired="2" />
-                    </forms:CachedImage.GestureRecognizers>
-                </forms:CachedImage>
 
-                <Button Text="Друк" HorizontalOptions="Start"
-                Clicked="OnClickPrint"                        
-                IsEnabled="{Binding IsEnabledPrint}"/>
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="190"/>
+                    </Grid.RowDefinitions>
+                    <Button Text="Друк" HorizontalOptions="Start" VerticalOptions="Start" 
+                            Clicked="OnClickPrint"                        
+                            IsEnabled="{Binding IsEnabledPrint}"/>
+
+                    <forms:CachedImage  x:Name="WareImage" ErrorPlaceholder="Photo.png" HeightRequest="190" >
+                        <forms:CachedImage.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="OnImageTapped" 
+                                              NumberOfTapsRequired="2" />
+                        </forms:CachedImage.GestureRecognizers>
+                    </forms:CachedImage>
+                </Grid>
 
                 <StackLayout  Orientation="Horizontal">
                     <Label Text="Ціна:" VerticalOptions="Center"/>
@@ -45,8 +51,9 @@
                     <Label Text="{Binding WP.PromotionEnd, StringFormat='{0:dd.MM}'}" 
                TextColor="DarkBlue" FontSize="Medium"
                FontAttributes="Bold"/>
+                    <Label Text="{Binding WP.PromotionNumber}" TextColor="DarkBlue" FontSize="Medium" HorizontalOptions="EndAndExpand"/>
                 </StackLayout>
-                <Label Text="{Binding WP.PromotionName}" IsVisible="{Binding IsVisPromotion}" FontSize="Medium" TextColor="DarkBlue"/>
+                <Label Text="{Binding WP.PromotionShortName}" IsVisible="{Binding IsVisPromotion}" FontSize="Medium" TextColor="DarkBlue" LineBreakMode="NoWrap"/>
 
                 <Label Text="{Binding WP.Name}" FontSize="24" TextColor="Black" FontAttributes="Bold"/>
 
@@ -100,9 +107,9 @@
                                             <ColumnDefinition Width="2*"/>
                                             <ColumnDefinition Width="3*"/>
                                         </Grid.ColumnDefinitions>
-                                        <Label Text="{Binding NameWarehouse}" TextColor="Black" Grid.Column="0"/>
-                                        <Label Text="{Binding Quantity}" Grid.Column="1" TextColor="Black" FontAttributes="Bold"/>
-                                        <Label Text="{Binding Date,StringFormat='{0:dd.MM.yyyy}'}" Grid.Column="2"/>
+                                        <Label Text="{Binding NameWarehouse}" TextColor="Black" Grid.Column="0" LineBreakMode="NoWrap"/>
+                                        <Label Text="{Binding Quantity}" Grid.Column="1" TextColor="Black" FontAttributes="Bold" LineBreakMode="NoWrap"/>
+                                        <Label Text="{Binding Date,StringFormat='{0:dd.MM.yyyy}'}" Grid.Column="2" LineBreakMode="NoWrap"/>
                                     </Grid>
                                 </ViewCell.View>
                             </ViewCell>

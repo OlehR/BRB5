@@ -46,7 +46,7 @@ namespace BRB5.Model
 
         public string PromotionName { get; set; }
 
-        public string PromotionShotName { get
+        public string PromotionShortName { get
             {
                 string[] parts = PromotionName.Split(new[] { ' ' }, 2);
                 return parts[1];
