@@ -41,6 +41,7 @@ namespace BRB5.Model
         public string BarCode { get; set; }
         public int CodeWares { get; set; }
         public int Article { get; set; }
+        public IEnumerable<int> WareHouses { get; set; }
     }
 
     public class ApiDoc : Api
