@@ -37,7 +37,7 @@
                                                               Unfocused="SaveItem"
                                                               Focused="EntryFocused"
                                                               Text="{Binding InputQuantity}" 
-                                                              Keyboard="{Binding Keyboard}"/>
+                                                              Keyboard="Telephone"/>
                                     </Frame>
                                     <Frame  Style="{StaticResource FrameStyle}"  Grid.Column="2"  Grid.Row="1">
                                         <controls:CustomEntry Style="{StaticResource EntryStyle}"                                                               
@@ -46,7 +46,7 @@
                                                               Unfocused="SaveItem"
                                                               Focused="EntryFocused"
                                                               Text="{Binding QuantityOld}"
-                                                              Keyboard="{Binding Keyboard}"/>
+                                                              Keyboard="Telephone"/>
                                     </Frame>
                                 </Grid>
                             </ViewCell.View>

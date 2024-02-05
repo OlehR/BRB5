@@ -42,7 +42,7 @@ namespace BRB5.Model
         public string BarCode { get; set; }
         public int CodeWares { get; set; }
         public int Article { get; set; }
-        public IEnumerable<int> WareHouses { get; set; }
+        public IEnumerable<int> WareHouses { get { return Config.CodesWarehouses; } }
         public string StrWareHouses { get { return WareHouses?.Any() == true ? "," + string.Join(",", WareHouses) + "," : null; } }
     }
 
