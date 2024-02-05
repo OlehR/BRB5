@@ -193,11 +193,28 @@ namespace BRB5.Connector
                 else
                     try
                     {
-                        bool AddDoc;
+                        //bool AddDoc;
                         var t = JsonConvert.DeserializeObject<Template>(result.Result);
                         var p = JsonConvert.DeserializeObject<Data>(result2.Result, new IsoDateTimeConverter { DateTimeFormat = "dd.MM.yyyy HH:mm:ss" });
-                        var d = new List<Doc>();
-                        var r = new List<Model.RaitingDocItem>();
+
+                        var Doc = p.data.Select(elp => new Doc()
+                                { TypeDoc = pTypeDoc, IdTemplate= elp.templateId, NumberDoc = elp.planId.ToString(), DateDoc = elp.date, CodeWarehouse = elp.shopId, Description =
+                                                                        t.data?.Where(el => el.templateId == elp.templateId)?.FirstOrDefault()?.templateName }).ToList();
+                        db.ReplaceDoc(Doc);
+
+                        var RaitingTemplate = t.data.Select(el => new RaitingTemplate() { IdTemplate = el.templateId, Text = el.templateName  });
+                        db.ReplaceRaitingTemplate(RaitingTemplate);
+                        foreach (var item in t.data)
+                        {                            
+                            var tt=item.sections.Select(el=>
+                                    new Model.RaitingTemplateItem() { IdTemplate = item.templateId,   Id = -el.sectionId, Parent = -el.parentId, Text = el.text, RatingTemplate = 8, OrderRS = el.sectionId }).ToList();
+                            db.ReplaceRaitingTemplateItem(tt);
+                            tt = item.questions.Select(el =>
+                                    new Model.RaitingTemplateItem() { IdTemplate = item.templateId, Id = el.questionId, Parent = -el.sectionId, Text = el.text, RatingTemplate = el.RatingTemplate, OrderRS = el.questionId }).ToList();
+                            db.ReplaceRaitingTemplateItem(tt);
+                        }
+
+                        /*
                         foreach (var elp in p.data)
                         {
                             var DocNumber = elp.planId.ToString();
@@ -220,9 +237,9 @@ namespace BRB5.Connector
                                 r.Add(new Model.RaitingDocItem() { TypeDoc = pTypeDoc, NumberDoc = DocNumber, Id = -1, Parent = 9999999, Text = "Всього",  RatingTemplate = 8, OrderRS = 9999999 });
                             }
                         }
-                        db.ReplaceDoc(d);
-                       //TMP!!! Треба переробити на нову схему db.ReplaceRaitingTemplateItem(r);
-                        FileLogger.WriteLogMessage($"ConnectorPSU.LoadDocsData=>(pTypeDoc=>{pTypeDoc}, pNumberDoc=>{pNumberDoc},pIsClear=>{pIsClear}) Res=>(Doc=>{d.Count()},RS=>{r.Count()},{Res.State},{Res.Info},{Res.TextError})", eTypeLog.Full);
+                        */
+
+                        FileLogger.WriteLogMessage($"ConnectorPSU.LoadDocsData=>(pTypeDoc=>{pTypeDoc}, pNumberDoc=>{pNumberDoc},pIsClear=>{pIsClear}) Res=>(Doc=>{Doc.Count()},{Res.State},{Res.Info},{Res.TextError})", eTypeLog.Full);
 
                         return Res;
                     }
@@ -318,6 +335,7 @@ namespace BRB5.Connector
             return Res;
         }
 
+        public override Result<IEnumerable<RaitingTemplate>> GetRaitingTemplate() { return null; }
 
         /// <summary>
         /// Вивантаження документів з ТЗД (HTTP)

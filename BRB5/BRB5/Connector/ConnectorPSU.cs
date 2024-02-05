@@ -380,6 +380,17 @@ namespace BRB5.Connector
             if (result.HttpState == eStateHTTP.HTTP_OK)
             {
                 var r = JsonConvert.DeserializeObject<IEnumerable<RaitingTemplate>>(result.Result);
+                
+                if (r != null)
+                {
+                    db.ReplaceRaitingTemplate(r);
+                    foreach (var el in r)
+                    {
+                        if (el.Item.Any())
+                            db.ReplaceRaitingTemplateItem(el.Item);
+                    }
+                }
+
                 return new Result<IEnumerable<RaitingTemplate>>() { Info = r };
             }
             else
