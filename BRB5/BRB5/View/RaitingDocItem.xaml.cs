@@ -20,7 +20,7 @@ namespace BRB5
     public partial class RaitingDocItem
     {
         Timer t;
-        Utils u = Utils.GetUtils();
+        //Utils u = Utils.GetUtils();
 
         DB db = DB.GetDB();
         BL Bl = BL.GetBL();
@@ -332,7 +332,7 @@ namespace BRB5
             try
             {
                 var dir = Path.Combine(Config.PathFiles, vQuestion.NumberDoc);
-                double Size = u.GetFreeSpace(dir);
+                double Size = FileAndDir.GetFreeSpace(dir);
                 if (Size < 10d * 1024d * 1024d)
                 {
                     await DisplayAlert($"Недостатньо місця", $"Залишок=> {Size / (1024d * 1024):n3} Mb", "OK");

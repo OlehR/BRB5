@@ -11,7 +11,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BRB5", "BRB5\BRB5\BRB5.cspr
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Test", "Test\Test.csproj", "{C69E62EB-3F5B-4050-9FE8-66CEA32C47CE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BRB5.Model", "Model\BRB5.Model.csproj", "{E1C7DAB8-E775-414D-91CE-30E46D8F40AF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BRB5.Model", "Model\BRB5.Model.csproj", "{E1C7DAB8-E775-414D-91CE-30E46D8F40AF}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Utils", "..\UniCS.TM\Utils\Utils.csproj", "{88612003-8422-446C-A408-780A08D155D7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -101,6 +103,18 @@ Global
 		{E1C7DAB8-E775-414D-91CE-30E46D8F40AF}.Release|iPhone.Build.0 = Release|Any CPU
 		{E1C7DAB8-E775-414D-91CE-30E46D8F40AF}.Release|iPhoneSimulator.ActiveCfg = Release|Any CPU
 		{E1C7DAB8-E775-414D-91CE-30E46D8F40AF}.Release|iPhoneSimulator.Build.0 = Release|Any CPU
+		{88612003-8422-446C-A408-780A08D155D7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{88612003-8422-446C-A408-780A08D155D7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{88612003-8422-446C-A408-780A08D155D7}.Debug|iPhone.ActiveCfg = Debug|Any CPU
+		{88612003-8422-446C-A408-780A08D155D7}.Debug|iPhone.Build.0 = Debug|Any CPU
+		{88612003-8422-446C-A408-780A08D155D7}.Debug|iPhoneSimulator.ActiveCfg = Debug|Any CPU
+		{88612003-8422-446C-A408-780A08D155D7}.Debug|iPhoneSimulator.Build.0 = Debug|Any CPU
+		{88612003-8422-446C-A408-780A08D155D7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{88612003-8422-446C-A408-780A08D155D7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{88612003-8422-446C-A408-780A08D155D7}.Release|iPhone.ActiveCfg = Release|Any CPU
+		{88612003-8422-446C-A408-780A08D155D7}.Release|iPhone.Build.0 = Release|Any CPU
+		{88612003-8422-446C-A408-780A08D155D7}.Release|iPhoneSimulator.ActiveCfg = Release|Any CPU
+		{88612003-8422-446C-A408-780A08D155D7}.Release|iPhoneSimulator.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

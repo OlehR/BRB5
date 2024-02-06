@@ -10,6 +10,7 @@ using Xamarin.Essentials;
 using Utils;
 using System.IO;
 using Newtonsoft.Json;
+using System.Threading.Tasks;
 
 //[assembly: Xamarin.Forms.Dependency(typeof(AndroidStorageManager))]
 
@@ -19,8 +20,7 @@ namespace BRB5
     {
         public ObservableCollection<TypeDoc> OCTypeDoc { get; set; }
         BRB5.Connector.Connector c;
-        DB db = DB.GetDB();
-        Utils u = Utils.GetUtils();
+        DB db = DB.GetDB();        
         public string Login { get; set; }
         public string Password { get; set; }
         public IEnumerable<LoginServer> LS { get; set; }
@@ -41,47 +41,53 @@ namespace BRB5
 
         private void OnButtonLogin(object sender, System.EventArgs e)
         {
-            var r = c.Login(Login, Password, Config.LoginServer);
-            if (r.State == 0)
+            Task.Run(async () =>
             {
-                db.SetConfig<string>("Login", Login);
-                //db.SetConfig<bool>("IsAutoLogin", true);
-                db.SetConfig<string>("Password", Password);
-                db.SetConfig<eLoginServer>("LoginServer", Config.LoginServer);
-                Config.Login = Login;
-                Config.Password = Password;
-                SLLogin.IsVisible = false;
-                ListDocs.IsVisible = true;
-                //eLoginServer LoginServer;
-
-                OCTypeDoc?.Clear();
-                Config.TypeDoc = c.GetTypeDoc(Config.Role, Config.LoginServer);
-                //OCTypeDoc = new ObservableCollection<TypeDoc>(Config.TypeDoc);
-                foreach (var i in Config.TypeDoc) OCTypeDoc.Add(i);
-
-                var Wh = c.LoadWarehouse();
-                db.ReplaceWarehouse(Wh);
-
-                long SizeDel = 0, SizeUse = 0;
-                if (Config.Company == eCompany.Sim23 && Device.RuntimePlatform == Device.Android)
+                var r = await c.LoginAsync(Login, Password, Config.LoginServer);
+                if (r.State == 0)
                 {
-                    var a = db.GetDoc(Config.GetDocSetting(11));
-                    (SizeDel, SizeUse) = u.DelDir(Config.PathFiles, a.Select(el => el.NumberDoc));
-                    FileLogger.WriteLogMessage($"{Config.PathFiles} => SizeDel={SizeDel}, SizeUse=>{SizeUse}");
-                    (SizeDel, SizeUse) = u.DelDir(Path.Combine(Config.PathFiles, "arx"), a.Select(el => el.NumberDoc));
-                    FileLogger.WriteLogMessage($"{Path.Combine(Config.PathFiles, "arx")} => SizeDel={SizeDel}, SizeUse=>{SizeUse}");
-                }
+                    MainThread.BeginInvokeOnMainThread(() =>
+                    {
+                        OCTypeDoc?.Clear();
+                        Config.TypeDoc = c.GetTypeDoc(Config.Role, Config.LoginServer);
+                        //OCTypeDoc = new ObservableCollection<TypeDoc>(Config.TypeDoc);
+                        foreach (var i in Config.TypeDoc) OCTypeDoc.Add(i);
+                        SLLogin.IsVisible = false;
+                        ListDocs.IsVisible = true;
+                    });
 
-                if (Config.DateLastLoadGuid.Date != DateTime.Today.Date)
-                {
-                    c.LoadGuidData(true);
-                    Config.DateLastLoadGuid = DateTime.Now;
-                    db.SetConfig<DateTime>("DateLastLoadGuid", Config.DateLastLoadGuid);
+                    db.SetConfig<string>("Login", Login);
+                    //db.SetConfig<bool>("IsAutoLogin", true);
+                    db.SetConfig<string>("Password", Password);
+                    db.SetConfig<eLoginServer>("LoginServer", Config.LoginServer);
+                    Config.Login = Login;
+                    Config.Password = Password;                    
+                    //eLoginServer LoginServer;                   
+
+                    var Wh = c.LoadWarehouse();
+                    db.ReplaceWarehouse(Wh);
+
+                    long SizeDel = 0, SizeUse = 0;
+                    if (Config.Company == eCompany.Sim23 && Device.RuntimePlatform == Device.Android)
+                    {
+                        var a = db.GetDoc(Config.GetDocSetting(11));
+                        (SizeDel, SizeUse) = FileAndDir.DelDir(Config.PathFiles, a.Select(el => el.NumberDoc));
+                        FileLogger.WriteLogMessage($"{Config.PathFiles} => SizeDel={SizeDel}, SizeUse=>{SizeUse}");
+                        (SizeDel, SizeUse) = FileAndDir.DelDir(Path.Combine(Config.PathFiles, "arx"), a.Select(el => el.NumberDoc));
+                        FileLogger.WriteLogMessage($"{Path.Combine(Config.PathFiles, "arx")} => SizeDel={SizeDel}, SizeUse=>{SizeUse}");
+                    }
+
+                    if (Config.DateLastLoadGuid.Date != DateTime.Today.Date)
+                    {
+                        c.LoadGuidData(true);
+                        Config.DateLastLoadGuid = DateTime.Now;
+                        db.SetConfig<DateTime>("DateLastLoadGuid", Config.DateLastLoadGuid);
+                    }
                 }
+                else
+                    _ = DisplayAlert("Проблеми з авторизацією", r.TextError + r.Info, "OK");
+            });
             }
-            else
-                _ = DisplayAlert("Проблеми з авторизацією", r.TextError + r.Info, "OK");
-        }
 
         private async void OnButtonClicked(object sender, System.EventArgs e)
         {

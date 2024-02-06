@@ -6,6 +6,8 @@ using System.Text;
 using Utils;
 using System.Linq;
 using System.Collections.ObjectModel;
+using System.Net.Mime;
+using System.Threading.Tasks;
 
 namespace BRB5.Connector
 {
@@ -13,10 +15,11 @@ namespace BRB5.Connector
     {
         public override IEnumerable<LoginServer> LoginServer() { return new List<LoginServer>()
             {new  LoginServer (){Code=eLoginServer.Central,Name = "ЦБ"}}; }
-        public override Result Login(string pLogin, string pPassWord, eLoginServer pLoginServer)
+
+        public override async Task<Result> LoginAsync(string pLogin, string pPassWord, eLoginServer pLoginServer)
         {
             string data = JsonConvert.SerializeObject(new Api() { CodeData = 1, Login = pLogin, PassWord = pPassWord }); //"{\"CodeData\": \"1\"" + ", \"Login\": \"" + pLogin + "\"" + ", \"PassWord\": \"" + pPassWord + "\"}";
-            HttpResult result = Http.HTTPRequest(0, "znp/", data, "application/json");//
+            HttpResult result = await Http.HTTPRequestAsync(0, "znp/", data, "application/json");//
 
             if (result.HttpState != eStateHTTP.HTTP_OK)
             {
@@ -130,7 +133,7 @@ namespace BRB5.Connector
             Config.OnProgress?.Invoke(0.3d);
             WaresPrice res;
             string data = JsonConvert.SerializeObject(new ApiPrice(154, pBC) { TypePriceInfo= pTP });
-            HttpResult result = Http.HTTPRequest(0, "DCT/GetPrice/", data, "application/json");
+            HttpResult result = Http.HTTPRequest(0, "DCT/GetPrice/", data, "application/json",null,null,2);
             Config.OnProgress?.Invoke(0.8d);
             if (result.HttpState != eStateHTTP.HTTP_OK)
                 res = new WaresPrice(result);
@@ -142,7 +145,7 @@ namespace BRB5.Connector
                     res.StateHTTP = result.HttpState;                    
                 }
                 catch (Exception e)
-                {
+                {               
                     return new WaresPrice(-1, e.Message);
                 }
             res.ParseBarCode = pBC;

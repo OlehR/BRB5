@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace BRB5.Connector
 {
@@ -41,7 +42,7 @@ namespace BRB5.Connector
         }
 
         //Логін
-        public virtual Result Login(string pLogin, string pPassWord, eLoginServer pLoginServer) { throw new NotImplementedException(); }
+        public virtual Task<Result> LoginAsync(string pLogin, string pPassWord, eLoginServer pLoginServer) { throw new NotImplementedException(); }
         //Завантаження довідників.
         public virtual Result LoadGuidData(bool IsFull) { throw new NotImplementedException(); }
 

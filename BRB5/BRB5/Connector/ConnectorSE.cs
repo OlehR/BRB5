@@ -11,6 +11,7 @@ using System.Diagnostics;
 using BRB5;
 using System.Globalization;
 using static System.Net.Mime.MediaTypeNames;
+using System.Threading.Tasks;
 
 namespace BRB5.Connector
 {
@@ -53,13 +54,13 @@ namespace BRB5.Connector
              new  LoginServer (){Code=eLoginServer.Bitrix,Name = "Бітрікс"}};//
         }
         
-        public override Result Login(string pLogin, string pPassWord, eLoginServer pLoginServer)
+        public override async Task<Result> LoginAsync(string pLogin, string pPassWord, eLoginServer pLoginServer)
         {
             Result Res = new Result();
             if (pLoginServer == eLoginServer.Bitrix)
             {
                 string data = JsonConvert.SerializeObject(new RequestLogin() { action = "auth", login = pLogin, password = pPassWord });
-                HttpResult result = Http.HTTPRequest(2, "", data, "application/json");
+                HttpResult result = await Http.HTTPRequestAsync(2, "", data, "application/json");
                 if (result.HttpState != eStateHTTP.HTTP_OK)
                 {
                     Res = new Result(result);
@@ -92,7 +93,7 @@ namespace BRB5.Connector
             }
             else
             {
-                HttpResult res = Http.HTTPRequest(pLoginServer == eLoginServer.Central ? 1 : 0, "login", "{\"login\" : \"" + pLogin + "\"}", "application/json", pLogin, pPassWord);
+                HttpResult res = await Http.HTTPRequestAsync(pLoginServer == eLoginServer.Central ? 1 : 0, "login", "{\"login\" : \"" + pLogin + "\"}", "application/json", pLogin, pPassWord);
                 if (res.HttpState == eStateHTTP.HTTP_UNAUTHORIZED || res.HttpState == eStateHTTP.HTTP_Not_Define_Error)
                 {
                     //Utils.WriteLog("e", TAG, "Login >>" + res.HttpState.toString());
