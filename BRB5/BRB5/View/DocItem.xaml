@@ -138,7 +138,7 @@
                        Grid.Column="7"
                        TextColor="#816f20">
                     <Label.GestureRecognizers>
-                        <TapGestureRecognizer Tapped="F2" />
+                        <TapGestureRecognizer Tapped="F2Save" />
                     </Label.GestureRecognizers>
                 </Label>
 

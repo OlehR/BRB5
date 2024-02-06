@@ -5,6 +5,7 @@ using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using Xamarin.Forms;
 using Xamarin.CommunityToolkit.Extensions;
+using System.Net.NetworkInformation;
 
 namespace BRB5.View
 {
@@ -32,6 +33,10 @@ namespace BRB5.View
         public ObservableCollection<DocWaresEx> MyDocWares { get; set; } = new ObservableCollection<DocWaresEx>();
         public DocItem(DocId pDocId,  TypeDoc pTypeDoc)
         {
+            MessagingCenter.Subscribe<KeyEventMessage>(this, "F2Pressed", message => { F2Save(null, EventArgs.Empty); });
+            MessagingCenter.Subscribe<KeyEventMessage>(this, "F3Pressed", message => { F3Scan(null, EventArgs.Empty); });
+            MessagingCenter.Subscribe<KeyEventMessage>(this, "F4Pressed", message => { F4WrOff(null, EventArgs.Empty); });
+            MessagingCenter.Subscribe<KeyEventMessage>(this, "F6Pressed", message => { F6Doc(null, EventArgs.Empty); });
             TypeDoc = pTypeDoc;
             Doc = new Doc(pDocId);           
             BindingContext = this;
@@ -48,17 +53,21 @@ namespace BRB5.View
                     MyDocWares.Add(item);
             }
         }
-        private void F2(object sender, EventArgs e)
+        protected override void OnDisappearing()
         {
-            F2Save();
+            base.OnDisappearing();
+            MessagingCenter.Unsubscribe<KeyEventMessage>(this, "F2Pressed");
+            MessagingCenter.Unsubscribe<KeyEventMessage>(this, "F3Pressed");
+            MessagingCenter.Unsubscribe<KeyEventMessage>(this, "F4Pressed");
+            MessagingCenter.Unsubscribe<KeyEventMessage>(this, "F6Pressed");
         }
-        private async Task F2Save()
+        private void F2Save(object sender, EventArgs e)
         {
             Doc.NumberOutInvoice = NumberOutInvoice;
             Doc.DateOutInvoice = ListDataStr[SelectedDataStr].DateString;
             var r = c.SendDocsData(Doc, db.GetDocWares(Doc, 2, eTypeOrder.Scan));
-            if (r.State != 0) await DisplayAlert("Помилка", r.TextError, "OK");
-            else await this.DisplayToastAsync("Документ успішно збережений");
+            if (r.State != 0) _ = DisplayAlert("Помилка", r.TextError, "OK");
+            else _ = this.DisplayToastAsync("Документ успішно збережений");
         }
 
         private async void F3Scan(object sender, EventArgs e)
@@ -74,9 +83,7 @@ namespace BRB5.View
         private void F6Doc(object sender, EventArgs e)
         {
             IsVisibleDocF6 = !IsVisibleDocF6;
-        }
-
-        
+        }        
     }
     public class AlternateColorDataTemplateSelector : DataTemplateSelector
     {

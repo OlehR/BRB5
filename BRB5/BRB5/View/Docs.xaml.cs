@@ -25,6 +25,10 @@ namespace BRB5.View
 
         public Docs(TypeDoc pTypeDoc )
         {
+            MessagingCenter.Subscribe<KeyEventMessage>(this, "F1Pressed", message => { OKPO(null, EventArgs.Empty); });
+            MessagingCenter.Subscribe<KeyEventMessage>(this, "8Pressed", message => {  });
+            MessagingCenter.Subscribe<KeyEventMessage>(this, "2Pressed", message => {  });
+            MessagingCenter.Subscribe<KeyEventMessage>(this, "EnterPressed", message => {  });
             TypeDoc = pTypeDoc;
             Config.BarCode = BarCode;
             BindingContext = this;
@@ -37,6 +41,15 @@ namespace BRB5.View
             c.LoadDocsData(TypeDoc.CodeDoc, null, false);
             MyDocsR = new ObservableCollection<Doc>(db.GetDoc(TypeDoc));
             OnPropertyChanged(nameof(MyDocsR));
+        }
+        protected override void OnDisappearing()
+        {
+            base.OnDisappearing();
+            zxing.IsScanning = false;
+            MessagingCenter.Unsubscribe<KeyEventMessage>(this, "F1Pressed");
+            MessagingCenter.Unsubscribe<KeyEventMessage>(this, "8Pressed");
+            MessagingCenter.Unsubscribe<KeyEventMessage>(this, "2Pressed");
+            MessagingCenter.Unsubscribe<KeyEventMessage>(this, "EnterPressed");
         }
         private async void OpenDoc(object sender, EventArgs e)
         {
