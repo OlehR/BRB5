@@ -38,7 +38,7 @@ namespace BRB5.View
         protected override void OnAppearing()
         {
             base.OnAppearing();
-            c.LoadDocsData(TypeDoc.CodeDoc, null, false);
+            c.LoadDocsDataAsync(TypeDoc.CodeDoc, null, false);
             MyDocsR = new ObservableCollection<Doc>(db.GetDoc(TypeDoc));
             OnPropertyChanged(nameof(MyDocsR));
         }

@@ -192,9 +192,9 @@ namespace BRB5.Connector
             return Res;
         }
 
-        public override Result LoadGuidData(bool IsFull)
+        public override async Task<Result> LoadGuidDataAsync(bool IsFull)
         {
-            return LoadDocsData(-1, null,  true);
+            return await LoadDocsDataAsync(-1, null,  true);
         }
 
         /// <summary>
@@ -205,12 +205,12 @@ namespace BRB5.Connector
         /// <param name="pProgress"></param>
         /// <param name="pIsClear"></param>
         /// <returns></returns>
-        public override Result LoadDocsData(int pTypeDoc, string pNumberDoc, bool pIsClear) 
+        public override async Task<Result> LoadDocsDataAsync(int pTypeDoc, string pNumberDoc, bool pIsClear) 
         {
 
             if (pTypeDoc == 11)
             {
-                var temp = GetRaitingDocs();
+                var temp = await GetRaitingDocsAsync();
                 if (temp.Info != null)
                 {
                     foreach (var doc in temp.Info)
@@ -227,7 +227,7 @@ namespace BRB5.Connector
             else
             {
                 string data = JsonConvert.SerializeObject(new ApiDoc() { CodeData = 150, TypeDoc = pTypeDoc,CodeWarehouse=Config.CodeWarehouse,Ver=5136 });
-                HttpResult result = Http.HTTPRequest(0, "znp/", data, "application/json");//
+                HttpResult result = await Http.HTTPRequestAsync(0, "znp/", data, "application/json");//
 
                 if (result.HttpState == eStateHTTP.HTTP_OK)
                 {
@@ -400,9 +400,9 @@ namespace BRB5.Connector
                 return new Result<IEnumerable<RaitingTemplate>>(result,null);
            
         }
-        public override Result<IEnumerable<Doc>> GetRaitingDocs()
+        public override async Task<Result<IEnumerable<Doc>>> GetRaitingDocsAsync()
         {
-            HttpResult result = Http.HTTPRequest(0, "DCT/Raitting/GetRaitingDocs", null, "application/json", "brb", "brb");//
+            HttpResult result = await Http.HTTPRequestAsync(0, "DCT/Raitting/GetRaitingDocs", null, "application/json", "brb", "brb");//
 
             if (result.HttpState == eStateHTTP.HTTP_OK)
             {

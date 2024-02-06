@@ -79,7 +79,7 @@ namespace BRB5
 
                     if (Config.DateLastLoadGuid.Date != DateTime.Today.Date)
                     {
-                        c.LoadGuidData(true);
+                        c.LoadGuidDataAsync(true);
                         Config.DateLastLoadGuid = DateTime.Now;
                         db.SetConfig<DateTime>("DateLastLoadGuid", Config.DateLastLoadGuid);
                     }

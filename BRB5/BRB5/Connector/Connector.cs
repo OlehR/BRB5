@@ -44,7 +44,7 @@ namespace BRB5.Connector
         //Логін
         public virtual Task<Result> LoginAsync(string pLogin, string pPassWord, eLoginServer pLoginServer) { throw new NotImplementedException(); }
         //Завантаження довідників.
-        public virtual Result LoadGuidData(bool IsFull) { throw new NotImplementedException(); }
+        public virtual async Task<Result> LoadGuidDataAsync(bool IsFull) => throw new NotImplementedException();
 
         //Робота з документами.
         /// <summary>
@@ -55,7 +55,7 @@ namespace BRB5.Connector
         /// <param name="pProgress"></param>
         /// <param name="pIsClear"></param>
         /// <returns></returns>
-        public virtual Result LoadDocsData(int pTypeDoc, string pNumberDoc, bool pIsClear) { throw new NotImplementedException(); }
+        public virtual async Task<Result> LoadDocsDataAsync(int pTypeDoc, string pNumberDoc, bool pIsClear) { throw new NotImplementedException(); }
 
 
         /// <summary>
@@ -126,7 +126,7 @@ namespace BRB5.Connector
         public virtual Result SaveDocRaiting(Doc pDoc) { throw new NotImplementedException(); }
 
         public virtual Result<IEnumerable<RaitingTemplate>> GetRaitingTemplate() { throw new NotImplementedException(); }
-        public virtual Result<IEnumerable<Doc>> GetRaitingDocs() { throw new NotImplementedException(); }
+        public virtual async Task<Result<IEnumerable<Doc>>> GetRaitingDocsAsync() { throw new NotImplementedException(); }
         public virtual Result<IEnumerable<Doc>> GetPromotion(int pCodeWarehouse) { throw new NotImplementedException(); }
         public virtual Result<IEnumerable<DocWares>> GetPromotionData(string pNumberDoc) { throw new NotImplementedException(); }
     }

@@ -69,7 +69,7 @@ namespace BRB5.Connector
             return new Result(-1, "Невірний логін чи пароль");
         }
 
-        public override Result LoadDocsData(int pTypeDoc, string pNumberDoc, bool pIsClear)
+        public override async Task<Result> LoadDocsDataAsync(int pTypeDoc, string pNumberDoc, bool pIsClear)
         {
             var Res = new Result();
             if (pTypeDoc == 11)

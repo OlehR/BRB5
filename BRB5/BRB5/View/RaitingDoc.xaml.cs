@@ -29,18 +29,20 @@ namespace BRB5
             c = BRB5.Connector.Connector.GetInstance();
             InitializeComponent();
             Routing.RegisterRoute(nameof(RaitingDocItem), typeof(RaitingDocItem));
-            c.LoadDocsData(pTypeDoc.CodeDoc, null, false);
-            NavigationPage.SetHasNavigationBar(this, Device.RuntimePlatform == Device.iOS);
-            MyDoc = new ObservableCollection<Doc> ( db.GetDoc(TypeDoc).OrderByDescending(el=>el.NumberDoc));
-            var temp = c.GetRaitingTemplate();
-           
+            NavigationPage.SetHasNavigationBar(this, Device.RuntimePlatform == Device.iOS);            
+                 
             this.BindingContext = this;            
         }
 
         protected override void OnAppearing()
         {
             base.OnAppearing();
-            c.LoadDocsData(11,null, false);
+            GetDocs();
+        }
+
+        void GetDocs()
+        {
+            c.LoadDocsDataAsync(TypeDoc.CodeDoc, null, false);
             var r = db.GetDoc(TypeDoc).OrderByDescending(el => el.NumberDoc);
             if (r != null)
             {
@@ -48,6 +50,7 @@ namespace BRB5
                 foreach (var item in r)
                     MyDoc.Add(item);
             }
+            var temp = c.GetRaitingTemplate();
         }
 
         private async void OnButtonClicked(object sender, System.EventArgs e)

@@ -137,7 +137,7 @@ namespace BRB5.Connector
         }
 
         //Завантаження довідників.
-        public override Result LoadGuidData(bool IsFull) { return new Result(); }
+        public override async Task<Result> LoadGuidDataAsync(bool IsFull) { return new Result(); }
 
 
         public override ParseBarCode ParsedBarCode(string pBarCode, bool pIsOnlyBarCode)
@@ -178,7 +178,7 @@ namespace BRB5.Connector
             return new Result(res);
         }
 
-        public override Result LoadDocsData(int pTypeDoc, string pNumberDoc,  bool pIsClear)
+        public override async Task<Result> LoadDocsDataAsync(int pTypeDoc, string pNumberDoc,  bool pIsClear)
         {
             var Res = new Result();
             if (pTypeDoc == 11)
@@ -280,7 +280,7 @@ namespace BRB5.Connector
                 }
 
                 if (pTypeDoc == -1)
-                    LoadGuidData((pTypeDoc == -1));
+                    LoadGuidDataAsync((pTypeDoc == -1));
 
                 Config.OnProgress?.Invoke(5);
                 HttpResult result;
