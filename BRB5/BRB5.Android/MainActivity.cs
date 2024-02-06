@@ -1,26 +1,24 @@
-﻿using System;
-using Android.App;
-using Android.Content.PM;
-using Android.Runtime;
-using Android.OS;
-using System.IO;
-using Utils;
+﻿using Android.App;
 using Android.Content;
-using AndroidX.Core.Content;
-using BRB5.Model;
-using BRB5.Connector;
-using System.Net;
-using System.Runtime.Serialization;
-using Result = Android.App.Result;
-using System.Threading;
-using System.Globalization;
+using Android.Content.PM;
+using Android.OS;
+using Android.Runtime;
+using Android.Views;
 using Android.Widget;
-using static Android.Renderscripts.ScriptGroup;
-using System.Runtime.Remoting.Contexts;
 //using Xamarin.Essentials;
 using AndroidX.AppCompat.App;
+using BRB5.Connector;
+using BRB5.Model;
+using BRB5.View;
+using System;
+using System.Globalization;
+using System.IO;
+using System.Net;
+using System.Threading;
+using Utils;
 using Xamarin.Essentials;
 using Xamarin.Forms;
+using Result = Android.App.Result;
 
 namespace BRB5.Droid
 {
@@ -354,6 +352,49 @@ namespace BRB5.Droid
                 return null;
             }
 
+        }
+
+        public override bool OnKeyUp([GeneratedEnum] Keycode keyCode, KeyEvent e)
+        {
+            switch (keyCode)
+            {
+                case Keycode.F1:
+                    MessagingCenter.Send(new KeyEventMessage { Key = "F1Pressed" }, "F1Pressed");
+                    break;
+                case Keycode.F2:
+                    MessagingCenter.Send(new KeyEventMessage { Key = "F2Pressed" }, "F2Pressed");
+                    break;
+                case Keycode.F3:
+                    MessagingCenter.Send(new KeyEventMessage { Key = "F3Pressed" }, "F3Pressed");
+                    break;
+                case Keycode.F4:
+                    MessagingCenter.Send(new KeyEventMessage { Key = "F4Pressed" }, "F4Pressed");
+                    break;
+                case Keycode.F5:
+                    MessagingCenter.Send(new KeyEventMessage { Key = "F5Pressed" }, "F5Pressed");
+                    break;
+                case Keycode.F6:
+                    MessagingCenter.Send(new KeyEventMessage { Key = "F6Pressed" }, "F6Pressed");
+                    break;
+                case Keycode.F7:
+                    MessagingCenter.Send(new KeyEventMessage { Key = "F7Pressed" }, "F7Pressed");
+                    break;
+                case Keycode.F8:
+                    MessagingCenter.Send(new KeyEventMessage { Key = "F8Pressed" }, "F8Pressed");
+                    break;
+                case Keycode.Num2:
+                    MessagingCenter.Send(new KeyEventMessage { Key = "2Pressed" }, "2Pressed");
+                    break;
+                case Keycode.Num8:
+                    MessagingCenter.Send(new KeyEventMessage { Key = "8Pressed" }, "8Pressed");
+                    break;
+                case Keycode.Enter:
+                    MessagingCenter.Send(new KeyEventMessage { Key = "EnterPressed" }, "EnterPressed");
+                    break;
+                default:
+                    break;
+            }
+            return base.OnKeyUp(keyCode, e);
         }
     }
 
