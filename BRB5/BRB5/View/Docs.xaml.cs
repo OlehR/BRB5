@@ -26,8 +26,8 @@ namespace BRB5.View
         public Docs(TypeDoc pTypeDoc )
         {
             MessagingCenter.Subscribe<KeyEventMessage>(this, "F1Pressed", message => { OKPO(null, EventArgs.Empty); });
-            MessagingCenter.Subscribe<KeyEventMessage>(this, "8Pressed", message => {  });
-            MessagingCenter.Subscribe<KeyEventMessage>(this, "2Pressed", message => {  });
+            MessagingCenter.Subscribe<KeyEventMessage>(this, "8Pressed", message => { UpDown(8);  });
+            MessagingCenter.Subscribe<KeyEventMessage>(this, "2Pressed", message => { UpDown(2); });
             MessagingCenter.Subscribe<KeyEventMessage>(this, "EnterPressed", message => {  });
             TypeDoc = pTypeDoc;
             Config.BarCode = BarCode;
@@ -40,6 +40,7 @@ namespace BRB5.View
             base.OnAppearing();
             c.LoadDocsData(TypeDoc.CodeDoc, null, false);
             MyDocsR = new ObservableCollection<Doc>(db.GetDoc(TypeDoc));
+            if (MyDocsR.Count > 0) ListDocs.SelectedItem = MyDocsR[0];            
             OnPropertyChanged(nameof(MyDocsR));
         }
         protected override void OnDisappearing()
@@ -85,6 +86,42 @@ namespace BRB5.View
             Config.BarCode -= BarCode;
         }
 
+        private void UpDown(int key)
+        {
+            if (key == 2)
+            {
+                if (Config.TypeScaner == eTypeScaner.PM550 || Config.TypeScaner == eTypeScaner.PM351) Up();
+                else if ( Config.TypeScaner == eTypeScaner.Zebra) Down();
+            }
+            else if (key == 8)
+            {
+                if (Config.TypeScaner == eTypeScaner.PM550 || Config.TypeScaner == eTypeScaner.PM351) Down();
+                else if ( Config.TypeScaner == eTypeScaner.Zebra) Up();
+            }
+
+        }
+        private void Up()
+        {
+            // ListWares.ScrollTo(tempSelected, ScrollToPosition.Start, false);
+
+            var selectedItem = (Doc)ListDocs.SelectedItem;
+            if (selectedItem != null)
+            {
+                var selectedIndex = MyDocsR.IndexOf(selectedItem);
+                if (selectedIndex > 0) ListDocs.SelectedItem = MyDocsR[selectedIndex - 1];
+                OnPropertyChanged(nameof(MyDocsR));
+            }
+        }
+        private void Down()
+        {
+            var selectedItem = (Doc)ListDocs.SelectedItem;
+            if (selectedItem != null)
+            {
+                var selectedIndex = MyDocsR.IndexOf(selectedItem);
+                if (selectedIndex < MyDocsR.Count - 1)   ListDocs.SelectedItem = MyDocsR[selectedIndex + 1];
+                OnPropertyChanged(nameof(MyDocsR));
+            }
+        }
         private void FilterBarCode(ZXing.Result result)
         {
             zxing.IsAnalyzing = false;
