@@ -125,7 +125,7 @@ namespace BRB5.Connector
 
         public virtual Result SaveDocRaiting(Doc pDoc) { throw new NotImplementedException(); }
 
-        public virtual Result<IEnumerable<RaitingTemplate>> GetRaitingTemplate() { throw new NotImplementedException(); }
+        public virtual async Task<Result<IEnumerable<RaitingTemplate>>> GetRaitingTemplateAsync() { throw new NotImplementedException(); }
         public virtual async Task<Result<IEnumerable<Doc>>> GetRaitingDocsAsync() { throw new NotImplementedException(); }
         public virtual Result<IEnumerable<Doc>> GetPromotion(int pCodeWarehouse) { throw new NotImplementedException(); }
         public virtual Result<IEnumerable<DocWares>> GetPromotionData(string pNumberDoc) { throw new NotImplementedException(); }

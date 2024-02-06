@@ -28,7 +28,8 @@ namespace BRB5
         Connector.Connector c = Connector.Connector.GetInstance();
         bool _IsVisBarCode = false;
         public bool IsVisBarCode { get { return _IsVisBarCode; } set { _IsVisBarCode = value; OnPropertyChanged("IsVisBarCode"); } }
-        public ObservableCollection<Model.RaitingDocItem> Questions { get; set; }
+        ObservableCollection<Model.RaitingDocItem> _Questions;
+        public ObservableCollection<Model.RaitingDocItem> Questions { get { return _Questions; } set { _Questions = value; OnPropertyChanged(nameof(Questions)); } }
 
         int CountAll, CountChoice;
         public bool IsSave { get { return CountAll == CountChoice; } }
@@ -37,6 +38,7 @@ namespace BRB5
         public string QuantityAllChoice { get { return $"{CountChoice}/{CountAll}"; } }
         
         bool IsOkWh { get {return Config.LocationWarehouse?.CodeWarehouse == cDoc.CodeWarehouse; } }
+        
         public string NameWarehouse
         {
             get
@@ -51,6 +53,7 @@ namespace BRB5
                 return res;
             }
         }       
+        
         public System.Drawing.Color GetGPSColor { get { if(Config.LocationWarehouse==null) return System.Drawing.Color.FromArgb(200, 200, 200);
                 return IsOkWh ? System.Drawing.Color.FromArgb(100, 250, 100) :
                         System.Drawing.Color.FromArgb(250, 100, 100);
@@ -77,42 +80,67 @@ namespace BRB5
         {
             cDoc = pDoc;
             InitializeComponent();
-            _ = LocationBrb.GetCurrentLocation(db.GetWarehouse());
-            LocationBrb.OnLocation += (Location) =>
-            {
-                OnPropertyChanged("GetGPSColor");
-                OnPropertyChanged("NameWarehouse");
-                OnPropertyChanged("SizeWarehouse");
-            };
-            var Q = db.GetRaitingDocItem(cDoc);
-            var R = new List<Model.RaitingDocItem>();
-            foreach (var e in Q.Where(d => d.IsHead).OrderBy(d => d.OrderRS))
-            {
-                R.Add(e);
-                foreach (var el in Q.Where(d => d.Parent == e.Id).OrderBy(d => d.OrderRS))
-                {
-                    if (e.Rating == 4)
-                        el.IsVisible = false;
-                    R.Add(el);
-                }
-            }
-            var Tottal = Q.Where(d => d.Id == -1).FirstOrDefault();
-            if(Tottal != null)  R.Add(Tottal);
-
-            c.OnSave += (Res) => Device.BeginInvokeOnMainThread(() => 
-            {
-                TextSave += Res + Environment.NewLine; 
-                OnPropertyChanged("TextSave"); 
-            });
-
-            CountAll = R.Count(el => !el.IsHead);
             NavigationPage.SetHasNavigationBar(this, Device.RuntimePlatform == Device.iOS);
-            Questions = new ObservableCollection<Model.RaitingDocItem>(R);
-            CalcValueRating();
-            RefreshHead();
-            this.BindingContext = this;
+            this.BindingContext = this;           
             StartTimer();
             FileLogger.WriteLogMessage($"Item Start=>{pDoc.NumberDoc}");
+            Questions = new ObservableCollection<Model.RaitingDocItem>();
+        }
+
+        protected override void OnAppearing()
+        {
+            base.OnAppearing();
+            LoadData();
+        }
+
+        void LoadData()
+        {
+            Task.Run(() =>
+            {
+                LocationBrb.OnLocation += (Location) =>
+                {
+                    OnPropertyChanged("GetGPSColor");
+                    OnPropertyChanged("NameWarehouse");
+                    OnPropertyChanged("SizeWarehouse");
+                };
+                _ = LocationBrb.GetCurrentLocation(db.GetWarehouse());
+
+                var Q = db.GetRaitingDocItem(cDoc);
+                var R = new List<Model.RaitingDocItem>();
+                foreach (var e in Q.Where(d => d.IsHead).OrderBy(d => d.OrderRS))
+                {
+                    R.Add(e);
+                    foreach (var el in Q.Where(d => d.Parent == e.Id).OrderBy(d => d.OrderRS))
+                    {
+                        if (e.Rating == 4)
+                            el.IsVisible = false;
+                        R.Add(el);
+                    }
+                }
+                var Tottal = Q.Where(d => d.Id == -1).FirstOrDefault();
+                if (Tottal != null) R.Add(Tottal);
+
+                c.OnSave += (Res) => Device.BeginInvokeOnMainThread(() =>
+                {
+                    TextSave += Res + Environment.NewLine;
+                    OnPropertyChanged("TextSave");
+                });
+
+                CountAll = R.Count(el => !el.IsHead); 
+                ViewDoc(R);
+            });
+        }
+
+        void ViewDoc(IEnumerable< Model.RaitingDocItem> pDocItem)
+        {
+            MainThread.BeginInvokeOnMainThread(() =>
+            {
+                Questions.Clear();
+                foreach (var el in pDocItem)
+                    Questions.Add(el);
+                RefreshHead();
+                CalcValueRating();
+            });
         }
 
         void StartTimer()
@@ -224,6 +252,7 @@ namespace BRB5
                 Total.Rating = Total.Rating;
             }
         }
+        
         void CalcValueRating()
         {
             decimal res=0;
@@ -247,6 +276,7 @@ namespace BRB5
                 Total.SumValueRating = res;
             }
         }
+        
         private void OnSetView(object sender, System.EventArgs e)
         {
             IsAll = !IsAll;

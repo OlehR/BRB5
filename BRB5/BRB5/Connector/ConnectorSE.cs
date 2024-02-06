@@ -184,10 +184,10 @@ namespace BRB5.Connector
             if (pTypeDoc == 11)
             {
                 string data = JsonConvert.SerializeObject(new Request() { userId = Config.CodeUser, action = "templates" });
-                HttpResult result = Http.HTTPRequest(2, "", data, "application/json");//
+                HttpResult result = await Http.HTTPRequestAsync(2, "", data, "application/json");//
 
                 string data2 = JsonConvert.SerializeObject(new Request() { userId = Config.CodeUser, action = "plans" });
-                HttpResult result2 = Http.HTTPRequest(2, "", data2, "application/json");//
+                HttpResult result2 = await Http.HTTPRequestAsync(2, "", data2, "application/json");//
 
                 if (result.HttpState != eStateHTTP.HTTP_OK || result2.HttpState != eStateHTTP.HTTP_OK)
                     return new Result(result.HttpState != eStateHTTP.HTTP_OK ? result : result2);
@@ -336,7 +336,7 @@ namespace BRB5.Connector
             return Res;
         }
 
-        public override Result<IEnumerable<RaitingTemplate>> GetRaitingTemplate() { return null; }
+        public override async Task<Result<IEnumerable<RaitingTemplate>>> GetRaitingTemplateAsync() { return null; }
 
         /// <summary>
         /// Вивантаження документів з ТЗД (HTTP)

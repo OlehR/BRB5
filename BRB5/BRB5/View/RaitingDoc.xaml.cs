@@ -10,6 +10,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Utils;
+using Xamarin.Essentials;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
@@ -22,16 +23,16 @@ namespace BRB5
         private readonly TypeDoc TypeDoc;
         public ObservableCollection<Doc> MyDoc { get; set; } = new ObservableCollection<Doc>();
         //public string Help { get; set; } = "ERHHHHHHH54";
-        public RaitingDoc(TypeDoc pTypeDoc )
+        public RaitingDoc(TypeDoc pTypeDoc)
         {
-            TypeDoc= pTypeDoc;
+            TypeDoc = pTypeDoc;
             _ = LocationBrb.GetCurrentLocation(db.GetWarehouse());
             c = BRB5.Connector.Connector.GetInstance();
             InitializeComponent();
             Routing.RegisterRoute(nameof(RaitingDocItem), typeof(RaitingDocItem));
-            NavigationPage.SetHasNavigationBar(this, Device.RuntimePlatform == Device.iOS);            
-                 
-            this.BindingContext = this;            
+            NavigationPage.SetHasNavigationBar(this, Device.RuntimePlatform == Device.iOS);
+
+            this.BindingContext = this;
         }
 
         protected override void OnAppearing()
@@ -42,15 +43,26 @@ namespace BRB5
 
         void GetDocs()
         {
-            c.LoadDocsDataAsync(TypeDoc.CodeDoc, null, false);
-            var r = db.GetDoc(TypeDoc).OrderByDescending(el => el.NumberDoc);
-            if (r != null)
+            _ = Task.Run(async () =>
+            {
+                var r = db.GetDoc(TypeDoc).OrderByDescending(el => el.NumberDoc);
+                ViewDoc(r);
+                await c.LoadDocsDataAsync(TypeDoc.CodeDoc, null, false);
+                _ = c.GetRaitingTemplateAsync();
+                r = db.GetDoc(TypeDoc).OrderByDescending(el => el.NumberDoc);
+                
+            });
+        }
+
+        void ViewDoc(IEnumerable<Doc> pDoc)
+        {
+            MainThread.BeginInvokeOnMainThread(() =>
             {
                 MyDoc.Clear();
-                foreach (var item in r)
+                if(pDoc?.Any()==true)
+                foreach (var item in pDoc)
                     MyDoc.Add(item);
-            }
-            var temp = c.GetRaitingTemplate();
+            });
         }
 
         private async void OnButtonClicked(object sender, System.EventArgs e)

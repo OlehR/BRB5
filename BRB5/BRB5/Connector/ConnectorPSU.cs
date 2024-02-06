@@ -219,7 +219,7 @@ namespace BRB5.Connector
                     }
                     db.ReplaceDoc(temp.Info);
 
-                    var RT=GetRaitingTemplate();
+                    //var RT=GetRaitingTemplateAsync();
 
                 }
                 return new Result();
@@ -376,9 +376,9 @@ namespace BRB5.Connector
             }
             return null;
         }
-        public override Result<IEnumerable<RaitingTemplate>> GetRaitingTemplate()
+        public override async Task<Result<IEnumerable<RaitingTemplate>>> GetRaitingTemplateAsync()
         {
-            HttpResult result = Http.HTTPRequest(0, "DCT/Raitting/GetRaitingTemplate", null, "application/json", "brb", "brb");//
+            HttpResult result = await  Http.HTTPRequestAsync(0, "DCT/Raitting/GetRaitingTemplate", null, "application/json", "brb", "brb");//
 
             if (result.HttpState == eStateHTTP.HTTP_OK)
             {

@@ -129,7 +129,7 @@ namespace BRB5.View
             var tempbool = await DisplayAlert("Завантаження", "Не збережені зміни можуть бути видалені", "OK" , "Cancel");
             if (tempbool)
             {
-                var temp = c.GetRaitingTemplate();
+                var temp = await c.GetRaitingTemplateAsync();
                 if (temp.Info == null)
                     _ = DisplayAlert("Помилка", temp.TextError, "OK");
                 else
