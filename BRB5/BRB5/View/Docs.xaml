@@ -108,15 +108,13 @@
                                         IsScanning="False">
                 </forms:ZXingScannerView>
             </Grid>
-            <ListView ItemsSource="{Binding MyDocsR}"
+            <ListView ItemsSource="{Binding MyDocsR}" x:Name="ListDocs"
                       SeparatorVisibility="None"
                       HasUnevenRows="True"
                       ItemTemplate="{StaticResource alternateColorDataTemplateSelector}">
             </ListView>
 
             <StackLayout VerticalOptions="EndAndExpand" Orientation="Horizontal">
-
-
                 <Label Text="8-"
                        VerticalOptions="Center"
                        FontSize="16"
