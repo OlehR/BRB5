@@ -6,6 +6,7 @@ using System.IO;
 using System.Text;
 using Utils;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace BRB5.Connector
 {
@@ -35,7 +36,7 @@ namespace BRB5.Connector
             return Res;
         }
 
-        public override Result Login(string pLogin, string pPassWord, eLoginServer pLoginServer)
+        public override async Task<Result> LoginAsync(string pLogin, string pPassWord, eLoginServer pLoginServer)
         {
             Result Res;
             try

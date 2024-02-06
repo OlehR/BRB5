@@ -128,6 +128,10 @@
     <AndroidResource Include="Resources\drawable\Photo.png" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\..\UniCS.TM\Utils\Utils.csproj">
+      <Project>{88612003-8422-446c-a408-780a08d155d7}</Project>
+      <Name>Utils</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\Model\BRB5.Model.csproj">
       <Project>{e1c7dab8-e775-414d-91ce-30e46d8f40af}</Project>
       <Name>BRB5.Model</Name>

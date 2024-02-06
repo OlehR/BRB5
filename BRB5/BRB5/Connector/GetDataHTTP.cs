@@ -93,7 +93,13 @@ namespace BRB5.Connector
             }
         }
 
-        public HttpResult HTTPRequest(int pUrlApi, string pApi, string pData, string pContentType, string pLogin=null, string pPassWord=null, double pTimeOut = 15,bool IsSaveData=true)
+        public HttpResult HTTPRequest(int pUrlApi, string pApi, string pData, string pContentType, string pLogin = null, string pPassWord = null, double pTimeOut = 15, bool IsSaveData = true)
+
+        {
+            return AsyncHelper.RunSync<HttpResult>(() => HTTPRequestAsync(pUrlApi, pApi, pData, pContentType, pLogin, pPassWord, pTimeOut, IsSaveData));
+        }
+
+        public async Task<HttpResult> HTTPRequestAsync(int pUrlApi, string pApi, string pData, string pContentType, string pLogin=null, string pPassWord=null, double pTimeOut = 15,bool IsSaveData=true)
         { //!!!!TMP
             try
             {
@@ -110,14 +116,14 @@ namespace BRB5.Connector
                 HttpResult res = new HttpResult();
                 if (Url != null && Url.Length >= pUrlApi && Url[pUrlApi] != null)
                 {
-                    res = HTTPRequestAsync(Url[pUrlApi][DefaultApi[pUrlApi]] + pApi, pData, pContentType, pLogin, pPassWord,pTimeOut).Result;
+                    res = await HTTPRequestAsync(Url[pUrlApi][DefaultApi[pUrlApi]] + pApi, pData, pContentType, pLogin, pPassWord,pTimeOut);
                     if (res.HttpState != eStateHTTP.HTTP_OK && res.HttpState != eStateHTTP.HTTP_UNAUTHORIZED)
                     {
                         for (int i = 0; i < Url[pUrlApi].Length; i++)
                         {
                             if (i != DefaultApi[pUrlApi] && !string.IsNullOrEmpty(Url[pUrlApi][i]))
                             {
-                                res = HTTPRequestAsync(Url[pUrlApi][i] + pApi, pData, pContentType, pLogin, pPassWord, pTimeOut).Result;
+                                res = await HTTPRequestAsync(Url[pUrlApi][i] + pApi, pData, pContentType, pLogin, pPassWord, pTimeOut);
                                 if (res.HttpState == eStateHTTP.HTTP_OK)
                                     DefaultApi[pUrlApi] = i;
                             }
