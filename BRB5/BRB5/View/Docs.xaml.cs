@@ -27,10 +27,6 @@ namespace BRB5.View
 
         public Docs(TypeDoc pTypeDoc )
         {
-        //    MessagingCenter.Subscribe<KeyEventMessage>(this, "F1Pressed", message => { OKPO(null, EventArgs.Empty); });
-        //    MessagingCenter.Subscribe<KeyEventMessage>(this, "8Pressed", message => { UpDown(8);  });
-        //    MessagingCenter.Subscribe<KeyEventMessage>(this, "2Pressed", message => { UpDown(2); });
-        //    MessagingCenter.Subscribe<KeyEventMessage>(this, "EnterPressed", message => { EnterPressed(); });
             TypeDoc = pTypeDoc;
             Config.BarCode = BarCode;
             BindingContext = this;
