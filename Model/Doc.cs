@@ -114,10 +114,15 @@ namespace BRB5.Model
         public DateTime DTStart { get; set; }
 
         public DateTime DTEnd { get; set; }
-    /// <summary>
-    /// Колір відображення документа
-    /// </summary>
-    public int Color { get; set; }
+        /// <summary>
+        /// Колір відображення документа
+        /// </summary>
+        public int Color { get; set; }
+
+        private bool _SelectedColor = false;
+        [JsonIgnore]
+        [Ignore]
+        public bool SelectedColor { get { return _SelectedColor; } set { _SelectedColor = value;   OnPropertyChanged(nameof(GetColor)); OnPropertyChanged(nameof(GetLightColor)); } } 
 
         // 9 - червоний, 2- оранжевий, 1 - жовтий, 0 - зелений, інше грязно жовтий-ранжевий.
         [JsonIgnore]
@@ -125,6 +130,7 @@ namespace BRB5.Model
         {
             get
             {
+                if (SelectedColor) return "#50c878";
                 switch (Color)
                 {
                     case 9:
@@ -145,6 +151,7 @@ namespace BRB5.Model
         {
             get
             {
+                if (SelectedColor) return "#50c878";
                 switch (Color)
                 {
                     case 9:
