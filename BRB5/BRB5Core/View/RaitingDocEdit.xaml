@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<controls:BaseContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+                          xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+                          xmlns:controls="clr-namespace:BRB5.View"
+                          x:Class="BRB5.View.RaitingDocEdit">
+    <NavigationPage.TitleView>
+        <Button Text="Зберегти"
+                Grid.Column="1"
+                Clicked="Save"
+                Style="{StaticResource ButtonStyle}" />
+
+    </NavigationPage.TitleView>
+    <ContentPage.Content>
+        <StackLayout>
+            <Label Text="{Binding RD.NumberDoc}" FontSize="Large" />
+            <Label Text="Дата:" FontSize="Medium" />
+            <DatePicker Date="{Binding RD.DateDoc}"
+                        Format="dd/MM/yyyy" />
+
+            <Label Text="Назва:" FontSize="Medium" />
+            <Frame Style="{StaticResource FrameStyle}"
+                   Grid.Column="1">
+                <controls:CustomEntry Style="{StaticResource EntryStyle}"
+                                      Text="{Binding RD.Description}" />
+            </Frame>
+
+            <Label Text="Шаблон опитування:" FontSize="Medium" />
+            <Picker Title="Шаблони"
+                    ItemsSource="{Binding RT}"
+                    ItemDisplayBinding="{Binding Text}"
+                    SelectedIndex="{Binding SelectedTemplate}" />
+
+            <Label Text="Магазин:" FontSize="Medium" />
+            <Picker Title="Магазини"
+                    ItemsSource="{Binding ListWarehouse}"
+                    ItemDisplayBinding="{Binding Name}"
+                    SelectedIndex="{Binding SelectedWarehouse}"
+                    HorizontalOptions="Fill" />
+
+        </StackLayout>
+    </ContentPage.Content>
+</controls:BaseContentPage>

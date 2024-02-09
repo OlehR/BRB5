@@ -32,6 +32,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\..\UniCS.TM\Utils\Utils.csproj" />
+    <ProjectReference Include="..\..\BL\BL.csproj" />
     <ProjectReference Include="..\..\Model\BRB5.Model.csproj" />
   </ItemGroup>
 

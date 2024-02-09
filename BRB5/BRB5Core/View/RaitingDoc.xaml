@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<view:BaseContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+                      xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+                      xmlns:Model="clr-namespace:BRB5.Model;assembly=BRB5.Model"
+                      xmlns:view="clr-namespace:BRB5.View;assembly=BRB5"
+                      
+                      x:Class="BRB5.RaitingDoc">
+
+    <ContentPage.Content>
+        <ListView x:Name="ListQuestions"
+                  HasUnevenRows="True"
+                  ItemsSource="{Binding MyDoc}">
+            <ListView.Header>
+                <StackLayout Orientation="Horizontal">
+                    <Label Text="Документи" FontSize="25"
+                           BackgroundColor="#c5cae9" HorizontalOptions="FillAndExpand" />
+                </StackLayout>
+            </ListView.Header>
+            <ListView.ItemTemplate>
+                <DataTemplate xmlns:brb5="clr-namespace:BRB5" x:DataType="Model:Doc">
+                    <ViewCell>
+                        <ViewCell.View BackgroundColor="white">
+
+                            <Grid Padding="4"
+                                  BackgroundColor="#dede7b">
+                                <Grid Focused="Grid_Focused"
+                                      BackgroundColor="{Binding GetColor}">
+
+                                    <Grid.GestureRecognizers>
+                                        <TapGestureRecognizer Tapped="OnButtonClicked" />
+                                    </Grid.GestureRecognizers>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="1*" />
+                                        <ColumnDefinition Width="4*" />
+                                    </Grid.ColumnDefinitions>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="*" />
+                                        <RowDefinition Height="*" />
+                                    </Grid.RowDefinitions>
+
+                                    <Label Grid.Row="0"
+                                           Grid.Column="0"
+                                           FontSize="Medium"
+                                           FontAttributes="Bold"
+                                           Text="{Binding CodeWarehouse}" />
+                                    <Label Grid.Row="0"
+                                           Grid.Column="1"
+                                           FontSize="Small"
+                                           Text="{Binding ShortAddress}" />
+
+                                    <Label Grid.Row="1"
+                                           Grid.Column="0"
+                                           Text="{Binding DateString}"
+                                           ClassId="Ok"
+                                           FontSize="Small" />
+                                    <Label Grid.Row="1"
+                                           Grid.Column="1"
+                                           FontSize="Small"
+                                           HorizontalOptions="Center"
+                                           Text="{Binding Description}" />
+
+                                </Grid>
+                            </Grid>
+                        </ViewCell.View>
+                    </ViewCell>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+    </ContentPage.Content>
+
+</view:BaseContentPage>

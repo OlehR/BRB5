@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<controls:BaseContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+                          xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+                          x:Class="BRB5.MainPage"
+                          xmlns:controls="clr-namespace:BRB5.View"
+                          NavigationPage.HasNavigationBar="True">
+    <NavigationPage.TitleView>
+        <StackLayout Spacing="10" Orientation="Horizontal">
+            <Label Text="{Binding Ver}"
+                   VerticalOptions="Center" />
+            <Label VerticalOptions="Center"
+                   Text="{Binding Company}"/>
+            <Label Text="{Binding Login}" 
+                   VerticalOptions="Center" FontSize="24" />
+        </StackLayout>
+    </NavigationPage.TitleView>
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Text="Налаштування"
+                     Order="Secondary"
+                     Priority="0"
+                     Clicked="OnSettingsClicked" />
+        <ToolbarItem Text="Автризація"
+                     Order="Secondary"
+                     Priority="1"
+                     Clicked="OnAuthorizationClicked" />
+    </ContentPage.ToolbarItems>
+    <StackLayout>
+        <StackLayout x:Name="SLLogin">
+
+            <Picker Title="сервер"
+                    ItemsSource="{Binding LS}"
+                    IsVisible="{Binding IsVisLS}"
+                    ItemDisplayBinding="{Binding Name}"
+                    SelectedIndex="{Binding SelectedLS}"
+                    HorizontalOptions="Fill" />
+            <Frame Style="{StaticResource FrameStyle}">
+                <controls:CustomEntry Style="{StaticResource EntryStyle}"
+                                      x:Name="loginEntry" Text="{Binding Login}" />
+            </Frame>
+            <!--TextChanged="loginEntry_TextChanged"-->
+            <Frame Style="{StaticResource FrameStyle}">
+                <controls:CustomEntry Style="{StaticResource EntryStyle}"
+                                      x:Name="passwordEntry"
+                                      Text="{Binding Password}"
+                                      Placeholder="Password"
+                                      IsPassword="True" />
+            </Frame>
+            <Button Text="Залогінитись" FontSize="Large" BorderWidth="1"
+                    HorizontalOptions="Center" VerticalOptions="CenterAndExpand"
+                    Clicked="OnButtonLogin" />
+        </StackLayout>
+        <ListView x:Name="ListDocs" IsVisible="false" 
+                  HasUnevenRows="True"
+                  ItemsSource="{Binding OCTypeDoc}">
+            <ListView.Header>
+                <StackLayout Orientation="Horizontal">
+                    <!-- <Label Text="Список    Запитань2" FontSize="25"
+                           BackgroundColor="#c5cae9" HorizontalOptions="FillAndExpand" />-->
+                </StackLayout>
+            </ListView.Header>
+            <!-- ItemTapped="OnItemTapped"-->
+            <ListView.ItemTemplate>
+                <DataTemplate xmlns:brb5="clr-namespace:BRB5">
+                    <ViewCell>
+                        <ViewCell.View>
+                            <Button Text="{Binding NameDoc}"
+                                    FontSize="Large"
+                                    Clicked="OnButtonClicked"
+                                    Style="{StaticResource ButtonStyle}" />
+                        </ViewCell.View>
+                    </ViewCell>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+    </StackLayout>
+
+</controls:BaseContentPage>

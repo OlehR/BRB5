@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<local:BaseContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+                       xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+                       xmlns:local="clr-namespace:BRB5.View"
+                       x:Class="BRB5.View.DocItem"
+                       xmlns:controls="clr-namespace:BRB5.View">
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <DataTemplate x:Key="evenTemplate">
+                <ViewCell>
+                    <Grid RowSpacing="1"
+                          ColumnSpacing="1"
+                          Padding="1"
+                          BackgroundColor="#adaea7">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="1*" />
+                            <ColumnDefinition Width="1*" />
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition />
+                            <RowDefinition />
+                        </Grid.RowDefinitions>
+
+                        <Label Text="{Binding NameWares}"
+                               Grid.ColumnSpan="2"
+                               BackgroundColor="{Binding GetBackgroundColor}" />
+
+                        <Label Text="{Binding CodeWares}"
+                               Grid.Row="1"
+                               Grid.Column="0"
+                               BackgroundColor="{Binding GetBackgroundColor}" />
+
+                        <Label Text="{Binding InputQuantity}"
+                               Grid.Row="1"
+                               Grid.Column="1"
+                               BackgroundColor="{Binding GetBackgroundColor}" />
+
+                    </Grid>
+                </ViewCell>
+            </DataTemplate>
+            <DataTemplate x:Key="unevenTemplate">
+                <ViewCell>
+
+                    <Grid RowSpacing="1"
+                          ColumnSpacing="1"
+                          Padding="1"
+                          BackgroundColor="#adaea7">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="1*" />
+                            <ColumnDefinition Width="1*" />
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition />
+                            <RowDefinition />
+                        </Grid.RowDefinitions>
+
+                        <Label Text="{Binding NameWares}"
+                               Grid.ColumnSpan="2"
+                               BackgroundColor="{Binding GetLightBackgroundColor}" />
+
+                        <Label Text="{Binding CodeWares}"
+                               Grid.Row="1"
+                               Grid.Column="0"
+                               BackgroundColor="{Binding GetLightBackgroundColor}" />
+
+                        <Label Text="{Binding InputQuantity}"
+                               Grid.Row="1"
+                               Grid.Column="1"
+                               BackgroundColor="{Binding GetLightBackgroundColor}" />
+
+                    </Grid>
+                </ViewCell>
+            </DataTemplate>
+            <local:AlternateColorDataTemplateSelector x:Key="alternateColorDataTemplateSelector"
+                                                      EvenTemplate="{StaticResource evenTemplate}"
+                                                      UnevenTemplate="{StaticResource unevenTemplate}" />
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
+    <ContentPage.Content>
+        <StackLayout>
+
+            <StackLayout IsVisible="{Binding IsVisibleDocF6}">
+                <Picker Title="дата"
+                        ItemsSource="{Binding ListDataStr}"
+                        ItemDisplayBinding="{Binding DateString}"
+                        SelectedIndex="{Binding SelectedDataStr}" />
+                <Frame Style="{StaticResource FrameStyle}">
+                    <controls:CustomEntry Style="{StaticResource EntryStyle}"
+                                          Placeholder="номер"
+                                          Text="{Binding NumberOutInvoice}" />
+                </Frame>
+            </StackLayout>
+            <ListView ItemTemplate="{StaticResource alternateColorDataTemplateSelector}"
+                      ItemsSource="{Binding MyDocWares}" SeparatorVisibility="None">
+                <ListView.Header>
+                    <Grid RowSpacing="1"
+                          ColumnSpacing="1"
+                          Padding="1"
+                          BackgroundColor="#adaea7">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="1*" />
+                            <ColumnDefinition Width="1*" />
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition />
+                            <RowDefinition />
+                        </Grid.RowDefinitions>
+
+                        <Label Text="Назва"
+                               Grid.ColumnSpan="2"
+                               BackgroundColor="White" />
+
+                        <Label Text="Код"
+                               Grid.Row="1"
+                               Grid.Column="0"
+                               BackgroundColor="White" />
+
+                        <Label Text="Факт"
+                               Grid.Row="1"
+                               Grid.Column="1"
+                               BackgroundColor="White" />
+
+                    </Grid>
+                </ListView.Header>
+            </ListView>
+
+            <StackLayout VerticalOptions="EndAndExpand" Orientation="Horizontal">
+
+                <Label Text="F2-"
+                       FontSize="16"
+                       Grid.Column="6"
+                       TextColor="#ff5c5c"
+                       VerticalOptions="Center" />
+                <Label Text="Збер"
+                       FontSize="18"
+                       Grid.Column="7"
+                       TextColor="#816f20">
+                    <Label.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="F2Save" />
+                    </Label.GestureRecognizers>
+                </Label>
+
+                <Label Text="F3-"
+                       FontSize="16"
+                       Grid.Column="6"
+                       TextColor="#ff5c5c"
+                       VerticalOptions="Center" />
+                <Label Text="Скан"
+                       FontSize="18"
+                       Grid.Column="7"
+                       TextColor="#816f20">
+                    <Label.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="F3Scan" />
+                    </Label.GestureRecognizers>
+                </Label>
+
+                <Label Text="F4-"
+                       FontSize="16"
+                       Grid.Column="6"
+                       TextColor="#ff5c5c"
+                       VerticalOptions="Center" />
+                <Label Text="Спис"
+                       FontSize="18"
+                       Grid.Column="7"
+                       TextColor="#816f20">
+                    <Label.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="F4WrOff" />
+                    </Label.GestureRecognizers>
+                </Label>
+
+                <Label Text="F6-"
+                       FontSize="16"
+                       Grid.Column="6"
+                       TextColor="#ff5c5c"
+                       VerticalOptions="Center" />
+                <Label Text="Док"
+                       FontSize="18"
+                       Grid.Column="7"
+                       TextColor="#816f20">
+                    <Label.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="F6Doc" />
+                    </Label.GestureRecognizers>
+                </Label>
+
+            </StackLayout>
+        </StackLayout>
+    </ContentPage.Content>
+</local:BaseContentPage>

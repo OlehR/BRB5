@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<view:BaseContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+                      xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+                      xmlns:view="clr-namespace:BRB5.View;assembly=BRB5"
+                      x:Class="BRB5.View.RaitingDocsEdit">
+    <NavigationPage.TitleView>
+        <Button Text="Створити"
+                Grid.Column="1"
+                Clicked="Create"
+                Style="{StaticResource ButtonStyle}" />
+
+    </NavigationPage.TitleView>
+    <ContentPage.Content>
+        <ListView ItemsSource="{Binding RD}"
+                  HasUnevenRows="True">
+            <ListView.Header>
+                <Grid RowSpacing="1"
+                          ColumnSpacing="1"
+                          Padding="1"
+                          BackgroundColor="#adaea7">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="1*" />
+                        <ColumnDefinition Width="3*" />
+                        <ColumnDefinition Width="3*" />
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                    </Grid.RowDefinitions>
+                    <Label Text=" ID" Grid.Column="0" FontSize="Medium" BackgroundColor="White"/>
+                    <Label Text="Назва" Grid.Column="1" FontSize="Medium" BackgroundColor="White"/>
+                    <Label Text="Дата" Grid.Column="2" FontSize="Medium" BackgroundColor="White"/>
+                    <Grid Grid.Row="1" Grid.ColumnSpan="3" 
+                          ColumnSpacing="1">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="1*" />
+                            <ColumnDefinition Width="1*" />
+                        </Grid.ColumnDefinitions>
+                        <Label Text="Магазин"  FontSize="Medium" BackgroundColor="White"/>
+                        <Label Text="Шаблон" Grid.Column="1"  FontSize="Medium" BackgroundColor="White"/>
+                    </Grid>
+                </Grid>
+            </ListView.Header>
+            <ListView.ItemTemplate>
+                <DataTemplate xmlns:brb5="clr-namespace:BRB5">
+                    <ViewCell>
+                        <ViewCell.View>
+                            <StackLayout>
+                                <Grid IsVisible="{Binding IsHidden}">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="3*" />
+                                        <ColumnDefinition Width="6*" />
+                                        <ColumnDefinition Width="4*" />
+                                        <ColumnDefinition Width="2*" />
+                                    </Grid.ColumnDefinitions>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition/>
+                                        <RowDefinition/>
+                                    </Grid.RowDefinitions>
+
+                                    <Label Text="{Binding NumberDoc}" Grid.Column="0" FontSize="Large" />
+                                    <Label Text="{Binding Description}" Grid.Column="1" FontSize="Large"
+                                           TextColor="Black" />
+                                    <Label Text="{Binding DateString}" Grid.Column="2" FontSize="Large"
+                                           TextColor="Black" />
+                                    <Grid Grid.Row="1" Grid.ColumnSpan="3">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="2*" />
+                                            <ColumnDefinition Width="1*" />
+                                        </Grid.ColumnDefinitions>
+                                        <Label Text="{Binding CodeWarehouseName}"  FontSize="Medium" />
+                                        <Label Text="{Binding RaitingTemplateName}" Grid.Column="1"  FontSize="Medium" />
+                                    </Grid>
+
+                                    <ImageButton Source="Edit.png"
+                                                 Grid.Column="3"
+                                                 Clicked="Edit"
+                                                 BackgroundColor="Transparent"
+                                                 HeightRequest="60"
+                                                 Aspect="AspectFit"
+                                                 Grid.RowSpan="2"/>
+
+                                </Grid>
+                            </StackLayout>
+                        </ViewCell.View>
+                    </ViewCell>
+                </DataTemplate>
+
+            </ListView.ItemTemplate>
+        </ListView>
+    </ContentPage.Content>
+</view:BaseContentPage>

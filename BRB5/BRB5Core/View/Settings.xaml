@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<TabbedPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+            xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+            xmlns:controls="clr-namespace:BRB5.View"
+            xmlns:iOsSpecific="clr-namespace:Microsoft.Maui.Controls.PlatformConfiguration.iOSSpecific;assembly=Microsoft.Maui.Controls"
+            x:Class="BRB5.View.Settings"
+            iOsSpecific:Page.UseSafeArea="True">
+    <controls:BaseContentPage Title="Налаштування">
+        <ContentPage.Content>
+            <StackLayout>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="3*" />
+                    </Grid.ColumnDefinitions>
+
+                    <Label Text="{Binding Ver}" />
+                    <Label Text="{Binding SN}"
+                           Grid.Column="1" />
+                </Grid>
+
+                <Picker Title="Торговий зал"
+                        ItemsSource="{Binding ListWarehouse}"
+                        ItemDisplayBinding="{Binding Name}"
+                        SelectedIndex="{Binding SelectedWarehouse}"
+                        HorizontalOptions="Fill" />
+                <StackLayout Orientation="Horizontal" >
+                    <CheckBox IsChecked="{Binding IsViewAllWH}" />
+                    <Label Text="Показувати всі склади"  />
+                </StackLayout>
+
+                <Picker Title="Принтер"
+                        ItemsSource="{Binding ListTypeUsePrinter}"
+                        SelectedIndex="{Binding SelectedTypePrinter}"
+                        HorizontalOptions="Fill" />
+                <!--ItemDisplayBinding="{Binding TypeUsePrinter}"-->
+
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+
+                    <Button Text="З.Довідники"
+                            HorizontalOptions="Fill"
+                            Clicked="OnClickLoad" />
+
+                    <Button Text="З.Документи"
+                            Grid.Column="1"
+                            HorizontalOptions="Fill"
+                            Clicked="OnClickLoadDoc" />
+                </Grid>
+
+                <Picker Title="Рівень логування"
+                        ItemsSource="{Binding ListTypeLog}"
+                        SelectedIndex="{Binding SelectedTypeLog}"
+                        HorizontalOptions="Fill" />
+
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="3*" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="3*" />
+                    </Grid.ColumnDefinitions>
+
+                    <CheckBox IsChecked="{Binding IsVibration}" />
+                    <Label Text="Вібрація" Grid.Column="1" />
+
+                    <CheckBox IsChecked="{Binding IsSound}"
+                              Grid.Column="2" />
+                    <Label Text="Звук"
+                           Grid.Column="3" />
+                </Grid>
+
+
+                <ProgressBar ScaleY="2"
+                             Progress="1"
+                             VerticalOptions="EndAndExpand"
+                             ProgressColor="Black" />
+
+                <Button Text="Зберегти"
+                        Grid.Column="1"
+                        HorizontalOptions="Fill"
+                        VerticalOptions="End"
+                        Clicked="OnClickSave" />
+
+            </StackLayout>
+        </ContentPage.Content>
+    </controls:BaseContentPage>
+    <controls:BaseContentPage Title="Адмін">
+        <ContentPage.Content>
+            <StackLayout>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="3*" />
+                    </Grid.ColumnDefinitions>
+
+                    <Label Text="{Binding Ver}" />
+                    <Label Text="{Binding SN}"
+                           Grid.Column="1" />
+                </Grid>
+
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="3*" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="3*" />
+                    </Grid.ColumnDefinitions>
+
+                    <CheckBox IsChecked="{Binding IsTest}" />
+                    <Label Text="Тестова" Grid.Column="1" />
+
+                    <CheckBox IsChecked="{Binding IsAutoLogin}"
+                              Grid.Column="2" />
+                    <Label Text="Автологін"
+                           Grid.Column="3" />
+                </Grid>
+
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="2*" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+
+                    <Picker Title="Компанія"
+                            ItemsSource="{Binding ListCompany}"
+                            SelectedIndex="{Binding SelectedCompany}"
+                            HorizontalOptions="Fill" />
+
+                    <Button Text="Зген."
+                            Grid.Column="1"
+                            HorizontalOptions="Fill"
+                            Clicked="OnClickGen" />
+
+                    <Button Text="IP"
+                            Grid.Column="2"
+                            HorizontalOptions="Fill"
+                            Clicked="OnClickIP" />
+
+                </Grid>
+
+                <Frame Style="{StaticResource FrameStyle}">
+                    <controls:CustomEntry Style="{StaticResource EntryStyle}"
+                                          Text="{Binding ApiUrl1}" />
+                </Frame>
+
+                <Frame Style="{StaticResource FrameStyle}" IsVisible="{Binding IsVisApi3}">
+                    <controls:CustomEntry Style="{StaticResource EntryStyle}"
+                                          Text="{Binding ApiUrl2}" IsVisible="{Binding IsVisApi3}"/>
+                </Frame>
+
+                <Frame Style="{StaticResource FrameStyle}" IsVisible="{Binding IsVisApi3}">
+                    <controls:CustomEntry Style="{StaticResource EntryStyle}"
+                                          Text="{Binding ApiUrl3}" IsVisible="{Binding IsVisApi3}" />
+                </Frame>
+
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+
+                    <Button Text="Коп.Бази"
+                            HorizontalOptions="Fill"
+                            Clicked="OnCopyDB" />
+
+                    <Button Text="Від.Бази"
+                            Grid.Column="1"
+                            HorizontalOptions="Fill"
+                            Clicked="OnRestoreDB" />
+                </Grid>
+
+                <Button Text="Зберегти"
+                        HorizontalOptions="Fill"
+                        VerticalOptions="EndAndExpand"
+                        Clicked="OnClickSave" />
+
+            </StackLayout>
+        </ContentPage.Content>
+    </controls:BaseContentPage>
+    <controls:BaseContentPage Title="Склади">
+        <ContentPage.Content>
+            <StackLayout>
+
+                <ListView HasUnevenRows="True" ItemsSource="{Binding Warehouses}" x:Name="LWH">
+                    <ListView.ItemTemplate>
+                        <DataTemplate xmlns:brb5="clr-namespace:BRB5">
+                            <ViewCell>
+                                <ViewCell.View>
+                                    <StackLayout Orientation="Horizontal" >
+                                        <CheckBox IsChecked="{Binding IsChecked}" AutomationId="{Binding CodeWarehouse}"  CheckedChanged="RefreshWarehouses" />
+                                        <Label Text="{Binding Name}" FontSize="Large" TextColor="Black"/>
+                                    </StackLayout>
+
+                                </ViewCell.View>
+                            </ViewCell>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+
+                <Button Text="Зберегти"
+                        HorizontalOptions="Fill"
+                        VerticalOptions="EndAndExpand"
+                        Clicked="OnClickSave" />
+            </StackLayout>
+        </ContentPage.Content>
+    </controls:BaseContentPage>
+</TabbedPage>

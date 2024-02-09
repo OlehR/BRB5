@@ -12,8 +12,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using Utils;
-using Xamarin.Essentials;
-using Xamarin.Forms;
+
 
 
 public static class ProtoDB
@@ -35,18 +34,22 @@ public static class ProtoDB
 }
 namespace BRB5
 {
-    
     public class DB
     {
         static DB Db = null;
-        public static DB GetDB()
+        public static DB GetDB(string pPathDB=null)
         {
+            if (!string.IsNullOrEmpty(pPathDB))
+                { BaseDir = pPathDB; Db = null; }
             if (Db == null)
                 Db = new DB();
             return Db;
         }
-        
+
+        public SQLiteConnection db;
         const string NameDB = "BRB5.db";
+        public static string BaseDir = Path.GetTempPath();
+
         const string SqlCreateDB = @"
 CREATE TABLE AdditionUnit (
     CodeWares   INTEGER NOT NULL,
@@ -214,25 +217,12 @@ CREATE TABLE RaitingDocItem(
 CREATE UNIQUE INDEX RaitingDocItemId ON RaitingDocItem (TypeDoc,NumberDoc,Id);
 ";
 
-        public SQLiteConnection db;
+        public string PathNameDB { get { return Path.Combine(BaseDir, NameDB); } }
 
-        public string PathNameDB;
+        public DB(string pBaseDir) : this() { BaseDir = pBaseDir; }
         public DB()
         {
-            string basedir = Path.GetTempPath();
-            try
-            {
-                basedir = Device.RuntimePlatform == Device.Android ? FileSystem.AppDataDirectory : Path.GetTempPath();
-            }
-            catch (Exception e) { }
-
-            var Dir = Path.Combine(basedir, "db");
-            if (!Directory.Exists(Dir))
-                Directory.CreateDirectory(Dir);
-            
-            PathNameDB=Path.Combine(Dir, NameDB);
-
-            FileLogger.WriteLogMessage($"Platform=>{Device.RuntimePlatform}  PathNameDB=>{PathNameDB}");
+            FileLogger.WriteLogMessage($"PathNameDB=>{PathNameDB}");
             
             if (!File.Exists(PathNameDB))
             {
@@ -244,7 +234,6 @@ CREATE UNIQUE INDEX RaitingDocItemId ON RaitingDocItem (TypeDoc,NumberDoc,Id);
             }
             else
                 db = new SQLiteConnection(PathNameDB, false);
-
         }
         
         public bool SetConfig<T>(string pName, T pValue)

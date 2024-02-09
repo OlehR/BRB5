@@ -128,6 +128,10 @@
       <Project>{88612003-8422-446c-a408-780a08d155d7}</Project>
       <Name>Utils</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\BL\BL.csproj">
+      <Project>{a49b55d6-e194-413e-a676-ba9aa26e7ab7}</Project>
+      <Name>BL</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\Model\BRB5.Model.csproj">
       <Project>{e1c7dab8-e775-414d-91ce-30e46d8f40af}</Project>
       <Name>BRB5.Model</Name>

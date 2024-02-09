@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<TabbedPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="BRB5.Settings"
+             >  
+    
+
+    <ContentPage Title="Налаштування" x:Name="Admin" >
+        <ContentPage.Content>
+            <StackLayout>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="3*" />
+                    </Grid.ColumnDefinitions>
+
+                    <Label Text="{Binding Ver}" />
+                    <Label Text="{Binding SN}"
+                       Grid.Column="1" />
+                </Grid>
+
+                <Picker Title="Торговий зал"
+                    ItemsSource="{Binding ListWarehouse}"
+                    ItemDisplayBinding="{Binding Name}"
+                    SelectedIndex="{Binding SelectedWarehouse}"
+                    HorizontalOptions="Fill" />
+                <StackLayout Orientation="Horizontal" >
+                    <CheckBox IsChecked="{Binding IsViewAllWH}" />
+                    <Label Text="Показувати всі склади"  />
+                </StackLayout>
+
+                <Picker Title="Принтер"
+                    ItemsSource="{Binding ListTypeUsePrinter}"
+                    SelectedIndex="{Binding SelectedTypePrinter}"
+                    HorizontalOptions="Fill" />
+                <!--ItemDisplayBinding="{Binding TypeUsePrinter}"-->
+
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+
+                    <Button Text="З.Довідники"
+                        HorizontalOptions="Fill"
+                        Clicked="OnClickLoad" />
+
+                    <Button Text="З.Документи"
+                        Grid.Column="1"
+                        HorizontalOptions="Fill"
+                        Clicked="OnClickLoadDoc" />
+                </Grid>
+
+                <Picker Title="Рівень логування"
+                    ItemsSource="{Binding ListTypeLog}"
+                    SelectedIndex="{Binding SelectedTypeLog}"
+                    HorizontalOptions="Fill" />
+
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="3*" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="3*" />
+                    </Grid.ColumnDefinitions>
+
+                    <CheckBox IsChecked="{Binding IsVibration}" />
+                    <Label Text="Вібрація" Grid.Column="1" />
+
+                    <CheckBox IsChecked="{Binding IsSound}"
+                          Grid.Column="2" />
+                    <Label Text="Звук"
+                       Grid.Column="3" />
+                </Grid>
+
+
+                <ProgressBar ScaleY="2"
+                         Progress="1"
+                         VerticalOptions="EndAndExpand"
+                         ProgressColor="Black" />
+
+                <Button Text="Зберегти"
+                    Grid.Column="1"
+                    HorizontalOptions="Fill"
+                    VerticalOptions="End"
+                    Clicked="OnClickSave" />
+
+            </StackLayout>
+        </ContentPage.Content>
+    </ContentPage>
+    
+
+</TabbedPage>

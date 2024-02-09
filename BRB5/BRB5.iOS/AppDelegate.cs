@@ -22,6 +22,7 @@ namespace BRB5.iOS
             SQLitePCL.Batteries.Init();
             global::Xamarin.Forms.Forms.Init();
             FFImageLoading.Forms.Platform.CachedImageRenderer.Init();
+            DB.BaseDir = ProtoBRB.GetPathDB;
             LoadApplication(new App());
 
             return base.FinishedLaunching(app, options);
