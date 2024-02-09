@@ -1,6 +1,8 @@
 ﻿using BRB5.Model;
 using System;
 using System.Collections.ObjectModel;
+using System.Linq;
+using System.Reflection;
 using Xamarin.Forms;
 
 namespace BRB5.View
@@ -25,10 +27,6 @@ namespace BRB5.View
 
         public Docs(TypeDoc pTypeDoc )
         {
-            MessagingCenter.Subscribe<KeyEventMessage>(this, "F1Pressed", message => { OKPO(null, EventArgs.Empty); });
-            MessagingCenter.Subscribe<KeyEventMessage>(this, "8Pressed", message => { UpDown(8);  });
-            MessagingCenter.Subscribe<KeyEventMessage>(this, "2Pressed", message => { UpDown(2); });
-            MessagingCenter.Subscribe<KeyEventMessage>(this, "EnterPressed", message => {  });
             TypeDoc = pTypeDoc;
             Config.BarCode = BarCode;
             BindingContext = this;
@@ -38,9 +36,18 @@ namespace BRB5.View
         protected override void OnAppearing()
         {
             base.OnAppearing();
+
+            MessagingCenter.Subscribe<KeyEventMessage>(this, "F1Pressed", message => { OKPO(null, EventArgs.Empty); });
+            MessagingCenter.Subscribe<KeyEventMessage>(this, "8Pressed", message => { UpDown(8); });
+            MessagingCenter.Subscribe<KeyEventMessage>(this, "2Pressed", message => { UpDown(2); });
+            MessagingCenter.Subscribe<KeyEventMessage>(this, "EnterPressed", message => { EnterKey(); });
             c.LoadDocsDataAsync(TypeDoc.CodeDoc, null, false);
             MyDocsR = new ObservableCollection<Doc>(db.GetDoc(TypeDoc));
-            if (MyDocsR.Count > 0) ListDocs.SelectedItem = MyDocsR[0];            
+            if (MyDocsR.Count > 0)
+            {
+                MyDocsR[0].SelectedColor = true;
+                ListDocs.SelectedItem = MyDocsR[0];
+            }       
             OnPropertyChanged(nameof(MyDocsR));
         }
         protected override void OnDisappearing()
@@ -91,24 +98,28 @@ namespace BRB5.View
             if (key == 2)
             {
                 if (Config.TypeScaner == eTypeScaner.PM550 || Config.TypeScaner == eTypeScaner.PM351) Up();
-                else if ( Config.TypeScaner == eTypeScaner.Zebra) Down();
+                else if ( Config.TypeScaner == eTypeScaner.Zebra || Config.TypeScaner == eTypeScaner.BitaHC61) Down();
             }
             else if (key == 8)
             {
                 if (Config.TypeScaner == eTypeScaner.PM550 || Config.TypeScaner == eTypeScaner.PM351) Down();
-                else if ( Config.TypeScaner == eTypeScaner.Zebra) Up();
+                else if ( Config.TypeScaner == eTypeScaner.Zebra || Config.TypeScaner == eTypeScaner.BitaHC61) Up();
             }
 
         }
         private void Up()
         {
-            // ListWares.ScrollTo(tempSelected, ScrollToPosition.Start, false);
-
             var selectedItem = (Doc)ListDocs.SelectedItem;
             if (selectedItem != null)
             {
                 var selectedIndex = MyDocsR.IndexOf(selectedItem);
-                if (selectedIndex > 0) ListDocs.SelectedItem = MyDocsR[selectedIndex - 1];
+                if (selectedIndex > 0)
+                {
+                    MyDocsR[selectedIndex].SelectedColor = false;
+                    MyDocsR[selectedIndex - 1].SelectedColor = true;
+                    ListDocs.SelectedItem = MyDocsR[selectedIndex - 1];
+                    ListDocs.ScrollTo(ListDocs.SelectedItem, ScrollToPosition.Center, false);
+                }
                 OnPropertyChanged(nameof(MyDocsR));
             }
         }
@@ -118,8 +129,23 @@ namespace BRB5.View
             if (selectedItem != null)
             {
                 var selectedIndex = MyDocsR.IndexOf(selectedItem);
-                if (selectedIndex < MyDocsR.Count - 1)   ListDocs.SelectedItem = MyDocsR[selectedIndex + 1];
+
+                if (selectedIndex < MyDocsR.Count - 1)
+                {
+                    MyDocsR[selectedIndex].SelectedColor = false;
+                    MyDocsR[selectedIndex + 1].SelectedColor = true;
+                    ListDocs.SelectedItem = MyDocsR[selectedIndex + 1];
+                    ListDocs.ScrollTo(ListDocs.SelectedItem, ScrollToPosition.Center, false);
+                }
                 OnPropertyChanged(nameof(MyDocsR));
+            }
+        }
+        private async void EnterKey()
+        {
+            var selectedItem = (Doc)ListDocs.SelectedItem;
+            if (selectedItem != null)
+            {
+                await Navigation.PushAsync(new DocItem(selectedItem, TypeDoc));
             }
         }
         private void FilterBarCode(ZXing.Result result)
