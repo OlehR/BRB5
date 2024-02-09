@@ -34,6 +34,7 @@ namespace BRB5.View
             MessagingCenter.Subscribe<KeyEventMessage>(this, "F2Pressed", message => {  });
             MessagingCenter.Subscribe<KeyEventMessage>(this, "F3Pressed", message => {  });
             MessagingCenter.Subscribe<KeyEventMessage>(this, "F8Pressed", message => {  });
+            MessagingCenter.Subscribe<KeyEventMessage>(this, "BackPressed", message => { KeyBack(); });
 
             DocId = pDocId;
             TypeDoc = pTypeDoc!=null? pTypeDoc:Config.GetDocSetting(pDocId.TypeDoc);
@@ -133,6 +134,7 @@ namespace BRB5.View
             MessagingCenter.Unsubscribe<KeyEventMessage>(this, "F2Pressed");
             MessagingCenter.Unsubscribe<KeyEventMessage>(this, "F3Pressed");
             MessagingCenter.Unsubscribe<KeyEventMessage>(this, "F8Pressed");
+            MessagingCenter.Unsubscribe<KeyEventMessage>(this, "BackPressed");
         }
 
         public void FindWareByBarCodeAsync(string BarCode)
@@ -226,6 +228,10 @@ namespace BRB5.View
             if (TypeDoc.TypeControlQuantity == eTypeControlDoc.Ask) ScanData = null;
 
             zxing.IsAnalyzing = true;
+        }
+        private async void KeyBack()
+        {
+            await Navigation.PopAsync();
         }
     }
 }

@@ -89,7 +89,7 @@ namespace BRB5
             MessagingCenter.Subscribe<KeyEventMessage>(this, "F2Pressed", message => { OnF2(null, EventArgs.Empty); });
             MessagingCenter.Subscribe<KeyEventMessage>(this, "F5Pressed", message => { OnF5(null, EventArgs.Empty); });
             MessagingCenter.Subscribe<KeyEventMessage>(this, "F6Pressed", message => { OnClickPrintOne(null, EventArgs.Empty); });
-
+            MessagingCenter.Subscribe<KeyEventMessage>(this, "BackPressed", message => { KeyBack(); });
 
             c = Connector.Connector.GetInstance();
             var r = db.GetCountScanCode();
@@ -211,6 +211,7 @@ namespace BRB5
             MessagingCenter.Unsubscribe<KeyEventMessage>(this, "F2Pressed");
             MessagingCenter.Unsubscribe<KeyEventMessage>(this, "F5Pressed");
             MessagingCenter.Unsubscribe<KeyEventMessage>(this, "F6Pressed");
+            MessagingCenter.Unsubscribe<KeyEventMessage>(this, "BackPressed");
         }
 
         public void Dispose()
@@ -276,6 +277,11 @@ namespace BRB5
         {
             if (IsEnabledPrint && WP!=null)
                 _ = DisplayAlert("Друк", c.PrintHTTP(new[] { WP.CodeWares }), "OK");
+        }
+    
+        private async void KeyBack()
+        {
+            await Navigation.PopAsync();    
         }
     }
 }

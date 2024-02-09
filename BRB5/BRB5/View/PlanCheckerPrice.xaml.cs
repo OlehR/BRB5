@@ -85,11 +85,13 @@ namespace BRB5.View
                 zxing.IsScanning = true;
                 zxing.IsAnalyzing = true;
             }
+            MessagingCenter.Subscribe<KeyEventMessage>(this, "BackPressed", message => { KeyBack(); });
         }
         protected override void OnDisappearing()
         {
             if (IsVisScan) zxing.IsScanning = false;
             base.OnDisappearing();
+            MessagingCenter.Unsubscribe<KeyEventMessage>(this, "BackPressed");
         }
 
         public void Dispose()
@@ -210,5 +212,9 @@ namespace BRB5.View
             }
         }
 
+        private async void KeyBack()
+        {
+            await Navigation.PopAsync();
+        }
     }
 }

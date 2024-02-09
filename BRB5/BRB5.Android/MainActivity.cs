@@ -30,7 +30,7 @@ namespace BRB5.Droid
         //public static string SerialNumber = "None";
         protected override void OnCreate(Bundle savedInstanceState)
         {
-            DB.BaseDir = ProtoBRB.GetPathDB;
+            
             AppCompatDelegate.DefaultNightMode = AppCompatDelegate.ModeNightNo;
             base.OnCreate(savedInstanceState);
             BR = new MyBroadcastReceiver();
@@ -38,8 +38,8 @@ namespace BRB5.Droid
 
             Thread.CurrentThread.CurrentCulture = CultureInfo.InvariantCulture;
             Thread.CurrentThread.CurrentUICulture = CultureInfo.InvariantCulture;
-            
-            DB db = DB.GetDB();
+
+            DB db = DB.GetDB(ProtoBRB.GetPathDB);
             // Path.Combine(Android.OS.Environment.ExternalStorageDirectory.AbsolutePath, Android.OS.Environment.DirectoryDownloads);
             Config.PathDownloads = Path.Combine(Android.App.Application.Context.GetExternalFilesDir("").AbsolutePath, Android.OS.Environment.DirectoryDownloads);
             Config.SN = GetDeviceId();
@@ -360,6 +360,9 @@ namespace BRB5.Droid
         {
             switch (keyCode)
             {
+                case Keycode.Back:
+                    MessagingCenter.Send(new KeyEventMessage { Key = "BackPressed" }, "BackPressed");
+                    break;
                 case Keycode.F1:
                     MessagingCenter.Send(new KeyEventMessage { Key = "F1Pressed" }, "F1Pressed");
                     break;
