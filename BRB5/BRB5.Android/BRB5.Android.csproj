@@ -45,7 +45,7 @@
     <AndroidSigningStorePass>Nataly75</AndroidSigningStorePass>
     <AndroidSigningKeyAlias>Unics.TM</AndroidSigningKeyAlias>
     <AndroidSigningKeyPass>Nataly75</AndroidSigningKeyPass>
-    <Debugger>Native</Debugger>
+    <Debugger>Xamarin</Debugger>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
