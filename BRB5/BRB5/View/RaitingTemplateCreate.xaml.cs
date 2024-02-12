@@ -9,6 +9,7 @@ namespace BRB5.View
 		private RaitingTemplate _RT;
 		public RaitingTemplate RT { get { return _RT; } set { _RT = value; OnPropertyChanged(nameof(RT.Text)); } }
         public bool AddTotal { get; set; }
+        public bool IsSoftKeyboard { get { return Config.IsSoftKeyboard; } }
 
         DB db = DB.GetDB();
         public RaitingTemplateCreate (int id)

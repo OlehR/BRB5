@@ -29,6 +29,7 @@ namespace BRB5
         public bool IsVisLS { get; set; } = true;
         public string Ver { get { return"BRB5 (" + AppInfo.VersionString + ")"; } }
         public string Company { get { return Enum.GetName(typeof(eCompany), Config.Company); } }
+        public bool IsSoftKeyboard { get { return Config.IsSoftKeyboard; } }
         public MainPage()
         {
             OCTypeDoc = new ObservableCollection<TypeDoc>();

@@ -9,6 +9,7 @@ namespace BRB5.View
         private Doc Doc;
         private Connector.Connector c = Connector.Connector.GetInstance();
         protected DB db = DB.GetDB();
+        public bool IsSoftKeyboard { get { return Config.IsSoftKeyboard; } }
         public ObservableCollection<DocWaresEx> DocWares { get; set; } = new ObservableCollection<DocWaresEx>();
         public ManualInput (DocId pDocId, TypeDoc pTypeDoc)
         {

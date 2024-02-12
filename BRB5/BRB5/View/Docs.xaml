@@ -3,6 +3,7 @@
 <local:BaseContentPage xmlns="http://xamarin.com/schemas/2014/forms"
                        xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" xmlns:local="clr-namespace:BRB5.View"
                        x:Class="BRB5.View.Docs"
+                       xmlns:effects="clr-namespace:Xamarin.KeyboardHelper;assembly=Xamarin.KeyboardHelper"
                        xmlns:forms="clr-namespace:ZXing.Net.Mobile.Forms;assembly=ZXing.Net.Mobile.Forms"
                        xmlns:controls="clr-namespace:BRB5.View">
     <ContentPage.Resources>
@@ -93,9 +94,15 @@
                 <Frame Style="{StaticResource FrameStyle}">
                     <controls:CustomEntry Style="{StaticResource EntryStyle}"
                                           Placeholder="ЗКПО"
+                                          effects:KeyboardEffect.EnableKeyboard="{Binding IsSoftKeyboard}"
                                           Text="{Binding OPKOstr}"
                                           Keyboard="Numeric"
-                                          Completed="FilterDocs" />
+                                          x:Name="ZKPOEntry"
+                                          Completed="FilterDocs" >
+                        <controls:CustomEntry.Effects>
+                            <effects:KeyboardEnableEffect/>
+                        </controls:CustomEntry.Effects>
+                    </controls:CustomEntry>
                 </Frame>
             </Grid>
 

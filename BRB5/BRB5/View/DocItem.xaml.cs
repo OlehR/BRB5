@@ -28,6 +28,7 @@ namespace BRB5.View
                 }
         }
         public int SelectedDataStr { get; set; } = 0;
+        public bool IsSoftKeyboard { get {  return Config.IsSoftKeyboard; } }
         bool _IsVisibleDocF6 = false;
         public bool IsVisibleDocF6 { get { return _IsVisibleDocF6; } set { _IsVisibleDocF6 = value; OnPropertyChanged("IsVisibleDocF6"); } } 
         public ObservableCollection<DocWaresEx> MyDocWares { get; set; } = new ObservableCollection<DocWaresEx>();
@@ -83,7 +84,13 @@ namespace BRB5.View
         private void F6Doc(object sender, EventArgs e)
         {
             IsVisibleDocF6 = !IsVisibleDocF6;
-        }        
+            if (IsVisibleDocF6) DocDate.Focus();
+        }
+
+        private void DocNameFocus(object sender, FocusEventArgs e)
+        {
+            DocName.Focus();
+        }
     }
     public class AlternateColorDataTemplateSelector : DataTemplateSelector
     {

@@ -17,6 +17,7 @@ namespace BRB5.View
         private Connector.Connector c;
         public TypeDoc TypeDoc { get; set; }
         public int OrderDoc { get; set; }
+        public bool IsSoftKeyboard { get { return Config.IsSoftKeyboard; } }
         public bool IsVisScan { get { return Config.TypeScaner == eTypeScaner.Camera; } }
         private DocId DocId;
         private bool _IsVisQ = false;

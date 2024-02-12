@@ -27,6 +27,7 @@ namespace BRB5.View
         public ObservableCollection<DocWaresEx> WaresList { get; set; }
         //private object Sender;
         private int ShelfType;
+        public bool IsSoftKeyboard { get { return Config.IsSoftKeyboard; } }
 
         public PlanCheckerPrice(Doc pDoc, int Selection)
         {

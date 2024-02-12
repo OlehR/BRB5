@@ -22,7 +22,7 @@ namespace BRB5.View
         bool _IsVisBarCode = false;
         public bool IsVisBarCode { get { return _IsVisBarCode; } set { _IsVisBarCode = value; OnPropertyChanged("IsVisBarCode"); } }
         public bool IsViewOut { get { return TypeDoc.IsViewOut; } }
-
+        public bool IsSoftKeyboard { get { return Config.IsSoftKeyboard; } }
         public bool IsVisScan { get { return Config.TypeScaner == eTypeScaner.Camera; } }
 
         public Docs(TypeDoc pTypeDoc )
@@ -71,6 +71,7 @@ namespace BRB5.View
         private void OKPO(object sender, EventArgs e)
         {
             IsVisOPKO = !IsVisOPKO;
+            if (IsVisOPKO) { ZKPOEntry.Focus(); }
         }
 
         private void FilterDocs(object sender, EventArgs e)

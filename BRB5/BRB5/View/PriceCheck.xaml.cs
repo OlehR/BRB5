@@ -36,7 +36,7 @@ namespace BRB5
 
         bool _IsVisRepl = false;
         public bool IsVisRepl { get { return _IsVisRepl; } set { _IsVisRepl = value; OnPropertyChanged("IsVisRepl"); } }
-
+        public bool IsSoftKeyboard { get { return Config.IsSoftKeyboard; } }
         double _PB = 0;
         public double PB { get { return _PB; } set { _PB = value; OnPropertyChanged("PB"); } }
 
@@ -237,6 +237,7 @@ namespace BRB5
         private void OnF2(object sender, EventArgs e)
         {
             IsVisRepl = !IsVisRepl;
+            if(IsVisRepl) NumberOfReplenishment.Focus();
         }
 
         private void OnF4(object sender, EventArgs e)
