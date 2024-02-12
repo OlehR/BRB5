@@ -76,6 +76,7 @@ namespace BRB5.Droid
             global::Xamarin.Forms.Forms.Init(this, savedInstanceState);
             global::ZXing.Net.Mobile.Forms.Android.Platform.Init();
             FFImageLoading.Forms.Platform.CachedImageRenderer.Init(enableFastRenderer: true );
+            Xamarin.KeyboardHelper.Platform.Droid.Effects.Init(this);
 
             LoadApplication(new App());
         }
