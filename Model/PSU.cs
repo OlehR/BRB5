@@ -61,11 +61,11 @@ namespace BRB5.Model
     public class ApiSaveDoc : ApiDoc
     {
         public ApiSaveDoc() : base() { }
-        public ApiSaveDoc(int pCodeData, int pTypeDoc, string pNumberDoc = null, IEnumerable<object> pWares = null) : base(pCodeData, pTypeDoc, pNumberDoc)
+        public ApiSaveDoc(int pCodeData, int pTypeDoc, string pNumberDoc = null, IEnumerable<decimal[]> pWares = null) : base(pCodeData, pTypeDoc, pNumberDoc)
         {
             Wares = pWares;
         }
-        public IEnumerable<object> Wares { get; set; }
+        public IEnumerable<decimal[]> Wares { get; set; }
 
     }
     public class ApiLogPrice : Api
