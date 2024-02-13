@@ -3,6 +3,7 @@
 <controls:BaseContentPage xmlns="http://xamarin.com/schemas/2014/forms"
                           xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
                           xmlns:controls="clr-namespace:BRB5.View"
+                          xmlns:effects="clr-namespace:Xamarin.KeyboardHelper;assembly=Xamarin.KeyboardHelper"
                           x:Class="BRB5.PriceCheck">
     <ContentPage.Content>
         <StackLayout BackgroundColor="{Binding ColorPrintColorType}">
@@ -130,10 +131,15 @@
                 <Label Text="Штрих код:" />
                 <Frame Style="{StaticResource FrameStyle}" Grid.Column="1">
                     <controls:CustomEntry Keyboard="Numeric" Style="{StaticResource EntryStyle}"
+                                          effects:KeyboardEffect.EnableKeyboard="{Binding IsSoftKeyboard}"
                                           Text="{Binding WP.BarCodes}" 
                                           x:Name="BarCodeInput"
                                           Focused="BarCodeFocused"
-                                          Completed="BarCodeHandInput"/>
+                                          Completed="BarCodeHandInput">
+                        <controls:CustomEntry.Effects>
+                            <effects:KeyboardEnableEffect/>
+                        </controls:CustomEntry.Effects>
+                    </controls:CustomEntry>
                 </Frame>
             </Grid>
 
@@ -147,9 +153,14 @@
                 <Frame Style="{StaticResource FrameStyle}"
                        Grid.Column="1">
                     <controls:CustomEntry Style="{StaticResource EntryStyle}"
-                                          Text=""
+                                          Text=""                                          
+                                          effects:KeyboardEffect.EnableKeyboard="{Binding IsSoftKeyboard}"
                                           x:Name="NumberOfReplenishment"
-                                          Keyboard="Numeric" />
+                                          Keyboard="Numeric" >
+                        <controls:CustomEntry.Effects>
+                            <effects:KeyboardEnableEffect/>
+                        </controls:CustomEntry.Effects>
+                    </controls:CustomEntry>
                 </Frame>
             </Grid>
 

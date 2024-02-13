@@ -37,6 +37,7 @@ namespace BRB5.View
             }
         }
         public int SelectedWarehouse { get; set; }
+        public bool IsSoftKeyboard { get { return Config.IsSoftKeyboard; } }
         public RaitingDocEdit (Doc doc, TypeDoc vTypeDoc)
 		{
 			InitializeComponent ();

@@ -1,13 +1,5 @@
-﻿using Android.App;
-using Android.Content;
-using Android.OS;
-using Android.Runtime;
-using Android.Views;
+﻿using Android.Content;
 using Android.Widget;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using Xamarin.Forms;
 using Xamarin.Forms.Platform.Android;
 using BRB5.View;
@@ -30,11 +22,6 @@ namespace BRB5.Droid
             if (Control != null)
             {
                 Control.Background = new ColorDrawable(Android.Graphics.Color.Transparent);
-                if (Config.TypeScaner != eTypeScaner.Camera)
-                {
-                    EditText editText = Control as EditText;
-                    editText.InputType = Android.Text.InputTypes.Null;
-                }
             }
         }
     }

@@ -4,6 +4,7 @@
                           xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
                           xmlns:forms="clr-namespace:ZXing.Net.Mobile.Forms;assembly=ZXing.Net.Mobile.Forms"
                           xmlns:controls="clr-namespace:BRB5.View"
+                          xmlns:effects="clr-namespace:Xamarin.KeyboardHelper;assembly=Xamarin.KeyboardHelper"
                           x:Class="BRB5.View.DocScan">
     <ContentPage.Content>
         <AbsoluteLayout Padding="0" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand">
@@ -41,15 +42,25 @@
 
                         <Frame Style="{StaticResource FrameStyle}">
                             <controls:CustomEntry Style="{StaticResource EntryStyle}"
+                                  effects:KeyboardEffect.EnableKeyboard="{Binding IsSoftKeyboard}"
                                                   Text="{Binding ScanData.BarCode}"
                                                   IsReadOnly="True"
-                                                  Placeholder="баркод" />
+                                                  Placeholder="баркод" >
+                                <controls:CustomEntry.Effects>
+                                    <effects:KeyboardEnableEffect/>
+                                </controls:CustomEntry.Effects>
+                            </controls:CustomEntry>
                         </Frame>
                         <Frame Style="{StaticResource FrameStyle}"
                                Grid.Column="1">
                             <controls:CustomEntry Style="{StaticResource EntryStyle}"
+                                  effects:KeyboardEffect.EnableKeyboard="{Binding IsSoftKeyboard}"
                                                   Text="{Binding ScanData.BeforeQuantity}"
-                                                  IsReadOnly="True" />
+                                                  IsReadOnly="True" >
+                                <controls:CustomEntry.Effects>
+                                    <effects:KeyboardEnableEffect/>
+                                </controls:CustomEntry.Effects>
+                            </controls:CustomEntry>
                         </Frame>
 
                         <Grid Grid.Row="1">
@@ -62,11 +73,16 @@
 
                             <Frame Grid.Column="0" Style="{StaticResource FrameStyle}">
                                 <controls:CustomEntry Style="{StaticResource EntryStyle}"
+                                  effects:KeyboardEffect.EnableKeyboard="{Binding IsSoftKeyboard}"
                                                       Text="{Binding ScanData.InputQuantity}"
                                                       x:Name="inputQ"
                                                       TextChanged="CalcQuantity"
                                                       Placeholder="к-сть"
-                                                      Keyboard="Telephone" />
+                                                      Keyboard="Telephone" >
+                                    <controls:CustomEntry.Effects>
+                                        <effects:KeyboardEnableEffect/>
+                                    </controls:CustomEntry.Effects>
+                                </controls:CustomEntry>
                             </Frame>
 
                             <Label Text="{Binding ScanData.NameUnit}" Grid.Column="1" />
@@ -75,8 +91,13 @@
                             <Frame Style="{StaticResource FrameStyle}"
                                    Grid.Column="3">
                                 <controls:CustomEntry Style="{StaticResource EntryStyle}"
+                                  effects:KeyboardEffect.EnableKeyboard="{Binding IsSoftKeyboard}"
                                                       Text="{Binding ScanData.Coefficient}"
-                                                      IsReadOnly="True" />
+                                                      IsReadOnly="True" >
+                                    <controls:CustomEntry.Effects>
+                                        <effects:KeyboardEnableEffect/>
+                                    </controls:CustomEntry.Effects>
+                                </controls:CustomEntry>
                             </Frame>
                         </Grid>
 
@@ -84,8 +105,13 @@
                                Grid.Column="1"
                                Grid.Row="1">
                             <controls:CustomEntry Style="{StaticResource EntryStyle}"
+                                  effects:KeyboardEffect.EnableKeyboard="{Binding IsSoftKeyboard}"
                                                   Text="{Binding ScanData.QuantityBarCode}"
-                                                  IsReadOnly="True" />
+                                                  IsReadOnly="True" >
+                                <controls:CustomEntry.Effects>
+                                    <effects:KeyboardEnableEffect/>
+                                </controls:CustomEntry.Effects>
+                            </controls:CustomEntry>
                         </Frame>
                     </Grid>
 

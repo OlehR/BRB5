@@ -4,6 +4,7 @@
                           xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
                           x:Class="BRB5.MainPage"
                           xmlns:controls="clr-namespace:BRB5.View"
+                          xmlns:effects="clr-namespace:Xamarin.KeyboardHelper;assembly=Xamarin.KeyboardHelper"
                           NavigationPage.HasNavigationBar="True">
     <NavigationPage.TitleView>
         <StackLayout Spacing="10" Orientation="Horizontal">
@@ -36,15 +37,25 @@
                     HorizontalOptions="Fill" />
             <Frame Style="{StaticResource FrameStyle}">
                 <controls:CustomEntry Style="{StaticResource EntryStyle}"
-                                      x:Name="loginEntry" Text="{Binding Login}" />
+                                      effects:KeyboardEffect.EnableKeyboard="{Binding IsSoftKeyboard}"
+                                      x:Name="loginEntry" Text="{Binding Login}" >
+                    <controls:CustomEntry.Effects>
+                        <effects:KeyboardEnableEffect/>
+                    </controls:CustomEntry.Effects>
+                </controls:CustomEntry>
             </Frame>
             <!--TextChanged="loginEntry_TextChanged"-->
             <Frame Style="{StaticResource FrameStyle}">
                 <controls:CustomEntry Style="{StaticResource EntryStyle}"
                                       x:Name="passwordEntry"
+                                      effects:KeyboardEffect.EnableKeyboard="{Binding IsSoftKeyboard}"
                                       Text="{Binding Password}"
                                       Placeholder="Password"
-                                      IsPassword="True" />
+                                      IsPassword="True" >
+                    <controls:CustomEntry.Effects>
+                        <effects:KeyboardEnableEffect/>
+                    </controls:CustomEntry.Effects>
+                </controls:CustomEntry>
             </Frame>
             <Button Text="Залогінитись" FontSize="Large" BorderWidth="1"
                     HorizontalOptions="Center" VerticalOptions="CenterAndExpand"
