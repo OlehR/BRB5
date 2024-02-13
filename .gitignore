@@ -12,3 +12,5 @@ obj
 /Model/Properties/PublishProfiles/FolderProfile.pubxml.user
 /Model/BRB5.Model.csproj.user
 /BRB5/BRB5.Android/Resources/Resource.designer.cs
+/BRB5/BRB5.Android/.vs/BRB5.Android.csproj.dtbcache.json
+/BRB5/BRB5.iOS/.vs/BRB5.iOS.csproj.dtbcache.json
