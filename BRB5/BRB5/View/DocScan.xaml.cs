@@ -1,8 +1,10 @@
 ﻿using BRB5.Model;
+using BRB5.ViewModel;
 using System;
 using System.Collections.ObjectModel;
 using System.Linq;
 using Xamarin.Forms;
+using ZXing.Net.Mobile.Forms;
 
 namespace BRB5.View
 {
@@ -27,7 +29,7 @@ namespace BRB5.View
         private string _DisplayQuestion;
         public string DisplayQuestion { get { return _DisplayQuestion; } set { _DisplayQuestion = value; OnPropertyChanged(nameof(DisplayQuestion)); } }
         private string TempBarcode;
-
+        ZXingScannerView zxing;
         public DocScan(DocId pDocId, TypeDoc pTypeDoc = null)
         {
             InitializeComponent();
@@ -38,17 +40,6 @@ namespace BRB5.View
             foreach (var t in tempListWares) { t.Ord = -1; }
             ListWares = tempListWares == null ? new ObservableCollection<DocWaresEx>(): new ObservableCollection<DocWaresEx>(tempListWares);
             OrderDoc = ListWares.Count > 0 ? ListWares.First().OrderDoc : 0;
-            if (IsVisScan)
-            {
-                zxing.OnScanResult += (result) =>
-                Device.BeginInvokeOnMainThread(async () => 
-                {
-                    zxing.IsAnalyzing = false;
-                    BarCode(result.Text);
-                    //zxing.IsAnalyzing = true;
-                });
-            }
-            else Config.BarCode = BarCode;
             NavigationPage.SetHasNavigationBar(this, Device.RuntimePlatform == Device.iOS || Config.TypeScaner == eTypeScaner.BitaHC61 || Config.TypeScaner == eTypeScaner.Zebra || Config.TypeScaner == eTypeScaner.PM550 || Config.TypeScaner == eTypeScaner.PM351);
             this.BindingContext = this;
         }
@@ -65,6 +56,8 @@ namespace BRB5.View
                     ScanData.InputQuantity = ScanData.QuantityBarCode;
                 else
                     inputQ.Text = "";
+
+                inputQ.Focus();
                 AddWare();
             }
         }
@@ -74,30 +67,36 @@ namespace BRB5.View
         }
         private void AddWare()
         {
-            inputQ.Unfocused += (object sender, FocusEventArgs e) =>
+            if (ScanData != null)
             {
-                if (ScanData != null) {
-                    if (!e.IsFocused && ScanData.InputQuantity == 0)
-                        ((Entry)sender).Focus();
-                    else
+                if (ScanData.InputQuantity > 0)
+                {
+                    ScanData.Quantity = ScanData.InputQuantity;
+                    ScanData.OrderDoc = ++OrderDoc;
+                    ScanData.Ord = -1;
+                    if (db.ReplaceDocWares(ScanData))
                     {
-                        ScanData.Quantity = ScanData.InputQuantity;
-                        ScanData.OrderDoc = ++OrderDoc;
-                        ScanData.Ord = -1;
-                        if (db.ReplaceDocWares(ScanData))
+                        ListWares.Insert(0, ScanData);
+                        foreach (var ware in ListWares)
                         {
-                            ListWares.Insert(0, ScanData);
-                            foreach (var ware in ListWares){
-                                if (ware.CodeWares == ScanData.CodeWares)ware.Ord = -1;}
-
-                            ScanData = null;
+                            if (ware.CodeWares == ScanData.CodeWares) ware.Ord = -1;
                         }
+                        ScanData = null;
                     }
+                    inputQ.Unfocus();
                 }
-            };
-
+            }
         }
-
+        private void UnfocusedInputQ(object sender, FocusEventArgs e)
+        {
+            if (ScanData != null)
+            {
+                if (!inputQ.IsFocused && ScanData.InputQuantity == 0)
+                    inputQ.Focus();
+                else
+                    AddWare();
+            }
+        }
         public decimal CountBeforeQuantity(int pCodeWares)
         {
             decimal res= 0;
@@ -117,8 +116,14 @@ namespace BRB5.View
         }
         protected override void OnAppearing()
         {
-            base.OnAppearing();
-            zxing.IsScanning = true;
+            base.OnAppearing(); 
+            if (IsVisScan)
+            {
+                zxing = ZxingBRB5.SetZxing(GridZxing, zxing, (Barcode) => BarCode(Barcode));
+                zxing.IsScanning = true;
+                zxing.IsAnalyzing = true;
+            }
+            else Config.BarCode = BarCode;
             if (!IsSoftKeyboard)
             {
                 MessagingCenter.Subscribe<KeyEventMessage>(this, "F1Pressed", message => { Reset(null, EventArgs.Empty); });
@@ -126,13 +131,14 @@ namespace BRB5.View
                 MessagingCenter.Subscribe<KeyEventMessage>(this, "F3Pressed", message => { });
                 MessagingCenter.Subscribe<KeyEventMessage>(this, "F8Pressed", message => { });
                 MessagingCenter.Subscribe<KeyEventMessage>(this, "BackPressed", message => { KeyBack(); });
+                MessagingCenter.Subscribe<KeyEventMessage>(this, "EnterPressed", message => { AddWare(); });
             }
         }
 
         protected override void OnDisappearing()
         {
             base.OnDisappearing();
-            zxing.IsScanning = false;
+            if (IsVisScan) zxing.IsScanning = false;
 
             if (!IsSoftKeyboard)
             {
@@ -141,6 +147,7 @@ namespace BRB5.View
                 MessagingCenter.Unsubscribe<KeyEventMessage>(this, "F3Pressed");
                 MessagingCenter.Unsubscribe<KeyEventMessage>(this, "F8Pressed");
                 MessagingCenter.Unsubscribe<KeyEventMessage>(this, "BackPressed");
+                MessagingCenter.Unsubscribe<KeyEventMessage>(this, "EnterPressed");
             }
         }
 
@@ -183,8 +190,7 @@ namespace BRB5.View
                         return;
                     }
                 }
-
-                zxing.IsAnalyzing = true;
+                if (IsVisScan)  zxing.IsAnalyzing = true;
             }
 
             return;
@@ -225,7 +231,7 @@ namespace BRB5.View
                 FindWareByBarCodeAsync(TempBarcode);
             }
 
-            zxing.IsAnalyzing = true;
+            if (IsVisScan) zxing.IsAnalyzing = true;
         }
 
         private void CancelClicked(object sender, EventArgs e)
@@ -234,11 +240,12 @@ namespace BRB5.View
             IsVisQOk = false;
             if (TypeDoc.TypeControlQuantity == eTypeControlDoc.Ask) ScanData = null;
 
-            zxing.IsAnalyzing = true;
+            if (IsVisScan) zxing.IsAnalyzing = true;
         }
         private async void KeyBack()
         {
             await Navigation.PopAsync();
         }
+
     }
 }

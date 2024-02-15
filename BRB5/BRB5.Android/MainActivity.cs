@@ -402,6 +402,18 @@ namespace BRB5.Droid
             }
             return base.OnKeyUp(keyCode, e);
         }
+        public override bool DispatchKeyEvent(KeyEvent e)
+        {
+            if (e.Action == KeyEventActions.Up)
+            {
+                if (e.KeyCode == Keycode.Enter)
+                {
+                    MessagingCenter.Send(new KeyEventMessage { Key = "EnterPressed" }, "EnterPressed");
+                    return true; 
+                }
+            }
+                return base.DispatchKeyEvent(e);
+        }
     }
 
     
