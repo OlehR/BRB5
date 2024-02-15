@@ -85,11 +85,6 @@ namespace BRB5
         public PriceCheck()
         {
             InitializeComponent();
-            MessagingCenter.Subscribe<KeyEventMessage>(this, "F1Pressed", message => { OnClickPrintBlock(null, EventArgs.Empty); });
-            MessagingCenter.Subscribe<KeyEventMessage>(this, "F2Pressed", message => { OnF2(null, EventArgs.Empty); });
-            MessagingCenter.Subscribe<KeyEventMessage>(this, "F5Pressed", message => { OnF5(null, EventArgs.Empty); });
-            MessagingCenter.Subscribe<KeyEventMessage>(this, "F6Pressed", message => { OnClickPrintOne(null, EventArgs.Empty); });
-            MessagingCenter.Subscribe<KeyEventMessage>(this, "BackPressed", message => { KeyBack(); });
 
             c = Connector.Connector.GetInstance();
             var r = db.GetCountScanCode();
@@ -159,6 +154,15 @@ namespace BRB5
         protected override void OnAppearing()
         {
             base.OnAppearing();
+
+            if (!IsSoftKeyboard)
+            {
+                MessagingCenter.Subscribe<KeyEventMessage>(this, "F1Pressed", message => { OnClickPrintBlock(null, EventArgs.Empty); });
+                MessagingCenter.Subscribe<KeyEventMessage>(this, "F2Pressed", message => { OnF2(null, EventArgs.Empty); });
+                MessagingCenter.Subscribe<KeyEventMessage>(this, "F5Pressed", message => { OnF5(null, EventArgs.Empty); });
+                MessagingCenter.Subscribe<KeyEventMessage>(this, "F6Pressed", message => { OnClickPrintOne(null, EventArgs.Empty); });
+                MessagingCenter.Subscribe<KeyEventMessage>(this, "BackPressed", message => { KeyBack(); });
+            }
             if (IsVisScan)
             {
                 zxing = SetZxing(GridZxing, zxing);
@@ -207,11 +211,14 @@ namespace BRB5
             base.OnDisappearing();
             if (IsVisScan) zxing.IsScanning = false;
 
-            MessagingCenter.Unsubscribe<KeyEventMessage>(this, "F1Pressed");
-            MessagingCenter.Unsubscribe<KeyEventMessage>(this, "F2Pressed");
-            MessagingCenter.Unsubscribe<KeyEventMessage>(this, "F5Pressed");
-            MessagingCenter.Unsubscribe<KeyEventMessage>(this, "F6Pressed");
-            MessagingCenter.Unsubscribe<KeyEventMessage>(this, "BackPressed");
+            if (!IsSoftKeyboard)
+            {
+                MessagingCenter.Unsubscribe<KeyEventMessage>(this, "F1Pressed");
+                MessagingCenter.Unsubscribe<KeyEventMessage>(this, "F2Pressed");
+                MessagingCenter.Unsubscribe<KeyEventMessage>(this, "F5Pressed");
+                MessagingCenter.Unsubscribe<KeyEventMessage>(this, "F6Pressed");
+                MessagingCenter.Unsubscribe<KeyEventMessage>(this, "BackPressed");
+            }
         }
 
         public void Dispose()

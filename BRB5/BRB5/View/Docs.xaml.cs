@@ -36,11 +36,13 @@ namespace BRB5.View
         protected override void OnAppearing()
         {
             base.OnAppearing();
-
-            MessagingCenter.Subscribe<KeyEventMessage>(this, "F1Pressed", message => { OKPO(null, EventArgs.Empty); });
-            MessagingCenter.Subscribe<KeyEventMessage>(this, "8Pressed", message => { UpDown(8); });
-            MessagingCenter.Subscribe<KeyEventMessage>(this, "2Pressed", message => { UpDown(2); });
-            MessagingCenter.Subscribe<KeyEventMessage>(this, "EnterPressed", message => { EnterKey(); });
+            if (!IsSoftKeyboard)
+            {
+                MessagingCenter.Subscribe<KeyEventMessage>(this, "F1Pressed", message => { OKPO(null, EventArgs.Empty); });
+                MessagingCenter.Subscribe<KeyEventMessage>(this, "8Pressed", message => { UpDown(8); });
+                MessagingCenter.Subscribe<KeyEventMessage>(this, "2Pressed", message => { UpDown(2); });
+                MessagingCenter.Subscribe<KeyEventMessage>(this, "EnterPressed", message => { EnterKey(); });
+            }
             c.LoadDocsDataAsync(TypeDoc.CodeDoc, null, false);
             MyDocsR = new ObservableCollection<Doc>(db.GetDoc(TypeDoc));
             if (MyDocsR.Count > 0)
@@ -54,10 +56,13 @@ namespace BRB5.View
         {
             base.OnDisappearing();
             zxing.IsScanning = false;
-            MessagingCenter.Unsubscribe<KeyEventMessage>(this, "F1Pressed");
-            MessagingCenter.Unsubscribe<KeyEventMessage>(this, "8Pressed");
-            MessagingCenter.Unsubscribe<KeyEventMessage>(this, "2Pressed");
-            MessagingCenter.Unsubscribe<KeyEventMessage>(this, "EnterPressed");
+            if (!IsSoftKeyboard)
+            {
+                MessagingCenter.Unsubscribe<KeyEventMessage>(this, "F1Pressed");
+                MessagingCenter.Unsubscribe<KeyEventMessage>(this, "8Pressed");
+                MessagingCenter.Unsubscribe<KeyEventMessage>(this, "2Pressed");
+                MessagingCenter.Unsubscribe<KeyEventMessage>(this, "EnterPressed");
+            }
         }
         private async void OpenDoc(object sender, EventArgs e)
         {

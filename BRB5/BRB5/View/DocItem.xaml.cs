@@ -34,10 +34,6 @@ namespace BRB5.View
         public ObservableCollection<DocWaresEx> MyDocWares { get; set; } = new ObservableCollection<DocWaresEx>();
         public DocItem(DocId pDocId,  TypeDoc pTypeDoc)
         {
-            MessagingCenter.Subscribe<KeyEventMessage>(this, "F2Pressed", message => { F2Save(null, EventArgs.Empty); });
-            MessagingCenter.Subscribe<KeyEventMessage>(this, "F3Pressed", message => { F3Scan(null, EventArgs.Empty); });
-            MessagingCenter.Subscribe<KeyEventMessage>(this, "F4Pressed", message => { F4WrOff(null, EventArgs.Empty); });
-            MessagingCenter.Subscribe<KeyEventMessage>(this, "F6Pressed", message => { F6Doc(null, EventArgs.Empty); });
             TypeDoc = pTypeDoc;
             Doc = new Doc(pDocId);           
             BindingContext = this;
@@ -46,6 +42,14 @@ namespace BRB5.View
         protected override void OnAppearing()
         {
             base.OnAppearing();
+
+            if(!IsSoftKeyboard)
+            {
+                MessagingCenter.Subscribe<KeyEventMessage>(this, "F2Pressed", message => { F2Save(null, EventArgs.Empty); });
+                MessagingCenter.Subscribe<KeyEventMessage>(this, "F3Pressed", message => { F3Scan(null, EventArgs.Empty); });
+                MessagingCenter.Subscribe<KeyEventMessage>(this, "F4Pressed", message => { F4WrOff(null, EventArgs.Empty); });
+                MessagingCenter.Subscribe<KeyEventMessage>(this, "F6Pressed", message => { F6Doc(null, EventArgs.Empty); });
+            }
             var r = db.GetDocWares(Doc, 1, eTypeOrder.Scan);
             if (r != null)
             {
@@ -57,10 +61,14 @@ namespace BRB5.View
         protected override void OnDisappearing()
         {
             base.OnDisappearing();
-            MessagingCenter.Unsubscribe<KeyEventMessage>(this, "F2Pressed");
-            MessagingCenter.Unsubscribe<KeyEventMessage>(this, "F3Pressed");
-            MessagingCenter.Unsubscribe<KeyEventMessage>(this, "F4Pressed");
-            MessagingCenter.Unsubscribe<KeyEventMessage>(this, "F6Pressed");
+
+            if (!IsSoftKeyboard)
+            {
+                MessagingCenter.Unsubscribe<KeyEventMessage>(this, "F2Pressed");
+                MessagingCenter.Unsubscribe<KeyEventMessage>(this, "F3Pressed");
+                MessagingCenter.Unsubscribe<KeyEventMessage>(this, "F4Pressed");
+                MessagingCenter.Unsubscribe<KeyEventMessage>(this, "F6Pressed");
+            }
         }
         private void F2Save(object sender, EventArgs e)
         {

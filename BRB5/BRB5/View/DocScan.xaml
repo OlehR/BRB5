@@ -175,7 +175,7 @@
                         </ListView.ItemTemplate>
                     </ListView>
 
-                    <StackLayout Grid.Row="3" VerticalOptions="Fill" Orientation="Horizontal">
+                    <StackLayout Grid.Row="3" VerticalOptions="EndAndExpand" Orientation="Horizontal">
                         <Label Text="f1-"
                                FontSize="16"
                                Grid.Column="2"

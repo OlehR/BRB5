@@ -31,12 +31,6 @@ namespace BRB5.View
         public DocScan(DocId pDocId, TypeDoc pTypeDoc = null)
         {
             InitializeComponent();
-            MessagingCenter.Subscribe<KeyEventMessage>(this, "F1Pressed", message => { Reset(null, EventArgs.Empty); });
-            MessagingCenter.Subscribe<KeyEventMessage>(this, "F2Pressed", message => {  });
-            MessagingCenter.Subscribe<KeyEventMessage>(this, "F3Pressed", message => {  });
-            MessagingCenter.Subscribe<KeyEventMessage>(this, "F8Pressed", message => {  });
-            MessagingCenter.Subscribe<KeyEventMessage>(this, "BackPressed", message => { KeyBack(); });
-
             DocId = pDocId;
             TypeDoc = pTypeDoc!=null? pTypeDoc:Config.GetDocSetting(pDocId.TypeDoc);
             c = Connector.Connector.GetInstance();
@@ -125,17 +119,29 @@ namespace BRB5.View
         {
             base.OnAppearing();
             zxing.IsScanning = true;
+            if (!IsSoftKeyboard)
+            {
+                MessagingCenter.Subscribe<KeyEventMessage>(this, "F1Pressed", message => { Reset(null, EventArgs.Empty); });
+                MessagingCenter.Subscribe<KeyEventMessage>(this, "F2Pressed", message => { });
+                MessagingCenter.Subscribe<KeyEventMessage>(this, "F3Pressed", message => { });
+                MessagingCenter.Subscribe<KeyEventMessage>(this, "F8Pressed", message => { });
+                MessagingCenter.Subscribe<KeyEventMessage>(this, "BackPressed", message => { KeyBack(); });
+            }
         }
 
         protected override void OnDisappearing()
         {
             base.OnDisappearing();
             zxing.IsScanning = false;
-            MessagingCenter.Unsubscribe<KeyEventMessage>(this, "F1Pressed");
-            MessagingCenter.Unsubscribe<KeyEventMessage>(this, "F2Pressed");
-            MessagingCenter.Unsubscribe<KeyEventMessage>(this, "F3Pressed");
-            MessagingCenter.Unsubscribe<KeyEventMessage>(this, "F8Pressed");
-            MessagingCenter.Unsubscribe<KeyEventMessage>(this, "BackPressed");
+
+            if (!IsSoftKeyboard)
+            {
+                MessagingCenter.Unsubscribe<KeyEventMessage>(this, "F1Pressed");
+                MessagingCenter.Unsubscribe<KeyEventMessage>(this, "F2Pressed");
+                MessagingCenter.Unsubscribe<KeyEventMessage>(this, "F3Pressed");
+                MessagingCenter.Unsubscribe<KeyEventMessage>(this, "F8Pressed");
+                MessagingCenter.Unsubscribe<KeyEventMessage>(this, "BackPressed");
+            }
         }
 
         public void FindWareByBarCodeAsync(string BarCode)
