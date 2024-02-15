@@ -1,19 +1,14 @@
 ﻿using BRB5.Model;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Input;
 using Xamarin.Forms;
-using Xamarin.Forms.Xaml;
 using ZXing.Net.Mobile.Forms;
 using Xamarin.Essentials;
 using ZXing;
 using ZXing.Mobile;
 using BRB5.View;
-using System.Net.NetworkInformation;
+using BRB5.ViewModel;
 
 //using BRB5.Connector;
 namespace BRB5
@@ -165,45 +160,11 @@ namespace BRB5
             }
             if (IsVisScan)
             {
-                zxing = SetZxing(GridZxing, zxing);
+                zxing = ZxingBRB5.SetZxing(GridZxing, zxing, (BarCode) => FoundWares(BarCode));
                 zxing.IsScanning = true;
                 zxing.IsAnalyzing = true;
             }
             BarCodeInput.Focus();
-        }
-
-        /// <summary>
-        /// Костиль через баг https://github.com/Redth/ZXing.Net.Mobile/issues/710
-        /// </summary>
-        ZXingScannerView SetZxing(Grid pV, ZXingScannerView pZxing)
-        {
-            if (pZxing != null)
-            {
-                if (Device.RuntimePlatform == Device.iOS)
-                    return pZxing;
-                pV.Children.Remove(pZxing);
-            }
-            pZxing = new ZXingScannerView();
-            pV.Children.Add(pZxing);
-
-            pZxing.Options = new MobileBarcodeScanningOptions
-            {
-                PossibleFormats = new List<BarcodeFormat>
-                    {
-                        BarcodeFormat.All_1D,
-                        BarcodeFormat.QR_CODE,
-                    },
-                UseNativeScanning = true,
-            };
-            pZxing.OnScanResult += (result) =>
-                Device.BeginInvokeOnMainThread(async () =>
-                // Stop analysis until we navigate away so we don't keep reading barcodes
-                {
-                    pZxing.IsAnalyzing = false;
-                    FoundWares(result.Text, false);
-                    pZxing.IsAnalyzing = true;
-                });            
-            return pZxing;
         }
 
         protected override void OnDisappearing()

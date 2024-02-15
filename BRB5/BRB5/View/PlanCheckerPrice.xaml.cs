@@ -13,6 +13,7 @@ using ZXing.Net.Mobile.Forms;
 using System.Collections.ObjectModel;
 using static SQLite.SQLite3;
 using System.Reflection;
+using BRB5.ViewModel;
 
 namespace BRB5.View
 {
@@ -82,7 +83,7 @@ namespace BRB5.View
             base.OnAppearing();
             if (IsVisScan)
             {
-                zxing = SetZxing(GridZxing, zxing);
+                zxing = ZxingBRB5.SetZxing(GridZxing, zxing, (BarCode) => WareFocus(BarCode));
                 zxing.IsScanning = true;
                 zxing.IsAnalyzing = true;
             }
@@ -107,36 +108,7 @@ namespace BRB5.View
         {
             Config.BarCode -= BarCode;
         }
-        ZXingScannerView SetZxing(Grid pV, ZXingScannerView pZxing)
-        {
-            if (pZxing != null)
-            {
-                if (Device.RuntimePlatform == Device.iOS)
-                    return pZxing;
-                pV.Children.Remove(pZxing);
-            }
-            pZxing = new ZXingScannerView();
-            pV.Children.Add(pZxing);
-
-            pZxing.Options = new MobileBarcodeScanningOptions
-            {
-                PossibleFormats = new List<BarcodeFormat>
-                    {
-                        BarcodeFormat.All_1D,
-                        BarcodeFormat.QR_CODE,
-                    },
-                UseNativeScanning = true,
-            };
-            pZxing.OnScanResult += (result) =>
-                Device.BeginInvokeOnMainThread(async () =>
-                // Stop analysis until we navigate away so we don't keep reading barcodes
-                {
-                    pZxing.IsAnalyzing = false; 
-                    WareFocus(result.Text);
-                    pZxing.IsAnalyzing = true;
-                });
-            return pZxing;
-        }
+        
         private void WareFocus(string pBarCode)
         {
             var parseBarCode = c.ParsedBarCode(pBarCode, true);
