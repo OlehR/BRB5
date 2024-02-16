@@ -1,4 +1,6 @@
-﻿using BRB5.Model;
+﻿using BL;
+using BL.Connector;
+using BRB5.Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,7 +16,7 @@ namespace BRB5.View
     public partial class WareInfo : ContentPage
     {
         DB db = DB.GetDB(); 
-        Connector.Connector c;
+        Connector c;
         public WaresPrice WP { get; set; }
         public bool IsVisPromotion {  get; set; }  = false;
         public bool IsNotFullScreenImg { get; set; } = true;
@@ -24,7 +26,7 @@ namespace BRB5.View
         public WareInfo(ParseBarCode parseBarCode)
         {
             InitializeComponent();
-            c = Connector.Connector.GetInstance();
+            c = Connector.GetInstance();
             NavigationPage.SetHasNavigationBar(this, Device.RuntimePlatform == Device.iOS);
             
             WP = c.GetPrice(parseBarCode, eTypePriceInfo.Full);

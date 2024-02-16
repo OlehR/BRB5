@@ -1,4 +1,6 @@
-﻿using BRB5.Model;
+﻿using BL;
+using BL.Connector;
+using BRB5.Model;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -16,14 +18,14 @@ namespace BRB5.View
     {
 
         DB db = DB.GetDB();
-        Connector.Connector c;
+        Connector c;
 
         public ObservableCollection<Doc> PromotionList { get; set; }
         public int Selection { get; set; } = 0;
         public PlanCheckPrice()
         {
             InitializeComponent();
-            c = Connector.Connector.GetInstance();
+            c = Connector.GetInstance();
 
             var temp = c.GetPromotion(Config.CodeWarehouse);
             if (temp.Info == null)

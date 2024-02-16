@@ -1,4 +1,6 @@
-﻿using BRB5.Model;
+﻿using BL;
+using BL.Connector;
+using BRB5.Model;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -11,7 +13,7 @@ namespace BRB5.View
 {
     public partial class Settings
     {
-        private Connector.Connector c;
+        private Connector c;
         DB db = DB.GetDB();
         //public string Ver { get { return "Ver:"+ Assembly.GetExecutingAssembly().GetName().Version; } }
         public string Ver { get { return "Ver:" + AppInfo.VersionString; } }
@@ -77,7 +79,7 @@ namespace BRB5.View
             InitializeComponent();
             NavigationPage.SetHasNavigationBar(this, Device.RuntimePlatform == Device.iOS);
 
-            c = Connector.Connector.GetInstance();
+            c = Connector.GetInstance();
 
             Warehouses = new ObservableCollection<Warehouse>(ListWarehouse);
             if (Config.CodesWarehouses != null) {

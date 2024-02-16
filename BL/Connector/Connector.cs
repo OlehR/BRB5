@@ -1,10 +1,11 @@
-﻿using BRB5.Model;
+﻿using BRB5;
+using BRB5.Model;
 using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BRB5.Connector
+namespace BL.Connector
 {
     public class ObservableInt { }
     public class Connector
@@ -75,7 +76,7 @@ namespace BRB5.Connector
         /// </summary>
         /// <param name="pR"></param>
         /// <returns></returns>
-        public virtual Result SendRaiting(IEnumerable<Model.RaitingDocItem> pR, Doc pDoc)  { throw new NotImplementedException(); }
+        public virtual Result SendRaiting(IEnumerable<RaitingDocItem> pR, Doc pDoc)  { throw new NotImplementedException(); }
 
         /// <summary>
         /// Вивантажеємо на сервер файли Рейтингів

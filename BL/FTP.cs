@@ -5,7 +5,7 @@ using System.Net;
 using System.IO;
 using Utils;
 
-namespace BRB5
+namespace BL
 {
     public class FTP
     {

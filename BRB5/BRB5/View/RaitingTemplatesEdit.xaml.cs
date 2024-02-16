@@ -1,4 +1,6 @@
-﻿using BRB5.Model;
+﻿using BL;
+using BL.Connector;
+using BRB5.Model;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -18,13 +20,13 @@ namespace BRB5.View
         public ObservableCollection<RaitingTemplate> RTemplate { get { return _RTemplate; } set { _RTemplate = value; OnPropertyChanged(nameof(RTemplate)); } }
 
         DB db = DB.GetDB();
-        BRB5.Connector.Connector c;
+        Connector c;
         private bool ShowHidden = false;
 
         public RaitingTemplatesEdit()
         {
             InitializeComponent();
-            c = Connector.Connector.GetInstance();
+            c = Connector.GetInstance();
             this.BindingContext = this;
         }
         protected override void OnAppearing()

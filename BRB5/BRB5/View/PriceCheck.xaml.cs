@@ -9,6 +9,8 @@ using ZXing;
 using ZXing.Mobile;
 using BRB5.View;
 using BRB5.ViewModel;
+using BL;
+using BL.Connector;
 
 //using BRB5.Connector;
 namespace BRB5
@@ -16,9 +18,9 @@ namespace BRB5
     public partial class PriceCheck : IDisposable
     {
 
-        Connector.Connector c;
+        Connector c;
         DB db = DB.GetDB();
-        BL bl = BL.GetBL();
+        BL.BL bl = BL.BL.GetBL();
 
         public List<PrintBlockItems> ListPrintBlockItems { get { return db.GetPrintBlockItemsCount().ToList(); }  }
 
@@ -81,7 +83,7 @@ namespace BRB5
         {
             InitializeComponent();
 
-            c = Connector.Connector.GetInstance();
+            c = Connector.GetInstance();
             var r = db.GetCountScanCode();
 
             if (Config.TypeUsePrinter == eTypeUsePrinter.StationaryWithCutAuto) PrintType = -1;

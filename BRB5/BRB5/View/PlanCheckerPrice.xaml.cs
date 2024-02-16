@@ -14,13 +14,15 @@ using System.Collections.ObjectModel;
 using static SQLite.SQLite3;
 using System.Reflection;
 using BRB5.ViewModel;
+using BL.Connector;
+using BL;
 
 namespace BRB5.View
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class PlanCheckerPrice : ContentPage
     {
-        Connector.Connector c;
+        Connector c;
         protected DB db = DB.GetDB();
         ZXingScannerView zxing;
         private Doc Doc;
@@ -34,7 +36,7 @@ namespace BRB5.View
         {
             Doc = pDoc;
             ShelfType = Selection;
-            c = Connector.Connector.GetInstance();
+            c = Connector.GetInstance();
             NavigationPage.SetHasNavigationBar(this, Device.RuntimePlatform == Device.iOS || Config.TypeScaner == eTypeScaner.BitaHC61 || Config.TypeScaner == eTypeScaner.Zebra || Config.TypeScaner == eTypeScaner.PM550 || Config.TypeScaner == eTypeScaner.PM351);
             InitializeComponent();
 

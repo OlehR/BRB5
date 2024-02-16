@@ -3,10 +3,11 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Linq;
+using BRB5;
 
-namespace BRB5
+namespace BL
 {
-    public class BL
+    public partial class BL
     {
         static BL Bl = null;
         public static BL GetBL()

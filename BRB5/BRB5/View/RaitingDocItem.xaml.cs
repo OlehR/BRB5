@@ -1,4 +1,5 @@
-﻿using BRB5.Connector;
+﻿using BL;
+using BL.Connector;
 using BRB5.Model;
 using BRB5.View;
 using System;
@@ -23,9 +24,9 @@ namespace BRB5
         //Utils u = Utils.GetUtils();
 
         DB db = DB.GetDB();
-        BL Bl = BL.GetBL();
+        BL.BL Bl = BL.BL.GetBL();
         Doc cDoc;
-        Connector.Connector c = Connector.Connector.GetInstance();
+        Connector c = Connector.GetInstance();
         bool _IsVisBarCode = false;
         public bool IsVisBarCode { get { return _IsVisBarCode; } set { _IsVisBarCode = value; OnPropertyChanged("IsVisBarCode"); } }
         ObservableCollection<Model.RaitingDocItem> _Questions;
@@ -221,7 +222,6 @@ namespace BRB5
 
         void CalcSumValueRating(Model.RaitingDocItem pRDI)
         {
-
             decimal res = 0;            
 
             var Head = Questions.Where(el => el.Id == pRDI.Parent).FirstOrDefault();
@@ -389,7 +389,7 @@ namespace BRB5
             catch (Exception ex)
             {
                 FileLogger.WriteLogMessage($"Item.TakePhotoAsync", eTypeLog.Error);
-                await DisplayAlert("Сообщение об ошибке", ex.Message, "OK");
+                await DisplayAlert("Помилка!", ex.Message, "OK");
             }
         }
 
@@ -409,7 +409,6 @@ namespace BRB5
             {
                 xx.IsVisible = !xx.IsVisible;
             }
-
         }
 
         private void OnAllOpen(object sender, EventArgs e)

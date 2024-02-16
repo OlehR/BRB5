@@ -6,8 +6,9 @@ using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using Utils;
+using BRB5;
 
-namespace BRB5.Connector
+namespace BL.Connector
 {
     public class GetDataHTTP
     {

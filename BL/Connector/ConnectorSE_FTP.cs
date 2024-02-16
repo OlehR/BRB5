@@ -7,10 +7,11 @@ using System.Text;
 using Utils;
 using System.Linq;
 using System.Threading.Tasks;
+using BRB5;
 
-namespace BRB5.Connector
+namespace BL.Connector
 {
-    public class RaitingTemplateSE : Model.RaitingDocItem
+    public class RaitingTemplateSE : RaitingDocItem
     {
         /// <summary>
         /// Шаблон опитування.
@@ -115,7 +116,7 @@ namespace BRB5.Connector
         /// </summary>
         /// <param name="pR"></param>
         /// <returns></returns>
-        public override Result SendRaiting(IEnumerable<Model.RaitingDocItem> pR, Doc pDoc)
+        public override Result SendRaiting(IEnumerable<BRB5.Model.RaitingDocItem> pR, Doc pDoc)
         {
             var Res = new Result();
             try

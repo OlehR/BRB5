@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using Xamarin.Forms;
-using BRB5.Connector;
+using BL.Connector;
 using BRB5.Model;
 using BRB5.View;
 using Xamarin.Essentials;
@@ -11,6 +11,7 @@ using Utils;
 using System.IO;
 using Newtonsoft.Json;
 using System.Threading.Tasks;
+using BL;
 
 //[assembly: Xamarin.Forms.Dependency(typeof(AndroidStorageManager))]
 
@@ -19,7 +20,7 @@ namespace BRB5
     public partial class MainPage
     {
         public ObservableCollection<TypeDoc> OCTypeDoc { get; set; }
-        BRB5.Connector.Connector c;
+        Connector c;
         DB db = DB.GetDB();        
         public string Login { get; set; }
         public string Password { get; set; }
@@ -33,7 +34,7 @@ namespace BRB5
         public MainPage()
         {
             OCTypeDoc = new ObservableCollection<TypeDoc>();
-            c = Connector.Connector.GetInstance();
+            c = Connector.GetInstance();
             InitializeComponent();
             Init();
 

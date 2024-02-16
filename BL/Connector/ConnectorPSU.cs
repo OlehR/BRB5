@@ -8,8 +8,9 @@ using System.Linq;
 using System.Collections.ObjectModel;
 using System.Net.Mime;
 using System.Threading.Tasks;
+using BRB5;
 
-namespace BRB5.Connector
+namespace BL.Connector
 {
     public class ConnectorPSU : Connector
     {

@@ -1,4 +1,6 @@
-﻿using BRB5.Model;
+﻿using BL;
+using BL.Connector;
+using BRB5.Model;
 using System;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -12,7 +14,7 @@ namespace BRB5.View
     public partial class RaitingDocsEdit
 	{
         private readonly TypeDoc TypeDoc;
-        BRB5.Connector.Connector c;
+        Connector c;
         DB db = DB.GetDB();
         private ObservableCollection<Doc> _RD;
         public ObservableCollection<Doc> RD { get { return _RD; } set { _RD = value; OnPropertyChanged(nameof(RD)); } }
@@ -22,7 +24,7 @@ namespace BRB5.View
 			InitializeComponent ();
             TypeDoc = vTypeDoc;
             TypeDoc.CodeDoc = 11;
-            c = Connector.Connector.GetInstance();  
+            c = Connector.GetInstance();  
             this.BindingContext = this;
         }
         protected override void OnAppearing()

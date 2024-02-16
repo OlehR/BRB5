@@ -1,4 +1,6 @@
-﻿using BRB5.Model;
+﻿using BL;
+using BL.Connector;
+using BRB5.Model;
 using System.Collections.ObjectModel;
 
 namespace BRB5.View
@@ -7,7 +9,7 @@ namespace BRB5.View
     {
         private readonly TypeDoc TypeDoc;
         private Doc Doc;
-        private Connector.Connector c = Connector.Connector.GetInstance();
+        private Connector c = Connector.GetInstance();
         protected DB db = DB.GetDB();
         public bool IsSoftKeyboard { get { return Config.IsSoftKeyboard; } }
         public ObservableCollection<DocWaresEx> DocWares { get; set; } = new ObservableCollection<DocWaresEx>();

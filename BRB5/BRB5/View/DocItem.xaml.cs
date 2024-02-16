@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 using Xamarin.Forms;
 using Xamarin.CommunityToolkit.Extensions;
 using System.Net.NetworkInformation;
+using BL.Connector;
+using BL;
 
 namespace BRB5.View
 {
@@ -14,7 +16,7 @@ namespace BRB5.View
         private readonly TypeDoc TypeDoc;
         
         private Doc Doc;
-        private Connector.Connector c = Connector.Connector.GetInstance(); 
+        private Connector c = Connector.GetInstance(); 
         protected DB db = DB.GetDB();
         string _NumberOutInvoice = "";
         public string NumberOutInvoice { get { return _NumberOutInvoice; } set { _NumberOutInvoice = value; OnPropertyChanged("NumberOutInvoice"); } }

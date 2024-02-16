@@ -1,4 +1,5 @@
 ﻿//using BRB5.Model;
+using BRB5;
 using BRB5.Model;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -32,7 +33,8 @@ public static class ProtoDB
         return c;
     }
 }
-namespace BRB5
+
+namespace BL
 {
     public class DB
     {
@@ -523,7 +525,7 @@ and bc.BarCode=?
             return db.Query<RaitingTemplateItem>(sql, pRT.IdTemplate);            
         }
 
-        public IEnumerable<Model.RaitingDocItem> GetRaitingDocItem(DocId pDoc)
+        public IEnumerable<RaitingDocItem> GetRaitingDocItem(DocId pDoc)
         {
             string sql = $@"select d.TypeDoc,d.NumberDoc,Rs.Id,Rs.Parent as Parent,Rs.Text,Rs.RatingTemplate,R.Rating,R.QuantityPhoto,R.Note,
                             Rs.OrderRS,Rs.DTDelete,Rs.ValueRating as ValueRating
@@ -533,10 +535,10 @@ and bc.BarCode=?
         where d.TypeDoc={pDoc.TypeDoc} and  d.NumberDoc={pDoc.NumberDoc}
         order by case when Rs.Id<0 then Rs.Id else Rs.Parent end ,  case when Rs.Id<0 then 0 else Rs.Id end
         ";
-            return db.Query<Model.RaitingDocItem>(sql);            
+            return db.Query<RaitingDocItem>(sql);            
         }
 
-        public bool ReplaceRaitingDocItem(Model.RaitingDocItem pR)
+        public bool ReplaceRaitingDocItem(RaitingDocItem pR)
         {
             string Sql = @"replace into RaitingDocItem ( TypeDoc, NumberDoc, Id, Rating, QuantityPhoto, Note) values (?, ?, ?, ?, ?, ?)";
                        

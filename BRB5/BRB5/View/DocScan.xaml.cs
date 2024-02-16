@@ -1,4 +1,6 @@
-﻿using BRB5.Model;
+﻿using BL;
+using BL.Connector;
+using BRB5.Model;
 using BRB5.ViewModel;
 using System;
 using System.Collections.ObjectModel;
@@ -16,7 +18,7 @@ namespace BRB5.View
         DocWaresEx _ScanData;
         public DocWaresEx ScanData { get { return _ScanData; } set { _ScanData = value; OnPropertyChanged("ScanData"); } }
         protected DB db = DB.GetDB();
-        private Connector.Connector c;
+        private Connector c;
         public TypeDoc TypeDoc { get; set; }
         public int OrderDoc { get; set; }
         public bool IsSoftKeyboard { get { return Config.IsSoftKeyboard; } }
@@ -35,7 +37,7 @@ namespace BRB5.View
             InitializeComponent();
             DocId = pDocId;
             TypeDoc = pTypeDoc!=null? pTypeDoc:Config.GetDocSetting(pDocId.TypeDoc);
-            c = Connector.Connector.GetInstance();
+            c = Connector.GetInstance();
             var tempListWares = db.GetDocWares(pDocId, 2, eTypeOrder.Scan);
             foreach (var t in tempListWares) { t.Ord = -1; }
             ListWares = tempListWares == null ? new ObservableCollection<DocWaresEx>(): new ObservableCollection<DocWaresEx>(tempListWares);

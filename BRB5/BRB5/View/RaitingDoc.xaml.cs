@@ -1,5 +1,6 @@
 ﻿//using BRB5.Model;
-using BRB5.Connector;
+using BL;
+using BL.Connector;
 using BRB5.Model;
 using BRB5.View;
 using System;
@@ -18,7 +19,7 @@ namespace BRB5
 {
     public partial class RaitingDoc
     {
-        Connector.Connector c;
+        Connector c;
         DB db = DB.GetDB();
         private readonly TypeDoc TypeDoc;
         public ObservableCollection<Doc> MyDoc { get; set; } = new ObservableCollection<Doc>();
@@ -27,7 +28,7 @@ namespace BRB5
         {
             TypeDoc = pTypeDoc;
             _ = LocationBrb.GetCurrentLocation(db.GetWarehouse());
-            c = BRB5.Connector.Connector.GetInstance();
+            c = Connector.GetInstance();
             InitializeComponent();
             Routing.RegisterRoute(nameof(RaitingDocItem), typeof(RaitingDocItem));
             NavigationPage.SetHasNavigationBar(this, Device.RuntimePlatform == Device.iOS);

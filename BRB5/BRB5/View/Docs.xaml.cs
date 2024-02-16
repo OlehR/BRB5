@@ -1,4 +1,6 @@
-﻿using BRB5.Model;
+﻿using BL;
+using BL.Connector;
+using BRB5.Model;
 using System;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -9,7 +11,7 @@ namespace BRB5.View
 {
     public partial class Docs
     {
-        private Connector.Connector c=Connector.Connector.GetInstance();
+        private Connector c = Connector.GetInstance();
         private TypeDoc TypeDoc;
         DB db = DB.GetDB();
         private ObservableCollection<Doc> _MyDocsR;

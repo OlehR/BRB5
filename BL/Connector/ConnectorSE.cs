@@ -13,7 +13,7 @@ using System.Globalization;
 using static System.Net.Mime.MediaTypeNames;
 using System.Threading.Tasks;
 
-namespace BRB5.Connector
+namespace BL.Connector
 {
     class ResultLogin : Result
     {
@@ -208,10 +208,10 @@ namespace BRB5.Connector
                         foreach (var item in t.data)
                         {                            
                             var tt=item.sections.Select(el=>
-                                    new Model.RaitingTemplateItem() { IdTemplate = item.templateId,   Id = -el.sectionId, Parent = -el.parentId, Text = el.text, RatingTemplate = 8, OrderRS = el.sectionId }).ToList();
+                                    new RaitingTemplateItem() { IdTemplate = item.templateId,   Id = -el.sectionId, Parent = -el.parentId, Text = el.text, RatingTemplate = 8, OrderRS = el.sectionId }).ToList();
                             db.ReplaceRaitingTemplateItem(tt);
                             tt = item.questions.Select(el =>
-                                    new Model.RaitingTemplateItem() { IdTemplate = item.templateId, Id = el.questionId, Parent = -el.sectionId, Text = el.text, RatingTemplate = el.RatingTemplate, OrderRS = el.questionId }).ToList();
+                                    new RaitingTemplateItem() { IdTemplate = item.templateId, Id = el.questionId, Parent = -el.sectionId, Text = el.text, RatingTemplate = el.RatingTemplate, OrderRS = el.questionId }).ToList();
                             db.ReplaceRaitingTemplateItem(tt);
                         }
 
@@ -354,7 +354,7 @@ namespace BRB5.Connector
         /// </summary>
         /// <param name="pR"></param>
         /// <returns></returns>
-        public override Result SendRaiting(IEnumerable<Model.RaitingDocItem> pR, Doc pDoc)
+        public override Result SendRaiting(IEnumerable<RaitingDocItem> pR, Doc pDoc)
         {
             OnSave?.Invoke($"StartSave NumberDoc=>{pDoc.NumberDoc}");
             var Res = new Result();
@@ -366,7 +366,7 @@ namespace BRB5.Connector
                     RD.Add(new Raitings() { questionId = el.Id, value = el.Rating, comment = el.Note });
                 }
 
-                Model.RaitingDocItem e = pR.FirstOrDefault(d => d.Id == -1);
+                RaitingDocItem e = pR.FirstOrDefault(d => d.Id == -1);
                 if (e == null || e.Id == 0)
                     e = pR.FirstOrDefault();
                 var r = new RequestSendRaiting() { userId = Config.CodeUser, action = "results", answers = RD, planId = int.Parse(e.NumberDoc), text = e.Note,

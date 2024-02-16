@@ -1,4 +1,6 @@
-﻿using BRB5.Model;
+﻿using BL;
+using BL.Connector;
+using BRB5.Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,7 +10,7 @@ namespace BRB5.View
 	public partial class RaitingDocEdit
 	{
         DB db = DB.GetDB();
-        BRB5.Connector.Connector c;
+        Connector c;
         private readonly TypeDoc TypeDoc;
         public List<RaitingTemplate> RT { get { return db.GetRaitingTemplate().Where(t => t.Text != null).ToList(); } }
 
@@ -41,7 +43,7 @@ namespace BRB5.View
         public RaitingDocEdit (Doc doc, TypeDoc vTypeDoc)
 		{
 			InitializeComponent ();
-            c = Connector.Connector.GetInstance();
+            c = Connector.GetInstance();
             RD = doc;
             TypeDoc = vTypeDoc;
             SelectedTemplate = RT.FindIndex(t => t.IdTemplate == RD.IdTemplate);
