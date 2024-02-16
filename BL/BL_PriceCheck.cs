@@ -9,8 +9,6 @@ namespace BL
     {
         public WaresPrice FoundWares(string pBarCode, int PackageNumber, int LineNumber, bool pIsHandInput, bool IsOnline = true)
         {
-            //--LineNumber++;
-
             WaresPrice WP;
             if (IsOnline)
             {
@@ -22,21 +20,9 @@ namespace BL
                 WP = new WaresPrice(data);
             }
 
-            //---if (WP != null)
-            //{
-            //    AllScan++;
-            //    if (!WP.IsPriceOk)
-            //        BadScan++;
-            //}
-
-            //---var duration = TimeSpan.FromMilliseconds(WP?.IsPriceOk == true ? 50 : 250);
-            //Vibration.Vibrate(duration);
-
             var l = new LogPrice(WP, IsOnline, PackageNumber, LineNumber);
             db.InsLogPrice(l);
 
-            //--BarCodeInput.Focus();
-            //--BarCodeFocused(null, null);
             return WP;
         }
     }
