@@ -17,8 +17,8 @@ namespace BL
             return Bl;
         }
 
-        protected DB db = DB.GetDB();
-        Connector.Connector c = Connector.Connector.GetInstance();
+        public DB db = DB.GetDB();
+        public Connector.Connector c = Connector.Connector.GetInstance();
         public void SendLogPrice()
         {
             for (int i = 0; i < 20; i++)

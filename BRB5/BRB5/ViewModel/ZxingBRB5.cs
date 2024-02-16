@@ -39,7 +39,7 @@ namespace BRB5.ViewModel
                 // Stop analysis until we navigate away so we don't keep reading barcodes
                 {
                     pZxing.IsAnalyzing = false;
-                    action(result.Text);
+                    action?.Invoke(result.Text);
                     pZxing.IsAnalyzing = true;
                 });
             return pZxing;
