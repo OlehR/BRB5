@@ -108,7 +108,7 @@
                         </Frame>
                     </Grid>
 
-                    <ListView Grid.Row="2" ItemsSource="{Binding ListWares}" SeparatorVisibility="None">
+                    <ListView Grid.Row="2" ItemsSource="{Binding ListWares}" SeparatorVisibility="None" HasUnevenRows="True" >
                         <ListView.Header>
                             <Grid RowSpacing="1"
                                   ColumnSpacing="1"

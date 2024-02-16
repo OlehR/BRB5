@@ -21,9 +21,6 @@
                     <Grid.RowDefinitions>
                         <RowDefinition Height="190"/>
                     </Grid.RowDefinitions>
-                    <Button Text="Друк" HorizontalOptions="Start" VerticalOptions="Start" 
-                            Clicked="OnClickPrint"                        
-                            IsEnabled="{Binding IsEnabledPrint}"/>
 
                     <forms:CachedImage  x:Name="WareImage" ErrorPlaceholder="Photo.png" HeightRequest="190" >
                         <forms:CachedImage.GestureRecognizers>
@@ -31,6 +28,10 @@
                                               NumberOfTapsRequired="2" />
                         </forms:CachedImage.GestureRecognizers>
                     </forms:CachedImage>
+
+                    <Button Text="Друк" HorizontalOptions="Start" VerticalOptions="Start" 
+                            Clicked="OnClickPrint"                        
+                            IsEnabled="{Binding IsEnabledPrint}"/>
                 </Grid>
 
                 <StackLayout  Orientation="Horizontal">
