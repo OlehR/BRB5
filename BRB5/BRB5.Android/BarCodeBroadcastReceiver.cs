@@ -16,7 +16,11 @@ namespace BRB5.Droid
     [BroadcastReceiver(Enabled = true)]
     [IntentFilter(new[] { "device.scanner.EVENT", "ua.uz.vopak.brb4", "com.symbol.datawedge.api.ACTION", "com.scanner.broadcast" })]
     public class MyBroadcastReceiver : BroadcastReceiver
-    {        
+    {
+        public MyBroadcastReceiver() 
+        {
+            var xx = GetHashCode();
+        }
         static public string IntentEvent { get {
                 string Res = null;
                     switch(Config.TypeScaner)
@@ -56,6 +60,7 @@ namespace BRB5.Droid
 
         public override void OnReceive(Context context, Intent intent)
         {
+            var xx = GetHashCode();
             String Res = null;
             try
             {

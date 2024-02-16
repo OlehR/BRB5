@@ -55,8 +55,8 @@
                     <ColumnDefinition Width="3*" />
                 </Grid.ColumnDefinitions>
                 <Grid.RowDefinitions>
-                    <RowDefinition/>
-                    <RowDefinition/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="auto"/>
                 </Grid.RowDefinitions>
 
                 <Label Text="Ціна с:"
@@ -100,7 +100,7 @@
 
                 <Label Text="Ц.с.опт."
                        VerticalOptions="Center"
-                       FontSize="16"
+                       FontSize="16" 
                        TextColor="{Binding TextColorPrice}" />
                 <Label Text="{Binding WP.PriceOptOld}"
                        FontSize="24"
@@ -189,13 +189,15 @@
                     <ColumnDefinition />
                 </Grid.ColumnDefinitions>
 
-                <Label
+                <Label Text="" />
+                <Label Grid.Column="1"
                     Text="{Binding WP.StrHttpResult}"
                     TextColor="{Binding TextColorHttp}" />
-                <Label Text=""
-                       Grid.Column="1" />
-                <Label Text=""
-                       Grid.Column="2" />
+                <StackLayout Orientation="Horizontal" Spacing="0" Grid.Column="2">
+                    <Label Text="{Binding BadScan}" />
+                    <Label Text="/" />
+                    <Label Text="{Binding AllScan}" />
+                </StackLayout>
             </Grid>
 
             <StackLayout VerticalOptions="End" Orientation="Horizontal">                

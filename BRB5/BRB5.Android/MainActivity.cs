@@ -34,7 +34,7 @@ namespace BRB5.Droid
             
             AppCompatDelegate.DefaultNightMode = AppCompatDelegate.ModeNightNo;
             base.OnCreate(savedInstanceState);
-            BR = new MyBroadcastReceiver();
+            //BR = new MyBroadcastReceiver();
             global::Xamarin.Forms.Forms.Init(this, savedInstanceState);
 
             Thread.CurrentThread.CurrentCulture = CultureInfo.InvariantCulture;
@@ -85,8 +85,8 @@ namespace BRB5.Droid
         protected override void OnResume()
         {
             base.OnResume();
-            if(Config.TypeScaner!=eTypeScaner.Camera && Config.TypeScaner != eTypeScaner.NotDefine )
-            RegisterReceiver(BR, new IntentFilter(MyBroadcastReceiver.IntentEvent));
+            //if(Config.TypeScaner!=eTypeScaner.Camera && Config.TypeScaner != eTypeScaner.NotDefine )
+            //RegisterReceiver(BR, new IntentFilter(MyBroadcastReceiver.IntentEvent));
             // Code omitted for clarity
         }
 

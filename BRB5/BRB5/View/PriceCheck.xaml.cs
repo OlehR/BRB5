@@ -11,14 +11,13 @@ using BRB5.View;
 using BRB5.ViewModel;
 using BL;
 using BL.Connector;
+using System.Threading;
 
 //using BRB5.Connector;
 namespace BRB5
 {
     public partial class PriceCheck : IDisposable
     {
-
-        Connector c;
         DB db = DB.GetDB();
         BL.BL bl = BL.BL.GetBL();
 
@@ -52,14 +51,12 @@ namespace BRB5
         /// Номер сканування цінників за день !!!TMP Треба зберігати в базі.
         /// </summary>
         int LineNumber = 0;
-
-        int _PackageNumber = 1;
-
         public int AllScan { get; set; } = 0;
         public int BadScan { get; set; } = 0;
         /// <summary>
         /// Номер пакета цінників за день !!!TMP Треба зберігати в базі.
         /// </summary>
+        int _PackageNumber = 1;
         public int PackageNumber { get { return _PackageNumber; } set { _PackageNumber = value; OnPropertyChanged("PackageNumber"); OnPropertyChanged("ListPrintBlockItems"); OnPropertyChanged("SelectedPrintBlockItems"); } }
 
 
@@ -81,9 +78,7 @@ namespace BRB5
 
         public PriceCheck()
         {
-            InitializeComponent();
-
-            c = Connector.GetInstance();
+            InitializeComponent();            
             var r = db.GetCountScanCode();
 
             if (Config.TypeUsePrinter == eTypeUsePrinter.StationaryWithCutAuto) PrintType = -1;
@@ -106,30 +101,21 @@ namespace BRB5
                     db.UpdateReplenishment(LineNumber, d);
             };
 
-            Config.OnProgress += (pProgress) => { PB = pProgress; };
+            Config.OnProgress += (pProgress) => Device.BeginInvokeOnMainThread(() => PB = pProgress);
             this.BindingContext = this;
         }
 
-        void BarCode(string pBarCode)
-        {
-            FoundWares(pBarCode, false);
-        }
+        //виклик FW
+        void BarCode(string pBarCode)=>FoundWares(pBarCode, false);
 
+        // перенести
         void FoundWares(string pBarCode, bool pIsHandInput = false)
         {
             LineNumber++;
-            PB = 0.2d;
+            Config.OnProgress?.Invoke(0.2d);
 
-            if (IsOnline)
-            {
-                WP = c.GetPrice(c.ParsedBarCode(pBarCode, pIsHandInput));
-                //if(WP.State>0)
-            }
-            else
-            {
-                var data = bl.GetWaresFromBarcode(0, null, pBarCode, pIsHandInput);
-                WP = new WaresPrice(data);
-            }
+            WP = bl.FoundWares(pBarCode, PackageNumber, LineNumber, pIsHandInput, IsOnline);
+
             if (WP != null)
             {
                 AllScan++;
@@ -138,12 +124,8 @@ namespace BRB5
             }
             var duration = TimeSpan.FromMilliseconds(WP?.IsPriceOk == true ? 50 : 250);
             Vibration.Vibrate(duration);
-            //if (Config.Company == eCompany.Sim23)
-            //   utils.PlaySound();
-            var l = new LogPrice(WP, IsOnline, PackageNumber, LineNumber);
-            db.InsLogPrice(l);
 
-            PB = 1;
+            Config.OnProgress?.Invoke(0.9d);
             BarCodeInput.Focus();
             BarCodeFocused(null, null);
         }
@@ -189,14 +171,15 @@ namespace BRB5
             bl.SendLogPrice();
             Config.BarCode -= BarCode;
         }
-
+        
+        // add item to list?
         private void OnClickAddPrintBlock(object sender, EventArgs e)
         {
             PackageNumber++;
             ListPrintBlockItems.Add(new PrintBlockItems() { PackageNumber = PackageNumber });
         }
 
-        
+        // є виклик bl
         private void OnClickPrintBlock(object sender, EventArgs e)
         {
             var temp = PrintBlockItemsXaml.SelectedItem as PrintBlockItems;
@@ -204,22 +187,26 @@ namespace BRB5
                 _ = DisplayAlert("Друк", bl.PrintPackage(PrintType, temp.PackageNumber, IsMultyLabel), "OK");
         }
 
+        // не перен,
         private void OnF2(object sender, EventArgs e)
         {
             IsVisRepl = !IsVisRepl;
             if(IsVisRepl) NumberOfReplenishment.Focus();
         }
 
+        // не перен,
         private void OnF4(object sender, EventArgs e)
         {
 
         }
 
+        // не перен,
         private void OnF5(object sender, EventArgs e)
         {            
             IsMultyLabel = !IsMultyLabel;
         }
 
+        // не перен, перехід на WP
         private async void OnClickWareInfo(object sender, EventArgs e)
         {            
             if (WP != null)
@@ -229,12 +216,14 @@ namespace BRB5
             }
         }
 
+        //виклик FW
         private void BarCodeHandInput(object sender, EventArgs e)
         {
             var text = ((Entry)sender).Text;
             FoundWares(text, true);
         }
 
+        //не перен, виділення тексту
         private void BarCodeFocused(object sender, FocusEventArgs e)
         {
             Device.BeginInvokeOnMainThread(() =>
@@ -244,12 +233,14 @@ namespace BRB5
             });
         }
 
+        // є виклик с.
         private void OnClickPrintOne(object sender, EventArgs e)
         {
             if (IsEnabledPrint && WP!=null)
-                _ = DisplayAlert("Друк", c.PrintHTTP(new[] { WP.CodeWares }), "OK");
+                _ = DisplayAlert("Друк", bl.c.PrintHTTP(new[] { WP.CodeWares }), "OK");
         }
     
+        //реакція на кнопку, не перен
         private async void KeyBack()
         {
             await Navigation.PopAsync();    
