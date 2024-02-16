@@ -82,6 +82,7 @@ namespace BRB5
             var r = db.GetCountScanCode();
 
             if (Config.TypeUsePrinter == eTypeUsePrinter.StationaryWithCutAuto) PrintType = -1;
+
             NavigationPage.SetHasNavigationBar(this, Device.RuntimePlatform == Device.iOS|| Config.TypeScaner==eTypeScaner.BitaHC61 || Config.TypeScaner == eTypeScaner.Zebra || Config.TypeScaner == eTypeScaner.PM550 || Config.TypeScaner == eTypeScaner.PM351);
 
             if (r != null)
@@ -105,10 +106,8 @@ namespace BRB5
             this.BindingContext = this;
         }
 
-        //виклик FW
         void BarCode(string pBarCode)=>FoundWares(pBarCode, false);
 
-        // перенести
         void FoundWares(string pBarCode, bool pIsHandInput = false)
         {
             LineNumber++;
@@ -172,14 +171,12 @@ namespace BRB5
             Config.BarCode -= BarCode;
         }
         
-        // add item to list?
         private void OnClickAddPrintBlock(object sender, EventArgs e)
         {
             PackageNumber++;
             ListPrintBlockItems.Add(new PrintBlockItems() { PackageNumber = PackageNumber });
         }
 
-        // є виклик bl
         private void OnClickPrintBlock(object sender, EventArgs e)
         {
             var temp = PrintBlockItemsXaml.SelectedItem as PrintBlockItems;
@@ -187,26 +184,22 @@ namespace BRB5
                 _ = DisplayAlert("Друк", bl.PrintPackage(PrintType, temp.PackageNumber, IsMultyLabel), "OK");
         }
 
-        // не перен,
         private void OnF2(object sender, EventArgs e)
         {
             IsVisRepl = !IsVisRepl;
             if(IsVisRepl) NumberOfReplenishment.Focus();
         }
 
-        // не перен,
         private void OnF4(object sender, EventArgs e)
         {
 
         }
 
-        // не перен,
         private void OnF5(object sender, EventArgs e)
         {            
             IsMultyLabel = !IsMultyLabel;
         }
 
-        // не перен, перехід на WP
         private async void OnClickWareInfo(object sender, EventArgs e)
         {            
             if (WP != null)
@@ -216,14 +209,12 @@ namespace BRB5
             }
         }
 
-        //виклик FW
         private void BarCodeHandInput(object sender, EventArgs e)
         {
             var text = ((Entry)sender).Text;
             FoundWares(text, true);
         }
 
-        //не перен, виділення тексту
         private void BarCodeFocused(object sender, FocusEventArgs e)
         {
             Device.BeginInvokeOnMainThread(() =>
@@ -233,14 +224,12 @@ namespace BRB5
             });
         }
 
-        // є виклик с.
         private void OnClickPrintOne(object sender, EventArgs e)
         {
             if (IsEnabledPrint && WP!=null)
                 _ = DisplayAlert("Друк", bl.c.PrintHTTP(new[] { WP.CodeWares }), "OK");
         }
     
-        //реакція на кнопку, не перен
         private async void KeyBack()
         {
             await Navigation.PopAsync();    
