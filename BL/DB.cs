@@ -396,7 +396,7 @@ and bc.BarCode=?
         {
             string Sql = $@"select d.* , Wh.Name as Address from Doc d 
    left join Warehouse Wh on d.CodeWarehouse = wh.number 
-   where d.TypeDoc = {pDocId.TypeDoc} and d.numberdoc = pDocId.NumberDoc";
+   where d.TypeDoc = {pDocId.TypeDoc} and d.numberdoc = '{pDocId.NumberDoc}'";
             var r= db.Query< Doc>(Sql);
             if(r!=null&&r.Any())
                 return r.First();
@@ -532,9 +532,8 @@ and bc.BarCode=?
         from Doc d 
          join RaitingTemplateItem as Rs on (d.IdTemplate=RS.IdTemplate ) 
          left join RaitingDocItem R on (d.TypeDoc=R.TypeDoc and d.NumberDoc=R.NumberDoc and Rs.Id=R.id)
-        where d.TypeDoc={pDoc.TypeDoc} and  d.NumberDoc={pDoc.NumberDoc}
-        order by case when Rs.Id<0 then Rs.Id else Rs.Parent end ,  case when Rs.Id<0 then 0 else Rs.Id end
-        ";
+        where d.TypeDoc={pDoc.TypeDoc} and  d.NumberDoc='{pDoc.NumberDoc}'
+        order by case when Rs.Id<0 then Rs.Id else Rs.Parent end ,  case when Rs.Id<0 then 0 else Rs.Id end";
             return db.Query<RaitingDocItem>(sql);            
         }
 

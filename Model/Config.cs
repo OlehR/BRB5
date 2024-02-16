@@ -64,7 +64,7 @@ namespace BRB5.Model
             if (r.Count() == 1) return r.First();
             return null; }
 
-        public static Warehouse LocationWarehouse = null;
+        //public static Warehouse LocationWarehouse = null;
         //static object Lock= new object();
         public static bool IsSoftKeyboard { get { return TypeScaner == eTypeScaner.Camera; } }
     }

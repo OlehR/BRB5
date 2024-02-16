@@ -1,13 +1,10 @@
-﻿using BL.Connector;
-using BRB5;
-using BRB5.Model;
+﻿using BRB5.Model;
 using System;
 using System.Collections.Generic;
-using System.Reflection;
-using System.Text;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Timers;
+using Utils;
 
 
 namespace BL
@@ -92,14 +89,12 @@ namespace BL
         public void InitTimerRDI(Doc pDoc)
         {
             cDoc = pDoc;
-            t = new Timer(3 * 60 * 1000); //3 хв
-            t.AutoReset = true;
+            t = new Timer(3 * 60 * 1000) { AutoReset = true }; //3 хв
             t.Elapsed += new ElapsedEventHandler(OnTimedEvent);
         }
         public void StartTimerRDI() => t?.Start();
         
-        public void StopTimerRDI() => t?.Stop();
-        
+        public void StopTimerRDI() => t?.Stop();        
 
         private void OnTimedEvent(Object source, ElapsedEventArgs e)
         {
@@ -116,17 +111,20 @@ namespace BL
                 Result res;
                 try
                 {
-                    var r = db.GetRaitingDocItem(cDoc);
-                    Doc d = db.GetDoc(cDoc);
+                    var r = db.GetRaitingDocItem(pDoc);
+                    Doc d = db.GetDoc(pDoc);
                     res = c.SendRaiting(r, d);
                     if (res.State == 0)
                     {
-                        cDoc.State = 1;
-                        db.SetStateDoc(cDoc);
+                        pDoc.State = 1;
+                        db.SetStateDoc(pDoc);
                     }
                 }
                 catch (Exception ex)
-                { res = new Result(ex); }
+                {
+                    FileLogger.WriteLogMessage(this, "SaveRDI", ex);
+                    res = new Result(ex); 
+                }
                 finally
                 {
                     pAction?.Invoke();

@@ -1,14 +1,10 @@
-﻿using BL;
-using BL.Connector;
-using BRB5.Model;
+﻿using BRB5.Model;
 using BRB5.View;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
-using System.Threading.Tasks;
-using System.Timers;
 using Utils;
 using Xamarin.Essentials;
 using Xamarin.Forms;
@@ -34,7 +30,7 @@ namespace BRB5
         public string TextAllNoChoice { get { return IsAll ? "Без відповіді" : "Всі"; } }
         public string QuantityAllChoice { get { return $"{CountChoice}/{CountAll}"; } }
         
-        bool IsOkWh { get {return Config.LocationWarehouse?.CodeWarehouse == cDoc.CodeWarehouse; } }
+        bool IsOkWh { get {return LocationBrb.LocationWarehouse?.CodeWarehouse == cDoc.CodeWarehouse; } }
         
         public string NameWarehouse
         {
@@ -45,13 +41,13 @@ namespace BRB5
                 {
                     var Wh = Bl.GetWarehouse(cDoc.CodeWarehouse);
                     if (Wh != null)
-                        res += $"( {Wh.Location}){Environment.NewLine}Найближчий:\" + {Config.LocationWarehouse?.Name} ({Config.LocationWarehouse?.Location})";
+                        res += $"( {Wh.Location}){Environment.NewLine}Найближчий:\" + {LocationBrb.LocationWarehouse?.Name} ({LocationBrb.LocationWarehouse?.Location})";
                 }
                 return res;
             }
         }       
         
-        public System.Drawing.Color GetGPSColor { get { if(Config.LocationWarehouse==null) return System.Drawing.Color.FromArgb(200, 200, 200);
+        public System.Drawing.Color GetGPSColor { get { if(LocationBrb.LocationWarehouse==null) return System.Drawing.Color.FromArgb(200, 200, 200);
                 return IsOkWh ? System.Drawing.Color.FromArgb(100, 250, 100) :
                         System.Drawing.Color.FromArgb(250, 100, 100);
             } }
@@ -225,10 +221,7 @@ namespace BRB5
             Bl.SaveRDI(cDoc, () => IsSaved = true);            
         }
 
-        private void OnFindGPS(object sender, System.EventArgs e)
-        {
-            _ = LocationBrb.GetCurrentLocation(Bl.db.GetWarehouse());
-        }
+        private void OnFindGPS(object sender, System.EventArgs e) =>  _ = LocationBrb.GetCurrentLocation(Bl.db.GetWarehouse());        
 
         private void EditPhoto(object sender, System.EventArgs e)
         {
@@ -276,10 +269,7 @@ namespace BRB5
             }
         }
 
-        private void Editor_Completed(object sender, EventArgs e)
-        {
-            Bl.db.ReplaceRaitingDocItem(GetRaiting(sender));
-        }
+        private void Editor_Completed(object sender, EventArgs e) => Bl.db.ReplaceRaitingDocItem(GetRaiting(sender));        
 
         private void OnHeadTapped(object sender, EventArgs e)
         {
