@@ -36,12 +36,13 @@ namespace BRB5.View
         {
             InitializeComponent();
             DocId = pDocId;
-            TypeDoc = pTypeDoc!=null? pTypeDoc:Config.GetDocSetting(pDocId.TypeDoc);
+            TypeDoc = pTypeDoc != null ? pTypeDoc : Config.GetDocSetting(pDocId.TypeDoc);
             c = Connector.GetInstance();
             var tempListWares = db.GetDocWares(pDocId, 2, eTypeOrder.Scan);
             foreach (var t in tempListWares) { t.Ord = -1; }
-            ListWares = tempListWares == null ? new ObservableCollection<DocWaresEx>(): new ObservableCollection<DocWaresEx>(tempListWares);
+            ListWares = tempListWares == null ? new ObservableCollection<DocWaresEx>() : new ObservableCollection<DocWaresEx>(tempListWares);
             OrderDoc = ListWares.Count > 0 ? ListWares.First().OrderDoc : 0;
+            if (ListWares.Count > 0)  ListViewWares.SelectedItem = ListWares[0];
             NavigationPage.SetHasNavigationBar(this, Device.RuntimePlatform == Device.iOS || Config.TypeScaner == eTypeScaner.BitaHC61 || Config.TypeScaner == eTypeScaner.Zebra || Config.TypeScaner == eTypeScaner.PM550 || Config.TypeScaner == eTypeScaner.PM351);
             this.BindingContext = this;
         }
@@ -83,6 +84,7 @@ namespace BRB5.View
                         {
                             if (ware.CodeWares == ScanData.CodeWares) ware.Ord = -1;
                         }
+                        ListViewWares.SelectedItem = ListWares[0];
                         ScanData = null;
                     }
                     inputQ.Unfocus();
@@ -101,10 +103,10 @@ namespace BRB5.View
         }
         public decimal CountBeforeQuantity(int pCodeWares)
         {
-            decimal res= 0;
-            if(ListWares.Count() > 0) 
-            { 
-                foreach(var ware in ListWares)
+            decimal res = 0;
+            if (ListWares.Count() > 0)
+            {
+                foreach (var ware in ListWares)
                 {
                     ware.Ord = -1;
                     if (ware.CodeWares == pCodeWares)
@@ -118,7 +120,7 @@ namespace BRB5.View
         }
         protected override void OnAppearing()
         {
-            base.OnAppearing(); 
+            base.OnAppearing();
             if (IsVisScan)
             {
                 zxing = ZxingBRB5.SetZxing(GridZxing, zxing, (Barcode) => BarCode(Barcode));
@@ -129,8 +131,8 @@ namespace BRB5.View
             if (!IsSoftKeyboard)
             {
                 MessagingCenter.Subscribe<KeyEventMessage>(this, "F1Pressed", message => { Reset(null, EventArgs.Empty); });
-                MessagingCenter.Subscribe<KeyEventMessage>(this, "F2Pressed", message => { });
-                MessagingCenter.Subscribe<KeyEventMessage>(this, "F3Pressed", message => { });
+                MessagingCenter.Subscribe<KeyEventMessage>(this, "F2Pressed", message => { Up(null, EventArgs.Empty); });
+                MessagingCenter.Subscribe<KeyEventMessage>(this, "F3Pressed", message => { Down(null, EventArgs.Empty); });
                 MessagingCenter.Subscribe<KeyEventMessage>(this, "F8Pressed", message => { });
                 MessagingCenter.Subscribe<KeyEventMessage>(this, "BackPressed", message => { KeyBack(); });
                 MessagingCenter.Subscribe<KeyEventMessage>(this, "EnterPressed", message => { AddWare(); });
@@ -155,9 +157,9 @@ namespace BRB5.View
 
         public void FindWareByBarCodeAsync(string BarCode)
         {
-            if(ScanData == null)
+            if (ScanData == null)
             {
-                DisplayQuestion = "Товар не знайдено \n"+ "Даний штрихкод=> " + BarCode + " відсутній в базі";
+                DisplayQuestion = "Товар не знайдено \n" + "Даний штрихкод=> " + BarCode + " відсутній в базі";
                 IsVisQ = true;
             }
             else
@@ -192,7 +194,7 @@ namespace BRB5.View
                         return;
                     }
                 }
-                if (IsVisScan)  zxing.IsAnalyzing = true;
+                if (IsVisScan) zxing.IsAnalyzing = true;
             }
 
             return;
@@ -204,11 +206,11 @@ namespace BRB5.View
             {
                 foreach (var ware in ListWares)
                 {
-                    if (ware.CodeWares == ScanData.CodeWares&& ware.InputQuantity!=0)
+                    if (ware.CodeWares == ScanData.CodeWares && ware.InputQuantity != 0)
                     {
                         ware.QuantityOld = ware.InputQuantity;
                         ware.InputQuantity = 0;
-                        ware.Quantity = 0; 
+                        ware.Quantity = 0;
                         db.ReplaceDocWares(ware);
                     }
                 }
@@ -222,7 +224,7 @@ namespace BRB5.View
                 ScanData.QuantityBarCode = ScanData.InputQuantity * ScanData.Coefficient;
         }
 
-        private void OkClicked(object sender, EventArgs e)      
+        private void OkClicked(object sender, EventArgs e)
         {
             IsVisQ = false;
             IsVisQOk = false;
@@ -249,5 +251,35 @@ namespace BRB5.View
             await Navigation.PopAsync();
         }
 
+        private void Up(object sender, EventArgs e)
+        {
+            var selectedItem = (DocWaresEx)ListViewWares.SelectedItem;
+            if (selectedItem != null)
+            {
+                var selectedIndex = ListWares.IndexOf(selectedItem);
+                if (selectedIndex > 0)
+                {
+                    ListViewWares.SelectedItem = ListWares[selectedIndex - 1];
+                    ListViewWares.ScrollTo(ListViewWares.SelectedItem, ScrollToPosition.Center, false);
+                }
+                OnPropertyChanged(nameof(ListWares));
+            }
+        }
+
+        private void Down(object sender, EventArgs e)
+        {
+            var selectedItem = (DocWaresEx)ListViewWares.SelectedItem;
+            if (selectedItem != null)
+            {
+                var selectedIndex = ListWares.IndexOf(selectedItem);
+
+                if (selectedIndex < ListWares.Count - 1)
+                {
+                    ListViewWares.SelectedItem = ListWares[selectedIndex + 1];
+                    ListViewWares.ScrollTo(ListViewWares.SelectedItem, ScrollToPosition.Center, false);
+                }
+                OnPropertyChanged(nameof(ListWares));
+            }
+        }
     }
 }

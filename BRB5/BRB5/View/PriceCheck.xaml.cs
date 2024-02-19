@@ -5,13 +5,9 @@ using System.Linq;
 using Xamarin.Forms;
 using ZXing.Net.Mobile.Forms;
 using Xamarin.Essentials;
-using ZXing;
-using ZXing.Mobile;
 using BRB5.View;
 using BRB5.ViewModel;
 using BL;
-using BL.Connector;
-using System.Threading;
 
 //using BRB5.Connector;
 namespace BRB5
@@ -63,16 +59,12 @@ namespace BRB5
         //public int ColorPrintColorType() { return Color.parseColor(HttpState != eStateHTTP.HTTP_OK ? "#ffb3b3" : (PrintType == 0 ? "#ffffff" : "#3fffff00")); }
 
         public string ColorPrintColorType { get { return PrintType == 0 ? "#ffffff" : PrintType == 1 ? "#ffffa8" : "#ffffff"; } }
-
         public string TextColorPrice { get {return (WP != null && WP.Price != 0 && WP.Price == WP.PriceOld && WP.PriceOpt == WP.PriceOptOld) ? "#009800" : "#ff5c5c"; } set { OnPropertyChanged(nameof(TextColorPrice)); } }
-
         public string TextColorHttp { get { return (WP != null && WP.StateHTTP == eStateHTTP.HTTP_OK) ? "#009800" : "#ff5c5c"; } }
 
         public bool _IsMultyLabel = false;
         public bool IsMultyLabel { get { return _IsMultyLabel; } set { _IsMultyLabel = value; OnPropertyChanged("IsMultyLabel"); OnPropertyChanged("F5Text"); } }
-
         public string F5Text { get { return IsMultyLabel ? "Дубл." : "Унік."; } }
-
         public bool IsVisScan { get { return Config.TypeScaner == eTypeScaner.Camera; } }
 
 

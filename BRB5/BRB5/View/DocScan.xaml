@@ -108,7 +108,7 @@
                         </Frame>
                     </Grid>
 
-                    <ListView Grid.Row="2" ItemsSource="{Binding ListWares}" SeparatorVisibility="None" HasUnevenRows="True" >
+                    <ListView Grid.Row="2" ItemsSource="{Binding ListWares}" x:Name="ListViewWares" SeparatorVisibility="None" HasUnevenRows="True" >
                         <ListView.Header>
                             <Grid RowSpacing="1"
                                   ColumnSpacing="1"
@@ -170,43 +170,48 @@
                 </Grid>
                 <StackLayout VerticalOptions="EndAndExpand" Orientation="Horizontal">
                     <Label Text="f1-"
-           FontSize="16"
-           Grid.Column="2"
-           TextColor="#ff5c5c" />
+                           FontSize="16"
+                           TextColor="#ff5c5c" />
                     <Label Text="обнулити"
-           FontSize="18"
-           Grid.Column="3"
-           TextColor="#816f20">
-
+                           FontSize="18"
+                           TextColor="#816f20">
                         <Label.GestureRecognizers>
                             <TapGestureRecognizer Tapped="Reset" />
                         </Label.GestureRecognizers>
                     </Label>
-                    <Label Text="f2-" FontSize="16"
-           TextColor="#ff5c5c"
-           Grid.Column="4" />
+                    <Label Text="F2-" FontSize="16"
+                           TextColor="#ff5c5c">
+                        <Label.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="Up" />
+                        </Label.GestureRecognizers>
+                    </Label>
                     <Label Text="↑"
-           FontSize="18"
-           Grid.Column="5"
-           TextColor="#816f20">
+                           FontSize="18"
+                           TextColor="#816f20">
+                        <Label.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="Up" />
+                        </Label.GestureRecognizers>
                     </Label>
-                    <Label Text="f3-"
-           FontSize="16"
-           Grid.Column="6"
-           TextColor="#ff5c5c" />
+                    <Label Text="F3-"
+                           FontSize="16"
+                           TextColor="#ff5c5c" >
+                        <Label.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="Down" />
+                        </Label.GestureRecognizers>
+                    </Label>
                     <Label Text="↓"
-           FontSize="18"
-           Grid.Column="7"
-           TextColor="#816f20">
+                           FontSize="18"
+                           TextColor="#816f20">
+                        <Label.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="Down" />
+                        </Label.GestureRecognizers>
                     </Label>
-                    <Label Text="f8-"
-           FontSize="16"
-           Grid.Column="6"
-           TextColor="#ff5c5c" />
+                    <Label Text="F8-"
+                           FontSize="16"
+                           TextColor="#ff5c5c" />
                     <Label Text="{Binding F8Text}"
-           FontSize="18"
-           Grid.Column="7"
-           TextColor="#816f20">
+                           FontSize="18"
+                           TextColor="#816f20">
                     </Label>
                 </StackLayout>
             </StackLayout>
