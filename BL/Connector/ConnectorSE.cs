@@ -12,6 +12,8 @@ using BRB5;
 using System.Globalization;
 using static System.Net.Mime.MediaTypeNames;
 using System.Threading.Tasks;
+using System.Net.NetworkInformation;
+using System.Security.Cryptography;
 
 namespace BL.Connector
 {
@@ -356,7 +358,7 @@ namespace BL.Connector
         /// <returns></returns>
         public override Result SendRaiting(IEnumerable<RaitingDocItem> pR, Doc pDoc)
         {
-            OnSave?.Invoke($"StartSave NumberDoc=>{pDoc.NumberDoc}");
+            OnSave?.Invoke($"Відпрака документа=>{pDoc.NumberDoc}");
             var Res = new Result();
             try
             {
@@ -406,7 +408,7 @@ namespace BL.Connector
                 Res = new Result(ex);
             }
             FileLogger.WriteLogMessage($"ConnectorPSU.SendRaiting=>(NumberDoc=>{pDoc.NumberDoc}) Res=>({Res.State},{Res.Info},{Res.TextError})");
-            OnSave?.Invoke("EndSave");
+            OnSave?.Invoke($"Документ відправлено =>{Res.TextError}");
             return Res;
         }
         CultureInfo provider = CultureInfo.InvariantCulture;
@@ -446,6 +448,7 @@ namespace BL.Connector
                 var Files = Directory.GetFiles(Path.Combine(Config.PathFiles, pNumberDoc));
                 FileLogger.WriteLogMessage($"SendRaitingFiles Files=>{Files?.Length}", eTypeLog.Full);
                 int i = 0;
+                OnSave?.Invoke($"Файлів для передачі=>{Files.Count()}");
                 foreach (var f in Files)
                 {
                     if (StopSend) break;
@@ -457,13 +460,14 @@ namespace BL.Connector
                         R.DT = DateTime.ParseExact(s, "yyyyMMdd_HHmmssfff", provider);
                         if (pSecondSkip > 0 && (DateTime.Now - R.DT).TotalSeconds < pSecondSkip)
                         {
-                            FileLogger.WriteLogMessage($"SendRaitingFiles Skip DateCreateFile {DateTime.Now} / {R.DT}", eTypeLog.Full);
+                            FileLogger.WriteLogMessage($"SendRaitingFiles Skip DateCreateFile File=>{f} {DateTime.Now} / {R.DT}", eTypeLog.Full);
+                            OnSave?.Invoke($"Файл пропущено=>{Path.GetFileName(f)}");
                             continue;
                         }
                     }catch(Exception e)
                     {
                         FileLogger.WriteLogMessage($"SendRaitingFiles Error=> {e.Message}", eTypeLog.Error);
-                        OnSave?.Invoke($"Error=>{e.Message}");
+                        OnSave?.Invoke($"помилка при передачі {Path.GetFileName(f)} Error=>{e.Message}");
                     }
                     i++;
                     if (StopSave)
@@ -496,7 +500,7 @@ namespace BL.Connector
                                 var FileTo = Path.Combine(DirArx, pNumberDoc, Path.GetFileName(f));
                                 File.Copy(f, FileTo, true);
                                 File.Delete(f);
-                                Sucsses++;
+                                Sucsses++;                               
                             }
                             else
                             {
@@ -505,25 +509,30 @@ namespace BL.Connector
                             }
                             sw.Stop();
                             TimeSpan TimeSend = sw.Elapsed;
-                            string text = $"{Environment.NewLine}ConnectorPSU.SendRaitingFiles Error={Error} [{i}/{Files.Length}] Send=>(File={f}, Speed=>{data.Length / (1024 * 1024 * TimeSend.TotalSeconds):n2}Mb, Size={((double)data.Length) / (1024d * 1024d):n2}Mb,Load={TimeLoad.TotalSeconds:n1},Send={TimeSend.TotalSeconds:n1}) Res=>({res.success})";
+                            string text = res.success? $"[({i},{Error})/{Files.Length}] {Path.GetFileName(f)}=>({data.Length / (1024 * 1024 * TimeSend.TotalSeconds):n2}Mb/c,{((double)data.Length) / (1024d * 1024d):n2}Mb,{TimeLoad.TotalSeconds:n1}c))":
+                               $"[({i},{Error})/{Files.Length}] Файл не передано=>{Path.GetFileName(f)}" ;
                             OnSave?.Invoke(text);
-                            FileLogger.WriteLogMessage(text, eTypeLog.Full);
+                            FileLogger.WriteLogMessage(this, System.Reflection.MethodBase.GetCurrentMethod().Name, text, eTypeLog.Full);
                         }
                         else
                         {
                             Error++;
                             FileLogger.WriteLogMessage($"ConnectorPSU.SendRaitingFiles=>(File={f}) Res=>({Res.State},{Res.Info},{Res.TextError})", eTypeLog.Expanded);
                             LastError = Res;
+                            OnSave?.Invoke($"[({i},{Error})/{Files.Length}] Файл не передано=>{Path.GetFileName(f)} {result.HttpState}");
                         }
                     }
                     catch (Exception e)
                     {
                         Res = new Result(e);
+                        OnSave?.Invoke($"помилка при передачі {Path.GetFileName(f)} Error=>{e.Message}");
                         FileLogger.WriteLogMessage($"ConnectorPSU.SendRaitingFiles=>(File={f}) Res=>({Res.State},{Res.Info},{Res.TextError})", eTypeLog.Error);
                     }
                 }
                 Res = LastError ?? Res;
-                Res.TextError = (Error>0?$"Не вдалось відправити {Error} файлів{Environment.NewLine}" :"") + $"Успішно відправлено  {Sucsses} файлів {Res.TextError}";
+                Res.TextError = (Error>0?$"Не вдалось відправити {Error} файлів{Environment.NewLine}" :"") + $"Успішно відправлено {Sucsses} файлів {Res.TextError}";
+
+                OnSave?.Invoke(Error>0? $"Не передано=>{Error} з {Files.Count()}": $"Файли успішно передані =>{Files.Count()}");
                 if (pTry > 1 && Error > 0 && (double)Error / (double)Files.Length < 0.25d)
                     return SendRaitingFiles(pNumberDoc, --pTry);
                 return Res;
