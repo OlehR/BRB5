@@ -98,22 +98,19 @@ namespace BL
 
         private void OnTimedEvent(Object source, ElapsedEventArgs e)
         {
-            var task = Task.Run(() =>
-            {
-                Bl.c.SendRaitingFiles(cDoc?.NumberDoc, 1, 3 * 60, 10 * 60);
-            });
+            var task = Task.Run(() => Bl.c.SendRaitingFilesAsync(cDoc?.NumberDoc, 1, 3 * 60, 10 * 60));
         }
 
         public void SaveRDI(Doc pDoc,Action pAction)
         {
-            Task.Run(() =>
+            Task.Run(async() =>
             {
                 Result res;
                 try
                 {
                     var r = db.GetRaitingDocItem(pDoc);
                     Doc d = db.GetDoc(pDoc);
-                    res = c.SendRaiting(r, d);
+                    res = await c.SendRaitingAsync(r, d);
                     if (res.State == 0)
                     {
                         pDoc.State = 1;

@@ -205,7 +205,7 @@ namespace BRB5
             if (IsSaving && !IsSaved)
             {
                 IsSaved = true;
-                Bl.c.StopSave = true;                            
+                Bl.c.IsStopSave = true;                            
             }
             else
             {

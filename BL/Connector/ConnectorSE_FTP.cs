@@ -116,7 +116,7 @@ namespace BL.Connector
         /// </summary>
         /// <param name="pR"></param>
         /// <returns></returns>
-        public override Result SendRaiting(IEnumerable<BRB5.Model.RaitingDocItem> pR, Doc pDoc)
+        public override async  Task<Result> SendRaitingAsync(IEnumerable<BRB5.Model.RaitingDocItem> pR, Doc pDoc)
         {
             var Res = new Result();
             try
@@ -147,7 +147,7 @@ namespace BL.Connector
         /// Вивантажеємо на сервер файли Рейтингів
         /// </summary>
         /// <returns></returns>
-        public override Result SendRaitingFiles(string pNumberDoc,int pTry=2, int pMaxSecondSend = 0, int pSecondSkip = 0)
+        public override async Task<Result> SendRaitingFilesAsync(string pNumberDoc,int pTry=2, int pMaxSecondSend = 0, int pSecondSkip = 0)
         {
             var Res = new Result();
             var DirArx = Path.Combine(Config.PathFiles, "arx");

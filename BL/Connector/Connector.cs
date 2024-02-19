@@ -10,12 +10,12 @@ namespace BL.Connector
     public class ObservableInt { }
     public class Connector
     {
-        public bool StopSend = false;
         protected static string TAG = "BRB5/Connector";
         
         private static Connector Instance = null;
         public Action<string> OnSave { get; set; }
-        public bool StopSave { get; set; } = false;
+        public volatile bool IsStopSave  = false;
+        public volatile bool IsSaving = false;
         protected DB db = DB.GetDB();
         protected GetDataHTTP Http = GetDataHTTP.GetInstance();
 
@@ -76,13 +76,13 @@ namespace BL.Connector
         /// </summary>
         /// <param name="pR"></param>
         /// <returns></returns>
-        public virtual Result SendRaiting(IEnumerable<RaitingDocItem> pR, Doc pDoc)  { throw new NotImplementedException(); }
+        public virtual async Task<Result> SendRaitingAsync(IEnumerable<RaitingDocItem> pR, Doc pDoc)  { throw new NotImplementedException(); }
 
         /// <summary>
         /// Вивантажеємо на сервер файли Рейтингів
         /// </summary>
         /// <returns></returns>
-        public virtual Result SendRaitingFiles(string pNumberDoc, int pTry =2, int pMaxSecondSend = 0, int pSecondSkip = 0) { throw new NotImplementedException(); }
+        public virtual async Task<Result> SendRaitingFilesAsync(string pNumberDoc, int pTry =2, int pMaxSecondSend = 0, int pSecondSkip = 0) { throw new NotImplementedException(); }
 
 
         /// <summary>
