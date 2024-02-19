@@ -469,7 +469,7 @@ namespace BL.Connector
                 i = 0;
                 OnSave?.Invoke($"Файлів для передачі=>{Files.Count()}");
                 foreach (var f in Files)
-                {
+                {                    
                     if (pMaxSecondSend > 0 && (DateTime.Now - StartTime).TotalSeconds > pMaxSecondSend) continue;
                     try
                     {
@@ -498,8 +498,7 @@ namespace BL.Connector
                         var sw = Stopwatch.StartNew();
                         R.file = Convert.ToBase64String(File.ReadAllBytes(f));
                         R.fileExt = Path.GetExtension(f).Substring(1);
-                        R.questionId = int.Parse(Path.GetFileName(f).Split('_')[0]);
-                         
+                        R.questionId = int.Parse(Path.GetFileName(f).Split('_')[0]);                         
 
                         sw.Stop();
                         TimeSpan TimeLoad = sw.Elapsed;
@@ -527,7 +526,7 @@ namespace BL.Connector
                             }
                             sw.Stop();
                             TimeSpan TimeSend = sw.Elapsed;
-                            string text = res.success? $"[({i},{Error})/{Files.Length}] {Path.GetFileName(f)}=>({data.Length / (1024 * 1024 * TimeSend.TotalSeconds):n2}Mb/c,{((double)data.Length) / (1024d * 1024d):n2}Mb,{TimeLoad.TotalSeconds:n1}c))":
+                            string text = res.success? $"[({i},{Error})/{Files.Length}] {Path.GetFileName(f)}=> ({data.Length / (1024 * 1024 * TimeSend.TotalSeconds):n2}Mb/c,{((double)data.Length) / (1024d * 1024d):n2}Mb,{TimeSend.TotalSeconds:n1}c))":
                                $"[({i},{Error})/{Files.Length}] Файл не передано=>{Path.GetFileName(f)}" ;
                             OnSave?.Invoke(text);
                             FileLogger.WriteLogMessage(this, System.Reflection.MethodBase.GetCurrentMethod().Name, text, eTypeLog.Full);
