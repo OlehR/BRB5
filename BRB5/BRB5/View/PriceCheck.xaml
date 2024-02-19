@@ -200,47 +200,47 @@
                 </StackLayout>
             </Grid>
 
-            <StackLayout VerticalOptions="End" Orientation="Horizontal">                
-                <Label Text="f2-"
+            <StackLayout VerticalOptions="End" Orientation="Horizontal" Spacing="2">                
+                <Label Text="F2"
                        VerticalOptions="Center"
                        FontSize="16"
                        TextColor="#ff5c5c" />
                 <Label Text="Підбір"
-                       FontSize="18"
+                       FontSize="16"
                        TextColor="#816f20">
                     <Label.GestureRecognizers>
                         <TapGestureRecognizer Tapped="OnF2" />
                     </Label.GestureRecognizers>
                 </Label>
-                <Label Text="f4-" FontSize="16"
+                <Label Text="F4" FontSize="16"
                        IsVisible="{Binding IsVisF4}"
                        TextColor="#ff5c5c"
                        VerticalOptions="Center" />
-                <Label Text=""
-                       FontSize="18"
+                <Label Text="{Binding F4Text}"
+                       FontSize="16"
                        IsVisible="{Binding IsVisF4}"
                        TextColor="#816f20">
                     <Label.GestureRecognizers>
                         <TapGestureRecognizer Tapped="OnF4" />
                     </Label.GestureRecognizers>
                 </Label>
-                <Label Text="f5-"
+                <Label Text="F5"
                        FontSize="16"
                        TextColor="#ff5c5c"
                        VerticalOptions="Center" />
                 <Label Text="{Binding F5Text}"
-                       FontSize="18"
+                       FontSize="16"
                        TextColor="#816f20">
                     <Label.GestureRecognizers>
                         <TapGestureRecognizer Tapped="OnF5" />
                     </Label.GestureRecognizers>
                 </Label>
-                <Label Text="f6-"
+                <Label Text="F6"
                        VerticalOptions="Center"
                        FontSize="16"
                        TextColor="#ff5c5c" />
                 <Label Text="Др.поточ."
-                       FontSize="18"
+                       FontSize="16"
                        TextColor="#816f20">
                     <Label.GestureRecognizers>
                         <TapGestureRecognizer Tapped="OnClickPrintOne" />
