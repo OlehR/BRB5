@@ -27,8 +27,10 @@ namespace BRB5
         public bool IsVisPriceNormal { get { return WP != null && (WP.PriceOld != WP.PriceNormal); } }
         public bool IsVisPriceOpt { get { return WP != null && (WP.PriceOpt != 0 || WP.PriceOptOld != 0); } }
 
-        bool _IsVisF4 = false;
-        public bool IsVisF4 { get { return _IsVisF4; } set { _IsVisF4 = value; OnPropertyChanged("IsVisF4"); } }
+        public bool IsVisF4 { get { return Config.Company == eCompany.Sim23; } }
+        public string F4Text { get { return IsOnline ? "OnLine" : "OffLine"; } }
+        private bool _IsOnline = true;
+        public bool IsOnline { get { return _IsOnline; } set { _IsOnline = value; OnPropertyChanged("F4Text"); } }
 
         bool _IsVisRepl = false;
         public bool IsVisRepl { get { return _IsVisRepl; } set { _IsVisRepl = value; OnPropertyChanged("IsVisRepl"); } }
@@ -45,8 +47,6 @@ namespace BRB5
         int _PrintType = 0;//Колір чека 0-звичайний 1-жовтий, -1 не розділяти.        
         public int PrintType { get { return _PrintType; } set { _PrintType = value; OnPropertyChanged("PrintType"); OnPropertyChanged("ColorPrintColorType"); } }
         public bool IsEnabledPrint { get { return Config.TypeUsePrinter != eTypeUsePrinter.NotDefined; } }
-        public bool IsOnline { get; set; } = true;
-
         /// <summary>
         /// Номер сканування цінників за день !!!TMP Треба зберігати в базі.
         /// </summary>
@@ -71,7 +71,7 @@ namespace BRB5
         public bool _IsMultyLabel = false;
         public bool IsMultyLabel { get { return _IsMultyLabel; } set { _IsMultyLabel = value; OnPropertyChanged("IsMultyLabel"); OnPropertyChanged("F5Text"); } }
 
-        public string F5Text { get { return IsMultyLabel ? "Дублювати" : "Унікальні"; } }
+        public string F5Text { get { return IsMultyLabel ? "Дубл." : "Унік."; } }
 
         public bool IsVisScan { get { return Config.TypeScaner == eTypeScaner.Camera; } }
 
@@ -125,8 +125,11 @@ namespace BRB5
             Vibration.Vibrate(duration);
 
             Config.OnProgress?.Invoke(0.9d);
-            BarCodeInput.Focus();
-            BarCodeFocused(null, null);
+            if (!IsVisScan)
+            {
+                BarCodeInput.Focus();
+                BarCodeFocused(null, null);
+            }
         }
 
         protected override void OnAppearing()
@@ -137,6 +140,7 @@ namespace BRB5
             {
                 MessagingCenter.Subscribe<KeyEventMessage>(this, "F1Pressed", message => { OnClickPrintBlock(null, EventArgs.Empty); });
                 MessagingCenter.Subscribe<KeyEventMessage>(this, "F2Pressed", message => { OnF2(null, EventArgs.Empty); });
+                MessagingCenter.Subscribe<KeyEventMessage>(this, "F4Pressed", message => { OnF4(null, EventArgs.Empty); });
                 MessagingCenter.Subscribe<KeyEventMessage>(this, "F5Pressed", message => { OnF5(null, EventArgs.Empty); });
                 MessagingCenter.Subscribe<KeyEventMessage>(this, "F6Pressed", message => { OnClickPrintOne(null, EventArgs.Empty); });
                 MessagingCenter.Subscribe<KeyEventMessage>(this, "BackPressed", message => { KeyBack(); });
@@ -147,7 +151,7 @@ namespace BRB5
                 zxing.IsScanning = true;
                 zxing.IsAnalyzing = true;
             }
-            BarCodeInput.Focus();
+            if (!IsVisScan) BarCodeInput.Focus();
         }
 
         protected override void OnDisappearing()
@@ -159,6 +163,7 @@ namespace BRB5
             {
                 MessagingCenter.Unsubscribe<KeyEventMessage>(this, "F1Pressed");
                 MessagingCenter.Unsubscribe<KeyEventMessage>(this, "F2Pressed");
+                MessagingCenter.Unsubscribe<KeyEventMessage>(this, "F4Pressed");
                 MessagingCenter.Unsubscribe<KeyEventMessage>(this, "F5Pressed");
                 MessagingCenter.Unsubscribe<KeyEventMessage>(this, "F6Pressed");
                 MessagingCenter.Unsubscribe<KeyEventMessage>(this, "BackPressed");
@@ -192,7 +197,7 @@ namespace BRB5
 
         private void OnF4(object sender, EventArgs e)
         {
-
+            IsOnline = !IsOnline;
         }
 
         private void OnF5(object sender, EventArgs e)
