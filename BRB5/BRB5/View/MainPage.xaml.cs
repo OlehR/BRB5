@@ -33,11 +33,9 @@ namespace BRB5
         public bool IsSoftKeyboard { get { return Config.IsSoftKeyboard; } }
         public MainPage()
         {
-            OCTypeDoc = new ObservableCollection<TypeDoc>();
-            c = Connector.GetInstance();
+            OCTypeDoc = new ObservableCollection<TypeDoc>();           
             InitializeComponent();
             Init();
-
             BindingContext = this;
         }
 
@@ -147,17 +145,7 @@ namespace BRB5
             {
                 Password = db.GetConfig<string>("Password");
                 OnButtonLogin(null, null);
-            }
-
-            if (c != null)
-            {
-                LS = c.LoginServer();
-                if (LS == null || LS.Count() == 1)
-                {
-                    IsVisLS = false;
-                    Config.LoginServer = LS.First().Code;
-                }
-            }
+            }            
 
             Config.IsViewAllWH = db.GetConfig<bool>("IsViewAllWH");
             Config.IsVibration = db.GetConfig<bool>("IsVibration");
@@ -173,7 +161,16 @@ namespace BRB5
             var tempstr = db.GetConfig<string>("CodesWarehouses");
             if (!string.IsNullOrEmpty(tempstr)) Config.CodesWarehouses = JsonConvert.DeserializeObject<List<int>>(tempstr);
             FileLogger.TypeLog = db.GetConfig<eTypeLog>("TypeLog");
-
+            c = Connector.GetInstance();
+            if (c != null)
+            {
+                LS = c.LoginServer();
+                if (LS == null || LS.Count() == 1)
+                {
+                    IsVisLS = false;
+                    Config.LoginServer = LS.First().Code;
+                }
+            }
         }
 
 
