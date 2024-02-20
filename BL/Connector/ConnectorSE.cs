@@ -14,6 +14,7 @@ using static System.Net.Mime.MediaTypeNames;
 using System.Threading.Tasks;
 using System.Net.NetworkInformation;
 using System.Security.Cryptography;
+using System.Threading;
 
 namespace BL.Connector
 {
@@ -356,9 +357,9 @@ namespace BL.Connector
         /// </summary>
         /// <param name="pR"></param>
         /// <returns></returns>
-        public override Result SendRaiting(IEnumerable<RaitingDocItem> pR, Doc pDoc)
+        public override async Task<Result> SendRaitingAsync(IEnumerable<RaitingDocItem> pR, Doc pDoc)
         {
-            OnSave?.Invoke($"Відпрака документа=>{pDoc.NumberDoc}");
+            OnSave?.Invoke($"Зберігаємо документ=>{pDoc.NumberDoc}");
             var Res = new Result();
             try
             {
@@ -384,7 +385,7 @@ namespace BL.Connector
                     File.AppendAllText(FileName, data);
                 }
                 catch (Exception) { }
-                HttpResult result = Http.HTTPRequest(2, "", data, "application/json");
+                HttpResult result =await Http.HTTPRequestAsync(2, "", data, "application/json",null,null,60);
 
                 FileLogger.WriteLogMessage($"ConnectorPSU.SendRaiting=>(NumberDoc=>{pDoc.NumberDoc}) Res=>({result.HttpState}");
 
@@ -396,19 +397,23 @@ namespace BL.Connector
                 else
                 {
                     var res = JsonConvert.DeserializeObject<AnswerSendRaiting>(result.Result);
-                    OnSave?.Invoke($"SendRaiting=>  (res.success={res.success})");
+                    
                     if (res.success)
-                    {
-                        Res = SendRaitingFiles(e.NumberDoc);
+                    {                      
+                        Res = await SendRaitingFilesAsync(e.NumberDoc);
+                        OnSave?.Invoke($"Документ {pDoc.NumberDoc} Успішно відправлено");
                     }
+                    else
+                        OnSave?.Invoke($"Помилка збереження документа {pDoc.NumberDoc}");
                 }
             }
             catch (Exception ex)
             {
                 Res = new Result(ex);
+                OnSave?.Invoke($"Помилка збереження =>{Res.TextError}");
             }
             FileLogger.WriteLogMessage($"ConnectorPSU.SendRaiting=>(NumberDoc=>{pDoc.NumberDoc}) Res=>({Res.State},{Res.Info},{Res.TextError})");
-            OnSave?.Invoke($"Документ відправлено =>{Res.TextError}");
+            
             return Res;
         }
         CultureInfo provider = CultureInfo.InvariantCulture;
@@ -420,16 +425,29 @@ namespace BL.Connector
         /// pSecondSkip - скільки хв не відправляти файл(для фонового відправлення
         /// </summary>
         /// <returns></returns>
-        public override Result SendRaitingFiles(string pNumberDoc, int pTry = 2, int pMaxSecondSend = 0, int pSecondSkip = 0)
+        public override async Task<Result> SendRaitingFilesAsync(string pNumberDoc, int pTry = 2, int pMaxSecondSend = 0, int pSecondSkip = 0)
         {            
             FileLogger.WriteLogMessage($"SendRaitingFiles Start pNumberDoc=>{pNumberDoc} pTry=>{pTry} pMaxSecondSend=>{pMaxSecondSend} pSecondSkip=>pSecondSkip", eTypeLog.Full);
-            lock (Lock)
+
+            int i = 30;
+            while(IsSaving && i-->0)
             {
-                FileLogger.WriteLogMessage($"SendRaitingFiles Lock pNumberDoc=>{pNumberDoc} pTry=>{pTry} pMaxSecondSend=>{pMaxSecondSend} pSecondSkip=>pSecondSkip", eTypeLog.Full);
-
+              if (!IsStopSave) IsStopSave = true;
+              Thread.Sleep(500);
+            }
+            if (IsSaving)
+            {
+                string mes = $"Збереження файлів зупинено, Оскільки попередне збереження не завершилось.";
+                FileLogger.WriteLogMessage(this, System.Reflection.MethodBase.GetCurrentMethod().Name,mes);
+                OnSave?.Invoke(mes);
+                return new Result(-1, "StopSave", mes);
+            }
+            try
+            {
+                IsSaving = true;
+                IsStopSave = false;
                 var StartTime = DateTime.Now;
-
-                StopSend = false;
+                
                 int Sucsses = 0, Error = 0;
                 Result LastError = null;
                 var Res = new Result();
@@ -438,6 +456,7 @@ namespace BL.Connector
                 {
                     Directory.CreateDirectory(DirArx);
                 }
+
                 if (!Directory.Exists(Path.Combine(DirArx, pNumberDoc)))
                 {
                     Directory.CreateDirectory(Path.Combine(DirArx, pNumberDoc));
@@ -447,11 +466,10 @@ namespace BL.Connector
 
                 var Files = Directory.GetFiles(Path.Combine(Config.PathFiles, pNumberDoc));
                 FileLogger.WriteLogMessage($"SendRaitingFiles Files=>{Files?.Length}", eTypeLog.Full);
-                int i = 0;
+                i = 0;
                 OnSave?.Invoke($"Файлів для передачі=>{Files.Count()}");
                 foreach (var f in Files)
-                {
-                    if (StopSend) break;
+                {                    
                     if (pMaxSecondSend > 0 && (DateTime.Now - StartTime).TotalSeconds > pMaxSecondSend) continue;
                     try
                     {
@@ -470,9 +488,9 @@ namespace BL.Connector
                         OnSave?.Invoke($"помилка при передачі {Path.GetFileName(f)} Error=>{e.Message}");
                     }
                     i++;
-                    if (StopSave)
+                    if (IsStopSave)
                     {
-                        StopSave = false;
+                        IsSaving = false;
                         return new Result(-1, "StopSave", "Збереження зупинено користувачем");
                     }
                     try
@@ -480,14 +498,13 @@ namespace BL.Connector
                         var sw = Stopwatch.StartNew();
                         R.file = Convert.ToBase64String(File.ReadAllBytes(f));
                         R.fileExt = Path.GetExtension(f).Substring(1);
-                        R.questionId = int.Parse(Path.GetFileName(f).Split('_')[0]);
-                         
+                        R.questionId = int.Parse(Path.GetFileName(f).Split('_')[0]);                         
 
                         sw.Stop();
                         TimeSpan TimeLoad = sw.Elapsed;
                         sw.Start();
                         string data = JsonConvert.SerializeObject(R);
-                        HttpResult result = Http.HTTPRequest(2, "", data, "application/json", null, null, 60, false);
+                        HttpResult result = await Http.HTTPRequestAsync(2, "", data, "application/json", null, null, 60, false);
                         R.file = null;
         
                         if (result.HttpState == eStateHTTP.HTTP_OK)
@@ -509,7 +526,7 @@ namespace BL.Connector
                             }
                             sw.Stop();
                             TimeSpan TimeSend = sw.Elapsed;
-                            string text = res.success? $"[({i},{Error})/{Files.Length}] {Path.GetFileName(f)}=>({data.Length / (1024 * 1024 * TimeSend.TotalSeconds):n2}Mb/c,{((double)data.Length) / (1024d * 1024d):n2}Mb,{TimeLoad.TotalSeconds:n1}c))":
+                            string text = res.success? $"[({i},{Error})/{Files.Length}] {Path.GetFileName(f)}=> ({data.Length / (1024 * 1024 * TimeSend.TotalSeconds):n2}Mb/c,{((double)data.Length) / (1024d * 1024d):n2}Mb,{TimeSend.TotalSeconds:n1}c))":
                                $"[({i},{Error})/{Files.Length}] Файл не передано=>{Path.GetFileName(f)}" ;
                             OnSave?.Invoke(text);
                             FileLogger.WriteLogMessage(this, System.Reflection.MethodBase.GetCurrentMethod().Name, text, eTypeLog.Full);
@@ -533,10 +550,13 @@ namespace BL.Connector
                 Res.TextError = (Error>0?$"Не вдалось відправити {Error} файлів{Environment.NewLine}" :"") + $"Успішно відправлено {Sucsses} файлів {Res.TextError}";
 
                 OnSave?.Invoke(Error>0? $"Не передано=>{Error} з {Files.Count()}": $"Файли успішно передані =>{Files.Count()}");
-                if (pTry > 1 && Error > 0 && (double)Error / (double)Files.Length < 0.25d)
-                    return SendRaitingFiles(pNumberDoc, --pTry);
+                
+                IsSaving = false;
+                if ( !IsStopSave && pTry > 1 && Error > 0 && (double)Error / (double)Files.Length < 0.25d)
+                    return await SendRaitingFilesAsync(pNumberDoc, --pTry);                
                 return Res;
             }
+            finally { IsSaving = false; }
         }
 
         /// <summary>

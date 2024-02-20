@@ -12,7 +12,7 @@
         <AbsoluteLayout>
             <StackLayout AbsoluteLayout.LayoutBounds="1, 0, 1, .9" AbsoluteLayout.LayoutFlags="All">
                 <Button Text="{Binding NameWarehouse}" BackgroundColor="{Binding GetGPSColor}" Clicked="OnFindGPS" />
-                <Editor Text="{Binding TextSave}" IsVisible="{Binding IsSaving}" HeightRequest="250" />
+                <Editor Text="{Binding TextSave}" IsVisible="{Binding IsSaving}" HeightRequest="250" IsReadOnly="True" />
 
                 <Button IsVisible="{Binding IsSaving}"
                         Text="{Binding TextButtonSaved}"
