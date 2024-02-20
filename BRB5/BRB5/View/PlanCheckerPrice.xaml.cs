@@ -31,6 +31,8 @@ namespace BRB5.View
         //private object Sender;
         private int ShelfType;
         public bool IsSoftKeyboard { get { return Config.IsSoftKeyboard; } }
+        private string CurrentCodeWares;
+        private int CurrentEntryType;
 
         public PlanCheckerPrice(Doc pDoc, int Selection)
         {
@@ -93,6 +95,7 @@ namespace BRB5.View
             if (!IsSoftKeyboard)
             {
                 MessagingCenter.Subscribe<KeyEventMessage>(this, "BackPressed", message => { KeyBack(); });
+                MessagingCenter.Subscribe<KeyEventMessage>(this, "EnterPressed", message => { SaveAndFocusNext(CurrentCodeWares, CurrentEntryType); });
             }
         }
         protected override void OnDisappearing()
@@ -103,6 +106,7 @@ namespace BRB5.View
             if (!IsSoftKeyboard)
             {
                 MessagingCenter.Unsubscribe<KeyEventMessage>(this, "BackPressed");
+                MessagingCenter.Unsubscribe<KeyEventMessage>(this, "EnterPressed");
             }
         }
 
@@ -141,24 +145,15 @@ namespace BRB5.View
 
         private void SaveItemAvailable(object sender, EventArgs e)
         {
-            SaveAndFocusNext(sender, 1);
+            SaveAndFocusNext((sender as Entry).AutomationId, 1);
         }
-        private void EntryFocused(object sender, FocusEventArgs e)
+        private void EntryFocused(object sender)
         {
-            //var t = sender.GetHashCode();
-            //int tw;
-            //if (Sender != null)
-            //{
-            //    tw = Sender.GetHashCode();
-            //    if (sender.GetHashCode().Equals(Sender.GetHashCode())) 
-            //        return;                
-            //}
-            //Sender = sender;
-
+            var entry = sender as Entry;
+            CurrentCodeWares = entry.AutomationId;
             if (IsVisScan)
             Device.BeginInvokeOnMainThread(() =>
-            {
-                var entry = sender as Entry;
+            {                
                 entry.CursorPosition = 0;
                 entry.SelectionLength = entry.Text == null ? 0 : entry.Text.Length;
             });
@@ -166,18 +161,16 @@ namespace BRB5.View
 
         private void SaveItemAdd(object sender, EventArgs e)
         {
-            SaveAndFocusNext(sender, 2);
+            SaveAndFocusNext((sender as Entry).AutomationId, 2);
         }
 
         private void SaveItem(object sender, FocusEventArgs e)
         {
-            SaveAndFocusNext(sender, 3);
+            SaveAndFocusNext((sender as Entry).AutomationId, 3);
         }
 
-        private void SaveAndFocusNext(object sender, int Type)
+        private void SaveAndFocusNext(string codeWares, int Type)
         {
-            var temp = sender as Entry;
-            var codeWares = temp.AutomationId;
             var tempSelected = WaresList.FirstOrDefault(item => item.CodeWares.ToString() == codeWares);
             tempSelected.Quantity = tempSelected.InputQuantity;
             tempSelected.CodeReason = ShelfType;
@@ -198,6 +191,18 @@ namespace BRB5.View
         private async void KeyBack()
         {
             await Navigation.PopAsync();
+        }
+
+        private void EntryFocusedAvailable(object sender, FocusEventArgs e)
+        {
+            EntryFocused(sender);
+            CurrentEntryType = 1;
+        }
+
+        private void EntryFocusedAdd(object sender, FocusEventArgs e)
+        {
+            EntryFocused(sender);
+            CurrentEntryType = 2;
         }
     }
 }

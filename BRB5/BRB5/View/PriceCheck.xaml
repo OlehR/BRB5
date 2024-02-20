@@ -135,6 +135,7 @@
                                           Text="{Binding WP.BarCodes}" 
                                           x:Name="BarCodeInput"
                                           Focused="BarCodeFocused"
+                                          Unfocused="BarCodeHandInput"
                                           Completed="BarCodeHandInput">
                         <controls:CustomEntry.Effects>
                             <effects:KeyboardEnableEffect/>

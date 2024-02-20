@@ -37,7 +37,7 @@
                                                               Completed="SaveItemAvailable"
                                                               effects:KeyboardEffect.EnableKeyboard="{Binding IsSoftKeyboard}"
                                                               Unfocused="SaveItem"
-                                                              Focused="EntryFocused"
+                                                              Focused="EntryFocusedAvailable"
                                                               Text="{Binding InputQuantity}" 
                                                               Keyboard="Telephone">
                                             <controls:CustomEntry.Effects>
@@ -51,7 +51,7 @@
                                                               Completed="SaveItemAdd"
                                                               effects:KeyboardEffect.EnableKeyboard="{Binding IsSoftKeyboard}"
                                                               Unfocused="SaveItem"
-                                                              Focused="EntryFocused"
+                                                              Focused="EntryFocusedAdd"
                                                               Text="{Binding QuantityOld}"
                                                               Keyboard="Telephone">
                                             <controls:CustomEntry.Effects>
