@@ -6,33 +6,42 @@
     <ContentPage.Content>
         <StackLayout>
 
-            <forms:CachedImage x:Name="WareImageFull" ErrorPlaceholder="Photo.png"
-                               HorizontalOptions="FillAndExpand" 
-                               VerticalOptions="FillAndExpand" IsVisible="false" >
+            <forms:CachedImage ErrorPlaceholder="Photo.png"
+                               HorizontalOptions="FillAndExpand" Source="{Binding UriPicture}"
+                               VerticalOptions="FillAndExpand" IsVisible="{Binding IsFullScreenImg}" >
                 <forms:CachedImage.GestureRecognizers>
                     <TapGestureRecognizer Tapped="OnImageTapped"
                                           NumberOfTapsRequired="2" />
                 </forms:CachedImage.GestureRecognizers>
             </forms:CachedImage>
 
-            <StackLayout Margin="5,0,5,0" Spacing="0" x:Name="WareInfoMain">
+            <Image Source="{Binding UriPicture}"  IsVisible="{Binding IsVisIOSFull}"
+                   HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand">
+                <Image.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="OnImageTapped" 
+                                              NumberOfTapsRequired="2" />
+                </Image.GestureRecognizers>
+            </Image>
+            <StackLayout Margin="5,0,5,0" Spacing="0" x:Name="WareInfoMain" IsVisible="{Binding IsNotFullScreenImg}">
 
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="190"/>
                     </Grid.RowDefinitions>
 
-                    <!-- <forms:CachedImage  x:Name="WareImage" ErrorPlaceholder="Photo.png" HeightRequest="190" >
+                    <forms:CachedImage  x:Name="WareImage" ErrorPlaceholder="Photo.png" HeightRequest="190"  Source="{Binding UriPicture}">
                         <forms:CachedImage.GestureRecognizers>
                             <TapGestureRecognizer Tapped="OnImageTapped" 
                                               NumberOfTapsRequired="2" />
                         </forms:CachedImage.GestureRecognizers>
-                        <forms:CachedImage.Source>
-                            <UriImageSource Uri="{Binding UriPicture}" />
-                        </forms:CachedImage.Source>
                     </forms:CachedImage>
-                    -->
-                    <Image Source="{Binding  UriPicture}" HeightRequest="190"/>
+
+                    <Image Source="{Binding UriPicture}" HeightRequest="190" x:Name="WareImageIOS" IsVisible="false">
+                        <Image.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="OnImageTapped" 
+                                              NumberOfTapsRequired="2" />
+                        </Image.GestureRecognizers>
+                    </Image>
 
                     <Button Text="Друк" HorizontalOptions="Start" VerticalOptions="Start" 
                             Clicked="OnClickPrint"                        

@@ -19,8 +19,12 @@ namespace BRB5.View
         Connector c;
         public WaresPrice WP { get; set; }
         public bool IsVisPromotion {  get; set; }  = false;
-        public bool IsNotFullScreenImg { get; set; } = true;
-        public bool IsFullScreenImg { get; set; } = false;
+        private bool _IsNotFullScreenImg = true;
+        public bool IsNotFullScreenImg { get { return _IsNotFullScreenImg; } set { _IsNotFullScreenImg = value; OnPropertyChanged(nameof(IsNotFullScreenImg));  } }
+        private bool _IsFullScreenImg = false;
+        public bool IsFullScreenImg { get { return _IsFullScreenImg; } set { _IsFullScreenImg = value; OnPropertyChanged(nameof(IsFullScreenImg)); } }
+        private bool _IsVisIOSFull = false;
+        public bool IsVisIOSFull { get { return _IsVisIOSFull; } set { _IsVisIOSFull = value; OnPropertyChanged(nameof(IsVisIOSFull)); } }
         public string ImageUri { get; set; } = "Photo.png"; 
         public bool IsEnabledPrint { get { return Config.TypeUsePrinter != eTypeUsePrinter.NotDefined; } }
         public UriImageSource Picture { get; set; }
@@ -44,9 +48,13 @@ namespace BRB5.View
                 CachingEnabled = false,
                 CacheValidity = new TimeSpan(7, 0, 0, 0)
             };
-           
-            //WareImage.Source= new Uri(;
-            WareImageFull.Source=Picture;
+            if (Device.RuntimePlatform == Device.iOS) 
+            {
+                WareImageIOS.IsVisible = true; 
+                WareImage.IsVisible = false;
+            } 
+
+
             this.BindingContext = this;
         }
 
@@ -58,8 +66,11 @@ namespace BRB5.View
 
         private void OnImageTapped(object sender, EventArgs e)
         {
-            WareImageFull.IsVisible = !WareImageFull.IsVisible;
-            WareInfoMain.IsVisible = !WareInfoMain.IsVisible;
+            IsNotFullScreenImg = !IsNotFullScreenImg;
+
+            if (Device.RuntimePlatform == Device.iOS)
+                 IsVisIOSFull = !IsVisIOSFull;
+            else IsFullScreenImg = !IsFullScreenImg;
         }
     }
 }
