@@ -23,6 +23,9 @@ namespace BRB5.View
         public bool IsFullScreenImg { get; set; } = false;
         public string ImageUri { get; set; } = "Photo.png"; 
         public bool IsEnabledPrint { get { return Config.TypeUsePrinter != eTypeUsePrinter.NotDefined; } }
+        public UriImageSource Picture { get; set; }
+        public Uri UriPicture { get { return new Uri(Config.ApiUrl1 + $"Wares/{WP.CodeWares:D9}.png"); } }
+
         public WareInfo(ParseBarCode parseBarCode)
         {
             InitializeComponent();
@@ -34,19 +37,16 @@ namespace BRB5.View
             if (WP.ActionType > 0)  IsVisPromotion = true;
             
             ImageUri = Config.ApiUrl1+$"Wares/{WP.CodeWares:D9}.png";
-            WareImage.Source = new UriImageSource
+            
+            Picture  = new UriImageSource
             {
                 Uri = new Uri(ImageUri),
-                CachingEnabled = true,
+                CachingEnabled = false,
                 CacheValidity = new TimeSpan(7, 0, 0, 0)
             };
-            WareImageFull.Source = new UriImageSource
-            {
-                Uri = new Uri(ImageUri),
-                CachingEnabled = true,
-                CacheValidity = new TimeSpan(7, 0, 0, 0)
-            };
-
+           
+            //WareImage.Source= new Uri(;
+            WareImageFull.Source=Picture;
             this.BindingContext = this;
         }
 
