@@ -41,7 +41,7 @@ namespace BRB5
 
         private void OnButtonLogin(object sender, System.EventArgs e)
         {
-            Task.Run(async () =>
+            _ = Task.Run(async () =>
             {
                 var r = await c.LoginAsync(Login, Password, Config.LoginServer);
                 if (r.State == 0)
@@ -61,7 +61,7 @@ namespace BRB5
                     db.SetConfig<string>("Password", Password);
                     db.SetConfig<eLoginServer>("LoginServer", Config.LoginServer);
                     Config.Login = Login;
-                    Config.Password = Password;                    
+                    Config.Password = Password;
                     //eLoginServer LoginServer;                   
 
                     var Wh = c.LoadWarehouse();
@@ -79,9 +79,16 @@ namespace BRB5
 
                     if (Config.DateLastLoadGuid.Date != DateTime.Today.Date)
                     {
-                        c.LoadGuidDataAsync(true);
-                        Config.DateLastLoadGuid = DateTime.Now;
-                        db.SetConfig<DateTime>("DateLastLoadGuid", Config.DateLastLoadGuid);
+                        _=Task.Run(async () =>
+                        {
+                            var r = await c.LoadGuidDataAsync(true);
+                            if (r.State == 0)
+                            {
+                                Config.DateLastLoadGuid = DateTime.Now;
+                                db.SetConfig<DateTime>("DateLastLoadGuid", Config.DateLastLoadGuid);
+                            }
+                        });
+
                     }
                 }
                 else
