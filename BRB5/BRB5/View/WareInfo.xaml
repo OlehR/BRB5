@@ -22,12 +22,17 @@
                         <RowDefinition Height="190"/>
                     </Grid.RowDefinitions>
 
-                    <forms:CachedImage  x:Name="WareImage" ErrorPlaceholder="Photo.png" HeightRequest="190" >
+                    <!-- <forms:CachedImage  x:Name="WareImage" ErrorPlaceholder="Photo.png" HeightRequest="190" >
                         <forms:CachedImage.GestureRecognizers>
                             <TapGestureRecognizer Tapped="OnImageTapped" 
                                               NumberOfTapsRequired="2" />
                         </forms:CachedImage.GestureRecognizers>
+                        <forms:CachedImage.Source>
+                            <UriImageSource Uri="{Binding UriPicture}" />
+                        </forms:CachedImage.Source>
                     </forms:CachedImage>
+                    -->
+                    <Image Source="{Binding  UriPicture}" HeightRequest="190"/>
 
                     <Button Text="Друк" HorizontalOptions="Start" VerticalOptions="Start" 
                             Clicked="OnClickPrint"                        
