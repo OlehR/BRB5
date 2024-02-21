@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using Utils;
 using Xamarin.Essentials;
 using Xamarin.Forms;
@@ -251,7 +252,9 @@ namespace BRB5
                 }
 
                 var photo = await MediaPicker.CapturePhotoAsync(new MediaPickerOptions { Title = FileName });
-                if (photo != null && File.Exists(photo.FullPath))
+                await Task.Delay(20);
+
+                if (photo != null) // && File.Exists(photo.FullPath))
                 {
                     var ext = Path.GetExtension(photo.FileName);
                     var newFile = Path.Combine(dir, FileName + ext);
