@@ -144,6 +144,10 @@
       <Project>{a49b55d6-e194-413e-a676-ba9aa26e7ab7}</Project>
       <Name>BL</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\Model\BRB5.Model.csproj">
+      <Project>{E1C7DAB8-E775-414D-91CE-30E46D8F40AF}</Project>
+      <Name>BRB5.Model</Name>
+    </ProjectReference>
     <ProjectReference Include="..\BRB5\BRB5.csproj">
       <Project>{BC9CD5BE-03B0-4DF3-A559-125445C9E053}</Project>
       <Name>BRB5</Name>

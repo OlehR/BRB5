@@ -1,5 +1,8 @@
 ﻿using BL;
+using BRB5.Model;
 using Foundation;
+using System;
+using System.IO;
 using UIKit;
 
 namespace BRB5.iOS
@@ -25,6 +28,11 @@ namespace BRB5.iOS
             FFImageLoading.Forms.Platform.CachedImageRenderer.Init();
             DB.BaseDir = ProtoBRB.GetPathDB;
             LoadApplication(new App());
+
+            // Отримання шляху до каталогу завантажень
+            string documentsPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+            Config.PathDownloads = Path.Combine(documentsPath, "..", "Library", "Downloads");
+            
 
             return base.FinishedLaunching(app, options);
         }
