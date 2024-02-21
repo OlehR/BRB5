@@ -1,4 +1,5 @@
 ﻿//using BRB5.Model;
+using BL.Connector;
 using BRB5;
 using BRB5.Model;
 using Newtonsoft.Json;
@@ -363,7 +364,31 @@ coalesce(dw1.quantity,0) as InputQuantity,
 (select max(d.DTStart) from Doc d where d.Typedoc=@TypeDoc and d.numberdoc=@NumberDoc ),
 (select max(d.DTEnd) from Doc d where d.Typedoc=@TypeDoc and d.numberdoc=@NumberDoc )
 )";
-            return db.ReplaceAll( pDoc) >= 0;
+            //return db.ReplaceAll( pDoc) >= 0;
+            int c = 0;
+            Sql = @"replace into Doc ( DateDoc, TypeDoc, NumberDoc, CodeWarehouse, IdTemplate, ExtInfo, NameUser, BarCode, Description, State,
+                                              IsControl, NumberDoc1C, DateOutInvoice, NumberOutInvoice, Color,DTStart,DTEnd) values 
+                                            (?,?,?,?,?,?,?,?,?,max(?, (select max(d.state) from Doc d where d.Typedoc=? and d.numberdoc=? )),
+                                             ?,?,?,?,?,
+(select max(d.DTStart) from Doc d where d.Typedoc=? and d.numberdoc=? ),
+(select max(d.DTEnd) from Doc d where d.Typedoc=? and d.numberdoc=? )
+)";
+            try
+            {
+                db.RunInTransaction(delegate
+                {
+                    foreach (Doc d in pDoc)
+                    {
+                        c += db.Execute(Sql, d.DateDoc, d.TypeDoc, d.NumberDoc, d.CodeWarehouse, d.IdTemplate, d.ExtInfo, d.NameUser, d.BarCode, d.Description, d.State, d.TypeDoc, d.NumberDoc,
+                            d.IsControl, d.NumberDoc1C, d.DateOutInvoice, d.NumberOutInvoice, d.Color,
+                            d.TypeDoc, d.NumberDoc, d.TypeDoc, d.NumberDoc);
+                    }
+                });
+            }catch(Exception e)
+            {
+                var er = e.Message;
+            }
+            return c>0;
         }
 
         public IEnumerable<DocVM> GetDoc(TypeDoc pTypeDoc, string pBarCode = null, string pExFilrer = null)
