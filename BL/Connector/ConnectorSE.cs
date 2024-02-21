@@ -212,11 +212,15 @@ namespace BL.Connector
                         {                            
                             var tt=item.sections.Select(el=>
                                     new RaitingTemplateItem() { IdTemplate = item.templateId,   Id = -el.sectionId, Parent = -el.parentId, Text = el.text, RatingTemplate = 8, OrderRS = el.sectionId }).ToList();
+                            tt.Add(new RaitingTemplateItem() { IdTemplate = item.templateId, Id = -1, Parent = 9999999, Text = "Всього", RatingTemplate = 8, OrderRS = 9999999 });
+
                             db.ReplaceRaitingTemplateItem(tt);
                             tt = item.questions.Select(el =>
                                     new RaitingTemplateItem() { IdTemplate = item.templateId, Id = el.questionId, Parent = -el.sectionId, Text = el.text, RatingTemplate = el.RatingTemplate, OrderRS = el.questionId }).ToList();
                             db.ReplaceRaitingTemplateItem(tt);
                         }
+
+              
 
                         /*
                         foreach (var elp in p.data)
@@ -385,8 +389,14 @@ namespace BL.Connector
                     File.AppendAllText(FileName, data);
                 }
                 catch (Exception) { }
+
+                var sw = Stopwatch.StartNew();
+
                 HttpResult result =await Http.HTTPRequestAsync(2, "", data, "application/json",null,null,60);
 
+                sw.Stop();
+                TimeSpan TimeLoad = sw.Elapsed;
+                OnSave?.Invoke($"Час збереження відповідей=>{TimeLoad.TotalSeconds}c");
                 FileLogger.WriteLogMessage($"ConnectorPSU.SendRaiting=>(NumberDoc=>{pDoc.NumberDoc}) Res=>({result.HttpState}");
 
                 if (result.HttpState != eStateHTTP.HTTP_OK)

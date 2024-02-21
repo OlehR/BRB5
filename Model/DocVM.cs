@@ -100,6 +100,7 @@ namespace BRB5.Model
         public DateTime DTStart { get; set; }
 
         public DateTime DTEnd { get; set; }
+
         /// <summary>
         /// Колір відображення документа
         /// </summary>
