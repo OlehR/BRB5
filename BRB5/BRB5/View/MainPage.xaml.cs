@@ -65,7 +65,7 @@ namespace BRB5
                     //eLoginServer LoginServer;                   
 
                     var Wh = c.LoadWarehouse();
-                    db.ReplaceWarehouse(Wh);
+                    var rrr=db.ReplaceWarehouse(Wh);
 
                     long SizeDel = 0, SizeUse = 0;
                     if (Config.Company == eCompany.Sim23 && Device.RuntimePlatform == Device.Android)

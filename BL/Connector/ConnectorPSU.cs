@@ -260,7 +260,7 @@ namespace BL.Connector
         /// <param name="pWares"></param>
         /// <param name="pIsClose"></param>
         /// <returns></returns>
-        public override Result SendDocsData(Doc pDoc, IEnumerable<DocWares> pWares)
+        public override Result SendDocsData(DocVM pDoc, IEnumerable<DocWares> pWares)
         {
             var r = pWares.Select(el => new decimal[] { el.OrderDoc, el.CodeWares, el.InputQuantity });
             var res = new ApiSaveDoc(153, pDoc.TypeDoc, pDoc.NumberDoc, r);
@@ -366,7 +366,7 @@ namespace BL.Connector
             return null;
         }
 
-        public override Result SaveDocRaiting(Doc pDoc)
+        public override Result SaveDocRaiting(DocVM pDoc)
         {
             HttpResult result = Http.HTTPRequest(0, "DCT/Raitting/SaveDocRaiting", pDoc.ToJSON("yyyy-MM-ddTHH:mm:ss"), "application/json", "brb", "brb");//
 
@@ -407,7 +407,7 @@ namespace BL.Connector
 
             if (result.HttpState == eStateHTTP.HTTP_OK)
             {
-                var r = JsonConvert.DeserializeObject<IEnumerable<Doc>>(result.Result);
+                var r = JsonConvert.DeserializeObject<IEnumerable<DocVM>>(result.Result);
                 return new Result<IEnumerable<Doc>>() { Info = r };
             }
             else
@@ -415,12 +415,12 @@ namespace BL.Connector
         }
 
 
-        public override Result<IEnumerable<Doc>> GetPromotion(int pCodeWarehouse) {
+        public override Result<IEnumerable<DocVM>> GetPromotion(int pCodeWarehouse) {
             HttpResult result = Http.HTTPRequest(0, "DCT/CheckPromotion/Doc", pCodeWarehouse.ToJSON(), "application/json", "brb", "brb");
 
             if (result.HttpState == eStateHTTP.HTTP_OK)
             {
-                var r = JsonConvert.DeserializeObject<Result<IEnumerable<Doc>>>(result.Result);
+                var r = JsonConvert.DeserializeObject<Result<IEnumerable<DocVM>>>(result.Result);
                 return r;
             }
             return null;

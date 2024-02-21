@@ -14,8 +14,8 @@ namespace BRB5.View
         private Connector c = Connector.GetInstance();
         private TypeDoc TypeDoc;
         DB db = DB.GetDB();
-        private ObservableCollection<Doc> _MyDocsR;
-        public ObservableCollection<Doc> MyDocsR { get { return _MyDocsR; } set { _MyDocsR = value; OnPropertyChanged("MyDocsR"); } }
+        private ObservableCollection<DocVM> _MyDocsR;
+        public ObservableCollection<DocVM> MyDocsR { get { return _MyDocsR; } set { _MyDocsR = value; OnPropertyChanged("MyDocsR"); } }
         bool _IsVisOPKO = false;
         public bool IsVisOPKO { get { return _IsVisOPKO; } set { _IsVisOPKO = value; OnPropertyChanged("IsVisOPKO"); } }
         string _OPKOstr = "";
@@ -46,7 +46,7 @@ namespace BRB5.View
                 MessagingCenter.Subscribe<KeyEventMessage>(this, "EnterPressed", message => { EnterKey(); });
             }
             c.LoadDocsDataAsync(TypeDoc.CodeDoc, null, false);
-            MyDocsR = new ObservableCollection<Doc>(db.GetDoc(TypeDoc));
+            MyDocsR = new ObservableCollection<DocVM>(db.GetDoc(TypeDoc));
             if (MyDocsR.Count > 0)
             {
                 MyDocsR[0].SelectedColor = true;
@@ -70,7 +70,7 @@ namespace BRB5.View
         {
             var s = sender as Grid;
 
-            var vDoc = s.BindingContext as Doc;
+            var vDoc = s.BindingContext as DocVM;
             
             await Navigation.PushAsync(new DocItem(vDoc,TypeDoc));
         }
@@ -84,7 +84,7 @@ namespace BRB5.View
         private void FilterDocs(object sender, EventArgs e)
         {
             if (OPKOstr.Length > 2)
-                MyDocsR = new ObservableCollection<Doc>(db.GetDoc(TypeDoc, null, OPKOstr));
+                MyDocsR = new ObservableCollection<DocVM>(db.GetDoc(TypeDoc, null, OPKOstr));
         }
 
         private void TabBarCode(object sender, EventArgs e)
@@ -94,7 +94,7 @@ namespace BRB5.View
         }
         void BarCode(string pBarCode)
         {
-            MyDocsR = new ObservableCollection<Doc>(db.GetDoc(TypeDoc, pBarCode, null));
+            MyDocsR = new ObservableCollection<DocVM>(db.GetDoc(TypeDoc, pBarCode, null));
         }
         public void Dispose()
         {
@@ -117,7 +117,7 @@ namespace BRB5.View
         }
         private void Up()
         {
-            var selectedItem = (Doc)ListDocs.SelectedItem;
+            var selectedItem = (DocVM)ListDocs.SelectedItem;
             if (selectedItem != null)
             {
                 var selectedIndex = MyDocsR.IndexOf(selectedItem);
@@ -133,7 +133,7 @@ namespace BRB5.View
         }
         private void Down()
         {
-            var selectedItem = (Doc)ListDocs.SelectedItem;
+            var selectedItem = (DocVM)ListDocs.SelectedItem;
             if (selectedItem != null)
             {
                 var selectedIndex = MyDocsR.IndexOf(selectedItem);
@@ -150,7 +150,7 @@ namespace BRB5.View
         }
         private async void EnterKey()
         {
-            var selectedItem = (Doc)ListDocs.SelectedItem;
+            var selectedItem = (DocVM)ListDocs.SelectedItem;
             if (selectedItem != null)
             {
                 await Navigation.PushAsync(new DocItem(selectedItem, TypeDoc));
@@ -159,7 +159,7 @@ namespace BRB5.View
         private void FilterBarCode(ZXing.Result result)
         {
             zxing.IsAnalyzing = false;
-            MyDocsR = new ObservableCollection<Doc>(db.GetDoc(TypeDoc, result.Text, null));
+            MyDocsR = new ObservableCollection<DocVM>(db.GetDoc(TypeDoc, result.Text, null));
             zxing.IsAnalyzing = true;
         }
     }

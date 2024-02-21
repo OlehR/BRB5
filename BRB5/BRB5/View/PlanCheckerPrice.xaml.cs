@@ -25,7 +25,7 @@ namespace BRB5.View
         Connector c;
         protected DB db = DB.GetDB();
         ZXingScannerView zxing;
-        private Doc Doc;
+        private DocVM Doc;
         public bool IsVisScan { get { return Config.TypeScaner == eTypeScaner.Camera; } }
         public ObservableCollection<DocWaresEx> WaresList { get; set; }
         //private object Sender;
@@ -34,7 +34,7 @@ namespace BRB5.View
         private string CurrentCodeWares;
         private int CurrentEntryType;
 
-        public PlanCheckerPrice(Doc pDoc, int Selection)
+        public PlanCheckerPrice(DocVM pDoc, int Selection)
         {
             Doc = pDoc;
             ShelfType = Selection;

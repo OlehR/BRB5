@@ -36,19 +36,28 @@ namespace BRB5.Model
 
     }
 
-    public class Doc:DocId
+    /// <summary>
+    /// Відповідає структурі БД.
+    /// </summary>
+    public class Doc : DocId, ICloneable
     {
+        #region ICloneable Members
+        public object Clone()
+        {
+            return this.MemberwiseClone();
+        }
+        #endregion
+        public Doc() : base() { }
+        public Doc(DocId pDocId) : base(pDocId) { }
         /// <summary>
         /// Стан 0 - готується, 1 - збережено ...
         /// </summary>
         public int State { get; set; }
 
-        
-
         /// <summary>
         /// Дата документа
         /// </summary>
-        public DateTime DateDoc { get; set; } 
+        public DateTime DateDoc { get; set; }
         public string DateString { get { return DateDoc.ToString("dd.MM.yy"); } }
 
         /// <summary>
@@ -60,34 +69,11 @@ namespace BRB5.Model
         /// Шаблон
         /// </summary>
         public int IdTemplate { get; set; }
-        [Ignore]
-        public string RaitingTemplateName { get; set; } = string.Empty;
+
         /// <summary>
         /// Код складу
         /// </summary>
         public int CodeWarehouse { get; set; }
-        [Ignore]
-        public string CodeWarehouseName { get; set; } = string.Empty;
-        /// <summary>
-        /// Додаткова інформація, яка може вплинути на обробку документа напиклад ЗКПО постачальника
-        /// Для Анкет код складу магазина.
-        /// </summary>
-        public string ExtInfo { get; set; } // 
-
-        /// <summary>
-        /// Адреса
-        /// </summary>
-        [Ignore]
-        public string Address { get; set; } // 
-        [JsonIgnore]
-        [Ignore]
-        public string ShortAddress { 
-            get {
-                if (Address == null) return null;
-                var temp = Address.Split('-')[1];
-                if (temp.Length < 2) temp= Address;
-                return temp;
-            }  } // 
 
         public string NameUser { get; set; } // 
         /// <summary>
@@ -118,6 +104,37 @@ namespace BRB5.Model
         /// Колір відображення документа
         /// </summary>
         public int Color { get; set; }
+
+        /// <summary>
+        /// Додаткова інформація, яка може вплинути на обробку документа напиклад ЗКПО постачальника
+        /// Для Анкет код складу магазина.
+        /// </summary>
+        public string ExtInfo { get; set; }
+    }
+
+    public class DocVM:Doc
+    {        
+        [Ignore]
+        public string RaitingTemplateName { get; set; } = string.Empty;
+        
+        [Ignore]
+        public string CodeWarehouseName { get; set; } = string.Empty;        
+
+        /// <summary>
+        /// Адреса
+        /// </summary>
+        public string Address { get; set; } // 
+        [JsonIgnore]
+        [Ignore]
+        public string ShortAddress { 
+            get {
+                if (Address == null) return null;
+                var temp = Address.Split('-')[1];
+                if (temp.Length < 2) temp= Address;
+                return temp;
+            }  } // 
+
+        
 
         private bool _SelectedColor = false;
         [JsonIgnore]
@@ -170,24 +187,10 @@ namespace BRB5.Model
         //public Color GetColor { get { return Color == 0?new Color(0xdcdcdc) : new Color(Color); } }
 
         //public int isClose; //0- не закривати, 1 - закривати.
-        public Doc() { }
+        public DocVM() { }
         
-        public Doc(DocId pDocId):base(pDocId) { }        
+        public DocVM(DocId pDocId):base(pDocId) { }        
 
 
-        /* public Date GetDateOutInvoice()
-         {
-             SimpleDateFormat formatterDate = new SimpleDateFormat("yyyy-MM-dd");
-             Date DateOut = Calendar.getInstance().getTime();
-             try
-             {
-                 DateOut = formatterDate.parse(DateOutInvoice);
-             }
-             catch (Exception e)
-             {
-                 try { DateOut = formatterDate.parse(formatterDate.format(DateOut)); } catch (Exception ee) { }
-             }
-             return DateOut;
-         }*/
     }
 }

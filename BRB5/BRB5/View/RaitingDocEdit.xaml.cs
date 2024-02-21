@@ -16,8 +16,8 @@ namespace BRB5.View
 
         public int SelectedTemplate { get; set; }
         
-        private Doc _RD;
-        public Doc RD { get { return _RD; } set { _RD = value; OnPropertyChanged(nameof(RD)); } }
+        private DocVM _RD;
+        public DocVM RD { get { return _RD; } set { _RD = value; OnPropertyChanged(nameof(RD)); } }
         public List<Warehouse> ListWarehouse
         {
             get
@@ -40,7 +40,7 @@ namespace BRB5.View
         }
         public int SelectedWarehouse { get; set; }
         public bool IsSoftKeyboard { get { return Config.IsSoftKeyboard; } }
-        public RaitingDocEdit (Doc doc, TypeDoc vTypeDoc)
+        public RaitingDocEdit (DocVM doc, TypeDoc vTypeDoc)
 		{
 			InitializeComponent ();
             c = Connector.GetInstance();

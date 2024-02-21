@@ -116,7 +116,7 @@ namespace BL.Connector
         /// </summary>
         /// <param name="pR"></param>
         /// <returns></returns>
-        public override async  Task<Result> SendRaitingAsync(IEnumerable<BRB5.Model.RaitingDocItem> pR, Doc pDoc)
+        public override async  Task<Result> SendRaitingAsync(IEnumerable<BRB5.Model.RaitingDocItem> pR, DocVM pDoc)
         {
             var Res = new Result();
             try

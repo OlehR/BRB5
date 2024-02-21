@@ -16,8 +16,8 @@ namespace BRB5.View
         private readonly TypeDoc TypeDoc;
         Connector c;
         DB db = DB.GetDB();
-        private ObservableCollection<Doc> _RD;
-        public ObservableCollection<Doc> RD { get { return _RD; } set { _RD = value; OnPropertyChanged(nameof(RD)); } }
+        private ObservableCollection<DocVM> _RD;
+        public ObservableCollection<DocVM> RD { get { return _RD; } set { _RD = value; OnPropertyChanged(nameof(RD)); } }
 
         public RaitingDocsEdit (TypeDoc vTypeDoc)
 		{
@@ -36,15 +36,19 @@ namespace BRB5.View
                 var temp = await c.GetRaitingDocsAsync();
                 if (temp.Info == null)
                 {
-                    RD = new ObservableCollection<Doc>();
+                    RD = new ObservableCollection<DocVM>();
                     _ = DisplayAlert("Помилка", temp.TextError, "OK");
                 }
-                else RD = new ObservableCollection<Doc>(temp.Info);
+                else
+                {
+                    var Docs = db.GetDoc(new TypeDoc { CodeDoc = 11 });
+                    RD = new ObservableCollection<DocVM>(Docs);
+                }
 
                 var tempWH = db.GetWarehouse()?.ToList();
                 var tempRT = db.GetRaitingTemplate()?.ToList();
                 if (tempWH != null)
-                    foreach (Doc d in RD)
+                    foreach (DocVM d in RD)
                         try
                         {
                             d.CodeWarehouseName = tempWH.FirstOrDefault(t => t.CodeWarehouse == d.CodeWarehouse).Name;
@@ -57,13 +61,13 @@ namespace BRB5.View
 
         private async void Create(object sender, EventArgs e)
         {
-            await Navigation.PushAsync(new RaitingDocEdit(new Doc() { DateDoc = DateTime.Today, NumberDoc = c.GetNumberDocRaiting().Info }, TypeDoc));
+            await Navigation.PushAsync(new RaitingDocEdit(new DocVM() { DateDoc = DateTime.Today, NumberDoc = c.GetNumberDocRaiting().Info }, TypeDoc));
         }
 
         private async void Edit(object sender, EventArgs e)
         {
             ImageButton cc = sender as ImageButton;
-            var vDoc = cc.BindingContext as Doc;
+            var vDoc = cc.BindingContext as DocVM;
             await Navigation.PushAsync(new RaitingDocEdit(vDoc, TypeDoc));
         }
     }

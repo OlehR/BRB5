@@ -15,7 +15,7 @@ namespace BRB5.View
     {
         private readonly TypeDoc TypeDoc;
         
-        private Doc Doc;
+        private DocVM Doc;
         private Connector c = Connector.GetInstance(); 
         protected DB db = DB.GetDB();
         string _NumberOutInvoice = "";
@@ -37,7 +37,7 @@ namespace BRB5.View
         public DocItem(DocId pDocId,  TypeDoc pTypeDoc)
         {
             TypeDoc = pTypeDoc;
-            Doc = new Doc(pDocId);           
+            Doc = new DocVM(pDocId);           
             BindingContext = this;
             InitializeComponent();
         }

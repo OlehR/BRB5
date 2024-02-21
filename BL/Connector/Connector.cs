@@ -66,7 +66,7 @@ namespace BL.Connector
         /// <param name="pWares"></param>
         /// <param name="pIsClose"></param>
         /// <returns></returns>
-        public virtual Result SendDocsData(Doc pDoc, IEnumerable<DocWares> pWares) { throw new NotImplementedException(); }
+        public virtual Result SendDocsData(DocVM pDoc, IEnumerable<DocWares> pWares) { throw new NotImplementedException(); }
 
         //Збереження ПРосканованих товарів в 1С
         public virtual Result SendLogPrice(IEnumerable<LogPrice> pList) { throw new NotImplementedException(); }
@@ -76,7 +76,7 @@ namespace BL.Connector
         /// </summary>
         /// <param name="pR"></param>
         /// <returns></returns>
-        public virtual async Task<Result> SendRaitingAsync(IEnumerable<RaitingDocItem> pR, Doc pDoc)  { throw new NotImplementedException(); }
+        public virtual async Task<Result> SendRaitingAsync(IEnumerable<RaitingDocItem> pR, DocVM pDoc)  { throw new NotImplementedException(); }
 
         /// <summary>
         /// Вивантажеємо на сервер файли Рейтингів
@@ -124,11 +124,11 @@ namespace BL.Connector
 
         public virtual Result SaveTemplate(RaitingTemplate pRT) { throw new NotImplementedException(); }        
 
-        public virtual Result SaveDocRaiting(Doc pDoc) { throw new NotImplementedException(); }
+        public virtual Result SaveDocRaiting(DocVM pDoc) { throw new NotImplementedException(); }
 
         public virtual async Task<Result<IEnumerable<RaitingTemplate>>> GetRaitingTemplateAsync() { throw new NotImplementedException(); }
         public virtual async Task<Result<IEnumerable<Doc>>> GetRaitingDocsAsync() { throw new NotImplementedException(); }
-        public virtual Result<IEnumerable<Doc>> GetPromotion(int pCodeWarehouse) { throw new NotImplementedException(); }
+        public virtual Result<IEnumerable<DocVM>> GetPromotion(int pCodeWarehouse) { throw new NotImplementedException(); }
         public virtual Result<IEnumerable<DocWares>> GetPromotionData(string pNumberDoc) { throw new NotImplementedException(); }
     }
 

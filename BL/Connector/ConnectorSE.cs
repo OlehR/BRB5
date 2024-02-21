@@ -348,7 +348,7 @@ namespace BL.Connector
         /// <param name="pWares"></param>
         /// <param name="pIsClose"></param>
         /// <returns></returns>
-        public override Result SendDocsData(Doc pDoc, IEnumerable<DocWares> pWares)
+        public override Result SendDocsData(DocVM pDoc, IEnumerable<DocWares> pWares)
         {
             return null;
         }
@@ -357,7 +357,7 @@ namespace BL.Connector
         /// </summary>
         /// <param name="pR"></param>
         /// <returns></returns>
-        public override async Task<Result> SendRaitingAsync(IEnumerable<RaitingDocItem> pR, Doc pDoc)
+        public override async Task<Result> SendRaitingAsync(IEnumerable<RaitingDocItem> pR, DocVM pDoc)
         {
             OnSave?.Invoke($"Зберігаємо документ=>{pDoc.NumberDoc}");
             var Res = new Result();

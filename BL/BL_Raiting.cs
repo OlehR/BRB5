@@ -12,7 +12,7 @@ namespace BL
     public partial class BL
     {
         Timer t;
-        Doc cDoc;
+        DocVM cDoc;
 
         public void ChangeRaiting(RaitingDocItem vQuestion, string pButtonName,IEnumerable<RaitingDocItem> Questions)
         {
@@ -63,7 +63,7 @@ namespace BL
 
         }
 
-        public void LoadDataRDI(Doc pDoc, Action<IEnumerable<RaitingDocItem>> pA)
+        public void LoadDataRDI(DocVM pDoc, Action<IEnumerable<RaitingDocItem>> pA)
         {
             Task.Run(() =>
             {
@@ -86,7 +86,7 @@ namespace BL
 
         }
 
-        public void InitTimerRDI(Doc pDoc)
+        public void InitTimerRDI(DocVM pDoc)
         {
             cDoc = pDoc;
             t = new Timer(3 * 60 * 1000) { AutoReset = true }; //3 хв
@@ -101,7 +101,7 @@ namespace BL
             var task = Task.Run(() => Bl.c.SendRaitingFilesAsync(cDoc?.NumberDoc, 1, 3 * 60, 10 * 60));
         }
 
-        public void SaveRDI(Doc pDoc,Action pAction)
+        public void SaveRDI(DocVM pDoc,Action pAction)
         {
             Task.Run(async() =>
             {
@@ -109,7 +109,7 @@ namespace BL
                 try
                 {
                     var r = db.GetRaitingDocItem(pDoc);
-                    Doc d = db.GetDoc(pDoc);
+                    DocVM d = db.GetDoc(pDoc);
                     res = await c.SendRaitingAsync(r, d);
                     if (res.State == 0)
                     {

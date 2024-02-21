@@ -366,7 +366,7 @@ coalesce(dw1.quantity,0) as InputQuantity,
             return db.ReplaceAll( pDoc) >= 0;
         }
 
-        public IEnumerable<Doc> GetDoc(TypeDoc pTypeDoc, string pBarCode = null, string pExFilrer = null)
+        public IEnumerable<DocVM> GetDoc(TypeDoc pTypeDoc, string pBarCode = null, string pExFilrer = null)
         {
             string Sql = $@"select d.*, Wh.Name as Address,d.State as Color from Doc d 
  left join Warehouse  Wh on d.CodeWarehouse = wh.number 
@@ -375,7 +375,7 @@ coalesce(dw1.quantity,0) as InputQuantity,
                                 (string.IsNullOrEmpty(pExFilrer) ? "" : $" and ExtInfo like'%{pExFilrer}%'") +
 " order by DateDoc DESC";
 
-            var res = db.Query< Doc>(Sql);
+            var res = db.Query< DocVM>(Sql);
             if(!res.Any() && !string.IsNullOrEmpty(pBarCode))
             {
                 Sql = $@"select d.*, Wh.Name as Address,d.State as Color  
@@ -386,18 +386,18 @@ from Doc d
    where d.TypeDoc = {pTypeDoc.CodeDoc} and DateDoc >= date(datetime(CURRENT_TIMESTAMP,'-{pTypeDoc.DayBefore} day'))
 and bc.BarCode=?
  order by DateDoc DESC";
-                res = db.Query< Doc>(Sql, pBarCode );
+                res = db.Query< DocVM>(Sql, pBarCode );
             }
            
             return res;
         }
 
-        public Doc GetDoc(DocId pDocId)
+        public DocVM GetDoc(DocId pDocId)
         {
             string Sql = $@"select d.* , Wh.Name as Address from Doc d 
    left join Warehouse Wh on d.CodeWarehouse = wh.number 
    where d.TypeDoc = {pDocId.TypeDoc} and d.numberdoc = '{pDocId.NumberDoc}'";
-            var r= db.Query< Doc>(Sql);
+            var r= db.Query< DocVM>(Sql);
             if(r!=null&&r.Any())
                 return r.First();
             return null;
@@ -610,7 +610,7 @@ and bc.BarCode=?
             return db.Query<Warehouse>(Sql);
         }
 
-        public bool SetStateDoc(Doc pDoc)
+        public bool SetStateDoc(DocVM pDoc)
         {
             string Sql = $@"Update Doc set State={pDoc.State}  where TypeDoc = {pDoc.TypeDoc} and NumberDoc = {pDoc.NumberDoc}";
             return db.Execute(Sql) >= 0;
@@ -620,7 +620,7 @@ and bc.BarCode=?
         {
             db.Execute("delete from warehouse");
             string Sql = @"replace into Warehouse ( Code, Number, Name, Url, InternalIP, ExternalIP, Location ) values 
-                                                  (@Code,@Number,@Name,@Url,@InternalIP,@ExternalIP,@Location )";
+                                                  (@CodeWarehouse,@Number,@Name,@Url,@InternalIP,@ExternalIP,@Location )";
             return db.ReplaceAll(pWh) >= 0;
         }
 

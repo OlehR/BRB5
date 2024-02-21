@@ -17,7 +17,7 @@ namespace BRB5
     public partial class RaitingDocItem
     {       
         BL.BL Bl = BL.BL.GetBL();
-        Doc cDoc;
+        DocVM cDoc;
         
         bool _IsVisBarCode = false;
         public bool IsVisBarCode { get { return _IsVisBarCode; } set { _IsVisBarCode = value; OnPropertyChanged(nameof(IsVisBarCode)); } }
@@ -66,7 +66,7 @@ namespace BRB5
         public string TextAllOpen { get { return IsAllOpen ? "Згорнути" : "Розгорнути"; } set { OnPropertyChanged(nameof(IsAllOpen)); } }
 
        
-        public RaitingDocItem(Doc pDoc)
+        public RaitingDocItem(DocVM pDoc)
         {
             FileLogger.WriteLogMessage($"Item Start=>{pDoc.NumberDoc}");
             cDoc = pDoc;

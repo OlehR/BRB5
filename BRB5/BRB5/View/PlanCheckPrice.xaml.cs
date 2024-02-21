@@ -20,7 +20,7 @@ namespace BRB5.View
         DB db = DB.GetDB();
         Connector c;
 
-        public ObservableCollection<Doc> PromotionList { get; set; }
+        public ObservableCollection<DocVM> PromotionList { get; set; }
         public int Selection { get; set; } = 0;
         public PlanCheckPrice()
         {
@@ -30,17 +30,17 @@ namespace BRB5.View
             var temp = c.GetPromotion(Config.CodeWarehouse);
             if (temp.Info == null)
             {
-                PromotionList = new ObservableCollection<Doc>();
+                PromotionList = new ObservableCollection<DocVM>();
                 _ = DisplayAlert("Помилка", temp.TextError, "OK");
             }
             else
             {
-                PromotionList = new ObservableCollection<Doc>(temp.Info);
+                PromotionList = new ObservableCollection<DocVM>(temp.Info);
                 foreach (var doc in temp.Info)
                 {
                     doc.TypeDoc = 13;
                 }
-                db.ReplaceDoc(temp.Info);
+                db.ReplaceDoc(temp.Info.Select(el=> (Doc) el.Clone() ));
             }
 
             this.BindingContext = this;
@@ -52,7 +52,7 @@ namespace BRB5.View
             {
                 Button button = (Button)sender;
                 Cell cc = button.Parent as Cell;
-                var vDoc = cc.BindingContext as Doc;
+                var vDoc = cc.BindingContext as DocVM;
 
                 _ = Navigation.PushAsync(new PlanCheckerPrice(vDoc, Selection));
             }   else _ = DisplayAlert("","Оберіть тип стелажу", "ok");

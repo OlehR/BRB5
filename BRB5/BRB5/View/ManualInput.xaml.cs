@@ -8,7 +8,7 @@ namespace BRB5.View
     public partial class ManualInput
     {
         private readonly TypeDoc TypeDoc;
-        private Doc Doc;
+        private DocVM Doc;
         private Connector c = Connector.GetInstance();
         protected DB db = DB.GetDB();
         public bool IsSoftKeyboard { get { return Config.IsSoftKeyboard; } }
@@ -16,7 +16,7 @@ namespace BRB5.View
         public ManualInput (DocId pDocId, TypeDoc pTypeDoc)
         {
             TypeDoc = pTypeDoc;
-            Doc = new Doc(pDocId);
+            Doc = new DocVM(pDocId);
             var r = db.GetDocWares(Doc, 1, eTypeOrder.Scan);
             if (r != null)
                 foreach (var item in r)
