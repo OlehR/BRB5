@@ -9,7 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Utils;
+//using Utils;
 
 namespace BRB5.Droid
 {
@@ -72,7 +72,7 @@ namespace BRB5.Droid
                 }
                 else
                     Res = intent.GetStringExtra(IntentEventValue);
-                FileLogger.WriteLogMessage($"MyBroadcastReceiver BarCodeScaner=>{Res}");
+                //FileLogger.WriteLogMessage($"MyBroadcastReceiver BarCodeScaner=>{Res}");
                 if (Res != null && !Res.Equals("READ_FAIL"))
                 {
                    // FileLogger.WriteLogMessage($"MyBroadcastReceiver Invoke=>{Res}");
@@ -83,7 +83,7 @@ namespace BRB5.Droid
             catch (Exception e)
             {
                 var m = e.Message;
-                FileLogger.WriteLogMessage($"MyBroadcastReceiver Exception=>{m}");
+                //FileLogger.WriteLogMessage($"MyBroadcastReceiver Exception=>{m}");
             }
         }
     }
