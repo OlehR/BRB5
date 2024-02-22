@@ -29,7 +29,7 @@ namespace BRB5
         public bool IsSave { get { return CountAll == CountChoice; } }
         bool IsAll = true;
         public string TextAllNoChoice { get { return IsAll ? "Без відповіді" : "Всі"; } }
-        public string QuantityAllChoice { get { return $"{CountChoice}/{CountAll}"; } }
+        public string QuantityAllChoice { get { return CountAll>0? $"{CountChoice}/{CountAll}":""; } }
         
         bool IsOkWh { get {return LocationBrb.LocationWarehouse?.CodeWarehouse == cDoc.CodeWarehouse; } }
         
@@ -37,14 +37,21 @@ namespace BRB5
         {
             get
             {
-                string res = cDoc.ShortAddress;
-                if (!IsOkWh)
-                {
-                    var Wh = Bl.GetWarehouse(cDoc.CodeWarehouse);
-                    if (Wh != null)
-                        res += $"( {Wh.Location}){Environment.NewLine}Найближчий:\" + {LocationBrb.LocationWarehouse?.Name} ({LocationBrb.LocationWarehouse?.Location})";
+                try {
+                    string res = cDoc.ShortAddress;
+                    if (!IsOkWh)
+                    {
+                        var Wh = Bl.GetWarehouse(cDoc.CodeWarehouse);
+                        if (Wh != null)
+                            res += $"( {Wh.Location}){Environment.NewLine}Найближчий:\" + {LocationBrb.LocationWarehouse?.Name} ({LocationBrb.LocationWarehouse?.Location})";
+                    }
+                    return res;
                 }
-                return res;
+                catch( Exception ex) 
+                {
+                    FileLogger.WriteLogMessage(this, System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                }
+                return null;
             }
         }       
         
@@ -64,7 +71,7 @@ namespace BRB5
         public string TextButtonSaved { get { return IsSaved ? "Закрити":"Зупинити"; } }
 
         bool IsAllOpen { get; set; } = true;
-        public string TextAllOpen { get { return IsAllOpen ? "Згорнути" : "Розгорнути"; } set { OnPropertyChanged(nameof(IsAllOpen)); } }
+        public string TextAllOpen { get { return IsAllOpen ? "Згорнути" : "Розгорнути"; }  }
 
        
         public RaitingDocItem(DocVM pDoc)
@@ -132,7 +139,9 @@ namespace BRB5
                 OnPropertyChanged(nameof(QuantityAllChoice));
                 OnPropertyChanged(nameof(IsSave));
             }
-            catch(Exception ex) {
+            catch(Exception ex)
+            {
+                FileLogger.WriteLogMessage(this, System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
             }
             
         }
@@ -172,6 +181,7 @@ namespace BRB5
             }
             catch (Exception ex)
             {
+                FileLogger.WriteLogMessage(this, System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
             }
         }
 
@@ -202,6 +212,7 @@ namespace BRB5
             }
             catch (Exception ex)
             {
+                FileLogger.WriteLogMessage(this, System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
             }
         }
         
@@ -307,6 +318,10 @@ namespace BRB5
 
         private void OnAllOpen(object sender, EventArgs e)
         {
+            try
+            { 
+            int i = 0;
+            //int aa = 233 / i;
             IsAllOpen = !IsAllOpen;
             if (IsAllOpen)
                 foreach (var el in Questions)
@@ -317,6 +332,11 @@ namespace BRB5
 
             OnPropertyChanged(nameof(TextAllOpen));
         }
+            catch (Exception ex)
+            {
+                FileLogger.WriteLogMessage(this, System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+            }
+}
 
         private void BarCode(object sender, EventArgs e)
         {

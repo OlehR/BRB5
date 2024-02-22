@@ -37,12 +37,12 @@ namespace BRB5
             InitializeComponent();
             Init();
             BindingContext = this;
-            AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
-            TaskScheduler.UnobservedTaskException += (s, e) =>
-            {
-                LogUnhandledException(e.Exception, "TaskScheduler.UnobservedTaskException");
-                e.SetObserved();
-            };
+            //AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
+            //TaskScheduler.UnobservedTaskException += (s, e) =>
+            //{
+            //    LogUnhandledException(e.Exception, "TaskScheduler.UnobservedTaskException");
+            //    e.SetObserved();
+            //};
 
         }
 
