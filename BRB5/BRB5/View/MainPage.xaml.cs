@@ -37,6 +37,40 @@ namespace BRB5
             InitializeComponent();
             Init();
             BindingContext = this;
+            AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
+            TaskScheduler.UnobservedTaskException += (s, e) =>
+            {
+                LogUnhandledException(e.Exception, "TaskScheduler.UnobservedTaskException");
+                e.SetObserved();
+            };
+
+        }
+
+        static void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs args)
+        {
+                LogUnhandledException((Exception)args.ExceptionObject, "AppDomain.CurrentDomain.UnhandledException");
+        }
+
+        static private void LogUnhandledException(Exception exception, string source)
+        {
+            string message = $"Unhandled exception ({source})";
+            try
+            {
+                FileLogger.WriteLogMessage("MainPage", "LogUnhandledException", exception);
+                System.Reflection.AssemblyName assemblyName = System.Reflection.Assembly.GetExecutingAssembly().GetName();
+                message = string.Format("Unhandled exception in {0} v{1}", assemblyName.Name, assemblyName.Version);
+            }
+            catch (Exception ex)
+            {
+                FileLogger.WriteLogMessage("MainPage", "Exception in LogUnhandledException", ex);
+
+            }
+            finally
+            {
+                FileLogger.WriteLogMessage("MainPage", message, exception);
+            }
+            
+                
         }
 
         private void OnButtonLogin(object sender, System.EventArgs e)
