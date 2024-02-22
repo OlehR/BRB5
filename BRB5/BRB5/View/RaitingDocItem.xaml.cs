@@ -24,6 +24,7 @@ namespace BRB5
         public bool IsVisBarCode { get { return _IsVisBarCode; } set { _IsVisBarCode = value; OnPropertyChanged(nameof(IsVisBarCode)); } }
         ObservableCollection<Model.RaitingDocItem> _Questions;
         public ObservableCollection<Model.RaitingDocItem> Questions { get { return _Questions; } set { _Questions = value; OnPropertyChanged(nameof(Questions)); } }
+        IEnumerable<Model.RaitingDocItem> All;
 
         int CountAll, CountChoice;
         public bool IsSave { get { return CountAll == CountChoice; } }
@@ -84,7 +85,6 @@ namespace BRB5
             Bl.InitTimerRDI(cDoc);            
            
             Questions = new ObservableCollection<Model.RaitingDocItem>();
-
             Bl.c.OnSave += (Res) => Device.BeginInvokeOnMainThread(() =>
             {
                 TextSave += Res + Environment.NewLine;
@@ -103,31 +103,44 @@ namespace BRB5
         {
             base.OnAppearing();
             Bl.StartTimerRDI();
-            Bl.LoadDataRDI(cDoc,ViewDoc);
+            Bl.LoadDataRDI(cDoc,GetData);
             _ = LocationBrb.GetCurrentLocation(Bl.db.GetWarehouse());
         }
 
         protected override void OnDisappearing() {  base.OnDisappearing(); Bl.StopTimerRDI(); }
 
-        void ViewDoc(IEnumerable< Model.RaitingDocItem> pDocItem)
+        void ViewDoc()
         {
-            CountAll = pDocItem.Count(el => !el.IsHead);
             MainThread.BeginInvokeOnMainThread(() =>
             {
                 Questions.Clear();
-                foreach (var el in pDocItem)
+                foreach (var el in All.Where(el => (el.IsHead || el.Parent == 9999999 || (IsAllOpen && IsAll) || //Заголовки Всього та Розгорнути
+                (!IsAll && (el.Rating == 0 || (el.Rating == 3 && (String.IsNullOrEmpty(el.Note) || el.QuantityPhoto == 0))) || //Без відповіді
+                (!IsAllOpen && (el.ParrentRDI?.IsVisible == true && el.ParrentRDI?.Rating != 4)) //Показати неприховані
+                )
+                )))
+                {
                     Questions.Add(el);
+                }
                 RefreshHead();
                 CalcValueRating();
             });
-        }        
+        }
+
+
+        void GetData(IEnumerable<Model.RaitingDocItem> pDocItem)
+        {
+            CountAll = pDocItem.Count(el => !el.IsHead);
+            All = pDocItem;
+            ViewDoc();
+        }   
 
         private void OnButtonClicked(object sender, System.EventArgs e)
         {
             Xamarin.Forms.View button = (Xamarin.Forms.View)sender;
             //Grid cc = button.Parent as Grid;
             var vQuestion = GetRaiting(sender);//cc.BindingContext as Raiting;
-            Bl.ChangeRaiting(vQuestion, button.ClassId, Questions);            
+            Bl.ChangeRaiting(vQuestion, button.ClassId, All);            
             CalcSumValueRating(vQuestion);
             RefreshHead();
         }
@@ -135,7 +148,7 @@ namespace BRB5
         void RefreshHead()
         {
             try {
-                CountChoice = Questions.Count(el => !el.IsHead && el.Rating > 0);
+                CountChoice = All.Count(el => !el.IsHead && el.Rating > 0);
                 OnPropertyChanged(nameof(QuantityAllChoice));
                 OnPropertyChanged(nameof(IsSave));
             }
@@ -151,10 +164,10 @@ namespace BRB5
             try
             {
                 decimal res = 0;
-            var Head = Questions.Where(el => el.Id == pRDI.Parent).FirstOrDefault();
+            var Head = All.Where(el => el.Id == pRDI.Parent).FirstOrDefault();
             if (Head != null)
             {
-                res = Questions?.Where(el => el.Parent == Head.Id)?.Sum(el => el.SumValueRating) ?? 0;
+                res = All?.Where(el => el.Parent == Head.Id)?.Sum(el => el.SumValueRating) ?? 0;
                 Head.SumValueRating = res;
                 Head.Rating = Head.Rating;
             } else
@@ -166,15 +179,15 @@ namespace BRB5
                 }
                 if (pRDI.Rating == 0)
                 {
-                    pRDI.SumValueRating = Questions?.Where(el => el.Parent == pRDI.Id)?.Sum(el => el.SumValueRating) ?? 0;
+                    pRDI.SumValueRating = All?.Where(el => el.Parent == pRDI.Id)?.Sum(el => el.SumValueRating) ?? 0;
                     pRDI.Rating = pRDI.Rating;
                 }
             }
 
-            var Total = Questions.Where(el => el.Id == -1).FirstOrDefault();
+            var Total = All.Where(el => el.Id == -1).FirstOrDefault();
             if (Total != null)
             {
-                res = Questions?.Where(el => el.Parent == 0 && el.Id != -1)?.Sum(el => el.SumValueRating) ?? 0;
+                res = All?.Where(el => el.Parent == 0 && el.Id != -1)?.Sum(el => el.SumValueRating) ?? 0;
                 Total.SumValueRating = res;
                 Total.Rating = Total.Rating;
                 }
@@ -190,23 +203,23 @@ namespace BRB5
             try
             {
                 decimal res = 0;
-                foreach (var q in Questions.Where(el => el.Parent == 0))
+                foreach (var q in All.Where(el => el.Parent == 0))
                 {
-                    res = Questions?.Where(e => e.Parent == q.Id)?.Sum(el => el.ValueRating) ?? 0;
+                    res = All?.Where(e => e.Parent == q.Id)?.Sum(el => el.ValueRating) ?? 0;
                     q.ValueRating = res;
                     if (q.Rating != 4)
                     {
-                        res = Questions?.Where(e => e.Parent == q.Id)?.Sum(el => el.SumValueRating) ?? 0;
+                        res = All?.Where(e => e.Parent == q.Id)?.Sum(el => el.SumValueRating) ?? 0;
                         q.SumValueRating = res;
                     }
                     else q.SumValueRating = 0;
                 }
-                var Total = Questions.Where(el => el.Id == -1).FirstOrDefault();
+                var Total = All.Where(el => el.Id == -1).FirstOrDefault();
                 if (Total != null)
                 {
-                    res = Questions?.Where(el => el.Parent == 0 && el.Id != -1)?.Sum(el => el.ValueRating) ?? 0;
+                    res = All?.Where(el => el.Parent == 0 && el.Id != -1)?.Sum(el => el.ValueRating) ?? 0;
                     Total.ValueRating = res;
-                    res = Questions?.Where(el => el.Parent == 0 && el.Id != -1)?.Sum(el => el.SumValueRating) ?? 0;
+                    res = All?.Where(el => el.Parent == 0 && el.Id != -1)?.Sum(el => el.SumValueRating) ?? 0;
                     Total.SumValueRating = res;
                 }
             }
@@ -219,6 +232,8 @@ namespace BRB5
         private void OnSetView(object sender, System.EventArgs e)
         {
             IsAll = !IsAll;
+            ViewDoc();
+            /*
             if (IsAll)
                 foreach (var el in Questions.Where(d => !d.IsVisible))
                     el.IsVisible = true;
@@ -226,7 +241,7 @@ namespace BRB5
                 foreach (var el in Questions.Where(d => !d.IsHead && d.Rating > 0))
                     if (el.Rating != 3) el.IsVisible = false;
                     else if (!String.IsNullOrEmpty(el.Note) || el.QuantityPhoto > 0) el.IsVisible = false;
-
+            */
             OnPropertyChanged(nameof(TextAllNoChoice));
         }
 
@@ -305,30 +320,50 @@ namespace BRB5
 
         private void OnHeadTapped(object sender, EventArgs e)
         {
+
             var s = sender as Grid;
             var cc = s.Parent as StackLayout;
 
             var vRait = cc.BindingContext as Model.RaitingDocItem;
             var id = vRait.Id;
-            foreach (var xx in Questions.Where(el => el.Parent == id))
-            {
-                xx.IsVisible = !xx.IsVisible;
-            }
+            vRait.IsVisible = !vRait.IsVisible;
+            ViewDoc();
+            /*
+            Questions.Clear();
+            foreach (var el in All.Where(el => (el.IsHead || el.Parent == 9999999 || All.Where(e=> e.Id == el.Parent).FirstOrDefault()?.IsVisible==true  )))
+                Questions.Add(el);*/
+
+
+            //foreach (var xx in Questions.Where(el => el.Parent == id))
+            //{
+            //    xx.IsVisible = !xx.IsVisible;
+            //}
         }
 
         private void OnAllOpen(object sender, EventArgs e)
         {
             try
-            { 
-            int i = 0;
-            //int aa = 233 / i;
-            IsAllOpen = !IsAllOpen;
+            {
+                IsAllOpen = !IsAllOpen;
+
+                foreach (var el in All.Where(el => el.IsHead))
+                    el.IsVisible = IsAllOpen;
+
+
+                    ViewDoc();
+                /*Questions.Clear();
+                foreach (var el in All.Where(el=> IsAllOpen || (el.IsHead || el.Parent == 9999999)))
+                    Questions.Add(el);*/
+
+                //int i = 0;
+                //int aa = 233 / i;
+            /*   
             if (IsAllOpen)
                 foreach (var el in Questions)
                     el.IsVisible = true;
             else
                 foreach (var el in Questions.Where(el => el.Parent != 9999999))
-                    el.IsVisible = false;
+                    el.IsVisible = false;*/
 
             OnPropertyChanged(nameof(TextAllOpen));
         }

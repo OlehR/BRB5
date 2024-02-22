@@ -74,8 +74,8 @@ namespace BL
                     R.Add(e);
                     foreach (var el in Q.Where(d => d.Parent == e.Id).OrderBy(d => d.OrderRS))
                     {
-                        if (e.Rating == 4)
-                            el.IsVisible = false;
+                        //if (e.Rating == 4)  el.IsVisible = false;
+                        el.ParrentRDI = e;
                         R.Add(el);
                     }
                 }

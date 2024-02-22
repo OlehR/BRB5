@@ -181,13 +181,8 @@ namespace BRB5
             _ = LocationBrb.GetCurrentLocation(db.GetWarehouse());
             Config.IsAutoLogin = db.GetConfig<bool>("IsAutoLogin");
             Config.LoginServer = db.GetConfig<eLoginServer>("LoginServer");
+            Config.Company = db.GetConfig<eCompany>("Company");
             Login = db.GetConfig<string>("Login");
-            if (Config.IsAutoLogin)
-            {
-                Password = db.GetConfig<string>("Password");
-                OnButtonLogin(null, null);
-            }            
-
             Config.IsViewAllWH = db.GetConfig<bool>("IsViewAllWH");
             Config.IsVibration = db.GetConfig<bool>("IsVibration");
             Config.IsSound = db.GetConfig<bool>("IsSound");
@@ -197,7 +192,6 @@ namespace BRB5
             Config.ApiUrl3 = db.GetConfig<string>("ApiUrl3");
             Config.DateLastLoadGuid = db.GetConfig<DateTime>("DateLastLoadGuid");
             Config.CodeWarehouse = db.GetConfig<int>("CodeWarehouse");
-            Config.Company = db.GetConfig<eCompany>("Company");
             Config.TypeUsePrinter = db.GetConfig<eTypeUsePrinter>("TypeUsePrinter");
             var tempstr = db.GetConfig<string>("CodesWarehouses");
             if (!string.IsNullOrEmpty(tempstr)) Config.CodesWarehouses = JsonConvert.DeserializeObject<List<int>>(tempstr);
@@ -212,6 +206,13 @@ namespace BRB5
                     Config.LoginServer = LS.First().Code;
                 }
             }
+
+            if (Config.IsAutoLogin)
+            {
+                Password = db.GetConfig<string>("Password");
+                OnButtonLogin(null, null);
+            }
+           
         }
 
 

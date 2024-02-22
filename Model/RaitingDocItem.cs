@@ -14,6 +14,7 @@ namespace BRB5.Model
     {
         public int Id { get; set; }
         public int Parent { get; set; }
+        public RaitingDocItem ParrentRDI { get; set; }
         public decimal ValueRating { get; set; }
 
         decimal _SumValueRating=0;
@@ -82,7 +83,7 @@ namespace BRB5.Model
         public bool IsVisPSU { get { return Config.Company != eCompany.Sim23; } }
         public bool IsVisTotal { get { return Id == -1 ; } }
 
-        bool _IsVisible = true;
+        bool _IsVisible = false;
         [JsonIgnore]
         public bool IsVisible { get { return _IsVisible; } set { _IsVisible = value; OnPropertyChanged("IsVisible"); OnPropertyChanged("HeightRequest"); } }
         [JsonIgnore]

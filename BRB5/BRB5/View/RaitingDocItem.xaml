@@ -77,12 +77,11 @@
                                                          Opacity="{Binding OpacityNotKnow}"
                                                          Clicked="OnButtonClicked" />
                                         </Grid>
-                                        <Grid BackgroundColor="{Binding BackgroundColor}"
-                                              IsVisible="{Binding IsVisible}">
+                                        <Grid BackgroundColor="{Binding BackgroundColor}">
 
                                             <StackLayout BackgroundColor="{Binding BackgroundColor}"
                                                          IsVisible="{Binding IsItem}"
-                                                         HeightRequest="{Binding HeightRequest}">
+                                                         >
 
                                                 <StackLayout Orientation="Horizontal">
                                                     <Label Text="{Binding Text}" FontSize="22" />
