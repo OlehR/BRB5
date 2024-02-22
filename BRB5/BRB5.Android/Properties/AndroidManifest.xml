@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android" android:versionCode="5243" android:versionName="5.2.43" package="ua.UniCS.TM.brb5" android:installLocation="preferExternal" android:requestLegacyExternalStorage="true">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" android:versionCode="5244" android:versionName="5.2.44" package="ua.UniCS.TM.brb5" android:installLocation="preferExternal" android:requestLegacyExternalStorage="true">
 	<uses-sdk android:minSdkVersion="24" android:targetSdkVersion="30" />
 	<uses-permission android:name="android.permission.CAMERA" />
 	<uses-permission android:name="android.permission.CALL_PHONE" />
