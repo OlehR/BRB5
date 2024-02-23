@@ -29,7 +29,8 @@ namespace BRB5
         Admin,
         User,
         Auditor,
-        Client
+        Client,
+        Manager
     }
 
     public enum eTypeControlDoc

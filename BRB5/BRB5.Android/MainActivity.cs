@@ -26,7 +26,7 @@ namespace BRB5.Droid
     [Activity(Label = "BRB5", Icon = "@mipmap/icon", Theme = "@style/MainTheme", MainLauncher = true, ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation | ConfigChanges.UiMode | ConfigChanges.ScreenLayout | ConfigChanges.SmallestScreenSize)]
     public class MainActivity : global::Xamarin.Forms.Platform.Android.FormsAppCompatActivity
     {
-        MyBroadcastReceiver BR;
+        //MyBroadcastReceiver BR;
        
         //public static string SerialNumber = "None";
         protected override void OnCreate(Bundle savedInstanceState)
@@ -93,7 +93,7 @@ namespace BRB5.Droid
         protected override void OnPause()
         {
             if (Config.TypeScaner != eTypeScaner.Camera && Config.TypeScaner != eTypeScaner.NotDefine)
-                UnregisterReceiver(BR);
+            //    UnregisterReceiver(BR);
             // Code omitted for clarity
             base.OnPause();
         }

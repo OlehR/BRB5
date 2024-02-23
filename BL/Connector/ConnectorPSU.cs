@@ -178,17 +178,18 @@ namespace BL.Connector
         {
             var Res = new List<TypeDoc>(){ 
                                         new TypeDoc() { CodeDoc = 0, NameDoc = "Прайсчекер" , KindDoc = eKindDoc.PriceCheck},                                        
-                                        new TypeDoc() { CodeDoc = 1, NameDoc = "Ревізія", TypeControlQuantity = eTypeControlDoc.Ask, IsSaveOnlyScan=false, KindDoc = eKindDoc.Normal },
-                                        new TypeDoc() { CodeDoc = 2, NameDoc = "Прихід", TypeControlQuantity = eTypeControlDoc.Ask, IsViewOut=true, KindDoc = eKindDoc.Normal },
-                                        new TypeDoc() { CodeDoc = 3, NameDoc = "Переміщення Вих", TypeControlQuantity=eTypeControlDoc.NoControl, KindDoc = eKindDoc.Normal },
-                                        new TypeDoc() { CodeDoc = 4, NameDoc = "Списання" ,  KindDoc = eKindDoc.Normal},
-                                        new TypeDoc() { CodeDoc = 5, NameDoc = "Повернення" ,  KindDoc = eKindDoc.Normal},
-                                        new TypeDoc() { CodeDoc = 7, NameDoc = "Ревізія ОЗ", TypeControlQuantity=eTypeControlDoc.Ask, IsSimpleDoc=true, KindDoc = eKindDoc.Normal,CodeApi=1,IsCreateNewDoc=true },
-                                        new TypeDoc() { CodeDoc = 8, NameDoc = "Переміщення Вх", TypeControlQuantity=eTypeControlDoc.Ask, IsViewOut=true, IsViewReason=true,KindDoc = eKindDoc.Normal },
-                                        new TypeDoc() { CodeDoc = 11, KindDoc = eKindDoc.RaitingDoc, NameDoc = "Опитування", DayBefore = 4 },
-                                        new TypeDoc() { CodeDoc = -1, KindDoc = eKindDoc.RaitingTempate, NameDoc = "Шаблони Опитування" },
-                                        new TypeDoc() { CodeDoc = 12, KindDoc = eKindDoc.RaitingTemplateCreate, NameDoc = "Керування Опитуваннями" },
-                                        new TypeDoc() { CodeDoc = 13, KindDoc = eKindDoc.PlanCheck, NameDoc = "Перевірка Акцій" }
+                                        new TypeDoc() { CodeDoc =  1, NameDoc = "Ревізія", TypeControlQuantity = eTypeControlDoc.Ask, IsSaveOnlyScan=false, KindDoc = eKindDoc.Normal },
+                                        new TypeDoc() { CodeDoc =  2, NameDoc = "Прихід", TypeControlQuantity = eTypeControlDoc.Ask, IsViewOut=true, KindDoc = eKindDoc.Normal },
+                                        new TypeDoc() { CodeDoc =  3, NameDoc = "Переміщення Вих", TypeControlQuantity=eTypeControlDoc.NoControl, KindDoc = eKindDoc.Normal },
+                                        new TypeDoc() { CodeDoc =  4, NameDoc = "Списання" ,  KindDoc = eKindDoc.Normal},
+                                        new TypeDoc() { CodeDoc =  5, NameDoc = "Повернення" ,  KindDoc = eKindDoc.Normal},
+                                        new TypeDoc() { CodeDoc =  7, NameDoc = "Ревізія ОЗ", TypeControlQuantity=eTypeControlDoc.Ask, IsSimpleDoc=true, KindDoc = eKindDoc.Normal,CodeApi=1,IsCreateNewDoc=true },
+                                        new TypeDoc() { CodeDoc =  8, NameDoc = "Переміщення Вх", TypeControlQuantity=eTypeControlDoc.Ask, IsViewOut=true, IsViewReason=true,KindDoc = eKindDoc.Normal },
+                                        new TypeDoc() { CodeDoc = 11, NameDoc = "Опитування", KindDoc = eKindDoc.RaitingDoc, DayBefore = 4 },
+                                        new TypeDoc() { CodeDoc = -1, NameDoc = "Шаблони Опитування", KindDoc = eKindDoc.RaitingTempate },
+                                        new TypeDoc() { CodeDoc = 12, NameDoc = "Керування Опитуваннями", KindDoc = eKindDoc.RaitingTemplateCreate },
+                                        new TypeDoc() { CodeDoc = 13, NameDoc = "Перевірка Акцій", KindDoc = eKindDoc.PlanCheck },
+                                        new TypeDoc() { CodeDoc = 14, NameDoc = "Знижки -%50%", KindDoc = eKindDoc.Normal }
         };
             return Res;
         }
