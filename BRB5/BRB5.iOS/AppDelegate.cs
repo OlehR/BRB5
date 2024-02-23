@@ -1,8 +1,12 @@
 ﻿using BL;
 using BRB5.Model;
 using Foundation;
+using Microsoft.AppCenter;
+using Microsoft.AppCenter.Analytics;
+using Microsoft.AppCenter.Crashes;
 using System;
 using System.Diagnostics;
+using System.Drawing;
 using System.IO;
 using System.Threading.Tasks;
 using UIKit;
@@ -25,14 +29,13 @@ namespace BRB5.iOS
         //
         public override bool FinishedLaunching(UIApplication app, NSDictionary options)
         {
-            AppDomain.CurrentDomain.UnhandledException += CurrentDomainOnUnhandledException;
-            TaskScheduler.UnobservedTaskException += TaskSchedulerOnUnobservedTaskException;
+           // AppCenter.Start("c3093621-a22d-4aa8-85c5-877eb4cb439a", typeof(Analytics), typeof(Crashes));
 
             ZXing.Net.Mobile.Forms.iOS.Platform.Init();
             SQLitePCL.Batteries.Init();
             global::Xamarin.Forms.Forms.Init();
 
-            DisplayCrashReport();
+            //DisplayCrashReport();
 
             FFImageLoading.Forms.Platform.CachedImageRenderer.Init();
             DB.BaseDir = ProtoBRB.GetPathDB;
@@ -45,18 +48,7 @@ namespace BRB5.iOS
 
             return base.FinishedLaunching(app, options);
         }
-        private static void TaskSchedulerOnUnobservedTaskException(object sender, UnobservedTaskExceptionEventArgs unobservedTaskExceptionEventArgs)
-        {
-            var newExc = new Exception("TaskSchedulerOnUnobservedTaskException", unobservedTaskExceptionEventArgs.Exception);
-            LogUnhandledException(newExc);
-        }
-
-        private static void CurrentDomainOnUnhandledException(object sender, UnhandledExceptionEventArgs unhandledExceptionEventArgs)
-        {
-            var newExc = new Exception("CurrentDomainOnUnhandledException", unhandledExceptionEventArgs.ExceptionObject as Exception);
-            LogUnhandledException(newExc);
-        }
-
+        /*
         internal static void LogUnhandledException(Exception exception)
         {
             try
@@ -96,6 +88,6 @@ namespace BRB5.iOS
                 }
             };
             alertView.Show();
-        }
+        }*/
     }
 }

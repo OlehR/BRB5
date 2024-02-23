@@ -16,6 +16,8 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.AppCenter.Analytics" Version="5.0.3" />
+    <PackageReference Include="Microsoft.AppCenter.Crashes" Version="5.0.3" />
     <PackageReference Include="Microsoft.Data.Sqlite" Version="8.0.1" />
     <PackageReference Include="Microsoft.Data.Sqlite.Core" Version="8.0.1" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
@@ -32,9 +34,14 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\UniCS.TM\Utils\Utils.csproj" />
     <ProjectReference Include="..\..\BL\BL.csproj" />
     <ProjectReference Include="..\..\Model\BRB5.Model.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="Utils">
+      <HintPath>..\..\DLL\Utils.dll</HintPath>
+    </Reference>
   </ItemGroup>
 
   <ItemGroup>
