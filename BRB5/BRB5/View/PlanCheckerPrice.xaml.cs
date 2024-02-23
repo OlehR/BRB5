@@ -1,18 +1,12 @@
 ﻿using BRB5.Model;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
-using ZXing.Mobile;
-using ZXing;
 using ZXing.Net.Mobile.Forms;
 using System.Collections.ObjectModel;
-using static SQLite.SQLite3;
-using System.Reflection;
 using BRB5.ViewModel;
 using BL.Connector;
 using BL;
@@ -59,10 +53,10 @@ namespace BRB5.View
         private void GetData()
         {
             var temp = c.GetPromotionData(Doc.NumberDoc);
-            if (temp.Info == null)
+            if (temp == null || temp.Info == null)
             {
                 WaresList = new ObservableCollection<DocWaresEx>();
-                _ = DisplayAlert("Помилка", temp.TextError, "OK");
+                _ = DisplayAlert("Помилка", temp?.TextError, "OK");
             }
             else
             {

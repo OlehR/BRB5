@@ -426,7 +426,7 @@ namespace BL.Connector
             return null;
         }
         public override Result<IEnumerable<DocWares>> GetPromotionData(string pNumberDoc) {
-            HttpResult result = Http.HTTPRequest(0, "DCT/CheckPromotion/DocWares", "\"" + pNumberDoc + "\"", "application/json", "brb", "brb");
+            HttpResult result = Http.HTTPRequest(0, "DCT/CheckPromotion/GetPromotionData", "\"" + pNumberDoc + "\"", "application/json", "brb", "brb");
 
             if (result.HttpState == eStateHTTP.HTTP_OK)
             {
