@@ -36,6 +36,9 @@ namespace BRB5
             OCTypeDoc = new ObservableCollection<TypeDoc>();           
             InitializeComponent();
             Init();
+
+            if (Config.Company == eCompany.NotDefined) _= Navigation.PushAsync(new Settings());
+                
             BindingContext = this;
         }        
 
@@ -92,7 +95,10 @@ namespace BRB5
                     }
                 }
                 else
-                    _ = DisplayAlert("Проблеми з авторизацією", r.TextError + r.Info, "OK");
+                    MainThread.BeginInvokeOnMainThread(() =>
+                    {
+                        _ = DisplayAlert("Проблеми з авторизацією", r.TextError + r.Info, "OK");
+                    });
             });
             }
 

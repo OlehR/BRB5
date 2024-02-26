@@ -92,7 +92,7 @@ namespace BRB5.Droid
 
         protected override void OnPause()
         {
-            if (Config.TypeScaner != eTypeScaner.Camera && Config.TypeScaner != eTypeScaner.NotDefine)
+            //if (Config.TypeScaner != eTypeScaner.Camera && Config.TypeScaner != eTypeScaner.NotDefine) 
             //    UnregisterReceiver(BR);
             // Code omitted for clarity
             base.OnPause();
