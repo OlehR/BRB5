@@ -11,7 +11,7 @@
 	<key>CFBundleIdentifier</key>
 	<string>ua.uz.spar.brb5</string>
 	<key>CFBundleVersion</key>
-	<string>10</string>
+	<string>11</string>
 	<key>CFBundleName</key>
 	<string>BRB5</string>
 	<key>UIDeviceFamily</key>
@@ -48,6 +48,6 @@
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>CICON app needs access to the photo gallery to pick photos for user avatar and chat.</string>
 	<key>CFBundleShortVersionString</key>
-	<string>5.1.10</string>
+	<string>5.1.11</string>
 </dict>
 </plist>
