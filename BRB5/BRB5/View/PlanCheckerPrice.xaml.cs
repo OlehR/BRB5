@@ -114,7 +114,7 @@ namespace BRB5.View
             var parseBarCode = c.ParsedBarCode(pBarCode, true);
             var temp = db.GetScanData(Doc, parseBarCode);
 
-            var tempSelected = WaresList.FirstOrDefault(item => item.CodeWares == temp.CodeWares);
+            var tempSelected = WaresList.FirstOrDefault(item => item.CodeWares == temp?.CodeWares);
             Device.BeginInvokeOnMainThread(async () =>
             {
                 if (tempSelected != null)
