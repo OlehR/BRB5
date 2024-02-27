@@ -42,7 +42,8 @@ namespace BRB5.Model
         public string BarCode { get; set; }
         public int CodeWares { get; set; }
         public int Article { get; set; }
-        public IEnumerable<int> WareHouses { get { return Config.CodesWarehouses; } }
+        IEnumerable<int> _WareHouses = null;
+        public IEnumerable<int> WareHouses { get { return _WareHouses?? Config.CodesWarehouses; } set { _WareHouses=value;} }
         public string StrWareHouses { get { return WareHouses?.Any() == true ? "," + string.Join(",", WareHouses) + "," : null; } }
     }
 
