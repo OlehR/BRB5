@@ -35,28 +35,20 @@
                                         <controls:CustomEntry Style="{StaticResource EntryStyle}" 
                                                               AutomationId="{Binding CodeWares}"
                                                               Completed="SaveItemAvailable"
-                                                              effects:KeyboardEffect.EnableKeyboard="{Binding IsSoftKeyboard}"
                                                               Unfocused="SaveItem"
                                                               Focused="EntryFocusedAvailable"
                                                               Text="{Binding InputQuantity}" 
                                                               Keyboard="Telephone">
-                                            <controls:CustomEntry.Effects>
-                                                <effects:KeyboardEnableEffect/>
-                                            </controls:CustomEntry.Effects>
                                         </controls:CustomEntry>
                                     </Frame>
                                     <Frame  Style="{StaticResource FrameStyle}"  Grid.Column="2"  Grid.Row="1">
                                         <controls:CustomEntry Style="{StaticResource EntryStyle}"                                                               
                                                               AutomationId="{Binding CodeWares}"
                                                               Completed="SaveItemAdd"
-                                                              effects:KeyboardEffect.EnableKeyboard="{Binding IsSoftKeyboard}"
                                                               Unfocused="SaveItem"
                                                               Focused="EntryFocusedAdd"
                                                               Text="{Binding QuantityOld}"
                                                               Keyboard="Telephone">
-                                            <controls:CustomEntry.Effects>
-                                                <effects:KeyboardEnableEffect/>
-                                            </controls:CustomEntry.Effects>
                                         </controls:CustomEntry>
                                     </Frame>
                                 </Grid>
