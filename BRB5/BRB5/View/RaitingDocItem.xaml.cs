@@ -73,7 +73,7 @@ namespace BRB5
 
         bool IsAllOpen { get; set; } = true;
         public string TextAllOpen { get { return IsAllOpen ? "Згорнути" : "Розгорнути"; }  }
-
+        private bool IsRefreshList = true;
        
         public RaitingDocItem(DocVM pDoc)
         {
@@ -103,7 +103,8 @@ namespace BRB5
         {
             base.OnAppearing();
             Bl.StartTimerRDI();
-            Bl.LoadDataRDI(cDoc,GetData);
+            if (IsRefreshList)Bl.LoadDataRDI(cDoc,GetData);
+            IsRefreshList = true;
             _ = LocationBrb.GetCurrentLocation(Bl.db.GetWarehouse());
         }
 
@@ -294,9 +295,10 @@ namespace BRB5
                     Directory.CreateDirectory(dir);
                     Directory.CreateDirectory(Path.Combine(dir, "Send"));
                 }
-
+                IsRefreshList = false;
                 var photo = await MediaPicker.CapturePhotoAsync(new MediaPickerOptions { Title = FileName });
-                await Task.Delay(20);
+
+                await Task.Delay(10);
 
                 if (photo != null) // && File.Exists(photo.FullPath))
                 {
