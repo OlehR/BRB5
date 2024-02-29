@@ -141,7 +141,8 @@ namespace BRB5
             Xamarin.Forms.View button = (Xamarin.Forms.View)sender;
             //Grid cc = button.Parent as Grid;
             var vQuestion = GetRaiting(sender);//cc.BindingContext as Raiting;
-            Bl.ChangeRaiting(vQuestion, button.ClassId, All);            
+            Bl.ChangeRaiting(vQuestion, button.ClassId, All);
+            ViewDoc();
             CalcSumValueRating(vQuestion);
             RefreshHead();
         }
@@ -328,7 +329,7 @@ namespace BRB5
             var cc = s.Parent as StackLayout;
 
             var vRait = cc.BindingContext as Model.RaitingDocItem;
-            var id = vRait.Id;
+            //var id = vRait.Id;
             vRait.IsVisible = !vRait.IsVisible;
             ViewDoc();
             /*
