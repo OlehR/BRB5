@@ -49,9 +49,9 @@ namespace BL
 
             if (OldRating != vQuestion.Rating && (vQuestion.Rating == 4 || vQuestion.Rating == 0) && vQuestion.IsHead)
             {
+                vQuestion.IsVisible = vQuestion.Rating != 4;
                 foreach (var el in Questions.Where(d => d.Parent == vQuestion.Id))
                 {
-                    el.IsVisible = vQuestion.Rating != 4;
                     if (el.Rating == 0 && vQuestion.Rating == 4)
                     {
                         el.Rating = 4;

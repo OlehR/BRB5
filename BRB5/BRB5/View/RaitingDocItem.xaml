@@ -11,7 +11,11 @@
     <ContentPage.Content>
         <AbsoluteLayout>
             <StackLayout AbsoluteLayout.LayoutBounds="1, 0, 1, .9" AbsoluteLayout.LayoutFlags="All">
-                <Button Text="{Binding NameWarehouse}" BackgroundColor="{Binding GetGPSColor}" Clicked="OnFindGPS" />
+                <Label Text="{Binding NameWarehouse}" BackgroundColor="{Binding GetGPSColor}"  >
+                    <Label.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="OnFindGPS" />
+                    </Label.GestureRecognizers>
+                </Label>
                 <Editor Text="{Binding TextSave}" IsVisible="{Binding IsSaving}" HeightRequest="250" IsReadOnly="True" />
 
                 <Button IsVisible="{Binding IsSaving}"
@@ -199,36 +203,48 @@
 
             <Grid AbsoluteLayout.LayoutBounds="0, 1, 1, .1" AbsoluteLayout.LayoutFlags="All">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="3*" />
-                    <ColumnDefinition Width="3*" />
-                    <ColumnDefinition Width="3*" />
-                    <ColumnDefinition Width="2*" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
-                <Button IsEnabled="{Binding IsSave}"
-                        Text="Зберегти"
-                        FontSize="Medium"
-                        BorderWidth="1"
-                        HorizontalOptions="FillAndExpand"
-                        VerticalOptions="CenterAndExpand"
-                        Clicked="OnButtonSave" />
+                <ImageButton IsEnabled="{Binding IsSave}"
+                             Margin="0" Padding="0"
+                             Source="save.png"
+                             BackgroundColor="Transparent"
+                             Aspect="AspectFit"
+                             Clicked="OnButtonSave" />
+                
+                <ImageButton Margin="0" Padding="0"
+                             Source="All.png"
+                             Grid.Column="1"
+                             BackgroundColor="Transparent"
+                             Aspect="AspectFit"
+                             Opacity="{Binding OpacityAll}"
+                             Clicked="ShowButton"
+                             AutomationId="All"
+                             />
+                <ImageButton Margin="0" Padding="0"
+                             Source="OnlyHead.png"
+                             Grid.Column="2"
+                             BackgroundColor="Transparent"
+                             Aspect="AspectFit"
+                             Opacity="{Binding OpacityOnlyHead}"
+                             Clicked="ShowButton"
+                             AutomationId="OnlyHead"
+                             />
+                <ImageButton Margin="0" Padding="0"
+                             Source="NoAnswer.png"
+                             Grid.Column="3"
+                             BackgroundColor="Transparent"
+                             Aspect="AspectFit"
+                             Opacity="{Binding OpacityNoAnswer}"
+                             Clicked="ShowButton"
+                             AutomationId="NoAnswer"
+                             />
 
-                <Button Grid.Column="1"
-                        Text="{Binding TextAllNoChoice}"
-                        FontSize="Medium"
-                        BorderWidth="1"
-                        HorizontalOptions="FillAndExpand"
-                        VerticalOptions="CenterAndExpand"
-                        Clicked="OnSetView" />
-
-                <Button Grid.Column="2"
-                        Text="{Binding TextAllOpen}"
-                        FontSize="Medium"
-                        BorderWidth="1"
-                        HorizontalOptions="FillAndExpand"
-                        VerticalOptions="CenterAndExpand"
-                        Clicked="OnAllOpen" />
-
-                <Grid Grid.Column="3">
+                <Grid Grid.Column="4">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="2*" />
                         <RowDefinition Height="3*" />

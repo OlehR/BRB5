@@ -74,7 +74,12 @@ namespace BRB5
         bool IsAllOpen { get; set; } = true;
         public string TextAllOpen { get { return IsAllOpen ? "Згорнути" : "Розгорнути"; }  }
         private bool IsRefreshList = true;
-       
+        private eTypeChoice _typeChoice = eTypeChoice.OnlyHead;
+        public eTypeChoice Choice { get { return _typeChoice; } set { _typeChoice = value; OnPropertyChanged(nameof(OpacityAll)); OnPropertyChanged(nameof(OpacityOnlyHead)); OnPropertyChanged(nameof(OpacityNoAnswer)); } }
+        public double OpacityAll { get { return Choice == eTypeChoice.All ? 1d : 0.4d; } }
+        public double OpacityOnlyHead { get { return Choice == eTypeChoice.OnlyHead ? 1d : 0.4d; } }
+        public double OpacityNoAnswer { get { return Choice == eTypeChoice.NoAnswer ? 1d : 0.4d; } }
+
         public RaitingDocItem(DocVM pDoc)
         {
             FileLogger.WriteLogMessage($"Item Start=>{pDoc.NumberDoc}");
@@ -115,10 +120,9 @@ namespace BRB5
             MainThread.BeginInvokeOnMainThread(() =>
             {
                 Questions.Clear();
-                foreach (var el in All.Where(el => (el.IsHead || el.Parent == 9999999 || (IsAllOpen && IsAll) || //Заголовки Всього та Розгорнути
-                (!IsAll && (el.Rating == 0 || (el.Rating == 3 && (String.IsNullOrEmpty(el.Note) || el.QuantityPhoto == 0))) || //Без відповіді
-                (!IsAllOpen && (el.ParrentRDI?.IsVisible == true && el.ParrentRDI?.Rating != 4)) //Показати неприховані
-                )
+                foreach (var el in All.Where(el => (el.IsHead || el.Parent == 9999999 ||// Choice== eTypeChoice.All|| //Заголовки Всього та Розгорнути
+                (Choice == eTypeChoice.NoAnswer && (el.Rating == 0 || (el.Rating == 3 && (String.IsNullOrEmpty(el.Note) || el.QuantityPhoto == 0)))) || //Без відповіді
+                (Choice != eTypeChoice.NoAnswer && el.ParrentRDI?.IsVisible == true && (el.ParrentRDI?.Rating != 4 || Choice == eTypeChoice.All)) //Показати неприховані                
                 )))
                 {
                     Questions.Add(el);
@@ -142,7 +146,7 @@ namespace BRB5
             //Grid cc = button.Parent as Grid;
             var vQuestion = GetRaiting(sender);//cc.BindingContext as Raiting;
             Bl.ChangeRaiting(vQuestion, button.ClassId, All);
-            ViewDoc();
+            if (vQuestion.IsHead) ViewDoc();
             CalcSumValueRating(vQuestion);
             RefreshHead();
         }
@@ -230,22 +234,7 @@ namespace BRB5
                 FileLogger.WriteLogMessage(this, System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
             }
         }
-        
-        private void OnSetView(object sender, System.EventArgs e)
-        {
-            IsAll = !IsAll;
-            ViewDoc();
-            /*
-            if (IsAll)
-                foreach (var el in Questions.Where(d => !d.IsVisible))
-                    el.IsVisible = true;
-            else
-                foreach (var el in Questions.Where(d => !d.IsHead && d.Rating > 0))
-                    if (el.Rating != 3) el.IsVisible = false;
-                    else if (!String.IsNullOrEmpty(el.Note) || el.QuantityPhoto > 0) el.IsVisible = false;
-            */
-            OnPropertyChanged(nameof(TextAllNoChoice));
-        }
+         
 
         private void OnButtonSaved(object sender, System.EventArgs e)
         {
@@ -324,7 +313,7 @@ namespace BRB5
 
         private void OnHeadTapped(object sender, EventArgs e)
         {
-
+            //            ListWares.ScrollTo(tempSelected, ScrollToPosition.Start, false);
             var s = sender as Grid;
             var cc = s.Parent as StackLayout;
 
@@ -344,39 +333,6 @@ namespace BRB5
             //}
         }
 
-        private void OnAllOpen(object sender, EventArgs e)
-        {
-            try
-            {
-                IsAllOpen = !IsAllOpen;
-
-                foreach (var el in All.Where(el => el.IsHead))
-                    el.IsVisible = IsAllOpen;
-
-
-                    ViewDoc();
-                /*Questions.Clear();
-                foreach (var el in All.Where(el=> IsAllOpen || (el.IsHead || el.Parent == 9999999)))
-                    Questions.Add(el);*/
-
-                //int i = 0;
-                //int aa = 233 / i;
-            /*   
-            if (IsAllOpen)
-                foreach (var el in Questions)
-                    el.IsVisible = true;
-            else
-                foreach (var el in Questions.Where(el => el.Parent != 9999999))
-                    el.IsVisible = false;*/
-
-            OnPropertyChanged(nameof(TextAllOpen));
-        }
-            catch (Exception ex)
-            {
-                FileLogger.WriteLogMessage(this, System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
-            }
-}
-
         private void BarCode(object sender, EventArgs e)
         {
             IsVisBarCode = !IsVisBarCode;
@@ -391,6 +347,27 @@ namespace BRB5
         //    db.ReplaceRaitingDocItem(temp);
         //    Questions[Questions.IndexOf(temp)] = temp;
         //    zxing.IsAnalyzing = true;
+        }
+
+        private void ShowButton(object sender, EventArgs e)
+        {
+            switch ((sender as ImageButton).AutomationId)
+            {
+                case "All":
+                    Choice = eTypeChoice.All;
+                    foreach (var el in All.Where(el => el.IsHead))
+                        el.IsVisible = true;
+                    break;
+                case "OnlyHead":
+                    Choice = eTypeChoice.OnlyHead;
+                    foreach (var el in All.Where(el => el.IsHead))
+                        el.IsVisible = false;
+                    break;
+                case "NoAnswer":
+                    Choice = eTypeChoice.NoAnswer;
+                    break;
+            }
+            ViewDoc();
         }
 
         private Model.RaitingDocItem GetRaiting(object sender)

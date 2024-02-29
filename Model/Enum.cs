@@ -317,4 +317,11 @@ namespace BRB5
         //[Description("розширена")]
         Full = 2
     }
+
+    public enum eTypeChoice
+    {
+        All,
+        OnlyHead,
+        NoAnswer
+    }
 }

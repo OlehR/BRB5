@@ -47,6 +47,8 @@
 	<string>CICON app needs access to the photo gallery to pick photos for user avatar and chat.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>CICON app needs access to the photo gallery to pick photos for user avatar and chat.</string>
+  <key>NSLocationWhenInUseUsageDescription</key>
+  <string>App needs access to Location to find the nearest store</string>
 	<key>CFBundleShortVersionString</key>
 	<string>5.2.48</string>
 </dict>
