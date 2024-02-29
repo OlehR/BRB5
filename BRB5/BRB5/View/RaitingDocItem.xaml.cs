@@ -272,6 +272,7 @@ namespace BRB5
         private void EditPhoto(object sender, System.EventArgs e)
         {
             var vQuestion = GetRaiting(sender);
+            IsRefreshList = false;
             Navigation.PushAsync(new RaitingDocItemEditPhoto(vQuestion));
         }
 

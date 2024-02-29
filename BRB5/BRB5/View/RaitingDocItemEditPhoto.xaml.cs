@@ -103,6 +103,7 @@ namespace BRB5.View
                 File.Delete(el.FileName);
                 MyFiles.Remove(el);
                 Raiting.QuantityPhoto--;
+                if(Raiting.QuantityPhoto < 0) Raiting.QuantityPhoto = 0;
                 db.ReplaceRaitingDocItem(Raiting);
             }
         }
@@ -114,7 +115,7 @@ namespace BRB5.View
 
             try
             {
-                var request = new MediaPickRequest(5, MediaFileType.Image, MediaFileType.Video)
+                var request = new MediaPickRequest(15, MediaFileType.Image, MediaFileType.Video)
                 {
                     PresentationSourceBounds = System.Drawing.Rectangle.Empty,
                     UseCreateChooser = true,

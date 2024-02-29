@@ -177,6 +177,7 @@
 
                                                 </Grid>
                                                 <Editor IsVisible="{Binding IsItem}"
+                                                        Placeholder="Введіть коментар"
                                                         Text="{Binding Note}"
                                                         AutoSize="TextChanges"
                                                         Completed="Editor_Completed" />
