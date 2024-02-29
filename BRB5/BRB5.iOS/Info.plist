@@ -10,8 +10,6 @@
 	<string>Light</string>
 	<key>CFBundleIdentifier</key>
 	<string>ua.uz.spar.brb5</string>
-	<key>CFBundleVersion</key>
-	<string>48</string>
 	<key>CFBundleName</key>
 	<string>BRB5</string>
 	<key>UIDeviceFamily</key>
@@ -47,9 +45,11 @@
 	<string>CICON app needs access to the photo gallery to pick photos for user avatar and chat.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>CICON app needs access to the photo gallery to pick photos for user avatar and chat.</string>
-  <key>NSLocationWhenInUseUsageDescription</key>
-  <string>App needs access to Location to find the nearest store</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>App needs access to Location to find the nearest store</string>
 	<key>CFBundleShortVersionString</key>
-	<string>5.2.48</string>
+	<string>5.2.50</string>
+	<key>CFBundleVersion</key>
+	<string>50</string>
 </dict>
 </plist>

@@ -9,4 +9,10 @@
     <PackageReference Include="sqlite-net-pcl" Version="1.8.116" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Reference Include="Utils">
+      <HintPath>..\DLL\Utils.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
 </Project>

@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using System.Threading;
 using Xamarin.Essentials;
 using Xamarin.Forms;
+using Utils;
 
 namespace BRB5.Model
 {
@@ -57,6 +58,7 @@ namespace BRB5.Model
             }
             catch (Exception ex)
             {
+                FileLogger.WriteLogMessage("LocationBrb.GetCurrentLocation", ex);
                 // Unable to get location
             }
             return Wh;

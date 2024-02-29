@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Text;
+using Utils;
 
 namespace BRB5.Model
 {
@@ -42,8 +43,8 @@ namespace BRB5.Model
         /// </summary>
         public string Location { get;set;}
 
-        public double GPSX { get { return Location.Split(',').Length == 2 ? Convert.ToDouble(Location.Split(',')[0]):0d; } }
-        public double GPSY { get { return Location.Split(',').Length == 2 ? Convert.ToDouble(Location.Split(',')[1]):0d; } }
+        public double GPSX { get { return Location.Split(',').Length == 2 ? Location.Split(',')[0].ToDouble():0d; } }
+        public double GPSY { get { return Location.Split(',').Length == 2 ? Location.Split(',')[1].ToDouble():0d; } }
         /// <summary>
         /// Дистанція
         /// </summary>
