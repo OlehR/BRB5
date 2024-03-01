@@ -141,10 +141,9 @@ namespace BRB5.View
         {
             SaveAndFocusNext((sender as Entry).AutomationId, 1);
         }
-        private void EntryFocused(object sender)
+        private void EntryFocused(object sender, FocusEventArgs e)
         {
             var entry = sender as Entry;
-            CurrentCodeWares = entry.AutomationId;
             if (IsVisScan)
             Device.BeginInvokeOnMainThread(() =>
             {                
@@ -179,6 +178,8 @@ namespace BRB5.View
             {
                 var next = (((list[Type == 1 ? index : nextIndex] as ViewCell).View as Grid).Children.ElementAt(Type == 1 ? 3 : 2) as Frame).Content as Entry;
                 next.Focus();
+                CurrentCodeWares = next.AutomationId;
+                CurrentEntryType = Type == 1 ? 2 : 1;
             }
         }
 
@@ -187,16 +188,28 @@ namespace BRB5.View
             await Navigation.PopAsync();
         }
 
-        private void EntryFocusedAvailable(object sender, FocusEventArgs e)
+        private void TextChangedAdd(object sender, TextChangedEventArgs e)
         {
-            EntryFocused(sender);
-            CurrentEntryType = 1;
+            var entry = sender as Entry;
+            CurrentCodeWares = entry.AutomationId;
+            CurrentEntryType = 2;
         }
 
-        private void EntryFocusedAdd(object sender, FocusEventArgs e)
+        private void TextChangedAvailable(object sender, TextChangedEventArgs e)
         {
-            EntryFocused(sender);
-            CurrentEntryType = 2;
+            var entry = sender as Entry;
+            CurrentCodeWares = entry.AutomationId;
+            CurrentEntryType = 1;
+        }
+    }
+    public class KeyboardTypeDataTemplateSelector : DataTemplateSelector
+    {
+        public DataTemplate SoftKeyboardTemplate { get; set; }
+        public DataTemplate HardKeyboardTemplate { get; set; }
+
+        protected override DataTemplate OnSelectTemplate(object item, BindableObject container)
+        {
+            return Config.IsSoftKeyboard ? SoftKeyboardTemplate : HardKeyboardTemplate;
         }
     }
 }
