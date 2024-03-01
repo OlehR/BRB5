@@ -66,7 +66,7 @@ namespace BRB5
         public bool IsMultyLabel { get { return _IsMultyLabel; } set { _IsMultyLabel = value; OnPropertyChanged("IsMultyLabel"); OnPropertyChanged("F5Text"); } }
         public string F5Text { get { return IsMultyLabel ? "Дубл." : "Унік."; } }
         public bool IsVisScan { get { return Config.TypeScaner == eTypeScaner.Camera; } }
-
+        private string CurrentEntry = "BarcodeEntry";
 
         public PriceCheck()
         {
@@ -87,12 +87,6 @@ namespace BRB5
             if (!IsVisScan)
              Config.BarCode = BarCode;
 
-            NumberOfReplenishment.Unfocused += (object sender, FocusEventArgs e) =>
-            {
-                decimal d;
-                if (decimal.TryParse(((Entry)sender).Text, out d))
-                    db.UpdateReplenishment(LineNumber, d);
-            };
 
             Config.OnProgress += (pProgress) => Device.BeginInvokeOnMainThread(() => PB = pProgress);
             this.BindingContext = this;
@@ -136,6 +130,7 @@ namespace BRB5
                 MessagingCenter.Subscribe<KeyEventMessage>(this, "F5Pressed", message => { OnF5(null, EventArgs.Empty); });
                 MessagingCenter.Subscribe<KeyEventMessage>(this, "F6Pressed", message => { OnClickPrintOne(null, EventArgs.Empty); });
                 MessagingCenter.Subscribe<KeyEventMessage>(this, "BackPressed", message => { KeyBack(); });
+                MessagingCenter.Subscribe<KeyEventMessage>(this, "EnterPressed", message => { KeyEnter(); });
             }
             if (IsVisScan)
             {
@@ -159,6 +154,7 @@ namespace BRB5
                 MessagingCenter.Unsubscribe<KeyEventMessage>(this, "F5Pressed");
                 MessagingCenter.Unsubscribe<KeyEventMessage>(this, "F6Pressed");
                 MessagingCenter.Unsubscribe<KeyEventMessage>(this, "BackPressed");
+                MessagingCenter.Unsubscribe<KeyEventMessage>(this, "EnterPressed");
             }
         }
 
@@ -208,7 +204,7 @@ namespace BRB5
 
         private void BarCodeHandInput(object sender, EventArgs e)
         {
-            var text = ((Entry)sender).Text;
+            var text = BarCodeInput.Text;
             FoundWares(text, true);
         }
 
@@ -231,5 +227,30 @@ namespace BRB5
         {
             await Navigation.PopAsync();    
         }
+
+        private void EntryTextChanged(object sender, TextChangedEventArgs e)
+        {
+            CurrentEntry = (sender as Entry).AutomationId;
+        }
+        private void KeyEnter()
+        {
+            switch (CurrentEntry)
+            {
+                case "BarcodeEntry":
+                    BarCodeHandInput(null,null);
+                    break;
+                case "ReplenishmentEntry":
+                    OnUpdateReplenishment(null, null);
+                    break;
+            }
+        }
+
+        private void OnUpdateReplenishment(object sender, EventArgs e)
+        {
+            decimal d;
+            if (decimal.TryParse(NumberOfReplenishment.Text, out d))
+                db.UpdateReplenishment(LineNumber, d);
+        }
+
     }
 }
