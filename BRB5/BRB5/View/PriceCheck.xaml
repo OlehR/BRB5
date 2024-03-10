@@ -134,6 +134,8 @@
                                           effects:KeyboardEffect.EnableKeyboard="{Binding IsSoftKeyboard}"
                                           Text="{Binding WP.BarCodes}" 
                                           x:Name="BarCodeInput"
+                                          TextChanged="EntryTextChanged"
+                                          AutomationId="BarcodeEntry"
                                           Focused="BarCodeFocused"
                                           Unfocused="BarCodeHandInput"
                                           Completed="BarCodeHandInput">
@@ -154,9 +156,13 @@
                 <Frame Style="{StaticResource FrameStyle}"
                        Grid.Column="1">
                     <controls:CustomEntry Style="{StaticResource EntryStyle}"
-                                          Text=""                                          
+                                          Text=""    
+                                          TextChanged="EntryTextChanged"
+                                          AutomationId="ReplenishmentEntry"
                                           effects:KeyboardEffect.EnableKeyboard="{Binding IsSoftKeyboard}"
                                           x:Name="NumberOfReplenishment"
+                                          Unfocused="OnUpdateReplenishment"
+                                          Completed="OnUpdateReplenishment"
                                           Keyboard="Numeric" >
                         <controls:CustomEntry.Effects>
                             <effects:KeyboardEnableEffect/>
