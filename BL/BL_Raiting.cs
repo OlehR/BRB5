@@ -98,7 +98,7 @@ namespace BL
 
         private void OnTimedEvent(Object source, ElapsedEventArgs e)
         {
-            var task = Task.Run(() => Bl.c.SendRaitingFilesAsync(cDoc?.NumberDoc, 1, 3 * 60, 10 * 60));
+            var task = Task.Run(() => Bl.c.SendRaitingFilesAsync(cDoc?.NumberDoc, 1, 2 * 60, 5 * 60));
         }
 
         public void SaveRDI(DocVM pDoc,Action pAction)

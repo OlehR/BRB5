@@ -48,8 +48,8 @@
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>App needs access to Location to find the nearest store</string>
 	<key>CFBundleShortVersionString</key>
-	<string>5.2.50</string>
+	<string>5.2.51</string>
 	<key>CFBundleVersion</key>
-	<string>50</string>
+	<string>51</string>
 </dict>
 </plist>

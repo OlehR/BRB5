@@ -392,7 +392,7 @@ namespace BL.Connector
 
                 var sw = Stopwatch.StartNew();
 
-                HttpResult result =await Http.HTTPRequestAsync(2, "", data, "application/json",null,null,60);
+                HttpResult result =await Http.HTTPRequestAsync(2, "", data, "application/json",null,null,90);
 
                 sw.Stop();
                 TimeSpan TimeLoad = sw.Elapsed;
@@ -536,7 +536,7 @@ namespace BL.Connector
                             }
                             sw.Stop();
                             TimeSpan TimeSend = sw.Elapsed;
-                            string text = res.success? $"[({i},{Error})/{Files.Length}] {Path.GetFileName(f)}=> ({data.Length / (1024 * 1024 * TimeSend.TotalSeconds):n2}Mb/c,{((double)data.Length) / (1024d * 1024d):n2}Mb,{TimeSend.TotalSeconds:n1}c))":
+                            string text = res.success? $"[({i}:{Error})/{Files.Length}] {Path.GetFileName(f)}=> ({data.Length / (1024 * 1024 * TimeSend.TotalSeconds):n2}Mb/c;{((double)data.Length) / (1024d * 1024d):n2}Mb;{TimeSend.TotalSeconds:n1}c))":
                                $"[({i},{Error})/{Files.Length}] Файл не передано=>{Path.GetFileName(f)}" ;
                             OnSave?.Invoke(text);
                             FileLogger.WriteLogMessage(this, System.Reflection.MethodBase.GetCurrentMethod().Name, text, eTypeLog.Full);

@@ -251,7 +251,7 @@ namespace BRB5
 
         private void OnButtonSave(object sender, System.EventArgs e)
         {
-            TextSave = "";
+            //TextSave = "";
             IsSaving = true;
             IsSaved = false;
             Bl.SaveRDI(cDoc, () => IsSaved = true);            
