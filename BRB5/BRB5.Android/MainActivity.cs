@@ -26,8 +26,7 @@ namespace BRB5.Droid
     [Activity(Label = "BRB5", Icon = "@mipmap/icon", Theme = "@style/MainTheme", MainLauncher = true, ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation | ConfigChanges.UiMode | ConfigChanges.ScreenLayout | ConfigChanges.SmallestScreenSize)]
     public class MainActivity : global::Xamarin.Forms.Platform.Android.FormsAppCompatActivity
     {
-        //MyBroadcastReceiver BR;
-       
+        //MyBroadcastReceiver BR;       
         //public static string SerialNumber = "None";
         protected override void OnCreate(Bundle savedInstanceState)
         {
@@ -55,7 +54,7 @@ namespace BRB5.Droid
             ///!!!!=TMP копіювання бази
             try
             {
-                string path1 = Path.Combine(Android.OS.Environment.ExternalStorageDirectory.AbsolutePath, Android.OS.Environment.DirectoryDownloads);
+                string path1 = Config.PathDownloads; //Path.Combine(Android.OS.Environment.ExternalStorageDirectory.AbsolutePath, Android.OS.Environment.DirectoryDownloads);
 
                 var FileDestination = Path.Combine(path1, "brb5.db");
                 if( File.Exists(FileDestination)) File.Delete(FileDestination); 
@@ -67,8 +66,8 @@ namespace BRB5.Droid
                 FileLogger.WriteLogMessage(e.Message);
             }
                         
-            if ( LoadAPK($"https://github.com/OlehR/BRB5/raw/master/Apk/{Config.Company}/", "ua.UniCS.TM.brb5.apk", null, VerCode))
-                         InstallAPK(Path.Combine(Config.PathDownloads, "ua.UniCS.TM.brb5.apk"));
+            /*if ( LoadAPK($"https://github.com/OlehR/BRB5/raw/master/Apk/{Config.Company}/", "ua.UniCS.TM.brb5.apk", null, VerCode))
+                         InstallAPK(Path.Combine(Config.PathDownloads, "ua.UniCS.TM.brb5.apk"));*/
 
             NativeMedia.Platform.Init(this, savedInstanceState);
             Xamarin.Essentials.Platform.Init(this, savedInstanceState);
@@ -111,9 +110,10 @@ namespace BRB5.Droid
 
             base.OnRequestPermissionsResult(requestCode, permissions, grantResults);
         }
-        void InstallAPK(string filepath)
+
+        /*void InstallAPK(string filepath)
         {
-            /*try
+            try
             {
                 Java.IO.File file = new Java.IO.File(filepath);
                 if (Build.VERSION.SdkInt >= BuildVersionCodes.N)
@@ -142,7 +142,7 @@ namespace BRB5.Droid
             {
                 FileLogger.WriteLogMessage(e.Message, eTypeLog.Error);
                 e = e.InnerException;
-            }*/
+            }
         }
         
         const string PACKAGE_INSTALLED_ACTION =
@@ -189,7 +189,7 @@ namespace BRB5.Droid
                 packageInSession.Close();
                 input.Close();
             }
-            /*using (var input = new FileStream(filePath, FileMode.Open, FileAccess.Read))
+            / *using (var input = new FileStream(filePath, FileMode.Open, FileAccess.Read))
             {
                 using (var packageInSession = session.OpenWrite("package", 0, -1))
                 {
@@ -197,13 +197,13 @@ namespace BRB5.Droid
                     packageInSession.Close();
                 }
                 input.Close();
-            }*/
+            }* /
             //That this is necessary could be a Xamarin bug.
             GC.Collect();
             GC.WaitForPendingFinalizers();
             GC.Collect();
         }
-
+        
 
         // Note: this Activity must run in singleTop launchMode for it to be able to receive the //intent
         protected override void OnNewIntent(Intent intent)
@@ -246,38 +246,8 @@ namespace BRB5.Droid
 
             
         }
-
-        public string GetDeviceId()
-        {
-            string deviceID = Android.OS.Build.Serial?.ToString();
-            if (string.IsNullOrEmpty(deviceID) || deviceID.ToUpper() == "UNKNOWN") // Android 9 returns "Unknown"
-            {
-                //ContentResolver myContentResolver = MainActivity.myContentResolver;
-                deviceID = Android.Provider.Settings.Secure.GetString(ContentResolver, Android.Provider.Settings.Secure.AndroidId);
-            }
-            return deviceID;
-        }
-
-        public int VerCode
-        {
-            get
-            {
-                int VerCode;
-                var pInfo = Android.App.Application.Context.ApplicationContext.PackageManager.GetPackageInfo(Android.App.Application.Context.ApplicationContext.PackageName, 0);
-                if (Build.VERSION.SdkInt >= BuildVersionCodes.P)
-                {
-                    VerCode = (int)pInfo.LongVersionCode; // avoid huge version numbers and you will be ok
-                }
-                else
-                {
-                    //noinspection deprecation
-                    VerCode = pInfo.VersionCode;
-                }
-                return VerCode;
-            }
-        }
         
-        public bool LoadAPK(string pPath, string pNameAPK, Action<int,string> pProgress, int pVersionCode)
+               public bool LoadAPK(string pPath, string pNameAPK, Action<int,string> pProgress, int pVersionCode)
         {
             GetDataHTTP Http = GetDataHTTP.GetInstance();
             try
@@ -317,8 +287,8 @@ namespace BRB5.Droid
 
             pProgress?.Invoke(100,"");
             return false;
-        }
-
+        }  
+        
         public HttpResult GetHttpFile(string pURL, string pFile)
         {
             //pDir = Config.GetPathFiles+"";
@@ -357,7 +327,38 @@ namespace BRB5.Droid
             }
 
         }
+         */
 
+        public string GetDeviceId()
+        {
+            string deviceID = Android.OS.Build.Serial?.ToString();
+            if (string.IsNullOrEmpty(deviceID) || deviceID.ToUpper() == "UNKNOWN") // Android 9 returns "Unknown"
+            {
+                //ContentResolver myContentResolver = MainActivity.myContentResolver;
+                deviceID = Android.Provider.Settings.Secure.GetString(ContentResolver, Android.Provider.Settings.Secure.AndroidId);
+            }
+            return deviceID;
+        }
+
+        public int VerCode
+        {
+            get
+            {
+                int VerCode;
+                var pInfo = Android.App.Application.Context.ApplicationContext.PackageManager.GetPackageInfo(Android.App.Application.Context.ApplicationContext.PackageName, 0);
+                if (Build.VERSION.SdkInt >= BuildVersionCodes.P)
+                {
+                    VerCode = (int)pInfo.LongVersionCode; // avoid huge version numbers and you will be ok
+                }
+                else
+                {
+                    //noinspection deprecation
+                    VerCode = pInfo.VersionCode;
+                }
+                return VerCode;
+            }
+        } 
+        
         public override bool OnKeyUp([GeneratedEnum] Keycode keyCode, KeyEvent e)
         {
             switch (keyCode)
@@ -403,6 +404,7 @@ namespace BRB5.Droid
             }
             return base.OnKeyUp(keyCode, e);
         }
+        
         public override bool DispatchKeyEvent(KeyEvent e)
         {
             if (e.Action == KeyEventActions.Up)
