@@ -15,14 +15,14 @@ namespace BRB5.View
         private TypeDoc TypeDoc;
         DB db = DB.GetDB();
         private ObservableCollection<DocVM> _MyDocsR;
-        public ObservableCollection<DocVM> MyDocsR { get { return _MyDocsR; } set { _MyDocsR = value; OnPropertyChanged("MyDocsR"); } }
-        bool _IsVisOPKO = false;
-        public bool IsVisOPKO { get { return _IsVisOPKO; } set { _IsVisOPKO = value; OnPropertyChanged("IsVisOPKO"); } }
-        string _OPKOstr = "";
-        public string OPKOstr { get { return _OPKOstr; } set { _OPKOstr = value; OnPropertyChanged("OPKOstr"); } }
-
+        public ObservableCollection<DocVM> MyDocsR { get { return _MyDocsR; } set { _MyDocsR = value; OnPropertyChanged(nameof(MyDocsR)); } }
+        bool _IsVisZKPO = false;
+        public bool IsVisZKPO { get { return _IsVisZKPO; } set { _IsVisZKPO = value; OnPropertyChanged(nameof(IsVisZKPO)); OnPropertyChanged(nameof(F1Text)); } }
+        string _ZKPOstr = "";
+        public string ZKPOstr { get { return _ZKPOstr; } set { _ZKPOstr = value; OnPropertyChanged(nameof(ZKPOstr)); } }
+        public string F1Text { get { return IsVisZKPO ? "Без фільтра" : "ЗКПО"; } }
         bool _IsVisBarCode = false;
-        public bool IsVisBarCode { get { return _IsVisBarCode; } set { _IsVisBarCode = value; OnPropertyChanged("IsVisBarCode"); } }
+        public bool IsVisBarCode { get { return _IsVisBarCode; } set { _IsVisBarCode = value; OnPropertyChanged(nameof(IsVisBarCode)); } }
         public bool IsViewOut { get { return TypeDoc.IsViewOut; } }
         public bool IsSoftKeyboard { get { return Config.IsSoftKeyboard; } }
         public bool IsVisScan { get { return Config.TypeScaner == eTypeScaner.Camera; } }
@@ -40,13 +40,17 @@ namespace BRB5.View
             base.OnAppearing();
             if (!IsSoftKeyboard)
             {
-                MessagingCenter.Subscribe<KeyEventMessage>(this, "F1Pressed", message => { OKPO(null, EventArgs.Empty); });
-                MessagingCenter.Subscribe<KeyEventMessage>(this, "8Pressed", message => { UpDown(8); });
-                MessagingCenter.Subscribe<KeyEventMessage>(this, "2Pressed", message => { UpDown(2); });
+                MessagingCenter.Subscribe<KeyEventMessage>(this, "F1Pressed", message => { ZKPO(null, EventArgs.Empty); });
+                MessagingCenter.Subscribe<KeyEventMessage>(this, "F2Pressed", message => { Up(); });
+                MessagingCenter.Subscribe<KeyEventMessage>(this, "F4Pressed", message => { Down(); });
+                MessagingCenter.Subscribe<KeyEventMessage>(this, "F3Pressed", message => { SelectKey(); });
                 MessagingCenter.Subscribe<KeyEventMessage>(this, "EnterPressed", message => { EnterKey(); });
             }
             c.LoadDocsDataAsync(TypeDoc.CodeDoc, null, false);
-            MyDocsR = new ObservableCollection<DocVM>(db.GetDoc(TypeDoc));
+
+            if (Config.IsFilterSave && ZKPOstr.Length > 2) MyDocsR = new ObservableCollection<DocVM>(db.GetDoc(TypeDoc, null, ZKPOstr));
+            else MyDocsR = new ObservableCollection<DocVM>(db.GetDoc(TypeDoc));
+
             if (MyDocsR.Count > 0)
             {
                 MyDocsR[0].SelectedColor = true;
@@ -61,9 +65,15 @@ namespace BRB5.View
             if (!IsSoftKeyboard)
             {
                 MessagingCenter.Unsubscribe<KeyEventMessage>(this, "F1Pressed");
-                MessagingCenter.Unsubscribe<KeyEventMessage>(this, "8Pressed");
-                MessagingCenter.Unsubscribe<KeyEventMessage>(this, "2Pressed");
+                MessagingCenter.Unsubscribe<KeyEventMessage>(this, "F2Pressed");
+                MessagingCenter.Unsubscribe<KeyEventMessage>(this, "F3Pressed");
+                MessagingCenter.Unsubscribe<KeyEventMessage>(this, "F4Pressed");
                 MessagingCenter.Unsubscribe<KeyEventMessage>(this, "EnterPressed");
+            }
+            if (!Config.IsFilterSave)
+            {
+                IsVisZKPO = false;
+                ZKPOEntry.Text = string.Empty;
             }
         }
         private async void OpenDoc(object sender, EventArgs e)
@@ -75,16 +85,26 @@ namespace BRB5.View
             await Navigation.PushAsync(new DocItem(vDoc,TypeDoc));
         }
 
-        private void OKPO(object sender, EventArgs e)
+        private void ZKPO(object sender, EventArgs e)
         {
-            IsVisOPKO = !IsVisOPKO;
-            if (IsVisOPKO) { ZKPOEntry.Focus(); }
+            IsVisZKPO = !IsVisZKPO;
+            if (IsVisZKPO) ZKPOEntry.Focus();
+            else
+            { 
+                ZKPOEntry.Text = string.Empty;
+                MyDocsR = new ObservableCollection<DocVM>(db.GetDoc(TypeDoc));
+            }
         }
 
         private void FilterDocs(object sender, EventArgs e)
         {
-            if (OPKOstr.Length > 2)
-                MyDocsR = new ObservableCollection<DocVM>(db.GetDoc(TypeDoc, null, OPKOstr));
+            if (ZKPOstr.Length > 2)
+                MyDocsR = new ObservableCollection<DocVM>(db.GetDoc(TypeDoc, null, ZKPOstr));
+            if (MyDocsR.Count > 0)
+            {
+                MyDocsR[0].SelectedColor = true;
+                ListDocs.SelectedItem = MyDocsR[0];
+            }
         }
 
         private void TabBarCode(object sender, EventArgs e)
@@ -103,17 +123,19 @@ namespace BRB5.View
 
         private void UpDown(int key)
         {
-            if (key == 2)
+            if (ZKPOEntry.IsFocused == false)
             {
-                if (Config.TypeScaner == eTypeScaner.PM550 || Config.TypeScaner == eTypeScaner.PM351) Up();
-                else if ( Config.TypeScaner == eTypeScaner.Zebra || Config.TypeScaner == eTypeScaner.BitaHC61) Down();
+                if (key == 2)
+                {
+                    if (Config.TypeScaner == eTypeScaner.PM550 || Config.TypeScaner == eTypeScaner.PM351) Up();
+                    else if (Config.TypeScaner == eTypeScaner.Zebra || Config.TypeScaner == eTypeScaner.BitaHC61) Down();
+                }
+                else if (key == 8)
+                {
+                    if (Config.TypeScaner == eTypeScaner.PM550 || Config.TypeScaner == eTypeScaner.PM351) Down();
+                    else if (Config.TypeScaner == eTypeScaner.Zebra || Config.TypeScaner == eTypeScaner.BitaHC61) Up();
+                }
             }
-            else if (key == 8)
-            {
-                if (Config.TypeScaner == eTypeScaner.PM550 || Config.TypeScaner == eTypeScaner.PM351) Down();
-                else if ( Config.TypeScaner == eTypeScaner.Zebra || Config.TypeScaner == eTypeScaner.BitaHC61) Up();
-            }
-
         }
         private void Up()
         {
@@ -148,13 +170,18 @@ namespace BRB5.View
                 OnPropertyChanged(nameof(MyDocsR));
             }
         }
-        private async void EnterKey()
+        private async void SelectKey()
         {
             var selectedItem = (DocVM)ListDocs.SelectedItem;
             if (selectedItem != null)
             {
                 await Navigation.PushAsync(new DocItem(selectedItem, TypeDoc));
             }
+        }
+
+        private void EnterKey()
+        {
+            if(IsVisZKPO) FilterDocs(null, null);
         }
         private void FilterBarCode(ZXing.Result result)
         {

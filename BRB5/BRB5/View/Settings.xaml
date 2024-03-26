@@ -75,6 +75,11 @@
                            Grid.Column="3" />
                 </Grid>
 
+                <StackLayout Orientation="Horizontal" >
+                    <CheckBox IsChecked="{Binding IsFilterSave}" />
+                    <Label Text="Фільтр"  />
+                </StackLayout>
+
 
                 <ProgressBar ScaleY="2"
                              Progress="1"

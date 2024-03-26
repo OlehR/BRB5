@@ -313,24 +313,28 @@ namespace BRB5
 
         private void OnHeadTapped(object sender, EventArgs e)
         {
-            //            ListWares.ScrollTo(tempSelected, ScrollToPosition.Start, false);
             var s = sender as Grid;
             var cc = s.Parent as StackLayout;
-
             var vRait = cc.BindingContext as Model.RaitingDocItem;
-            //var id = vRait.Id;
             vRait.IsVisible = !vRait.IsVisible;
-            ViewDoc();
-            /*
-            Questions.Clear();
-            foreach (var el in All.Where(el => (el.IsHead || el.Parent == 9999999 || All.Where(e=> e.Id == el.Parent).FirstOrDefault()?.IsVisible==true  )))
-                Questions.Add(el);*/
+            //ViewDoc();
 
+            Choice = eTypeChoice.NotDefine;
 
-            //foreach (var xx in Questions.Where(el => el.Parent == id))
-            //{
-            //    xx.IsVisible = !xx.IsVisible;
-            //}
+            MainThread.BeginInvokeOnMainThread(() =>
+            {
+                var index = Questions.IndexOf(vRait) + 1;
+                foreach (var el in All.Where(el => el.Parent==vRait.Id))
+                {
+                    if(vRait.IsVisible)
+                    {
+                        Questions.Insert(index, el);
+                        index++;
+                    }
+                    else Questions.Remove(el);
+                }
+            });
+
         }
 
         private void BarCode(object sender, EventArgs e)

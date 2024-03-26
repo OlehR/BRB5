@@ -37,25 +37,15 @@
                     HorizontalOptions="Fill" />
             <Frame Style="{StaticResource FrameStyle}">
                 <controls:CustomEntry Style="{StaticResource EntryStyle}"
-                                      effects:KeyboardEffect.EnableKeyboard="{Binding IsSoftKeyboard}"
-                                      x:Name="loginEntry" Text="{Binding Login}" >
-                    <controls:CustomEntry.Effects>
-                        <effects:KeyboardEnableEffect/>
-                    </controls:CustomEntry.Effects>
-                </controls:CustomEntry>
+                                      x:Name="loginEntry" Text="{Binding Login}" />
             </Frame>
             <!--TextChanged="loginEntry_TextChanged"-->
             <Frame Style="{StaticResource FrameStyle}">
                 <controls:CustomEntry Style="{StaticResource EntryStyle}"
                                       x:Name="passwordEntry"
-                                      effects:KeyboardEffect.EnableKeyboard="{Binding IsSoftKeyboard}"
                                       Text="{Binding Password}"
                                       Placeholder="Password"
-                                      IsPassword="True" >
-                    <controls:CustomEntry.Effects>
-                        <effects:KeyboardEnableEffect/>
-                    </controls:CustomEntry.Effects>
-                </controls:CustomEntry>
+                                      IsPassword="True" />
             </Frame>
             <Button Text="Залогінитись" FontSize="Large" BorderWidth="1"
                     HorizontalOptions="Center" VerticalOptions="CenterAndExpand"
