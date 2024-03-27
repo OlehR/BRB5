@@ -36,6 +36,8 @@ namespace BRB5.Model
         public static bool IsVibration { get; set; } = false;
         public static bool IsSound { get; set; } = false;
         public static bool IsTest { get; set; } = true;
+        public static bool IsFilterSave { get; set; } = false;
+
         public static bool IsLoginCO = true;
         public static eLoginServer LoginServer = eLoginServer.Bitrix;
         public static string Login { get; set; } = "LOX";

@@ -38,7 +38,15 @@ namespace BL
                     break;
             }
             if (OldRating == vQuestion.Rating)
+            {
+                if (vQuestion.IsHead && vQuestion.Rating == 4)
+                    foreach (var el in Questions.Where(d => d.Parent == vQuestion.Id))
+                    {
+                        if(el.Rating==4)  el.Rating = 0;
+                    }
+
                 vQuestion.Rating = 0;
+            }
 
             if (vQuestion.IsItem)
             {

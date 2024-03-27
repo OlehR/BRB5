@@ -68,6 +68,7 @@ namespace BRB5.View
         public bool IsVibration { get { return Config.IsVibration; } set { Config.IsVibration = value; } }
         public bool IsSound { get { return Config.IsSound; } set { Config.IsSound = value; } }
         public bool IsTest { get { return Config.IsTest; } set { Config.IsTest = value; } }
+        public bool IsFilterSave { get { return Config.IsFilterSave; } set { Config.IsFilterSave = value; } }
 
         public string ApiUrl1 { get { return Config.ApiUrl1; } set { Config.ApiUrl1 = value; OnPropertyChanged("ApiUrl1"); } }
         public string ApiUrl2 { get { return Config.ApiUrl2; } set { Config.ApiUrl2 = value; OnPropertyChanged("ApiUrl2"); } }
@@ -148,6 +149,7 @@ namespace BRB5.View
             db.SetConfig<bool>("IsViewAllWH", IsViewAllWH);
             db.SetConfig<bool>("IsSound", IsSound);
             db.SetConfig<bool>("IsTest", IsTest);
+            db.SetConfig<bool>("IsFilterSave", IsFilterSave);
 
             db.SetConfig<string>("ApiUrl1", ApiUrl1 ?? "");
             db.SetConfig<string>("ApiUrl2", ApiUrl2 ?? "");

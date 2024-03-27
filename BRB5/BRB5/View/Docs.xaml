@@ -90,12 +90,12 @@
     </ContentPage.Resources>
     <ContentPage.Content>
         <StackLayout>
-            <Grid IsVisible="{Binding IsVisOPKO}" HeightRequest="50">
+            <Grid IsVisible="{Binding IsVisZKPO}" HeightRequest="60">
                 <Frame Style="{StaticResource FrameStyle}">
                     <controls:CustomEntry Style="{StaticResource EntryStyle}"
                                           Placeholder="ЗКПО"
                                           effects:KeyboardEffect.EnableKeyboard="{Binding IsSoftKeyboard}"
-                                          Text="{Binding OPKOstr}"
+                                          Text="{Binding ZKPOstr}"
                                           Keyboard="Numeric"
                                           x:Name="ZKPOEntry"
                                           Completed="FilterDocs" >
@@ -122,7 +122,20 @@
             </ListView>
 
             <StackLayout VerticalOptions="EndAndExpand" Orientation="Horizontal">
-                <Label Text="8-"
+                <Label Text="F1-"
+                       IsVisible="{Binding IsViewOut}"
+                       FontSize="16"
+                       TextColor="#ff5c5c"
+                       VerticalOptions="Center" />
+                <Label Text="{Binding F1Text}"
+                       IsVisible="{Binding IsViewOut}"
+                       FontSize="18"
+                       TextColor="#816f20">
+                    <Label.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="ZKPO" />
+                    </Label.GestureRecognizers>
+                </Label>
+                <Label Text="F2-"
                        VerticalOptions="Center"
                        FontSize="16"
                        TextColor="#ff5c5c" />
@@ -130,34 +143,21 @@
                        FontSize="18"
                        TextColor="#816f20">
                 </Label>
-                <Label Text="2-" FontSize="16"
-                       TextColor="#ff5c5c"
-                       VerticalOptions="Center" />
-                <Label Text="↓"
-                       FontSize="18"
-                       TextColor="#816f20">
-                </Label>
-                <Label Text="ENT-"
-                       FontSize="16"
+                <Label Text="F3-" FontSize="16"
                        TextColor="#ff5c5c"
                        VerticalOptions="Center" />
                 <Label Text="вибір"
                        FontSize="18"
                        TextColor="#816f20">
                 </Label>
-                <Label Text="F1-"
-                       IsVisible="{Binding IsViewOut}"
+                <Label Text="F4-"
                        FontSize="16"
                        TextColor="#ff5c5c"
                        VerticalOptions="Center" />
-                <Label Text="ЗКПО"
-                       IsVisible="{Binding IsViewOut}"
+                <Label Text="↓"
                        FontSize="18"
                        TextColor="#816f20">
-                    <Label.GestureRecognizers>
-                        <TapGestureRecognizer Tapped="OKPO" />
-                    </Label.GestureRecognizers>
-                </Label>
+                </Label>                
 
                 <Grid IsVisible="{Binding IsVisScan}">
                     <Label Text="штрихкод"

@@ -320,6 +320,7 @@ namespace BRB5
 
     public enum eTypeChoice
     {
+        NotDefine,
         All,
         OnlyHead,
         NoAnswer

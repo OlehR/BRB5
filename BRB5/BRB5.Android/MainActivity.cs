@@ -393,6 +393,9 @@ namespace BRB5.Droid
                 case Keycode.Num2:
                     MessagingCenter.Send(new KeyEventMessage { Key = "2Pressed" }, "2Pressed");
                     break;
+                case Keycode.Num5:
+                    MessagingCenter.Send(new KeyEventMessage { Key = "5Pressed" }, "5Pressed");
+                    break;
                 case Keycode.Num8:
                     MessagingCenter.Send(new KeyEventMessage { Key = "8Pressed" }, "8Pressed");
                     break;
