@@ -5,8 +5,10 @@ using System.Text;
 namespace BRB5
 {
     public enum eKindDoc {Normal,Simple, PriceCheck, RaitingDoc, RaitingTempate, RaitingTemplateCreate, PlanCheck }
+    public enum eGroup {Price,Doc,Raiting, FixedAssets }
     public class TypeDoc
     {
+        public eGroup Group {  get; set; }
         public int CodeDoc { get; set; }
         public eKindDoc KindDoc { get; set; } = eKindDoc.Normal;
         public string NameDoc { get; set; }
