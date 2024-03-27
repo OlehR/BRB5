@@ -326,7 +326,7 @@ namespace BRB5
                 var index = Questions.IndexOf(vRait) + 1;
                 foreach (var el in All.Where(el => el.Parent==vRait.Id))
                 {
-                    if(vRait.IsVisible)
+                    if(vRait.IsVisible&&!Questions.Any(e => el.Id == e.Id))
                     {
                         Questions.Insert(index, el);
                         index++;
@@ -369,6 +369,8 @@ namespace BRB5
                     break;
                 case "NoAnswer":
                     Choice = eTypeChoice.NoAnswer;
+                    foreach (var el in All.Where(el => el.IsHead))
+                        el.IsVisible = false;
                     break;
             }
             ViewDoc();
