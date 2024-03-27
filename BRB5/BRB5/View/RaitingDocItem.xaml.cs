@@ -317,7 +317,6 @@ namespace BRB5
             var cc = s.Parent as StackLayout;
             var vRait = cc.BindingContext as Model.RaitingDocItem;
             vRait.IsVisible = !vRait.IsVisible;
-            //ViewDoc();
 
             Choice = eTypeChoice.NotDefine;
 
