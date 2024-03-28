@@ -325,10 +325,13 @@ namespace BRB5
                 var index = Questions.IndexOf(vRait) + 1;
                 foreach (var el in All.Where(el => el.Parent==vRait.Id))
                 {
-                    if(vRait.IsVisible&&!Questions.Any(e => el.Id == e.Id))
+                    if(vRait.IsVisible)
                     {
-                        Questions.Insert(index, el);
-                        index++;
+                        if(!Questions.Any(e => el.Id == e.Id))
+                        {
+                            Questions.Insert(index, el);
+                            index++;
+                        }
                     }
                     else Questions.Remove(el);
                 }
