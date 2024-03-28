@@ -134,9 +134,9 @@ namespace BRB5
             MainThread.BeginInvokeOnMainThread(() =>
             {
                 Questions.Clear();
-                foreach (var el in All.Where(el => (el.IsHead || el.Parent == 9999999 ||// Choice== eTypeChoice.All|| //Заголовки Всього та Розгорнути
-                (Choice == eTypeChoice.NoAnswer && (el.Rating == 0 || (el.Rating == 3 && (String.IsNullOrEmpty(el.Note) || el.QuantityPhoto == 0)))) || //Без відповіді
-                (Choice != eTypeChoice.NoAnswer && el.ParrentRDI?.IsVisible == true && (el.ParrentRDI?.Rating != 4 || Choice == eTypeChoice.All)) //Показати неприховані                
+                foreach (var el in All.Where(el => (el.IsHead || el.Parent == 9999999 || Choice == eTypeChoice.All ||//Заголовки Всього та Розгорнути                
+                (Choice == eTypeChoice.NoAnswer && (el.Rating == 0 || (el.Rating == 3 && (String.IsNullOrEmpty(el.Note) || el.QuantityPhoto == 0)))) //Без відповіді
+                //||(Choice != eTypeChoice.NoAnswer && el.ParrentRDI?.IsVisible == true && (el.ParrentRDI?.Rating != 4 || Choice == eTypeChoice.All)) //Показати неприховані                
                 )))
                 {
                     Questions.Add(el);
@@ -160,7 +160,9 @@ namespace BRB5
             //Grid cc = button.Parent as Grid;
             var vQuestion = GetRaiting(sender);//cc.BindingContext as Raiting;
             Bl.ChangeRaiting(vQuestion, button.ClassId, All);
-            if (vQuestion.IsHead) ViewDoc();
+
+            if (vQuestion.IsHead) ChangeItemBlok(vQuestion);
+
             CalcSumValueRating(vQuestion);
             RefreshHead();
         }
@@ -331,17 +333,20 @@ namespace BRB5
             var cc = s.Parent as StackLayout;
             var vRait = cc.BindingContext as Model.RaitingDocItem;
             vRait.IsVisible = !vRait.IsVisible;
-
             Choice = eTypeChoice.NotDefine;
+            ChangeItemBlok(vRait);
+        }
 
+        private void ChangeItemBlok(Model.RaitingDocItem vRait)
+        {
             MainThread.BeginInvokeOnMainThread(() =>
             {
                 var index = Questions.IndexOf(vRait) + 1;
-                foreach (var el in All.Where(el => el.Parent==vRait.Id))
+                foreach (var el in All.Where(el => el.Parent == vRait.Id))
                 {
-                    if(vRait.IsVisible)
+                    if (vRait.IsVisible)
                     {
-                        if(!Questions.Any(e => el.Id == e.Id))
+                        if (!Questions.Any(e => el.Id == e.Id))
                         {
                             Questions.Insert(index, el);
                             index++;
@@ -350,7 +355,6 @@ namespace BRB5
                     else Questions.Remove(el);
                 }
             });
-
         }
 
         private void BarCode(object sender, EventArgs e)

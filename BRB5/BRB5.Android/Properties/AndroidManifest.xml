@@ -1,14 +1,14 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android" android:versionCode="5254" android:versionName="5.2.54" package="ua.UniCS.TM.brb5" android:installLocation="preferExternal" android:requestLegacyExternalStorage="true">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" android:versionCode="5255" android:versionName="5.2.55" package="ua.UniCS.TM.brb5" android:installLocation="preferExternal" android:requestLegacyExternalStorage="true">
 	<uses-sdk android:minSdkVersion="24" android:targetSdkVersion="34" />
 	<uses-permission android:name="android.permission.CAMERA" />
-  <!--<uses-permission android:name="android.permission.CALL_PHONE" />
+	<!--<uses-permission android:name="android.permission.CALL_PHONE" />
 	
   <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />	
 	<uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE" />
   <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />-->
 	<uses-permission android:name="android.permission.VIBRATE" />
-  <uses-feature android:name="android.hardware.camera" android:required="false" />
+	<uses-feature android:name="android.hardware.camera" android:required="false" />
 	<application android:label="BRB5.Android" android:theme="@style/MainTheme" android:icon="@mipmap/icon">
 		<provider android:name="androidx.core.content.FileProvider" android:authorities="${applicationId}.provider" android:exported="false" android:grantUriPermissions="true">
 			<meta-data android:name="android.support.FILE_PROVIDER_PATHS" android:resource="@xml/provider_paths" />
