@@ -27,13 +27,12 @@
                         Clicked="OnButtonSaved" />
 
                 <Grid x:Name="GridZxing" IsVisible="{Binding IsVisBarCode}" HeightRequest="150">
-                  <!--   <forms:ZXingScannerView x:Name="zxing"
+                    <forms:ZXingScannerView x:Name="zxing"
                                             HorizontalOptions="StartAndExpand"
                                             VerticalOptions="FillAndExpand"
                                             ScaleY="2"
                                             OnScanResult="OnScanBarCode"
-                                            IsScanning="False">
-                    </forms:ZXingScannerView>    -->
+                                            IsScanning="False"/>
                 </Grid>
 
                 <ListView x:Name="ListQuestions"

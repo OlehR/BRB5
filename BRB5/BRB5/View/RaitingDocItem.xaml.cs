@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Utils;
 using Xamarin.Essentials;
@@ -342,17 +343,26 @@ namespace BRB5
         private void BarCode(object sender, EventArgs e)
         {
             IsVisBarCode = !IsVisBarCode;
-            //zxing.IsScanning = IsVisBarCode;
+            zxing.IsScanning = IsVisBarCode;
         }
         private void OnScanBarCode(ZXing.Result result)
         {
-        //    zxing.IsAnalyzing = false;
+            MainThread.BeginInvokeOnMainThread(() =>
+            {
+                zxing.IsAnalyzing = false;
+                var resultText = "[" + result.Text + "]";
+                var temp = Questions.Where(el => el.Id == -1).FirstOrDefault();
 
-        //    var temp = Questions.Where(el => el.Id==-1).FirstOrDefault();
-        //    if (temp.Note == null || !temp.Note.StartsWith(result.Text)) { temp.Note = result.Text + temp.Note; }
-        //    db.ReplaceRaitingDocItem(temp);
-        //    Questions[Questions.IndexOf(temp)] = temp;
-        //    zxing.IsAnalyzing = true;
+                if (string.IsNullOrEmpty(temp.Note)) temp.Note = resultText;
+                else if (Regex.IsMatch(temp.Note, @"\[\d+\]")) temp.Note = Regex.Replace(temp.Note, @"\[\d+\]", resultText);
+                     else temp.Note = resultText + temp.Note;
+
+                Bl.db.ReplaceRaitingDocItem(temp);
+                Questions[Questions.IndexOf(temp)] = temp;
+
+                ListQuestions.ScrollTo(Questions.Last(), ScrollToPosition.Center, false);
+                zxing.IsAnalyzing = true;
+            });
         }
 
         private void ShowButton(object sender, EventArgs e)
@@ -376,6 +386,8 @@ namespace BRB5
                     break;
             }
             ViewDoc();
+
+            ListQuestions.ScrollTo( Questions.First(), ScrollToPosition.Start, false);
         }
 
         private Model.RaitingDocItem GetRaiting(object sender)
