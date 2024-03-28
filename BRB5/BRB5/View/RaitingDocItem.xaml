@@ -26,14 +26,14 @@
                         VerticalOptions="CenterAndExpand"
                         Clicked="OnButtonSaved" />
 
-                <Grid x:Name="GridZxing" IsVisible="{Binding IsVisBarCode}" HeightRequest="150">
-                    <forms:ZXingScannerView x:Name="zxing"
+                <Grid x:Name="GridZxing" IsVisible="{Binding IsVisBarCode}" HeightRequest="150"/>
+                <!--<forms:ZXingScannerView x:Name="zxing"
                                             HorizontalOptions="StartAndExpand"
                                             VerticalOptions="FillAndExpand"
                                             ScaleY="2"
                                             OnScanResult="OnScanBarCode"
-                                            IsScanning="False"/>
-                </Grid>
+                                            IsScanning="False"/>-->
+
 
                 <ListView x:Name="ListQuestions"
                           HasUnevenRows="True"

@@ -29,7 +29,8 @@ namespace BRB5.ViewModel
             {
                 PossibleFormats = new List<BarcodeFormat>
                     {
-                        BarcodeFormat.All_1D,
+                        BarcodeFormat.EAN_13,
+                        BarcodeFormat.EAN_8,
                         BarcodeFormat.QR_CODE,
                     },
                 UseNativeScanning = true,

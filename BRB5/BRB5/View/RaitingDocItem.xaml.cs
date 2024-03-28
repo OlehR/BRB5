@@ -1,5 +1,6 @@
 ﻿using BRB5.Model;
 using BRB5.View;
+using BRB5.ViewModel;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -10,6 +11,7 @@ using System.Threading.Tasks;
 using Utils;
 using Xamarin.Essentials;
 using Xamarin.Forms;
+using ZXing.Net.Mobile.Forms;
 
 namespace BRB5
 {
@@ -80,6 +82,8 @@ namespace BRB5
         public double OpacityAll { get { return Choice == eTypeChoice.All ? 1d : 0.4d; } }
         public double OpacityOnlyHead { get { return Choice == eTypeChoice.OnlyHead ? 1d : 0.4d; } }
         public double OpacityNoAnswer { get { return Choice == eTypeChoice.NoAnswer ? 1d : 0.4d; } }
+        ZXingScannerView zxing;
+        public bool IsVisScan { get { return Config.TypeScaner == eTypeScaner.Camera; } }
 
         public RaitingDocItem(DocVM pDoc)
         {
@@ -108,13 +112,22 @@ namespace BRB5
         protected override void OnAppearing()
         {
             base.OnAppearing();
+            if (IsVisScan)
+            {
+                zxing = ZxingBRB5.SetZxing(GridZxing, zxing, (BarCode) => OnScanBarCode(BarCode));
+            }
             Bl.StartTimerRDI();
             if (IsRefreshList)Bl.LoadDataRDI(cDoc,GetData);
             IsRefreshList = true;
             _ = LocationBrb.GetCurrentLocation(Bl.db.GetWarehouse());
         }
 
-        protected override void OnDisappearing() {  base.OnDisappearing(); Bl.StopTimerRDI(); }
+        protected override void OnDisappearing() 
+        {  
+            base.OnDisappearing(); 
+            Bl.StopTimerRDI();
+            if (IsVisScan) zxing.IsScanning = false;
+        }
 
         void ViewDoc()
         {
@@ -343,14 +356,16 @@ namespace BRB5
         private void BarCode(object sender, EventArgs e)
         {
             IsVisBarCode = !IsVisBarCode;
+
             zxing.IsScanning = IsVisBarCode;
+            zxing.IsAnalyzing = IsVisBarCode;
         }
-        private void OnScanBarCode(ZXing.Result result)
+        private void OnScanBarCode(string result)
         {
             MainThread.BeginInvokeOnMainThread(() =>
             {
                 zxing.IsAnalyzing = false;
-                var resultText = "[" + result.Text + "]";
+                var resultText = "[" + result + "]";
                 var temp = Questions.Where(el => el.Id == -1).FirstOrDefault();
 
                 if (string.IsNullOrEmpty(temp.Note)) temp.Note = resultText;
