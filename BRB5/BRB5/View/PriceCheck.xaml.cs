@@ -126,7 +126,7 @@ namespace BRB5
                 BarCodeFocused(null, null);
             }
 
-            if (IsVisDoubleScan) SurchDoubleScan();
+            if (IsVisDoubleScan) SearchDoubleScan();
         }
 
         protected override void OnAppearing()
