@@ -6,7 +6,7 @@
                           xmlns:effects="clr-namespace:Xamarin.KeyboardHelper;assembly=Xamarin.KeyboardHelper"
                           x:Class="BRB5.PriceCheck">
     <ContentPage.Content>
-        <StackLayout BackgroundColor="{Binding ColorPrintColorType}">
+        <StackLayout BackgroundColor="{Binding ColorPrintColorType}" Spacing="0">
 
             <Grid x:Name="GridZxing" IsVisible="{Binding IsVisScan}" 
                   HeightRequest="200">
@@ -47,7 +47,7 @@
                        Grid.Column="4" />
             </Grid>
 
-            <Grid >
+            <Grid RowSpacing="0"  ColumnSpacing="0">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="2*" />
                     <ColumnDefinition Width="3*" />
@@ -55,7 +55,7 @@
                     <ColumnDefinition Width="3*" />
                 </Grid.ColumnDefinitions>
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="*"/>
+                    <RowDefinition />
                     <RowDefinition Height="auto"/>
                 </Grid.RowDefinitions>
 
@@ -90,7 +90,7 @@
                        TextColor="{Binding TextColorPrice}" />
             </Grid>
 
-            <Grid IsVisible="{Binding IsVisPriceOpt}">
+            <Grid RowSpacing="0"  ColumnSpacing="0" IsVisible="{Binding IsVisPriceOpt}">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="2*" />
                     <ColumnDefinition Width="3*" />
@@ -171,6 +171,13 @@
                 </Frame>
             </Grid>
 
+            <StackLayout IsVisible="{Binding IsVisDoubleScan}">
+                <Frame  BackgroundColor="{Binding }">
+                    <Label Text="{Binding }"/>
+                </Frame>
+                <Button Text="{Binding }" />
+            </StackLayout>            
+            
             <Grid VerticalOptions="EndAndExpand">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition />

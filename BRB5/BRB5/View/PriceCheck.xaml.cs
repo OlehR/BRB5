@@ -67,15 +67,18 @@ namespace BRB5
         public string F5Text { get { return IsMultyLabel ? "Дубл." : "Унік."; } }
         public bool IsVisScan { get { return Config.TypeScaner == eTypeScaner.Camera; } }
         private string CurrentEntry = "BarcodeEntry";
+        public bool IsVisDoubleScan { get; set; }
 
-        public PriceCheck()
+
+        public PriceCheck(TypeDoc pTypeDoc)
         {
             InitializeComponent();            
             var r = db.GetCountScanCode();
+            IsVisDoubleScan = pTypeDoc.CodeDoc == 15;
 
             if (Config.TypeUsePrinter == eTypeUsePrinter.StationaryWithCutAuto) PrintType = -1;
 
-            NavigationPage.SetHasNavigationBar(this, Device.RuntimePlatform == Device.iOS|| Config.TypeScaner==eTypeScaner.BitaHC61 || Config.TypeScaner == eTypeScaner.Zebra || Config.TypeScaner == eTypeScaner.PM550 || Config.TypeScaner == eTypeScaner.PM351);
+            NavigationPage.SetHasNavigationBar(this, Device.RuntimePlatform == Device.iOS);
 
             if (r != null)
             {
