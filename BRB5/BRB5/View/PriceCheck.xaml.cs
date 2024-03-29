@@ -53,7 +53,7 @@ namespace BRB5
         /// Номер пакета цінників за день !!!TMP Треба зберігати в базі.
         /// </summary>
         int _PackageNumber = 1;
-        public int PackageNumber { get { return _PackageNumber; } set { _PackageNumber = value; OnPropertyChanged("PackageNumber"); OnPropertyChanged("ListPrintBlockItems"); OnPropertyChanged("SelectedPrintBlockItems"); } }
+        public int PackageNumber { get { return _PackageNumber; } set { _PackageNumber = value; OnPropertyChanged(nameof(PackageNumber)); OnPropertyChanged(nameof(ListPrintBlockItems)); OnPropertyChanged(nameof(SelectedPrintBlockItems)); } }
 
 
         //public int ColorPrintColorType() { return Color.parseColor(HttpState != eStateHTTP.HTTP_OK ? "#ffb3b3" : (PrintType == 0 ? "#ffffff" : "#3fffff00")); }
@@ -63,13 +63,20 @@ namespace BRB5
         public string TextColorHttp { get { return (WP != null && WP.StateHTTP == eStateHTTP.HTTP_OK) ? "#009800" : "#ff5c5c"; } }
 
         public bool _IsMultyLabel = false;
-        public bool IsMultyLabel { get { return _IsMultyLabel; } set { _IsMultyLabel = value; OnPropertyChanged("IsMultyLabel"); OnPropertyChanged("F5Text"); } }
+        public bool IsMultyLabel { get { return _IsMultyLabel; } set { _IsMultyLabel = value; OnPropertyChanged(nameof(IsMultyLabel)); OnPropertyChanged(nameof(F5Text)); } }
         public string F5Text { get { return IsMultyLabel ? "Дубл." : "Унік."; } }
         public bool IsVisScan { get { return Config.TypeScaner == eTypeScaner.Camera; } }
         private string CurrentEntry = "BarcodeEntry";
+
+        // 0 - нічого , 1 - сканований цінник, 2 - сканований товар, 3 - штрихкод товату не підходить, 4 - цінник не підходить
+        private int _IsWareScaned = 0;
+        public int IsWareScaned { get { return _IsWareScaned; } set { _IsWareScaned = value; OnPropertyChanged(nameof(ColorDoubleScan)); OnPropertyChanged(nameof(IsWareScaned)); OnPropertyChanged(nameof(ButtonDoubleScan)); } }
         public bool IsVisDoubleScan { get; set; }
-
-
+        public bool IsVisBarcode { get { return !IsVisDoubleScan; } }
+        private string _MessageDoubleScan;
+        public string MessageDoubleScan {  get { return _MessageDoubleScan; } set { _MessageDoubleScan = value; OnPropertyChanged(nameof(MessageDoubleScan)); } }
+        public string ButtonDoubleScan { get { return IsWareScaned == 0 || IsWareScaned == 2 || IsWareScaned == 4 ? "Відсутній ціник" : "Відсутній товар"; } }
+        public string ColorDoubleScan { get { return IsWareScaned == 3 || IsWareScaned==4 ? "#FFC4C4" : IsWareScaned == 1 || IsWareScaned == 2 ? "#FEFFC4" : "#FFFFFF"; } }
         public PriceCheck(TypeDoc pTypeDoc)
         {
             InitializeComponent();            
@@ -89,7 +96,6 @@ namespace BRB5
             }
             if (!IsVisScan)
              Config.BarCode = BarCode;
-
 
             Config.OnProgress += (pProgress) => Device.BeginInvokeOnMainThread(() => PB = pProgress);
             this.BindingContext = this;
@@ -119,6 +125,8 @@ namespace BRB5
                 BarCodeInput.Focus();
                 BarCodeFocused(null, null);
             }
+
+            if (IsVisDoubleScan) SurchDoubleScan();
         }
 
         protected override void OnAppearing()
@@ -142,6 +150,7 @@ namespace BRB5
                 zxing.IsAnalyzing = true;
             }
             if (!IsVisScan) BarCodeInput.Focus();
+            if (IsVisDoubleScan) MessageDoubleScan = "Скануйте цінник чи товар";
         }
 
         protected override void OnDisappearing()
@@ -237,6 +246,9 @@ namespace BRB5
         }
         private void KeyEnter()
         {
+            if (IsVisDoubleScan)
+                //TEMP!!
+                return;
             switch (CurrentEntry)
             {
                 case "BarcodeEntry":
@@ -255,5 +267,14 @@ namespace BRB5
                 db.UpdateReplenishment(LineNumber, d);
         }
 
+        private void DoubleScanReact(object sender, EventArgs e)
+        {
+
+        }
+
+        private void SearchDoubleScan()
+        {
+
+        }
     }
 }

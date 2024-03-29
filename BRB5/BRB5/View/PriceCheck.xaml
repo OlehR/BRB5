@@ -122,7 +122,7 @@
                        FontSize="28" />
             </Grid>
 
-            <Grid>
+            <Grid IsVisible="{Binding IsVisBarcode}">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="1*" />
                     <ColumnDefinition Width="2*" />
@@ -137,6 +137,7 @@
                                           TextChanged="EntryTextChanged"
                                           AutomationId="BarcodeEntry"
                                           Focused="BarCodeFocused"
+                                          IsReadOnly="{Binding IsVisBarcode}"
                                           Unfocused="BarCodeHandInput"
                                           Completed="BarCodeHandInput">
                         <controls:CustomEntry.Effects>
@@ -172,10 +173,10 @@
             </Grid>
 
             <StackLayout IsVisible="{Binding IsVisDoubleScan}">
-                <Frame  BackgroundColor="{Binding }">
-                    <Label Text="{Binding }"/>
+                <Frame HasShadow="False"  BackgroundColor="{Binding ColorDoubleScan}">
+                    <Label FontSize="Large" Text="{Binding MessageDoubleScan}"/>
                 </Frame>
-                <Button Text="{Binding }" />
+                <Button Text="{Binding ButtonDoubleScan}" Clicked="DoubleScanReact"/>
             </StackLayout>            
             
             <Grid VerticalOptions="EndAndExpand">
