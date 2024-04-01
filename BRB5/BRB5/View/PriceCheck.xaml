@@ -6,7 +6,7 @@
                           xmlns:effects="clr-namespace:Xamarin.KeyboardHelper;assembly=Xamarin.KeyboardHelper"
                           x:Class="BRB5.PriceCheck">
     <ContentPage.Content>
-        <StackLayout BackgroundColor="{Binding ColorPrintColorType}">
+        <StackLayout BackgroundColor="{Binding ColorPrintColorType}" Spacing="0">
 
             <Grid x:Name="GridZxing" IsVisible="{Binding IsVisScan}" 
                   HeightRequest="200">
@@ -47,7 +47,7 @@
                        Grid.Column="4" />
             </Grid>
 
-            <Grid >
+            <Grid RowSpacing="0"  ColumnSpacing="0">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="2*" />
                     <ColumnDefinition Width="3*" />
@@ -55,7 +55,7 @@
                     <ColumnDefinition Width="3*" />
                 </Grid.ColumnDefinitions>
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="*"/>
+                    <RowDefinition />
                     <RowDefinition Height="auto"/>
                 </Grid.RowDefinitions>
 
@@ -90,7 +90,7 @@
                        TextColor="{Binding TextColorPrice}" />
             </Grid>
 
-            <Grid IsVisible="{Binding IsVisPriceOpt}">
+            <Grid RowSpacing="0"  ColumnSpacing="0" IsVisible="{Binding IsVisPriceOpt}">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="2*" />
                     <ColumnDefinition Width="3*" />
@@ -122,7 +122,7 @@
                        FontSize="28" />
             </Grid>
 
-            <Grid>
+            <Grid IsVisible="{Binding IsVisBarcode}">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="1*" />
                     <ColumnDefinition Width="2*" />
@@ -137,6 +137,7 @@
                                           TextChanged="EntryTextChanged"
                                           AutomationId="BarcodeEntry"
                                           Focused="BarCodeFocused"
+                                          IsReadOnly="{Binding IsVisBarcode}"
                                           Unfocused="BarCodeHandInput"
                                           Completed="BarCodeHandInput">
                         <controls:CustomEntry.Effects>
@@ -171,6 +172,13 @@
                 </Frame>
             </Grid>
 
+            <StackLayout IsVisible="{Binding IsVisDoubleScan}">
+                <Frame HasShadow="False"  BackgroundColor="{Binding ColorDoubleScan}">
+                    <Label FontSize="Large" Text="{Binding MessageDoubleScan}"/>
+                </Frame>
+                <Button Text="{Binding ButtonDoubleScan}" Clicked="DoubleScanReact"/>
+            </StackLayout>            
+            
             <Grid VerticalOptions="EndAndExpand">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition />

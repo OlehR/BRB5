@@ -124,7 +124,7 @@ namespace BRB5
             switch (vTypeDoc.KindDoc)
             {
                 case eKindDoc.PriceCheck:
-                    await Navigation.PushAsync(new PriceCheck()); //new CustomScanPage()); // 
+                    await Navigation.PushAsync(new PriceCheck(vTypeDoc)); //new CustomScanPage()); // 
                     break;
                 case eKindDoc.Normal:
                 case eKindDoc.Simple:
