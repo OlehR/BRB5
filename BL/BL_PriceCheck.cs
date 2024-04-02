@@ -7,12 +7,14 @@ namespace BL
 {
     public partial class BL
     {
-        public WaresPrice FoundWares(string pBarCode, int PackageNumber, int LineNumber, bool pIsHandInput, bool IsOnline = true)
+        public (WaresPrice, ParseBarCode) FoundWares(string pBarCode, int PackageNumber, int LineNumber, bool pIsHandInput, bool IsOnline = true)
         {
             WaresPrice WP;
+            ParseBarCode PB = null;
             if (IsOnline)
             {
-                WP = c.GetPrice(c.ParsedBarCode(pBarCode, pIsHandInput));
+                PB = c.ParsedBarCode(pBarCode, pIsHandInput);
+                WP = c.GetPrice(PB);
             }
             else
             {
@@ -23,7 +25,7 @@ namespace BL
             var l = new LogPrice(WP, IsOnline, PackageNumber, LineNumber);
             db.InsLogPrice(l);
 
-            return WP;
+            return (WP, PB);
         }
     }
 }
