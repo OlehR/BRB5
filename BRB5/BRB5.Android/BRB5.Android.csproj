@@ -94,10 +94,6 @@
     <PackageReference Include="Xamarin.MediaGallery">
       <Version>2.2.1</Version>
     </PackageReference>
-    <PackageReference Include="ZXing.Net.Mobile">
-      <Version>2.4.1</Version>
-    </PackageReference>
-    <PackageReference Include="ZXing.Net.Mobile.Forms" Version="2.4.1" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AndroidStorageManager .cs" />
@@ -140,6 +136,14 @@
     <ProjectReference Include="..\..\Model\BRB5.Model.csproj">
       <Project>{e1c7dab8-e775-414d-91ce-30e46d8f40af}</Project>
       <Name>BRB5.Model</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\ZXing.Net.Mobile.Forms\ZXing.Net.Mobile.Forms.csproj">
+      <Project>{b70931c7-3cf5-4d0c-92f6-a481ef0bdba5}</Project>
+      <Name>ZXing.Net.Mobile.Forms</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\ZXing.Net.Mobile\ZXing.Net.Mobile.csproj">
+      <Project>{1ff34556-44a7-476c-ab44-365da9ba59cc}</Project>
+      <Name>ZXing.Net.Mobile</Name>
     </ProjectReference>
     <ProjectReference Include="..\BRB5\BRB5.csproj">
       <Project>{BC9CD5BE-03B0-4DF3-A559-125445C9E053}</Project>

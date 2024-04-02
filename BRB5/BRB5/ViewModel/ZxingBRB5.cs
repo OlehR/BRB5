@@ -34,6 +34,7 @@ namespace BRB5.ViewModel
                         BarcodeFormat.QR_CODE,
                     },
                 UseNativeScanning = true,
+                TryUseUltraWideCamera =true,
             };
             pZxing.OnScanResult += (result) =>
                 Device.BeginInvokeOnMainThread(async () =>
