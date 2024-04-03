@@ -137,7 +137,7 @@
                                           TextChanged="EntryTextChanged"
                                           AutomationId="BarcodeEntry"
                                           Focused="BarCodeFocused"
-                                          IsReadOnly="{Binding IsVisBarcode}"
+                                          IsReadOnly="{Binding IsVisDoubleScan}"
                                           Unfocused="BarCodeHandInput"
                                           Completed="BarCodeHandInput">
                         <controls:CustomEntry.Effects>
