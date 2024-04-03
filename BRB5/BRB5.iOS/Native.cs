@@ -12,7 +12,45 @@ namespace BRB5.iOS
 {
     public class Native : NativeBase
     {
-        public override byte[] ResizeImage(byte[] imageData, float max)
+
+        public override byte[] ResizeImage(byte[] imageData, float width)
+        {
+            float height = width;
+            UIImage originalImage = ImageFromByteArray(imageData);
+
+            var originalHeight = originalImage.Size.Height;
+            var originalWidth = originalImage.Size.Width;
+
+            nfloat newHeight = 0;
+            nfloat newWidth = 0;
+
+            if (originalHeight > originalWidth)
+            {
+                newHeight = height;
+                nfloat ratio = originalHeight / height;
+                newWidth = originalWidth / ratio;
+            }
+            else
+            {
+                newWidth = width;
+                nfloat ratio = originalWidth / width;
+                newHeight = originalHeight / ratio;
+            }
+
+            width = (float)newWidth;
+            height = (float)newHeight;
+
+            UIGraphics.BeginImageContext(new SizeF(width, height));
+            originalImage.Draw(new RectangleF(0, 0, width, height));
+            var resizedImage = UIGraphics.GetImageFromCurrentImageContext();
+            UIGraphics.EndImageContext();
+
+            var bytesImagen = resizedImage.AsJPEG().ToArray();
+            resizedImage.Dispose();
+            return bytesImagen;
+        }
+  /*  
+    public override byte[] ResizeImage(byte[] imageData, float max)
         {
             UIImage originalImage = ImageFromByteArray(imageData);
             UIImageOrientation orientation = originalImage.Orientation;
@@ -25,7 +63,11 @@ namespace BRB5.iOS
             var width = (int)(!IsHeightMax ? max : originalImage.Size.Width * coef);
 
             //create a 24bit RGB image
-            using (CGBitmapContext context = new CGBitmapContext(IntPtr.Zero,
+
+            width=orientation == UIImageOrientation.Up ? width : height;
+            height = orientation == UIImageOrientation.Up ? height : width;
+            
+           using (CGBitmapContext context = new CGBitmapContext(IntPtr.Zero,
                                                  width, height, 8,
                                                  4 * width, CGColorSpace.CreateDeviceRGB(),
                                                  CGImageAlphaInfo.PremultipliedFirst))
@@ -42,7 +84,7 @@ namespace BRB5.iOS
                 return resizedImage.AsJPEG().ToArray();
             }
         }
-
+*/
         public static UIKit.UIImage ImageFromByteArray(byte[] data)
         {
             if (data == null)
