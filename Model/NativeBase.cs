@@ -7,7 +7,7 @@ namespace BRB5.Model
 {
     public class NativeBase
     {
-        public virtual byte[] ResizeImage(byte[] imageData, float max) { throw new NotImplementedException(); }
+        public virtual byte[] ResizeImage(byte[] imageData, float max, int compress = 90) { throw new NotImplementedException(); }
         public static byte[] ReadFully(Stream input)
         {
             byte[] buffer = new byte[16 * 1024];

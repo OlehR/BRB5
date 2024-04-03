@@ -325,4 +325,14 @@ namespace BRB5
         OnlyHead,
         NoAnswer
     }
+
+    public enum ePhotoQuality
+    {
+        [Description("Оригінальна")]
+        Original,
+        [Description("Висока")]
+        High,
+        [Description("Середня")]
+        Medium
+    }
 }

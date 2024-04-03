@@ -8,7 +8,7 @@ namespace BRB5.Droid
 {
     public class Native : NativeBase
     {
-        public override byte[] ResizeImage(byte[] imageData, float max)
+        public override byte[] ResizeImage(byte[] imageData, float max, int compress = 90)
         {
             // Load the bitmap            
             Bitmap originalImage = BitmapFactory.DecodeByteArray(imageData, 0, imageData.Length);
@@ -24,7 +24,7 @@ namespace BRB5.Droid
 
             using (MemoryStream ms = new MemoryStream())
             {
-                resizedImage.Compress(Bitmap.CompressFormat.Jpeg, 100, ms);
+                resizedImage.Compress(Bitmap.CompressFormat.Jpeg, compress, ms);
                 return ms.ToArray();
             }
         }

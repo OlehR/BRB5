@@ -315,7 +315,7 @@ namespace BRB5
                     using (var stream = await photo.OpenReadAsync())
                     {
                         imageData = NativeBase.ReadFully(stream);
-                        byte[] resizedImage = Config.NativeBase.ResizeImage(imageData, 400);
+                        byte[] resizedImage = Config.NativeBase.ResizeImage(imageData, 2016, 90);
                         File.WriteAllBytes(newFile, resizedImage);
 
                         //using (var newStream = File.OpenWrite(newFile))

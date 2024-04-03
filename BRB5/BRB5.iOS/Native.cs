@@ -13,7 +13,7 @@ namespace BRB5.iOS
     public class Native : NativeBase
     {
 
-        public override byte[] ResizeImage(byte[] imageData, float width)
+        public override byte[] ResizeImage(byte[] imageData, float width, int compress = 90)
         {
             float height = width;
             UIImage originalImage = ImageFromByteArray(imageData);
@@ -45,46 +45,10 @@ namespace BRB5.iOS
             var resizedImage = UIGraphics.GetImageFromCurrentImageContext();
             UIGraphics.EndImageContext();
 
-            var bytesImagen = resizedImage.AsJPEG().ToArray();
+            var bytesImagen = resizedImage.AsJPEG(compress).ToArray();
             resizedImage.Dispose();
             return bytesImagen;
         }
-  /*  
-    public override byte[] ResizeImage(byte[] imageData, float max)
-        {
-            UIImage originalImage = ImageFromByteArray(imageData);
-            UIImageOrientation orientation = originalImage.Orientation;
-
-            var imageMax = Math.Max(originalImage.Size.Width, originalImage.Size.Height);
-            bool IsHeightMax = originalImage.Size.Width < originalImage.Size.Height;
-            var coef = max / imageMax;
-
-            var height = (int)(IsHeightMax ? max : originalImage.Size.Height * coef);
-            var width = (int)(!IsHeightMax ? max : originalImage.Size.Width * coef);
-
-            //create a 24bit RGB image
-
-            width=orientation == UIImageOrientation.Up ? width : height;
-            height = orientation == UIImageOrientation.Up ? height : width;
-            
-           using (CGBitmapContext context = new CGBitmapContext(IntPtr.Zero,
-                                                 width, height, 8,
-                                                 4 * width, CGColorSpace.CreateDeviceRGB(),
-                                                 CGImageAlphaInfo.PremultipliedFirst))
-            {
-
-                RectangleF imageRect = new RectangleF(0, 0, width, height);
-
-                // draw the image
-                context.DrawImage(imageRect, originalImage.CGImage);
-
-                UIKit.UIImage resizedImage = UIKit.UIImage.FromImage(context.ToImage(), 0, orientation);
-
-                // save the image as a jpeg
-                return resizedImage.AsJPEG().ToArray();
-            }
-        }
-*/
         public static UIKit.UIImage ImageFromByteArray(byte[] data)
         {
             if (data == null)

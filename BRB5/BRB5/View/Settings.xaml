@@ -81,6 +81,23 @@
                 </StackLayout>
 
 
+                <Picker Title="Якість фото"
+                        ItemsSource="{Binding ListPhotoQuality}"
+                        SelectedIndex="{Binding SelectedPhotoQuality}"
+                        HorizontalOptions="Fill" />
+                <StackLayout Orientation="Horizontal"  >
+                    <Label Text="Стискання" />
+                    <Frame Style="{StaticResource FrameStyle}">
+                        <controls:CustomEntry Style="{StaticResource EntryStyle}"
+                          effects:KeyboardEffect.EnableKeyboard="{Binding IsSoftKeyboard}"
+                          Text="{Binding }">
+                            <controls:CustomEntry.Effects>
+                                <effects:KeyboardEnableEffect/>
+                            </controls:CustomEntry.Effects>
+                        </controls:CustomEntry>
+                    </Frame>
+                </StackLayout>
+
                 <ProgressBar ScaleY="2"
                              Progress="1"
                              VerticalOptions="EndAndExpand"

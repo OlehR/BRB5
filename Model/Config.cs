@@ -71,5 +71,9 @@ namespace BRB5.Model
         public static bool IsSoftKeyboard { get { return TypeScaner == eTypeScaner.Camera; } }
 
         public static NativeBase NativeBase;
+        public static ePhotoQuality PhotoQuality { get;set; }
+
+        public static int Compress { get; set; } = 90;
+
     }
 }

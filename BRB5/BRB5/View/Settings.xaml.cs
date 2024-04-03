@@ -31,6 +31,18 @@ namespace BRB5.View
                 return list;
             }
         }
+        public List<string> ListPhotoQuality
+        {
+            get
+            {
+                List<string> list = new List<string>();
+                foreach (ePhotoQuality type in Enum.GetValues(typeof(ePhotoQuality)))
+                {
+                    list.Add(EnumMethods.GetDescription(type));
+                }
+                return list;
+            }
+        }
 
         public List<string> ListCompany { get { return Enum.GetNames(typeof(eCompany)).Where(el => !el.Equals(eCompany.Sim23FTP.ToString())&& !el.Equals(eCompany.VPSU.ToString())).ToList(); } }
         public List<string> ListTypeLog { get { return Enum.GetNames(typeof(eTypeLog)).ToList(); } }
@@ -60,6 +72,7 @@ namespace BRB5.View
         public int SelectedCompany { get { return ListCompany.FindIndex(x => x == Enum.GetName(typeof(eCompany),Config.Company)); } set { Config.Company = (eCompany)value; OnPropertyChanged("IsVisApi3"); } }
         public int SelectedTypePrinter { get { return Enum.GetNames(typeof(eTypeUsePrinter)).ToList().FindIndex(x => x == Enum.GetName(typeof(eTypeUsePrinter), Config.TypeUsePrinter)); } set { Config.TypeUsePrinter = (eTypeUsePrinter)value; } }
         public int SelectedTypeLog { get { return ListTypeLog.FindIndex(x => x == Enum.GetName(typeof(eTypeLog), FileLogger.TypeLog)); } set { FileLogger.TypeLog = (eTypeLog)value; } }
+        public int SelectedPhotoQuality { get { return Enum.GetNames(typeof(ePhotoQuality)).ToList().FindIndex(x => x == Enum.GetName(typeof(ePhotoQuality), Config.PhotoQuality)); } set { Config.PhotoQuality = (ePhotoQuality)value; } }
 
         public bool IsSoftKeyboard { get { return Config.IsSoftKeyboard; } }
         public bool IsVisApi3 { get { return Config.Company == eCompany.Sim23; } }
@@ -157,6 +170,7 @@ namespace BRB5.View
 
             db.SetConfig<eCompany>("Company", (eCompany)SelectedCompany);
             db.SetConfig<eTypeLog>("TypeLog", (eTypeLog)SelectedTypeLog);
+            db.SetConfig<ePhotoQuality>("PhotoQuality", (ePhotoQuality)SelectedPhotoQuality);
             db.SetConfig<eTypeUsePrinter>("TypeUsePrinter", (eTypeUsePrinter)SelectedTypePrinter);
             if(SelectedWarehouse>-1) db.SetConfig<int>("CodeWarehouse", ListWarehouse[SelectedWarehouse].Code);
             db.SetConfig<string>("CodesWarehouses", Warehouses.Where(el => el.IsChecked == true).Select(el=>el.CodeWarehouse).ToList().ToJSON() );
