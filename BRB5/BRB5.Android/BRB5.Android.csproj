@@ -101,6 +101,7 @@
     <Compile Include="CustomEntryRenderer.cs" />
     <None Include="DB.cs" />
     <Compile Include="MainActivity.cs" />
+    <Compile Include="Native.cs" />
     <Compile Include="Resources\Resource.designer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <None Include="SQLite.cs" />

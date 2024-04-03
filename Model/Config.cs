@@ -69,5 +69,7 @@ namespace BRB5.Model
         //public static Warehouse LocationWarehouse = null;
         //static object Lock= new object();
         public static bool IsSoftKeyboard { get { return TypeScaner == eTypeScaner.Camera; } }
+
+        public static NativeBase NativeBase;
     }
 }

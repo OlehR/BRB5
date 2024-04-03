@@ -44,7 +44,7 @@ namespace BRB5.iOS
             // Отримання шляху до каталогу завантажень
             string documentsPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
             Config.PathDownloads = Path.Combine(documentsPath, "..", "Library", "Downloads");
-            
+            Config.NativeBase = new Native();
 
             return base.FinishedLaunching(app, options);
         }

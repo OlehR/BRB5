@@ -311,9 +311,17 @@ namespace BRB5
                 {
                     var ext = Path.GetExtension(photo.FileName);
                     var newFile = Path.Combine(dir, FileName + ext);
+                    byte[] imageData;
                     using (var stream = await photo.OpenReadAsync())
-                    using (var newStream = File.OpenWrite(newFile))
-                        await stream.CopyToAsync(newStream);
+                    {
+                        imageData = NativeBase.ReadFully(stream);
+                        byte[] resizedImage = Config.NativeBase.ResizeImage(imageData, 400);
+                        File.WriteAllBytes(newFile, resizedImage);
+
+                        //using (var newStream = File.OpenWrite(newFile))
+                        //    await stream.CopyToAsync(newStream);
+                    }                  
+
                     vQuestion.QuantityPhoto++;
                     Bl.db.ReplaceRaitingDocItem(vQuestion);
                 }

@@ -47,7 +47,7 @@ namespace BRB5.Droid
             Config.Manufacturer = DeviceInfo.Manufacturer;
             Config.Model = DeviceInfo.Model;
             Config.Company = db.GetConfig<eCompany>("Company");
-           
+            Config.NativeBase = new Native();
 
             FileLogger.PathLog = Path.Combine(Config.PathDownloads, "Log");            
             FileLogger.WriteLogMessage("Start", eTypeLog.Expanded);
