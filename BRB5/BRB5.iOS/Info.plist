@@ -46,9 +46,9 @@
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>App needs access to Location to find the nearest store</string>
 	<key>CFBundleShortVersionString</key>
-	<string>5.2.57</string>
+	<string>5.2.58</string>
 	<key>CFBundleVersion</key>
-	<string>57</string>
+	<string>58</string>
 	<key>XSAppIconAssets</key>
 	<string>Assets.xcassets/BRB5.appiconset</string>
 </dict>
