@@ -134,9 +134,10 @@ namespace BRB5
             MainThread.BeginInvokeOnMainThread(() =>
             {
                 Questions.Clear();
-                foreach (var el in All.Where(el => (el.IsHead || el.Parent == 9999999 || Choice == eTypeChoice.All ||//Заголовки Всього та Розгорнути                
-                (Choice == eTypeChoice.NoAnswer && (el.Rating == 0 || (el.Rating == 3 && (String.IsNullOrEmpty(el.Note) || el.QuantityPhoto == 0)))) //Без відповіді
-                //||(Choice != eTypeChoice.NoAnswer && el.ParrentRDI?.IsVisible == true && (el.ParrentRDI?.Rating != 4 || Choice == eTypeChoice.All)) //Показати неприховані                
+                foreach (var el in All.Where(el => (el.IsHead || el.Parent == 9999999 || // Заголовки Всього
+                Choice == eTypeChoice.All ||                                             // Розгорнути      
+                (Choice == eTypeChoice.NoAnswer && (el.Rating == 0 ||                    //Без відповіді  
+                (el.Rating == 3 && String.IsNullOrEmpty(el.Note) && el.QuantityPhoto == 0)))  //Без опису           
                 )))
                 {
                     Questions.Add(el);
