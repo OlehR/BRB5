@@ -11,17 +11,21 @@ namespace BRB5.Droid
         public override byte[] ResizeImage(byte[] imageData, float max, int compress = 90)
         {
             // Load the bitmap            
-            Bitmap originalImage = BitmapFactory.DecodeByteArray(imageData, 0, imageData.Length);
+            Bitmap resizedImage,originalImage = BitmapFactory.DecodeByteArray(imageData, 0, imageData.Length);
 
             int imageMax = Math.Max(originalImage.Width, originalImage.Height);
-            bool IsHeightMax = originalImage.Width < originalImage.Height;
-            var coef = max / imageMax;
+            if (max < imageMax)
+            {
+                bool IsHeightMax = originalImage.Width < originalImage.Height;
+                var coef = max / imageMax;
 
-            var height = (int)(IsHeightMax ? max : originalImage.Height * coef);
-            var width = (int)(!IsHeightMax ? max : originalImage.Width * coef);
+                var height = (int)(IsHeightMax ? max : originalImage.Height * coef);
+                var width = (int)(!IsHeightMax ? max : originalImage.Width * coef);
 
-            Bitmap resizedImage = Bitmap.CreateScaledBitmap(originalImage, width, height, false);
-
+                resizedImage = Bitmap.CreateScaledBitmap(originalImage, width, height, false);
+            }
+            else
+                resizedImage = originalImage;
             using (MemoryStream ms = new MemoryStream())
             {
                 resizedImage.Compress(Bitmap.CompressFormat.Jpeg, compress, ms);

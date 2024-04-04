@@ -86,11 +86,11 @@
                         SelectedIndex="{Binding SelectedPhotoQuality}"
                         HorizontalOptions="Fill" />
                 <StackLayout Orientation="Horizontal"  >
-                    <Label Text="Стискання" />
-                    <Frame Style="{StaticResource FrameStyle}">
-                        <controls:CustomEntry Style="{StaticResource EntryStyle}"
+                    <Label Text="Стискання(відсотки)" />
+                    <Frame Style="{StaticResource FrameStyle}" WidthRequest="50">
+                        <controls:CustomEntry Style="{StaticResource EntryStyle}" Keyboard="Numeric"
                           effects:KeyboardEffect.EnableKeyboard="{Binding IsSoftKeyboard}"
-                          Text="{Binding }">
+                          Text="{Binding Compress}">
                             <controls:CustomEntry.Effects>
                                 <effects:KeyboardEnableEffect/>
                             </controls:CustomEntry.Effects>

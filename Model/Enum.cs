@@ -96,7 +96,17 @@ namespace BRB5
                 descriptionAttribute == null
                     ? value.ToString()
                     : descriptionAttribute.Description;
-        }        
+        }
+        public static int GetValue(this ePhotoQuality pPQ)
+        {
+            return pPQ switch
+            {
+                ePhotoQuality.Original => 4032,
+                ePhotoQuality.High => 2016,
+                ePhotoQuality.Medium => 1008,
+                _ => 0,
+            };
+        }
     }
 
 

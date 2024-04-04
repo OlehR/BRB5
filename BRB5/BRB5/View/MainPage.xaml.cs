@@ -167,6 +167,8 @@ namespace BRB5
             Config.CodeWarehouse = db.GetConfig<int>("CodeWarehouse");
             Config.TypeUsePrinter = db.GetConfig<eTypeUsePrinter>("TypeUsePrinter");
             Config.PhotoQuality = db.GetConfig<ePhotoQuality>("PhotoQuality");
+            Config.Compress = db.GetConfig<int>("Compress");
+            Config.Compress = Config.Compress == 0 ? 80 : Config.Compress;
             var tempstr = db.GetConfig<string>("CodesWarehouses");
             if (!string.IsNullOrEmpty(tempstr)) Config.CodesWarehouses = JsonConvert.DeserializeObject<List<int>>(tempstr);
             FileLogger.TypeLog = db.GetConfig<eTypeLog>("TypeLog");

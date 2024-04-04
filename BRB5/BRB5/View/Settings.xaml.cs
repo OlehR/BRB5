@@ -69,7 +69,7 @@ namespace BRB5.View
 
         public int SelectedWarehouse { get { return ListWarehouse?.FindIndex(x => x.Code == Config.CodeWarehouse)??0 ; } set { Config.CodeWarehouse = ListWarehouse[value].Code; } }
 
-        public int SelectedCompany { get { return ListCompany.FindIndex(x => x == Enum.GetName(typeof(eCompany),Config.Company)); } set { Config.Company = (eCompany)value; OnPropertyChanged("IsVisApi3"); } }
+        public int SelectedCompany { get { return ListCompany.FindIndex(x => x == Enum.GetName(typeof(eCompany),Config.Company)); } set { Config.Company = (eCompany)value; OnPropertyChanged(nameof(IsVisApi3)); } }
         public int SelectedTypePrinter { get { return Enum.GetNames(typeof(eTypeUsePrinter)).ToList().FindIndex(x => x == Enum.GetName(typeof(eTypeUsePrinter), Config.TypeUsePrinter)); } set { Config.TypeUsePrinter = (eTypeUsePrinter)value; } }
         public int SelectedTypeLog { get { return ListTypeLog.FindIndex(x => x == Enum.GetName(typeof(eTypeLog), FileLogger.TypeLog)); } set { FileLogger.TypeLog = (eTypeLog)value; } }
         public int SelectedPhotoQuality { get { return Enum.GetNames(typeof(ePhotoQuality)).ToList().FindIndex(x => x == Enum.GetName(typeof(ePhotoQuality), Config.PhotoQuality)); } set { Config.PhotoQuality = (ePhotoQuality)value; } }
@@ -83,9 +83,10 @@ namespace BRB5.View
         public bool IsTest { get { return Config.IsTest; } set { Config.IsTest = value; } }
         public bool IsFilterSave { get { return Config.IsFilterSave; } set { Config.IsFilterSave = value; } }
 
-        public string ApiUrl1 { get { return Config.ApiUrl1; } set { Config.ApiUrl1 = value; OnPropertyChanged("ApiUrl1"); } }
-        public string ApiUrl2 { get { return Config.ApiUrl2; } set { Config.ApiUrl2 = value; OnPropertyChanged("ApiUrl2"); } }
-        public string ApiUrl3 { get { return Config.ApiUrl3; } set { Config.ApiUrl3 = value; OnPropertyChanged("ApiUrl3"); } }
+        public string ApiUrl1 { get { return Config.ApiUrl1; } set { Config.ApiUrl1 = value; OnPropertyChanged(nameof(ApiUrl1)); } }
+        public string ApiUrl2 { get { return Config.ApiUrl2; } set { Config.ApiUrl2 = value; OnPropertyChanged(nameof(ApiUrl2)); } }
+        public string ApiUrl3 { get { return Config.ApiUrl3; } set { Config.ApiUrl3 = value; OnPropertyChanged(nameof(ApiUrl3)); } }
+        public int Compress { get { return Config.Compress; } set { Config.Compress = value; OnPropertyChanged(nameof(Compress)); } }
         public ObservableCollection<Warehouse> Warehouses { get; set; }
 
         public Settings()
@@ -167,6 +168,7 @@ namespace BRB5.View
             db.SetConfig<string>("ApiUrl1", ApiUrl1 ?? "");
             db.SetConfig<string>("ApiUrl2", ApiUrl2 ?? "");
             db.SetConfig<string>("ApiUrl3", ApiUrl3 ?? "");
+            db.SetConfig<int>("Compress", Compress);
 
             db.SetConfig<eCompany>("Company", (eCompany)SelectedCompany);
             db.SetConfig<eTypeLog>("TypeLog", (eTypeLog)SelectedTypeLog);

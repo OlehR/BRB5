@@ -16,34 +16,39 @@ namespace BRB5.iOS
         public override byte[] ResizeImage(byte[] imageData, float width, int compress = 90)
         {
             float height = width;
-            UIImage originalImage = ImageFromByteArray(imageData);
+            UIImage resizedImage, originalImage = ImageFromByteArray(imageData);
 
             var originalHeight = originalImage.Size.Height;
             var originalWidth = originalImage.Size.Width;
 
-            nfloat newHeight = 0;
-            nfloat newWidth = 0;
 
-            if (originalHeight > originalWidth)
+            if (width < originalHeight && width < originalWidth)
             {
-                newHeight = height;
-                nfloat ratio = originalHeight / height;
-                newWidth = originalWidth / ratio;
+                nfloat newHeight = 0;
+                nfloat newWidth = 0;
+                if (originalHeight > originalWidth)
+                {
+                    newHeight = height;
+                    nfloat ratio = originalHeight / height;
+                    newWidth = originalWidth / ratio;
+                }
+                else
+                {
+                    newWidth = width;
+                    nfloat ratio = originalWidth / width;
+                    newHeight = originalHeight / ratio;
+                }
+
+                width = (float)newWidth;
+                height = (float)newHeight;
+
+                UIGraphics.BeginImageContext(new SizeF(width, height));
+                originalImage.Draw(new RectangleF(0, 0, width, height));
+                resizedImage = UIGraphics.GetImageFromCurrentImageContext();
+                UIGraphics.EndImageContext();
             }
             else
-            {
-                newWidth = width;
-                nfloat ratio = originalWidth / width;
-                newHeight = originalHeight / ratio;
-            }
-
-            width = (float)newWidth;
-            height = (float)newHeight;
-
-            UIGraphics.BeginImageContext(new SizeF(width, height));
-            originalImage.Draw(new RectangleF(0, 0, width, height));
-            var resizedImage = UIGraphics.GetImageFromCurrentImageContext();
-            UIGraphics.EndImageContext();
+                resizedImage = originalImage;
 
             var bytesImagen = resizedImage.AsJPEG(compress).ToArray();
             resizedImage.Dispose();
