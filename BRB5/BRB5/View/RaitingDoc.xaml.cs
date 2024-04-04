@@ -51,7 +51,7 @@ namespace BRB5
                 await c.LoadDocsDataAsync(TypeDoc.CodeDoc, null, false);
                 _ = c.GetRaitingTemplateAsync();
                 r = db.GetDoc(TypeDoc).OrderByDescending(el => el.NumberDoc);
-                
+                ViewDoc(r);
             });
         }
 
