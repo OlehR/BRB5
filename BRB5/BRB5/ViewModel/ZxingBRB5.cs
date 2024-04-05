@@ -35,6 +35,7 @@ namespace BRB5.ViewModel
                     },
                 UseNativeScanning = true,
                 TryUseUltraWideCamera =true,
+                DelayBetweenContinuousScans=2000
             };
             pZxing.OnScanResult += (result) =>
                 Device.BeginInvokeOnMainThread(async () =>
