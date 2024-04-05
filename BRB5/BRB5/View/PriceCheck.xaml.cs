@@ -8,6 +8,7 @@ using Xamarin.Essentials;
 using BRB5.View;
 using BRB5.ViewModel;
 using BL;
+using Utils;
 
 //using BRB5.Connector;
 namespace BRB5
@@ -34,7 +35,6 @@ namespace BRB5
         double _PB = 0;
         public double PB { get { return _PB; } set { _PB = value; OnPropertyChanged("PB"); } }
 
-        WaresPrice CheckWP;
         WaresPrice _WP;
         public WaresPrice WP { get { return _WP; } set { _WP = value; OnPropertyChanged("WP"); OnPropertyChanged("TextColorPrice");
                 OnPropertyChanged("IsVisPriceOpt"); OnPropertyChanged(nameof(IsVisPriceNormal)); OnPropertyChanged("TextColorHttp"); } }
@@ -68,19 +68,19 @@ namespace BRB5
         public string F5Text { get { return IsMultyLabel ? "Дубл." : "Унік."; } }
         public bool IsVisScan { get { return Config.TypeScaner == eTypeScaner.Camera; } }
         private string CurrentEntry = "BarcodeEntry";
-
-        // 0 - нічого , 1 - сканований цінник, 2 - сканований товар, 3 - штрихкод товату не підходить, 4 - цінник не підходить
-        private int _IsWareScaned = 0;
-        public int IsWareScaned { get { return _IsWareScaned; } set { _IsWareScaned = value; OnPropertyChanged(nameof(ColorDoubleScan)); OnPropertyChanged(nameof(IsWareScaned)); OnPropertyChanged(nameof(ButtonDoubleScan)); } }
+        /// <summary>
+        /// 0 - нічого , 1 - сканований цінник, 2 - сканований товар, 3 - штрихкод товату не підходить, 4 - цінник не підходить, 5 - успішно
+        /// </summary>
+        private eCheckWareScaned _IsWareScaned = eCheckWareScaned.Nothing;
+        public eCheckWareScaned IsWareScaned { get { return _IsWareScaned; } set { _IsWareScaned = value; OnPropertyChanged(nameof(ColorDoubleScan)); OnPropertyChanged(nameof(IsWareScaned)); OnPropertyChanged(nameof(ButtonDoubleScan)); } }
         public bool IsVisDoubleScan { get; set; }
         public bool IsVisBarcode { get { return !IsVisDoubleScan; } }
         private string _MessageDoubleScan;
         public string MessageDoubleScan {  get { return _MessageDoubleScan; } set { _MessageDoubleScan = value; OnPropertyChanged(nameof(MessageDoubleScan)); } }
-        public string ButtonDoubleScan { get { return IsWareScaned == 0 || IsWareScaned == 2 || IsWareScaned == 4 ? "Відсутній ціник" : "Відсутній товар"; } }
-        public string ColorDoubleScan { get { return IsWareScaned == 3 || IsWareScaned==4 ? "#FFC4C4" : IsWareScaned == 1 || IsWareScaned == 2 ? "#FEFFC4" : "#FFFFFF"; } }
-
-        ParseBarCode CheckPBC;
-        ParseBarCode PBC;
+        public string ButtonDoubleScan { get { return IsWareScaned == eCheckWareScaned.Nothing || IsWareScaned == eCheckWareScaned.Success ? "" :  IsWareScaned == eCheckWareScaned.WareScaned || IsWareScaned == eCheckWareScaned.PriceTagNotFit ? "Відсутній ціник" : "Відсутній товар"; } }
+        public string ColorDoubleScan { get { return IsWareScaned == eCheckWareScaned.Success ? "#C5FFC4" : IsWareScaned == eCheckWareScaned.WareNotFit || IsWareScaned== eCheckWareScaned.PriceTagNotFit ? "#FFC4C4" : 
+                                                     IsWareScaned == eCheckWareScaned.PriceTagScaned || IsWareScaned == eCheckWareScaned.WareScaned ? "#FEFFC4" : "#FFFFFF"; } }
+        
         public PriceCheck(TypeDoc pTypeDoc)
         {
             InitializeComponent();            
@@ -111,20 +111,15 @@ namespace BRB5
         {
             LineNumber++;
             Config.OnProgress?.Invoke(0.2d);
-
-            if (IsVisDoubleScan)
-            {
-                (CheckWP, CheckPBC) = bl.FoundWares(pBarCode, PackageNumber, LineNumber, pIsHandInput, IsOnline);
-                SearchDoubleScan();
-            }
-            else
-                (WP, PBC) = bl.FoundWares(pBarCode, PackageNumber, LineNumber, pIsHandInput, IsOnline);
+            
+            (WP, MessageDoubleScan) = bl.FoundWares(pBarCode, PackageNumber, LineNumber, pIsHandInput, IsVisDoubleScan, IsOnline);
 
             if (WP != null)
             {
                 AllScan++;
                 if (!WP.IsPriceOk)
                     BadScan++;
+                IsWareScaned = WP.StateDoubleScan;
             }
             var duration = TimeSpan.FromMilliseconds(WP?.IsPriceOk == true ? 50 : 250);
             Vibration.Vibrate(duration);
@@ -278,96 +273,20 @@ namespace BRB5
 
         private void DoubleScanReact(object sender, EventArgs e)
         {
-            WP = null;
-            PBC = null;
-        }
 
-        private void SearchDoubleScan()
-        {
-            if (WP == null)
+            if(IsWareScaned==eCheckWareScaned.PriceTagScaned|| IsWareScaned == eCheckWareScaned.WareNotFit)//Відсутній товар
             {
-                WP = CheckWP;
-                PBC = CheckPBC;
-                if(PBC.BarCode == null)
-                {
-                    MessageDoubleScan = "Скануйте товар";
-                    IsWareScaned = 1;
-                }
-                else
-                {
-                    MessageDoubleScan = "Скануйте цінник";
-                    IsWareScaned = 2;
-                }
+                bl.SaveDoubleScan(102, WP, PackageNumber, LineNumber);
+                WP = null;
+                IsWareScaned = eCheckWareScaned.Nothing;
+                MessageDoubleScan = "Скануйте цінник чи товар";
             }
-            else
+            else if (IsWareScaned == eCheckWareScaned.WareScaned || IsWareScaned == eCheckWareScaned.PriceTagNotFit)//Відсутній ціник
             {
-                if (IsWareScaned != 0)
-                {
-                    if (PBC.BarCode == null)//поточний цінник
-                    {
-                        if (CheckPBC.BarCode == null)
-                        {
-                            MessageDoubleScan = "Скануйте товар";
-                            IsWareScaned = 3;
-                        }
-                        else
-                        {
-                            if (WP.CodeWares == CheckWP.CodeWares)
-                            {
-                                MessageDoubleScan = "Скануйте цінник чи товар";
-                                IsWareScaned = 0;
-
-                                WP = CheckWP;
-                                PBC = CheckPBC;
-                            }
-                            else
-                            {
-                                MessageDoubleScan = " Товар не підходить. \n Скануйте товар";
-                                IsWareScaned = 3;
-                            }
-                        }
-                    }
-                    else// поточний товар
-                    {
-                        if (CheckPBC.BarCode == null)
-                        {
-                            if (WP.CodeWares == CheckWP.CodeWares)
-                            {
-                                MessageDoubleScan = "Скануйте цінник чи товар";
-                                IsWareScaned = 0;
-
-                                WP = CheckWP;
-                                PBC = CheckPBC;
-                            }
-                            else
-                            {
-                                MessageDoubleScan = " Цінник не підходить. \n Скануйте цінник";
-                                IsWareScaned = 4;
-                            }
-                        }
-                        else
-                        {
-                            MessageDoubleScan = "Скануйте цінник";
-                            IsWareScaned = 4;
-                        }
-                    }
-                }
-                else
-                {
-                    WP = CheckWP;
-                    PBC = CheckPBC;
-                    if (PBC.BarCode == null)
-                    {
-                        MessageDoubleScan = "Скануйте товар";
-                        IsWareScaned = 1;
-                    }
-                    else
-                    {
-                        MessageDoubleScan = "Скануйте цінник";
-                        IsWareScaned = 2;
-                    }
-                }
-                
+                bl.SaveDoubleScan(101, WP, PackageNumber, LineNumber);
+                WP = null;
+                IsWareScaned = eCheckWareScaned.Nothing;
+                MessageDoubleScan = "Скануйте цінник чи товар";
             }
 
         }

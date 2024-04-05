@@ -345,4 +345,14 @@ namespace BRB5
         [Description("Середня")]
         Medium
     }
+
+    public enum eCheckWareScaned
+    {
+        Nothing = 0,
+        PriceTagScaned = 1,
+        WareScaned = 2,
+        WareNotFit = 3,
+        PriceTagNotFit = 4,
+        Success = 5,
+    }
 }
