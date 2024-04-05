@@ -91,6 +91,7 @@ namespace BRB5.Model
         public eTermsForIlliquidWare TermsForIlliquidWare { get; set; }
         //Залишок по складу браку
         public IEnumerable<RestWarehouse> RestWarehouse { get; set; }
+        public eCheckWareScaned StateDoubleScan { get; set; }
     }
     public class RestWarehouse
     {
