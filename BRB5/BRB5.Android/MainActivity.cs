@@ -26,14 +26,14 @@ namespace BRB5.Droid
     [Activity(Label = "BRB5", Icon = "@mipmap/icon", Theme = "@style/MainTheme", MainLauncher = true, ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation | ConfigChanges.UiMode | ConfigChanges.ScreenLayout | ConfigChanges.SmallestScreenSize)]
     public class MainActivity : global::Xamarin.Forms.Platform.Android.FormsAppCompatActivity
     {
-        //MyBroadcastReceiver BR;       
+        MyBroadcastReceiver BR;       
         //public static string SerialNumber = "None";
         protected override void OnCreate(Bundle savedInstanceState)
         {
             
             AppCompatDelegate.DefaultNightMode = AppCompatDelegate.ModeNightNo;
             base.OnCreate(savedInstanceState);
-            //BR = new MyBroadcastReceiver();
+           
             global::Xamarin.Forms.Forms.Init(this, savedInstanceState);
 
             Thread.CurrentThread.CurrentCulture = CultureInfo.InvariantCulture;
@@ -77,7 +77,9 @@ namespace BRB5.Droid
             global::ZXing.Net.Mobile.Forms.Android.Platform.Init();
             FFImageLoading.Forms.Platform.CachedImageRenderer.Init(enableFastRenderer: true );
             Xamarin.KeyboardHelper.Platform.Droid.Effects.Init(this);
-
+            Config.TypeScaner = App.GetTypeScaner();
+            if(Config.TypeScaner==eTypeScaner.PM351)
+                BR = new MyBroadcastReceiver();
             LoadApplication(new App());
         }
 
@@ -85,7 +87,8 @@ namespace BRB5.Droid
         {
             base.OnResume();
             //if(Config.TypeScaner!=eTypeScaner.Camera && Config.TypeScaner != eTypeScaner.NotDefine )
-            //RegisterReceiver(BR, new IntentFilter(MyBroadcastReceiver.IntentEvent));
+            if(BR!=null)
+            RegisterReceiver(BR, new IntentFilter(MyBroadcastReceiver.IntentEvent));
             // Code omitted for clarity
         }
 

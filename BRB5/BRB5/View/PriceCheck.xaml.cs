@@ -172,11 +172,11 @@ namespace BRB5
                 MessagingCenter.Unsubscribe<KeyEventMessage>(this, "BackPressed");
                 MessagingCenter.Unsubscribe<KeyEventMessage>(this, "EnterPressed");
             }
+            bl.SendLogPrice();
         }
 
         public void Dispose()
-        {
-            bl.SendLogPrice();
+        {           
             Config.BarCode -= BarCode;
         }
         

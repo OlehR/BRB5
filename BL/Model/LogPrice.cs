@@ -55,7 +55,7 @@ namespace BRB5.Model
         }
         public object[] GetPSU()
         {
-            object[] arr = { BarCode, Status, DTInsert, PackageNumber, CodeWares };
+            object[] arr = { BarCode, Status,DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") /*TMP!!!! DTInsert*/, PackageNumber, CodeWares };
             return arr;
         }
 
