@@ -664,18 +664,19 @@ and bc.BarCode=?
             return db.Query<User>(sql)?.First();
         }
 
-        public void InsLogPrice(LogPrice pLP)// String pBarCode, Integer pStatus, Integer pActionType, Integer pPackageNumber, Integer pCodeWarees, String pArticle, Integer pLineNumber)
+        public void InsLogPrice(LogPrice pLP)
         {
-            string Sql = @" insert into LogPrice ( BarCode, Status,  ActionType, PackageNumber, CodeWares, LineNumber, Article) 
-                                          values (@BarCode,@Status, @ActionType,@PackageNumber,@CodeWares,@LineNumber,@Article)";
-            try
+            string Sql = $@"insert into LogPrice ( BarCode, Status,  ActionType, PackageNumber, CodeWares, LineNumber, Article) 
+                                          values ({pLP.BarCode},{pLP.Status}, {pLP.ActionType},{pLP.PackageNumber},{pLP.CodeWares},{pLP.LineNumber},{pLP.Article})";
+            db.Execute(Sql);
+           /* try
             {
                 db.Insert( pLP);
             }
             catch (Exception e)
             {
                 // Utils.WriteLog("e", TAG, "InsLogPrice >>" + e.toString());
-            }
+            }*/
         }
 
         /// <summary>

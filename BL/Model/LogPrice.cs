@@ -14,8 +14,7 @@ namespace BRB5.Model
         /// 100 - Ок Подвійне скануванн,101-Відсутній цінник,102 -відсутній товар
         /// -999 -Ofline,-9 - Проблема,
         /// </summary>
-        public int Status { get; set; }
-        [Ignore]
+        public int Status { get; set; }        
         public DateTime DTInsert { get; set; }
         [Ignore]
         public int IsSend { get; set; }
@@ -55,7 +54,7 @@ namespace BRB5.Model
         }
         public object[] GetPSU()
         {
-            object[] arr = { BarCode, Status,DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") /*TMP!!!! DTInsert*/, PackageNumber, CodeWares };
+            object[] arr = { BarCode, Status, DTInsert, PackageNumber, CodeWares };//DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") TMP!!!!
             return arr;
         }
 
