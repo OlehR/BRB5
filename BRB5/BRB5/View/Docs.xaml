@@ -121,7 +121,7 @@
                       ItemTemplate="{StaticResource alternateColorDataTemplateSelector}">
             </ListView>
 
-            <StackLayout VerticalOptions="EndAndExpand" Orientation="Horizontal">
+            <StackLayout VerticalOptions="EndAndExpand" Orientation="Horizontal" Spacing="1">
                 <Label Text="F1-"
                        IsVisible="{Binding IsViewOut}"
                        FontSize="16"

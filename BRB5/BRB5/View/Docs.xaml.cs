@@ -20,7 +20,7 @@ namespace BRB5.View
         public bool IsVisZKPO { get { return _IsVisZKPO; } set { _IsVisZKPO = value; OnPropertyChanged(nameof(IsVisZKPO)); OnPropertyChanged(nameof(F1Text)); } }
         string _ZKPOstr = "";
         public string ZKPOstr { get { return _ZKPOstr; } set { _ZKPOstr = value; OnPropertyChanged(nameof(ZKPOstr)); } }
-        public string F1Text { get { return IsVisZKPO ? "Без фільтра" : "ЗКПО"; } }
+        public string F1Text { get { return IsVisZKPO ? "Без ф-тра" : "ЗКПО"; } }
         bool _IsVisBarCode = false;
         public bool IsVisBarCode { get { return _IsVisBarCode; } set { _IsVisBarCode = value; OnPropertyChanged(nameof(IsVisBarCode)); } }
         public bool IsViewOut { get { return TypeDoc.IsViewOut; } }
