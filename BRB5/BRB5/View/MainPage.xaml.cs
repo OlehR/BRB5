@@ -142,6 +142,15 @@ namespace BRB5
                 case eKindDoc.PlanCheck:
                     await Navigation.PushAsync(new PlanCheckPrice());
                     break;
+
+                case eKindDoc.NotDefined:
+                    MainThread.BeginInvokeOnMainThread(() =>
+                    {
+                        OCTypeDoc?.Clear();
+                        Config.TypeDoc = c.GetTypeDoc(Config.Role, Config.LoginServer, vTypeDoc.Group);
+                        foreach (var i in Config.TypeDoc) OCTypeDoc.Add(i);
+                    });
+                    break;
                 default:
                     break;
             }

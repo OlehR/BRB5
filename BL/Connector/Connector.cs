@@ -112,7 +112,7 @@ namespace BL.Connector
         /// </summary>
         /// <param name="pRole"></param>
         /// <returns></returns>
-        public virtual IEnumerable<TypeDoc> GetTypeDoc(eRole pRole, eLoginServer pLS) { throw new NotImplementedException(); }
+        public virtual IEnumerable<TypeDoc> GetTypeDoc(eRole pRole, eLoginServer pLS, eGroup pGroup = eGroup.NotDefined) { throw new NotImplementedException(); }
 
         public virtual IEnumerable<Warehouse> LoadWarehouse() { throw new NotImplementedException(); }
 

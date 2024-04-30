@@ -35,7 +35,7 @@ namespace BL.Connector
         /// </summary>
         /// <param name="pRole"></param>
         /// <returns></returns>
-        public override IEnumerable<TypeDoc> GetTypeDoc(eRole pRole, eLoginServer pLS)
+        public override IEnumerable<TypeDoc> GetTypeDoc(eRole pRole, eLoginServer pLS, eGroup pGroup = eGroup.NotDefined)
         {
             var Res = new List<TypeDoc>();
             if (pLS == eLoginServer.Local)

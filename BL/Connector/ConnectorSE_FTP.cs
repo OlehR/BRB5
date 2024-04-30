@@ -30,7 +30,7 @@ namespace BL.Connector
         /// </summary>
         /// <param name="pRole"></param>
         /// <returns></returns>
-        public override IEnumerable<TypeDoc> GetTypeDoc(eRole pRole, eLoginServer pLS)
+        public override IEnumerable<TypeDoc> GetTypeDoc(eRole pRole, eLoginServer pLS, eGroup pGroup = eGroup.NotDefined)
         {
             var Res = new List<TypeDoc>()
             {    new TypeDoc() { CodeDoc = 11, KindDoc = eKindDoc.RaitingDoc, NameDoc = "Опитування" }, };
