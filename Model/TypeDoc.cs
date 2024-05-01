@@ -6,6 +6,7 @@ namespace BRB5
 {
     public enum eKindDoc {Normal,Simple, PriceCheck, RaitingDoc, RaitingTempate, RaitingTemplateCreate, PlanCheck, NotDefined }
     public enum eGroup { NotDefined, Price,Doc,Raiting, FixedAssets }
+    public enum eTypeReplenishment {None/*Відсутне*/,Input /*Вручну*/,Auto /* Проставляємо 1*/ }
     public class TypeDoc
     {
         public eGroup Group {  get; set; }
@@ -69,6 +70,7 @@ namespace BRB5
         public int CodeApi = 0;
         public bool IsCreateNewDoc = false;
         //public bool IsViewOPKO = false;
+        public eTypeReplenishment TypeReplenishment = eTypeReplenishment.None;
 
     }
 }
