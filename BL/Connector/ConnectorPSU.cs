@@ -187,7 +187,6 @@ namespace BL.Connector
                 },
                 eGroup.Price => new List<TypeDoc>()
                 {
-                    new TypeDoc() { Group= eGroup.NotDefined, CodeDoc = 100, NameDoc = "Назад" , KindDoc = eKindDoc.NotDefined},
                     new TypeDoc() { Group= eGroup.Price, CodeDoc = 0, NameDoc = "Прайсчекер" , KindDoc = eKindDoc.PriceCheck},
                     new TypeDoc() { Group= eGroup.Price, CodeDoc = 15, NameDoc = "Подвійний сканер" , KindDoc = eKindDoc.PriceCheck},
                     new TypeDoc() {Group = eGroup.Price,  CodeDoc = 13, NameDoc = "Перевірка Акцій", KindDoc = eKindDoc.PlanCheck },
@@ -196,7 +195,6 @@ namespace BL.Connector
                 },
                 eGroup.Raiting => new List<TypeDoc>()
                 {
-                    new TypeDoc() { Group= eGroup.NotDefined, CodeDoc = 100, NameDoc = "Назад" , KindDoc = eKindDoc.NotDefined},
                     new TypeDoc() { Group= eGroup.Raiting, CodeDoc = 11, NameDoc = "Опитування", KindDoc = eKindDoc.RaitingDoc, DayBefore = 4 },
                     new TypeDoc() { Group= eGroup.Raiting, CodeDoc = -1, NameDoc = "Шаблони Опитування", KindDoc = eKindDoc.RaitingTempate },
                     new TypeDoc() { Group= eGroup.Raiting, CodeDoc = 12, NameDoc = "Керування Опитуваннями", KindDoc = eKindDoc.RaitingTemplateCreate },
@@ -204,7 +202,6 @@ namespace BL.Connector
                 },
                 eGroup.Doc => new List<TypeDoc>()
                 {
-                    new TypeDoc() { Group= eGroup.NotDefined, CodeDoc = 100, NameDoc = "Назад" , KindDoc = eKindDoc.NotDefined},
                     new TypeDoc() { Group= eGroup.Doc, CodeDoc =  1, NameDoc = "Ревізія", TypeControlQuantity = eTypeControlDoc.Ask, IsSaveOnlyScan=false, KindDoc = eKindDoc.Normal },
                     new TypeDoc() { Group= eGroup.Doc, CodeDoc =  2, NameDoc = "Прихід", TypeControlQuantity = eTypeControlDoc.Ask, IsViewOut=true, KindDoc = eKindDoc.Normal },
                     new TypeDoc() { Group= eGroup.Doc, CodeDoc =  3, NameDoc = "Переміщення Вих", TypeControlQuantity=eTypeControlDoc.NoControl, KindDoc = eKindDoc.Normal },
@@ -215,7 +212,6 @@ namespace BL.Connector
                 },
                 eGroup.FixedAssets => new List<TypeDoc>()
                 {
-                    new TypeDoc() { Group= eGroup.NotDefined, CodeDoc = 100, NameDoc = "Назад" , KindDoc = eKindDoc.NotDefined},
                     new TypeDoc() { Group= eGroup.FixedAssets, CodeDoc =  7, NameDoc = "Ревізія ОЗ", TypeControlQuantity=eTypeControlDoc.Ask, IsSimpleDoc=true, KindDoc = eKindDoc.Normal,CodeApi=1,IsCreateNewDoc=true },
                 },
 

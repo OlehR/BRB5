@@ -28,6 +28,8 @@ namespace BRB5
 
         public int SelectedLS { get { return LS == null || LS.Count() == 1 ? 0 : LS.ToList().FindIndex(x => x.Code == Config.LoginServer); } set { Config.LoginServer = LS.ToList()[value].Code; } }
         public bool IsVisLS { get; set; } = true;
+        private bool _IsVisibleBack = false;
+        public bool IsVisibleBack { get { return _IsVisibleBack; } set { _IsVisibleBack = value; OnPropertyChanged(nameof(IsVisibleBack)); } }
         public string Ver { get { return"BRB5 (" + AppInfo.VersionString + ")"; } }
         public string Company { get { return Enum.GetName(typeof(eCompany), Config.Company); } }
         public bool IsSoftKeyboard { get { return Config.IsSoftKeyboard; } }
@@ -142,13 +144,13 @@ namespace BRB5
                 case eKindDoc.PlanCheck:
                     await Navigation.PushAsync(new PlanCheckPrice());
                     break;
-
                 case eKindDoc.NotDefined:
                     MainThread.BeginInvokeOnMainThread(() =>
                     {
                         OCTypeDoc?.Clear();
                         Config.TypeDoc = c.GetTypeDoc(Config.Role, Config.LoginServer, vTypeDoc.Group);
                         foreach (var i in Config.TypeDoc) OCTypeDoc.Add(i);
+                        IsVisibleBack = true;
                     });
                     break;
                 default:
@@ -215,6 +217,17 @@ namespace BRB5
         {
             ListDocs.IsVisible = false;
             SLLogin.IsVisible = true;
+        }
+
+        private void BackToMainList(object sender, EventArgs e)
+        {
+            MainThread.BeginInvokeOnMainThread(() =>
+            {
+                IsVisibleBack = false;
+                OCTypeDoc?.Clear();
+                Config.TypeDoc = c.GetTypeDoc(Config.Role, Config.LoginServer);
+                foreach (var i in Config.TypeDoc) OCTypeDoc.Add(i);
+            });
         }
     }
 }
