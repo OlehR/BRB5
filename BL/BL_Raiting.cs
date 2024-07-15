@@ -209,5 +209,39 @@ namespace BL
 
             return new ObservableCollection<RaitingTemplateItem>(res);
         }
+
+        private void DragDropHead(RaitingTemplateItem Droped, ObservableCollection<RaitingTemplateItem> RS, bool ShowDeleted, RaitingTemplateItem Draged)
+        {
+            if (Droped.IsItem)
+            {
+                var temp = RS.Where(rs => rs.Parent == Droped.Id).FirstOrDefault();
+                if (temp != null) Droped = temp;
+            }
+
+            foreach (var el in RS.Where(rs => rs.Parent == 0 && rs.OrderRS > Droped.OrderRS)) el.OrderRS += 1;
+
+            Draged.OrderRS = Droped.OrderRS + 1;
+            RS = SortRS(RS, ShowDeleted);
+        }
+        private void DragDropItem(RaitingTemplateItem Droped, ObservableCollection<RaitingTemplateItem> RS, bool ShowDeleted, RaitingTemplateItem Draged)
+        {
+            var dropedIndex = RS.IndexOf(Droped);
+
+            if (Droped.IsHead) Draged.Parent = Droped.Id;
+            else Draged.Parent = Droped.Parent;
+
+            List<RaitingTemplateItem> temp = new List<RaitingTemplateItem>(RS);
+            temp.Remove(Draged);
+            temp.Insert(dropedIndex, Draged);
+            int i = 1;
+            foreach (RaitingTemplateItem r in temp)
+            {
+                r.OrderRS = i;
+                i++;
+            }
+            RS.Clear();
+            RS = new ObservableCollection<RaitingTemplateItem>(temp);
+
+        }
     }
 }
