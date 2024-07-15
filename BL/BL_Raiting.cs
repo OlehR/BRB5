@@ -195,5 +195,19 @@ namespace BL
                 return new ObservableCollection<RaitingTemplate>(db.GetRaitingTemplate());
             
         }
+
+        public ObservableCollection<RaitingTemplateItem> SortRS(IEnumerable<RaitingTemplateItem> temp, bool ShowDeleted)
+        {
+            var res = new List<RaitingTemplateItem>();
+
+            foreach (RaitingTemplateItem r in temp.Where(rs => rs.Parent == 0).OrderBy(el => el.OrderRS))
+            {
+                res.Add(r);
+                res.AddRange(temp.Where(rs => rs.Parent == r.Id).OrderBy(el => el.OrderRS));
+            }
+            if (!ShowDeleted) foreach (RaitingTemplateItem r in temp) r.IsVisible = !r.IsDelete;
+
+            return new ObservableCollection<RaitingTemplateItem>(res);
+        }
     }
 }

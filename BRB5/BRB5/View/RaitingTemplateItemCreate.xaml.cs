@@ -19,6 +19,7 @@ namespace BRB5.View
 
         RaitingTemplate RT;
         DB db = DB.GetDB();
+        BL.BL Bl = BL.BL.GetBL();
 
         public RaitingTemplateItemCreate(int pId)
         {
@@ -31,22 +32,9 @@ namespace BRB5.View
         protected override void OnAppearing()
         {
             base.OnAppearing();
-            RS = SortRS(db.GetRaitingTemplateItem(RT));
+            RS = Bl.SortRS(db.GetRaitingTemplateItem(RT),ShowDeleted);
         }
-        private ObservableCollection<RaitingTemplateItem> SortRS (IEnumerable<RaitingTemplateItem> temp)
-        {
-            var res = new List<RaitingTemplateItem>();
-
-            foreach (RaitingTemplateItem r in temp.Where(rs => rs.Parent == 0).OrderBy(el => el.OrderRS))
-            {
-                res.Add(r);
-                res.AddRange(temp.Where(rs => rs.Parent == r.Id).OrderBy(el => el.OrderRS));                
-            }
-            if (!ShowDeleted) foreach (RaitingTemplateItem r in temp)  r.IsVisible = !r.IsDelete;
-
-            return new ObservableCollection<RaitingTemplateItem>(res);
-        }
-
+        
 
         private void OnDrop(object sender, DropEventArgs e)
         {
@@ -75,7 +63,7 @@ namespace BRB5.View
             foreach (var el in RS.Where(rs => rs.Parent == 0 && rs.OrderRS > Droped.OrderRS)) el.OrderRS += 1;
 
             Draged.OrderRS = Droped.OrderRS + 1;
-            RS = SortRS(RS);
+            RS = Bl.SortRS(RS, ShowDeleted);
         }
         private void DragDropItem(RaitingTemplateItem Droped)
         {
@@ -174,7 +162,7 @@ namespace BRB5.View
                 vRaiting.DTDelete = default;
                 db.ReplaceRaitingTemplateItem(RS);
                 RS.Clear();
-                RS = SortRS(db.GetRaitingTemplateItem(RT));
+                RS = Bl.SortRS(db.GetRaitingTemplateItem(RT), ShowDeleted);
                 return;
             }
 
@@ -196,7 +184,7 @@ namespace BRB5.View
                 db.ReplaceRaitingTemplateItem(RS);
 
                 RS.Clear();
-                RS = SortRS(db.GetRaitingTemplateItem(RT));
+                RS = Bl.SortRS(db.GetRaitingTemplateItem(RT), ShowDeleted);
             }
         }
 
