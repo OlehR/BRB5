@@ -1,7 +1,9 @@
 ﻿using BRB5.Model;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using System.Timers;
 using Utils;
@@ -14,9 +16,9 @@ namespace BL
         Timer t;
         DocVM cDoc;
 
-        public void ChangeRaiting(RaitingDocItem vQuestion, string pButtonName,IEnumerable<RaitingDocItem> Questions)
+        public void ChangeRaiting(RaitingDocItem vQuestion, string pButtonName, IEnumerable<RaitingDocItem> Questions)
         {
-           
+
             var OldRating = vQuestion.Rating;
             switch (pButtonName)
             {
@@ -42,7 +44,7 @@ namespace BL
                 if (vQuestion.IsHead && vQuestion.Rating == 4)
                     foreach (var el in Questions.Where(d => d.Parent == vQuestion.Id))
                     {
-                        if(el.Rating==4)  el.Rating = 0;
+                        if (el.Rating == 4) el.Rating = 0;
                     }
 
                 vQuestion.Rating = 0;
@@ -101,17 +103,17 @@ namespace BL
             t.Elapsed += new ElapsedEventHandler(OnTimedEvent);
         }
         public void StartTimerRDI() => t?.Start();
-        
-        public void StopTimerRDI() => t?.Stop();        
+
+        public void StopTimerRDI() => t?.Stop();
 
         private void OnTimedEvent(Object source, ElapsedEventArgs e)
         {
             var task = Task.Run(() => Bl.c.SendRaitingFilesAsync(cDoc?.NumberDoc, 1, 2 * 60, 5 * 60));
         }
 
-        public void SaveRDI(DocVM pDoc,Action pAction)
+        public void SaveRDI(DocVM pDoc, Action pAction)
         {
-            Task.Run(async() =>
+            Task.Run(async () =>
             {
                 Result res;
                 try
@@ -128,7 +130,7 @@ namespace BL
                 catch (Exception ex)
                 {
                     FileLogger.WriteLogMessage(this, "SaveRDI", ex);
-                    res = new Result(ex); 
+                    res = new Result(ex);
                 }
                 finally
                 {
@@ -137,5 +139,47 @@ namespace BL
             }
             );
         }
+
+        public void ImportRT(RaitingTemplate vRaitingTemplate, string resultFullPath)
+        {
+
+            var B = File.ReadAllBytes(resultFullPath);
+
+            var cp1251 = Encoding.GetEncoding(1251);
+            var textBytes = Encoding.Convert(cp1251, Encoding.UTF8, B);
+            var text = Encoding.UTF8.GetString(textBytes);
+
+            var t = text.Split(new string[] { "\r\n" }, StringSplitOptions.None);
+            List<RaitingTemplateItem> RS = new List<RaitingTemplateItem>();
+
+            foreach (var v in t)
+            {
+                var p = v.Split(';');
+                if (p.Count() < 4)
+                    break;
+                var el = new RaitingTemplateItem();
+                int temp = 0;
+
+                Int32.TryParse(p[0], out temp);
+                el.Id = temp;
+
+                Int32.TryParse(p[1], out temp);
+                el.Parent = temp;
+
+                el.Text = p[3];
+                if (!String.IsNullOrEmpty(p[2])) el.ValueRating = Convert.ToDecimal(p[2]);
+
+                el.IdTemplate = vRaitingTemplate.IdTemplate;
+
+                el.IsEnableBad = true;
+                el.IsEnableSoSo = true;
+                el.IsEnableNotKnow = true;
+                el.IsEnableOk = true;
+                RS.Add(el);
+            }
+
+            var tdi = db.ReplaceRaitingTemplateItem(RS);
+        }
+
     }
 }

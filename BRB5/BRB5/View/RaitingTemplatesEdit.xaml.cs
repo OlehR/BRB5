@@ -19,6 +19,8 @@ namespace BRB5.View
         private ObservableCollection<RaitingTemplate> _RTemplate;
         public ObservableCollection<RaitingTemplate> RTemplate { get { return _RTemplate; } set { _RTemplate = value; OnPropertyChanged(nameof(RTemplate)); } }
 
+
+        BL.BL Bl = BL.BL.GetBL();
         DB db = DB.GetDB();
         Connector c;
         private bool ShowHidden = false;
@@ -76,6 +78,9 @@ namespace BRB5.View
             var result = await FilePicker.PickAsync(options);
             if (result != null) 
             {
+                Bl.ImportRT(vRaitingTemplate, result.FullPath);
+
+                /*
                 var B = File.ReadAllBytes(result.FullPath);
 
                 var cp1251 = Encoding.GetEncoding(1251);
@@ -112,6 +117,7 @@ namespace BRB5.View
                 }
 
                 var tdi = db.ReplaceRaitingTemplateItem(RS);
+                */
             }
         }
                 
