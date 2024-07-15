@@ -1,6 +1,8 @@
-﻿using BRB5.Model;
+﻿using BL.Connector;
+using BRB5.Model;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -140,7 +142,7 @@ namespace BL
             );
         }
 
-        public void ImportRT(RaitingTemplate vRaitingTemplate, string resultFullPath)
+        public void ImportExcelRT(RaitingTemplate vRaitingTemplate, string resultFullPath)
         {
 
             var B = File.ReadAllBytes(resultFullPath);
@@ -181,5 +183,17 @@ namespace BL
             var tdi = db.ReplaceRaitingTemplateItem(RS);
         }
 
+        public ObservableCollection<RaitingTemplate> DownloadRT(Result<IEnumerable<RaitingTemplate>> temp)
+        {
+          
+                db.ReplaceRaitingTemplate(temp.Info);
+                foreach (var el in temp.Info)
+                {
+                    if (el.Item.Any())
+                        db.ReplaceRaitingTemplateItem(el.Item);
+                }
+                return new ObservableCollection<RaitingTemplate>(db.GetRaitingTemplate());
+            
+        }
     }
 }

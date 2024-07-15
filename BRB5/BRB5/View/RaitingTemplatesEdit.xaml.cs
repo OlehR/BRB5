@@ -78,46 +78,8 @@ namespace BRB5.View
             var result = await FilePicker.PickAsync(options);
             if (result != null) 
             {
-                Bl.ImportRT(vRaitingTemplate, result.FullPath);
+                Bl.ImportExcelRT(vRaitingTemplate, result.FullPath);
 
-                /*
-                var B = File.ReadAllBytes(result.FullPath);
-
-                var cp1251 = Encoding.GetEncoding(1251);
-                var textBytes=Encoding.Convert(cp1251, Encoding.UTF8, B);
-                var text = Encoding.UTF8.GetString(textBytes);
-
-                var t = text.Split(new string[] { "\r\n" }, StringSplitOptions.None);
-                List<RaitingTemplateItem> RS = new List<RaitingTemplateItem>();
-                
-                foreach (var v in t)
-                {                   
-                    var p = v.Split(';');
-                    if (p.Count() < 4)
-                        break;
-                    var el = new RaitingTemplateItem();
-                    int temp = 0;
-
-                    Int32.TryParse(p[0], out temp);
-                    el.Id = temp;
-
-                    Int32.TryParse(p[1], out temp);
-                    el.Parent = temp;
-
-                    el.Text = p[3];
-                    if (!String.IsNullOrEmpty(p[2])) el.ValueRating = Convert.ToDecimal(p[2]);
-
-                    el.IdTemplate = vRaitingTemplate.IdTemplate;
-
-                    el.IsEnableBad = true;
-                    el.IsEnableSoSo = true;
-                    el.IsEnableNotKnow = true;
-                    el.IsEnableOk = true;
-                    RS.Add(el);                    
-                }
-
-                var tdi = db.ReplaceRaitingTemplateItem(RS);
-                */
             }
         }
                 
@@ -142,12 +104,7 @@ namespace BRB5.View
                     _ = DisplayAlert("Помилка", temp.TextError, "OK");
                 else
                 {
-                    db.ReplaceRaitingTemplate(temp.Info);
-                    foreach(var el in temp.Info) {
-                        if(el.Item.Any())
-                          db.ReplaceRaitingTemplateItem(el.Item);
-                    }
-                    RTemplate = new ObservableCollection<RaitingTemplate>(db.GetRaitingTemplate());
+                    RTemplate = Bl.DownloadRT(temp);
                 }
             }
         }
