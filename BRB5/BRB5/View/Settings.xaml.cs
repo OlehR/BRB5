@@ -46,6 +46,7 @@ namespace BRB5.View
 
         public List<string> ListCompany { get { return Enum.GetNames(typeof(eCompany)).Where(el => !el.Equals(eCompany.Sim23FTP.ToString())&& !el.Equals(eCompany.VPSU.ToString())).ToList(); } }
         public List<string> ListTypeLog { get { return Enum.GetNames(typeof(eTypeLog)).ToList(); } }
+        public List<string> ListReplenishment { get { return Enum.GetNames(typeof(eTypeLog)).ToList(); } }
 
         public List<Warehouse> ListWarehouse
         {
