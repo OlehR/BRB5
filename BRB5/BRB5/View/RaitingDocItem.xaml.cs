@@ -143,7 +143,8 @@ namespace BRB5
                     Questions.Add(el);
                 }
                 RefreshHead();
-                CalcValueRating();
+                //CalcValueRating();
+                Bl.CalcValueRating(All);
             });
         }
 
@@ -164,7 +165,7 @@ namespace BRB5
 
             if (vQuestion.IsHead) ChangeItemBlok(vQuestion);
 
-            CalcSumValueRating(vQuestion);
+            Bl.CalcSumValueRating(vQuestion, All);
             RefreshHead();
         }
 
@@ -221,6 +222,7 @@ namespace BRB5
             }
         }
 
+        /*
         void CalcValueRating()
         {
             try
@@ -251,6 +253,7 @@ namespace BRB5
                 FileLogger.WriteLogMessage(this, System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
             }
         }
+        */
          
 
         private void OnButtonSaved(object sender, System.EventArgs e)

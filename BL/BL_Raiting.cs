@@ -210,38 +210,161 @@ namespace BL
             return new ObservableCollection<RaitingTemplateItem>(res);
         }
 
-        private void DragDropHead(RaitingTemplateItem Droped, ObservableCollection<RaitingTemplateItem> RS, bool ShowDeleted, RaitingTemplateItem Draged)
+        public void CreateRTC(RaitingTemplate RT, bool AddTotal)
         {
-            if (Droped.IsItem)
+            RT.IsActive = true;
+            db.ReplaceRaitingTemplate(new List<RaitingTemplate>() { RT });
+
+            if (AddTotal)
             {
-                var temp = RS.Where(rs => rs.Parent == Droped.Id).FirstOrDefault();
-                if (temp != null) Droped = temp;
+                var temp = new RaitingTemplateItem() { IdTemplate = RT.IdTemplate, Id = -1, Parent = 9999999, Text = "Всього", RatingTemplate = 8, OrderRS = 9999999 };
+                db.ReplaceRaitingTemplateItem(new List<RaitingTemplateItem>() { temp });
             }
 
-            foreach (var el in RS.Where(rs => rs.Parent == 0 && rs.OrderRS > Droped.OrderRS)) el.OrderRS += 1;
-
-            Draged.OrderRS = Droped.OrderRS + 1;
-            RS = SortRS(RS, ShowDeleted);
         }
-        private void DragDropItem(RaitingTemplateItem Droped, ObservableCollection<RaitingTemplateItem> RS, bool ShowDeleted, RaitingTemplateItem Draged)
+
+        public void CalcValueRating(IEnumerable<RaitingDocItem> All)
         {
-            var dropedIndex = RS.IndexOf(Droped);
-
-            if (Droped.IsHead) Draged.Parent = Droped.Id;
-            else Draged.Parent = Droped.Parent;
-
-            List<RaitingTemplateItem> temp = new List<RaitingTemplateItem>(RS);
-            temp.Remove(Draged);
-            temp.Insert(dropedIndex, Draged);
-            int i = 1;
-            foreach (RaitingTemplateItem r in temp)
+            try
             {
-                r.OrderRS = i;
-                i++;
+                decimal res = 0;
+                foreach (var q in All.Where(el => el.Parent == 0))
+                {
+                    res = All?.Where(e => e.Parent == q.Id)?.Sum(el => el.ValueRating) ?? 0;
+                    q.ValueRating = res;
+                    if (q.Rating != 4)
+                    {
+                        res = All?.Where(e => e.Parent == q.Id)?.Sum(el => el.SumValueRating) ?? 0;
+                        q.SumValueRating = res;
+                    }
+                    else q.SumValueRating = 0;
+                }
+                var Total = All.Where(el => el.Id == -1).FirstOrDefault();
+                if (Total != null)
+                {
+                    res = All?.Where(el => el.Parent == 0 && el.Id != -1)?.Sum(el => el.ValueRating) ?? 0;
+                    Total.ValueRating = res;
+                    res = All?.Where(el => el.Parent == 0 && el.Id != -1)?.Sum(el => el.SumValueRating) ?? 0;
+                    Total.SumValueRating = res;
+                }
             }
-            RS.Clear();
-            RS = new ObservableCollection<RaitingTemplateItem>(temp);
-
+            catch (Exception ex)
+            {
+                FileLogger.WriteLogMessage(this, System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+            }
         }
+        public void CalcSumValueRating(RaitingDocItem pRDI, IEnumerable<RaitingDocItem> All)
+        {
+            try
+            {
+                decimal res = 0;
+                var Head = All.Where(el => el.Id == pRDI.Parent).FirstOrDefault();
+                if (Head != null)
+                {
+                    res = All?.Where(el => el.Parent == Head.Id)?.Sum(el => el.SumValueRating) ?? 0;
+                    Head.SumValueRating = res;
+                    Head.Rating = Head.Rating;
+                }
+                else
+                {
+                    if (pRDI.Rating == 4)
+                    {
+                        pRDI.SumValueRating = 0;
+                        pRDI.Rating = pRDI.Rating;
+                    }
+                    if (pRDI.Rating == 0)
+                    {
+                        pRDI.SumValueRating = All?.Where(el => el.Parent == pRDI.Id)?.Sum(el => el.SumValueRating) ?? 0;
+                        pRDI.Rating = pRDI.Rating;
+                    }
+                }
+
+                var Total = All.Where(el => el.Id == -1).FirstOrDefault();
+                if (Total != null)
+                {
+                    res = All?.Where(el => el.Parent == 0 && el.Id != -1)?.Sum(el => el.SumValueRating) ?? 0;
+                    Total.SumValueRating = res;
+                    Total.Rating = Total.Rating;
+                }
+            }
+            catch (Exception ex)
+            {
+                FileLogger.WriteLogMessage(this, System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+            }
+        }
+        /*
+        public void DeleteRTI(RaitingTemplateItem vRaiting, ObservableCollection<RaitingTemplateItem> RS, bool ShowDeleted, RaitingTemplate RT)
+        {
+
+            if (vRaiting.IsDelete)
+            {
+                if (vRaiting.IsItem && RS.Where(rs => rs.Id == vRaiting.Parent).FirstOrDefault().IsDelete) return;
+
+                vRaiting.DTDelete = default;
+                db.ReplaceRaitingTemplateItem(RS);
+                //
+                RS.Clear();
+                RS = Bl.SortRS(db.GetRaitingTemplateItem(RT), ShowDeleted);
+                //
+                return;
+            }
+
+            var Question = "Ви точно хочете видалти ";
+            if (vRaiting.IsHead) Question += "групу '" + vRaiting.Text + "' з " + RS.Where(rs => rs.Parent == vRaiting.Id).Count() + " питаннями";
+            else Question += "питання '" + vRaiting.Text + "'";
+
+            //
+            if (true)//await DisplayAlert("Видалення", Question, "Видалити", "Ні"))
+                //
+            {
+                vRaiting.DTDelete = DateTime.Now;
+
+                if (vRaiting.IsHead)
+                    foreach (RaitingTemplateItem r in RS.Where(rs => rs.Parent == vRaiting.Id))
+                    {
+                        r.DTDelete = DateTime.Now;
+                    }
+
+                db.ReplaceRaitingTemplateItem(RS);
+                //
+                RS.Clear();
+                RS = Bl.SortRS(db.GetRaitingTemplateItem(RT), ShowDeleted);
+                //
+            }
+        }
+        */
+        //private void DragDropHead(RaitingTemplateItem Droped, ObservableCollection<RaitingTemplateItem> RS, bool ShowDeleted, RaitingTemplateItem Draged)
+        //{
+        //    if (Droped.IsItem)
+        //    {
+        //        var temp = RS.Where(rs => rs.Parent == Droped.Id).FirstOrDefault();
+        //        if (temp != null) Droped = temp;
+        //    }
+
+        //    foreach (var el in RS.Where(rs => rs.Parent == 0 && rs.OrderRS > Droped.OrderRS)) el.OrderRS += 1;
+
+        //    Draged.OrderRS = Droped.OrderRS + 1;
+        //    RS = SortRS(RS, ShowDeleted);
+        //}
+        //private void DragDropItem(RaitingTemplateItem Droped, ObservableCollection<RaitingTemplateItem> RS, bool ShowDeleted, RaitingTemplateItem Draged)
+        //{
+        //    var dropedIndex = RS.IndexOf(Droped);
+
+        //    if (Droped.IsHead) Draged.Parent = Droped.Id;
+        //    else Draged.Parent = Droped.Parent;
+
+        //    List<RaitingTemplateItem> temp = new List<RaitingTemplateItem>(RS);
+        //    temp.Remove(Draged);
+        //    temp.Insert(dropedIndex, Draged);
+        //    int i = 1;
+        //    foreach (RaitingTemplateItem r in temp)
+        //    {
+        //        r.OrderRS = i;
+        //        i++;
+        //    }
+        //    RS.Clear();
+        //    RS = new ObservableCollection<RaitingTemplateItem>(temp);
+
+        //}
     }
 }

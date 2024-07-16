@@ -155,6 +155,7 @@ namespace BRB5.View
             var s = b.Parent as Grid;
             var vRaiting = s.BindingContext as RaitingTemplateItem;
 
+            // unDel
             if(vRaiting.IsDelete)
             {
                 if (vRaiting.IsItem && RS.Where(rs => rs.Id == vRaiting.Parent).FirstOrDefault().IsDelete) return;

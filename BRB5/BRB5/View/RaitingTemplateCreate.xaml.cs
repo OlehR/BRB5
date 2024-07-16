@@ -13,6 +13,7 @@ namespace BRB5.View
         public bool IsSoftKeyboard { get { return Config.IsSoftKeyboard; } }
 
         DB db = DB.GetDB();
+        BL.BL Bl = BL.BL.GetBL();
         public RaitingTemplateCreate (int id)
 		{
             InitializeComponent();
@@ -23,16 +24,8 @@ namespace BRB5.View
         }
 
         private async void Create(object sender, EventArgs e)
-        {
-			RT.IsActive = true;
-			db.ReplaceRaitingTemplate(new List<RaitingTemplate>() { RT });
-
-            if (AddTotal)
-            {
-                var temp = new Model.RaitingTemplateItem() { IdTemplate = RT.IdTemplate, Id = -1, Parent = 9999999, Text = "Всього", RatingTemplate = 8, OrderRS = 9999999 };
-                db.ReplaceRaitingTemplateItem(new List<RaitingTemplateItem>() { temp });
-            }
-
+        {			
+            Bl.CreateRTC(RT, AddTotal);
             await Navigation.PopAsync();
         }
     }
