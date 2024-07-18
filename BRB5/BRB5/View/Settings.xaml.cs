@@ -15,6 +15,7 @@ namespace BRB5.View
     {
         private Connector c;
         DB db = DB.GetDB();
+        BL.BL Bl = BL.BL.GetBL();
         //public string Ver { get { return "Ver:"+ Assembly.GetExecutingAssembly().GetName().Version; } }
         public string Ver { get { return "Ver:" + AppInfo.VersionString; } }
         public string SN { get { return "SN:"+ Config.SN; } }
@@ -128,6 +129,12 @@ namespace BRB5.View
 
         private void OnClickGen(object sender, EventArgs e)
         {
+            var temp = Bl.GenApiUrl();
+
+            ApiUrl1 = temp[0];
+            ApiUrl2 = temp[1];
+            ApiUrl3 = temp[2];
+            /*
             switch (Config.Company)
             {
                 case eCompany.NotDefined:
@@ -152,13 +159,18 @@ namespace BRB5.View
                     ApiUrl2 = "";
                     ApiUrl3 = "";
                     break;
-            }            
+            }      
+            */
         }
 
         private void OnClickIP(object sender, EventArgs e)  {   }
 
         private void OnClickSave(object sender, EventArgs e)
         {
+            Bl.SaveSettings(IsAutoLogin, IsVibration, IsViewAllWH, IsSound, IsTest, IsFilterSave, ApiUrl1, ApiUrl2, ApiUrl3, Compress, 
+                (eCompany)SelectedCompany, (eTypeLog)SelectedTypeLog, (ePhotoQuality)SelectedPhotoQuality, (eTypeUsePrinter)SelectedTypePrinter, 
+                SelectedWarehouse, ListWarehouse[SelectedWarehouse].Code, Warehouses);
+            /*
             db.SetConfig<bool>("IsAutoLogin", IsAutoLogin);
             db.SetConfig<bool>("IsVibration", IsVibration);
             db.SetConfig<bool>("IsViewAllWH", IsViewAllWH);
@@ -177,11 +189,16 @@ namespace BRB5.View
             db.SetConfig<eTypeUsePrinter>("TypeUsePrinter", (eTypeUsePrinter)SelectedTypePrinter);
             if(SelectedWarehouse>-1) db.SetConfig<int>("CodeWarehouse", ListWarehouse[SelectedWarehouse].Code);
             db.SetConfig<string>("CodesWarehouses", Warehouses.Where(el => el.IsChecked == true).Select(el=>el.CodeWarehouse).ToList().ToJSON() );
+            */
         }
         private void RefreshWarehouses(object sender, CheckedChangedEventArgs e)
         {
             var temp = sender as CheckBox;
-            if( int.TryParse(temp.AutomationId, out int code))
+
+            Bl.RefreshWarehouses(temp.AutomationId, temp.IsChecked);
+
+            /*
+            if ( int.TryParse(temp.AutomationId, out int code))
             {
                 if (temp.IsChecked)
                 {
@@ -189,6 +206,7 @@ namespace BRB5.View
                 }
                 else if (Config.CodesWarehouses.Contains(code)) Config.CodesWarehouses.Remove(code);
             }
+            */
         }
     }
 }

@@ -2,6 +2,8 @@
 using BRB5.Model;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Linq;
 using System.Text;
 using Utils;
 
@@ -142,6 +144,21 @@ namespace BL
             var l = new LogPrice(Status, pWP, PackageNumber, LineNumber);
             db.InsLogPrice(l);
             WP = null;
+        }
+
+        public ObservableCollection<DocWaresEx> GetDataPCP(IEnumerable<DocWares> tempInfo, DocVM Doc, int ShelfType)
+        {
+            int i = 0;
+            foreach (var item in tempInfo)
+            {
+                item.TypeDoc = 13;
+                item.OrderDoc = i++;
+            }
+
+            db.ReplaceDocWaresSample(tempInfo.Select(el => new DocWaresSample(el)));
+
+            return new ObservableCollection<DocWaresEx>(db.GetDocWares(Doc, 1, eTypeOrder.Name, ShelfType));
+
         }
     }
 }
