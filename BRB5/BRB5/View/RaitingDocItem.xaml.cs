@@ -143,7 +143,6 @@ namespace BRB5
                     Questions.Add(el);
                 }
                 RefreshHead();
-                //CalcValueRating();
                 Bl.CalcValueRating(All);
             });
         }
@@ -182,7 +181,7 @@ namespace BRB5
             }
             
         }
-
+        /*
         void CalcSumValueRating(Model.RaitingDocItem pRDI)
         {
             try
@@ -222,7 +221,7 @@ namespace BRB5
             }
         }
 
-        /*
+        
         void CalcValueRating()
         {
             try

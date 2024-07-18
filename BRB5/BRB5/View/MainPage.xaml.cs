@@ -21,7 +21,8 @@ namespace BRB5
     {
         public ObservableCollection<TypeDoc> OCTypeDoc { get; set; }
         Connector c;
-        DB db = DB.GetDB();        
+        DB db = DB.GetDB();
+        BL.BL Bl = BL.BL.GetBL();
         public string Login { get; set; }
         public string Password { get; set; }
         public IEnumerable<LoginServer> LS { get; set; }
@@ -61,6 +62,8 @@ namespace BRB5
                         ListDocs.IsVisible = true;
                     });
 
+                    Bl.OnButtonLogin(Login, Password, Device.RuntimePlatform == Device.Android);
+                    /*
                     db.SetConfig<string>("Login", Login);
                     //db.SetConfig<bool>("IsAutoLogin", true);
                     db.SetConfig<string>("Password", Password);
@@ -70,7 +73,7 @@ namespace BRB5
                     //eLoginServer LoginServer;                   
 
                     var Wh = c.LoadWarehouse();
-                    var rrr=db.ReplaceWarehouse(Wh);
+                    var rrr = db.ReplaceWarehouse(Wh);
 
                     long SizeDel = 0, SizeUse = 0;
                     if (Config.Company == eCompany.Sim23 && Device.RuntimePlatform == Device.Android)
@@ -84,7 +87,7 @@ namespace BRB5
 
                     if (Config.DateLastLoadGuid.Date != DateTime.Today.Date)
                     {
-                        _=Task.Run(async () =>
+                        _ = Task.Run(async () =>
                         {
                             var r = await c.LoadGuidDataAsync(true);
                             if (r.State == 0)
@@ -95,6 +98,7 @@ namespace BRB5
                         });
 
                     }
+                    */
                 }
                 else
                     MainThread.BeginInvokeOnMainThread(() =>
@@ -162,10 +166,14 @@ namespace BRB5
         void Init()
         {
             _ = LocationBrb.GetCurrentLocation(db.GetWarehouse());
+            Login = db.GetConfig<string>("Login");
+
+            Bl.Init();
+
+            /*
             Config.IsAutoLogin = db.GetConfig<bool>("IsAutoLogin");
             Config.LoginServer = db.GetConfig<eLoginServer>("LoginServer");
             Config.Company = db.GetConfig<eCompany>("Company");
-            Login = db.GetConfig<string>("Login");
             Config.IsViewAllWH = db.GetConfig<bool>("IsViewAllWH");
             Config.IsVibration = db.GetConfig<bool>("IsVibration");
             Config.IsSound = db.GetConfig<bool>("IsSound");
@@ -183,6 +191,8 @@ namespace BRB5
             var tempstr = db.GetConfig<string>("CodesWarehouses");
             if (!string.IsNullOrEmpty(tempstr)) Config.CodesWarehouses = JsonConvert.DeserializeObject<List<int>>(tempstr);
             FileLogger.TypeLog = db.GetConfig<eTypeLog>("TypeLog");
+            */
+
             c = Connector.GetInstance();
             if (c != null)
             {

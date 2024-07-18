@@ -18,6 +18,7 @@ namespace BRB5.View
     {
         Connector c;
         protected DB db = DB.GetDB();
+        BL.BL Bl = BL.BL.GetBL();
         ZXingScannerView zxing;
         private DocVM Doc;
         public bool IsVisScan { get { return Config.TypeScaner == eTypeScaner.Camera; } }
@@ -60,6 +61,7 @@ namespace BRB5.View
             }
             else
             {
+                /*
                 int i=0;
                 foreach (var item in temp.Info) {
                     item.TypeDoc = 13;
@@ -68,6 +70,9 @@ namespace BRB5.View
                 db.ReplaceDocWaresSample(temp.Info.Select(el=> new DocWaresSample(el)));
 
                 WaresList = new ObservableCollection<DocWaresEx>(db.GetDocWares(Doc, 1, eTypeOrder.Name, ShelfType));
+                */
+
+                WaresList = Bl.GetDataPCP(temp.Info, Doc, ShelfType);
             }            
         }
 

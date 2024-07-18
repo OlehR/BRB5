@@ -19,6 +19,7 @@ namespace BRB5.View
         public DocWaresEx ScanData { get { return _ScanData; } set { _ScanData = value; OnPropertyChanged("ScanData"); } }
         protected DB db = DB.GetDB();
         private Connector c;
+        BL.BL Bl = BL.BL.GetBL();
         public TypeDoc TypeDoc { get; set; }
         public int OrderDoc { get; set; }
         public bool IsSoftKeyboard { get { return Config.IsSoftKeyboard; } }
@@ -101,7 +102,9 @@ namespace BRB5.View
                     AddWare();
             }
         }
-        public decimal CountBeforeQuantity(int pCodeWares)
+        
+        /*
+        public decimal CountBeforeQuantity(int pCodeWares)         
         {
             decimal res = 0;
             if (ListWares.Count() > 0)
@@ -118,6 +121,7 @@ namespace BRB5.View
             }
             return res;
         }
+        */
         protected override void OnAppearing()
         {
             base.OnAppearing();
@@ -183,7 +187,7 @@ namespace BRB5.View
                     }
                 }
 
-                ScanData.BeforeQuantity = CountBeforeQuantity(ScanData.CodeWares);
+                ScanData.BeforeQuantity = Bl.CountBeforeQuantity(ScanData.CodeWares, ListWares);
 
                 if (TypeDoc.IsSimpleDoc)
                 {
@@ -202,6 +206,7 @@ namespace BRB5.View
 
         private void Reset(object sender, EventArgs e)
         {
+            /*
             if (ScanData != null && ListWares.Count() > 0)
             {
                 foreach (var ware in ListWares)
@@ -214,8 +219,10 @@ namespace BRB5.View
                         db.ReplaceDocWares(ware);
                     }
                 }
-
             }
+            */
+
+            Bl.Reset(ScanData, ListWares);
         }
 
         private void CalcQuantity(object sender, TextChangedEventArgs e)
