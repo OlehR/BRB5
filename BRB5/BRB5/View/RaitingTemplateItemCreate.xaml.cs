@@ -55,32 +55,13 @@ namespace BRB5.View
 
         private void DragDropHead(RaitingTemplateItem Droped)
         {
-            if(Droped.IsItem){
-                var temp=RS.Where(rs => rs.Parent == Droped.Id).FirstOrDefault();
-                if (temp!= null) Droped=temp;
-            }
-
-            foreach (var el in RS.Where(rs => rs.Parent == 0 && rs.OrderRS > Droped.OrderRS)) el.OrderRS += 1;
-
+            Bl.DragDropHead(Droped, RS);
             Draged.OrderRS = Droped.OrderRS + 1;
             RS = Bl.SortRS(RS, ShowDeleted);
         }
         private void DragDropItem(RaitingTemplateItem Droped)
         {
-            var dropedIndex = RS.IndexOf(Droped);
-
-            if (Droped.IsHead) Draged.Parent = Droped.Id;
-            else Draged.Parent = Droped.Parent;
-
-            List<RaitingTemplateItem> temp = new List<RaitingTemplateItem>(RS);
-            temp.Remove(Draged);
-            temp.Insert(dropedIndex, Draged);
-            int i = 1;
-            foreach (RaitingTemplateItem r in temp)
-            {
-                r.OrderRS = i;
-                i++;
-            }
+            var temp = Bl.DragDropItem(Droped, RS, Draged);
             RS.Clear();
             RS = new ObservableCollection<RaitingTemplateItem>(temp);
 
@@ -155,35 +136,27 @@ namespace BRB5.View
             var s = b.Parent as Grid;
             var vRaiting = s.BindingContext as RaitingTemplateItem;
 
+            bool shouldUpdateRS = false;
             // unDel
             if(vRaiting.IsDelete)
             {
-                if (vRaiting.IsItem && RS.Where(rs => rs.Id == vRaiting.Parent).FirstOrDefault().IsDelete) return;
+                shouldUpdateRS = Bl.UnDeleteRTI(vRaiting, RS);
+            }
+            else
+            {
+                var Question = "Ви точно хочете видалти ";
+                if (vRaiting.IsHead) Question += "групу '" + vRaiting.Text + "' з " + RS.Where(rs => rs.Parent == vRaiting.Id).Count() + " питаннями";
+                else Question += "питання '" + vRaiting.Text + "'";
 
-                vRaiting.DTDelete = default;
-                db.ReplaceRaitingTemplateItem(RS);
-                RS.Clear();
-                RS = Bl.SortRS(db.GetRaitingTemplateItem(RT), ShowDeleted);
-                return;
+                if (await DisplayAlert("Видалення", Question, "Видалити", "Ні"))
+                {
+                    Bl.DeleteRTI(vRaiting, RS);
+                    shouldUpdateRS = true;
+                }
             }
 
-            var Question = "Ви точно хочете видалти ";
-            if (vRaiting.IsHead) Question += "групу '" + vRaiting.Text + "' з " + RS.Where(rs => rs.Parent == vRaiting.Id).Count() + " питаннями";
-            else Question += "питання '" + vRaiting.Text + "'";
-            
-
-            if (await DisplayAlert("Видалення", Question, "Видалити", "Ні"))
+            if (shouldUpdateRS)
             {
-                vRaiting.DTDelete = DateTime.Now;
-
-                if (vRaiting.IsHead)
-                    foreach (RaitingTemplateItem r in RS.Where(rs => rs.Parent == vRaiting.Id))
-                    {
-                        r.DTDelete = DateTime.Now;
-                    }
-
-                db.ReplaceRaitingTemplateItem(RS);
-
                 RS.Clear();
                 RS = Bl.SortRS(db.GetRaitingTemplateItem(RT), ShowDeleted);
             }
