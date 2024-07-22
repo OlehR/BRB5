@@ -83,7 +83,8 @@ namespace BRB5.View
         public bool IsVibration { get { return Config.IsVibration; } set { Config.IsVibration = value; } }
         public bool IsSound { get { return Config.IsSound; } set { Config.IsSound = value; } }
         public bool IsTest { get { return Config.IsTest; } set { Config.IsTest = value; } }
-        public bool IsFilterSave { get { return Config.IsFilterSave; } set { Config.IsFilterSave = value; } }
+        public bool IsFilterSave { get { return Config.IsFilterSave; } set { Config.IsFilterSave = value; } }     
+        public bool IsFullScreenScan { get { return Config.IsFullScreenScan; } set { Config.IsFullScreenScan = value; } }
 
         public string ApiUrl1 { get { return Config.ApiUrl1; } set { Config.ApiUrl1 = value; OnPropertyChanged(nameof(ApiUrl1)); } }
         public string ApiUrl2 { get { return Config.ApiUrl2; } set { Config.ApiUrl2 = value; OnPropertyChanged(nameof(ApiUrl2)); } }
@@ -130,83 +131,23 @@ namespace BRB5.View
         private void OnClickGen(object sender, EventArgs e)
         {
             var temp = Bl.GenApiUrl();
-
             ApiUrl1 = temp[0];
             ApiUrl2 = temp[1];
             ApiUrl3 = temp[2];
-            /*
-            switch (Config.Company)
-            {
-                case eCompany.NotDefined:
-                    ApiUrl1 = "";
-                    ApiUrl2 = "";
-                    ApiUrl3 = "";
-                    break;
-                case eCompany.Sim23:
-                    
-                    ApiUrl1 = "http://93.183.216.37:80/dev1/hs/TSD/";//
-                    ApiUrl2 = "http://37.53.84.148/TK/hs/TSD/";// "http://93.183.216.37/TK/hs/TSD/;http://37.53.84.148/TK/hs/TSD/";
-                    ApiUrl3 = "https://bitrix.sim23.ua/rest/233/ax02yr7l9hia35vj/";
-                    break;
-                case eCompany.Sim23FTP:
-                    ApiUrl1 = "";
-                    ApiUrl2 = "";
-                    ApiUrl3 = "";
-                    break;
-                case eCompany.VPSU:
-                case eCompany.SparPSU:
-                    ApiUrl1 = "http://apitest.spar.uz.ua/";
-                    ApiUrl2 = "";
-                    ApiUrl3 = "";
-                    break;
-            }      
-            */
         }
 
         private void OnClickIP(object sender, EventArgs e)  {   }
 
         private void OnClickSave(object sender, EventArgs e)
         {
-            Bl.SaveSettings(IsAutoLogin, IsVibration, IsViewAllWH, IsSound, IsTest, IsFilterSave, ApiUrl1, ApiUrl2, ApiUrl3, Compress, 
+            Bl.SaveSettings(IsAutoLogin, IsVibration, IsViewAllWH, IsSound, IsTest, IsFilterSave, IsFullScreenScan, ApiUrl1, ApiUrl2, ApiUrl3, Compress, 
                 (eCompany)SelectedCompany, (eTypeLog)SelectedTypeLog, (ePhotoQuality)SelectedPhotoQuality, (eTypeUsePrinter)SelectedTypePrinter, 
                 SelectedWarehouse, ListWarehouse[SelectedWarehouse].Code, Warehouses);
-            /*
-            db.SetConfig<bool>("IsAutoLogin", IsAutoLogin);
-            db.SetConfig<bool>("IsVibration", IsVibration);
-            db.SetConfig<bool>("IsViewAllWH", IsViewAllWH);
-            db.SetConfig<bool>("IsSound", IsSound);
-            db.SetConfig<bool>("IsTest", IsTest);
-            db.SetConfig<bool>("IsFilterSave", IsFilterSave);
-
-            db.SetConfig<string>("ApiUrl1", ApiUrl1 ?? "");
-            db.SetConfig<string>("ApiUrl2", ApiUrl2 ?? "");
-            db.SetConfig<string>("ApiUrl3", ApiUrl3 ?? "");
-            db.SetConfig<int>("Compress", Compress);
-
-            db.SetConfig<eCompany>("Company", (eCompany)SelectedCompany);
-            db.SetConfig<eTypeLog>("TypeLog", (eTypeLog)SelectedTypeLog);
-            db.SetConfig<ePhotoQuality>("PhotoQuality", (ePhotoQuality)SelectedPhotoQuality);
-            db.SetConfig<eTypeUsePrinter>("TypeUsePrinter", (eTypeUsePrinter)SelectedTypePrinter);
-            if(SelectedWarehouse>-1) db.SetConfig<int>("CodeWarehouse", ListWarehouse[SelectedWarehouse].Code);
-            db.SetConfig<string>("CodesWarehouses", Warehouses.Where(el => el.IsChecked == true).Select(el=>el.CodeWarehouse).ToList().ToJSON() );
-            */
         }
         private void RefreshWarehouses(object sender, CheckedChangedEventArgs e)
         {
             var temp = sender as CheckBox;
-
             Bl.RefreshWarehouses(temp.AutomationId, temp.IsChecked);
-
-            /*
-            if ( int.TryParse(temp.AutomationId, out int code))
-            {
-                if (temp.IsChecked)
-                {
-                    if (!Config.CodesWarehouses.Contains(code)) Config.CodesWarehouses.Add(code);
-                }
-                else if (Config.CodesWarehouses.Contains(code)) Config.CodesWarehouses.Remove(code);
-            }
-            */
         }
     }
 }

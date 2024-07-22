@@ -121,29 +121,16 @@ namespace BRB5.View
                     UseCreateChooser = true,
                     Title = "Select"
                 };
-
                 cts.CancelAfter(TimeSpan.FromMinutes(5));
 
                 var results = await MediaGallery.PickAsync(request, cts.Token);
                 files = results?.Files?.ToArray();
             }
-            catch (OperationCanceledException)
-            {
-                // handling a cancellation request
-            }
-            catch (Exception)
-            {
-                // handling other exceptions
-            }
-            finally
-            {
-                cts.Dispose();
-            }
+            catch (OperationCanceledException)   {  /* handling a cancellation request  */  }
+            catch (Exception)   {   /* handling other exceptions*/     }
+            finally  {  cts.Dispose();  }
 
-
-            if (files == null)
-                return;
-            
+            if (files == null)  return;            
 
             foreach (var file in files)
             {

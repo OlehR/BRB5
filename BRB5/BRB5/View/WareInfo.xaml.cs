@@ -34,14 +34,10 @@ namespace BRB5.View
         {
             InitializeComponent();
             c = Connector.GetInstance();
-            NavigationPage.SetHasNavigationBar(this, Device.RuntimePlatform == Device.iOS);
-            
-            WP = c.GetPrice(parseBarCode, eTypePriceInfo.Full);
-           
-            if (WP.ActionType > 0)  IsVisPromotion = true;
-            
-            ImageUri = Config.ApiUrl1+$"Wares/{WP.CodeWares:D9}.png";
-            
+            NavigationPage.SetHasNavigationBar(this, Device.RuntimePlatform == Device.iOS);            
+            WP = c.GetPrice(parseBarCode, eTypePriceInfo.Full);           
+            if (WP.ActionType > 0)  IsVisPromotion = true;            
+            ImageUri = Config.ApiUrl1+$"Wares/{WP.CodeWares:D9}.png";            
             Picture  = new UriImageSource
             {
                 Uri = new Uri(ImageUri),
@@ -53,21 +49,13 @@ namespace BRB5.View
                 WareImageIOS.IsVisible = true; 
                 WareImage.IsVisible = false;
             } 
-
-
             this.BindingContext = this;
         }
 
-        private void OnClickPrint(object sender, EventArgs e)
-        {
-            if (IsEnabledPrint) 
-                _ = DisplayAlert("Друк", c.PrintHTTP(new[] { WP.CodeWares }), "OK");            
-        }
-
+        private void OnClickPrint(object sender, EventArgs e) {  if (IsEnabledPrint)  _ = DisplayAlert("Друк", c.PrintHTTP(new[] { WP.CodeWares }), "OK");     }
         private void OnImageTapped(object sender, EventArgs e)
         {
             IsNotFullScreenImg = !IsNotFullScreenImg;
-
             if (Device.RuntimePlatform == Device.iOS)
                  IsVisIOSFull = !IsVisIOSFull;
             else IsFullScreenImg = !IsFullScreenImg;

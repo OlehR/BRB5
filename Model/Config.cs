@@ -37,6 +37,7 @@ namespace BRB5.Model
         public static bool IsSound { get; set; } = false;
         public static bool IsTest { get; set; } = true;
         public static bool IsFilterSave { get; set; } = false;
+        public static bool IsFullScreenScan { get; set; } = false;
 
         public static bool IsLoginCO = true;
         public static eLoginServer LoginServer = eLoginServer.Bitrix;

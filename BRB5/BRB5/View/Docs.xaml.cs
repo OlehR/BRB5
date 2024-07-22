@@ -79,9 +79,7 @@ namespace BRB5.View
         private async void OpenDoc(object sender, EventArgs e)
         {
             var s = sender as Grid;
-
-            var vDoc = s.BindingContext as DocVM;
-            
+            var vDoc = s.BindingContext as DocVM;            
             await Navigation.PushAsync(new DocItem(vDoc,TypeDoc));
         }
 
@@ -112,14 +110,8 @@ namespace BRB5.View
             IsVisBarCode= !IsVisBarCode;
             zxing.IsScanning = IsVisBarCode;
         }
-        void BarCode(string pBarCode)
-        {
-            MyDocsR = new ObservableCollection<DocVM>(db.GetDoc(TypeDoc, pBarCode, null));
-        }
-        public void Dispose()
-        {
-            Config.BarCode -= BarCode;
-        }
+        void BarCode(string pBarCode) { MyDocsR = new ObservableCollection<DocVM>(db.GetDoc(TypeDoc, pBarCode, null));  }
+        public void Dispose() {  Config.BarCode -= BarCode;  }
 
         private void UpDown(int key)
         {
@@ -173,16 +165,10 @@ namespace BRB5.View
         private async void SelectKey()
         {
             var selectedItem = (DocVM)ListDocs.SelectedItem;
-            if (selectedItem != null)
-            {
-                await Navigation.PushAsync(new DocItem(selectedItem, TypeDoc));
-            }
+            if (selectedItem != null) await Navigation.PushAsync(new DocItem(selectedItem, TypeDoc));            
         }
 
-        private void EnterKey()
-        {
-            if(IsVisZKPO) FilterDocs(null, null);
-        }
+        private void EnterKey() { if(IsVisZKPO) FilterDocs(null, null); }
         private void FilterBarCode(ZXing.Result result)
         {
             zxing.IsAnalyzing = false;

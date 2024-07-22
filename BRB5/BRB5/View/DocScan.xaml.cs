@@ -51,24 +51,17 @@ namespace BRB5.View
         {
             ScanData = db.GetScanData(DocId, c.ParsedBarCode(pBarCode, true/*?*/));
             FindWareByBarCodeAsync(pBarCode);
-
             if (ScanData != null)
             {
                 ScanData.BarCode = pBarCode;
-
-                if (ScanData.QuantityBarCode > 0)
-                    ScanData.InputQuantity = ScanData.QuantityBarCode;
-                else
-                    inputQ.Text = "";
+                if (ScanData.QuantityBarCode > 0) ScanData.InputQuantity = ScanData.QuantityBarCode;
+                else inputQ.Text = "";
 
                 inputQ.Focus();
                 AddWare();
             }
         }
-        public void Dispose()
-        {
-            Config.BarCode -= BarCode;
-        }
+        public void Dispose() { Config.BarCode -= BarCode; }
         private void AddWare()
         {
             if (ScanData != null)
@@ -103,25 +96,6 @@ namespace BRB5.View
             }
         }
         
-        /*
-        public decimal CountBeforeQuantity(int pCodeWares)         
-        {
-            decimal res = 0;
-            if (ListWares.Count() > 0)
-            {
-                foreach (var ware in ListWares)
-                {
-                    ware.Ord = -1;
-                    if (ware.CodeWares == pCodeWares)
-                    {
-                        res += ware.InputQuantity;
-                        ware.Ord = 0;
-                    }
-                }
-            }
-            return res;
-        }
-        */
         protected override void OnAppearing()
         {
             base.OnAppearing();
@@ -204,26 +178,7 @@ namespace BRB5.View
             return;
         }
 
-        private void Reset(object sender, EventArgs e)
-        {
-            /*
-            if (ScanData != null && ListWares.Count() > 0)
-            {
-                foreach (var ware in ListWares)
-                {
-                    if (ware.CodeWares == ScanData.CodeWares && ware.InputQuantity != 0)
-                    {
-                        ware.QuantityOld = ware.InputQuantity;
-                        ware.InputQuantity = 0;
-                        ware.Quantity = 0;
-                        db.ReplaceDocWares(ware);
-                    }
-                }
-            }
-            */
-
-            Bl.Reset(ScanData, ListWares);
-        }
+        private void Reset(object sender, EventArgs e) { Bl.Reset(ScanData, ListWares); }
 
         private void CalcQuantity(object sender, TextChangedEventArgs e)
         {
@@ -241,7 +196,6 @@ namespace BRB5.View
                 ScanData.QuantityMax = decimal.MaxValue;
                 FindWareByBarCodeAsync(TempBarcode);
             }
-
             if (IsVisScan) zxing.IsAnalyzing = true;
         }
 
@@ -250,13 +204,9 @@ namespace BRB5.View
             IsVisQ = false;
             IsVisQOk = false;
             if (TypeDoc.TypeControlQuantity == eTypeControlDoc.Ask) ScanData = null;
-
             if (IsVisScan) zxing.IsAnalyzing = true;
         }
-        private async void KeyBack()
-        {
-            await Navigation.PopAsync();
-        }
+        private async void KeyBack() { await Navigation.PopAsync();  }
 
         private void Up(object sender, EventArgs e)
         {

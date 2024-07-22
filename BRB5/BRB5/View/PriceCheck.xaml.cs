@@ -175,10 +175,7 @@ namespace BRB5
             bl.SendLogPrice();
         }
 
-        public void Dispose()
-        {           
-            Config.BarCode -= BarCode;
-        }
+        public void Dispose() { Config.BarCode -= BarCode;   }
         
         private void OnClickAddPrintBlock(object sender, EventArgs e)
         {
@@ -199,15 +196,9 @@ namespace BRB5
             if(IsVisRepl) NumberOfReplenishment.Focus();
         }
 
-        private void OnF4(object sender, EventArgs e)
-        {
-            IsOnline = !IsOnline;
-        }
+        private void OnF4(object sender, EventArgs e) {      IsOnline = !IsOnline;      }
 
-        private void OnF5(object sender, EventArgs e)
-        {            
-            IsMultyLabel = !IsMultyLabel;
-        }
+        private void OnF5(object sender, EventArgs e)   {   IsMultyLabel = !IsMultyLabel;    }
 
         private async void OnClickWareInfo(object sender, EventArgs e)
         {            
@@ -239,15 +230,9 @@ namespace BRB5
                 _ = DisplayAlert("Друк", bl.c.PrintHTTP(new[] { WP.CodeWares }), "OK");
         }
     
-        private async void KeyBack()
-        {
-            await Navigation.PopAsync();    
-        }
+        private async void KeyBack()  { await Navigation.PopAsync();    }
 
-        private void EntryTextChanged(object sender, TextChangedEventArgs e)
-        {
-            CurrentEntry = (sender as Entry).AutomationId;
-        }
+        private void EntryTextChanged(object sender, TextChangedEventArgs e) {  CurrentEntry = (sender as Entry).AutomationId;   }
         private void KeyEnter()
         {
             if (IsVisDoubleScan)

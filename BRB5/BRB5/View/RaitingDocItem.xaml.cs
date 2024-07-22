@@ -112,10 +112,8 @@ namespace BRB5
         protected override void OnAppearing()
         {
             base.OnAppearing();
-            if (IsVisScan)
-            {
-                zxing = ZxingBRB5.SetZxing(GridZxing, zxing, (BarCode) => OnScanBarCode(BarCode));
-            }
+            if (IsVisScan) zxing = ZxingBRB5.SetZxing(GridZxing, zxing, (BarCode) => OnScanBarCode(BarCode));
+            
             Bl.StartTimerRDI();
             if (IsRefreshList)Bl.LoadDataRDI(cDoc,GetData);
             IsRefreshList = true;
@@ -178,82 +176,8 @@ namespace BRB5
             catch(Exception ex)
             {
                 FileLogger.WriteLogMessage(this, System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
-            }
-            
+            }            
         }
-        /*
-        void CalcSumValueRating(Model.RaitingDocItem pRDI)
-        {
-            try
-            {
-                decimal res = 0;
-            var Head = All.Where(el => el.Id == pRDI.Parent).FirstOrDefault();
-            if (Head != null)
-            {
-                res = All?.Where(el => el.Parent == Head.Id)?.Sum(el => el.SumValueRating) ?? 0;
-                Head.SumValueRating = res;
-                Head.Rating = Head.Rating;
-            } else
-            {
-                if (pRDI.Rating == 4)
-                {
-                    pRDI.SumValueRating = 0;
-                    pRDI.Rating = pRDI.Rating;
-                }
-                if (pRDI.Rating == 0)
-                {
-                    pRDI.SumValueRating = All?.Where(el => el.Parent == pRDI.Id)?.Sum(el => el.SumValueRating) ?? 0;
-                    pRDI.Rating = pRDI.Rating;
-                }
-            }
-
-            var Total = All.Where(el => el.Id == -1).FirstOrDefault();
-            if (Total != null)
-            {
-                res = All?.Where(el => el.Parent == 0 && el.Id != -1)?.Sum(el => el.SumValueRating) ?? 0;
-                Total.SumValueRating = res;
-                Total.Rating = Total.Rating;
-                }
-            }
-            catch (Exception ex)
-            {
-                FileLogger.WriteLogMessage(this, System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
-            }
-        }
-
-        
-        void CalcValueRating()
-        {
-            try
-            {
-                decimal res = 0;
-                foreach (var q in All.Where(el => el.Parent == 0))
-                {
-                    res = All?.Where(e => e.Parent == q.Id)?.Sum(el => el.ValueRating) ?? 0;
-                    q.ValueRating = res;
-                    if (q.Rating != 4)
-                    {
-                        res = All?.Where(e => e.Parent == q.Id)?.Sum(el => el.SumValueRating) ?? 0;
-                        q.SumValueRating = res;
-                    }
-                    else q.SumValueRating = 0;
-                }
-                var Total = All.Where(el => el.Id == -1).FirstOrDefault();
-                if (Total != null)
-                {
-                    res = All?.Where(el => el.Parent == 0 && el.Id != -1)?.Sum(el => el.ValueRating) ?? 0;
-                    Total.ValueRating = res;
-                    res = All?.Where(el => el.Parent == 0 && el.Id != -1)?.Sum(el => el.SumValueRating) ?? 0;
-                    Total.SumValueRating = res;
-                }
-            }
-            catch (Exception ex)
-            {
-                FileLogger.WriteLogMessage(this, System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
-            }
-        }
-        */
-         
 
         private void OnButtonSaved(object sender, System.EventArgs e)
         {
@@ -261,11 +185,7 @@ namespace BRB5
             {
                 IsSaved = true;
                 Bl.c.IsStopSave = true;                            
-            }
-            else
-            {
-                IsSaving = false;               
-            }               
+            } else IsSaving = false;
         }
 
         private void OnButtonSave(object sender, System.EventArgs e)
@@ -320,11 +240,9 @@ namespace BRB5
                         imageData = NativeBase.ReadFully(stream);
                         byte[] resizedImage = Config.NativeBase.ResizeImage(imageData, Config.PhotoQuality.GetValue(), Config.Compress);
                         File.WriteAllBytes(newFile, resizedImage);
-
                         //using (var newStream = File.OpenWrite(newFile))
                         //    await stream.CopyToAsync(newStream);
-                    }                  
-
+                    }
                     vQuestion.QuantityPhoto++;
                     Bl.db.ReplaceRaitingDocItem(vQuestion);
                 }
@@ -371,7 +289,6 @@ namespace BRB5
         private void BarCode(object sender, EventArgs e)
         {
             IsVisBarCode = !IsVisBarCode;
-
             zxing.IsScanning = IsVisBarCode;
             zxing.IsAnalyzing = IsVisBarCode;
         }
@@ -416,7 +333,6 @@ namespace BRB5
                     break;
             }
             ViewDoc();
-
             ListQuestions.ScrollTo( Questions.First(), ScrollToPosition.Start, false);
         }
 

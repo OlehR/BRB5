@@ -39,9 +39,7 @@ namespace BRB5
             OCTypeDoc = new ObservableCollection<TypeDoc>();           
             InitializeComponent();
             Init();
-
-            if (Config.Company == eCompany.NotDefined) _= Navigation.PushAsync(new Settings());
-                
+            if (Config.Company == eCompany.NotDefined) _= Navigation.PushAsync(new Settings());                
             BindingContext = this;
         }        
 
@@ -63,42 +61,6 @@ namespace BRB5
                     });
 
                     Bl.OnButtonLogin(Login, Password, Device.RuntimePlatform == Device.Android);
-                    /*
-                    db.SetConfig<string>("Login", Login);
-                    //db.SetConfig<bool>("IsAutoLogin", true);
-                    db.SetConfig<string>("Password", Password);
-                    db.SetConfig<eLoginServer>("LoginServer", Config.LoginServer);
-                    Config.Login = Login;
-                    Config.Password = Password;
-                    //eLoginServer LoginServer;                   
-
-                    var Wh = c.LoadWarehouse();
-                    var rrr = db.ReplaceWarehouse(Wh);
-
-                    long SizeDel = 0, SizeUse = 0;
-                    if (Config.Company == eCompany.Sim23 && Device.RuntimePlatform == Device.Android)
-                    {
-                        var a = db.GetDoc(Config.GetDocSetting(11));
-                        (SizeDel, SizeUse) = FileAndDir.DelDir(Config.PathFiles, a.Select(el => el.NumberDoc));
-                        FileLogger.WriteLogMessage($"{Config.PathFiles} => SizeDel={SizeDel}, SizeUse=>{SizeUse}");
-                        (SizeDel, SizeUse) = FileAndDir.DelDir(Path.Combine(Config.PathFiles, "arx"), a.Select(el => el.NumberDoc));
-                        FileLogger.WriteLogMessage($"{Path.Combine(Config.PathFiles, "arx")} => SizeDel={SizeDel}, SizeUse=>{SizeUse}");
-                    }
-
-                    if (Config.DateLastLoadGuid.Date != DateTime.Today.Date)
-                    {
-                        _ = Task.Run(async () =>
-                        {
-                            var r = await c.LoadGuidDataAsync(true);
-                            if (r.State == 0)
-                            {
-                                Config.DateLastLoadGuid = DateTime.Now;
-                                db.SetConfig<DateTime>("DateLastLoadGuid", Config.DateLastLoadGuid);
-                            }
-                        });
-
-                    }
-                    */
                 }
                 else
                     MainThread.BeginInvokeOnMainThread(() =>
@@ -113,13 +75,10 @@ namespace BRB5
             Button button = (Button)sender;
             Cell cc = button.Parent as Cell;
             var vTypeDoc = cc.BindingContext as TypeDoc;
-
             var cameraStatus = await Permissions.CheckStatusAsync<Permissions.Camera>();
 
             if (cameraStatus != PermissionStatus.Granted)
-            {
-                cameraStatus = await Permissions.RequestAsync<Permissions.Camera>();
-            }
+                cameraStatus = await Permissions.RequestAsync<Permissions.Camera>();            
 
             if (cameraStatus != PermissionStatus.Granted)
             {
@@ -162,37 +121,11 @@ namespace BRB5
             }
         }
 
-
         void Init()
         {
             _ = LocationBrb.GetCurrentLocation(db.GetWarehouse());
             Login = db.GetConfig<string>("Login");
-
             Bl.Init();
-
-            /*
-            Config.IsAutoLogin = db.GetConfig<bool>("IsAutoLogin");
-            Config.LoginServer = db.GetConfig<eLoginServer>("LoginServer");
-            Config.Company = db.GetConfig<eCompany>("Company");
-            Config.IsViewAllWH = db.GetConfig<bool>("IsViewAllWH");
-            Config.IsVibration = db.GetConfig<bool>("IsVibration");
-            Config.IsSound = db.GetConfig<bool>("IsSound");
-            Config.IsTest = db.GetConfig<bool>("IsTest");
-            Config.IsFilterSave = db.GetConfig<bool>("IsFilterSave");
-            Config.ApiUrl1 = db.GetConfig<string>("ApiUrl1");
-            Config.ApiUrl2 = db.GetConfig<string>("ApiUrl2");
-            Config.ApiUrl3 = db.GetConfig<string>("ApiUrl3");
-            Config.DateLastLoadGuid = db.GetConfig<DateTime>("DateLastLoadGuid");
-            Config.CodeWarehouse = db.GetConfig<int>("CodeWarehouse");
-            Config.TypeUsePrinter = db.GetConfig<eTypeUsePrinter>("TypeUsePrinter");
-            Config.PhotoQuality = db.GetConfig<ePhotoQuality>("PhotoQuality");
-            Config.Compress = db.GetConfig<int>("Compress");
-            Config.Compress = Config.Compress == 0 ? 80 : Config.Compress;
-            var tempstr = db.GetConfig<string>("CodesWarehouses");
-            if (!string.IsNullOrEmpty(tempstr)) Config.CodesWarehouses = JsonConvert.DeserializeObject<List<int>>(tempstr);
-            FileLogger.TypeLog = db.GetConfig<eTypeLog>("TypeLog");
-            */
-
             c = Connector.GetInstance();
             if (c != null)
             {
@@ -203,25 +136,16 @@ namespace BRB5
                     Config.LoginServer = LS.First().Code;
                 }
             }
-
             if (Config.IsAutoLogin)
             {
                 Password = db.GetConfig<string>("Password");
                 OnButtonLogin(null, null);
-            }
-           
+            }           
         }
 
+        protected override void OnDisappearing()  {  base.OnDisappearing(); }
 
-        protected override void OnDisappearing()
-        {
-            base.OnDisappearing();
-        }
-
-        private async void OnSettingsClicked(object sender, EventArgs e)
-        {
-            await Navigation.PushAsync(new Settings());
-        }
+        private async void OnSettingsClicked(object sender, EventArgs e) { await Navigation.PushAsync(new Settings());  }
 
         private void OnAuthorizationClicked(object sender, EventArgs e)
         {

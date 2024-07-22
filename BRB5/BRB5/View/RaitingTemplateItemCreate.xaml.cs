@@ -79,10 +79,7 @@ namespace BRB5.View
             }
         }
 
-        private void Save(object sender, EventArgs e)
-        {
-            db.ReplaceRaitingTemplateItem(RS);
-        }
+        private void Save(object sender, EventArgs e)   {  db.ReplaceRaitingTemplateItem(RS);     }
 
         private async void Edit(object sender, EventArgs e)
         {
@@ -113,7 +110,6 @@ namespace BRB5.View
         {
             var b = sender as ImageButton;
             var s = b.Parent as Grid;
-
             var temp = s.BindingContext as RaitingTemplateItem;
 
             var vRaiting = new RaitingTemplateItem

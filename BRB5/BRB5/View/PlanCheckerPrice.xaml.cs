@@ -59,27 +59,11 @@ namespace BRB5.View
                 WaresList = new ObservableCollection<DocWaresEx>();
                 _ = DisplayAlert("Помилка", temp?.TextError, "OK");
             }
-            else
-            {
-                /*
-                int i=0;
-                foreach (var item in temp.Info) {
-                    item.TypeDoc = 13;
-                    item.OrderDoc = i++; }
-                               
-                db.ReplaceDocWaresSample(temp.Info.Select(el=> new DocWaresSample(el)));
-
-                WaresList = new ObservableCollection<DocWaresEx>(db.GetDocWares(Doc, 1, eTypeOrder.Name, ShelfType));
-                */
-
-                WaresList = Bl.GetDataPCP(temp.Info, Doc, ShelfType);
-            }            
+            else WaresList = Bl.GetDataPCP(temp.Info, Doc, ShelfType);
+                  
         }
 
-        void BarCode(string pBarCode)
-        {
-            WareFocus(pBarCode);
-        }
+        void BarCode(string pBarCode) {   WareFocus(pBarCode);  }
 
         protected override void OnAppearing()
         {
@@ -109,10 +93,7 @@ namespace BRB5.View
             }
         }
 
-        public void Dispose()
-        {
-            Config.BarCode -= BarCode;
-        }
+        public void Dispose()  { Config.BarCode -= BarCode; }
         
         private void WareFocus(string pBarCode)
         {
@@ -142,10 +123,7 @@ namespace BRB5.View
             _ = DisplayAlert("Збереження", res.TextError, "ok");            
         }
 
-        private void SaveItemAvailable(object sender, EventArgs e)
-        {
-            SaveAndFocusNext((sender as Entry).AutomationId, 1);
-        }
+        private void SaveItemAvailable(object sender, EventArgs e) {    SaveAndFocusNext((sender as Entry).AutomationId, 1);   }
         private void EntryFocused(object sender, FocusEventArgs e)
         {
             var entry = sender as Entry;
@@ -157,15 +135,9 @@ namespace BRB5.View
             });
         }
 
-        private void SaveItemAdd(object sender, EventArgs e)
-        {
-            SaveAndFocusNext((sender as Entry).AutomationId, 2);
-        }
+        private void SaveItemAdd(object sender, EventArgs e)    {  SaveAndFocusNext((sender as Entry).AutomationId, 2);   }
 
-        private void SaveItem(object sender, FocusEventArgs e)
-        {
-            SaveAndFocusNext((sender as Entry).AutomationId, 3);
-        }
+        private void SaveItem(object sender, FocusEventArgs e)   {   SaveAndFocusNext((sender as Entry).AutomationId, 3);    }
 
         private void SaveAndFocusNext(string codeWares, int Type)
         {
@@ -188,10 +160,7 @@ namespace BRB5.View
             }
         }
 
-        private async void KeyBack()
-        {
-            await Navigation.PopAsync();
-        }
+        private async void KeyBack()  {  await Navigation.PopAsync();   }
 
         private void TextChangedAdd(object sender, TextChangedEventArgs e)
         {

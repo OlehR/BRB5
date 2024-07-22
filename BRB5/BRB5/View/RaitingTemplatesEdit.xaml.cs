@@ -45,10 +45,7 @@ namespace BRB5.View
 
         }
 
-        private async void Create(object sender, EventArgs e)
-        {
-            await Navigation.PushAsync(new RaitingTemplateCreate(c.GetIdRaitingTemplate().Info));
-        }
+        private async void Create(object sender, EventArgs e)  { await Navigation.PushAsync(new RaitingTemplateCreate(c.GetIdRaitingTemplate().Info)); }
 
         private async void Edit(object sender, EventArgs e)
         {

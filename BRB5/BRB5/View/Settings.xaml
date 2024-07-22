@@ -65,6 +65,10 @@
                         <ColumnDefinition Width="*" />
                         <ColumnDefinition Width="3*" />
                     </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                    </Grid.RowDefinitions>
 
                     <CheckBox IsChecked="{Binding IsVibration}" />
                     <Label Text="Вібрація" Grid.Column="1" />
@@ -73,12 +77,14 @@
                               Grid.Column="2" />
                     <Label Text="Звук"
                            Grid.Column="3" />
+
+                    <CheckBox IsChecked="{Binding IsFilterSave}"  Grid.Row="1" />
+                    <Label Text="Фільтр"  Grid.Column="1" Grid.Row="1" />
+
+                    <CheckBox IsChecked="{Binding IsFullScreenScan}"  Grid.Row="1"  Grid.Column="2"/>
+                    <Label Text="Скан full screen"  Grid.Column="3" Grid.Row="1" />
                 </Grid>
 
-                <StackLayout Orientation="Horizontal" >
-                    <CheckBox IsChecked="{Binding IsFilterSave}" />
-                    <Label Text="Фільтр"  />
-                </StackLayout>
 
 
                 <Picker Title="Якість фото"

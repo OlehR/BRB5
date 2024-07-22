@@ -23,7 +23,7 @@ namespace BL
                 else if (Config.CodesWarehouses.Contains(code)) Config.CodesWarehouses.Remove(code);
             }
         }
-        public void SaveSettings(bool IsAutoLogin, bool IsVibration, bool IsViewAllWH, bool IsSound, bool IsTest, bool IsFilterSave, string ApiUrl1,
+        public void SaveSettings(bool IsAutoLogin, bool IsVibration, bool IsViewAllWH, bool IsSound, bool IsTest, bool IsFilterSave, bool IsFullScreenScan, string ApiUrl1,
             string ApiUrl2, string ApiUrl3, int Compress, eCompany SelectedCompany, eTypeLog SelectedTypeLog, ePhotoQuality SelectedPhotoQuality, 
             eTypeUsePrinter SelectedTypePrinter, int SelectedWarehouse, int ListWarehouseCode, ObservableCollection<Warehouse> Warehouses)
         {
@@ -33,6 +33,7 @@ namespace BL
             db.SetConfig<bool>("IsSound", IsSound);
             db.SetConfig<bool>("IsTest", IsTest);
             db.SetConfig<bool>("IsFilterSave", IsFilterSave);
+            db.SetConfig<bool>("IsFullScreenScan", IsFullScreenScan);
 
             db.SetConfig<string>("ApiUrl1", ApiUrl1 ?? "");
             db.SetConfig<string>("ApiUrl2", ApiUrl2 ?? "");
