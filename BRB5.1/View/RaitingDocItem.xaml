@@ -1,0 +1,270 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<view:BaseContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+                      xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+                      xmlns:brb5="clr-namespace:BRB5"
+                      xmlns:forms="clr-namespace:ZXing.Net.Mobile.Forms;assembly=ZXing.Net.Mobile.Forms"
+                      xmlns:Model="clr-namespace:BRB5.Model;assembly=BRB5.Model"
+                      xmlns:view="clr-namespace:BRB5.View;assembly=BRB5"
+                      x:DataType="brb5:RaitingDocItem"
+                      x:Class="BRB5.RaitingDocItem">
+    <ContentPage.Content>
+        <AbsoluteLayout>
+            <StackLayout AbsoluteLayout.LayoutBounds="1, 0, 1, .9" AbsoluteLayout.LayoutFlags="All">
+                <Label Text="{Binding NameWarehouse}" BackgroundColor="{Binding GetGPSColor}"  >
+                    <Label.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="OnFindGPS" />
+                    </Label.GestureRecognizers>
+                </Label>
+                <Editor Text="{Binding TextSave}" IsVisible="{Binding IsSaving}" HeightRequest="250" IsReadOnly="True" />
+
+                <Button IsVisible="{Binding IsSaving}"
+                        Text="{Binding TextButtonSaved}"
+                        FontSize="Medium"
+                        BorderWidth="1"
+                        HorizontalOptions="FillAndExpand"
+                        VerticalOptions="CenterAndExpand"
+                        Clicked="OnButtonSaved" />
+
+                <Grid x:Name="GridZxing" IsVisible="{Binding IsVisBarCode}" HeightRequest="150"/>
+                <!--<forms:ZXingScannerView x:Name="zxing"
+                                            HorizontalOptions="StartAndExpand"
+                                            VerticalOptions="FillAndExpand"
+                                            ScaleY="2"
+                                            OnScanResult="OnScanBarCode"
+                                            IsScanning="False"/>-->
+
+
+                <ListView x:Name="ListQuestions"
+                          HasUnevenRows="True"
+                          ItemsSource="{Binding Questions}">
+                    <ListView.Header>
+                        <StackLayout Orientation="Horizontal">
+                            <Label Text="Список Запитань"
+                                   FontSize="25"
+                                   BackgroundColor="#c5cae9"
+                                   HorizontalOptions="FillAndExpand" />
+                        </StackLayout>
+                    </ListView.Header>
+
+                    <ListView.ItemTemplate>
+                        <DataTemplate x:DataType="Model:RaitingDocItem">
+                            <ViewCell>
+                                <ViewCell.View>
+                                    <StackLayout>
+                                        <Grid BackgroundColor="{Binding BackgroundColor}"
+                                              IsVisible="{Binding IsHead}">
+                                            <Grid.GestureRecognizers>
+                                                <TapGestureRecognizer Tapped="OnHeadTapped" />
+                                            </Grid.GestureRecognizers>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="3*" />
+                                                <ColumnDefinition Width="*" />
+                                            </Grid.ColumnDefinitions>
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="auto" />
+                                                <RowDefinition/>
+                                            </Grid.RowDefinitions>
+
+                                            <Label Text="{Binding Text}" FontSize="22" Grid.RowSpan="2" FontAttributes="Bold" />
+
+                                            <StackLayout Spacing="0" Grid.Column="1" Orientation="Horizontal"  IsVisible="{Binding IsVisPSU}">
+                                                <Label Text="{Binding SumValueRating}" FontSize="22" />
+                                                <Label Text="/" FontSize="22" />
+                                                <Label Text="{Binding ValueRating}" FontSize="22" />
+                                            </StackLayout>
+                                            <ImageButton IsVisible="{Binding IsEnableNotKnow}"
+                                                         Source="NotKnow.png" 
+                                                         ClassId="NotKnow"
+                                                         Grid.Column="1"
+                                                         Grid.Row="1"
+                                                         BackgroundColor="Transparent"
+                                                         HeightRequest="50"
+                                                         Aspect="AspectFit"
+                                                         Opacity="{Binding OpacityNotKnow}"
+                                                         Clicked="OnButtonClicked" />
+                                        </Grid>
+                                        <Grid BackgroundColor="{Binding BackgroundColor}">
+
+                                            <StackLayout BackgroundColor="{Binding BackgroundColor}"
+                                                         IsVisible="{Binding IsItem}"
+                                                         >
+
+                                                <StackLayout Orientation="Horizontal">
+                                                    <Label Text="{Binding Text}" FontSize="22" />
+
+                                                    <StackLayout Spacing="0" Orientation="Horizontal" HorizontalOptions="EndAndExpand" IsVisible="{Binding IsVisTotal}">
+                                                        <Label Text="{Binding SumValueRating}" FontSize="22" />
+                                                        <Label Text="/" FontSize="22" />
+                                                        <Label Text="{Binding ValueRating}" FontSize="22" />
+                                                    </StackLayout>
+                                                </StackLayout>
+                                                <Grid Margin="0" Padding="0">
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="1*" />
+                                                        <ColumnDefinition Width="1*" />
+                                                        <ColumnDefinition Width="1*" />
+                                                        <ColumnDefinition Width="1*" />
+                                                        <ColumnDefinition Width="1*" />
+                                                        <ColumnDefinition Width="1*" />
+                                                    </Grid.ColumnDefinitions>
+
+                                                    <ImageButton IsVisible="{Binding IsEnableOk}"
+                                                                 Margin="0" Padding="0"
+                                                                 Source="Ok.png"
+                                                                 ClassId="Ok"
+                                                                 BackgroundColor="Transparent"
+                                                                 HeightRequest="60"
+                                                                 Aspect="AspectFit"
+                                                                 Opacity="{Binding OpacityOk}"
+                                                                 Clicked="OnButtonClicked" />
+
+                                                    <ImageButton IsVisible="{Binding IsEnableSoSo}"
+                                                                 Margin="0" Padding="0"
+                                                                 Source="So_so.png"
+                                                                 ClassId="SoSo"
+                                                                 Grid.Column="1"
+                                                                 BackgroundColor="Transparent"
+                                                                 HeightRequest="60"
+                                                                 Aspect="AspectFit"
+                                                                 Opacity="{Binding OpacitySoSo}"
+                                                                 Clicked="OnButtonClicked" />
+
+                                                    <ImageButton IsVisible="{Binding IsEnableBad}"
+                                                                 Margin="0" Padding="0"
+                                                                 Source="Bad.png"
+                                                                 ClassId="Bad"
+                                                                 Grid.Column="2"
+                                                                 BackgroundColor="Transparent"
+                                                                 HeightRequest="60"
+                                                                 Aspect="AspectFit"
+                                                                 Opacity="{Binding OpacityBad}"
+                                                                 Clicked="OnButtonClicked" />
+
+                                                    <ImageButton IsVisible="{Binding IsEnableNotKnow}"
+                                                                 Margin="0" Padding="0"
+                                                                 Source="NotKnow.png"
+                                                                 ClassId="NotKnow"
+                                                                 Grid.Column="3"
+                                                                 BackgroundColor="Transparent"
+                                                                 HeightRequest="60"
+                                                                 Aspect="AspectFit"
+                                                                 Opacity="{Binding OpacityNotKnow}"
+                                                                 Clicked="OnButtonClicked" />
+
+                                                    <ImageButton IsVisible="{Binding IsItem}"
+                                                                 Margin="0" Padding="0"
+                                                                 Source="Photo.png"
+                                                                 ClassId="{Binding Id}"
+                                                                 Grid.Column="4"
+                                                                 BackgroundColor="Transparent"
+                                                                 HeightRequest="60"
+                                                                 Aspect="AspectFit"
+                                                                 Clicked="TakePhotoAsync" />
+
+                                                    <Label IsVisible="{Binding IsItem}"
+                                                           TextColor="Red"
+                                                           Text="{Binding QuantityPhoto}"
+                                                           ClassId="CountFoto"
+                                                           FontSize="22"
+                                                           FontAttributes="Bold"
+                                                           Grid.Column="4"
+                                                           VerticalOptions="Start"
+                                                           HorizontalOptions="End" />
+
+                                                    <ImageButton IsVisible="{Binding IsItem}"
+                                                                 Margin="0" Padding="0"
+                                                                 Source="Edit.png"
+                                                                 ClassId="{Binding Id}"
+                                                                 Grid.Column="5"
+                                                                 BackgroundColor="Transparent"
+                                                                 HeightRequest="60"
+                                                                 Aspect="AspectFit"
+                                                                 Clicked="EditPhoto" />
+
+                                                </Grid>
+                                                <Editor IsVisible="{Binding IsItem}"
+                                                        Placeholder="Введіть коментар"
+                                                        Text="{Binding Note}"
+                                                        AutoSize="TextChanges"
+                                                        Completed="Editor_Completed" />
+                                            </StackLayout>
+                                        </Grid>
+                                    </StackLayout>
+
+                                </ViewCell.View>
+                            </ViewCell>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+
+            </StackLayout>
+
+            <Grid AbsoluteLayout.LayoutBounds="0, 1, 1, .1" AbsoluteLayout.LayoutFlags="All">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <ImageButton IsEnabled="{Binding IsSave}"
+                             Margin="0" Padding="0"
+                             Source="save.png"
+                             BackgroundColor="Transparent"
+                             Aspect="AspectFit"
+                             Clicked="OnButtonSave" />
+                
+                <ImageButton Margin="0" Padding="0"
+                             Source="All.png"
+                             Grid.Column="1"
+                             BackgroundColor="Transparent"
+                             Aspect="AspectFit"
+                             Opacity="{Binding OpacityAll}"
+                             Clicked="ShowButton"
+                             AutomationId="All"
+                             />
+                <ImageButton Margin="0" Padding="0"
+                             Source="OnlyHead.png"
+                             Grid.Column="2"
+                             BackgroundColor="Transparent"
+                             Aspect="AspectFit"
+                             Opacity="{Binding OpacityOnlyHead}"
+                             Clicked="ShowButton"
+                             AutomationId="OnlyHead"
+                             />
+                <ImageButton Margin="0" Padding="0"
+                             Source="NoAnswer.png"
+                             Grid.Column="3"
+                             BackgroundColor="Transparent"
+                             Aspect="AspectFit"
+                             Opacity="{Binding OpacityNoAnswer}"
+                             Clicked="ShowButton"
+                             AutomationId="NoAnswer"
+                             />
+
+                <Grid Grid.Column="4">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="2*" />
+                        <RowDefinition Height="3*" />
+                    </Grid.RowDefinitions>
+
+                    <Label IsVisible="{Binding QuantityAllChoice}"
+                           TextColor="Red"
+                           Text="{Binding QuantityAllChoice}"
+                           ClassId="CountFoto"
+                           FontSize="20"
+                           FontAttributes="Bold"
+                           VerticalOptions="Start"
+                           HorizontalOptions="End" />
+
+                    <ImageButton Source="BarcodeScanning.png"
+                                 Clicked="BarCode" Grid.Row="1"
+                                 BackgroundColor="Transparent"
+                                 Aspect="AspectFill"
+                                 Margin="0" Padding="0" />
+                </Grid>
+            </Grid>
+        </AbsoluteLayout>
+    </ContentPage.Content>
+</view:BaseContentPage>

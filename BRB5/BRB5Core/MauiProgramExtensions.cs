@@ -8,6 +8,7 @@ public static class MauiProgramExtensions
     {
         builder
             .UseMauiCommunityToolkit()
+            .UseFFImageLoading()
             .UseMauiApp<App>();
 
         // TODO: Add the entry points to your Apps here.

@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<controls:BaseContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+                          xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+                          xmlns:controls="clr-namespace:BRB5.View"
+                          xmlns:effects="clr-namespace:Xamarin.KeyboardHelper;assembly=Xamarin.KeyboardHelper"
+                          x:Class="BRB5.View.ManualInput">
+
+    <ContentPage.Content>
+        <StackLayout>
+
+            <Frame Style="{StaticResource FrameStyle}">
+                <controls:CustomEntry Style="{StaticResource EntryStyle}"
+                                      effects:KeyboardEffect.EnableKeyboard="{Binding IsSoftKeyboard}"
+                                      Placeholder="назва"
+                                      Text="{Binding NumberOutInvoice}" >
+                    <controls:CustomEntry.Effects>
+                        <effects:KeyboardEnableEffect/>
+                    </controls:CustomEntry.Effects>
+                </controls:CustomEntry>
+            </Frame>
+
+            <ListView ItemsSource="{Binding DocWares}" SeparatorVisibility="None">
+                <ListView.Header>
+                    <Grid RowSpacing="1"
+                          ColumnSpacing="1"
+                          Padding="1"
+                          BackgroundColor="#adaea7">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="1*" />
+                            <ColumnDefinition Width="1*" />
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition />
+                            <RowDefinition />
+                        </Grid.RowDefinitions>
+
+                        <Label Text="Назва"
+                               Grid.ColumnSpan="2"
+                               BackgroundColor="White" />
+
+                        <Label Text="Замовленно"
+                               Grid.Row="1"
+                               Grid.Column="0"
+                               BackgroundColor="White" />
+
+                        <Label Text="Прийнято"
+                               Grid.Row="1"
+                               Grid.Column="1"
+                               BackgroundColor="White" />
+
+                    </Grid>
+                </ListView.Header>
+                <ListView.ItemTemplate>
+                    <DataTemplate xmlns:brb5="clr-namespace:BRB5">
+                        <ViewCell>
+                            <ViewCell.View>
+                                <Grid RowSpacing="1"
+                                      ColumnSpacing="1"
+                                      HeightRequest="60"
+                                      Padding="1"
+                                      BackgroundColor="#adaea7">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="1*" />
+                                        <ColumnDefinition Width="1*" />
+                                    </Grid.ColumnDefinitions>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="20" />
+                                        <RowDefinition Height="40" />
+                                    </Grid.RowDefinitions>
+
+                                    <Label Text="{Binding NameWares}"
+                                           Grid.ColumnSpan="2"
+                                           BackgroundColor="White" />
+
+                                    <Label Text="{Binding QuantityOrder}"
+                                           Grid.Row="1"
+                                           Grid.Column="0"
+                                           BackgroundColor="White" />
+
+                                    <Frame Style="{StaticResource FrameStyle}"
+                                           BackgroundColor="White"
+                                           Grid.Row="1"
+                                           Grid.Column="1">
+                                        <controls:CustomEntry
+                                            Style="{StaticResource EntryStyle}"
+                                            effects:KeyboardEffect.EnableKeyboard="{Binding IsSoftKeyboard}"
+                                            Keyboard="Numeric"
+                                            Text="{Binding InputQuantity}" >
+                                            <controls:CustomEntry.Effects>
+                                                <effects:KeyboardEnableEffect/>
+                                            </controls:CustomEntry.Effects>
+                                        </controls:CustomEntry>
+                                    </Frame>
+
+                                </Grid>
+                            </ViewCell.View>
+                        </ViewCell>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+        </StackLayout>
+    </ContentPage.Content>
+</controls:BaseContentPage>
