@@ -2,29 +2,22 @@
 
 <controls:BaseContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
                           xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-                          xmlns:forms="clr-namespace:ZXing.Net.Mobile.Forms;assembly=ZXing.Net.Mobile.Forms"
                           xmlns:controls="clr-namespace:BRB5.View"
+                          xmlns:effects="clr-namespace:Xamarin.KeyboardHelper;assembly=Xamarin.KeyboardHelper"
                           x:Class="BRB5.View.DocScan">
     <ContentPage.Content>
         <AbsoluteLayout Padding="0" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand">
 
             <StackLayout IsEnabled="True" AbsoluteLayout.LayoutBounds="1, 1, 1,1" AbsoluteLayout.LayoutFlags="All">
-                <Grid IsVisible="{Binding IsVisScan}" HeightRequest="300">
-                    <forms:ZXingScannerView x:Name="zxing"
-                                            ScaleY="1.7"
-                                            HorizontalOptions="StartAndExpand"
-                                            VerticalOptions="FillAndExpand">
-                    </forms:ZXingScannerView>
-                </Grid>
-                <Grid IsVisible="{Binding IsVisScan}" HeightRequest="50" />
+
+                <Grid x:Name="GridZxing" IsVisible="{Binding IsVisScan}"  HeightRequest="400"/>             
 
                 <Grid>
 
                     <Grid.RowDefinitions>
                         <RowDefinition Height="auto" />
-                        <RowDefinition Height="3*" />
-                        <RowDefinition Height="7*" />
                         <RowDefinition Height="2*" />
+                        <RowDefinition Height="5*" />
                     </Grid.RowDefinitions>
 
                     <Label Text="{Binding ScanData.NameWares}"
@@ -41,15 +34,25 @@
 
                         <Frame Style="{StaticResource FrameStyle}">
                             <controls:CustomEntry Style="{StaticResource EntryStyle}"
+                                  effects:KeyboardEffect.EnableKeyboard="{Binding IsSoftKeyboard}"
                                                   Text="{Binding ScanData.BarCode}"
                                                   IsReadOnly="True"
-                                                  Placeholder="баркод" />
+                                                  Placeholder="баркод" >
+                                <controls:CustomEntry.Effects>
+                                    <effects:KeyboardEnableEffect/>
+                                </controls:CustomEntry.Effects>
+                            </controls:CustomEntry>
                         </Frame>
                         <Frame Style="{StaticResource FrameStyle}"
                                Grid.Column="1">
                             <controls:CustomEntry Style="{StaticResource EntryStyle}"
+                                  effects:KeyboardEffect.EnableKeyboard="{Binding IsSoftKeyboard}"
                                                   Text="{Binding ScanData.BeforeQuantity}"
-                                                  IsReadOnly="True" />
+                                                  IsReadOnly="True" >
+                                <controls:CustomEntry.Effects>
+                                    <effects:KeyboardEnableEffect/>
+                                </controls:CustomEntry.Effects>
+                            </controls:CustomEntry>
                         </Frame>
 
                         <Grid Grid.Row="1">
@@ -62,11 +65,17 @@
 
                             <Frame Grid.Column="0" Style="{StaticResource FrameStyle}">
                                 <controls:CustomEntry Style="{StaticResource EntryStyle}"
+                                  effects:KeyboardEffect.EnableKeyboard="{Binding IsSoftKeyboard}"
                                                       Text="{Binding ScanData.InputQuantity}"
                                                       x:Name="inputQ"
+                                                      Unfocused="UnfocusedInputQ"
                                                       TextChanged="CalcQuantity"
                                                       Placeholder="к-сть"
-                                                      Keyboard="Telephone" />
+                                                      Keyboard="Telephone" >
+                                    <controls:CustomEntry.Effects>
+                                        <effects:KeyboardEnableEffect/>
+                                    </controls:CustomEntry.Effects>
+                                </controls:CustomEntry>
                             </Frame>
 
                             <Label Text="{Binding ScanData.NameUnit}" Grid.Column="1" />
@@ -75,8 +84,13 @@
                             <Frame Style="{StaticResource FrameStyle}"
                                    Grid.Column="3">
                                 <controls:CustomEntry Style="{StaticResource EntryStyle}"
+                                  effects:KeyboardEffect.EnableKeyboard="{Binding IsSoftKeyboard}"
                                                       Text="{Binding ScanData.Coefficient}"
-                                                      IsReadOnly="True" />
+                                                      IsReadOnly="True" >
+                                    <controls:CustomEntry.Effects>
+                                        <effects:KeyboardEnableEffect/>
+                                    </controls:CustomEntry.Effects>
+                                </controls:CustomEntry>
                             </Frame>
                         </Grid>
 
@@ -84,13 +98,17 @@
                                Grid.Column="1"
                                Grid.Row="1">
                             <controls:CustomEntry Style="{StaticResource EntryStyle}"
+                                  effects:KeyboardEffect.EnableKeyboard="{Binding IsSoftKeyboard}"
                                                   Text="{Binding ScanData.QuantityBarCode}"
-                                                  IsReadOnly="True" />
+                                                  IsReadOnly="True" >
+                                <controls:CustomEntry.Effects>
+                                    <effects:KeyboardEnableEffect/>
+                                </controls:CustomEntry.Effects>
+                            </controls:CustomEntry>
                         </Frame>
                     </Grid>
 
-
-                    <ListView Grid.Row="2" ItemsSource="{Binding ListWares}" SeparatorVisibility="None">
+                    <ListView Grid.Row="2" ItemsSource="{Binding ListWares}" x:Name="ListViewWares" SeparatorVisibility="None" HasUnevenRows="True" >
                         <ListView.Header>
                             <Grid RowSpacing="1"
                                   ColumnSpacing="1"
@@ -98,8 +116,8 @@
                                   BackgroundColor="#adaea7">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="1*" />
-                                    <ColumnDefinition Width="6*" />
-                                    <ColumnDefinition Width="2*" />
+                                    <ColumnDefinition Width="12*" />
+                                    <ColumnDefinition Width="3*" />
                                     <ColumnDefinition Width="2*" />
                                 </Grid.ColumnDefinitions>
 
@@ -111,7 +129,7 @@
                                 <Label Text="к-сть"
                                        Grid.Column="2"
                                        BackgroundColor="White" />
-                                <Label Text="ст.к-сть"
+                                <Label Text="ст."
                                        Grid.Column="3"
                                        BackgroundColor="White" />
                             </Grid>
@@ -126,73 +144,76 @@
                                           BackgroundColor="#adaea7">
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="1*" />
-                                            <ColumnDefinition Width="6*" />
-                                            <ColumnDefinition Width="2*" />
+                                            <ColumnDefinition Width="12*" />
+                                            <ColumnDefinition Width="3*" />
                                             <ColumnDefinition Width="2*" />
                                         </Grid.ColumnDefinitions>
 
-                                        <Label Text="{Binding OrderDoc}"
+                                        <Label Text="{Binding OrderDoc}" 
                                                BackgroundColor="{Binding GetLightBackgroundColor}" />
                                         <Label Text="{Binding NameWares}"
-                                               Grid.Column="1"
+                                               Grid.Column="1" LineBreakMode="NoWrap"
                                                BackgroundColor="{Binding GetLightBackgroundColor}" />
                                         <Label Text="{Binding InputQuantity}"
-                                               Grid.Column="2"
+                                               Grid.Column="2" LineBreakMode="NoWrap"
                                                BackgroundColor="{Binding GetLightBackgroundColor}" />
                                         <Label Text="{Binding QuantityOld}"
-                                               Grid.Column="3"
+                                               Grid.Column="3" LineBreakMode="NoWrap"
                                                BackgroundColor="{Binding GetLightBackgroundColor}" />
 
                                     </Grid>
                                 </ViewCell>
                             </DataTemplate>
                         </ListView.ItemTemplate>
-                    </ListView>
-
-                    <StackLayout Grid.Row="3" VerticalOptions="Fill" Orientation="Horizontal">
-                        <Label Text="f1-"
-                               FontSize="16"
-                               Grid.Column="2"
-                               TextColor="#ff5c5c" />
-                        <Label Text="обнулити"
-                               FontSize="18"
-                               Grid.Column="3"
-                               TextColor="#816f20">
-
-                            <Label.GestureRecognizers>
-                                <TapGestureRecognizer Tapped="Reset" />
-                            </Label.GestureRecognizers>
-                        </Label>
-                        <Label Text="f2-" FontSize="16"
-                               TextColor="#ff5c5c"
-                               Grid.Column="4" />
-                        <Label Text="↑"
-                               FontSize="18"
-                               Grid.Column="5"
-                               TextColor="#816f20">
-                        </Label>
-                        <Label Text="f3-"
-                               FontSize="16"
-                               Grid.Column="6"
-                               TextColor="#ff5c5c" />
-                        <Label Text="↓"
-                               FontSize="18"
-                               Grid.Column="7"
-                               TextColor="#816f20">
-                        </Label>
-                        <Label Text="f8-"
-                               FontSize="16"
-                               Grid.Column="6"
-                               TextColor="#ff5c5c" />
-                        <Label Text="{Binding F8Text}"
-                               FontSize="18"
-                               Grid.Column="7"
-                               TextColor="#816f20">
-                        </Label>
-                    </StackLayout>
+                    </ListView>                    
 
                 </Grid>
-
+                <StackLayout VerticalOptions="EndAndExpand" Orientation="Horizontal">
+                    <Label Text="f1-"
+                           FontSize="16"
+                           TextColor="#ff5c5c" />
+                    <Label Text="обнулити"
+                           FontSize="18"
+                           TextColor="#816f20">
+                        <Label.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="Reset" />
+                        </Label.GestureRecognizers>
+                    </Label>
+                    <Label Text="F2-" FontSize="16"
+                           TextColor="#ff5c5c">
+                        <Label.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="Up" />
+                        </Label.GestureRecognizers>
+                    </Label>
+                    <Label Text="↑"
+                           FontSize="18"
+                           TextColor="#816f20">
+                        <Label.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="Up" />
+                        </Label.GestureRecognizers>
+                    </Label>
+                    <Label Text="F3-"
+                           FontSize="16"
+                           TextColor="#ff5c5c" >
+                        <Label.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="Down" />
+                        </Label.GestureRecognizers>
+                    </Label>
+                    <Label Text="↓"
+                           FontSize="18"
+                           TextColor="#816f20">
+                        <Label.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="Down" />
+                        </Label.GestureRecognizers>
+                    </Label>
+                    <Label Text="F8-"
+                           FontSize="16"
+                           TextColor="#ff5c5c" />
+                    <Label Text="{Binding F8Text}"
+                           FontSize="18"
+                           TextColor="#816f20">
+                    </Label>
+                </StackLayout>
             </StackLayout>
             <BoxView IsVisible="{Binding IsVisQ}" Color="Gray" Opacity=".3" AbsoluteLayout.LayoutBounds="0, 0, 1, 1"
                      AbsoluteLayout.LayoutFlags="All" />

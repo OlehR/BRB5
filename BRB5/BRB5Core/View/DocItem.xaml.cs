@@ -5,6 +5,9 @@ using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using CommunityToolkit.Maui.Extensions;
 using System.Net.NetworkInformation;
+using BL.Connector;
+using BL;
+using Microsoft.Maui.Controls.Compatibility;
 using Microsoft.Maui.Controls;
 using Microsoft.Maui;
 
@@ -14,8 +17,8 @@ namespace BRB5.View
     {
         private readonly TypeDoc TypeDoc;
         
-        private Doc Doc;
-        private Connector.Connector c = Connector.Connector.GetInstance(); 
+        private DocVM Doc;
+        private Connector c = Connector.GetInstance(); 
         protected DB db = DB.GetDB();
         string _NumberOutInvoice = "";
         public string NumberOutInvoice { get { return _NumberOutInvoice; } set { _NumberOutInvoice = value; OnPropertyChanged("NumberOutInvoice"); } }
@@ -29,23 +32,28 @@ namespace BRB5.View
                 }
         }
         public int SelectedDataStr { get; set; } = 0;
+        public bool IsSoftKeyboard { get {  return Config.IsSoftKeyboard; } }
         bool _IsVisibleDocF6 = false;
         public bool IsVisibleDocF6 { get { return _IsVisibleDocF6; } set { _IsVisibleDocF6 = value; OnPropertyChanged("IsVisibleDocF6"); } } 
         public ObservableCollection<DocWaresEx> MyDocWares { get; set; } = new ObservableCollection<DocWaresEx>();
         public DocItem(DocId pDocId,  TypeDoc pTypeDoc)
         {
-            MessagingCenter.Subscribe<KeyEventMessage>(this, "F2Pressed", message => { F2Save(null, EventArgs.Empty); });
-            MessagingCenter.Subscribe<KeyEventMessage>(this, "F3Pressed", message => { F3Scan(null, EventArgs.Empty); });
-            MessagingCenter.Subscribe<KeyEventMessage>(this, "F4Pressed", message => { F4WrOff(null, EventArgs.Empty); });
-            MessagingCenter.Subscribe<KeyEventMessage>(this, "F6Pressed", message => { F6Doc(null, EventArgs.Empty); });
             TypeDoc = pTypeDoc;
-            Doc = new Doc(pDocId);           
+            Doc = new DocVM(pDocId);           
             BindingContext = this;
             InitializeComponent();
         }
         protected override void OnAppearing()
         {
             base.OnAppearing();
+
+            if(!IsSoftKeyboard)
+            {
+                MessagingCenter.Subscribe<KeyEventMessage>(this, "F2Pressed", message => { F2Save(null, EventArgs.Empty); });
+                MessagingCenter.Subscribe<KeyEventMessage>(this, "F3Pressed", message => { F3Scan(null, EventArgs.Empty); });
+                MessagingCenter.Subscribe<KeyEventMessage>(this, "F4Pressed", message => { F4WrOff(null, EventArgs.Empty); });
+                MessagingCenter.Subscribe<KeyEventMessage>(this, "F6Pressed", message => { F6Doc(null, EventArgs.Empty); });
+            }
             var r = db.GetDocWares(Doc, 1, eTypeOrder.Scan);
             if (r != null)
             {
@@ -57,10 +65,14 @@ namespace BRB5.View
         protected override void OnDisappearing()
         {
             base.OnDisappearing();
-            MessagingCenter.Unsubscribe<KeyEventMessage>(this, "F2Pressed");
-            MessagingCenter.Unsubscribe<KeyEventMessage>(this, "F3Pressed");
-            MessagingCenter.Unsubscribe<KeyEventMessage>(this, "F4Pressed");
-            MessagingCenter.Unsubscribe<KeyEventMessage>(this, "F6Pressed");
+
+            if (!IsSoftKeyboard)
+            {
+                MessagingCenter.Unsubscribe<KeyEventMessage>(this, "F2Pressed");
+                MessagingCenter.Unsubscribe<KeyEventMessage>(this, "F3Pressed");
+                MessagingCenter.Unsubscribe<KeyEventMessage>(this, "F4Pressed");
+                MessagingCenter.Unsubscribe<KeyEventMessage>(this, "F6Pressed");
+            }
         }
         private void F2Save(object sender, EventArgs e)
         {
@@ -70,21 +82,14 @@ namespace BRB5.View
             if (r.State != 0) _ = DisplayAlert("Помилка", r.TextError, "OK");
             else _ = this.DisplayToastAsync("Документ успішно збережений");
         }
-
-        private async void F3Scan(object sender, EventArgs e)
-        {
-            await Navigation.PushAsync(new DocScan(Doc, TypeDoc));
-        }
-
-        private async void F4WrOff(object sender, EventArgs e)
-        {
-            await Navigation.PushAsync(new ManualInput(Doc, TypeDoc));
-        }
-
+        private async void F3Scan(object sender, EventArgs e) { await Navigation.PushAsync(new DocScan(Doc, TypeDoc)); }
+        private async void F4WrOff(object sender, EventArgs e) { await Navigation.PushAsync(new ManualInput(Doc, TypeDoc));  }
         private void F6Doc(object sender, EventArgs e)
         {
             IsVisibleDocF6 = !IsVisibleDocF6;
-        }        
+            if (IsVisibleDocF6) DocDate.Focus();
+        }
+        private void DocNameFocus(object sender, FocusEventArgs e) {  DocName.Focus(); }
     }
     public class AlternateColorDataTemplateSelector : DataTemplateSelector
     {

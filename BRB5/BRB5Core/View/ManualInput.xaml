@@ -3,6 +3,7 @@
 <controls:BaseContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
                           xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
                           xmlns:controls="clr-namespace:BRB5.View"
+                          xmlns:effects="clr-namespace:Xamarin.KeyboardHelper;assembly=Xamarin.KeyboardHelper"
                           x:Class="BRB5.View.ManualInput">
 
     <ContentPage.Content>
@@ -10,8 +11,13 @@
 
             <Frame Style="{StaticResource FrameStyle}">
                 <controls:CustomEntry Style="{StaticResource EntryStyle}"
+                                      effects:KeyboardEffect.EnableKeyboard="{Binding IsSoftKeyboard}"
                                       Placeholder="назва"
-                                      Text="{Binding NumberOutInvoice}" />
+                                      Text="{Binding NumberOutInvoice}" >
+                    <controls:CustomEntry.Effects>
+                        <effects:KeyboardEnableEffect/>
+                    </controls:CustomEntry.Effects>
+                </controls:CustomEntry>
             </Frame>
 
             <ListView ItemsSource="{Binding DocWares}" SeparatorVisibility="None">
@@ -78,8 +84,13 @@
                                            Grid.Column="1">
                                         <controls:CustomEntry
                                             Style="{StaticResource EntryStyle}"
+                                            effects:KeyboardEffect.EnableKeyboard="{Binding IsSoftKeyboard}"
                                             Keyboard="Numeric"
-                                            Text="{Binding InputQuantity}" />
+                                            Text="{Binding InputQuantity}" >
+                                            <controls:CustomEntry.Effects>
+                                                <effects:KeyboardEnableEffect/>
+                                            </controls:CustomEntry.Effects>
+                                        </controls:CustomEntry>
                                     </Frame>
 
                                 </Grid>

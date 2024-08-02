@@ -1,4 +1,5 @@
-﻿using BRB5.Model;
+﻿using BL;
+using BRB5.Model;
 using NativeMedia;
 using System;
 using System.Collections.Generic;
@@ -8,6 +9,7 @@ using System.Linq;
 using System.Threading;
 using Microsoft.Maui.Controls.Xaml;
 using File = System.IO.File;
+using Microsoft.Maui.Controls.Compatibility;
 using Microsoft.Maui.Controls;
 using Microsoft.Maui;
 
@@ -104,6 +106,7 @@ namespace BRB5.View
                 File.Delete(el.FileName);
                 MyFiles.Remove(el);
                 Raiting.QuantityPhoto--;
+                if(Raiting.QuantityPhoto < 0) Raiting.QuantityPhoto = 0;
                 db.ReplaceRaitingDocItem(Raiting);
             }
         }
@@ -115,35 +118,22 @@ namespace BRB5.View
 
             try
             {
-                var request = new MediaPickRequest(5, MediaFileType.Image, MediaFileType.Video)
+                var request = new MediaPickRequest(15, MediaFileType.Image, MediaFileType.Video)
                 {
                     PresentationSourceBounds = System.Drawing.Rectangle.Empty,
                     UseCreateChooser = true,
                     Title = "Select"
                 };
-
                 cts.CancelAfter(TimeSpan.FromMinutes(5));
 
                 var results = await MediaGallery.PickAsync(request, cts.Token);
                 files = results?.Files?.ToArray();
             }
-            catch (OperationCanceledException)
-            {
-                // handling a cancellation request
-            }
-            catch (Exception)
-            {
-                // handling other exceptions
-            }
-            finally
-            {
-                cts.Dispose();
-            }
+            catch (OperationCanceledException)   {  /* handling a cancellation request  */  }
+            catch (Exception)   {   /* handling other exceptions*/     }
+            finally  {  cts.Dispose();  }
 
-
-            if (files == null)
-                return;
-            
+            if (files == null)  return;            
 
             foreach (var file in files)
             {

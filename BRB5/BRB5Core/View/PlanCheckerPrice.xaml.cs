@@ -1,16 +1,14 @@
 ﻿using BRB5.Model;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Maui.Controls.Xaml;
-using ZXing.Mobile;
-using ZXing;
 using ZXing.Net.Mobile.Forms;
 using System.Collections.ObjectModel;
-using static SQLite.SQLite3;
-using System.Reflection;
+using BRB5.ViewModel;
+using BL.Connector;
+using BL;
+using Microsoft.Maui.Controls.Compatibility;
 using Microsoft.Maui.Controls;
 using Microsoft.Maui;
 
@@ -19,20 +17,24 @@ namespace BRB5.View
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class PlanCheckerPrice : ContentPage
     {
-        Connector.Connector c;
+        Connector c;
         protected DB db = DB.GetDB();
+        BL.BL Bl = BL.BL.GetBL();
         ZXingScannerView zxing;
-        private Doc Doc;
+        private DocVM Doc;
         public bool IsVisScan { get { return Config.TypeScaner == eTypeScaner.Camera; } }
         public ObservableCollection<DocWaresEx> WaresList { get; set; }
         //private object Sender;
         private int ShelfType;
+        public bool IsSoftKeyboard { get { return Config.IsSoftKeyboard; } }
+        private string CurrentCodeWares;
+        private int CurrentEntryType;
 
-        public PlanCheckerPrice(Doc pDoc, int Selection)
+        public PlanCheckerPrice(DocVM pDoc, int Selection)
         {
             Doc = pDoc;
             ShelfType = Selection;
-            c = Connector.Connector.GetInstance();
+            c = Connector.GetInstance();
             // TODO Xamarin.Forms.Device.RuntimePlatform is no longer supported. Use Microsoft.Maui.Devices.DeviceInfo.Platform instead. For more details see https://learn.microsoft.com/en-us/dotnet/maui/migration/forms-projects#device-changes
             NavigationPage.SetHasNavigationBar(this, Device.RuntimePlatform == Device.iOS || Config.TypeScaner == eTypeScaner.BitaHC61 || Config.TypeScaner == eTypeScaner.Zebra || Config.TypeScaner == eTypeScaner.PM550 || Config.TypeScaner == eTypeScaner.PM351);
             InitializeComponent();
@@ -54,86 +56,53 @@ namespace BRB5.View
         private void GetData()
         {
             var temp = c.GetPromotionData(Doc.NumberDoc);
-            if (temp.Info == null)
+            if (temp == null || temp.Info == null)
             {
                 WaresList = new ObservableCollection<DocWaresEx>();
-                _ = DisplayAlert("Помилка", temp.TextError, "OK");
+                _ = DisplayAlert("Помилка", temp?.TextError, "OK");
             }
-            else
-            {
-                int i=0;
-                foreach (var item in temp.Info) {
-                    item.TypeDoc = 13;
-                    item.OrderDoc = i++; }
-                               
-                db.ReplaceDocWaresSample(temp.Info.Select(el=> new DocWaresSample(el)));
-
-                WaresList = new ObservableCollection<DocWaresEx>(db.GetDocWares(Doc, 1, eTypeOrder.Name, ShelfType));
-            }            
+            else WaresList = Bl.GetDataPCP(temp.Info, Doc, ShelfType);
+                  
         }
 
-        void BarCode(string pBarCode)
-        {
-            WareFocus(pBarCode);
-        }
+        void BarCode(string pBarCode) {   WareFocus(pBarCode);  }
 
         protected override void OnAppearing()
         {
             base.OnAppearing();
             if (IsVisScan)
             {
-                zxing = SetZxing(GridZxing, zxing);
+                zxing = ZxingBRB5.SetZxing(GridZxing, zxing, (BarCode) => WareFocus(BarCode));
                 zxing.IsScanning = true;
                 zxing.IsAnalyzing = true;
+            }
+
+            if (!IsSoftKeyboard)
+            {
+                MessagingCenter.Subscribe<KeyEventMessage>(this, "BackPressed", message => { KeyBack(); });
+                MessagingCenter.Subscribe<KeyEventMessage>(this, "EnterPressed", message => { SaveAndFocusNext(CurrentCodeWares, CurrentEntryType); });
             }
         }
         protected override void OnDisappearing()
         {
             if (IsVisScan) zxing.IsScanning = false;
             base.OnDisappearing();
-        }
 
-        public void Dispose()
-        {
-            Config.BarCode -= BarCode;
-        }
-        ZXingScannerView SetZxing(Grid pV, ZXingScannerView pZxing)
-        {
-            if (pZxing != null)
+            if (!IsSoftKeyboard)
             {
-                // TODO Xamarin.Forms.Device.RuntimePlatform is no longer supported. Use Microsoft.Maui.Devices.DeviceInfo.Platform instead. For more details see https://learn.microsoft.com/en-us/dotnet/maui/migration/forms-projects#device-changes
-                if (Device.RuntimePlatform == Device.iOS)
-                    return pZxing;
-                pV.Children.Remove(pZxing);
+                MessagingCenter.Unsubscribe<KeyEventMessage>(this, "BackPressed");
+                MessagingCenter.Unsubscribe<KeyEventMessage>(this, "EnterPressed");
             }
-            pZxing = new ZXingScannerView();
-            pV.Children.Add(pZxing);
-
-            pZxing.Options = new MobileBarcodeScanningOptions
-            {
-                PossibleFormats = new List<BarcodeFormat>
-                    {
-                        BarcodeFormat.All_1D,
-                        BarcodeFormat.QR_CODE,
-                    },
-                UseNativeScanning = true,
-            };
-            pZxing.OnScanResult += (result) =>
-                Device.BeginInvokeOnMainThread(async () =>
-                // Stop analysis until we navigate away so we don't keep reading barcodes
-                {
-                    pZxing.IsAnalyzing = false; 
-                    WareFocus(result.Text);
-                    pZxing.IsAnalyzing = true;
-                });
-            return pZxing;
         }
+
+        public void Dispose()  { Config.BarCode -= BarCode; }
+        
         private void WareFocus(string pBarCode)
         {
             var parseBarCode = c.ParsedBarCode(pBarCode, true);
             var temp = db.GetScanData(Doc, parseBarCode);
 
-            var tempSelected = WaresList.FirstOrDefault(item => item.CodeWares == temp.CodeWares);
+            var tempSelected = WaresList.FirstOrDefault(item => item.CodeWares == temp?.CodeWares);
             Device.BeginInvokeOnMainThread(async () =>
             {
                 if (tempSelected != null)
@@ -156,45 +125,24 @@ namespace BRB5.View
             _ = DisplayAlert("Збереження", res.TextError, "ok");            
         }
 
-        private void SaveItemAvailable(object sender, EventArgs e)
-        {
-            SaveAndFocusNext(sender, 1);
-        }
+        private void SaveItemAvailable(object sender, EventArgs e) {    SaveAndFocusNext((sender as Entry).AutomationId, 1);   }
         private void EntryFocused(object sender, FocusEventArgs e)
         {
-            //var t = sender.GetHashCode();
-            //int tw;
-            //if (Sender != null)
-            //{
-            //    tw = Sender.GetHashCode();
-            //    if (sender.GetHashCode().Equals(Sender.GetHashCode())) 
-            //        return;                
-            //}
-            //Sender = sender;
-
+            var entry = sender as Entry;
             if (IsVisScan)
             Device.BeginInvokeOnMainThread(() =>
-            {
-                var entry = sender as Entry;
+            {                
                 entry.CursorPosition = 0;
                 entry.SelectionLength = entry.Text == null ? 0 : entry.Text.Length;
             });
         }
 
-        private void SaveItemAdd(object sender, EventArgs e)
-        {
-            SaveAndFocusNext(sender, 2);
-        }
+        private void SaveItemAdd(object sender, EventArgs e)    {  SaveAndFocusNext((sender as Entry).AutomationId, 2);   }
 
-        private void SaveItem(object sender, FocusEventArgs e)
-        {
-            SaveAndFocusNext(sender, 3);
-        }
+        private void SaveItem(object sender, FocusEventArgs e)   {   SaveAndFocusNext((sender as Entry).AutomationId, 3);    }
 
-        private void SaveAndFocusNext(object sender, int Type)
+        private void SaveAndFocusNext(string codeWares, int Type)
         {
-            var temp = sender as Entry;
-            var codeWares = temp.AutomationId;
             var tempSelected = WaresList.FirstOrDefault(item => item.CodeWares.ToString() == codeWares);
             tempSelected.Quantity = tempSelected.InputQuantity;
             tempSelected.CodeReason = ShelfType;
@@ -209,8 +157,35 @@ namespace BRB5.View
             {
                 var next = (((list[Type == 1 ? index : nextIndex] as ViewCell).View as Grid).Children.ElementAt(Type == 1 ? 3 : 2) as Frame).Content as Entry;
                 next.Focus();
+                CurrentCodeWares = next.AutomationId;
+                CurrentEntryType = Type == 1 ? 2 : 1;
             }
         }
 
+        private async void KeyBack()  {  await Navigation.PopAsync();   }
+
+        private void TextChangedAdd(object sender, TextChangedEventArgs e)
+        {
+            var entry = sender as Entry;
+            CurrentCodeWares = entry.AutomationId;
+            CurrentEntryType = 2;
+        }
+
+        private void TextChangedAvailable(object sender, TextChangedEventArgs e)
+        {
+            var entry = sender as Entry;
+            CurrentCodeWares = entry.AutomationId;
+            CurrentEntryType = 1;
+        }
+    }
+    public class KeyboardTypeDataTemplateSelector : DataTemplateSelector
+    {
+        public DataTemplate SoftKeyboardTemplate { get; set; }
+        public DataTemplate HardKeyboardTemplate { get; set; }
+
+        protected override DataTemplate OnSelectTemplate(object item, BindableObject container)
+        {
+            return Config.IsSoftKeyboard ? SoftKeyboardTemplate : HardKeyboardTemplate;
+        }
     }
 }

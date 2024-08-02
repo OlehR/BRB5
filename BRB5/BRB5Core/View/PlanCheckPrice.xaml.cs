@@ -1,4 +1,6 @@
-﻿using BRB5.Model;
+﻿using BL;
+using BL.Connector;
+using BRB5.Model;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -6,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Maui.Controls.Xaml;
+using Microsoft.Maui.Controls.Compatibility;
 using Microsoft.Maui.Controls;
 using Microsoft.Maui;
 
@@ -16,29 +19,29 @@ namespace BRB5.View
     {
 
         DB db = DB.GetDB();
-        Connector.Connector c;
+        Connector c;
 
-        public ObservableCollection<Doc> PromotionList { get; set; }
+        public ObservableCollection<DocVM> PromotionList { get; set; }
         public int Selection { get; set; } = 0;
         public PlanCheckPrice()
         {
             InitializeComponent();
-            c = Connector.Connector.GetInstance();
+            c = Connector.GetInstance();
 
             var temp = c.GetPromotion(Config.CodeWarehouse);
             if (temp.Info == null)
             {
-                PromotionList = new ObservableCollection<Doc>();
+                PromotionList = new ObservableCollection<DocVM>();
                 _ = DisplayAlert("Помилка", temp.TextError, "OK");
             }
             else
             {
-                PromotionList = new ObservableCollection<Doc>(temp.Info);
+                PromotionList = new ObservableCollection<DocVM>(temp.Info);
                 foreach (var doc in temp.Info)
                 {
                     doc.TypeDoc = 13;
                 }
-                db.ReplaceDoc(temp.Info);
+                db.ReplaceDoc(temp.Info.Select(el=> (Doc) el.Clone() ));
             }
 
             this.BindingContext = this;
@@ -50,7 +53,7 @@ namespace BRB5.View
             {
                 Button button = (Button)sender;
                 Cell cc = button.Parent as Cell;
-                var vDoc = cc.BindingContext as Doc;
+                var vDoc = cc.BindingContext as DocVM;
 
                 _ = Navigation.PushAsync(new PlanCheckerPrice(vDoc, Selection));
             }   else _ = DisplayAlert("","Оберіть тип стелажу", "ok");

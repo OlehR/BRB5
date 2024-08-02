@@ -1,4 +1,6 @@
-﻿using BRB5.Model;
+﻿using BL;
+using BL.Connector;
+using BRB5.Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,14 +10,14 @@ namespace BRB5.View
 	public partial class RaitingDocEdit
 	{
         DB db = DB.GetDB();
-        BRB5.Connector.Connector c;
+        Connector c;
         private readonly TypeDoc TypeDoc;
         public List<RaitingTemplate> RT { get { return db.GetRaitingTemplate().Where(t => t.Text != null).ToList(); } }
 
         public int SelectedTemplate { get; set; }
         
-        private Doc _RD;
-        public Doc RD { get { return _RD; } set { _RD = value; OnPropertyChanged(nameof(RD)); } }
+        private DocVM _RD;
+        public DocVM RD { get { return _RD; } set { _RD = value; OnPropertyChanged(nameof(RD)); } }
         public List<Warehouse> ListWarehouse
         {
             get
@@ -37,10 +39,11 @@ namespace BRB5.View
             }
         }
         public int SelectedWarehouse { get; set; }
-        public RaitingDocEdit (Doc doc, TypeDoc vTypeDoc)
+        public bool IsSoftKeyboard { get { return Config.IsSoftKeyboard; } }
+        public RaitingDocEdit (DocVM doc, TypeDoc vTypeDoc)
 		{
 			InitializeComponent ();
-            c = Connector.Connector.GetInstance();
+            c = Connector.GetInstance();
             RD = doc;
             TypeDoc = vTypeDoc;
             SelectedTemplate = RT.FindIndex(t => t.IdTemplate == RD.IdTemplate);

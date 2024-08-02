@@ -3,6 +3,7 @@
 <controls:BaseContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
                           xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
                           xmlns:controls="clr-namespace:BRB5.View"
+                          xmlns:effects="clr-namespace:Xamarin.KeyboardHelper;assembly=Xamarin.KeyboardHelper"
                           x:Class="BRB5.View.RaitingDocEdit">
     <NavigationPage.TitleView>
         <Button Text="Зберегти"
@@ -22,7 +23,12 @@
             <Frame Style="{StaticResource FrameStyle}"
                    Grid.Column="1">
                 <controls:CustomEntry Style="{StaticResource EntryStyle}"
-                                      Text="{Binding RD.Description}" />
+                                      effects:KeyboardEffect.EnableKeyboard="{Binding IsSoftKeyboard}"
+                                      Text="{Binding RD.Description}" >
+                    <controls:CustomEntry.Effects>
+                        <effects:KeyboardEnableEffect/>
+                    </controls:CustomEntry.Effects>
+                </controls:CustomEntry>
             </Frame>
 
             <Label Text="Шаблон опитування:" FontSize="Medium" />

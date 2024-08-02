@@ -1,16 +1,21 @@
-﻿using BRB5.Connector;
-using BRB5.Model;
+﻿using BRB5.Model;
 using BRB5.View;
+using BRB5.ViewModel;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using System.Timers;
 using Utils;
+using ZXing.Net.Mobile.Forms;
+using Microsoft.Maui.Controls.Compatibility;
 using Microsoft.Maui.Controls;
 using Microsoft.Maui;
+using Microsoft.Maui.Media;
+using Microsoft.Maui.ApplicationModel;
+using Microsoft.Maui.Devices.Sensors;
 
 namespace BRB5
 {
@@ -18,43 +23,47 @@ namespace BRB5
     //[QueryProperty(nameof(TypeDoc), nameof(TypeDoc))]
     //[XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class RaitingDocItem
-    {
-        Timer t;
-        //Utils u = Utils.GetUtils();
-
-        DB db = DB.GetDB();
-        BL Bl = BL.GetBL();
-        Doc cDoc;
-        Connector.Connector c = Connector.Connector.GetInstance();
+    {       
+        BL.BL Bl = BL.BL.GetBL();
+        DocVM cDoc;
+        
         bool _IsVisBarCode = false;
-        public bool IsVisBarCode { get { return _IsVisBarCode; } set { _IsVisBarCode = value; OnPropertyChanged("IsVisBarCode"); } }
+        public bool IsVisBarCode { get { return _IsVisBarCode; } set { _IsVisBarCode = value; OnPropertyChanged(nameof(IsVisBarCode)); } }
         ObservableCollection<Model.RaitingDocItem> _Questions;
         public ObservableCollection<Model.RaitingDocItem> Questions { get { return _Questions; } set { _Questions = value; OnPropertyChanged(nameof(Questions)); } }
+        IEnumerable<Model.RaitingDocItem> All;
 
         int CountAll, CountChoice;
         public bool IsSave { get { return CountAll == CountChoice; } }
         bool IsAll = true;
         public string TextAllNoChoice { get { return IsAll ? "Без відповіді" : "Всі"; } }
-        public string QuantityAllChoice { get { return $"{CountChoice}/{CountAll}"; } }
+        public string QuantityAllChoice { get { return CountAll>0? $"{CountChoice}/{CountAll}":""; } }
         
-        bool IsOkWh { get {return Config.LocationWarehouse?.CodeWarehouse == cDoc.CodeWarehouse; } }
+        bool IsOkWh { get {return LocationBrb.LocationWarehouse?.CodeWarehouse == cDoc.CodeWarehouse; } }
         
         public string NameWarehouse
         {
             get
             {
-                string res = cDoc.ShortAddress;
-                if (!IsOkWh)
-                {
-                    var Wh = Bl.GetWarehouse(cDoc.CodeWarehouse);
-                    if (Wh != null)
-                        res += $"( {Wh.Location}){Environment.NewLine}Найближчий:\" + {Config.LocationWarehouse?.Name} ({Config.LocationWarehouse?.Location})";
+                try {
+                    string res = cDoc.ShortAddress;
+                    if (!IsOkWh)
+                    {
+                        var Wh = Bl.GetWarehouse(cDoc.CodeWarehouse);
+                        if (Wh != null)
+                            res += $"( {Wh.Location}){Environment.NewLine}Найближчий:\" + {LocationBrb.LocationWarehouse?.Name} ({LocationBrb.LocationWarehouse?.Location})";
+                    }
+                    return res;
                 }
-                return res;
+                catch( Exception ex) 
+                {
+                    FileLogger.WriteLogMessage(this, System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                }
+                return null;
             }
         }       
         
-        public System.Drawing.Color GetGPSColor { get { if(Config.LocationWarehouse==null) return System.Drawing.Color.FromArgb(200, 200, 200);
+        public System.Drawing.Color GetGPSColor { get { if(LocationBrb.LocationWarehouse==null) return System.Drawing.Color.FromArgb(200, 200, 200);
                 return IsOkWh ? System.Drawing.Color.FromArgb(100, 250, 100) :
                         System.Drawing.Color.FromArgb(250, 100, 100);
             } }
@@ -62,234 +71,117 @@ namespace BRB5
         public string SizeWarehouse { get { return (IsOkWh ? "25" : "50"); } }
 
         public string TextSave { get; set; } = "";
-        public bool IsSaving { get; set; } = false;
-        //public string TextButtonSave { get { return IsSaving ? "Зупинити" : "Зберегти"; } }
+        bool _IsSaving = false;
+        public bool IsSaving { get { return _IsSaving; } set { _IsSaving = value; OnPropertyChanged(nameof(IsSaving)); } }
 
-        public bool IsSaved { get; set; } = false;
+        bool _IsSaved = false;
+        public bool IsSaved { get {return _IsSaved;} set { _IsSaved = value; OnPropertyChanged(nameof(IsSaved)); OnPropertyChanged(nameof(TextButtonSaved)); } } 
         public string TextButtonSaved { get { return IsSaved ? "Закрити":"Зупинити"; } }
 
         bool IsAllOpen { get; set; } = true;
-        public string TextAllOpen { get { return IsAllOpen ? "Згорнути" : "Розгорнути"; } set { OnPropertyChanged("IsAllOpen"); } }
+        public string TextAllOpen { get { return IsAllOpen ? "Згорнути" : "Розгорнути"; }  }
+        private bool IsRefreshList = true;
+        private eTypeChoice _typeChoice = eTypeChoice.OnlyHead;
+        public eTypeChoice Choice { get { return _typeChoice; } set { _typeChoice = value; OnPropertyChanged(nameof(OpacityAll)); OnPropertyChanged(nameof(OpacityOnlyHead)); OnPropertyChanged(nameof(OpacityNoAnswer)); } }
+        public double OpacityAll { get { return Choice == eTypeChoice.All ? 1d : 0.4d; } }
+        public double OpacityOnlyHead { get { return Choice == eTypeChoice.OnlyHead ? 1d : 0.4d; } }
+        public double OpacityNoAnswer { get { return Choice == eTypeChoice.NoAnswer ? 1d : 0.4d; } }
+        ZXingScannerView zxing;
+        public bool IsVisScan { get { return Config.TypeScaner == eTypeScaner.Camera; } }
 
-        /*public event PropertyChangedEventHandler PropertyChanged;
-        protected virtual void OnPropertyChanged(string propertyName)
+        public RaitingDocItem(DocVM pDoc)
         {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }*/
-        public RaitingDocItem(Doc pDoc)
-        {
+            FileLogger.WriteLogMessage($"Item Start=>{pDoc.NumberDoc}");
             cDoc = pDoc;
             InitializeComponent();
             // TODO Xamarin.Forms.Device.RuntimePlatform is no longer supported. Use Microsoft.Maui.Devices.DeviceInfo.Platform instead. For more details see https://learn.microsoft.com/en-us/dotnet/maui/migration/forms-projects#device-changes
             NavigationPage.SetHasNavigationBar(this, Device.RuntimePlatform == Device.iOS);
-            this.BindingContext = this;           
-            StartTimer();
-            FileLogger.WriteLogMessage($"Item Start=>{pDoc.NumberDoc}");
+            this.BindingContext = this;
+            Bl.InitTimerRDI(cDoc);            
+           
             Questions = new ObservableCollection<Model.RaitingDocItem>();
+            Bl.c.OnSave += (Res) => Device.BeginInvokeOnMainThread(() =>
+            {
+                TextSave += Res + Environment.NewLine;
+                OnPropertyChanged(nameof(TextSave));
+            });
+
+            LocationBrb.OnLocation += (Location) =>
+            {
+                OnPropertyChanged(nameof(GetGPSColor));
+                OnPropertyChanged(nameof(NameWarehouse));
+                OnPropertyChanged(nameof(SizeWarehouse));
+            };
         }
 
         protected override void OnAppearing()
         {
             base.OnAppearing();
-            LoadData();
+            if (IsVisScan) zxing = ZxingBRB5.SetZxing(GridZxing, zxing, (BarCode) => OnScanBarCode(BarCode));
+            
+            Bl.StartTimerRDI();
+            if (IsRefreshList)Bl.LoadDataRDI(cDoc,GetData);
+            IsRefreshList = true;
+            _ = LocationBrb.GetCurrentLocation(Bl.db.GetWarehouse());
         }
 
-        void LoadData()
-        {
-            Task.Run(() =>
-            {
-                LocationBrb.OnLocation += (Location) =>
-                {
-                    OnPropertyChanged("GetGPSColor");
-                    OnPropertyChanged("NameWarehouse");
-                    OnPropertyChanged("SizeWarehouse");
-                };
-                _ = LocationBrb.GetCurrentLocation(db.GetWarehouse());
-
-                var Q = db.GetRaitingDocItem(cDoc);
-                var R = new List<Model.RaitingDocItem>();
-                foreach (var e in Q.Where(d => d.IsHead).OrderBy(d => d.OrderRS))
-                {
-                    R.Add(e);
-                    foreach (var el in Q.Where(d => d.Parent == e.Id).OrderBy(d => d.OrderRS))
-                    {
-                        if (e.Rating == 4)
-                            el.IsVisible = false;
-                        R.Add(el);
-                    }
-                }
-                var Tottal = Q.Where(d => d.Id == -1).FirstOrDefault();
-                if (Tottal != null) R.Add(Tottal);
-
-                c.OnSave += (Res) => Device.BeginInvokeOnMainThread(() =>
-                {
-                    TextSave += Res + Environment.NewLine;
-                    OnPropertyChanged("TextSave");
-                });
-
-                CountAll = R.Count(el => !el.IsHead); 
-                ViewDoc(R);
-            });
+        protected override void OnDisappearing() 
+        {  
+            base.OnDisappearing(); 
+            Bl.StopTimerRDI();
+            if (IsVisScan) zxing.IsScanning = false;
         }
 
-        void ViewDoc(IEnumerable< Model.RaitingDocItem> pDocItem)
+        void ViewDoc()
         {
             MainThread.BeginInvokeOnMainThread(() =>
             {
                 Questions.Clear();
-                foreach (var el in pDocItem)
+                foreach (var el in All.Where(el => (el.IsHead || el.Parent == 9999999 || // Заголовки Всього
+                Choice == eTypeChoice.All ||                                             // Розгорнути      
+                (Choice == eTypeChoice.NoAnswer && (el.Rating == 0 ||                    //Без відповіді  
+                (el.Rating == 3 && String.IsNullOrEmpty(el.Note) && el.QuantityPhoto == 0)))  //Без опису           
+                )))
+                {
                     Questions.Add(el);
+                }
                 RefreshHead();
-                CalcValueRating();
+                Bl.CalcValueRating(All);
             });
         }
 
-        void StartTimer()
-        {
-            t = new System.Timers.Timer(3 * 60 * 1000); //3 хв
-            t.AutoReset = true;
-            t.Elapsed += new ElapsedEventHandler(OnTimedEvent);
-            t.Start();            
-        }
 
-        private void OnTimedEvent(Object source, ElapsedEventArgs e)
+        void GetData(IEnumerable<Model.RaitingDocItem> pDocItem)
         {
-            var task = Task.Run(() =>
-            {
-                c.SendRaitingFiles(cDoc.NumberDoc, 1, 3 * 60, 10 * 60);
-            });
-          
-        }
+            CountAll = pDocItem.Count(el => !el.IsHead);
+            All = pDocItem;
+            ViewDoc();
+        }   
 
         private void OnButtonClicked(object sender, System.EventArgs e)
         {
             Microsoft.Maui.Controls.View button = (Microsoft.Maui.Controls.View)sender;
             //Grid cc = button.Parent as Grid;
             var vQuestion = GetRaiting(sender);//cc.BindingContext as Raiting;
-            var OldRating = vQuestion.Rating;
-            switch (button.ClassId)
-            {
-                case "Ok":
-                    vQuestion.Rating = 1;
-                    break;
-                case "SoSo":
-                    vQuestion.Rating = 2;
-                    break;
-                case "Bad":
-                    vQuestion.Rating = 3;
-                    break;
-                case "NotKnow":
-                    vQuestion.Rating = 4;
-                    break;
+            Bl.ChangeRaiting(vQuestion, button.ClassId, All);
 
-                default:
-                    vQuestion.Rating = 0;
-                    break;
-            }
-            if (OldRating == vQuestion.Rating)
-                vQuestion.Rating = 0;
+            if (vQuestion.IsHead) ChangeItemBlok(vQuestion);
 
-            if (vQuestion.IsItem)
-            {
-                var el = Questions.FirstOrDefault(i => i.Id == vQuestion.Parent);
-                if (el != null) el.Rating = 0;
-            }
-
-
-            if (OldRating != vQuestion.Rating && (vQuestion.Rating == 4 || vQuestion.Rating == 0) && vQuestion.IsHead)
-            {
-                foreach (var el in Questions.Where(d => d.Parent == vQuestion.Id))
-                {
-                    el.IsVisible = vQuestion.Rating != 4;
-                    if (el.Rating == 0 && vQuestion.Rating == 4)
-                    {
-                        el.Rating = 4;
-                        db.ReplaceRaitingDocItem(el);
-                    }
-                }
-            }
-            db.ReplaceRaitingDocItem(vQuestion);
-            CalcSumValueRating(vQuestion);
+            Bl.CalcSumValueRating(vQuestion, All);
             RefreshHead();
         }
 
         void RefreshHead()
         {
-            CountChoice = Questions.Count(el => !el.IsHead && el.Rating > 0);
-            OnPropertyChanged("QuantityAllChoice");
-            OnPropertyChanged("IsSave");
-        }
-
-        void CalcSumValueRating(Model.RaitingDocItem pRDI)
-        {
-
-            decimal res = 0;            
-
-            var Head = Questions.Where(el => el.Id == pRDI.Parent).FirstOrDefault();
-            if (Head != null)
-            {
-                res = Questions?.Where(el => el.Parent == Head.Id)?.Sum(el => el.SumValueRating) ?? 0;
-                Head.SumValueRating = res;
-                Head.Rating = Head.Rating;
-            } else
-            {
-                if (pRDI.Rating == 4)
-                {
-                    pRDI.SumValueRating = 0;
-                    pRDI.Rating = pRDI.Rating;
-                }
-                if (pRDI.Rating == 0)
-                {
-                    pRDI.SumValueRating = Questions?.Where(el => el.Parent == pRDI.Id)?.Sum(el => el.SumValueRating) ?? 0;
-                    pRDI.Rating = pRDI.Rating;
-                }
+            try {
+                CountChoice = All.Count(el => !el.IsHead && el.Rating > 0);
+                OnPropertyChanged(nameof(QuantityAllChoice));
+                OnPropertyChanged(nameof(IsSave));
             }
-
-            var Total = Questions.Where(el => el.Id == -1).FirstOrDefault();
-            if (Total != null)
+            catch(Exception ex)
             {
-                res = Questions?.Where(el => el.Parent == 0 && el.Id != -1)?.Sum(el => el.SumValueRating) ?? 0;
-                Total.SumValueRating = res;
-                Total.Rating = Total.Rating;
-            }
-        }
-        
-        void CalcValueRating()
-        {
-            decimal res=0;
-            foreach (var q in Questions.Where(el => el.Parent == 0))
-            {
-                res = Questions?.Where(e => e.Parent == q.Id)?.Sum(el => el.ValueRating) ?? 0;
-                q.ValueRating = res;
-                if (q.Rating != 4)
-                {
-                    res = Questions?.Where(e => e.Parent == q.Id)?.Sum(el => el.SumValueRating) ?? 0;
-                    q.SumValueRating = res;
-                } else  q.SumValueRating = 0;
-            }
-
-            var Total = Questions.Where(el => el.Id == -1).FirstOrDefault();
-            if (Total != null)
-            {
-                res = Questions?.Where(el => el.Parent == 0 && el.Id != -1)?.Sum(el => el.ValueRating) ?? 0;
-                Total.ValueRating = res;
-                res = Questions?.Where(el => el.Parent == 0 && el.Id != -1)?.Sum(el => el.SumValueRating) ?? 0;
-                Total.SumValueRating = res;
-            }
-        }
-        
-        private void OnSetView(object sender, System.EventArgs e)
-        {
-            IsAll = !IsAll;
-            if (IsAll)
-                foreach (var el in Questions.Where(d => !d.IsVisible))
-                    el.IsVisible = true;
-            else
-                foreach (var el in Questions.Where(d => !d.IsHead && d.Rating > 0))
-                    if (el.Rating != 3) el.IsVisible = false;
-                    else if (!String.IsNullOrEmpty(el.Note) || el.QuantityPhoto > 0) el.IsVisible = false;
-
-            OnPropertyChanged("TextAllNoChoice");
+                FileLogger.WriteLogMessage(this, System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+            }            
         }
 
         private void OnButtonSaved(object sender, System.EventArgs e)
@@ -297,60 +189,24 @@ namespace BRB5
             if (IsSaving && !IsSaved)
             {
                 IsSaved = true;
-                c.StopSave = true;                            
-            }
-            else
-            {
-                IsSaving = false;
-                OnPropertyChanged("IsSaving");
-            }
-               
+                Bl.c.IsStopSave = true;                            
+            } else IsSaving = false;
         }
 
         private void OnButtonSave(object sender, System.EventArgs e)
         {
-            Task.Run(() =>
-            {
-                Result res;
-                try
-                {
-                    TextSave = "";
-                    IsSaving = true;
-                    OnPropertyChanged("IsSaving");
-                    IsSaved = false;
-                    OnPropertyChanged("IsSaved");
-                    OnPropertyChanged("TextButtonSaved");
-                    var r = db.GetRaitingDocItem(cDoc);
-                    Doc d = db.GetDoc(cDoc);
-                    res = c.SendRaiting(r, d);
-                    if (res.State == 0)
-                    {
-                        cDoc.State = 1;
-                        db.SetStateDoc(cDoc);
-                    }
-                }
-                catch (Exception ex)
-                { res = new Result(ex); }
-                finally
-                {
-                    IsSaved = true;
-                    OnPropertyChanged("IsSaved");
-                    OnPropertyChanged("TextButtonSaved");
-                }
-
-                // Navigation.PopAsync();
-            }
-            );
+            //TextSave = "";
+            IsSaving = true;
+            IsSaved = false;
+            Bl.SaveRDI(cDoc, () => IsSaved = true);            
         }
 
-        private void OnFindGPS(object sender, System.EventArgs e)
-        {
-            _ = LocationBrb.GetCurrentLocation(db.GetWarehouse());
-        }
+        private void OnFindGPS(object sender, System.EventArgs e) =>  _ = LocationBrb.GetCurrentLocation(Bl.db.GetWarehouse());        
 
         private void EditPhoto(object sender, System.EventArgs e)
         {
             var vQuestion = GetRaiting(sender);
+            IsRefreshList = false;
             Navigation.PushAsync(new RaitingDocItemEditPhoto(vQuestion));
         }
 
@@ -374,72 +230,115 @@ namespace BRB5
                     Directory.CreateDirectory(dir);
                     Directory.CreateDirectory(Path.Combine(dir, "Send"));
                 }
-
+                IsRefreshList = false;
                 var photo = await MediaPicker.CapturePhotoAsync(new MediaPickerOptions { Title = FileName });
-                if (photo != null && File.Exists(photo.FullPath))
+
+                await Task.Delay(10);
+
+                if (photo != null) // && File.Exists(photo.FullPath))
                 {
                     var ext = Path.GetExtension(photo.FileName);
                     var newFile = Path.Combine(dir, FileName + ext);
+                    byte[] imageData;
                     using (var stream = await photo.OpenReadAsync())
-                    using (var newStream = File.OpenWrite(newFile))
-                        await stream.CopyToAsync(newStream);
+                    {
+                        imageData = NativeBase.ReadFully(stream);
+                        byte[] resizedImage = Config.NativeBase.ResizeImage(imageData, Config.PhotoQuality.GetValue(), Config.Compress);
+                        File.WriteAllBytes(newFile, resizedImage);
+                        //using (var newStream = File.OpenWrite(newFile))
+                        //    await stream.CopyToAsync(newStream);
+                    }
                     vQuestion.QuantityPhoto++;
-                    db.ReplaceRaitingDocItem(vQuestion);
+                    Bl.db.ReplaceRaitingDocItem(vQuestion);
                 }
             }
             catch (Exception ex)
             {
                 FileLogger.WriteLogMessage($"Item.TakePhotoAsync", eTypeLog.Error);
-                await DisplayAlert("Сообщение об ошибке", ex.Message, "OK");
+                await DisplayAlert("Помилка!", ex.Message, "OK");
             }
         }
 
-        private void Editor_Completed(object sender, EventArgs e)
-        {
-            db.ReplaceRaitingDocItem(GetRaiting(sender));
-        }
+        private void Editor_Completed(object sender, EventArgs e) => Bl.db.ReplaceRaitingDocItem(GetRaiting(sender));        
 
         private void OnHeadTapped(object sender, EventArgs e)
         {
             var s = sender as Grid;
             var cc = s.Parent as StackLayout;
-
             var vRait = cc.BindingContext as Model.RaitingDocItem;
-            var id = vRait.Id;
-            foreach (var xx in Questions.Where(el => el.Parent == id))
-            {
-                xx.IsVisible = !xx.IsVisible;
-            }
-
+            vRait.IsVisible = !vRait.IsVisible;
+            Choice = eTypeChoice.NotDefine;
+            ChangeItemBlok(vRait);
         }
 
-        private void OnAllOpen(object sender, EventArgs e)
+        private void ChangeItemBlok(Model.RaitingDocItem vRait)
         {
-            IsAllOpen = !IsAllOpen;
-            if (IsAllOpen)
-                foreach (var el in Questions)
-                    el.IsVisible = true;
-            else
-                foreach (var el in Questions.Where(el => el.Parent != 9999999))
-                    el.IsVisible = false;
-
-            OnPropertyChanged("TextAllOpen");
+            MainThread.BeginInvokeOnMainThread(() =>
+            {
+                var index = Questions.IndexOf(vRait) + 1;
+                foreach (var el in All.Where(el => el.Parent == vRait.Id))
+                {
+                    if (vRait.IsVisible)
+                    {
+                        if (!Questions.Any(e => el.Id == e.Id))
+                        {
+                            Questions.Insert(index, el);
+                            index++;
+                        }
+                    }
+                    else Questions.Remove(el);
+                }
+            });
         }
 
         private void BarCode(object sender, EventArgs e)
         {
             IsVisBarCode = !IsVisBarCode;
-            //zxing.IsScanning = IsVisBarCode;
+            zxing.IsScanning = IsVisBarCode;
+            zxing.IsAnalyzing = IsVisBarCode;
         }
-        private void OnScanBarCode(ZXing.Result result)
+        private void OnScanBarCode(string result)
         {
-        //    zxing.IsAnalyzing = false;
+            MainThread.BeginInvokeOnMainThread(() =>
+            {
+                zxing.IsAnalyzing = false;
+                var resultText = "[" + result + "]";
+                var temp = Questions.Where(el => el.Id == -1).FirstOrDefault();
 
-        //    var temp = Questions.Where(el => el.Id==-1).FirstOrDefault();
-        //    if (temp.Note == null || !temp.Note.StartsWith(result.Text)) { temp.Note = result.Text + temp.Note; }
-        //    db.ReplaceRaitingDocItem(temp);
-        //    Questions[Questions.IndexOf(temp)] = temp;
-        //    zxing.IsAnalyzing = true;
+                if (string.IsNullOrEmpty(temp.Note)) temp.Note = resultText;
+                else if (Regex.IsMatch(temp.Note, @"\[\d+\]")) temp.Note = Regex.Replace(temp.Note, @"\[\d+\]", resultText);
+                     else temp.Note = resultText + temp.Note;
+
+                Bl.db.ReplaceRaitingDocItem(temp);
+                Questions[Questions.IndexOf(temp)] = temp;
+
+                ListQuestions.ScrollTo(Questions.Last(), ScrollToPosition.Center, false);
+                zxing.IsAnalyzing = true;
+            });
+        }
+
+        private void ShowButton(object sender, EventArgs e)
+        {
+            switch ((sender as ImageButton).AutomationId)
+            {
+                case "All":
+                    Choice = eTypeChoice.All;
+                    foreach (var el in All.Where(el => el.IsHead))
+                        el.IsVisible = true;
+                    break;
+                case "OnlyHead":
+                    Choice = eTypeChoice.OnlyHead;
+                    foreach (var el in All.Where(el => el.IsHead))
+                        el.IsVisible = false;
+                    break;
+                case "NoAnswer":
+                    Choice = eTypeChoice.NoAnswer;
+                    foreach (var el in All.Where(el => el.IsHead))
+                        el.IsVisible = false;
+                    break;
+            }
+            ViewDoc();
+            ListQuestions.ScrollTo( Questions.First(), ScrollToPosition.Start, false);
         }
 
         private Model.RaitingDocItem GetRaiting(object sender)

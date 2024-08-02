@@ -18,7 +18,7 @@
                 </StackLayout>
             </ListView.Header>
             <ListView.ItemTemplate>
-                <DataTemplate xmlns:brb5="clr-namespace:BRB5" x:DataType="Model:Doc">
+                <DataTemplate xmlns:brb5="clr-namespace:BRB5" x:DataType="Model:DocVM">
                     <ViewCell>
                         <ViewCell.View BackgroundColor="white">
 
@@ -54,11 +54,15 @@
                                            Text="{Binding DateString}"
                                            ClassId="Ok"
                                            FontSize="Small" />
-                                    <Label Grid.Row="1"
-                                           Grid.Column="1"
-                                           FontSize="Small"
+                                    <StackLayout Orientation="Horizontal"
+                                                 Grid.Row="1"
+                                                 Grid.Column="1">
+
+                                        <Label Text="{Binding NumberDoc}" />
+                                        <Label FontSize="Small"
                                            HorizontalOptions="Center"
                                            Text="{Binding Description}" />
+                                    </StackLayout >
 
                                 </Grid>
                             </Grid>

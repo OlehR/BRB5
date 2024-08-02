@@ -2,15 +2,18 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using BRB5.Connector;
+using BL.Connector;
 using BRB5.Model;
 using BRB5.View;
 using Utils;
 using System.IO;
 using Newtonsoft.Json;
 using System.Threading.Tasks;
+using BL;
+using Microsoft.Maui.Controls.Compatibility;
 using Microsoft.Maui.Controls;
 using Microsoft.Maui;
+using Microsoft.Maui.ApplicationModel;
 
 //[assembly: Xamarin.Forms.Dependency(typeof(AndroidStorageManager))]
 
@@ -19,29 +22,32 @@ namespace BRB5
     public partial class MainPage
     {
         public ObservableCollection<TypeDoc> OCTypeDoc { get; set; }
-        BRB5.Connector.Connector c;
-        DB db = DB.GetDB();        
+        Connector c;
+        DB db = DB.GetDB();
+        BL.BL Bl = BL.BL.GetBL();
         public string Login { get; set; }
         public string Password { get; set; }
         public IEnumerable<LoginServer> LS { get; set; }
 
         public int SelectedLS { get { return LS == null || LS.Count() == 1 ? 0 : LS.ToList().FindIndex(x => x.Code == Config.LoginServer); } set { Config.LoginServer = LS.ToList()[value].Code; } }
         public bool IsVisLS { get; set; } = true;
+        private bool _IsVisibleBack = false;
+        public bool IsVisibleBack { get { return _IsVisibleBack; } set { _IsVisibleBack = value; OnPropertyChanged(nameof(IsVisibleBack)); } }
         public string Ver { get { return"BRB5 (" + AppInfo.VersionString + ")"; } }
         public string Company { get { return Enum.GetName(typeof(eCompany), Config.Company); } }
+        public bool IsSoftKeyboard { get { return Config.IsSoftKeyboard; } }
         public MainPage()
         {
-            OCTypeDoc = new ObservableCollection<TypeDoc>();
-            c = Connector.Connector.GetInstance();
+            OCTypeDoc = new ObservableCollection<TypeDoc>();           
             InitializeComponent();
             Init();
-
+            if (Config.Company == eCompany.NotDefined) _= Navigation.PushAsync(new Settings());                
             BindingContext = this;
-        }
+        }        
 
         private void OnButtonLogin(object sender, System.EventArgs e)
         {
-            Task.Run(async () =>
+            _ = Task.Run(async () =>
             {
                 var r = await c.LoginAsync(Login, Password, Config.LoginServer);
                 if (r.State == 0)
@@ -56,37 +62,14 @@ namespace BRB5
                         ListDocs.IsVisible = true;
                     });
 
-                    db.SetConfig<string>("Login", Login);
-                    //db.SetConfig<bool>("IsAutoLogin", true);
-                    db.SetConfig<string>("Password", Password);
-                    db.SetConfig<eLoginServer>("LoginServer", Config.LoginServer);
-                    Config.Login = Login;
-                    Config.Password = Password;                    
-                    //eLoginServer LoginServer;                   
-
-                    var Wh = c.LoadWarehouse();
-                    db.ReplaceWarehouse(Wh);
-
-                    long SizeDel = 0, SizeUse = 0;
                     // TODO Xamarin.Forms.Device.RuntimePlatform is no longer supported. Use Microsoft.Maui.Devices.DeviceInfo.Platform instead. For more details see https://learn.microsoft.com/en-us/dotnet/maui/migration/forms-projects#device-changes
-                    if (Config.Company == eCompany.Sim23 && Device.RuntimePlatform == Device.Android)
-                    {
-                        var a = db.GetDoc(Config.GetDocSetting(11));
-                        (SizeDel, SizeUse) = FileAndDir.DelDir(Config.PathFiles, a.Select(el => el.NumberDoc));
-                        FileLogger.WriteLogMessage($"{Config.PathFiles} => SizeDel={SizeDel}, SizeUse=>{SizeUse}");
-                        (SizeDel, SizeUse) = FileAndDir.DelDir(Path.Combine(Config.PathFiles, "arx"), a.Select(el => el.NumberDoc));
-                        FileLogger.WriteLogMessage($"{Path.Combine(Config.PathFiles, "arx")} => SizeDel={SizeDel}, SizeUse=>{SizeUse}");
-                    }
-
-                    if (Config.DateLastLoadGuid.Date != DateTime.Today.Date)
-                    {
-                        c.LoadGuidDataAsync(true);
-                        Config.DateLastLoadGuid = DateTime.Now;
-                        db.SetConfig<DateTime>("DateLastLoadGuid", Config.DateLastLoadGuid);
-                    }
+                    Bl.OnButtonLogin(Login, Password, Device.RuntimePlatform == Device.Android);
                 }
                 else
-                    _ = DisplayAlert("Проблеми з авторизацією", r.TextError + r.Info, "OK");
+                    MainThread.BeginInvokeOnMainThread(() =>
+                    {
+                        _ = DisplayAlert("Проблеми з авторизацією", r.TextError + r.Info, "OK");
+                    });
             });
             }
 
@@ -95,13 +78,10 @@ namespace BRB5
             Button button = (Button)sender;
             Cell cc = button.Parent as Cell;
             var vTypeDoc = cc.BindingContext as TypeDoc;
-
             var cameraStatus = await Permissions.CheckStatusAsync<Permissions.Camera>();
 
             if (cameraStatus != PermissionStatus.Granted)
-            {
-                cameraStatus = await Permissions.RequestAsync<Permissions.Camera>();
-            }
+                cameraStatus = await Permissions.RequestAsync<Permissions.Camera>();            
 
             if (cameraStatus != PermissionStatus.Granted)
             {
@@ -112,7 +92,7 @@ namespace BRB5
             switch (vTypeDoc.KindDoc)
             {
                 case eKindDoc.PriceCheck:
-                    await Navigation.PushAsync(new PriceCheck()); //new CustomScanPage()); // 
+                    await Navigation.PushAsync(new PriceCheck(vTypeDoc)); //new CustomScanPage()); // 
                     break;
                 case eKindDoc.Normal:
                 case eKindDoc.Simple:
@@ -130,24 +110,26 @@ namespace BRB5
                 case eKindDoc.PlanCheck:
                     await Navigation.PushAsync(new PlanCheckPrice());
                     break;
+                case eKindDoc.NotDefined:
+                    MainThread.BeginInvokeOnMainThread(() =>
+                    {
+                        OCTypeDoc?.Clear();
+                        Config.TypeDoc = c.GetTypeDoc(Config.Role, Config.LoginServer, vTypeDoc.Group);
+                        foreach (var i in Config.TypeDoc) OCTypeDoc.Add(i);
+                        IsVisibleBack = true;
+                    });
+                    break;
                 default:
                     break;
             }
         }
 
-
         void Init()
         {
             _ = LocationBrb.GetCurrentLocation(db.GetWarehouse());
-            Config.IsAutoLogin = db.GetConfig<bool>("IsAutoLogin");
-            Config.LoginServer = db.GetConfig<eLoginServer>("LoginServer");
             Login = db.GetConfig<string>("Login");
-            if (Config.IsAutoLogin)
-            {
-                Password = db.GetConfig<string>("Password");
-                OnButtonLogin(null, null);
-            }
-
+            Bl.Init();
+            c = Connector.GetInstance();
             if (c != null)
             {
                 LS = c.LoginServer();
@@ -157,39 +139,32 @@ namespace BRB5
                     Config.LoginServer = LS.First().Code;
                 }
             }
-
-            Config.IsViewAllWH = db.GetConfig<bool>("IsViewAllWH");
-            Config.IsVibration = db.GetConfig<bool>("IsVibration");
-            Config.IsSound = db.GetConfig<bool>("IsSound");
-            Config.IsTest = db.GetConfig<bool>("IsTest");
-            Config.ApiUrl1 = db.GetConfig<string>("ApiUrl1");
-            Config.ApiUrl2 = db.GetConfig<string>("ApiUrl2");
-            Config.ApiUrl3 = db.GetConfig<string>("ApiUrl3");
-            Config.DateLastLoadGuid = db.GetConfig<DateTime>("DateLastLoadGuid");
-            Config.CodeWarehouse = db.GetConfig<int>("CodeWarehouse");
-            Config.Company = db.GetConfig<eCompany>("Company");
-            Config.TypeUsePrinter = db.GetConfig<eTypeUsePrinter>("TypeUsePrinter");
-            var tempstr = db.GetConfig<string>("CodesWarehouses");
-            if (!string.IsNullOrEmpty(tempstr)) Config.CodesWarehouses = JsonConvert.DeserializeObject<List<int>>(tempstr);
-            FileLogger.TypeLog = db.GetConfig<eTypeLog>("TypeLog");
-
+            if (Config.IsAutoLogin)
+            {
+                Password = db.GetConfig<string>("Password");
+                OnButtonLogin(null, null);
+            }           
         }
 
+        protected override void OnDisappearing()  {  base.OnDisappearing(); }
 
-        protected override void OnDisappearing()
-        {
-            base.OnDisappearing();
-        }
-
-        private async void OnSettingsClicked(object sender, EventArgs e)
-        {
-            await Navigation.PushAsync(new Settings());
-        }
+        private async void OnSettingsClicked(object sender, EventArgs e) { await Navigation.PushAsync(new Settings());  }
 
         private void OnAuthorizationClicked(object sender, EventArgs e)
         {
             ListDocs.IsVisible = false;
             SLLogin.IsVisible = true;
+        }
+
+        private void BackToMainList(object sender, EventArgs e)
+        {
+            MainThread.BeginInvokeOnMainThread(() =>
+            {
+                IsVisibleBack = false;
+                OCTypeDoc?.Clear();
+                Config.TypeDoc = c.GetTypeDoc(Config.Role, Config.LoginServer);
+                foreach (var i in Config.TypeDoc) OCTypeDoc.Add(i);
+            });
         }
     }
 }

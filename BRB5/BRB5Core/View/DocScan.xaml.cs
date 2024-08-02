@@ -1,7 +1,12 @@
-﻿using BRB5.Model;
+﻿using BL;
+using BL.Connector;
+using BRB5.Model;
+using BRB5.ViewModel;
 using System;
 using System.Collections.ObjectModel;
 using System.Linq;
+using ZXing.Net.Mobile.Forms;
+using Microsoft.Maui.Controls.Compatibility;
 using Microsoft.Maui.Controls;
 using Microsoft.Maui;
 
@@ -15,9 +20,11 @@ namespace BRB5.View
         DocWaresEx _ScanData;
         public DocWaresEx ScanData { get { return _ScanData; } set { _ScanData = value; OnPropertyChanged("ScanData"); } }
         protected DB db = DB.GetDB();
-        private Connector.Connector c;
+        private Connector c;
+        BL.BL Bl = BL.BL.GetBL();
         public TypeDoc TypeDoc { get; set; }
         public int OrderDoc { get; set; }
+        public bool IsSoftKeyboard { get { return Config.IsSoftKeyboard; } }
         public bool IsVisScan { get { return Config.TypeScaner == eTypeScaner.Camera; } }
         private DocId DocId;
         private bool _IsVisQ = false;
@@ -27,33 +34,18 @@ namespace BRB5.View
         private string _DisplayQuestion;
         public string DisplayQuestion { get { return _DisplayQuestion; } set { _DisplayQuestion = value; OnPropertyChanged(nameof(DisplayQuestion)); } }
         private string TempBarcode;
-
+        ZXingScannerView zxing;
         public DocScan(DocId pDocId, TypeDoc pTypeDoc = null)
         {
             InitializeComponent();
-            MessagingCenter.Subscribe<KeyEventMessage>(this, "F1Pressed", message => { Reset(null, EventArgs.Empty); });
-            MessagingCenter.Subscribe<KeyEventMessage>(this, "F2Pressed", message => {  });
-            MessagingCenter.Subscribe<KeyEventMessage>(this, "F3Pressed", message => {  });
-            MessagingCenter.Subscribe<KeyEventMessage>(this, "F8Pressed", message => {  });
-
             DocId = pDocId;
-            TypeDoc = pTypeDoc!=null? pTypeDoc:Config.GetDocSetting(pDocId.TypeDoc);
-            c = Connector.Connector.GetInstance();
+            TypeDoc = pTypeDoc != null ? pTypeDoc : Config.GetDocSetting(pDocId.TypeDoc);
+            c = Connector.GetInstance();
             var tempListWares = db.GetDocWares(pDocId, 2, eTypeOrder.Scan);
             foreach (var t in tempListWares) { t.Ord = -1; }
-            ListWares = tempListWares == null ? new ObservableCollection<DocWaresEx>(): new ObservableCollection<DocWaresEx>(tempListWares);
+            ListWares = tempListWares == null ? new ObservableCollection<DocWaresEx>() : new ObservableCollection<DocWaresEx>(tempListWares);
             OrderDoc = ListWares.Count > 0 ? ListWares.First().OrderDoc : 0;
-            if (IsVisScan)
-            {
-                zxing.OnScanResult += (result) =>
-                Device.BeginInvokeOnMainThread(async () => 
-                {
-                    zxing.IsAnalyzing = false;
-                    BarCode(result.Text);
-                    //zxing.IsAnalyzing = true;
-                });
-            }
-            else Config.BarCode = BarCode;
+            if (ListWares.Count > 0)  ListViewWares.SelectedItem = ListWares[0];
             // TODO Xamarin.Forms.Device.RuntimePlatform is no longer supported. Use Microsoft.Maui.Devices.DeviceInfo.Platform instead. For more details see https://learn.microsoft.com/en-us/dotnet/maui/migration/forms-projects#device-changes
             NavigationPage.SetHasNavigationBar(this, Device.RuntimePlatform == Device.iOS || Config.TypeScaner == eTypeScaner.BitaHC61 || Config.TypeScaner == eTypeScaner.Zebra || Config.TypeScaner == eTypeScaner.PM550 || Config.TypeScaner == eTypeScaner.PM351);
             this.BindingContext = this;
@@ -62,86 +54,93 @@ namespace BRB5.View
         {
             ScanData = db.GetScanData(DocId, c.ParsedBarCode(pBarCode, true/*?*/));
             FindWareByBarCodeAsync(pBarCode);
-
             if (ScanData != null)
             {
                 ScanData.BarCode = pBarCode;
+                if (ScanData.QuantityBarCode > 0) ScanData.InputQuantity = ScanData.QuantityBarCode;
+                else inputQ.Text = "";
 
-                if (ScanData.QuantityBarCode > 0)
-                    ScanData.InputQuantity = ScanData.QuantityBarCode;
-                else
-                    inputQ.Text = "";
+                inputQ.Focus();
                 AddWare();
             }
         }
-        public void Dispose()
-        {
-            Config.BarCode -= BarCode;
-        }
+        public void Dispose() { Config.BarCode -= BarCode; }
         private void AddWare()
         {
-            inputQ.Unfocused += (object sender, FocusEventArgs e) =>
+            if (ScanData != null)
             {
-                if (ScanData != null) {
-                    if (!e.IsFocused && ScanData.InputQuantity == 0)
-                        ((Entry)sender).Focus();
-                    else
-                    {
-                        ScanData.Quantity = ScanData.InputQuantity;
-                        ScanData.OrderDoc = ++OrderDoc;
-                        ScanData.Ord = -1;
-                        if (db.ReplaceDocWares(ScanData))
-                        {
-                            ListWares.Insert(0, ScanData);
-                            foreach (var ware in ListWares){
-                                if (ware.CodeWares == ScanData.CodeWares)ware.Ord = -1;}
-
-                            ScanData = null;
-                        }
-                    }
-                }
-            };
-
-        }
-
-        public decimal CountBeforeQuantity(int pCodeWares)
-        {
-            decimal res= 0;
-            if(ListWares.Count() > 0) 
-            { 
-                foreach(var ware in ListWares)
+                if (ScanData.InputQuantity > 0)
                 {
-                    ware.Ord = -1;
-                    if (ware.CodeWares == pCodeWares)
+                    ScanData.Quantity = ScanData.InputQuantity;
+                    ScanData.OrderDoc = ++OrderDoc;
+                    ScanData.Ord = -1;
+                    if (db.ReplaceDocWares(ScanData))
                     {
-                        res += ware.InputQuantity;
-                        ware.Ord = 0;
+                        ListWares.Insert(0, ScanData);
+                        foreach (var ware in ListWares)
+                        {
+                            if (ware.CodeWares == ScanData.CodeWares) ware.Ord = -1;
+                        }
+                        ListViewWares.SelectedItem = ListWares[0];
+                        ScanData = null;
                     }
+                    inputQ.Unfocus();
                 }
             }
-            return res;
         }
+        private void UnfocusedInputQ(object sender, FocusEventArgs e)
+        {
+            if (ScanData != null)
+            {
+                if (!inputQ.IsFocused && ScanData.InputQuantity == 0)
+                    inputQ.Focus();
+                else
+                    AddWare();
+            }
+        }
+        
         protected override void OnAppearing()
         {
             base.OnAppearing();
-            zxing.IsScanning = true;
+            if (IsVisScan)
+            {
+                zxing = ZxingBRB5.SetZxing(GridZxing, zxing, (Barcode) => BarCode(Barcode));
+                zxing.IsScanning = true;
+                zxing.IsAnalyzing = true;
+            }
+            else Config.BarCode = BarCode;
+            if (!IsSoftKeyboard)
+            {
+                MessagingCenter.Subscribe<KeyEventMessage>(this, "F1Pressed", message => { Reset(null, EventArgs.Empty); });
+                MessagingCenter.Subscribe<KeyEventMessage>(this, "F2Pressed", message => { Up(null, EventArgs.Empty); });
+                MessagingCenter.Subscribe<KeyEventMessage>(this, "F3Pressed", message => { Down(null, EventArgs.Empty); });
+                MessagingCenter.Subscribe<KeyEventMessage>(this, "F8Pressed", message => { });
+                MessagingCenter.Subscribe<KeyEventMessage>(this, "BackPressed", message => { KeyBack(); });
+                MessagingCenter.Subscribe<KeyEventMessage>(this, "EnterPressed", message => { AddWare(); });
+            }
         }
 
         protected override void OnDisappearing()
         {
             base.OnDisappearing();
-            zxing.IsScanning = false;
-            MessagingCenter.Unsubscribe<KeyEventMessage>(this, "F1Pressed");
-            MessagingCenter.Unsubscribe<KeyEventMessage>(this, "F2Pressed");
-            MessagingCenter.Unsubscribe<KeyEventMessage>(this, "F3Pressed");
-            MessagingCenter.Unsubscribe<KeyEventMessage>(this, "F8Pressed");
+            if (IsVisScan) zxing.IsScanning = false;
+
+            if (!IsSoftKeyboard)
+            {
+                MessagingCenter.Unsubscribe<KeyEventMessage>(this, "F1Pressed");
+                MessagingCenter.Unsubscribe<KeyEventMessage>(this, "F2Pressed");
+                MessagingCenter.Unsubscribe<KeyEventMessage>(this, "F3Pressed");
+                MessagingCenter.Unsubscribe<KeyEventMessage>(this, "F8Pressed");
+                MessagingCenter.Unsubscribe<KeyEventMessage>(this, "BackPressed");
+                MessagingCenter.Unsubscribe<KeyEventMessage>(this, "EnterPressed");
+            }
         }
 
         public void FindWareByBarCodeAsync(string BarCode)
         {
-            if(ScanData == null)
+            if (ScanData == null)
             {
-                DisplayQuestion = "Товар не знайдено \n"+ "Даний штрихкод=> " + BarCode + " відсутній в базі";
+                DisplayQuestion = "Товар не знайдено \n" + "Даний штрихкод=> " + BarCode + " відсутній в базі";
                 IsVisQ = true;
             }
             else
@@ -165,7 +164,7 @@ namespace BRB5.View
                     }
                 }
 
-                ScanData.BeforeQuantity = CountBeforeQuantity(ScanData.CodeWares);
+                ScanData.BeforeQuantity = Bl.CountBeforeQuantity(ScanData.CodeWares, ListWares);
 
                 if (TypeDoc.IsSimpleDoc)
                 {
@@ -176,30 +175,13 @@ namespace BRB5.View
                         return;
                     }
                 }
-
-                zxing.IsAnalyzing = true;
+                if (IsVisScan) zxing.IsAnalyzing = true;
             }
 
             return;
         }
 
-        private void Reset(object sender, EventArgs e)
-        {
-            if (ScanData != null && ListWares.Count() > 0)
-            {
-                foreach (var ware in ListWares)
-                {
-                    if (ware.CodeWares == ScanData.CodeWares&& ware.InputQuantity!=0)
-                    {
-                        ware.QuantityOld = ware.InputQuantity;
-                        ware.InputQuantity = 0;
-                        ware.Quantity = 0; 
-                        db.ReplaceDocWares(ware);
-                    }
-                }
-
-            }
-        }
+        private void Reset(object sender, EventArgs e) { Bl.Reset(ScanData, ListWares); }
 
         private void CalcQuantity(object sender, TextChangedEventArgs e)
         {
@@ -207,7 +189,7 @@ namespace BRB5.View
                 ScanData.QuantityBarCode = ScanData.InputQuantity * ScanData.Coefficient;
         }
 
-        private void OkClicked(object sender, EventArgs e)      
+        private void OkClicked(object sender, EventArgs e)
         {
             IsVisQ = false;
             IsVisQOk = false;
@@ -217,8 +199,7 @@ namespace BRB5.View
                 ScanData.QuantityMax = decimal.MaxValue;
                 FindWareByBarCodeAsync(TempBarcode);
             }
-
-            zxing.IsAnalyzing = true;
+            if (IsVisScan) zxing.IsAnalyzing = true;
         }
 
         private void CancelClicked(object sender, EventArgs e)
@@ -226,8 +207,39 @@ namespace BRB5.View
             IsVisQ = false;
             IsVisQOk = false;
             if (TypeDoc.TypeControlQuantity == eTypeControlDoc.Ask) ScanData = null;
+            if (IsVisScan) zxing.IsAnalyzing = true;
+        }
+        private async void KeyBack() { await Navigation.PopAsync();  }
 
-            zxing.IsAnalyzing = true;
+        private void Up(object sender, EventArgs e)
+        {
+            var selectedItem = (DocWaresEx)ListViewWares.SelectedItem;
+            if (selectedItem != null)
+            {
+                var selectedIndex = ListWares.IndexOf(selectedItem);
+                if (selectedIndex > 0)
+                {
+                    ListViewWares.SelectedItem = ListWares[selectedIndex - 1];
+                    ListViewWares.ScrollTo(ListViewWares.SelectedItem, ScrollToPosition.Center, false);
+                }
+                OnPropertyChanged(nameof(ListWares));
+            }
+        }
+
+        private void Down(object sender, EventArgs e)
+        {
+            var selectedItem = (DocWaresEx)ListViewWares.SelectedItem;
+            if (selectedItem != null)
+            {
+                var selectedIndex = ListWares.IndexOf(selectedItem);
+
+                if (selectedIndex < ListWares.Count - 1)
+                {
+                    ListViewWares.SelectedItem = ListWares[selectedIndex + 1];
+                    ListViewWares.ScrollTo(ListViewWares.SelectedItem, ScrollToPosition.Center, false);
+                }
+                OnPropertyChanged(nameof(ListWares));
+            }
         }
     }
 }

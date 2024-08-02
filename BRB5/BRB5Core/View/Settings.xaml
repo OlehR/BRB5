@@ -4,6 +4,7 @@
             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
             xmlns:controls="clr-namespace:BRB5.View"
             xmlns:iOsSpecific="clr-namespace:Microsoft.Maui.Controls.PlatformConfiguration.iOSSpecific;assembly=Microsoft.Maui.Controls"
+            xmlns:effects="clr-namespace:Xamarin.KeyboardHelper;assembly=Xamarin.KeyboardHelper"
             x:Class="BRB5.View.Settings"
             iOsSpecific:Page.UseSafeArea="True">
     <controls:BaseContentPage Title="Налаштування">
@@ -64,6 +65,10 @@
                         <ColumnDefinition Width="*" />
                         <ColumnDefinition Width="3*" />
                     </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                    </Grid.RowDefinitions>
 
                     <CheckBox IsChecked="{Binding IsVibration}" />
                     <Label Text="Вібрація" Grid.Column="1" />
@@ -72,8 +77,32 @@
                               Grid.Column="2" />
                     <Label Text="Звук"
                            Grid.Column="3" />
+
+                    <CheckBox IsChecked="{Binding IsFilterSave}"  Grid.Row="1" />
+                    <Label Text="Фільтр"  Grid.Column="1" Grid.Row="1" />
+
+                    <CheckBox IsChecked="{Binding IsFullScreenScan}"  Grid.Row="1"  Grid.Column="2"/>
+                    <Label Text="Скан full screen"  Grid.Column="3" Grid.Row="1" />
                 </Grid>
 
+
+
+                <Picker Title="Якість фото"
+                        ItemsSource="{Binding ListPhotoQuality}"
+                        SelectedIndex="{Binding SelectedPhotoQuality}"
+                        HorizontalOptions="Fill" />
+                <StackLayout Orientation="Horizontal"  >
+                    <Label Text="Стискання(відсотки)" />
+                    <Frame Style="{StaticResource FrameStyle}" WidthRequest="50">
+                        <controls:CustomEntry Style="{StaticResource EntryStyle}" Keyboard="Numeric"
+                          effects:KeyboardEffect.EnableKeyboard="{Binding IsSoftKeyboard}"
+                          Text="{Binding Compress}">
+                            <controls:CustomEntry.Effects>
+                                <effects:KeyboardEnableEffect/>
+                            </controls:CustomEntry.Effects>
+                        </controls:CustomEntry>
+                    </Frame>
+                </StackLayout>
 
                 <ProgressBar ScaleY="2"
                              Progress="1"
@@ -146,17 +175,32 @@
 
                 <Frame Style="{StaticResource FrameStyle}">
                     <controls:CustomEntry Style="{StaticResource EntryStyle}"
-                                          Text="{Binding ApiUrl1}" />
+                                          effects:KeyboardEffect.EnableKeyboard="{Binding IsSoftKeyboard}"
+                                          Text="{Binding ApiUrl1}">
+                        <controls:CustomEntry.Effects>
+                            <effects:KeyboardEnableEffect/>
+                        </controls:CustomEntry.Effects>
+                    </controls:CustomEntry>
                 </Frame>
 
                 <Frame Style="{StaticResource FrameStyle}" IsVisible="{Binding IsVisApi3}">
                     <controls:CustomEntry Style="{StaticResource EntryStyle}"
-                                          Text="{Binding ApiUrl2}" IsVisible="{Binding IsVisApi3}"/>
+                                          effects:KeyboardEffect.EnableKeyboard="{Binding IsSoftKeyboard}"
+                                          Text="{Binding ApiUrl2}" IsVisible="{Binding IsVisApi3}">
+                        <controls:CustomEntry.Effects>
+                            <effects:KeyboardEnableEffect/>
+                        </controls:CustomEntry.Effects>
+                    </controls:CustomEntry>
                 </Frame>
 
                 <Frame Style="{StaticResource FrameStyle}" IsVisible="{Binding IsVisApi3}">
                     <controls:CustomEntry Style="{StaticResource EntryStyle}"
-                                          Text="{Binding ApiUrl3}" IsVisible="{Binding IsVisApi3}" />
+                                          effects:KeyboardEffect.EnableKeyboard="{Binding IsSoftKeyboard}"
+                                          Text="{Binding ApiUrl3}" IsVisible="{Binding IsVisApi3}" >
+                        <controls:CustomEntry.Effects>
+                            <effects:KeyboardEnableEffect/>
+                        </controls:CustomEntry.Effects>
+                    </controls:CustomEntry>
                 </Frame>
 
                 <Grid>

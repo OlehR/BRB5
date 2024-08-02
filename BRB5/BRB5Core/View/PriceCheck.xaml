@@ -3,9 +3,10 @@
 <controls:BaseContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
                           xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
                           xmlns:controls="clr-namespace:BRB5.View"
+                          xmlns:effects="clr-namespace:Xamarin.KeyboardHelper;assembly=Xamarin.KeyboardHelper"
                           x:Class="BRB5.PriceCheck">
     <ContentPage.Content>
-        <StackLayout BackgroundColor="{Binding ColorPrintColorType}">
+        <StackLayout BackgroundColor="{Binding ColorPrintColorType}" Spacing="0">
 
             <Grid x:Name="GridZxing" IsVisible="{Binding IsVisScan}" 
                   HeightRequest="200">
@@ -46,7 +47,7 @@
                        Grid.Column="4" />
             </Grid>
 
-            <Grid >
+            <Grid RowSpacing="0"  ColumnSpacing="0">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="2*" />
                     <ColumnDefinition Width="3*" />
@@ -54,8 +55,8 @@
                     <ColumnDefinition Width="3*" />
                 </Grid.ColumnDefinitions>
                 <Grid.RowDefinitions>
-                    <RowDefinition/>
-                    <RowDefinition/>
+                    <RowDefinition />
+                    <RowDefinition Height="auto"/>
                 </Grid.RowDefinitions>
 
                 <Label Text="Ціна с:"
@@ -89,7 +90,7 @@
                        TextColor="{Binding TextColorPrice}" />
             </Grid>
 
-            <Grid IsVisible="{Binding IsVisPriceOpt}">
+            <Grid RowSpacing="0"  ColumnSpacing="0" IsVisible="{Binding IsVisPriceOpt}">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="2*" />
                     <ColumnDefinition Width="3*" />
@@ -99,7 +100,7 @@
 
                 <Label Text="Ц.с.опт."
                        VerticalOptions="Center"
-                       FontSize="16"
+                       FontSize="16" 
                        TextColor="{Binding TextColorPrice}" />
                 <Label Text="{Binding WP.PriceOptOld}"
                        FontSize="24"
@@ -121,7 +122,7 @@
                        FontSize="28" />
             </Grid>
 
-            <Grid>
+            <Grid IsVisible="{Binding IsVisBarcode}">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="1*" />
                     <ColumnDefinition Width="2*" />
@@ -130,10 +131,19 @@
                 <Label Text="Штрих код:" />
                 <Frame Style="{StaticResource FrameStyle}" Grid.Column="1">
                     <controls:CustomEntry Keyboard="Numeric" Style="{StaticResource EntryStyle}"
+                                          effects:KeyboardEffect.EnableKeyboard="{Binding IsSoftKeyboard}"
                                           Text="{Binding WP.BarCodes}" 
                                           x:Name="BarCodeInput"
+                                          TextChanged="EntryTextChanged"
+                                          AutomationId="BarcodeEntry"
                                           Focused="BarCodeFocused"
-                                          Completed="BarCodeHandInput"/>
+                                          IsReadOnly="{Binding IsVisDoubleScan}"
+                                          Unfocused="BarCodeHandInput"
+                                          Completed="BarCodeHandInput">
+                        <controls:CustomEntry.Effects>
+                            <effects:KeyboardEnableEffect/>
+                        </controls:CustomEntry.Effects>
+                    </controls:CustomEntry>
                 </Frame>
             </Grid>
 
@@ -147,12 +157,28 @@
                 <Frame Style="{StaticResource FrameStyle}"
                        Grid.Column="1">
                     <controls:CustomEntry Style="{StaticResource EntryStyle}"
-                                          Text=""
+                                          Text=""    
+                                          TextChanged="EntryTextChanged"
+                                          AutomationId="ReplenishmentEntry"
+                                          effects:KeyboardEffect.EnableKeyboard="{Binding IsSoftKeyboard}"
                                           x:Name="NumberOfReplenishment"
-                                          Keyboard="Numeric" />
+                                          Unfocused="OnUpdateReplenishment"
+                                          Completed="OnUpdateReplenishment"
+                                          Keyboard="Numeric" >
+                        <controls:CustomEntry.Effects>
+                            <effects:KeyboardEnableEffect/>
+                        </controls:CustomEntry.Effects>
+                    </controls:CustomEntry>
                 </Frame>
             </Grid>
 
+            <StackLayout IsVisible="{Binding IsVisDoubleScan}">
+                <Frame HasShadow="False"  BackgroundColor="{Binding ColorDoubleScan}">
+                    <Label FontSize="Large" Text="{Binding MessageDoubleScan}"/>
+                </Frame>
+                <Button Text="{Binding ButtonDoubleScan}" Clicked="DoubleScanReact"/>
+            </StackLayout>            
+            
             <Grid VerticalOptions="EndAndExpand">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition />
@@ -178,56 +204,58 @@
                     <ColumnDefinition />
                 </Grid.ColumnDefinitions>
 
-                <Label
+                <Label Text="" />
+                <Label Grid.Column="1"
                     Text="{Binding WP.StrHttpResult}"
                     TextColor="{Binding TextColorHttp}" />
-                <Label Text=""
-                       Grid.Column="1" />
-                <Label Text=""
-                       Grid.Column="2" />
+                <StackLayout Orientation="Horizontal" Spacing="0" Grid.Column="2">
+                    <Label Text="{Binding BadScan}" />
+                    <Label Text="/" />
+                    <Label Text="{Binding AllScan}" />
+                </StackLayout>
             </Grid>
 
-            <StackLayout VerticalOptions="End" Orientation="Horizontal">                
-                <Label Text="f2-"
+            <StackLayout VerticalOptions="End" Orientation="Horizontal" Spacing="2">                
+                <Label Text="F2"
                        VerticalOptions="Center"
                        FontSize="16"
                        TextColor="#ff5c5c" />
                 <Label Text="Підбір"
-                       FontSize="18"
+                       FontSize="16"
                        TextColor="#816f20">
                     <Label.GestureRecognizers>
                         <TapGestureRecognizer Tapped="OnF2" />
                     </Label.GestureRecognizers>
                 </Label>
-                <Label Text="f4-" FontSize="16"
+                <Label Text="F4" FontSize="16"
                        IsVisible="{Binding IsVisF4}"
                        TextColor="#ff5c5c"
                        VerticalOptions="Center" />
-                <Label Text=""
-                       FontSize="18"
+                <Label Text="{Binding F4Text}"
+                       FontSize="16"
                        IsVisible="{Binding IsVisF4}"
                        TextColor="#816f20">
                     <Label.GestureRecognizers>
                         <TapGestureRecognizer Tapped="OnF4" />
                     </Label.GestureRecognizers>
                 </Label>
-                <Label Text="f5-"
+                <Label Text="F5"
                        FontSize="16"
                        TextColor="#ff5c5c"
                        VerticalOptions="Center" />
                 <Label Text="{Binding F5Text}"
-                       FontSize="18"
+                       FontSize="16"
                        TextColor="#816f20">
                     <Label.GestureRecognizers>
                         <TapGestureRecognizer Tapped="OnF5" />
                     </Label.GestureRecognizers>
                 </Label>
-                <Label Text="f6-"
+                <Label Text="F6"
                        VerticalOptions="Center"
                        FontSize="16"
                        TextColor="#ff5c5c" />
                 <Label Text="Др.поточ."
-                       FontSize="18"
+                       FontSize="16"
                        TextColor="#816f20">
                     <Label.GestureRecognizers>
                         <TapGestureRecognizer Tapped="OnClickPrintOne" />

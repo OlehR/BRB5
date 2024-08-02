@@ -5,8 +5,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Threading;
+using Utils;
+using Microsoft.Maui.Controls.Compatibility;
 using Microsoft.Maui.Controls;
 using Microsoft.Maui;
+using Microsoft.Maui.ApplicationModel;
+using Microsoft.Maui.Devices.Sensors;
 
 namespace BRB5.Model
 {
@@ -57,6 +61,7 @@ namespace BRB5.Model
             }
             catch (Exception ex)
             {
+                FileLogger.WriteLogMessage("LocationBrb.GetCurrentLocation", ex);
                 // Unable to get location
             }
             return Wh;

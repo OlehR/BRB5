@@ -4,6 +4,7 @@
                           xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
                           x:Class="BRB5.MainPage"
                           xmlns:controls="clr-namespace:BRB5.View"
+                          xmlns:effects="clr-namespace:Xamarin.KeyboardHelper;assembly=Xamarin.KeyboardHelper"
                           NavigationPage.HasNavigationBar="True">
     <NavigationPage.TitleView>
         <StackLayout Spacing="10" Orientation="Horizontal">
@@ -50,29 +51,36 @@
                     HorizontalOptions="Center" VerticalOptions="CenterAndExpand"
                     Clicked="OnButtonLogin" />
         </StackLayout>
-        <ListView x:Name="ListDocs" IsVisible="false" 
+
+        <StackLayout x:Name="ListDocs" IsVisible="false">
+            <Button Text="Назад" ImageSource="BackSmall.png" IsVisible="{Binding IsVisibleBack}"
+                    FontSize="Large"
+                    Clicked="BackToMainList"
+                    Style="{StaticResource ButtonStyle}" />
+            <ListView  
                   HasUnevenRows="True"
                   ItemsSource="{Binding OCTypeDoc}">
-            <ListView.Header>
-                <StackLayout Orientation="Horizontal">
-                    <!-- <Label Text="Список    Запитань2" FontSize="25"
+                <ListView.Header>
+                    <StackLayout Orientation="Horizontal">
+                        <!-- <Label Text="Список    Запитань2" FontSize="25"
                            BackgroundColor="#c5cae9" HorizontalOptions="FillAndExpand" />-->
-                </StackLayout>
-            </ListView.Header>
-            <!-- ItemTapped="OnItemTapped"-->
-            <ListView.ItemTemplate>
-                <DataTemplate xmlns:brb5="clr-namespace:BRB5">
-                    <ViewCell>
-                        <ViewCell.View>
-                            <Button Text="{Binding NameDoc}"
+                    </StackLayout>
+                </ListView.Header>
+                <!-- ItemTapped="OnItemTapped"-->
+                <ListView.ItemTemplate>
+                    <DataTemplate xmlns:brb5="clr-namespace:BRB5">
+                        <ViewCell>
+                            <ViewCell.View>
+                                <Button Text="{Binding NameDoc}"
                                     FontSize="Large"
                                     Clicked="OnButtonClicked"
                                     Style="{StaticResource ButtonStyle}" />
-                        </ViewCell.View>
-                    </ViewCell>
-                </DataTemplate>
-            </ListView.ItemTemplate>
-        </ListView>
+                            </ViewCell.View>
+                        </ViewCell>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+        </StackLayout>
     </StackLayout>
 
 </controls:BaseContentPage>
