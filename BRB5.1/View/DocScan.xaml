@@ -3,8 +3,8 @@
 <controls:BaseContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
                           xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
                           xmlns:controls="clr-namespace:BRB51.View"
-                          xmlns:effects="clr-namespace:Xamarin.KeyboardHelper;assembly=Xamarin.KeyboardHelper"
                           x:Class="BRB51.View.DocScan">
+    <!--xmlns:effects="clr-namespace:Xamarin.KeyboardHelper;assembly=Xamarin.KeyboardHelper"-->
     <ContentPage.Content>
         <AbsoluteLayout Padding="0" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand">
 
@@ -34,25 +34,25 @@
 
                         <Frame Style="{StaticResource FrameStyle}">
                             <controls:CustomEntry Style="{StaticResource EntryStyle}"
-                                  effects:KeyboardEffect.EnableKeyboard="{Binding IsSoftKeyboard}"
                                                   Text="{Binding ScanData.BarCode}"
                                                   IsReadOnly="True"
-                                                  Placeholder="баркод" >
+                                                  Placeholder="баркод" />
+                            <!--effects:KeyboardEffect.EnableKeyboard="{Binding IsSoftKeyboard}"
                                 <controls:CustomEntry.Effects>
                                     <effects:KeyboardEnableEffect/>
                                 </controls:CustomEntry.Effects>
-                            </controls:CustomEntry>
+                            </controls:CustomEntry>-->
                         </Frame>
                         <Frame Style="{StaticResource FrameStyle}"
                                Grid.Column="1">
                             <controls:CustomEntry Style="{StaticResource EntryStyle}"
-                                  effects:KeyboardEffect.EnableKeyboard="{Binding IsSoftKeyboard}"
                                                   Text="{Binding ScanData.BeforeQuantity}"
-                                                  IsReadOnly="True" >
+                                                  IsReadOnly="True" />
+                            <!--effects:KeyboardEffect.EnableKeyboard="{Binding IsSoftKeyboard}"
                                 <controls:CustomEntry.Effects>
                                     <effects:KeyboardEnableEffect/>
                                 </controls:CustomEntry.Effects>
-                            </controls:CustomEntry>
+                            </controls:CustomEntry>-->
                         </Frame>
 
                         <Grid Grid.Row="1">
@@ -65,17 +65,17 @@
 
                             <Frame Grid.Column="0" Style="{StaticResource FrameStyle}">
                                 <controls:CustomEntry Style="{StaticResource EntryStyle}"
-                                  effects:KeyboardEffect.EnableKeyboard="{Binding IsSoftKeyboard}"
                                                       Text="{Binding ScanData.InputQuantity}"
                                                       x:Name="inputQ"
                                                       Unfocused="UnfocusedInputQ"
                                                       TextChanged="CalcQuantity"
                                                       Placeholder="к-сть"
-                                                      Keyboard="Telephone" >
+                                                      Keyboard="Telephone" />
+                                <!--effects:KeyboardEffect.EnableKeyboard="{Binding IsSoftKeyboard}"
                                     <controls:CustomEntry.Effects>
                                         <effects:KeyboardEnableEffect/>
                                     </controls:CustomEntry.Effects>
-                                </controls:CustomEntry>
+                                </controls:CustomEntry>-->
                             </Frame>
 
                             <Label Text="{Binding ScanData.NameUnit}" Grid.Column="1" />
@@ -84,13 +84,13 @@
                             <Frame Style="{StaticResource FrameStyle}"
                                    Grid.Column="3">
                                 <controls:CustomEntry Style="{StaticResource EntryStyle}"
-                                  effects:KeyboardEffect.EnableKeyboard="{Binding IsSoftKeyboard}"
                                                       Text="{Binding ScanData.Coefficient}"
-                                                      IsReadOnly="True" >
+                                                      IsReadOnly="True" />
+                                <!--effects:KeyboardEffect.EnableKeyboard="{Binding IsSoftKeyboard}"
                                     <controls:CustomEntry.Effects>
                                         <effects:KeyboardEnableEffect/>
                                     </controls:CustomEntry.Effects>
-                                </controls:CustomEntry>
+                                </controls:CustomEntry>-->
                             </Frame>
                         </Grid>
 
@@ -98,13 +98,13 @@
                                Grid.Column="1"
                                Grid.Row="1">
                             <controls:CustomEntry Style="{StaticResource EntryStyle}"
-                                  effects:KeyboardEffect.EnableKeyboard="{Binding IsSoftKeyboard}"
                                                   Text="{Binding ScanData.QuantityBarCode}"
-                                                  IsReadOnly="True" >
+                                                  IsReadOnly="True" />
+                            <!--effects:KeyboardEffect.EnableKeyboard="{Binding IsSoftKeyboard}"
                                 <controls:CustomEntry.Effects>
                                     <effects:KeyboardEnableEffect/>
                                 </controls:CustomEntry.Effects>
-                            </controls:CustomEntry>
+                            </controls:CustomEntry>-->
                         </Frame>
                     </Grid>
 

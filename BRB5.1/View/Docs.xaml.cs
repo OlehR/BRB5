@@ -1,17 +1,14 @@
 ﻿using BL;
 using BL.Connector;
 using BRB5.Model;
-using System;
 using System.Collections.ObjectModel;
-using System.Linq;
-using System.Reflection;
 using Microsoft.Maui.Controls.Compatibility;
-using Microsoft.Maui.Controls;
-using Microsoft.Maui;
+using BRB5;
+using Grid = Microsoft.Maui.Controls.Grid;
 
 namespace BRB51.View
 {
-    public partial class Docs
+    public partial class Docs: ContentPage
     {
         private Connector c = Connector.GetInstance();
         private TypeDoc TypeDoc;

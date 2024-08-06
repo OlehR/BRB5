@@ -3,21 +3,21 @@
 <controls:BaseContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
                           xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
                           xmlns:controls="clr-namespace:BRB51.View"
-                          xmlns:effects="clr-namespace:Xamarin.KeyboardHelper;assembly=Xamarin.KeyboardHelper"
                           x:Class="BRB51.View.ManualInput">
+    <!--xmlns:effects="clr-namespace:Xamarin.KeyboardHelper;assembly=Xamarin.KeyboardHelper"-->
 
     <ContentPage.Content>
         <StackLayout>
 
             <Frame Style="{StaticResource FrameStyle}">
                 <controls:CustomEntry Style="{StaticResource EntryStyle}"
-                                      effects:KeyboardEffect.EnableKeyboard="{Binding IsSoftKeyboard}"
                                       Placeholder="назва"
-                                      Text="{Binding NumberOutInvoice}" >
+                                      Text="{Binding NumberOutInvoice}"/>
+                <!--effects:KeyboardEffect.EnableKeyboard="{Binding IsSoftKeyboard}"
                     <controls:CustomEntry.Effects>
                         <effects:KeyboardEnableEffect/>
                     </controls:CustomEntry.Effects>
-                </controls:CustomEntry>
+                </controls:CustomEntry>-->
             </Frame>
 
             <ListView ItemsSource="{Binding DocWares}" SeparatorVisibility="None">
@@ -84,13 +84,13 @@
                                            Grid.Column="1">
                                         <controls:CustomEntry
                                             Style="{StaticResource EntryStyle}"
-                                            effects:KeyboardEffect.EnableKeyboard="{Binding IsSoftKeyboard}"
                                             Keyboard="Numeric"
-                                            Text="{Binding InputQuantity}" >
+                                            Text="{Binding InputQuantity}" />
+                                        <!--effects:KeyboardEffect.EnableKeyboard="{Binding IsSoftKeyboard}"
                                             <controls:CustomEntry.Effects>
                                                 <effects:KeyboardEnableEffect/>
                                             </controls:CustomEntry.Effects>
-                                        </controls:CustomEntry>
+                                        </controls:CustomEntry>-->
                                     </Frame>
 
                                 </Grid>

@@ -2,17 +2,12 @@
 using BL.Connector;
 using BRB5.Model;
 using BRB51.ViewModel;
-using System;
 using System.Collections.ObjectModel;
-using System.Linq;
-using ZXing.Net.Mobile.Forms;
-using Microsoft.Maui.Controls.Compatibility;
-using Microsoft.Maui.Controls;
-using Microsoft.Maui;
+using BRB5;
 
 namespace BRB51.View
 {
-    public partial class DocScan
+    public partial class DocScan: ContentPage
     {
         private ObservableCollection<DocWaresEx> _ListWares;
         public ObservableCollection<DocWaresEx> ListWares { get { return _ListWares; } set { _ListWares = value; OnPropertyChanged("ListWares"); } }

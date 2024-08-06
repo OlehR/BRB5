@@ -1,21 +1,13 @@
 ﻿using BRB5.Model;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using ZXing.Net.Mobile.Forms;
 using BRB51.View;
 using BRB51.ViewModel;
 using BL;
-using Utils;
-using Microsoft.Maui.Controls.Compatibility;
-using Microsoft.Maui.Controls;
-using Microsoft.Maui;
-using Microsoft.Maui.Devices;
+using BRB5;
 
 //using BRB5.Connector;
-namespace BRB5
+namespace BRB51
 {
-    public partial class PriceCheck : IDisposable
+    public partial class PriceCheck : ContentPage, IDisposable
     {
         DB db = DB.GetDB();
         BL.BL bl = BL.BL.GetBL();

@@ -1,16 +1,11 @@
 ﻿using BRB5.Model;
-using System;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.Maui.Controls.Xaml;
-using ZXing.Net.Mobile.Forms;
 using System.Collections.ObjectModel;
 using BRB51.ViewModel;
 using BL.Connector;
 using BL;
 using Microsoft.Maui.Controls.Compatibility;
-using Microsoft.Maui.Controls;
-using Microsoft.Maui;
+using BRB5;
+using Grid = Microsoft.Maui.Controls.Grid;
 
 namespace BRB51.View
 {

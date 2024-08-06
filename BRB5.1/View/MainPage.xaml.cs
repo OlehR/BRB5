@@ -14,12 +14,13 @@ using Microsoft.Maui.Controls.Compatibility;
 using Microsoft.Maui.Controls;
 using Microsoft.Maui;
 using Microsoft.Maui.ApplicationModel;
+using BRB5;
 
 //[assembly: Xamarin.Forms.Dependency(typeof(AndroidStorageManager))]
 
-namespace BRB5
+namespace BRB51
 {
-    public partial class MainPage
+    public partial class MainPage : ContentPage
     {
         public ObservableCollection<TypeDoc> OCTypeDoc { get; set; }
         Connector c;

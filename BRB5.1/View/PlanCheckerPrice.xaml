@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" xmlns:controls="clr-namespace:BRB51.View"
-             xmlns:effects="clr-namespace:Xamarin.KeyboardHelper;assembly=Xamarin.KeyboardHelper"
-             xmlns:local="clr-namespace:BRB51.View"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" 
+             xmlns:controls="clr-namespace:BRB51.View"
              x:Class="BRB51.View.PlanCheckerPrice">
+    <!--xmlns:effects="clr-namespace:Xamarin.KeyboardHelper;assembly=Xamarin.KeyboardHelper"-->
     <ContentPage.Resources>
         <ResourceDictionary>
             <DataTemplate x:Key="softKeyboardTemplate">
@@ -64,30 +64,30 @@
                             <controls:CustomEntry Style="{StaticResource EntryStyle}" 
                                    AutomationId="{Binding CodeWares}"
                                    TextChanged="TextChangedAvailable"
-                                   effects:KeyboardEffect.EnableKeyboard="False"
                                    Text="{Binding InputQuantity}" 
-                                   Keyboard="Telephone">
+                                   Keyboard="Telephone"/>
+                            <!--effects:KeyboardEffect.EnableKeyboard="False"
                                 <controls:CustomEntry.Effects>
                                     <effects:KeyboardEnableEffect/>
                                 </controls:CustomEntry.Effects>
-                            </controls:CustomEntry>
+                            </controls:CustomEntry>-->
                         </Frame>
                         <Frame  Style="{StaticResource FrameStyle}"  Grid.Column="2"  Grid.Row="1">
                             <controls:CustomEntry Style="{StaticResource EntryStyle}"
                                    AutomationId="{Binding CodeWares}"
                                    TextChanged="TextChangedAdd"
-                                   effects:KeyboardEffect.EnableKeyboard="{Binding IsSoftKeyboard}"
-                                   Keyboard="Telephone">
+                                   Keyboard="Telephone"/>
+                            <!--effects:KeyboardEffect.EnableKeyboard="{Binding IsSoftKeyboard}"
                                 <controls:CustomEntry.Effects>
                                     <effects:KeyboardEnableEffect/>
                                 </controls:CustomEntry.Effects>
-                            </controls:CustomEntry>
+                            </controls:CustomEntry>-->
                         </Frame>
                     </Grid>
 
                 </ViewCell>
             </DataTemplate>
-            <local:KeyboardTypeDataTemplateSelector x:Key="keyboardTypeDataTemplateSelector"
+            <controls:KeyboardTypeDataTemplateSelector x:Key="keyboardTypeDataTemplateSelector"
                                                    SoftKeyboardTemplate="{StaticResource softKeyboardTemplate}"
                                                    HardKeyboardTemplate="{StaticResource hardKeyboardTemplate}" />
         </ResourceDictionary>

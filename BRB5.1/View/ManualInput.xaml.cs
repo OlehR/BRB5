@@ -1,11 +1,12 @@
 ﻿using BL;
 using BL.Connector;
+using BRB5;
 using BRB5.Model;
 using System.Collections.ObjectModel;
 
 namespace BRB51.View
 {
-    public partial class ManualInput
+    public partial class ManualInput: ContentPage
     {
         private readonly TypeDoc TypeDoc;
         private DocVM Doc;

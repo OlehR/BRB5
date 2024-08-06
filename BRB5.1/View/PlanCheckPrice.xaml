@@ -13,7 +13,7 @@
             <ListView HasUnevenRows="True" 
                   ItemsSource="{Binding PromotionList}">
                 <ListView.ItemTemplate>
-                    <DataTemplate xmlns:brb5="clr-namespace:BRB5">
+                    <DataTemplate xmlns:brb5="clr-namespace:BRB51">
                         <ViewCell>
                             <ViewCell.View>
                                 <Button Text="{Binding Description}"
