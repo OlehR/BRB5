@@ -3,7 +3,7 @@ using BL.Connector;
 using BRB5.Model;
 using System.Collections.ObjectModel;
 
-namespace BRB5.View
+namespace BRB51.View
 {
     public partial class ManualInput
     {

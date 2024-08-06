@@ -2,24 +2,14 @@
 using BL;
 using BL.Connector;
 using BRB5.Model;
-using BRB5.View;
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Utils;
-using Microsoft.Maui.Controls.Xaml;
 using Microsoft.Maui.Controls.Compatibility;
-using Microsoft.Maui.Controls;
-using Microsoft.Maui;
-using Microsoft.Maui.ApplicationModel;
+using Grid = Microsoft.Maui.Controls.Grid;
+using BRB5;
 
-namespace BRB5
+namespace BRB51
 {
-    public partial class RaitingDoc
+    public partial class RaitingDoc: ContentPage
     {
         Connector c;
         DB db = DB.GetDB();

@@ -1,20 +1,14 @@
 ﻿using BL;
 using BL.Connector;
 using BRB5.Model;
-using System;
 using System.Collections.ObjectModel;
-using System.Linq;
-using System.Threading.Tasks;
-using ZXing;
-using Microsoft.Maui.Controls.Compatibility;
-using Microsoft.Maui.Controls;
-using Microsoft.Maui;
+using BRB5;
 
-namespace BRB5.View
+namespace BRB51.View
 {
-    
-    public partial class RaitingDocsEdit
-	{
+
+    public partial class RaitingDocsEdit : ContentPage
+    {
         private readonly TypeDoc TypeDoc;
         Connector c;
         DB db = DB.GetDB();

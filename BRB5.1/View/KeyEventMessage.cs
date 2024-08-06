@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace BRB5.View
+namespace BRB51.View
 {
     public class KeyEventMessage
     {

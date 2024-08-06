@@ -3,10 +3,10 @@ using BRB5.Model;
 using System;
 using System.Collections.Generic;
 
-namespace BRB5.View
+namespace BRB51.View
 {
-	public partial class RaitingTemplateCreate
-	{
+	public partial class RaitingTemplateCreate : ContentPage
+    {
 		private RaitingTemplate _RT;
 		public RaitingTemplate RT { get { return _RT; } set { _RT = value; OnPropertyChanged(nameof(RT.Text)); } }
         public bool AddTotal { get; set; }

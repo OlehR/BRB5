@@ -1,19 +1,13 @@
 ﻿using BL;
 using BL.Connector;
 using BRB5.Model;
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
 using Utils;
-using Microsoft.Maui.Controls.Compatibility;
-using Microsoft.Maui.Controls;
-using Microsoft.Maui;
-using Microsoft.Maui.ApplicationModel;
+using BRB5;
 
-namespace BRB5.View
+namespace BRB51.View
 {
-    public partial class Settings
+    public partial class Settings : TabbedPage
     {
         private Connector c;
         DB db = DB.GetDB();

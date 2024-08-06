@@ -1,17 +1,9 @@
 ﻿using BL;
 using BL.Connector;
 using BRB5.Model;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.Maui.Controls.Xaml;
-using Microsoft.Maui.Controls.Compatibility;
-using Microsoft.Maui.Controls;
-using Microsoft.Maui;
+using BRB5;
 
-namespace BRB5.View
+namespace BRB51.View
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class WareInfo : ContentPage

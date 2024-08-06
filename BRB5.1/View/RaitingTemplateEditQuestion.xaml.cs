@@ -3,13 +3,13 @@ using BRB5.Model;
 using System;
 using System.Collections.Generic;
 
-namespace BRB5.View
+namespace BRB51.View
 {
-    public partial class RaitingTemplateEditQuestion
+    public partial class RaitingTemplateEditQuestion : ContentPage
     {
         public bool IsSoftKeyboard { get { return Config.IsSoftKeyboard; } }
 
-        private Model.RaitingTemplateItem _RQ;
+        private BRB5.Model.RaitingTemplateItem _RQ;
         public RaitingTemplateItem RQ { get { return _RQ; } set { _RQ = value; OnPropertyChanged(nameof(RQ)); } }
 
         DB db = DB.GetDB();

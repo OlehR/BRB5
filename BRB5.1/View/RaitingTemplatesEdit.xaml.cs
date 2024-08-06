@@ -1,23 +1,12 @@
 ﻿using BL;
 using BL.Connector;
 using BRB5.Model;
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.IO;
-using System.Linq;
-using System.Text;
-using static Microsoft.Maui.ApplicationModel.Permissions;
-using Microsoft.Maui.Controls.Compatibility;
-using Microsoft.Maui.Controls;
-using Microsoft.Maui;
-using Microsoft.Maui.Devices;
-using Microsoft.Maui.Storage;
-using Microsoft.Maui.ApplicationModel;
+using Grid = Microsoft.Maui.Controls.Grid;
 
-namespace BRB5.View
+namespace BRB51.View
 {
-    public partial class RaitingTemplatesEdit        
+    public partial class RaitingTemplatesEdit : ContentPage    
     {
 
         private ObservableCollection<RaitingTemplate> _RTemplate;

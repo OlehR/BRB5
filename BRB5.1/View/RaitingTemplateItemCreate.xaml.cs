@@ -1,16 +1,12 @@
 ﻿using BL;
 using BRB5.Model;
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
 using Microsoft.Maui.Controls.Compatibility;
-using Microsoft.Maui.Controls;
-using Microsoft.Maui;
+using Grid = Microsoft.Maui.Controls.Grid;
 
-namespace BRB5.View
+namespace BRB51.View
 {
-    public partial class RaitingTemplateItemCreate
+    public partial class RaitingTemplateItemCreate : ContentPage
     {
         private ObservableCollection<RaitingTemplateItem> _RS;
         public ObservableCollection<RaitingTemplateItem> RS { get { return _RS; } set { _RS = value; OnPropertyChanged(nameof(RS)); } }

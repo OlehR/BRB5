@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <local:BaseContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-                       xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" xmlns:local="clr-namespace:BRB5.View"
-                       x:Class="BRB5.View.Docs"
+                       xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" xmlns:local="clr-namespace:BRB51.View"
+                       x:Class="BRB51.View.Docs"
                        xmlns:effects="clr-namespace:Xamarin.KeyboardHelper;assembly=Xamarin.KeyboardHelper"
                        xmlns:forms="clr-namespace:ZXing.Net.Mobile.Forms;assembly=ZXing.Net.Mobile.Forms"
-                       xmlns:controls="clr-namespace:BRB5.View">
+                       xmlns:controls="clr-namespace:BRB51.View">
     <ContentPage.Resources>
         <ResourceDictionary>
             <DataTemplate x:Key="evenTemplate">

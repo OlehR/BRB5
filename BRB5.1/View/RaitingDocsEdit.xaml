@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<view:BaseContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
                       xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-                      xmlns:view="clr-namespace:BRB5.View;assembly=BRB5"
-                      x:Class="BRB5.View.RaitingDocsEdit">
+                      x:Class="BRB51.View.RaitingDocsEdit">
     <NavigationPage.TitleView>
         <Button Text="Створити"
                 Grid.Column="1"
@@ -90,4 +89,4 @@
             </ListView.ItemTemplate>
         </ListView>
     </ContentPage.Content>
-</view:BaseContentPage>
+</ContentPage>

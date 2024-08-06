@@ -1,14 +1,12 @@
 ﻿using BL;
 using BL.Connector;
+using BRB5;
 using BRB5.Model;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 
-namespace BRB5.View
+namespace BRB51.View
 {
-	public partial class RaitingDocEdit
-	{
+    public partial class RaitingDocEdit : ContentPage
+    {
         DB db = DB.GetDB();
         Connector c;
         private readonly TypeDoc TypeDoc;

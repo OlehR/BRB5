@@ -5,14 +5,14 @@ using System.Threading.Tasks;
 using Microsoft.Maui.Controls.Xaml;
 using ZXing.Net.Mobile.Forms;
 using System.Collections.ObjectModel;
-using BRB5.ViewModel;
+using BRB51.ViewModel;
 using BL.Connector;
 using BL;
 using Microsoft.Maui.Controls.Compatibility;
 using Microsoft.Maui.Controls;
 using Microsoft.Maui;
 
-namespace BRB5.View
+namespace BRB51.View
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class PlanCheckerPrice : ContentPage

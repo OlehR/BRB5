@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" xmlns:controls="clr-namespace:BRB5.View"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" xmlns:controls="clr-namespace:BRB51.View"
              xmlns:effects="clr-namespace:Xamarin.KeyboardHelper;assembly=Xamarin.KeyboardHelper"
-             xmlns:local="clr-namespace:BRB5.View"
-             x:Class="BRB5.View.PlanCheckerPrice">
+             xmlns:local="clr-namespace:BRB51.View"
+             x:Class="BRB51.View.PlanCheckerPrice">
     <ContentPage.Resources>
         <ResourceDictionary>
             <DataTemplate x:Key="softKeyboardTemplate">

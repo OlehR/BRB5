@@ -1,7 +1,7 @@
 ﻿using BL;
 using BL.Connector;
 using BRB5.Model;
-using BRB5.ViewModel;
+using BRB51.ViewModel;
 using System;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -10,7 +10,7 @@ using Microsoft.Maui.Controls.Compatibility;
 using Microsoft.Maui.Controls;
 using Microsoft.Maui;
 
-namespace BRB5.View
+namespace BRB51.View
 {
     public partial class DocScan
     {

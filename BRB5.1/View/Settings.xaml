@@ -2,11 +2,11 @@
 
 <TabbedPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-            xmlns:controls="clr-namespace:BRB5.View"
+            xmlns:controls="clr-namespace:BRB51.View"
             xmlns:iOsSpecific="clr-namespace:Microsoft.Maui.Controls.PlatformConfiguration.iOSSpecific;assembly=Microsoft.Maui.Controls"
-            xmlns:effects="clr-namespace:Xamarin.KeyboardHelper;assembly=Xamarin.KeyboardHelper"
-            x:Class="BRB5.View.Settings"
+            x:Class="BRB51.View.Settings"
             iOsSpecific:Page.UseSafeArea="True">
+    <!--xmlns:effects="clr-namespace:Xamarin.KeyboardHelper;assembly=Xamarin.KeyboardHelper"-->
     <controls:BaseContentPage Title="Налаштування">
         <ContentPage.Content>
             <StackLayout>
@@ -95,12 +95,12 @@
                     <Label Text="Стискання(відсотки)" />
                     <Frame Style="{StaticResource FrameStyle}" WidthRequest="50">
                         <controls:CustomEntry Style="{StaticResource EntryStyle}" Keyboard="Numeric"
-                          effects:KeyboardEffect.EnableKeyboard="{Binding IsSoftKeyboard}"
-                          Text="{Binding Compress}">
+                          Text="{Binding Compress}"/>
+                        <!--effects:KeyboardEffect.EnableKeyboard="{Binding IsSoftKeyboard}"
                             <controls:CustomEntry.Effects>
                                 <effects:KeyboardEnableEffect/>
                             </controls:CustomEntry.Effects>
-                        </controls:CustomEntry>
+                        </controls:CustomEntry>-->
                     </Frame>
                 </StackLayout>
 
@@ -175,32 +175,32 @@
 
                 <Frame Style="{StaticResource FrameStyle}">
                     <controls:CustomEntry Style="{StaticResource EntryStyle}"
-                                          effects:KeyboardEffect.EnableKeyboard="{Binding IsSoftKeyboard}"
-                                          Text="{Binding ApiUrl1}">
+                                          Text="{Binding ApiUrl1}"/>
+                    <!--effects:KeyboardEffect.EnableKeyboard="{Binding IsSoftKeyboard}"
                         <controls:CustomEntry.Effects>
                             <effects:KeyboardEnableEffect/>
                         </controls:CustomEntry.Effects>
-                    </controls:CustomEntry>
+                    </controls:CustomEntry>-->
                 </Frame>
 
                 <Frame Style="{StaticResource FrameStyle}" IsVisible="{Binding IsVisApi3}">
                     <controls:CustomEntry Style="{StaticResource EntryStyle}"
-                                          effects:KeyboardEffect.EnableKeyboard="{Binding IsSoftKeyboard}"
-                                          Text="{Binding ApiUrl2}" IsVisible="{Binding IsVisApi3}">
+                                          Text="{Binding ApiUrl2}" IsVisible="{Binding IsVisApi3}"/>
+                    <!--effects:KeyboardEffect.EnableKeyboard="{Binding IsSoftKeyboard}"
                         <controls:CustomEntry.Effects>
                             <effects:KeyboardEnableEffect/>
                         </controls:CustomEntry.Effects>
-                    </controls:CustomEntry>
+                    </controls:CustomEntry>-->
                 </Frame>
 
                 <Frame Style="{StaticResource FrameStyle}" IsVisible="{Binding IsVisApi3}">
                     <controls:CustomEntry Style="{StaticResource EntryStyle}"
-                                          effects:KeyboardEffect.EnableKeyboard="{Binding IsSoftKeyboard}"
-                                          Text="{Binding ApiUrl3}" IsVisible="{Binding IsVisApi3}" >
+                                          Text="{Binding ApiUrl3}" IsVisible="{Binding IsVisApi3}" />
+                    <!--effects:KeyboardEffect.EnableKeyboard="{Binding IsSoftKeyboard}"
                         <controls:CustomEntry.Effects>
                             <effects:KeyboardEnableEffect/>
                         </controls:CustomEntry.Effects>
-                    </controls:CustomEntry>
+                    </controls:CustomEntry>-->
                 </Frame>
 
                 <Grid>

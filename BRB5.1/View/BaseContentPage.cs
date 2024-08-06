@@ -1,15 +1,13 @@
-using Page = Xamarin.Forms.PlatformConfiguration.iOSSpecific.Page;
-using Microsoft.Maui.Controls.Compatibility;
-using Microsoft.Maui.Controls;
-using Microsoft.Maui;
+using Microsoft.Maui.Controls.PlatformConfiguration;
+using Microsoft.Maui.Controls.PlatformConfiguration.iOSSpecific;
 
-namespace BRB5.View
+namespace BRB51.View
 {
     public class BaseContentPage : ContentPage
     {
         public BaseContentPage()
         {
-            Page.SetUseSafeArea(this, true);
+            this.On<iOS>().SetUseSafeArea(true);
         }
     }
 }

@@ -1,19 +1,10 @@
 ﻿using BL;
 using BRB5.Model;
-using NativeMedia;
-using System;
-using System.Collections.Generic;
+//using NativeMedia;
 using System.Collections.ObjectModel;
-using System.IO;
-using System.Linq;
-using System.Threading;
-using Microsoft.Maui.Controls.Xaml;
 using File = System.IO.File;
-using Microsoft.Maui.Controls.Compatibility;
-using Microsoft.Maui.Controls;
-using Microsoft.Maui;
 
-namespace BRB5.View
+namespace BRB51.View
 {
     public class Pictures
     {
@@ -33,14 +24,14 @@ namespace BRB5.View
 
     }
 
-    public partial class RaitingDocItemEditPhoto
+    public partial class RaitingDocItemEditPhoto : ContentPage
     {
         DB db = DB.GetDB();
         public ObservableCollection<Pictures> MyFiles { get; set; }
         string Mask;
-        Model.RaitingDocItem Raiting;
+        BRB5.Model.RaitingDocItem Raiting;
         string dir;
-        public RaitingDocItemEditPhoto(Model.RaitingDocItem pRaiting)
+        public RaitingDocItemEditPhoto(BRB5.Model.RaitingDocItem pRaiting)
         {
             dir = Path.Combine(Config.PathFiles, pRaiting.NumberDoc);
             if (!Directory.Exists(dir))

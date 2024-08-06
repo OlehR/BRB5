@@ -2,9 +2,9 @@
 
 <controls:BaseContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
                           xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-                          xmlns:controls="clr-namespace:BRB5.View"
+                          xmlns:controls="clr-namespace:BRB51.View"
                           xmlns:effects="clr-namespace:Xamarin.KeyboardHelper;assembly=Xamarin.KeyboardHelper"
-                          x:Class="BRB5.View.DocScan">
+                          x:Class="BRB51.View.DocScan">
     <ContentPage.Content>
         <AbsoluteLayout Padding="0" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand">
 

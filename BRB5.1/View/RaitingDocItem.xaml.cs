@@ -1,37 +1,29 @@
 ﻿using BRB5.Model;
-using BRB5.View;
-using BRB5.ViewModel;
-using System;
-using System.Collections.Generic;
+using BRB51.View;
+using BRB51.ViewModel;
 using System.Collections.ObjectModel;
-using System.IO;
-using System.Linq;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using Utils;
-using ZXing.Net.Mobile.Forms;
 using Microsoft.Maui.Controls.Compatibility;
-using Microsoft.Maui.Controls;
-using Microsoft.Maui;
-using Microsoft.Maui.Media;
-using Microsoft.Maui.ApplicationModel;
-using Microsoft.Maui.Devices.Sensors;
+using BRB5;
+using Grid = Microsoft.Maui.Controls.Grid;
+using StackLayout = Microsoft.Maui.Controls.StackLayout;
 
-namespace BRB5
+namespace BRB51
 {
     //[QueryProperty(nameof(NumberDoc), nameof(NumberDoc))]
     //[QueryProperty(nameof(TypeDoc), nameof(TypeDoc))]
     //[XamlCompilation(XamlCompilationOptions.Compile)]
-    public partial class RaitingDocItem
+    public partial class RaitingDocItem : ContentPage
     {       
         BL.BL Bl = BL.BL.GetBL();
         DocVM cDoc;
         
         bool _IsVisBarCode = false;
         public bool IsVisBarCode { get { return _IsVisBarCode; } set { _IsVisBarCode = value; OnPropertyChanged(nameof(IsVisBarCode)); } }
-        ObservableCollection<Model.RaitingDocItem> _Questions;
-        public ObservableCollection<Model.RaitingDocItem> Questions { get { return _Questions; } set { _Questions = value; OnPropertyChanged(nameof(Questions)); } }
-        IEnumerable<Model.RaitingDocItem> All;
+        ObservableCollection<BRB5.Model.RaitingDocItem> _Questions;
+        public ObservableCollection<BRB5.Model.RaitingDocItem> Questions { get { return _Questions; } set { _Questions = value; OnPropertyChanged(nameof(Questions)); } }
+        IEnumerable<BRB5.Model.RaitingDocItem> All;
 
         int CountAll, CountChoice;
         public bool IsSave { get { return CountAll == CountChoice; } }
@@ -99,7 +91,7 @@ namespace BRB5
             this.BindingContext = this;
             Bl.InitTimerRDI(cDoc);            
            
-            Questions = new ObservableCollection<Model.RaitingDocItem>();
+            Questions = new ObservableCollection<BRB5.Model.RaitingDocItem>();
             Bl.c.OnSave += (Res) => Device.BeginInvokeOnMainThread(() =>
             {
                 TextSave += Res + Environment.NewLine;
@@ -151,7 +143,7 @@ namespace BRB5
         }
 
 
-        void GetData(IEnumerable<Model.RaitingDocItem> pDocItem)
+        void GetData(IEnumerable<BRB5.Model.RaitingDocItem> pDocItem)
         {
             CountAll = pDocItem.Count(el => !el.IsHead);
             All = pDocItem;
@@ -213,7 +205,7 @@ namespace BRB5
         async void TakePhotoAsync(object sender, EventArgs e)
         {
             ImageButton button = (ImageButton)sender;
-            var vQuestion = button.BindingContext as Model.RaitingDocItem;
+            var vQuestion = button.BindingContext as BRB5.Model.RaitingDocItem;
             var FileName = $"{vQuestion.Id}_{DateTime.Now.ToString("yyyyMMdd_HHmmssfff")}";
 
             try
@@ -265,13 +257,13 @@ namespace BRB5
         {
             var s = sender as Grid;
             var cc = s.Parent as StackLayout;
-            var vRait = cc.BindingContext as Model.RaitingDocItem;
+            var vRait = cc.BindingContext as BRB5.Model.RaitingDocItem;
             vRait.IsVisible = !vRait.IsVisible;
             Choice = eTypeChoice.NotDefine;
             ChangeItemBlok(vRait);
         }
 
-        private void ChangeItemBlok(Model.RaitingDocItem vRait)
+        private void ChangeItemBlok(BRB5.Model.RaitingDocItem vRait)
         {
             MainThread.BeginInvokeOnMainThread(() =>
             {
@@ -341,10 +333,10 @@ namespace BRB5
             ListQuestions.ScrollTo( Questions.First(), ScrollToPosition.Start, false);
         }
 
-        private Model.RaitingDocItem GetRaiting(object sender)
+        private BRB5.Model.RaitingDocItem GetRaiting(object sender)
         {
             Microsoft.Maui.Controls.View V = (Microsoft.Maui.Controls.View)sender;
-            return V.BindingContext as Model.RaitingDocItem;
+            return V.BindingContext as BRB5.Model.RaitingDocItem;
         }
     }
 }

@@ -1,19 +1,12 @@
 ﻿using BRB5.Model;
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Threading.Tasks;
-using CommunityToolkit.Maui.Extensions;
-using System.Net.NetworkInformation;
 using BL.Connector;
 using BL;
-using Microsoft.Maui.Controls.Compatibility;
-using Microsoft.Maui.Controls;
-using Microsoft.Maui;
+using BRB5;
 
-namespace BRB5.View
+namespace BRB51.View
 {
-    public partial class DocItem
+    public partial class DocItem : ContentPage
     {
         private readonly TypeDoc TypeDoc;
         

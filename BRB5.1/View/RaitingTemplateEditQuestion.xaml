@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<controls:BaseContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
                           xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-                          xmlns:controls="clr-namespace:BRB5.View"
-                          xmlns:effects="clr-namespace:Xamarin.KeyboardHelper;assembly=Xamarin.KeyboardHelper"
-                          x:Class="BRB5.View.RaitingTemplateEditQuestion">
+                          xmlns:controls="clr-namespace:BRB51.View"
+                          x:Class="BRB51.View.RaitingTemplateEditQuestion">
+    <!--xmlns:effects="clr-namespace:Xamarin.KeyboardHelper;assembly=Xamarin.KeyboardHelper"-->
     <NavigationPage.TitleView>
         <Button Text="Зберегти"
                 Clicked="Save"
@@ -16,24 +16,24 @@
             <Label Text="Текст питання" />
             <Frame Style="{StaticResource FrameStyle}">
                 <controls:CustomEntry Style="{StaticResource EntryStyle}"
-                                      effects:KeyboardEffect.EnableKeyboard="{Binding IsSoftKeyboard}"
-                                      Text="{Binding RQ.Text}" >
+                                      Text="{Binding RQ.Text}" />
+                <!--effects:KeyboardEffect.EnableKeyboard="{Binding IsSoftKeyboard}"
                     <controls:CustomEntry.Effects>
                         <effects:KeyboardEnableEffect/>
                     </controls:CustomEntry.Effects>
-                </controls:CustomEntry>
+                </controls:CustomEntry>-->
             </Frame>
             
             <Label Text="Бал" />
             <Frame Style="{StaticResource FrameStyle}">
                 <controls:CustomEntry Style="{StaticResource EntryStyle}"
-                                      effects:KeyboardEffect.EnableKeyboard="{Binding IsSoftKeyboard}"
                           Text="{Binding RQ.ValueRating}" 
-                          Keyboard="Numeric">
+                          Keyboard="Numeric"/>
+                <!--effects:KeyboardEffect.EnableKeyboard="{Binding IsSoftKeyboard}"
                     <controls:CustomEntry.Effects>
                         <effects:KeyboardEnableEffect/>
                     </controls:CustomEntry.Effects>
-                </controls:CustomEntry>
+                </controls:CustomEntry>-->
             </Frame>
             
             <Label Text="Оцінки" />
@@ -88,4 +88,4 @@
         </StackLayout>
 
     </ContentPage.Content>
-</controls:BaseContentPage>
+</ContentPage>

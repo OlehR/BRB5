@@ -3,7 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:iOsSpecific="clr-namespace:Microsoft.Maui.Controls.PlatformConfiguration.iOSSpecific;assembly=Microsoft.Maui.Controls"
              iOsSpecific:Application.EnableAccessibilityScalingForNamedFontSizes="false"
-             x:Class="BRB5.App">
+             x:Class="BRB51.App">
     <Application.Resources>
 
         <ResourceDictionary>

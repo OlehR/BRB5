@@ -2,10 +2,9 @@
 
 <local:BaseContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
                        xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-                       xmlns:local="clr-namespace:BRB5.View"
-                       xmlns:effects="clr-namespace:Xamarin.KeyboardHelper;assembly=Xamarin.KeyboardHelper"
-                       x:Class="BRB5.View.DocItem"
-                       xmlns:controls="clr-namespace:BRB5.View">
+                       xmlns:local="clr-namespace:BRB51.View"
+                       x:Class="BRB51.View.DocItem">
+    <!--xmlns:effects="clr-namespace:Xamarin.KeyboardHelper;assembly=Xamarin.KeyboardHelper"-->
     <ContentPage.Resources>
         <ResourceDictionary>
             <DataTemplate x:Key="evenTemplate">
@@ -90,15 +89,15 @@
                         ItemDisplayBinding="{Binding DateString}"
                         SelectedIndex="{Binding SelectedDataStr}" />
                 <Frame Style="{StaticResource FrameStyle}">
-                    <controls:CustomEntry Style="{StaticResource EntryStyle}"
+                    <local:CustomEntry Style="{StaticResource EntryStyle}"
                                           x:Name="DocName"
                                           Placeholder="номер"
-                                          effects:KeyboardEffect.EnableKeyboard="{Binding IsSoftKeyboard}"
                                           Text="{Binding NumberOutInvoice}" >
-                        <controls:CustomEntry.Effects>
+                        <!--effects:KeyboardEffect.EnableKeyboard="{Binding IsSoftKeyboard}"
+                        <local:CustomEntry.Effects>
                             <effects:KeyboardEnableEffect/>
-                        </controls:CustomEntry.Effects>
-                    </controls:CustomEntry>
+                        </local:CustomEntry.Effects>-->
+                    </local:CustomEntry>
                 </Frame>
             </StackLayout>
             <ListView ItemTemplate="{StaticResource alternateColorDataTemplateSelector}"

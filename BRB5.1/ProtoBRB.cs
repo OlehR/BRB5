@@ -7,7 +7,7 @@ using Microsoft.Maui.Controls;
 using Microsoft.Maui;
 using Microsoft.Maui.Storage;
 
-namespace BRB5
+namespace BRB51
 {
     public class ProtoBRB
     {
