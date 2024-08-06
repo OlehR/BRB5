@@ -2,7 +2,7 @@ using Microsoft.Maui;
 using Microsoft.Maui.Hosting;
 using System;
 
-namespace BRB5._1
+namespace BRB51
 {
     internal class Program : MauiApplication
     {

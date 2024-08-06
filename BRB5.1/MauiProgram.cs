@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 
-namespace BRB5._1
+namespace BRB51
 {
     public static class MauiProgram
     {

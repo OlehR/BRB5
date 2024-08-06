@@ -1,6 +1,6 @@
 ﻿using Foundation;
 
-namespace BRB5._1
+namespace BRB51
 {
     [Register("AppDelegate")]
     public class AppDelegate : MauiUIApplicationDelegate
