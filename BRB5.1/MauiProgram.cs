@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
 using CommunityToolkit.Maui;
 using FFImageLoading.Maui;
+using BarcodeScanner.Mobile;
 
 namespace BRB51
 {
@@ -13,6 +14,11 @@ namespace BRB51
                 .UseMauiApp<App>()
                 .UseMauiCommunityToolkit()
                 .UseFFImageLoading()
+                .ConfigureMauiHandlers(handlers =>
+                {
+                    // Add the handlers
+                    handlers.AddBarcodeScannerHandler();
+                })
                 .ConfigureFonts(fonts =>
                 {
                     fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
