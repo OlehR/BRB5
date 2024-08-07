@@ -7,7 +7,7 @@ using BRB5;
 
 namespace BRB51.View
 {
-    public partial class DocScan: ContentPage
+    public partial class DocScan
     {
         private ObservableCollection<DocWaresEx> _ListWares;
         public ObservableCollection<DocWaresEx> ListWares { get { return _ListWares; } set { _ListWares = value; OnPropertyChanged("ListWares"); } }

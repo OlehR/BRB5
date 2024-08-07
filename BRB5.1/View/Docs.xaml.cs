@@ -8,7 +8,7 @@ using Grid = Microsoft.Maui.Controls.Grid;
 
 namespace BRB51.View
 {
-    public partial class Docs: ContentPage
+    public partial class Docs
     {
         private Connector c = Connector.GetInstance();
         private TypeDoc TypeDoc;

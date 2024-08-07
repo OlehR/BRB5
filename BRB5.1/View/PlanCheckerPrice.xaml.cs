@@ -10,7 +10,7 @@ using Grid = Microsoft.Maui.Controls.Grid;
 namespace BRB51.View
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
-    public partial class PlanCheckerPrice : ContentPage
+    public partial class PlanCheckerPrice
     {
         Connector c;
         protected DB db = DB.GetDB();

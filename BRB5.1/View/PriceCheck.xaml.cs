@@ -7,7 +7,7 @@ using BRB5;
 //using BRB5.Connector;
 namespace BRB51
 {
-    public partial class PriceCheck : ContentPage, IDisposable
+    public partial class PriceCheck : IDisposable
     {
         DB db = DB.GetDB();
         BL.BL bl = BL.BL.GetBL();

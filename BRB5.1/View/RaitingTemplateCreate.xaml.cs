@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace BRB51.View
 {
-	public partial class RaitingTemplateCreate : ContentPage
+	public partial class RaitingTemplateCreate 
     {
 		private RaitingTemplate _RT;
 		public RaitingTemplate RT { get { return _RT; } set { _RT = value; OnPropertyChanged(nameof(RT.Text)); } }

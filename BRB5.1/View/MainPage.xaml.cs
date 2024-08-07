@@ -1,26 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
+﻿using System.Collections.ObjectModel;
 using BL.Connector;
 using BRB5.Model;
 using BRB51.View;
-using Utils;
-using System.IO;
-using Newtonsoft.Json;
-using System.Threading.Tasks;
 using BL;
-using Microsoft.Maui.Controls.Compatibility;
-using Microsoft.Maui.Controls;
-using Microsoft.Maui;
-using Microsoft.Maui.ApplicationModel;
 using BRB5;
 
 //[assembly: Xamarin.Forms.Dependency(typeof(AndroidStorageManager))]
 
 namespace BRB51
 {
-    public partial class MainPage : ContentPage
+    public partial class MainPage 
     {
         public ObservableCollection<TypeDoc> OCTypeDoc { get; set; }
         Connector c;

@@ -57,112 +57,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <MauiXaml Remove="App.xaml" />
-	  <MauiXaml Remove="View\DocItem.xaml" />
-	  <MauiXaml Remove="View\Docs.xaml" />
-	  <MauiXaml Remove="View\DocScan.xaml" />
-	  <MauiXaml Remove="View\MainPage.xaml" />
-	  <MauiXaml Remove="View\ManualInput.xaml" />
-	  <MauiXaml Remove="View\PlanCheckerPrice.xaml" />
-	  <MauiXaml Remove="View\PlanCheckPrice.xaml" />
-	  <MauiXaml Remove="View\PriceCheck.xaml" />
-	  <MauiXaml Remove="View\RaitingDoc.xaml" />
-	  <MauiXaml Remove="View\RaitingDocEdit.xaml" />
-	  <MauiXaml Remove="View\RaitingDocItem.xaml" />
-	  <MauiXaml Remove="View\RaitingDocItemEditPhoto.xaml" />
-	  <MauiXaml Remove="View\RaitingDocsEdit.xaml" />
-	  <MauiXaml Remove="View\RaitingTemplateCreate.xaml" />
-	  <MauiXaml Remove="View\RaitingTemplateEditQuestion.xaml" />
-	  <MauiXaml Remove="View\RaitingTemplateItemCreate.xaml" />
-	  <MauiXaml Remove="View\RaitingTemplatesEdit.xaml" />
-	  <MauiXaml Remove="View\Settings.xaml" />
-	  <MauiXaml Remove="View\WareInfo.xaml" />
-	</ItemGroup>
-
-	<ItemGroup>
-	  <EmbeddedResource Include="App.xaml">
-	    <SubType>Designer</SubType>
-	    <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
-	  </EmbeddedResource>
-	  <EmbeddedResource Include="View\DocItem.xaml">
-	    <SubType>Designer</SubType>
-	    <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
-	  </EmbeddedResource>
-	  <EmbeddedResource Include="View\Docs.xaml">
-	    <SubType>Designer</SubType>
-	    <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
-	  </EmbeddedResource>
-	  <EmbeddedResource Include="View\DocScan.xaml">
-	    <SubType>Designer</SubType>
-	    <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
-	  </EmbeddedResource>
-	  <EmbeddedResource Include="View\MainPage.xaml">
-	    <SubType>Designer</SubType>
-	    <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
-	  </EmbeddedResource>
-	  <EmbeddedResource Include="View\ManualInput.xaml">
-	    <SubType>Designer</SubType>
-	    <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
-	  </EmbeddedResource>
-	  <EmbeddedResource Include="View\PlanCheckerPrice.xaml">
-	    <SubType>Designer</SubType>
-	    <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
-	  </EmbeddedResource>
-	  <EmbeddedResource Include="View\PlanCheckPrice.xaml">
-	    <SubType>Designer</SubType>
-	    <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
-	  </EmbeddedResource>
-	  <EmbeddedResource Include="View\PriceCheck.xaml">
-	    <SubType>Designer</SubType>
-	    <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
-	  </EmbeddedResource>
-	  <EmbeddedResource Include="View\RaitingDoc.xaml">
-	    <SubType>Designer</SubType>
-	    <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
-	  </EmbeddedResource>
-	  <EmbeddedResource Include="View\RaitingDocEdit.xaml">
-	    <SubType>Designer</SubType>
-	    <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
-	  </EmbeddedResource>
-	  <EmbeddedResource Include="View\RaitingDocItem.xaml">
-	    <SubType>Designer</SubType>
-	    <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
-	  </EmbeddedResource>
-	  <EmbeddedResource Include="View\RaitingDocItemEditPhoto.xaml">
-	    <SubType>Designer</SubType>
-	    <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
-	  </EmbeddedResource>
-	  <EmbeddedResource Include="View\RaitingDocsEdit.xaml">
-	    <SubType>Designer</SubType>
-	    <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
-	  </EmbeddedResource>
-	  <EmbeddedResource Include="View\RaitingTemplateCreate.xaml">
-	    <SubType>Designer</SubType>
-	    <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
-	  </EmbeddedResource>
-	  <EmbeddedResource Include="View\RaitingTemplateEditQuestion.xaml">
-	    <SubType>Designer</SubType>
-	    <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
-	  </EmbeddedResource>
-	  <EmbeddedResource Include="View\RaitingTemplateItemCreate.xaml">
-	    <SubType>Designer</SubType>
-	    <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
-	  </EmbeddedResource>
-	  <EmbeddedResource Include="View\RaitingTemplatesEdit.xaml">
-	    <SubType>Designer</SubType>
-	    <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
-	  </EmbeddedResource>
-	  <EmbeddedResource Include="View\Settings.xaml">
-	    <SubType>Designer</SubType>
-	    <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
-	  </EmbeddedResource>
-	  <EmbeddedResource Include="View\WareInfo.xaml">
-	    <SubType>Designer</SubType>
-	    <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
-	  </EmbeddedResource>
-	</ItemGroup>
-
-	<ItemGroup>
 		<PackageReference Include="CommunityToolkit.Maui" Version="9.0.2" />
 		<PackageReference Include="FFImageLoading.Maui" Version="1.2.6" />
 		<PackageReference Include="Microsoft.Maui.Controls" Version="8.0.71" />
@@ -237,6 +131,89 @@
 	  <Compile Update="View\WareInfo.xaml.cs">
 	    <DependentUpon>%(Filename)</DependentUpon>
 	  </Compile>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <MauiXaml Update="App.xaml">
+	    <SubType>Designer</SubType>
+	    <Generator></Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="View\DocItem.xaml">
+	    <SubType>Designer</SubType>
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="View\Docs.xaml">
+	    <SubType>Designer</SubType>
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="View\DocScan.xaml">
+	    <SubType>Designer</SubType>
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="View\MainPage.xaml">
+	    <SubType>Designer</SubType>
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="View\ManualInput.xaml">
+	    <SubType>Designer</SubType>
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="View\PlanCheckerPrice.xaml">
+	    <SubType>Designer</SubType>
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="View\PlanCheckPrice.xaml">
+	    <SubType>Designer</SubType>
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="View\PriceCheck.xaml">
+	    <SubType>Designer</SubType>
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="View\RaitingDoc.xaml">
+	    <SubType>Designer</SubType>
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="View\RaitingDocEdit.xaml">
+	    <SubType>Designer</SubType>
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="View\RaitingDocItem.xaml">
+	    <SubType>Designer</SubType>
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="View\RaitingDocItemEditPhoto.xaml">
+	    <SubType>Designer</SubType>
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="View\RaitingDocsEdit.xaml">
+	    <SubType>Designer</SubType>
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="View\RaitingTemplateCreate.xaml">
+	    <SubType>Designer</SubType>
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="View\RaitingTemplateEditQuestion.xaml">
+	    <SubType>Designer</SubType>
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="View\RaitingTemplateItemCreate.xaml">
+	    <SubType>Designer</SubType>
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="View\RaitingTemplatesEdit.xaml">
+	    <SubType>Designer</SubType>
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="View\Settings.xaml">
+	    <SubType>Designer</SubType>
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="View\WareInfo.xaml">
+	    <SubType>Designer</SubType>
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
 	</ItemGroup>
 
 </Project>

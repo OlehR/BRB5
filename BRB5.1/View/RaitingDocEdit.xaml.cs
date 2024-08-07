@@ -5,7 +5,7 @@ using BRB5.Model;
 
 namespace BRB51.View
 {
-    public partial class RaitingDocEdit : ContentPage
+    public partial class RaitingDocEdit 
     {
         DB db = DB.GetDB();
         Connector c;

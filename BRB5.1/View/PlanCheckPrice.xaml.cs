@@ -6,7 +6,7 @@ using System.Collections.ObjectModel;
 namespace BRB51.View
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
-    public partial class PlanCheckPrice : ContentPage
+    public partial class PlanCheckPrice 
     {
 
         DB db = DB.GetDB();

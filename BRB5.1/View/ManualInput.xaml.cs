@@ -6,7 +6,7 @@ using System.Collections.ObjectModel;
 
 namespace BRB51.View
 {
-    public partial class ManualInput: ContentPage
+    public partial class ManualInput
     {
         private readonly TypeDoc TypeDoc;
         private DocVM Doc;

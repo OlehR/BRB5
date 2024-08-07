@@ -6,7 +6,7 @@ using BRB5;
 
 namespace BRB51.View
 {
-    public partial class DocItem : ContentPage
+    public partial class DocItem 
     {
         private readonly TypeDoc TypeDoc;
         
