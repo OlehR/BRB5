@@ -52,7 +52,7 @@
                     </Grid>
                 </ListView.Header>
                 <ListView.ItemTemplate>
-                    <DataTemplate xmlns:brb5="clr-namespace:BRB5">
+                    <DataTemplate xmlns:brb5="clr-namespace:BRB51">
                         <ViewCell>
                             <ViewCell.View>
                                 <Grid RowSpacing="1"

@@ -1,6 +1,5 @@
 ﻿using BRB5.Model;
 using BRB51.View;
-using BRB51.ViewModel;
 using System.Collections.ObjectModel;
 using System.Text.RegularExpressions;
 using Utils;
@@ -78,7 +77,7 @@ namespace BRB51
         public double OpacityAll { get { return Choice == eTypeChoice.All ? 1d : 0.4d; } }
         public double OpacityOnlyHead { get { return Choice == eTypeChoice.OnlyHead ? 1d : 0.4d; } }
         public double OpacityNoAnswer { get { return Choice == eTypeChoice.NoAnswer ? 1d : 0.4d; } }
-        ZXingScannerView zxing;
+        //ZXingScannerView zxing;
         public bool IsVisScan { get { return Config.TypeScaner == eTypeScaner.Camera; } }
 
         public RaitingDocItem(DocVM pDoc)
@@ -109,7 +108,7 @@ namespace BRB51
         protected override void OnAppearing()
         {
             base.OnAppearing();
-            if (IsVisScan) zxing = ZxingBRB5.SetZxing(GridZxing, zxing, (BarCode) => OnScanBarCode(BarCode));
+            //if (IsVisScan) zxing = ZxingBRB5.SetZxing(GridZxing, zxing, (BarCode) => OnScanBarCode(BarCode));
             
             Bl.StartTimerRDI();
             if (IsRefreshList)Bl.LoadDataRDI(cDoc,GetData);
@@ -121,7 +120,7 @@ namespace BRB51
         {  
             base.OnDisappearing(); 
             Bl.StopTimerRDI();
-            if (IsVisScan) zxing.IsScanning = false;
+            //if (IsVisScan) zxing.IsScanning = false;
         }
 
         void ViewDoc()
@@ -285,15 +284,15 @@ namespace BRB51
 
         private void BarCode(object sender, EventArgs e)
         {
-            IsVisBarCode = !IsVisBarCode;
-            zxing.IsScanning = IsVisBarCode;
-            zxing.IsAnalyzing = IsVisBarCode;
+            //IsVisBarCode = !IsVisBarCode;
+            //zxing.IsScanning = IsVisBarCode;
+            //zxing.IsAnalyzing = IsVisBarCode;
         }
         private void OnScanBarCode(string result)
         {
             MainThread.BeginInvokeOnMainThread(() =>
             {
-                zxing.IsAnalyzing = false;
+                //zxing.IsAnalyzing = false;
                 var resultText = "[" + result + "]";
                 var temp = Questions.Where(el => el.Id == -1).FirstOrDefault();
 
@@ -305,7 +304,7 @@ namespace BRB51
                 Questions[Questions.IndexOf(temp)] = temp;
 
                 ListQuestions.ScrollTo(Questions.Last(), ScrollToPosition.Center, false);
-                zxing.IsAnalyzing = true;
+                //zxing.IsAnalyzing = true;
             });
         }
 

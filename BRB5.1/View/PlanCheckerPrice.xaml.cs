@@ -1,6 +1,5 @@
 ﻿using BRB5.Model;
 using System.Collections.ObjectModel;
-using BRB51.ViewModel;
 using BL.Connector;
 using BL;
 using Microsoft.Maui.Controls.Compatibility;
@@ -15,7 +14,7 @@ namespace BRB51.View
         Connector c;
         protected DB db = DB.GetDB();
         BL.BL Bl = BL.BL.GetBL();
-        ZXingScannerView zxing;
+        //ZXingScannerView zxing;
         private DocVM Doc;
         public bool IsVisScan { get { return Config.TypeScaner == eTypeScaner.Camera; } }
         public ObservableCollection<DocWaresEx> WaresList { get; set; }
@@ -67,9 +66,9 @@ namespace BRB51.View
             base.OnAppearing();
             if (IsVisScan)
             {
-                zxing = ZxingBRB5.SetZxing(GridZxing, zxing, (BarCode) => WareFocus(BarCode));
-                zxing.IsScanning = true;
-                zxing.IsAnalyzing = true;
+                //zxing = ZxingBRB5.SetZxing(GridZxing, zxing, (BarCode) => WareFocus(BarCode));
+               // zxing.IsScanning = true;
+                //zxing.IsAnalyzing = true;
             }
 
             if (!IsSoftKeyboard)
@@ -80,7 +79,7 @@ namespace BRB51.View
         }
         protected override void OnDisappearing()
         {
-            if (IsVisScan) zxing.IsScanning = false;
+            //if (IsVisScan) zxing.IsScanning = false;
             base.OnDisappearing();
 
             if (!IsSoftKeyboard)

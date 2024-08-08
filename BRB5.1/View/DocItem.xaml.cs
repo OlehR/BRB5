@@ -3,6 +3,7 @@ using System.Collections.ObjectModel;
 using BL.Connector;
 using BL;
 using BRB5;
+using CommunityToolkit.Maui.Alerts;
 
 namespace BRB51.View
 {
@@ -73,7 +74,12 @@ namespace BRB51.View
             Doc.DateOutInvoice = ListDataStr[SelectedDataStr].DateString;
             var r = c.SendDocsData(Doc, db.GetDocWares(Doc, 2, eTypeOrder.Scan));
             if (r.State != 0) _ = DisplayAlert("Помилка", r.TextError, "OK");
-            else _ = this.DisplayToastAsync("Документ успішно збережений");
+            else
+            {
+                var toast = Toast.Make("Документ успішно збережений");
+                _ = toast.Show();
+                //_ = this.DisplayToastAsync("Документ успішно збережений");
+            }
         }
         private async void F3Scan(object sender, EventArgs e) { await Navigation.PushAsync(new DocScan(Doc, TypeDoc)); }
         private async void F4WrOff(object sender, EventArgs e) { await Navigation.PushAsync(new ManualInput(Doc, TypeDoc));  }

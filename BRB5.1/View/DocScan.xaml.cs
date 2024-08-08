@@ -1,7 +1,6 @@
 ﻿using BL;
 using BL.Connector;
 using BRB5.Model;
-using BRB51.ViewModel;
 using System.Collections.ObjectModel;
 using BRB5;
 
@@ -29,7 +28,7 @@ namespace BRB51.View
         private string _DisplayQuestion;
         public string DisplayQuestion { get { return _DisplayQuestion; } set { _DisplayQuestion = value; OnPropertyChanged(nameof(DisplayQuestion)); } }
         private string TempBarcode;
-        ZXingScannerView zxing;
+        //ZXingScannerView zxing;
         public DocScan(DocId pDocId, TypeDoc pTypeDoc = null)
         {
             InitializeComponent();
@@ -99,9 +98,9 @@ namespace BRB51.View
             base.OnAppearing();
             if (IsVisScan)
             {
-                zxing = ZxingBRB5.SetZxing(GridZxing, zxing, (Barcode) => BarCode(Barcode));
-                zxing.IsScanning = true;
-                zxing.IsAnalyzing = true;
+                //zxing = ZxingBRB5.SetZxing(GridZxing, zxing, (Barcode) => BarCode(Barcode));
+                //zxing.IsScanning = true;
+                //zxing.IsAnalyzing = true;
             }
             else Config.BarCode = BarCode;
             if (!IsSoftKeyboard)
@@ -118,7 +117,7 @@ namespace BRB51.View
         protected override void OnDisappearing()
         {
             base.OnDisappearing();
-            if (IsVisScan) zxing.IsScanning = false;
+            //if (IsVisScan) zxing.IsScanning = false;
 
             if (!IsSoftKeyboard)
             {
@@ -170,7 +169,7 @@ namespace BRB51.View
                         return;
                     }
                 }
-                if (IsVisScan) zxing.IsAnalyzing = true;
+                //if (IsVisScan) zxing.IsAnalyzing = true;
             }
 
             return;
@@ -194,7 +193,7 @@ namespace BRB51.View
                 ScanData.QuantityMax = decimal.MaxValue;
                 FindWareByBarCodeAsync(TempBarcode);
             }
-            if (IsVisScan) zxing.IsAnalyzing = true;
+            //if (IsVisScan) zxing.IsAnalyzing = true;
         }
 
         private void CancelClicked(object sender, EventArgs e)
@@ -202,7 +201,7 @@ namespace BRB51.View
             IsVisQ = false;
             IsVisQOk = false;
             if (TypeDoc.TypeControlQuantity == eTypeControlDoc.Ask) ScanData = null;
-            if (IsVisScan) zxing.IsAnalyzing = true;
+            //if (IsVisScan) zxing.IsAnalyzing = true;
         }
         private async void KeyBack() { await Navigation.PopAsync();  }
 

@@ -1,6 +1,5 @@
 ﻿using BRB5.Model;
 using BRB51.View;
-using BRB51.ViewModel;
 using BL;
 using BRB5;
 
@@ -32,7 +31,7 @@ namespace BRB51
         WaresPrice _WP;
         public WaresPrice WP { get { return _WP; } set { _WP = value; OnPropertyChanged("WP"); OnPropertyChanged("TextColorPrice");
                 OnPropertyChanged("IsVisPriceOpt"); OnPropertyChanged(nameof(IsVisPriceNormal)); OnPropertyChanged("TextColorHttp"); } }
-        ZXingScannerView zxing;
+        //ZXingScannerView zxing;
         //ZXingDefaultOverlay overlay;
 
         int _PrintType = 0;//Колір чека 0-звичайний 1-жовтий, -1 не розділяти.        
@@ -144,9 +143,9 @@ namespace BRB51
             }
             if (IsVisScan)
             {
-                zxing = ZxingBRB5.SetZxing(GridZxing, zxing, (BarCode) => FoundWares(BarCode));
-                zxing.IsScanning = true;
-                zxing.IsAnalyzing = true;
+                //zxing = ZxingBRB5.SetZxing(GridZxing, zxing, (BarCode) => FoundWares(BarCode));
+                //zxing.IsScanning = true;
+                //zxing.IsAnalyzing = true;
             }
             if (!IsVisScan) BarCodeInput.Focus();
             if (IsVisDoubleScan) MessageDoubleScan = "Скануйте цінник чи товар";
@@ -155,7 +154,7 @@ namespace BRB51
         protected override void OnDisappearing()
         {
             base.OnDisappearing();
-            if (IsVisScan) zxing.IsScanning = false;
+            //if (IsVisScan) zxing.IsScanning = false;
 
             if (!IsSoftKeyboard)
             {
@@ -199,7 +198,7 @@ namespace BRB51
         {            
             if (WP != null)
             {
-                if (IsVisScan) zxing.IsAnalyzing = false;
+                //if (IsVisScan) zxing.IsAnalyzing = false;
                 await Navigation.PushAsync(new WareInfo(WP.ParseBarCode));
             }
         }

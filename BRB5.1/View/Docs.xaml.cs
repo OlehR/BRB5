@@ -60,7 +60,7 @@ namespace BRB51.View
         protected override void OnDisappearing()
         {
             base.OnDisappearing();
-            zxing.IsScanning = false;
+            //zxing.IsScanning = false;
             if (!IsSoftKeyboard)
             {
                 MessagingCenter.Unsubscribe<KeyEventMessage>(this, "F1Pressed");
@@ -107,7 +107,7 @@ namespace BRB51.View
         private void TabBarCode(object sender, EventArgs e)
         {
             IsVisBarCode= !IsVisBarCode;
-            zxing.IsScanning = IsVisBarCode;
+            //zxing.IsScanning = IsVisBarCode;
         }
         void BarCode(string pBarCode) { MyDocsR = new ObservableCollection<DocVM>(db.GetDoc(TypeDoc, pBarCode, null));  }
         public void Dispose() {  Config.BarCode -= BarCode;  }
@@ -168,11 +168,11 @@ namespace BRB51.View
         }
 
         private void EnterKey() { if(IsVisZKPO) FilterDocs(null, null); }
-        private void FilterBarCode(ZXing.Result result)
+        private void FilterBarCode(/*ZXing.Result result*/)
         {
-            zxing.IsAnalyzing = false;
-            MyDocsR = new ObservableCollection<DocVM>(db.GetDoc(TypeDoc, result.Text, null));
-            zxing.IsAnalyzing = true;
+            //zxing.IsAnalyzing = false;
+            //MyDocsR = new ObservableCollection<DocVM>(db.GetDoc(TypeDoc, result.Text, null));
+            //zxing.IsAnalyzing = true;
         }
     }
 }

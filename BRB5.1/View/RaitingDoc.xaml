@@ -15,7 +15,7 @@
                 </StackLayout>
             </ListView.Header>
             <ListView.ItemTemplate>
-                <DataTemplate xmlns:brb5="clr-namespace:BRB5" x:DataType="Model:DocVM">
+                <DataTemplate xmlns:brb5="clr-namespace:BRB51" x:DataType="Model:DocVM">
                     <ViewCell>
                         <ViewCell.View BackgroundColor="white">
 

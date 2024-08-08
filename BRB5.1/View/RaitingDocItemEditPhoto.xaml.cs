@@ -3,6 +3,9 @@ using BRB5.Model;
 //using NativeMedia;
 using System.Collections.ObjectModel;
 using File = System.IO.File;
+using System.Threading;
+using Microsoft.Maui.ApplicationModel;
+using Microsoft.Maui.Media;
 
 namespace BRB51.View
 {
@@ -105,20 +108,29 @@ namespace BRB51.View
         private async void OnPhotosAdd(object sender, EventArgs e)
         {
             var cts = new CancellationTokenSource();
-            IMediaFile[] files = null;
+            List<FileResult> files = null;
 
             try
             {
-                var request = new MediaPickRequest(15, MediaFileType.Image, MediaFileType.Video)
-                {
-                    PresentationSourceBounds = System.Drawing.Rectangle.Empty,
-                    UseCreateChooser = true,
-                    Title = "Select"
-                };
+                // Cancel the operation after 5 minutes
                 cts.CancelAfter(TimeSpan.FromMinutes(5));
 
-                var results = await MediaGallery.PickAsync(request, cts.Token);
-                files = results?.Files?.ToArray();
+                // Picking images and videos (one at a time in MAUI)
+                var pickPhotoTask = MediaPicker.PickPhotoAsync(new MediaPickerOptions
+                {
+                    Title = "Select an Image"
+                });
+
+                var pickVideoTask = MediaPicker.PickVideoAsync(new MediaPickerOptions
+                {
+                    Title = "Select a Video"
+                });
+
+                // Await both tasks
+                await Task.WhenAll(pickPhotoTask, pickVideoTask);
+
+                // Collect the results
+                files = new List<FileResult> { await pickPhotoTask, await pickVideoTask };
             }
             catch (OperationCanceledException)   {  /* handling a cancellation request  */  }
             catch (Exception)   {   /* handling other exceptions*/     }
@@ -128,7 +140,7 @@ namespace BRB51.View
 
             foreach (var file in files)
             {
-                var ext = "." + file.Extension;
+                var ext = Path.GetExtension(file.FullPath);
                 var FileName = $"{Raiting.Id}_{DateTime.Now:yyyyMMdd_HHmmssfff}";
                 var newFile = Path.Combine(dir, FileName + ext);
 
