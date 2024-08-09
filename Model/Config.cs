@@ -12,7 +12,7 @@ namespace BRB5.Model
     {
         public static Action<string> BarCode;
         public static Action<double> OnProgress;
-        public static string Manufacturer = "";
+        public static string Manufacturer;
         public static string Model;     
         public static int CodeWarehouse;
         public static List<int> CodesWarehouses { get; set; }

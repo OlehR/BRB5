@@ -72,7 +72,7 @@ namespace BL
                     break;
                 case eCompany.VPSU:
                 case eCompany.SparPSU:
-                    result[0] = "https://apitest.spar.uz.ua/";
+                    result[0] = "http://apitest.spar.uz.ua/";
                     result[1] = "";
                     result[2] = "";
                     break;
