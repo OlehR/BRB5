@@ -3,6 +3,7 @@
 <controls:BaseContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
                           xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
                           xmlns:controls="clr-namespace:BRB51.View"
+                          xmlns:scanner="clr-namespace:BarcodeScanning;assembly=BarcodeScanning.Native.Maui"
                           x:Class="BRB51.PriceCheck">
     <!--xmlns:effects="clr-namespace:Xamarin.KeyboardHelper;assembly=Xamarin.KeyboardHelper"-->
     <ContentPage.Content>
