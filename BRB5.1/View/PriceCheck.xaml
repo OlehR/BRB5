@@ -11,17 +11,19 @@
 
             <Grid x:Name="GridZxing" IsVisible="{Binding IsVisScan}" 
                   HeightRequest="200">
-                <!---<forms:ZXingScannerView x:Name="zxing" /> -->
+                <scanner:CameraView OnDetectionFinished="CameraView_OnDetectionFinished"
+                            x:Name="Barcode"  />
             </Grid>
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition />
                     <ColumnDefinition />
                 </Grid.ColumnDefinitions>
-                <Button Text="Інформація"
+                <Button Text="Інформація" 
+                        Margin="5,5,2,5"
                         HorizontalOptions="Fill"
                         Clicked="OnClickWareInfo" />
-                <Button
+                <Button Margin="3,5,5,5"
                     Grid.Column="1"
                     Text="{Binding PackageNumber}"
                     HorizontalOptions="Fill"

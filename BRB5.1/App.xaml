@@ -28,6 +28,14 @@
                 <Setter Property="CornerRadius" Value="5" />
                 <Setter Property="BorderColor" Value="{StaticResource BorderColor}" />
             </Style>
+            <Style TargetType="NavigationPage">
+                <Setter Property="BarBackgroundColor" Value="#2196F3" />
+                <Setter Property="BarTextColor" Value="White" />
+            </Style>
+            <Style TargetType="Button">
+                <Setter Property="BackgroundColor" Value="{AppThemeBinding Light='#E0E0E0', Dark='#424242'}" />
+                <Setter Property="TextColor" Value="{AppThemeBinding Light='#000000', Dark='#FFFFFF'}" />
+            </Style>
         </ResourceDictionary>
     </Application.Resources>
 </Application>

@@ -146,6 +146,8 @@ namespace BRB51
                 //zxing = ZxingBRB5.SetZxing(GridZxing, zxing, (BarCode) => FoundWares(BarCode));
                 //zxing.IsScanning = true;
                 //zxing.IsAnalyzing = true;
+
+                Barcode.CameraEnabled = true;
             }
             if (!IsVisScan) BarCodeInput.Focus();
             if (IsVisDoubleScan) MessageDoubleScan = "Скануйте цінник чи товар";
@@ -155,6 +157,7 @@ namespace BRB51
         {
             base.OnDisappearing();
             //if (IsVisScan) zxing.IsScanning = false;
+            if (IsVisScan) Barcode.CameraEnabled = false;
 
             if (!IsSoftKeyboard)
             {
@@ -268,6 +271,12 @@ namespace BRB51
                 MessageDoubleScan = "Скануйте цінник чи товар";
             }
 
+        }
+
+        private void CameraView_OnDetectionFinished(object sender, BarcodeScanning.OnDetectionFinishedEventArg e)
+        {
+            if (e.BarcodeResults.Length > 0)
+                FoundWares(e.BarcodeResults[0].DisplayValue);
         }
     }
 }
