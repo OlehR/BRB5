@@ -17,14 +17,13 @@
                 <Setter Property="BorderColor" Value="{StaticResource BorderColor}" />
             </Style>
             <Style x:Key="EntryStyle" TargetType="Entry">
-                <Setter Property="HeightRequest" Value="40"></Setter>
                 <Setter Property="Margin" Value="5,0,0,0"></Setter>
                 <Setter Property="TextColor" Value="Black"></Setter>
-                
+                <Setter Property="HeightRequest" Value="45" />
+                <Setter Property="FontSize" Value="18" />
             </Style>
             <Style x:Key="ButtonStyle" TargetType="Button">
                 <Setter Property="Margin" Value="5" />
-                <Setter Property="Padding" Value="0" />
                 <Setter Property="CornerRadius" Value="5" />
                 <Setter Property="BorderColor" Value="{StaticResource BorderColor}" />
             </Style>
@@ -35,6 +34,7 @@
             <Style TargetType="Button">
                 <Setter Property="BackgroundColor" Value="{AppThemeBinding Light='#E0E0E0', Dark='#424242'}" />
                 <Setter Property="TextColor" Value="{AppThemeBinding Light='#000000', Dark='#FFFFFF'}" />
+                <Setter Property="Margin" Value="5"></Setter>
             </Style>
         </ResourceDictionary>
     </Application.Resources>

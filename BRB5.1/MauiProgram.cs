@@ -2,6 +2,7 @@
 using CommunityToolkit.Maui;
 using FFImageLoading.Maui;
 using BarcodeScanning;
+using BRB51.Handlers;
 
 namespace BRB51
 {
@@ -21,8 +22,9 @@ namespace BRB51
                     fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
                 });
 
+            FormHandler.RemoveBorders();
 #if DEBUG
-    		builder.Logging.AddDebug();
+            builder.Logging.AddDebug();
 #endif
 
             return builder.Build();
