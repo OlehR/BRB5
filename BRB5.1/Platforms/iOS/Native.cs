@@ -8,7 +8,7 @@ using System.Linq;
 using System.Text;
 using UIKit;
 
-namespace BRB5.iOS
+namespace BRB51
 {
     public class Native : NativeBase
     {
@@ -42,7 +42,7 @@ namespace BRB5.iOS
                 width = (float)newWidth;
                 height = (float)newHeight;
 
-                UIGraphics.BeginImageContext(new SizeF(width, height));
+                UIGraphics.BeginImageContext(new System.Drawing.SizeF(width, height));
                 originalImage.Draw(new RectangleF(0, 0, width, height));
                 resizedImage = UIGraphics.GetImageFromCurrentImageContext();
                 UIGraphics.EndImageContext();

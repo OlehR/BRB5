@@ -13,8 +13,8 @@ namespace BRB51
     {
         public ObservableCollection<TypeDoc> OCTypeDoc { get; set; }
         Connector c;
-        DB db = DB.GetDB();
-        BL.BL Bl = BL.BL.GetBL();
+        DB db;
+        BL.BL Bl;
         public string Login { get; set; }
         public string Password { get; set; }
         public IEnumerable<LoginServer> LS { get; set; }
@@ -28,6 +28,10 @@ namespace BRB51
         public bool IsSoftKeyboard { get { return Config.IsSoftKeyboard; } }
         public MainPage()
         {
+
+            db = DB.GetDB(ProtoBRB.GetPathDB);
+            Bl = BL.BL.GetBL();
+            Config.Company = db.GetConfig<eCompany>("Company");
             OCTypeDoc = new ObservableCollection<TypeDoc>();           
             InitializeComponent();
             Init();

@@ -1,10 +1,7 @@
 ﻿using Android.Graphics;
-using Android.Hardware.Lights;
 using BRB5.Model;
-using System;
-using System.IO;
 
-namespace BRB5.Droid
+namespace BRB51
 {
     public class Native : NativeBase
     {

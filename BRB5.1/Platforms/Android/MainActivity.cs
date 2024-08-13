@@ -13,6 +13,7 @@ namespace BRB51
     [Activity(Theme = "@style/Maui.SplashTheme", MainLauncher = true, LaunchMode = LaunchMode.SingleTop, ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation | ConfigChanges.UiMode | ConfigChanges.ScreenLayout | ConfigChanges.SmallestScreenSize | ConfigChanges.Density)]
     public class MainActivity : MauiAppCompatActivity
     {
+ 
         protected override void OnCreate(Bundle savedInstanceState)
         {
 
@@ -31,6 +32,7 @@ namespace BRB51
             Config.Manufacturer = DeviceInfo.Manufacturer;
             Config.Model = DeviceInfo.Model;
             Config.Company = db.GetConfig<eCompany>("Company");
+            Config.NativeBase = new Native();
 
             FileLogger.PathLog = Path.Combine(Config.PathDownloads, "Log");
             FileLogger.WriteLogMessage("Start", eTypeLog.Expanded);

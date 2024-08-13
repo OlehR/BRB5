@@ -99,12 +99,10 @@
     <Compile Include="AndroidStorageManager .cs" />
     <Compile Include="BarCodeBroadcastReceiver.cs" />
     <Compile Include="CustomEntryRenderer.cs" />
-    <None Include="DB.cs" />
     <Compile Include="MainActivity.cs" />
     <Compile Include="Native.cs" />
     <Compile Include="Resources\Resource.designer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <None Include="SQLite.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\AboutResources.txt" />
