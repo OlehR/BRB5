@@ -2,6 +2,7 @@
 using BRB51.View;
 using BL;
 using BRB5;
+using BarcodeScanning;
 
 //using BRB5.Connector;
 namespace BRB51
@@ -73,7 +74,7 @@ namespace BRB51
         public string ButtonDoubleScan { get { return IsWareScaned == eCheckWareScaned.Nothing || IsWareScaned == eCheckWareScaned.Success ? "" :  IsWareScaned == eCheckWareScaned.WareScaned || IsWareScaned == eCheckWareScaned.PriceTagNotFit ? "Відсутній ціник" : "Відсутній товар"; } }
         public string ColorDoubleScan { get { return IsWareScaned == eCheckWareScaned.Success ? "#C5FFC4" : IsWareScaned == eCheckWareScaned.WareNotFit || IsWareScaned== eCheckWareScaned.PriceTagNotFit ? "#FFC4C4" : 
                                                      IsWareScaned == eCheckWareScaned.PriceTagScaned || IsWareScaned == eCheckWareScaned.WareScaned ? "#FEFFC4" : "#FFFFFF"; } }
-        
+        CameraView BarcodeScaner;
         public PriceCheck(TypeDoc pTypeDoc)
         {
             InitializeComponent();            
@@ -146,11 +147,21 @@ namespace BRB51
             }
             if (IsVisScan)
             {
-                //zxing = ZxingBRB5.SetZxing(GridZxing, zxing, (BarCode) => FoundWares(BarCode));
-                //zxing.IsScanning = true;
-                //zxing.IsAnalyzing = true;
+                BarcodeScaner = new CameraView
+                {
+                    VerticalOptions = LayoutOptions.FillAndExpand,
+                    HorizontalOptions = LayoutOptions.FillAndExpand,
+                    CameraEnabled = true,
+                    VibrationOnDetected = false,
+                    BarcodeSymbologies = BarcodeFormats.Ean13 | BarcodeFormats.Ean8 | BarcodeFormats.QRCode,
+                    ViewfinderMode = true,
 
-                Barcode.CameraEnabled = true;
+                };
+
+                BarcodeScaner.OnDetectionFinished += CameraView_OnDetectionFinished;
+
+                GridZxing.Children.Add(BarcodeScaner);
+
             }
             if (!IsVisScan) BarCodeInput.Focus();
             if (IsVisDoubleScan) MessageDoubleScan = "Скануйте цінник чи товар";
@@ -159,8 +170,7 @@ namespace BRB51
         protected override void OnDisappearing()
         {
             base.OnDisappearing();
-            //if (IsVisScan) zxing.IsScanning = false;
-            if (IsVisScan) Barcode.CameraEnabled = false;
+            if (IsVisScan) BarcodeScaner.CameraEnabled = false;
 
             if (!IsSoftKeyboard)
             {
@@ -204,7 +214,7 @@ namespace BRB51
         {            
             if (WP != null)
             {
-                //if (IsVisScan) zxing.IsAnalyzing = false;
+                if (IsVisScan) BarcodeScaner.PauseScanning = true;
                 await Navigation.PushAsync(new WareInfo(WP.ParseBarCode));
             }
         }
@@ -232,7 +242,7 @@ namespace BRB51
     
         private async void KeyBack()  { await Navigation.PopAsync();    }
 
-        private void EntryTextChanged(object sender, TextChangedEventArgs e) {  CurrentEntry = (sender as Entry).AutomationId;   }
+        private void EntryTextChanged(object sender, TextChangedEventArgs e) {  CurrentEntry = ((Entry)sender).AutomationId;   }
         private void KeyEnter()
         {
             if (IsVisDoubleScan)

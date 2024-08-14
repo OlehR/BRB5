@@ -11,8 +11,6 @@
 
             <Grid x:Name="GridZxing" IsVisible="{Binding IsVisScan}" 
                   HeightRequest="200">
-                <scanner:CameraView OnDetectionFinished="CameraView_OnDetectionFinished"
-                            x:Name="Barcode"  />
             </Grid>
             <Grid>
                 <Grid.ColumnDefinitions>
