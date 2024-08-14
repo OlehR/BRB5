@@ -115,8 +115,11 @@ namespace BRB51
                     BadScan++;
                 IsWareScaned = WP.StateDoubleScan;
             }
-            var duration = TimeSpan.FromMilliseconds(WP?.IsPriceOk == true ? 50 : 250);
-            Vibration.Vibrate(duration);
+            if (Config.IsVibration)
+            {
+                var duration = TimeSpan.FromMilliseconds(WP?.IsPriceOk == true ? 50 : 250);
+                Vibration.Vibrate(duration);
+            }
 
             Config.OnProgress?.Invoke(0.9d);
             if (!IsVisScan)
