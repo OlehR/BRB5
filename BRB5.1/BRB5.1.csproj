@@ -55,6 +55,7 @@
 	</ItemGroup>
   
 	<ItemGroup>
+	  <Compile Remove="Platforms\Android\BarCodeBroadcastReceiver.cs" />
 	  <Compile Remove="ViewModel\ZxingBRB5.cs" />
 	</ItemGroup>
 
@@ -223,6 +224,10 @@
 
 	<ItemGroup>
 	  <Folder Include="ViewModel\" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <None Include="Platforms\Android\BarCodeBroadcastReceiver.cs" />
 	</ItemGroup>
 
 </Project>
