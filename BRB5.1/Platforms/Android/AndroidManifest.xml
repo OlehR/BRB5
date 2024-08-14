@@ -1,7 +1,14 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
 	<application android:allowBackup="true" android:icon="@mipmap/appicon" android:roundIcon="@mipmap/appicon_round" android:supportsRtl="true">
-    
+    <receiver android:enabled="true" android:name="crc64d175a7b651dd7ab2.MyBroadcastReceiver" android:exported="true">
+      <intent-filter>
+        <action android:name="device.scanner.EVENT" />
+        <action android:name="ua.uz.vopak.brb4" />
+        <action android:name="com.symbol.datawedge.api.ACTION" />
+        <action android:name="com.scanner.broadcast" />
+      </intent-filter>
+    </receiver>
   </application>
 	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 	<uses-permission android:name="android.permission.INTERNET" />
