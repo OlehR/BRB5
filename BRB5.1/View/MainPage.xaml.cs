@@ -29,6 +29,7 @@ namespace BRB51
         public MainPage()
         {
 
+            ProtoBRB.Init();
             db = DB.GetDB(ProtoBRB.GetPathDB);
             Bl = BL.BL.GetBL();
             Config.Company = db.GetConfig<eCompany>("Company");

@@ -16,29 +16,27 @@ namespace BRB51
  
         protected override void OnCreate(Bundle savedInstanceState)
         {
-
             AppCompatDelegate.DefaultNightMode = AppCompatDelegate.ModeNightNo;
             base.OnCreate(savedInstanceState);
-
-
-            Thread.CurrentThread.CurrentCulture = CultureInfo.InvariantCulture;
-            Thread.CurrentThread.CurrentUICulture = CultureInfo.InvariantCulture;
-
-            DB db = DB.GetDB(ProtoBRB.GetPathDB);
+            
+            //Config.Company = db.GetConfig<eCompany>("Company");
+            //DB db = DB.GetDB(ProtoBRB.GetPathDB);
             // Path.Combine(Android.OS.Environment.ExternalStorageDirectory.AbsolutePath, Android.OS.Environment.DirectoryDownloads);
-            Config.PathDownloads = Path.Combine(Android.App.Application.Context.GetExternalFilesDir("").AbsolutePath, Android.OS.Environment.DirectoryDownloads);
+            ProtoBRB.SetPath(Path.Combine(Android.App.Application.Context.GetExternalFilesDir("").AbsolutePath, Android.OS.Environment.DirectoryDownloads));
+            //Config.PathDownloads = Path.Combine(Android.App.Application.Context.GetExternalFilesDir("").AbsolutePath, Android.OS.Environment.DirectoryDownloads);
             Config.SN = GetDeviceId();
-            Config.Ver = int.Parse(AppInfo.VersionString.Replace(".", ""));
-            Config.Manufacturer = DeviceInfo.Manufacturer;
-            Config.Model = DeviceInfo.Model;
-            Config.Company = db.GetConfig<eCompany>("Company");
+            //Config.Ver = int.Parse(AppInfo.VersionString.Replace(".", ""));
+            //Config.Manufacturer = DeviceInfo.Manufacturer;
+            //Config.Model = DeviceInfo.Model;
+            
             Config.NativeBase = new Native();
-
-            FileLogger.PathLog = Path.Combine(Config.PathDownloads, "Log");
+            //FileLogger.PathLog = Path.Combine(Config.PathDownloads, "Log");
             FileLogger.WriteLogMessage("Start", eTypeLog.Expanded);
-            ///!!!!=TMP копіювання бази
+
+            /*
             try
             {
+            ///!!!!=TMP копіювання бази
                 string path1 = Config.PathDownloads; //Path.Combine(Android.OS.Environment.ExternalStorageDirectory.AbsolutePath, Android.OS.Environment.DirectoryDownloads);
 
                 var FileDestination = Path.Combine(path1, "brb5.db");
@@ -52,8 +50,8 @@ namespace BRB51
             {
                 FileLogger.WriteLogMessage(e.Message);
             }
-
-            Config.TypeScaner = App.GetTypeScaner();
+            */
+            //Config.TypeScaner = App.GetTypeScaner();
             //if (Config.TypeScaner == eTypeScaner.PM351)
             //    BR = new MyBroadcastReceiver();
             //LoadApplication(new App());
