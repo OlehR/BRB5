@@ -3,8 +3,8 @@
   <PropertyGroup>
     <IsFirstTimeProjectOpen>False</IsFirstTimeProjectOpen>
     <ActiveDebugFramework>net8.0-android</ActiveDebugFramework>
-    <ActiveDebugProfile>POINTMOBILE PM550 (Android 7.1 - API 25)</ActiveDebugProfile>
-    <SelectedPlatformGroup>PhysicalDevice</SelectedPlatformGroup>
+    <ActiveDebugProfile>Android Emulator</ActiveDebugProfile>
+    <SelectedPlatformGroup>Emulator</SelectedPlatformGroup>
     <DeveloperId>S4J9BA3B6S</DeveloperId>
     <DevelopmentTeamId>S4J9BA3B6S</DevelopmentTeamId>
     <SelectedDevice>Android Emulator</SelectedDevice>

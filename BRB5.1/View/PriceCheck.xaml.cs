@@ -154,7 +154,6 @@ namespace BRB51
                     CameraEnabled = true,
                     VibrationOnDetected = false,
                     BarcodeSymbologies = BarcodeFormats.Ean13 | BarcodeFormats.Ean8 | BarcodeFormats.QRCode,
-                    ViewfinderMode = true,
 
                 };
 
@@ -289,7 +288,17 @@ namespace BRB51
         private void CameraView_OnDetectionFinished(object sender, BarcodeScanning.OnDetectionFinishedEventArg e)
         {
             if (e.BarcodeResults.Length > 0)
+            {
+                BarcodeScaner.PauseScanning = true;
                 FoundWares(e.BarcodeResults[0].DisplayValue);
+                Task.Run(async () => {                     
+                    await Task.Delay(1000);
+                    BarcodeScaner.PauseScanning = false;
+                });
+                
+                
+            }
         }
+
     }
 }
