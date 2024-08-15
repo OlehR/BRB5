@@ -3,7 +3,7 @@ using BL.Connector;
 using BRB5.Model;
 using System.Collections.ObjectModel;
 
-namespace BRB51.View
+namespace BRB6.View
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class PlanCheckPrice 

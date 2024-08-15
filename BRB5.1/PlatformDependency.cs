@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace BRB51.PlatformDependency
+namespace BRB6.PlatformDependency
 {
     public interface IStorage
     {

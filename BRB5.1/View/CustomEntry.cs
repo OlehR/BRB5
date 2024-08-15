@@ -5,7 +5,7 @@ using Microsoft.Maui.Controls.Compatibility;
 using Microsoft.Maui.Controls;
 using Microsoft.Maui;
 
-namespace BRB51.View
+namespace BRB6.View
 {
     public class CustomEntry : Entry
     {

@@ -12,7 +12,7 @@ using System.Linq;
 using System.Text;
 //using Utils;
 
-namespace BRB51
+namespace BRB6
 {
     [BroadcastReceiver(Enabled = true)]
     [Service(Exported = true)]

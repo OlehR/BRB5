@@ -3,7 +3,7 @@ using BL.Connector;
 using BRB5;
 using BRB5.Model;
 
-namespace BRB51.View
+namespace BRB6.View
 {
     public partial class RaitingDocEdit 
     {

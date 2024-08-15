@@ -5,7 +5,7 @@ using System.Collections.ObjectModel;
 using Utils;
 using BRB5;
 
-namespace BRB51.View
+namespace BRB6.View
 {
     public partial class Settings : TabbedPage
     {

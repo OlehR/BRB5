@@ -1,5 +1,5 @@
 ﻿using BRB5.Model;
-using BRB51.View;
+using BRB6.View;
 using System.Collections.ObjectModel;
 using System.Text.RegularExpressions;
 using Utils;
@@ -8,7 +8,7 @@ using BRB5;
 using Grid = Microsoft.Maui.Controls.Grid;
 using StackLayout = Microsoft.Maui.Controls.StackLayout;
 
-namespace BRB51
+namespace BRB6
 {
     //[QueryProperty(nameof(NumberDoc), nameof(NumberDoc))]
     //[QueryProperty(nameof(TypeDoc), nameof(TypeDoc))]

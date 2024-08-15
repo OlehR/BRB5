@@ -9,7 +9,7 @@ using Microsoft.Maui.Controls;
 using Microsoft.Maui;
 using BRB5;
 
-namespace BRB51
+namespace BRB6
 {
     public partial class App : Application
     {

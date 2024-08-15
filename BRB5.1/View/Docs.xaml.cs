@@ -6,7 +6,7 @@ using Microsoft.Maui.Controls.Compatibility;
 using BRB5;
 using Grid = Microsoft.Maui.Controls.Grid;
 
-namespace BRB51.View
+namespace BRB6.View
 {
     public partial class Docs
     {

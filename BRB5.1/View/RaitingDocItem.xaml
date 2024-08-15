@@ -2,10 +2,10 @@
 
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
                       xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-                      xmlns:brb5="clr-namespace:BRB51"
+                      xmlns:brb5="clr-namespace:BRB6"
                       xmlns:Model="clr-namespace:BRB5.Model;assembly=BRB5.Model"
                       x:DataType="brb5:RaitingDocItem"
-                      x:Class="BRB51.RaitingDocItem">
+                      x:Class="BRB6.RaitingDocItem">
     <!--xmlns:forms="clr-namespace:ZXing.Net.Mobile.Forms;assembly=ZXing.Net.Mobile.Forms"-->
     <ContentPage.Content>
         <AbsoluteLayout>

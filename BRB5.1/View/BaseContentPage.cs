@@ -1,7 +1,7 @@
 using Microsoft.Maui.Controls.PlatformConfiguration;
 using Microsoft.Maui.Controls.PlatformConfiguration.iOSSpecific;
 
-namespace BRB51.View
+namespace BRB6.View
 {
     public class BaseContentPage : ContentPage
     {

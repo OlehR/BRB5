@@ -7,7 +7,7 @@ using Microsoft.Maui.Controls.Compatibility;
 using Grid = Microsoft.Maui.Controls.Grid;
 using BRB5;
 
-namespace BRB51
+namespace BRB6
 {
     public partial class RaitingDoc: ContentPage
     {

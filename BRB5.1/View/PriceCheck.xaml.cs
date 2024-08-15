@@ -1,11 +1,11 @@
 ﻿using BRB5.Model;
-using BRB51.View;
+using BRB6.View;
 using BL;
 using BRB5;
 using BarcodeScanning;
 
 //using BRB5.Connector;
-namespace BRB51
+namespace BRB6
 {
     public partial class PriceCheck : IDisposable
     {

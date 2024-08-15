@@ -10,7 +10,7 @@ using Foundation;
 using Microsoft.Maui.Controls.Compatibility.Platform.Android;
 #endif
 
-namespace BRB51.Handlers;
+namespace BRB6.Handlers;
 
 public static class FormHandler
 {

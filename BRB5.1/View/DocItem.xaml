@@ -2,8 +2,8 @@
 
 <local:BaseContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
                        xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-                       xmlns:local="clr-namespace:BRB51.View"
-                       x:Class="BRB51.View.DocItem">
+                       xmlns:local="clr-namespace:BRB6.View"
+                       x:Class="BRB6.View.DocItem">
     <!--xmlns:effects="clr-namespace:Xamarin.KeyboardHelper;assembly=Xamarin.KeyboardHelper"-->
     <ContentPage.Resources>
         <ResourceDictionary>

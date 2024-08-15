@@ -1,13 +1,13 @@
 ﻿using System.Collections.ObjectModel;
 using BL.Connector;
 using BRB5.Model;
-using BRB51.View;
+using BRB6.View;
 using BL;
 using BRB5;
 
 //[assembly: Xamarin.Forms.Dependency(typeof(AndroidStorageManager))]
 
-namespace BRB51
+namespace BRB6
 {
     public partial class MainPage 
     {

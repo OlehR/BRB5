@@ -2,9 +2,9 @@
 using CommunityToolkit.Maui;
 using FFImageLoading.Maui;
 using BarcodeScanning;
-using BRB51.Handlers;
+using BRB6.Handlers;
 
-namespace BRB51
+namespace BRB6
 {
     public static class MauiProgram
     {

@@ -5,7 +5,7 @@ using BL;
 using BRB5;
 using CommunityToolkit.Maui.Alerts;
 
-namespace BRB51.View
+namespace BRB6.View
 {
     public partial class DocItem 
     {

@@ -2,9 +2,9 @@
 
 <TabbedPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-            xmlns:controls="clr-namespace:BRB51.View"
+            xmlns:controls="clr-namespace:BRB6.View"
             xmlns:iOsSpecific="clr-namespace:Microsoft.Maui.Controls.PlatformConfiguration.iOSSpecific;assembly=Microsoft.Maui.Controls"
-            x:Class="BRB51.View.Settings"
+            x:Class="BRB6.View.Settings"
             iOsSpecific:Page.UseSafeArea="True">
     <!--xmlns:effects="clr-namespace:Xamarin.KeyboardHelper;assembly=Xamarin.KeyboardHelper"-->
     <controls:BaseContentPage Title="Налаштування">
@@ -233,7 +233,7 @@
 
                 <ListView HasUnevenRows="True" ItemsSource="{Binding Warehouses}" x:Name="LWH">
                     <ListView.ItemTemplate>
-                        <DataTemplate xmlns:brb5="clr-namespace:BRB51">
+                        <DataTemplate xmlns:brb5="clr-namespace:BRB6">
                             <ViewCell>
                                 <ViewCell.View>
                                     <StackLayout Orientation="Horizontal" >

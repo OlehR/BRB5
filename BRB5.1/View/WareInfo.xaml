@@ -2,7 +2,7 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" 
              xmlns:ffimageloading="clr-namespace:FFImageLoading.Maui;assembly=FFImageLoading.Maui"
-             x:Class="BRB51.View.WareInfo">
+             x:Class="BRB6.View.WareInfo">
     <ContentPage.Content>
         <StackLayout>
 
@@ -113,7 +113,7 @@
                     </ListView.Header>
 
                     <ListView.ItemTemplate>
-                        <DataTemplate xmlns:brb5="clr-namespace:BRB51">
+                        <DataTemplate xmlns:brb5="clr-namespace:BRB6">
                             <ViewCell>
                                 <ViewCell.View>
                                     <Grid>

@@ -3,7 +3,7 @@ using BRB5.Model;
 using System;
 using System.Collections.Generic;
 
-namespace BRB51.View
+namespace BRB6.View
 {
 	public partial class RaitingTemplateCreate 
     {

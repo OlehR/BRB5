@@ -1,7 +1,7 @@
 ﻿using ObjCRuntime;
 using UIKit;
 
-namespace BRB51
+namespace BRB6
 {
     public class Program
     {

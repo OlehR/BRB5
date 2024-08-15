@@ -1,7 +1,7 @@
 ﻿using Android.App;
 using Android.Runtime;
 
-namespace BRB51
+namespace BRB6
 {
     [Application]
     public class MainApplication : MauiApplication

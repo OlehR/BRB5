@@ -5,7 +5,7 @@ using BRB5.Model;
 using Utils;
 using System.Globalization;
 
-namespace BRB51
+namespace BRB6
 {
     public class ProtoBRB
     {

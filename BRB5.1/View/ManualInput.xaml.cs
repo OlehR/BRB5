@@ -4,7 +4,7 @@ using BRB5;
 using BRB5.Model;
 using System.Collections.ObjectModel;
 
-namespace BRB51.View
+namespace BRB6.View
 {
     public partial class ManualInput
     {

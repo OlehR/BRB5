@@ -1,7 +1,7 @@
 ﻿
-using BRB51.PlatformDependency;
+using BRB6.PlatformDependency;
 
-namespace BRB51
+namespace BRB6
 {
 
     public class AndroidStorageManager : IStorage

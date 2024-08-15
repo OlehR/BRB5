@@ -4,7 +4,7 @@ using Foundation;
 using System.Net.NetworkInformation;
 using UIKit;
 
-namespace BRB51
+namespace BRB6
 {
     [Register("AppDelegate")]
     public class AppDelegate : MauiUIApplicationDelegate

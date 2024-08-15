@@ -4,7 +4,7 @@ using BRB5.Model;
 using System.Collections.ObjectModel;
 using Grid = Microsoft.Maui.Controls.Grid;
 
-namespace BRB51.View
+namespace BRB6.View
 {
     public partial class RaitingTemplatesEdit : ContentPage    
     {

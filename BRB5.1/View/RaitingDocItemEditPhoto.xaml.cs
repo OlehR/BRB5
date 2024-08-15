@@ -7,7 +7,7 @@ using System.Threading;
 using Microsoft.Maui.ApplicationModel;
 using Microsoft.Maui.Media;
 
-namespace BRB51.View
+namespace BRB6.View
 {
     public class Pictures
     {

@@ -1,7 +1,7 @@
 ﻿using Android.Graphics;
 using BRB5.Model;
 
-namespace BRB51
+namespace BRB6
 {
     public class Native : NativeBase
     {
