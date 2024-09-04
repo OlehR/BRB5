@@ -10,7 +10,7 @@
 
             <StackLayout IsEnabled="True" AbsoluteLayout.LayoutBounds="1, 1, 1,1" AbsoluteLayout.LayoutFlags="All">
 
-                <Grid x:Name="GridZxing" IsVisible="{Binding IsVisScan}"  HeightRequest="400"/>             
+                <Grid x:Name="GridZxing" IsVisible="{Binding IsVisScan}"  HeightRequest="200"/>             
 
                 <Grid>
 

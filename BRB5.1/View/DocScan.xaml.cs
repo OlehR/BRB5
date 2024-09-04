@@ -3,6 +3,7 @@ using BL.Connector;
 using BRB5.Model;
 using System.Collections.ObjectModel;
 using BRB5;
+using BarcodeScanning;
 
 namespace BRB6.View
 {
@@ -28,6 +29,8 @@ namespace BRB6.View
         private string _DisplayQuestion;
         public string DisplayQuestion { get { return _DisplayQuestion; } set { _DisplayQuestion = value; OnPropertyChanged(nameof(DisplayQuestion)); } }
         private string TempBarcode;
+
+        CameraView BarcodeScaner;
         //ZXingScannerView zxing;
         public DocScan(DocId pDocId, TypeDoc pTypeDoc = null)
         {
@@ -98,9 +101,19 @@ namespace BRB6.View
             base.OnAppearing();
             if (IsVisScan)
             {
-                //zxing = ZxingBRB5.SetZxing(GridZxing, zxing, (Barcode) => BarCode(Barcode));
-                //zxing.IsScanning = true;
-                //zxing.IsAnalyzing = true;
+                BarcodeScaner = new CameraView
+                {
+                    VerticalOptions = LayoutOptions.FillAndExpand,
+                    HorizontalOptions = LayoutOptions.FillAndExpand,
+                    CameraEnabled = true,
+                    VibrationOnDetected = false,
+                    BarcodeSymbologies = BarcodeFormats.Ean13 | BarcodeFormats.Ean8 | BarcodeFormats.QRCode,
+
+                };
+
+                BarcodeScaner.OnDetectionFinished += CameraView_OnDetectionFinished;
+
+                GridZxing.Children.Add(BarcodeScaner);
             }
             else Config.BarCode = BarCode;
             if (!IsSoftKeyboard)
@@ -117,7 +130,6 @@ namespace BRB6.View
         protected override void OnDisappearing()
         {
             base.OnDisappearing();
-            //if (IsVisScan) zxing.IsScanning = false;
 
             if (!IsSoftKeyboard)
             {
@@ -128,6 +140,8 @@ namespace BRB6.View
                 MessagingCenter.Unsubscribe<KeyEventMessage>(this, "BackPressed");
                 MessagingCenter.Unsubscribe<KeyEventMessage>(this, "EnterPressed");
             }
+
+            if (IsVisScan) BarcodeScaner.CameraEnabled = false;
         }
 
         public void FindWareByBarCodeAsync(string BarCode)
@@ -233,6 +247,21 @@ namespace BRB6.View
                     ListViewWares.ScrollTo(ListViewWares.SelectedItem, ScrollToPosition.Center, false);
                 }
                 OnPropertyChanged(nameof(ListWares));
+            }
+        }
+
+        private void CameraView_OnDetectionFinished(object sender, OnDetectionFinishedEventArg e)
+        {
+            if (e.BarcodeResults.Length > 0)
+            {
+                BarcodeScaner.PauseScanning = true;
+                BarCode(e.BarcodeResults[0].DisplayValue);
+                Task.Run(async () => {
+                    await Task.Delay(1000);
+                    BarcodeScaner.PauseScanning = false;
+                });
+
+
             }
         }
     }

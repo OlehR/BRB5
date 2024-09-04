@@ -5,6 +5,7 @@ using BL;
 using Microsoft.Maui.Controls.Compatibility;
 using BRB5;
 using Grid = Microsoft.Maui.Controls.Grid;
+using BarcodeScanning;
 
 namespace BRB6.View
 {
@@ -23,7 +24,7 @@ namespace BRB6.View
         public bool IsSoftKeyboard { get { return Config.IsSoftKeyboard; } }
         private string CurrentCodeWares;
         private int CurrentEntryType;
-
+        CameraView BarcodeScaner;
         public PlanCheckerPrice(DocVM pDoc, int Selection)
         {
             Doc = pDoc;
@@ -39,6 +40,8 @@ namespace BRB6.View
                 if (e.Item == null) return;
                 var temp = e.Item as DocWaresEx;
                 ((ListView)sender).SelectedItem = null;
+
+                if (IsVisScan) BarcodeScaner.PauseScanning = true;
                 _ = Navigation.PushAsync(new WareInfo(new ParseBarCode() { CodeWares = temp.CodeWares}));
             };
 
@@ -67,8 +70,21 @@ namespace BRB6.View
             if (IsVisScan)
             {
                 //zxing = ZxingBRB5.SetZxing(GridZxing, zxing, (BarCode) => WareFocus(BarCode));
-               // zxing.IsScanning = true;
+                // zxing.IsScanning = true;
                 //zxing.IsAnalyzing = true;
+                BarcodeScaner = new CameraView
+                {
+                    VerticalOptions = LayoutOptions.FillAndExpand,
+                    HorizontalOptions = LayoutOptions.FillAndExpand,
+                    CameraEnabled = true,
+                    VibrationOnDetected = false,
+                    BarcodeSymbologies = BarcodeFormats.Ean13 | BarcodeFormats.Ean8 | BarcodeFormats.QRCode,
+
+                };
+
+                BarcodeScaner.OnDetectionFinished += CameraView_OnDetectionFinished;
+
+                GridZxing.Children.Add(BarcodeScaner);
             }
 
             if (!IsSoftKeyboard)
@@ -87,30 +103,29 @@ namespace BRB6.View
                 MessagingCenter.Unsubscribe<KeyEventMessage>(this, "BackPressed");
                 MessagingCenter.Unsubscribe<KeyEventMessage>(this, "EnterPressed");
             }
+
+            if (IsVisScan) BarcodeScaner.CameraEnabled = false;
         }
 
         public void Dispose()  { Config.BarCode -= BarCode; }
-        
+
         private void WareFocus(string pBarCode)
         {
             var parseBarCode = c.ParsedBarCode(pBarCode, true);
             var temp = db.GetScanData(Doc, parseBarCode);
 
             var tempSelected = WaresList.FirstOrDefault(item => item.CodeWares == temp?.CodeWares);
-            Device.BeginInvokeOnMainThread(async () =>
+
+            if (tempSelected != null) Dispatcher.Dispatch(() =>
             {
-                if (tempSelected != null)
-                {
-                    ListWares.ScrollTo(tempSelected, ScrollToPosition.Start, false);
-                    var index = WaresList.IndexOf(tempSelected);
-                    var list = ListWares.TemplatedItems.ToList();
-                    var Scaned = (((list[index] as ViewCell).View as Grid).Children.ElementAt(2) as Frame).Content as Entry;
-                    await Task.Delay(10);
-                    Scaned.Focus();
-                }
-                else _ = DisplayAlert("", "Товар відсутній", "ok");
+                ListWares.ScrollTo(tempSelected, ScrollToPosition.Start, false);
+                var index = WaresList.IndexOf(tempSelected);
+                var list = ListWares.TemplatedItems.ToList();
+                var Scaned = (((list[index] as ViewCell).View as Grid).Children.ElementAt(2) as Frame).Content as Entry;
+
+                Scaned.Focus();
             });
-            
+            else _ = DisplayAlert("", "Товар відсутній", "ok"); 
         }
 
         private void Save(object sender, EventArgs e)
@@ -120,15 +135,16 @@ namespace BRB6.View
         }
 
         private void SaveItemAvailable(object sender, EventArgs e) {    SaveAndFocusNext((sender as Entry).AutomationId, 1);   }
+
         private void EntryFocused(object sender, FocusEventArgs e)
         {
             var entry = sender as Entry;
             if (IsVisScan)
-            Device.BeginInvokeOnMainThread(() =>
-            {                
-                entry.CursorPosition = 0;
-                entry.SelectionLength = entry.Text == null ? 0 : entry.Text.Length;
-            });
+                Dispatcher.Dispatch(() =>
+                {
+                    entry.CursorPosition = 0;
+                    entry.SelectionLength = entry.Text == null ? 0 : entry.Text.Length;
+                });
         }
 
         private void SaveItemAdd(object sender, EventArgs e)    {  SaveAndFocusNext((sender as Entry).AutomationId, 2);   }
@@ -138,23 +154,35 @@ namespace BRB6.View
         private void SaveAndFocusNext(string codeWares, int Type)
         {
             var tempSelected = WaresList.FirstOrDefault(item => item.CodeWares.ToString() == codeWares);
-            tempSelected.Quantity = tempSelected.InputQuantity;
-            tempSelected.CodeReason = ShelfType;
-            db.ReplaceDocWares(tempSelected);
+            if (tempSelected != null)
+            {
+                tempSelected.Quantity = tempSelected.InputQuantity;
+                tempSelected.CodeReason = ShelfType;
+                db.ReplaceDocWares(tempSelected);
+            }
 
             if (Type == 3) return;
 
             var list = ListWares.TemplatedItems.ToList();
-            var index = WaresList.IndexOf(tempSelected); 
+            var index = WaresList.IndexOf(tempSelected);
             var nextIndex = (index + 1) >= list.Count ? -1 : index + 1;
-            if ( Type == 1 || nextIndex >= 0)
+
+            if (Type == 1 || nextIndex >= 0)
             {
-                var next = (((list[Type == 1 ? index : nextIndex] as ViewCell).View as Grid).Children.ElementAt(Type == 1 ? 3 : 2) as Frame).Content as Entry;
-                next.Focus();
-                CurrentCodeWares = next.AutomationId;
-                CurrentEntryType = Type == 1 ? 2 : 1;
+                Dispatcher.Dispatch(() =>
+                {
+                    var nextEntry = (((list[Type == 1 ? index : nextIndex] as ViewCell).View as Grid).Children.ElementAt(Type == 1 ? 3 : 2) as Frame).Content as Entry;
+
+                    if (nextEntry != null)
+                    {
+                        nextEntry.Focus();
+                        CurrentCodeWares = nextEntry.AutomationId;
+                        CurrentEntryType = Type == 1 ? 2 : 1;
+                    }
+                });
             }
         }
+
 
         private async void KeyBack()  {  await Navigation.PopAsync();   }
 
@@ -171,6 +199,22 @@ namespace BRB6.View
             CurrentCodeWares = entry.AutomationId;
             CurrentEntryType = 1;
         }
+
+        private void CameraView_OnDetectionFinished(object sender, OnDetectionFinishedEventArg e)
+        {
+
+            if (e.BarcodeResults.Length > 0)
+            {
+                BarcodeScaner.PauseScanning = true;
+                WareFocus(e.BarcodeResults[0].DisplayValue); 
+                Task.Run(async () => {
+                    await Task.Delay(1000);
+                    BarcodeScaner.PauseScanning = false;
+                });
+
+
+            }
+        }
     }
     public class KeyboardTypeDataTemplateSelector : DataTemplateSelector
     {
@@ -182,4 +226,5 @@ namespace BRB6.View
             return Config.IsSoftKeyboard ? SoftKeyboardTemplate : HardKeyboardTemplate;
         }
     }
+   
 }

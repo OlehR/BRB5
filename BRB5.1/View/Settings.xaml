@@ -231,7 +231,7 @@
         <ContentPage.Content>
             <StackLayout>
 
-                <ListView HasUnevenRows="True" ItemsSource="{Binding Warehouses}" x:Name="LWH">
+                <ListView HasUnevenRows="True" ItemsSource="{Binding Warehouses}" x:Name="LWH" VerticalOptions="CenterAndExpand">
                     <ListView.ItemTemplate>
                         <DataTemplate xmlns:brb5="clr-namespace:BRB6">
                             <ViewCell>
@@ -249,7 +249,7 @@
 
                 <Button Text="Зберегти"
                         HorizontalOptions="Fill"
-                        VerticalOptions="EndAndExpand"
+                        VerticalOptions="End"
                         Clicked="OnClickSave" />
             </StackLayout>
         </ContentPage.Content>

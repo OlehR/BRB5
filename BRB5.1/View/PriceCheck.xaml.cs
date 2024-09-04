@@ -104,30 +104,33 @@ namespace BRB6
 
         void FoundWares(string pBarCode, bool pIsHandInput = false)
         {
-            LineNumber++;
-            Config.OnProgress?.Invoke(0.2d);
-            
-            (WP, MessageDoubleScan) = bl.FoundWares(pBarCode, PackageNumber, LineNumber, pIsHandInput, IsVisDoubleScan, IsOnline);
+            if (!String.IsNullOrWhiteSpace(pBarCode))
+            {
+                LineNumber++;
+                Config.OnProgress?.Invoke(0.2d);
 
-            if (WP != null)
-            {
-                AllScan++;
-                if (!WP.IsPriceOk)
-                    BadScan++;
-                IsWareScaned = WP.StateDoubleScan;
-            }
-            if (Config.IsVibration)
-            {
-                var duration = TimeSpan.FromMilliseconds(WP?.IsPriceOk == true ? 50 : 250);
-                Vibration.Vibrate(duration);
-            }
+                (WP, MessageDoubleScan) = bl.FoundWares(pBarCode, PackageNumber, LineNumber, pIsHandInput, IsVisDoubleScan, IsOnline);
 
-            Config.OnProgress?.Invoke(0.9d);
-            if (!IsVisScan)
-            {
-                BarCodeInput.Focus();
-                BarCodeFocused(null, null);
-            }
+                if (WP != null)
+                {
+                    AllScan++;
+                    if (!WP.IsPriceOk)
+                        BadScan++;
+                    IsWareScaned = WP.StateDoubleScan;
+                }
+                if (Config.IsVibration)
+                {
+                    var duration = TimeSpan.FromMilliseconds(WP?.IsPriceOk == true ? 50 : 250);
+                    Vibration.Vibrate(duration);
+                }
+
+                Config.OnProgress?.Invoke(0.9d);
+                if (!IsVisScan)
+                {
+                    BarCodeInput.Focus();
+                    BarCodeFocused(null, null);
+                }
+            }                
 
         }
 

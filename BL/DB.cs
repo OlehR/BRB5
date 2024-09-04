@@ -667,7 +667,7 @@ and bc.BarCode=?
         public void InsLogPrice(LogPrice pLP)
         {
             string Sql = $@"insert into LogPrice ( BarCode, Status,  ActionType, PackageNumber, CodeWares, LineNumber, Article) 
-                                          values ({pLP.BarCode},{pLP.Status}, {pLP.ActionType},{pLP.PackageNumber},{pLP.CodeWares},{pLP.LineNumber},{pLP.Article??"0"})";
+                                          values ('{pLP.BarCode}',{pLP.Status}, {pLP.ActionType},{pLP.PackageNumber},{pLP.CodeWares},{pLP.LineNumber},{pLP.Article??"0"})";
             db.Execute(Sql);
            /* try
             {
