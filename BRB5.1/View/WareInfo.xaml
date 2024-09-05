@@ -6,7 +6,7 @@
     <ContentPage.Content>
         <StackLayout>
 
-            <ffimageloading:CachedImage ErrorPlaceholder="Photo.png"
+            <ffimageloading:CachedImage ErrorPlaceholder="photo.png"
                                HorizontalOptions="FillAndExpand" Source="{Binding UriPicture}"
                                VerticalOptions="FillAndExpand" IsVisible="{Binding IsFullScreenImg}" >
                 <ffimageloading:CachedImage.GestureRecognizers>
@@ -29,7 +29,7 @@
                         <RowDefinition Height="190"/>
                     </Grid.RowDefinitions>
 
-                    <ffimageloading:CachedImage  x:Name="WareImage" ErrorPlaceholder="Photo.png" HeightRequest="190"  Source="{Binding UriPicture}">
+                    <ffimageloading:CachedImage  x:Name="WareImage" ErrorPlaceholder="photo.png" HeightRequest="190"  Source="{Binding UriPicture}">
                         <ffimageloading:CachedImage.GestureRecognizers>
                             <TapGestureRecognizer Tapped="OnImageTapped" 
                                               NumberOfTapsRequired="2" />

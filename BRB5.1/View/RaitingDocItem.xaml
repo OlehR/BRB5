@@ -73,7 +73,7 @@
                                                 <Label Text="{Binding ValueRating}" FontSize="22" />
                                             </StackLayout>
                                             <ImageButton IsVisible="{Binding IsEnableNotKnow}"
-                                                         Source="NotKnow.png" 
+                                                         Source="not_know.png" 
                                                          ClassId="NotKnow"
                                                          Grid.Column="1"
                                                          Grid.Row="1"
@@ -110,7 +110,7 @@
 
                                                     <ImageButton IsVisible="{Binding IsEnableOk}"
                                                                  Margin="0" Padding="0"
-                                                                 Source="Ok.png"
+                                                                 Source="ok.png"
                                                                  ClassId="Ok"
                                                                  BackgroundColor="Transparent"
                                                                  HeightRequest="60"
@@ -120,7 +120,7 @@
 
                                                     <ImageButton IsVisible="{Binding IsEnableSoSo}"
                                                                  Margin="0" Padding="0"
-                                                                 Source="So_so.png"
+                                                                 Source="so_so.png"
                                                                  ClassId="SoSo"
                                                                  Grid.Column="1"
                                                                  BackgroundColor="Transparent"
@@ -131,7 +131,7 @@
 
                                                     <ImageButton IsVisible="{Binding IsEnableBad}"
                                                                  Margin="0" Padding="0"
-                                                                 Source="Bad.png"
+                                                                 Source="bad.png"
                                                                  ClassId="Bad"
                                                                  Grid.Column="2"
                                                                  BackgroundColor="Transparent"
@@ -142,7 +142,7 @@
 
                                                     <ImageButton IsVisible="{Binding IsEnableNotKnow}"
                                                                  Margin="0" Padding="0"
-                                                                 Source="NotKnow.png"
+                                                                 Source="not_know.png"
                                                                  ClassId="NotKnow"
                                                                  Grid.Column="3"
                                                                  BackgroundColor="Transparent"
@@ -153,7 +153,7 @@
 
                                                     <ImageButton IsVisible="{Binding IsItem}"
                                                                  Margin="0" Padding="0"
-                                                                 Source="Photo.png"
+                                                                 Source="photo.png"
                                                                  ClassId="{Binding Id}"
                                                                  Grid.Column="4"
                                                                  BackgroundColor="Transparent"
@@ -173,7 +173,7 @@
 
                                                     <ImageButton IsVisible="{Binding IsItem}"
                                                                  Margin="0" Padding="0"
-                                                                 Source="Edit.png"
+                                                                 Source="edit.png"
                                                                  ClassId="{Binding Id}"
                                                                  Grid.Column="5"
                                                                  BackgroundColor="Transparent"
@@ -215,7 +215,7 @@
                              Clicked="OnButtonSave" />
                 
                 <ImageButton Margin="0" Padding="0"
-                             Source="All.png"
+                             Source="all.png"
                              Grid.Column="1"
                              BackgroundColor="Transparent"
                              Aspect="AspectFit"
@@ -224,7 +224,7 @@
                              AutomationId="All"
                              />
                 <ImageButton Margin="0" Padding="0"
-                             Source="OnlyHead.png"
+                             Source="only_head.png"
                              Grid.Column="2"
                              BackgroundColor="Transparent"
                              Aspect="AspectFit"
@@ -233,7 +233,7 @@
                              AutomationId="OnlyHead"
                              />
                 <ImageButton Margin="0" Padding="0"
-                             Source="NoAnswer.png"
+                             Source="no_answer.png"
                              Grid.Column="3"
                              BackgroundColor="Transparent"
                              Aspect="AspectFit"
@@ -257,7 +257,7 @@
                            VerticalOptions="Start"
                            HorizontalOptions="End" />
 
-                    <ImageButton Source="BarcodeScanning.png"
+                    <ImageButton Source="barcode_scanning.png"
                                  Clicked="BarCode" Grid.Row="1"
                                  BackgroundColor="Transparent"
                                  Aspect="AspectFill"

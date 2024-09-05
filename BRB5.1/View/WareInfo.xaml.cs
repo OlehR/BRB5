@@ -18,7 +18,7 @@ namespace BRB6.View
         public bool IsFullScreenImg { get { return _IsFullScreenImg; } set { _IsFullScreenImg = value; OnPropertyChanged(nameof(IsFullScreenImg)); } }
         private bool _IsVisIOSFull = false;
         public bool IsVisIOSFull { get { return _IsVisIOSFull; } set { _IsVisIOSFull = value; OnPropertyChanged(nameof(IsVisIOSFull)); } }
-        public string ImageUri { get; set; } = "Photo.png"; 
+        public string ImageUri { get; set; } = "photo.png"; 
         public bool IsEnabledPrint { get { return Config.TypeUsePrinter != eTypeUsePrinter.NotDefined; } }
         public UriImageSource Picture { get; set; }
         public Uri UriPicture { get { return new Uri(Config.ApiUrl1 + $"Wares/{WP.CodeWares:D9}.png"); } }

@@ -70,13 +70,13 @@
                                                      BackgroundColor="Transparent"
                                                      HeightRequest="60"
                                                      Aspect="AspectFit" />
-                                        <ImageButton Source="Edit.png"
+                                        <ImageButton Source="edit.png"
                                                      Grid.Column="3"
                                                      Clicked="Edit"
                                                      BackgroundColor="Transparent"
                                                      HeightRequest="60"
                                                      Aspect="AspectFit" />
-                                        <ImageButton Source="Import1.png"
+                                        <ImageButton Source="import.png"
                                                      Grid.Column="4"
                                                      Clicked="Import"
                                                      BackgroundColor="Transparent"

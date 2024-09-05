@@ -52,7 +52,7 @@
         </StackLayout>
 
         <StackLayout x:Name="ListDocs" IsVisible="false">
-            <Button Text="Назад" ImageSource="BackSmall.png" IsVisible="{Binding IsVisibleBack}"
+            <Button Text="Назад" ImageSource="back_small.png" IsVisible="{Binding IsVisibleBack}"
                     FontSize="Large"
                     Clicked="BackToMainList"
                     Style="{StaticResource ButtonStyle}" />

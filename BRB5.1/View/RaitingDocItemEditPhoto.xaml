@@ -33,7 +33,7 @@
                                            FlexLayout.AlignSelf="Center"
                                            FlexLayout.Grow="1" Aspect="AspectFit"
                                            IsVisible="{Binding IsPhoto}" />
-                                    <Image Source="Video.png"
+                                    <Image Source="video.png"
                                            ClassId="Ok"
                                            BackgroundColor="Transparent"
                                            WidthRequest="240"
@@ -41,7 +41,7 @@
                                            FlexLayout.Grow="1" Aspect="AspectFit"
                                            IsVisible="{Binding IsVideo}" />
 
-                                    <ImageButton Source="Delete.png"
+                                    <ImageButton Source="delete.png"
                                                  ClassId="NotKnow"
                                                  Grid.Column="1"
                                                  BackgroundColor="Transparent"

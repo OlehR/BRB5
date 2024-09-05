@@ -68,7 +68,7 @@
                                                TextColor="Black" />
 
 
-                                        <ImageButton Source="Edit.png"
+                                        <ImageButton Source="edit.png"
                                                      Clicked="Edit"
                                                      Grid.Column="2"
                                                      BackgroundColor="Transparent"
@@ -76,7 +76,7 @@
                                                      Aspect="AspectFit"
                                                      Opacity="{Binding OpacityDelete}" />
 
-                                        <ImageButton Source="Add.png"
+                                        <ImageButton Source="add.png"
                                                      Clicked="AddItem"
                                                      IsVisible="{Binding IsHead}"
                                                      Grid.Column="3"
@@ -85,7 +85,7 @@
                                                      Aspect="AspectFit"
                                                      Opacity="{Binding OpacityDelete}" />
 
-                                        <ImageButton Source="Delete.png"
+                                        <ImageButton Source="delete.png"
                                                      Clicked="Delete"
                                                      Grid.Column="4"
                                                      BackgroundColor="Transparent"
