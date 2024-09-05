@@ -106,15 +106,8 @@
                 </Frame>
             </Grid>
 
-            <Grid IsVisible="{Binding IsVisBarCode}" HeightRequest="150">
-                <!--<forms:ZXingScannerView x:Name="zxing"
-                                        HorizontalOptions="StartAndExpand"
-                                        VerticalOptions="FillAndExpand"
-                                        ScaleY="2"
-                                        OnScanResult="FilterBarCode"
-                                        IsScanning="False">
-                </forms:ZXingScannerView>-->
-            </Grid>
+            <Grid IsVisible="{Binding IsVisBarCode}" HeightRequest="150" x:Name="GridZxing"/>
+            
             <ListView ItemsSource="{Binding MyDocsR}" x:Name="ListDocs" VerticalOptions="CenterAndExpand"
                       SeparatorVisibility="None"
                       HasUnevenRows="True"

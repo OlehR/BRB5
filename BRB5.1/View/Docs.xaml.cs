@@ -5,6 +5,7 @@ using System.Collections.ObjectModel;
 using Microsoft.Maui.Controls.Compatibility;
 using BRB5;
 using Grid = Microsoft.Maui.Controls.Grid;
+using BarcodeScanning;
 
 namespace BRB6.View
 {
@@ -25,6 +26,7 @@ namespace BRB6.View
         public bool IsViewOut { get { return TypeDoc.IsViewOut; } }
         public bool IsSoftKeyboard { get { return Config.IsSoftKeyboard; } }
         public bool IsVisScan { get { return Config.TypeScaner == eTypeScaner.Camera; } }
+        CameraView BarcodeScaner;
 
         public Docs(TypeDoc pTypeDoc )
         {
@@ -37,6 +39,20 @@ namespace BRB6.View
         protected override void OnAppearing()
         {
             base.OnAppearing();
+            if (IsVisScan)
+            {
+                BarcodeScaner = new CameraView
+                {
+                    VerticalOptions = LayoutOptions.FillAndExpand,
+                    HorizontalOptions = LayoutOptions.FillAndExpand,
+                    CameraEnabled = false,
+                    VibrationOnDetected = false,
+                    BarcodeSymbologies = BarcodeFormats.Ean13 | BarcodeFormats.Ean8 | BarcodeFormats.QRCode,
+
+                };
+                BarcodeScaner.OnDetectionFinished += CameraView_OnDetectionFinished;
+                GridZxing.Children.Add(BarcodeScaner);
+            }
             if (!IsSoftKeyboard)
             {
                 MessagingCenter.Subscribe<KeyEventMessage>(this, "F1Pressed", message => { ZKPO(null, EventArgs.Empty); });
@@ -60,7 +76,7 @@ namespace BRB6.View
         protected override void OnDisappearing()
         {
             base.OnDisappearing();
-            //zxing.IsScanning = false;
+            if (IsVisScan) BarcodeScaner.CameraEnabled = false;
             if (!IsSoftKeyboard)
             {
                 MessagingCenter.Unsubscribe<KeyEventMessage>(this, "F1Pressed");
@@ -107,7 +123,7 @@ namespace BRB6.View
         private void TabBarCode(object sender, EventArgs e)
         {
             IsVisBarCode= !IsVisBarCode;
-            //zxing.IsScanning = IsVisBarCode;
+            BarcodeScaner.CameraEnabled = IsVisBarCode;
         }
         void BarCode(string pBarCode) { MyDocsR = new ObservableCollection<DocVM>(db.GetDoc(TypeDoc, pBarCode, null));  }
         public void Dispose() {  Config.BarCode -= BarCode;  }
@@ -168,11 +184,18 @@ namespace BRB6.View
         }
 
         private void EnterKey() { if(IsVisZKPO) FilterDocs(null, null); }
-        private void FilterBarCode(/*ZXing.Result result*/)
+      
+        private void CameraView_OnDetectionFinished(object sender, BarcodeScanning.OnDetectionFinishedEventArg e)
         {
-            //zxing.IsAnalyzing = false;
-            //MyDocsR = new ObservableCollection<DocVM>(db.GetDoc(TypeDoc, result.Text, null));
-            //zxing.IsAnalyzing = true;
+            if (e.BarcodeResults.Length > 0)
+            {
+                BarcodeScaner.PauseScanning = true;
+                MyDocsR = new ObservableCollection<DocVM>(db.GetDoc(TypeDoc, e.BarcodeResults[0].DisplayValue, null));
+                Task.Run(async () => {
+                    await Task.Delay(1000);
+                    BarcodeScaner.PauseScanning = false;
+                });
+            }
         }
     }
 }

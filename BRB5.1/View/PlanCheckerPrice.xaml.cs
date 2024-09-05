@@ -69,9 +69,6 @@ namespace BRB6.View
             base.OnAppearing();
             if (IsVisScan)
             {
-                //zxing = ZxingBRB5.SetZxing(GridZxing, zxing, (BarCode) => WareFocus(BarCode));
-                // zxing.IsScanning = true;
-                //zxing.IsAnalyzing = true;
                 BarcodeScaner = new CameraView
                 {
                     VerticalOptions = LayoutOptions.FillAndExpand,
@@ -81,9 +78,7 @@ namespace BRB6.View
                     BarcodeSymbologies = BarcodeFormats.Ean13 | BarcodeFormats.Ean8 | BarcodeFormats.QRCode,
 
                 };
-
                 BarcodeScaner.OnDetectionFinished += CameraView_OnDetectionFinished;
-
                 GridZxing.Children.Add(BarcodeScaner);
             }
 
@@ -202,7 +197,6 @@ namespace BRB6.View
 
         private void CameraView_OnDetectionFinished(object sender, OnDetectionFinishedEventArg e)
         {
-
             if (e.BarcodeResults.Length > 0)
             {
                 BarcodeScaner.PauseScanning = true;
@@ -211,8 +205,6 @@ namespace BRB6.View
                     await Task.Delay(1000);
                     BarcodeScaner.PauseScanning = false;
                 });
-
-
             }
         }
     }
