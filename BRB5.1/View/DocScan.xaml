@@ -6,13 +6,12 @@
                           x:Class="BRB6.View.DocScan">
     <!--xmlns:effects="clr-namespace:Xamarin.KeyboardHelper;assembly=Xamarin.KeyboardHelper"-->
     <ContentPage.Content>
-        <AbsoluteLayout Padding="0" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand">
 
-            <StackLayout IsEnabled="True" AbsoluteLayout.LayoutBounds="1, 1, 1,1" AbsoluteLayout.LayoutFlags="All">
+            <StackLayout IsEnabled="True" >
 
                 <Grid x:Name="GridZxing" IsVisible="{Binding IsVisScan}"  HeightRequest="200"/>             
 
-                <Grid>
+                <Grid VerticalOptions="CenterAndExpand">
 
                     <Grid.RowDefinitions>
                         <RowDefinition Height="auto" />
@@ -69,6 +68,7 @@
                                                       x:Name="inputQ"
                                                       Unfocused="UnfocusedInputQ"
                                                       TextChanged="CalcQuantity"
+                                                       Completed="CompletedInputQ"
                                                       Placeholder="к-сть"
                                                       Keyboard="Telephone" />
                                 <!--effects:KeyboardEffect.EnableKeyboard="{Binding IsSoftKeyboard}"
@@ -168,7 +168,7 @@
                     </ListView>                    
 
                 </Grid>
-                <StackLayout VerticalOptions="EndAndExpand" Orientation="Horizontal">
+                <StackLayout VerticalOptions="End" Orientation="Horizontal">
                     <Label Text="f1-"
                            FontSize="16"
                            TextColor="#ff5c5c" />
@@ -215,27 +215,6 @@
                     </Label>
                 </StackLayout>
             </StackLayout>
-            <BoxView IsVisible="{Binding IsVisQ}" Color="Gray" Opacity=".3" AbsoluteLayout.LayoutBounds="0, 0, 1, 1"
-                     AbsoluteLayout.LayoutFlags="All" />
-            <Frame AbsoluteLayout.LayoutBounds="0.5, 0.5, -1, -1" IsVisible="{Binding IsVisQ}"
-                   AbsoluteLayout.LayoutFlags="PositionProportional"
-                   CornerRadius="10" Padding="0">
-                <StackLayout Padding="10" WidthRequest="300" BackgroundColor="White">
-
-                    <Label TextColor="Black" Text="{Binding DisplayQuestion}" FontSize="Large" VerticalOptions="Center" />
-                    <StackLayout Orientation="Horizontal" HorizontalOptions="End">
-                        <Button Text="Ok"
-                                IsVisible="{Binding IsVisQOk}"
-                                Clicked="OkClicked"
-                                FontSize="Medium"
-                                Style="{StaticResource ButtonStyle}" />
-                        <Button Text="Cancel"
-                                FontSize="Medium"
-                                Clicked="CancelClicked"
-                                Style="{StaticResource ButtonStyle}" />
-                    </StackLayout>
-                </StackLayout>
-            </Frame>
-        </AbsoluteLayout>
+            
     </ContentPage.Content>
 </controls:BaseContentPage>
