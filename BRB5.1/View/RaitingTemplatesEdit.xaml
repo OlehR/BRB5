@@ -76,7 +76,7 @@
                                                      BackgroundColor="Transparent"
                                                      HeightRequest="60"
                                                      Aspect="AspectFit" />
-                                        <ImageButton Source="import.png"
+                                        <ImageButton Source="my_import.png"
                                                      Grid.Column="4"
                                                      Clicked="Import"
                                                      BackgroundColor="Transparent"

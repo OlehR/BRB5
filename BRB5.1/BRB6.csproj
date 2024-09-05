@@ -62,6 +62,26 @@
 	<ItemGroup>
 	  <Compile Remove="ViewModel\ZxingBRB5.cs" />
 	</ItemGroup>
+  
+	<ItemGroup>
+	  <None Remove="Resources\Images\add.png" />
+	  <None Remove="Resources\Images\all.png" />
+	  <None Remove="Resources\Images\back.png" />
+	  <None Remove="Resources\Images\back_small.png" />
+	  <None Remove="Resources\Images\bad.png" />
+	  <None Remove="Resources\Images\barcode_scanning.png" />
+	  <None Remove="Resources\Images\delete.png" />
+	  <None Remove="Resources\Images\edit.png" />
+	  <None Remove="Resources\Images\my_import.png" />
+	  <None Remove="Resources\Images\not_know.png" />
+	  <None Remove="Resources\Images\no_answer.png" />
+	  <None Remove="Resources\Images\ok.png" />
+	  <None Remove="Resources\Images\only_head.png" />
+	  <None Remove="Resources\Images\photo.png" />
+	  <None Remove="Resources\Images\save.png" />
+	  <None Remove="Resources\Images\so_so.png" />
+	  <None Remove="Resources\Images\video.png" />
+	</ItemGroup>
 
 	<ItemGroup>
   
