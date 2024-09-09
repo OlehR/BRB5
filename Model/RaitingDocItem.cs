@@ -3,7 +3,6 @@ using SQLite;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Drawing;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
@@ -49,8 +48,7 @@ namespace BRB5.Model
         [JsonIgnore]
         public bool IsItem { get { return !IsHead; } }
         public string Text { get; set; }
-        [JsonIgnore]
-        public Color BackgroundColor { get { return IsHead ? Color.FromArgb(200, 200, 200)  : Color.FromArgb(230, 230, 230); } }
+       
         /// <summary>
         /// Доступні варіанти відповіді 1 -погано + 2-так собі + 4 - добре + 8 - відсутня відповідь
         /// </summary>

@@ -7,6 +7,7 @@ using Microsoft.Maui.Controls.Compatibility;
 using BRB5;
 using Grid = Microsoft.Maui.Controls.Grid;
 using StackLayout = Microsoft.Maui.Controls.StackLayout;
+using BarcodeScanning;
 
 namespace BRB6
 {
@@ -77,8 +78,9 @@ namespace BRB6
         public double OpacityAll { get { return Choice == eTypeChoice.All ? 1d : 0.4d; } }
         public double OpacityOnlyHead { get { return Choice == eTypeChoice.OnlyHead ? 1d : 0.4d; } }
         public double OpacityNoAnswer { get { return Choice == eTypeChoice.NoAnswer ? 1d : 0.4d; } }
-        //ZXingScannerView zxing;
         public bool IsVisScan { get { return Config.TypeScaner == eTypeScaner.Camera; } }
+        CameraView BarcodeScaner;
+        public bool IsVisibleBarcodeScanning { get; set; } = false;
 
         public RaitingDocItem(DocVM pDoc)
         {
@@ -91,7 +93,7 @@ namespace BRB6
             Bl.InitTimerRDI(cDoc);            
            
             Questions = new ObservableCollection<BRB5.Model.RaitingDocItem>();
-            Bl.c.OnSave += (Res) => Device.BeginInvokeOnMainThread(() =>
+            Bl.c.OnSave += (Res) => Dispatcher.Dispatch(() =>
             {
                 TextSave += Res + Environment.NewLine;
                 OnPropertyChanged(nameof(TextSave));
@@ -108,8 +110,21 @@ namespace BRB6
         protected override void OnAppearing()
         {
             base.OnAppearing();
-            //if (IsVisScan) zxing = ZxingBRB5.SetZxing(GridZxing, zxing, (BarCode) => OnScanBarCode(BarCode));
-            
+            if (IsVisScan)
+            {
+                BarcodeScaner = new CameraView
+                {
+                    VerticalOptions = LayoutOptions.FillAndExpand,
+                    HorizontalOptions = LayoutOptions.FillAndExpand,
+                    CameraEnabled = false,
+                    VibrationOnDetected = false,
+                    BarcodeSymbologies = BarcodeFormats.Ean13 | BarcodeFormats.Ean8 | BarcodeFormats.QRCode,
+
+                };
+                BarcodeScaner.OnDetectionFinished += CameraView_OnDetectionFinished;
+                GridZxing.Children.Add(BarcodeScaner);
+            }
+
             Bl.StartTimerRDI();
             if (IsRefreshList)Bl.LoadDataRDI(cDoc,GetData);
             IsRefreshList = true;
@@ -120,22 +135,25 @@ namespace BRB6
         {  
             base.OnDisappearing(); 
             Bl.StopTimerRDI();
-            //if (IsVisScan) zxing.IsScanning = false;
+            if (IsVisScan) BarcodeScaner.CameraEnabled = false;
         }
 
         void ViewDoc()
         {
-            MainThread.BeginInvokeOnMainThread(() =>
+            Dispatcher.Dispatch(() =>
             {
-                Questions.Clear();
+                ObservableCollection<BRB5.Model.RaitingDocItem> tempQuestions = new();
+
+              
                 foreach (var el in All.Where(el => (el.IsHead || el.Parent == 9999999 || // Заголовки Всього
                 Choice == eTypeChoice.All ||                                             // Розгорнути      
                 (Choice == eTypeChoice.NoAnswer && (el.Rating == 0 ||                    //Без відповіді  
                 (el.Rating == 3 && String.IsNullOrEmpty(el.Note) && el.QuantityPhoto == 0)))  //Без опису           
                 )))
                 {
-                    Questions.Add(el);
+                    tempQuestions.Add(el);
                 }
+                Questions= tempQuestions;
                 RefreshHead();
                 Bl.CalcValueRating(All);
             });
@@ -146,6 +164,8 @@ namespace BRB6
         {
             CountAll = pDocItem.Count(el => !el.IsHead);
             All = pDocItem;
+            IsVisibleBarcodeScanning = All.Any(el => el.Id == -1);
+            OnPropertyChanged(nameof(IsVisibleBarcodeScanning));
             ViewDoc();
         }   
 
@@ -264,7 +284,7 @@ namespace BRB6
 
         private void ChangeItemBlok(BRB5.Model.RaitingDocItem vRait)
         {
-            MainThread.BeginInvokeOnMainThread(() =>
+            Dispatcher.Dispatch(() =>
             {
                 var index = Questions.IndexOf(vRait) + 1;
                 foreach (var el in All.Where(el => el.Parent == vRait.Id))
@@ -284,18 +304,16 @@ namespace BRB6
 
         private void BarCode(object sender, EventArgs e)
         {
-            //IsVisBarCode = !IsVisBarCode;
-            //zxing.IsScanning = IsVisBarCode;
-            //zxing.IsAnalyzing = IsVisBarCode;
+            IsVisBarCode = !IsVisBarCode;
+            BarcodeScaner.CameraEnabled = IsVisBarCode;
         }
         private void OnScanBarCode(string result)
         {
-            MainThread.BeginInvokeOnMainThread(() =>
+            Dispatcher.Dispatch(() =>
             {
-                //zxing.IsAnalyzing = false;
                 var resultText = "[" + result + "]";
                 var temp = Questions.Where(el => el.Id == -1).FirstOrDefault();
-
+                
                 if (string.IsNullOrEmpty(temp.Note)) temp.Note = resultText;
                 else if (Regex.IsMatch(temp.Note, @"\[\d+\]")) temp.Note = Regex.Replace(temp.Note, @"\[\d+\]", resultText);
                      else temp.Note = resultText + temp.Note;
@@ -304,7 +322,6 @@ namespace BRB6
                 Questions[Questions.IndexOf(temp)] = temp;
 
                 ListQuestions.ScrollTo(Questions.Last(), ScrollToPosition.Center, false);
-                //zxing.IsAnalyzing = true;
             });
         }
 
@@ -330,6 +347,19 @@ namespace BRB6
             }
             ViewDoc();
             ListQuestions.ScrollTo( Questions.First(), ScrollToPosition.Start, false);
+        }
+
+        private void CameraView_OnDetectionFinished(object sender, BarcodeScanning.OnDetectionFinishedEventArg e)
+        {
+            if (e.BarcodeResults.Length > 0)
+            {
+                BarcodeScaner.PauseScanning = true;
+                OnScanBarCode(e.BarcodeResults[0].DisplayValue);
+                Task.Run(async () => {
+                    await Task.Delay(1000);
+                    BarcodeScaner.PauseScanning = false;
+                });
+            }
         }
 
         private BRB5.Model.RaitingDocItem GetRaiting(object sender)

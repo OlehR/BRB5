@@ -53,10 +53,11 @@
 
         <StackLayout x:Name="ListDocs" IsVisible="false">
             <Button Text="Назад" ImageSource="back_small.png" IsVisible="{Binding IsVisibleBack}"
-                    FontSize="Large"
+                    FontSize="Large" BackgroundColor="White" BorderColor="White"
                     Clicked="BackToMainList"
                     Style="{StaticResource ButtonStyle}" />
-            <ListView  
+            <ListView  HorizontalOptions="CenterAndExpand" 
+          ItemTapped="OnItemTapped"
                   HasUnevenRows="True"
                   ItemsSource="{Binding OCTypeDoc}">
                 <ListView.Header>
@@ -70,10 +71,13 @@
                     <DataTemplate xmlns:brb5="clr-namespace:BRB6">
                         <ViewCell>
                             <ViewCell.View>
-                                <Button Text="{Binding NameDoc}"
-                                    FontSize="Large"
-                                    Clicked="OnButtonClicked"
-                                    Style="{StaticResource ButtonStyle}" />
+                                <Grid Margin="5" Padding="5"  BackgroundColor="#E0E0E0">
+                                    <Label Text="{Binding NameDoc}"
+                                           TextColor="{AppThemeBinding Light='#000000', Dark='#FFFFFF'}"
+                                                FontSize="Large"
+                                                HorizontalOptions="CenterAndExpand"
+                                                VerticalOptions="CenterAndExpand"/>
+                                </Grid>
                             </ViewCell.View>
                         </ViewCell>
                     </DataTemplate>

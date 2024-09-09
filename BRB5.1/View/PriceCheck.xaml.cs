@@ -96,7 +96,7 @@ namespace BRB6
             if (!IsVisScan)
              Config.BarCode = BarCode;
 
-            Config.OnProgress += (pProgress) => Device.BeginInvokeOnMainThread(() => PB = pProgress);
+            Config.OnProgress += (pProgress) => Dispatcher.Dispatch(() => PB = pProgress);
             this.BindingContext = this;
         }
 
@@ -229,7 +229,7 @@ namespace BRB6
 
         private void BarCodeFocused(object sender, FocusEventArgs e)
         {
-            Device.BeginInvokeOnMainThread(() =>
+            Dispatcher.Dispatch(() =>
             {
                 BarCodeInput.CursorPosition = 0;
                 BarCodeInput.SelectionLength = BarCodeInput.Text == null ? 0 : BarCodeInput.Text.Length;

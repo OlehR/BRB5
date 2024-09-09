@@ -47,7 +47,7 @@ namespace BRB6
                 var r = await c.LoginAsync(Login, Password, Config.LoginServer);
                 if (r.State == 0)
                 {
-                    MainThread.BeginInvokeOnMainThread(() =>
+                    Dispatcher.Dispatch(() =>
                     {
                         OCTypeDoc?.Clear();
                         Config.TypeDoc = c.GetTypeDoc(Config.Role, Config.LoginServer);
@@ -61,22 +61,24 @@ namespace BRB6
                     Bl.OnButtonLogin(Login, Password, Device.RuntimePlatform == Device.Android);
                 }
                 else
-                    MainThread.BeginInvokeOnMainThread(() =>
+                    Dispatcher.Dispatch(() =>
                     {
                         _ = DisplayAlert("Проблеми з авторизацією", r.TextError + r.Info, "OK");
                     });
             });
             }
 
-        private async void OnButtonClicked(object sender, System.EventArgs e)
+        private async void OnItemTapped(object sender, ItemTappedEventArgs e)
         {
-            Button button = (Button)sender;
-            Cell cc = button.Parent as Cell;
-            var vTypeDoc = cc.BindingContext as TypeDoc;
+            if (e.Item == null) return;
+
+            // Отримання вибраного елемента
+            var vTypeDoc = e.Item as TypeDoc;
+
             var cameraStatus = await Permissions.CheckStatusAsync<Permissions.Camera>();
 
             if (cameraStatus != PermissionStatus.Granted)
-                cameraStatus = await Permissions.RequestAsync<Permissions.Camera>();            
+                cameraStatus = await Permissions.RequestAsync<Permissions.Camera>();
 
             if (cameraStatus != PermissionStatus.Granted)
             {
@@ -87,7 +89,7 @@ namespace BRB6
             switch (vTypeDoc.KindDoc)
             {
                 case eKindDoc.PriceCheck:
-                    await Navigation.PushAsync(new PriceCheck(vTypeDoc)); //new CustomScanPage()); // 
+                    await Navigation.PushAsync(new PriceCheck(vTypeDoc));
                     break;
                 case eKindDoc.Normal:
                 case eKindDoc.Simple:
@@ -106,7 +108,7 @@ namespace BRB6
                     await Navigation.PushAsync(new PlanCheckPrice());
                     break;
                 case eKindDoc.NotDefined:
-                    MainThread.BeginInvokeOnMainThread(() =>
+                    Dispatcher.Dispatch(() =>
                     {
                         OCTypeDoc?.Clear();
                         Config.TypeDoc = c.GetTypeDoc(Config.Role, Config.LoginServer, vTypeDoc.Group);
@@ -117,7 +119,11 @@ namespace BRB6
                 default:
                     break;
             }
+
+            // Скидання вибраного елемента, щоб зняти виділення
+            ((ListView)sender).SelectedItem = null;
         }
+
 
         void Init()
         {
@@ -153,7 +159,7 @@ namespace BRB6
 
         private void BackToMainList(object sender, EventArgs e)
         {
-            MainThread.BeginInvokeOnMainThread(() =>
+            Dispatcher.Dispatch(() =>
             {
                 IsVisibleBack = false;
                 OCTypeDoc?.Clear();

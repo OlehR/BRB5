@@ -50,7 +50,7 @@ namespace BRB6
 
         void ViewDoc(IEnumerable<DocVM> pDoc)
         {
-            MainThread.BeginInvokeOnMainThread(() =>
+            Dispatcher.Dispatch(() =>
             {
                 MyDoc.Clear();
                 if(pDoc?.Any()==true)

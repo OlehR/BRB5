@@ -26,13 +26,6 @@
                         Clicked="OnButtonSaved" />
 
                 <Grid x:Name="GridZxing" IsVisible="{Binding IsVisBarCode}" HeightRequest="150"/>
-                <!--<forms:ZXingScannerView x:Name="zxing"
-                                            HorizontalOptions="StartAndExpand"
-                                            VerticalOptions="FillAndExpand"
-                                            ScaleY="2"
-                                            OnScanResult="OnScanBarCode"
-                                            IsScanning="False"/>-->
-
 
                 <ListView x:Name="ListQuestions"
                           HasUnevenRows="True"
@@ -51,7 +44,7 @@
                             <ViewCell>
                                 <ViewCell.View>
                                     <StackLayout>
-                                        <Grid BackgroundColor="{Binding BackgroundColor}"
+                                        <Grid BackgroundColor="#c8c8c8"
                                               IsVisible="{Binding IsHead}">
                                             <Grid.GestureRecognizers>
                                                 <TapGestureRecognizer Tapped="OnHeadTapped" />
@@ -65,7 +58,7 @@
                                                 <RowDefinition/>
                                             </Grid.RowDefinitions>
 
-                                            <Label Text="{Binding Text}" FontSize="22" Grid.RowSpan="2" FontAttributes="Bold" />
+                                            <Label  Text="{Binding Text}" FontSize="22" Grid.RowSpan="2" FontAttributes="Bold" />
 
                                             <StackLayout Spacing="0" Grid.Column="1" Orientation="Horizontal"  IsVisible="{Binding IsVisPSU}">
                                                 <Label Text="{Binding SumValueRating}" FontSize="22" />
@@ -83,14 +76,17 @@
                                                          Opacity="{Binding OpacityNotKnow}"
                                                          Clicked="OnButtonClicked" />
                                         </Grid>
-                                        <Grid BackgroundColor="{Binding BackgroundColor}">
+                                        <Grid BackgroundColor="#e6e6e6">
 
-                                            <StackLayout BackgroundColor="{Binding BackgroundColor}"
-                                                         IsVisible="{Binding IsItem}"
-                                                         >
+                                            <StackLayout BackgroundColor="#e6e6e6"
+                                                         IsVisible="{Binding IsItem}" >
 
                                                 <StackLayout Orientation="Horizontal">
-                                                    <Label Text="{Binding Text}" FontSize="22" />
+                                                    <Label Text="{Binding Text}" 
+                                                           FontSize="22" 
+                                                           LineBreakMode="WordWrap"
+                                                           HorizontalOptions="FillAndExpand"
+                                                           VerticalOptions="Start" />
 
                                                     <StackLayout Spacing="0" Orientation="Horizontal" HorizontalOptions="EndAndExpand" IsVisible="{Binding IsVisTotal}">
                                                         <Label Text="{Binding SumValueRating}" FontSize="22" />
@@ -257,7 +253,8 @@
                            VerticalOptions="Start"
                            HorizontalOptions="End" />
 
-                    <ImageButton Source="barcode_scanning.png"
+                    <ImageButton IsVisible="{Binding IsVisibleBarcodeScanning}"
+                                 Source="barcode_scanning.png"
                                  Clicked="BarCode" Grid.Row="1"
                                  BackgroundColor="Transparent"
                                  Aspect="AspectFill"

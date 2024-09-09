@@ -71,6 +71,7 @@ namespace BRB5
         public bool IsCreateNewDoc = false;
         //public bool IsViewOPKO = false;
         public eTypeReplenishment TypeReplenishment = eTypeReplenishment.None;
+        public bool IsVisible { get; set; } = true;
 
     }
 }
