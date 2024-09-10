@@ -140,7 +140,7 @@ namespace BRB6.View
         {
             Bl.SaveSettings(IsAutoLogin, IsVibration, IsViewAllWH, IsSound, IsTest, IsFilterSave, IsFullScreenScan, ApiUrl1, ApiUrl2, ApiUrl3, Compress, 
                 (eCompany)SelectedCompany, (eTypeLog)SelectedTypeLog, (ePhotoQuality)SelectedPhotoQuality, (eTypeUsePrinter)SelectedTypePrinter, 
-                SelectedWarehouse, ListWarehouse[SelectedWarehouse].Code, Warehouses);
+                SelectedWarehouse, SelectedWarehouse !=-1? ListWarehouse[SelectedWarehouse].Code:-2, Warehouses);
         }
         private void RefreshWarehouses(object sender, CheckedChangedEventArgs e)
         {
