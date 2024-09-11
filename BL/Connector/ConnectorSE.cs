@@ -183,6 +183,7 @@ namespace BL.Connector
 
         public override async Task<Result> LoadDocsDataAsync(int pTypeDoc, string pNumberDoc,  bool pIsClear)
         {
+            int temp = 0;
             var Res = new Result();
             if (pTypeDoc == 11)
             {
@@ -209,15 +210,26 @@ namespace BL.Connector
                         var RaitingTemplate = t.data.Select(el => new RaitingTemplate() { IdTemplate = el.templateId, Text = el.templateName  });
                         db.ReplaceRaitingTemplate(RaitingTemplate);
                         foreach (var item in t.data)
-                        {                            
-                            var tt=item.sections.Select(el=>
-                                    new RaitingTemplateItem() { IdTemplate = item.templateId,   Id = -el.sectionId, Parent = -el.parentId, Text = el.text, RatingTemplate = 8, OrderRS = el.sectionId }).ToList();
-                            tt.Add(new RaitingTemplateItem() { IdTemplate = item.templateId, Id = -1, Parent = 9999999, Text = "Всього", RatingTemplate = 8, OrderRS = 9999999 });
+                        {
+                           // if (item.questions != null && item.sections != null)
+                            {
+                                try
+                                {
+                                    temp = item.templateId;
+                                    var tt = item.sections.Select(el =>
+                                            new RaitingTemplateItem() { IdTemplate = item.templateId, Id = -el.sectionId, Parent = -el.parentId, Text = el.text, RatingTemplate = 8, OrderRS = el.sectionId }).ToList();
+                                    tt.Add(new RaitingTemplateItem() { IdTemplate = item.templateId, Id = -1, Parent = 9999999, Text = "Всього", RatingTemplate = 8, OrderRS = 9999999 });
 
-                            db.ReplaceRaitingTemplateItem(tt);
-                            tt = item.questions.Select(el =>
-                                    new RaitingTemplateItem() { IdTemplate = item.templateId, Id = el.questionId, Parent = -el.sectionId, Text = el.text, RatingTemplate = el.RatingTemplate, OrderRS = el.questionId }).ToList();
-                            db.ReplaceRaitingTemplateItem(tt);
+                                    db.ReplaceRaitingTemplateItem(tt);
+                                    tt = item.questions.Select(el =>
+                                            new RaitingTemplateItem() { IdTemplate = item.templateId, Id = el.questionId, Parent = -el.sectionId, Text = el.text, RatingTemplate = el.RatingTemplate, OrderRS = el.questionId }).ToList();
+                                    db.ReplaceRaitingTemplateItem(tt);
+                                }
+                                catch (Exception e)
+                                {
+                                    var aa = temp;
+                                }
+                            }
                         }
 
               
@@ -253,6 +265,7 @@ namespace BL.Connector
                     }
                     catch (Exception e)
                     {
+                        var aa = temp;
                         Res = new Result(-1, e.Message);
                         FileLogger.WriteLogMessage($"ConnectorPSU.LoadDocsData=>(pTypeDoc=>{pTypeDoc}, pNumberDoc=>{pNumberDoc},pIsClear=>{pIsClear}) Res=>({Res.State},{Res.Info},{Res.TextError})", eTypeLog.Error);
                         return Res;
