@@ -3,6 +3,7 @@ using BRB6.View;
 using BL;
 using BRB5;
 using BarcodeScanning;
+using CommunityToolkit.Maui.Core.Platform;
 
 //using BRB5.Connector;
 namespace BRB6
@@ -127,7 +128,6 @@ namespace BRB6
                 Config.OnProgress?.Invoke(0.9d);
                 if (!IsVisScan)
                 {
-                    BarCodeInput.Focus();
                     BarCodeFocused(null, null);
                 }
             }                
@@ -229,10 +229,12 @@ namespace BRB6
 
         private void BarCodeFocused(object sender, FocusEventArgs e)
         {
-            Dispatcher.Dispatch(() =>
+            Dispatcher.Dispatch(async () =>
             {
+                if (!BarCodeInput.IsFocused)  BarCodeInput.Focus();
                 BarCodeInput.CursorPosition = 0;
                 BarCodeInput.SelectionLength = BarCodeInput.Text == null ? 0 : BarCodeInput.Text.Length;
+                var isHide = await BarCodeInput.HideKeyboardAsync(CancellationToken.None);
             });
         }
 

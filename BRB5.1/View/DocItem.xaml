@@ -100,7 +100,9 @@
                     </local:CustomEntry>
                 </Frame>
             </StackLayout>
-            <ListView ItemTemplate="{StaticResource alternateColorDataTemplateSelector}" VerticalOptions="CenterAndExpand"
+            <ListView ItemTemplate="{StaticResource alternateColorDataTemplateSelector}"
+                      CachingStrategy="RecycleElementAndDataTemplate"
+                      VerticalOptions="CenterAndExpand"
                       ItemsSource="{Binding MyDocWares}" SeparatorVisibility="None">
                 <ListView.Header>
                     <Grid RowSpacing="1"

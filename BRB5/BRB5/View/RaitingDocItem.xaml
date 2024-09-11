@@ -52,8 +52,8 @@
                             <ViewCell>
                                 <ViewCell.View>
                                     <StackLayout>
-                                        <Grid BackgroundColor="{Binding BackgroundColor}"
-                                              IsVisible="{Binding IsHead}">
+                                        <Grid IsVisible="{Binding IsHead}">
+                                            <!--BackgroundColor="{Binding BackgroundColor}"-->
                                             <Grid.GestureRecognizers>
                                                 <TapGestureRecognizer Tapped="OnHeadTapped" />
                                             </Grid.GestureRecognizers>
@@ -84,12 +84,11 @@
                                                          Opacity="{Binding OpacityNotKnow}"
                                                          Clicked="OnButtonClicked" />
                                         </Grid>
-                                        <Grid BackgroundColor="{Binding BackgroundColor}">
+                                        <Grid >
+                                            <!--BackgroundColor="{Binding BackgroundColor}"-->
 
-                                            <StackLayout BackgroundColor="{Binding BackgroundColor}"
-                                                         IsVisible="{Binding IsItem}"
-                                                         >
-
+                                            <StackLayout IsVisible="{Binding IsItem}">
+                                                <!--BackgroundColor="{Binding BackgroundColor}"-->
                                                 <StackLayout Orientation="Horizontal">
                                                     <Label Text="{Binding Text}" FontSize="22" />
 
