@@ -101,7 +101,7 @@
                 </Frame>
             </StackLayout>
             <ListView ItemTemplate="{StaticResource alternateColorDataTemplateSelector}"
-                      CachingStrategy="RecycleElementAndDataTemplate"
+                      CachingStrategy="RecycleElement"
                       VerticalOptions="CenterAndExpand"
                       ItemsSource="{Binding MyDocWares}" SeparatorVisibility="None">
                 <ListView.Header>
