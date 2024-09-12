@@ -4,7 +4,6 @@
                           xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
                           xmlns:controls="clr-namespace:BRB6.View"
                           x:Class="BRB6.View.RaitingTemplateEditQuestion">
-    <!--xmlns:effects="clr-namespace:Xamarin.KeyboardHelper;assembly=Xamarin.KeyboardHelper"-->
     <NavigationPage.TitleView>
         <Button Text="Зберегти"
                 Clicked="Save"
@@ -17,11 +16,6 @@
             <Frame Style="{StaticResource FrameStyle}">
                 <controls:CustomEntry Style="{StaticResource EntryStyle}"
                                       Text="{Binding RQ.Text}" />
-                <!--effects:KeyboardEffect.EnableKeyboard="{Binding IsSoftKeyboard}"
-                    <controls:CustomEntry.Effects>
-                        <effects:KeyboardEnableEffect/>
-                    </controls:CustomEntry.Effects>
-                </controls:CustomEntry>-->
             </Frame>
             
             <Label Text="Бал" />
@@ -29,11 +23,6 @@
                 <controls:CustomEntry Style="{StaticResource EntryStyle}"
                           Text="{Binding RQ.ValueRating}" 
                           Keyboard="Numeric"/>
-                <!--effects:KeyboardEffect.EnableKeyboard="{Binding IsSoftKeyboard}"
-                    <controls:CustomEntry.Effects>
-                        <effects:KeyboardEnableEffect/>
-                    </controls:CustomEntry.Effects>
-                </controls:CustomEntry>-->
             </Frame>
             
             <Label Text="Оцінки" />

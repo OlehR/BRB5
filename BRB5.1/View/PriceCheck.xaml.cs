@@ -78,7 +78,9 @@ namespace BRB6
         CameraView BarcodeScaner;
         public PriceCheck(TypeDoc pTypeDoc)
         {
-            InitializeComponent();            
+            InitializeComponent();
+            NokeyBoard();
+
             var r = db.GetCountScanCode();
             IsVisDoubleScan = pTypeDoc.CodeDoc == 15;
 
@@ -99,39 +101,6 @@ namespace BRB6
 
             Config.OnProgress += (pProgress) => Dispatcher.Dispatch(() => PB = pProgress);
             this.BindingContext = this;
-        }
-
-        void BarCode(string pBarCode)=>FoundWares(pBarCode, false);
-
-        void FoundWares(string pBarCode, bool pIsHandInput = false)
-        {
-            if (!String.IsNullOrWhiteSpace(pBarCode))
-            {
-                LineNumber++;
-                Config.OnProgress?.Invoke(0.2d);
-
-                (WP, MessageDoubleScan) = bl.FoundWares(pBarCode, PackageNumber, LineNumber, pIsHandInput, IsVisDoubleScan, IsOnline);
-
-                if (WP != null)
-                {
-                    AllScan++;
-                    if (!WP.IsPriceOk)
-                        BadScan++;
-                    IsWareScaned = WP.StateDoubleScan;
-                }
-                if (Config.IsVibration)
-                {
-                    var duration = TimeSpan.FromMilliseconds(WP?.IsPriceOk == true ? 50 : 250);
-                    Vibration.Vibrate(duration);
-                }
-
-                Config.OnProgress?.Invoke(0.9d);
-                if (!IsVisScan)
-                {
-                    BarCodeFocused(null, null);
-                }
-            }                
-
         }
 
         protected override void OnAppearing()
@@ -165,7 +134,8 @@ namespace BRB6
                 GridZxing.Children.Add(BarcodeScaner);
 
             }
-            if (!IsVisScan) BarCodeInput.Focus();
+            if (!IsVisScan) 
+                BarCodeInput.Focus();
             if (IsVisDoubleScan) MessageDoubleScan = "Скануйте цінник чи товар";
         }
 
@@ -185,6 +155,37 @@ namespace BRB6
                 MessagingCenter.Unsubscribe<KeyEventMessage>(this, "EnterPressed");
             }
             bl.SendLogPrice();
+        }
+        void BarCode(string pBarCode)=>FoundWares(pBarCode, false);
+
+        void FoundWares(string pBarCode, bool pIsHandInput = false)
+        {
+            if (!String.IsNullOrWhiteSpace(pBarCode))
+            {
+                LineNumber++;
+                Config.OnProgress?.Invoke(0.2d);
+
+                (WP, MessageDoubleScan) = bl.FoundWares(pBarCode, PackageNumber, LineNumber, pIsHandInput, IsVisDoubleScan, IsOnline);
+
+                if (WP != null)
+                {
+                    AllScan++;
+                    if (!WP.IsPriceOk)
+                        BadScan++;
+                    IsWareScaned = WP.StateDoubleScan;
+                }
+                if (Config.IsVibration)
+                {
+                    var duration = TimeSpan.FromMilliseconds(WP?.IsPriceOk == true ? 50 : 250);
+                    Vibration.Vibrate(duration);
+                }
+
+                Config.OnProgress?.Invoke(0.9d);
+                
+                BarCodeFocused(null, null);
+                
+            }                
+
         }
 
         public void Dispose() { Config.BarCode -= BarCode;   }
@@ -229,12 +230,12 @@ namespace BRB6
 
         private void BarCodeFocused(object sender, FocusEventArgs e)
         {
-            Dispatcher.Dispatch(async () =>
+            Dispatcher.Dispatch(() =>
             {
-                if (!BarCodeInput.IsFocused)  BarCodeInput.Focus();
                 BarCodeInput.CursorPosition = 0;
                 BarCodeInput.SelectionLength = BarCodeInput.Text == null ? 0 : BarCodeInput.Text.Length;
-                var isHide = await BarCodeInput.HideKeyboardAsync(CancellationToken.None);
+                if (!BarCodeInput.IsFocused|| IsVisScan) 
+                    BarCodeInput.Focus();
             });
         }
 
@@ -304,6 +305,6 @@ namespace BRB6
                 
             }
         }
-
+       
     }
 }

@@ -5,7 +5,6 @@
                           xmlns:controls="clr-namespace:BRB6.View"
                           xmlns:scanner="clr-namespace:BarcodeScanning;assembly=BarcodeScanning.Native.Maui"
                           x:Class="BRB6.PriceCheck">
-    <!--xmlns:effects="clr-namespace:Xamarin.KeyboardHelper;assembly=Xamarin.KeyboardHelper"-->
     <ContentPage.Content>
         <StackLayout BackgroundColor="{Binding ColorPrintColorType}" Spacing="0">
 
@@ -138,13 +137,7 @@
                                           AutomationId="BarcodeEntry"
                                           Focused="BarCodeFocused"
                                           IsReadOnly="{Binding IsVisDoubleScan}"
-                                          Unfocused="BarCodeHandInput"
                                           Completed="BarCodeHandInput"/>
-                    <!--effects:KeyboardEffect.EnableKeyboard="{Binding IsSoftKeyboard}"
-                        <controls:CustomEntry.Effects>
-                            <effects:KeyboardEnableEffect/>
-                        </controls:CustomEntry.Effects>
-                    </controls:CustomEntry>-->
                 </Frame>
             </Grid>
 
@@ -165,11 +158,6 @@
                                           Unfocused="OnUpdateReplenishment"
                                           Completed="OnUpdateReplenishment"
                                           Keyboard="Numeric" />
-                    <!--effects:KeyboardEffect.EnableKeyboard="{Binding IsSoftKeyboard}"
-                        <controls:CustomEntry.Effects>
-                            <effects:KeyboardEnableEffect/>
-                        </controls:CustomEntry.Effects>
-                    </controls:CustomEntry>-->
                 </Frame>
             </Grid>
 

@@ -4,7 +4,6 @@
                        xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
                        xmlns:local="clr-namespace:BRB6.View"
                        x:Class="BRB6.View.DocItem">
-    <!--xmlns:effects="clr-namespace:Xamarin.KeyboardHelper;assembly=Xamarin.KeyboardHelper"-->
     <ContentPage.Resources>
         <ResourceDictionary>
             <DataTemplate x:Key="evenTemplate">
@@ -93,10 +92,6 @@
                                           x:Name="DocName"
                                           Placeholder="номер"
                                           Text="{Binding NumberOutInvoice}" >
-                        <!--effects:KeyboardEffect.EnableKeyboard="{Binding IsSoftKeyboard}"
-                        <local:CustomEntry.Effects>
-                            <effects:KeyboardEnableEffect/>
-                        </local:CustomEntry.Effects>-->
                     </local:CustomEntry>
                 </Frame>
             </StackLayout>

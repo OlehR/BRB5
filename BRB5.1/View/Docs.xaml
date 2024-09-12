@@ -4,8 +4,6 @@
                        xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" 
                        xmlns:local="clr-namespace:BRB6.View"
                        x:Class="BRB6.View.Docs">
-    <!--xmlns:effects="clr-namespace:Xamarin.KeyboardHelper;assembly=Xamarin.KeyboardHelper"
-                       xmlns:forms="clr-namespace:ZXing.Net.Mobile.Forms;assembly=ZXing.Net.Mobile.Forms"-->
     <ContentPage.Resources>
         <ResourceDictionary>
             <DataTemplate x:Key="evenTemplate">
@@ -98,10 +96,6 @@
                                           Keyboard="Numeric"
                                           x:Name="ZKPOEntry"
                                           Completed="FilterDocs" />
-                    <!--effects:KeyboardEffect.EnableKeyboard="{Binding IsSoftKeyboard}"
-                        <local:CustomEntry.Effects>
-                            <effects:KeyboardEnableEffect/>
-                        </local:CustomEntry.Effects>-->
 
                 </Frame>
             </Grid>

@@ -5,7 +5,6 @@
              xmlns:controls="clr-namespace:BRB6.View"
              xmlns:scanner="clr-namespace:BarcodeScanning;assembly=BarcodeScanning.Native.Maui"
              x:Class="BRB6.View.PlanCheckerPrice">
-    <!--xmlns:effects="clr-namespace:Xamarin.KeyboardHelper;assembly=Xamarin.KeyboardHelper"-->
     <ContentPage.Resources>
         <ResourceDictionary>
             <DataTemplate x:Key="softKeyboardTemplate">
@@ -68,22 +67,12 @@
                                    TextChanged="TextChangedAvailable"
                                    Text="{Binding InputQuantity}" 
                                    Keyboard="Telephone"/>
-                            <!--effects:KeyboardEffect.EnableKeyboard="False"
-                                <controls:CustomEntry.Effects>
-                                    <effects:KeyboardEnableEffect/>
-                                </controls:CustomEntry.Effects>
-                            </controls:CustomEntry>-->
                         </Frame>
                         <Frame  Style="{StaticResource FrameStyle}"  Grid.Column="2"  Grid.Row="1">
                             <controls:CustomEntry Style="{StaticResource EntryStyle}"
                                    AutomationId="{Binding CodeWares}"
                                    TextChanged="TextChangedAdd"
                                    Keyboard="Telephone"/>
-                            <!--effects:KeyboardEffect.EnableKeyboard="{Binding IsSoftKeyboard}"
-                                <controls:CustomEntry.Effects>
-                                    <effects:KeyboardEnableEffect/>
-                                </controls:CustomEntry.Effects>
-                            </controls:CustomEntry>-->
                         </Frame>
                     </Grid>
 
