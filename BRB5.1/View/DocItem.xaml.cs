@@ -32,6 +32,7 @@ namespace BRB6.View
         public ObservableCollection<DocWaresEx> MyDocWares { get; set; } = new ObservableCollection<DocWaresEx>();
         public DocItem(DocId pDocId,  TypeDoc pTypeDoc)
         {
+            NokeyBoard();
             TypeDoc = pTypeDoc;
             Doc = new DocVM(pDocId);           
             BindingContext = this;

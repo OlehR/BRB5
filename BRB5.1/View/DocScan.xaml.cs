@@ -35,6 +35,7 @@ namespace BRB6.View
         public DocScan(DocId pDocId, TypeDoc pTypeDoc = null)
         {
             InitializeComponent();
+            NokeyBoard();
             DocId = pDocId;
             TypeDoc = pTypeDoc != null ? pTypeDoc : Config.GetDocSetting(pDocId.TypeDoc);
             c = Connector.GetInstance();

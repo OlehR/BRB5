@@ -30,6 +30,7 @@ namespace BRB6.View
 
         public Docs(TypeDoc pTypeDoc )
         {
+            NokeyBoard();
             TypeDoc = pTypeDoc;
             Config.BarCode = BarCode;
             BindingContext = this;
