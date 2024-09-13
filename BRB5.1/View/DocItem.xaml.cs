@@ -4,6 +4,9 @@ using BL.Connector;
 using BL;
 using BRB5;
 using CommunityToolkit.Maui.Alerts;
+#if ANDROID
+using Android.Views;
+#endif
 
 namespace BRB6.View
 {
@@ -44,10 +47,9 @@ namespace BRB6.View
 
             if(!IsSoftKeyboard)
             {
-                MessagingCenter.Subscribe<KeyEventMessage>(this, "F2Pressed", message => { F2Save(null, EventArgs.Empty); });
-                MessagingCenter.Subscribe<KeyEventMessage>(this, "F3Pressed", message => { F3Scan(null, EventArgs.Empty); });
-                MessagingCenter.Subscribe<KeyEventMessage>(this, "F4Pressed", message => { F4WrOff(null, EventArgs.Empty); });
-                MessagingCenter.Subscribe<KeyEventMessage>(this, "F6Pressed", message => { F6Doc(null, EventArgs.Empty); });
+#if ANDROID
+            MainActivity.Key+= OnPageKeyDown;
+#endif
             }
             var r = db.GetDocWares(Doc, 1, eTypeOrder.Scan);
             if (r != null)
@@ -63,10 +65,9 @@ namespace BRB6.View
 
             if (!IsSoftKeyboard)
             {
-                MessagingCenter.Unsubscribe<KeyEventMessage>(this, "F2Pressed");
-                MessagingCenter.Unsubscribe<KeyEventMessage>(this, "F3Pressed");
-                MessagingCenter.Unsubscribe<KeyEventMessage>(this, "F4Pressed");
-                MessagingCenter.Unsubscribe<KeyEventMessage>(this, "F6Pressed");
+#if ANDROID
+            MainActivity.Key-= OnPageKeyDown;
+#endif
             }
         }
         private void F2Save(object sender, EventArgs e)
@@ -90,6 +91,30 @@ namespace BRB6.View
             if (IsVisibleDocF6) DocDate.Focus();
         }
         private void DocNameFocus(object sender, FocusEventArgs e) {  DocName.Focus(); }
+
+#if ANDROID
+        public void OnPageKeyDown(Keycode keyCode, KeyEvent e)
+        {
+           switch (keyCode)
+           {
+            case Keycode.F2:
+               F2Save(null, EventArgs.Empty);
+               return;
+            case Keycode.F3:
+               F3Scan(null, EventArgs.Empty);
+               return;
+            case Keycode.F4:
+               F4WrOff(null, EventArgs.Empty); 
+               return;
+            case Keycode.F6:
+               F6Doc(null, EventArgs.Empty);
+               return;
+
+            default:
+               return;
+           }
+         }
+#endif
     }
     public class AlternateColorDataTemplateSelector : DataTemplateSelector
     {

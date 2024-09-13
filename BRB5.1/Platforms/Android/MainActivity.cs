@@ -7,13 +7,16 @@ using BRB5;
 using System.Globalization;
 using Utils;
 using BRB5.Model;
+using Android.Runtime;
+using Android.Views;
+using BRB6.View;
 
 namespace BRB6
 {
     [Activity(Theme = "@style/Maui.SplashTheme", MainLauncher = true, LaunchMode = LaunchMode.SingleTop, ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation | ConfigChanges.UiMode | ConfigChanges.ScreenLayout | ConfigChanges.SmallestScreenSize | ConfigChanges.Density)]
     public class MainActivity : MauiAppCompatActivity
     {
- 
+        public static Action<Keycode, KeyEvent> Key;
         protected override void OnCreate(Bundle savedInstanceState)
         {
             AppCompatDelegate.DefaultNightMode = AppCompatDelegate.ModeNightNo;
@@ -66,6 +69,10 @@ namespace BRB6
             }
             return deviceID;
         }
-
+        public override bool OnKeyDown([GeneratedEnum] Keycode keyCode, KeyEvent e)
+        {
+            Key?.Invoke(keyCode, e);
+            return base.OnKeyDown(keyCode, e);
+        }
     }
 }

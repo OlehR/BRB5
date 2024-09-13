@@ -4,6 +4,9 @@ using BRB5.Model;
 using System.Collections.ObjectModel;
 using BRB5;
 using BarcodeScanning;
+#if ANDROID
+using Android.Views;
+#endif
 
 namespace BRB6.View
 {
@@ -119,12 +122,9 @@ namespace BRB6.View
             else Config.BarCode = BarCode;
             if (!IsSoftKeyboard)
             {
-                MessagingCenter.Subscribe<KeyEventMessage>(this, "F1Pressed", message => { Reset(null, EventArgs.Empty); });
-                MessagingCenter.Subscribe<KeyEventMessage>(this, "F2Pressed", message => { Up(null, EventArgs.Empty); });
-                MessagingCenter.Subscribe<KeyEventMessage>(this, "F3Pressed", message => { Down(null, EventArgs.Empty); });
-                MessagingCenter.Subscribe<KeyEventMessage>(this, "F8Pressed", message => { });
-                MessagingCenter.Subscribe<KeyEventMessage>(this, "BackPressed", message => { KeyBack(); });
-                MessagingCenter.Subscribe<KeyEventMessage>(this, "EnterPressed", message => { AddWare(); });
+#if ANDROID
+            MainActivity.Key+= OnPageKeyDown;
+#endif
             }
         }
 
@@ -134,12 +134,9 @@ namespace BRB6.View
 
             if (!IsSoftKeyboard)
             {
-                MessagingCenter.Unsubscribe<KeyEventMessage>(this, "F1Pressed");
-                MessagingCenter.Unsubscribe<KeyEventMessage>(this, "F2Pressed");
-                MessagingCenter.Unsubscribe<KeyEventMessage>(this, "F3Pressed");
-                MessagingCenter.Unsubscribe<KeyEventMessage>(this, "F8Pressed");
-                MessagingCenter.Unsubscribe<KeyEventMessage>(this, "BackPressed");
-                MessagingCenter.Unsubscribe<KeyEventMessage>(this, "EnterPressed");
+#if ANDROID
+            MainActivity.Key-= OnPageKeyDown;
+#endif
             }
 
             if (IsVisScan) BarcodeScaner.CameraEnabled = false;
@@ -189,17 +186,13 @@ namespace BRB6.View
             }
         }
 
-
         private void Reset(object sender, EventArgs e) { Bl.Reset(ScanData, ListWares); }
 
         private void CalcQuantity(object sender, TextChangedEventArgs e)
         {
             if (ScanData != null && ScanData.QuantityBarCode == 0)
                 ScanData.QuantityBarCode = ScanData.InputQuantity * ScanData.Coefficient;
-        }
-
-       
-        private async void KeyBack() { await Navigation.PopAsync();  }
+        }       
 
         private void Up(object sender, EventArgs e)
         {
@@ -247,9 +240,28 @@ namespace BRB6.View
             }
         }
 
-        private void CompletedInputQ(object sender, EventArgs e)
-        {
-            AddWare();
-        }
+        private void CompletedInputQ(object sender, EventArgs e) {  AddWare(); }
+#if ANDROID
+        public void OnPageKeyDown(Keycode keyCode, KeyEvent e)
+        { 
+           switch (keyCode)
+           {
+            case Keycode.F1:
+               Reset(null, EventArgs.Empty);
+               return;
+            case Keycode.F2:
+               Up(null, EventArgs.Empty);
+               return;
+            case Keycode.F3:
+               Down(null, EventArgs.Empty);
+               return;
+            case Keycode.F8:
+
+               return;
+            default:
+               return;
+           }
+         }
+#endif
     }
 }

@@ -133,7 +133,6 @@
                     <controls:CustomEntry Keyboard="Numeric" Style="{StaticResource EntryStyle}"
                                           Text="{Binding WP.BarCodes}" 
                                           x:Name="BarCodeInput"
-                                          TextChanged="EntryTextChanged"
                                           AutomationId="BarcodeEntry"
                                           Focused="BarCodeFocused"
                                           IsReadOnly="{Binding IsVisDoubleScan}"
@@ -152,7 +151,6 @@
                        Grid.Column="1">
                     <controls:CustomEntry Style="{StaticResource EntryStyle}"
                                           Text=""    
-                                          TextChanged="EntryTextChanged"
                                           AutomationId="ReplenishmentEntry"
                                           x:Name="NumberOfReplenishment"
                                           Unfocused="OnUpdateReplenishment"

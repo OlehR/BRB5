@@ -4,6 +4,9 @@ using BL;
 using BRB5;
 using BarcodeScanning;
 using CommunityToolkit.Maui.Core.Platform;
+#if ANDROID
+using Android.Views;
+#endif
 
 //using BRB5.Connector;
 namespace BRB6
@@ -62,7 +65,6 @@ namespace BRB6
         public bool IsMultyLabel { get { return _IsMultyLabel; } set { _IsMultyLabel = value; OnPropertyChanged(nameof(IsMultyLabel)); OnPropertyChanged(nameof(F5Text)); } }
         public string F5Text { get { return IsMultyLabel ? "Дубл." : "Унік."; } }
         public bool IsVisScan { get { return Config.TypeScaner == eTypeScaner.Camera; } }
-        private string CurrentEntry = "BarcodeEntry";
         /// <summary>
         /// 0 - нічого , 1 - сканований цінник, 2 - сканований товар, 3 - штрихкод товату не підходить, 4 - цінник не підходить, 5 - успішно
         /// </summary>
@@ -108,14 +110,10 @@ namespace BRB6
             base.OnAppearing();
 
             if (!IsSoftKeyboard)
-            {
-                MessagingCenter.Subscribe<KeyEventMessage>(this, "F1Pressed", message => { OnClickPrintBlock(null, EventArgs.Empty); });
-                MessagingCenter.Subscribe<KeyEventMessage>(this, "F2Pressed", message => { OnF2(null, EventArgs.Empty); });
-                MessagingCenter.Subscribe<KeyEventMessage>(this, "F4Pressed", message => { OnF4(null, EventArgs.Empty); });
-                MessagingCenter.Subscribe<KeyEventMessage>(this, "F5Pressed", message => { OnF5(null, EventArgs.Empty); });
-                MessagingCenter.Subscribe<KeyEventMessage>(this, "F6Pressed", message => { OnClickPrintOne(null, EventArgs.Empty); });
-                MessagingCenter.Subscribe<KeyEventMessage>(this, "BackPressed", message => { KeyBack(); });
-                MessagingCenter.Subscribe<KeyEventMessage>(this, "EnterPressed", message => { KeyEnter(); });
+            {                
+#if ANDROID
+            MainActivity.Key+= OnPageKeyDown;
+#endif
             }
             if (IsVisScan)
             {
@@ -146,13 +144,9 @@ namespace BRB6
 
             if (!IsSoftKeyboard)
             {
-                MessagingCenter.Unsubscribe<KeyEventMessage>(this, "F1Pressed");
-                MessagingCenter.Unsubscribe<KeyEventMessage>(this, "F2Pressed");
-                MessagingCenter.Unsubscribe<KeyEventMessage>(this, "F4Pressed");
-                MessagingCenter.Unsubscribe<KeyEventMessage>(this, "F5Pressed");
-                MessagingCenter.Unsubscribe<KeyEventMessage>(this, "F6Pressed");
-                MessagingCenter.Unsubscribe<KeyEventMessage>(this, "BackPressed");
-                MessagingCenter.Unsubscribe<KeyEventMessage>(this, "EnterPressed");
+#if ANDROID
+            MainActivity.Key-= OnPageKeyDown;
+#endif
             }
             bl.SendLogPrice();
         }
@@ -243,26 +237,7 @@ namespace BRB6
         {
             if (IsEnabledPrint && WP!=null)
                 _ = DisplayAlert("Друк", bl.c.PrintHTTP(new[] { WP.CodeWares }), "OK");
-        }
-    
-        private async void KeyBack()  { await Navigation.PopAsync();    }
-
-        private void EntryTextChanged(object sender, TextChangedEventArgs e) {  CurrentEntry = ((Entry)sender).AutomationId;   }
-        private void KeyEnter()
-        {
-            if (IsVisDoubleScan)
-                //TEMP!!
-                return;
-            switch (CurrentEntry)
-            {
-                case "BarcodeEntry":
-                    BarCodeHandInput(null,null);
-                    break;
-                case "ReplenishmentEntry":
-                    OnUpdateReplenishment(null, null);
-                    break;
-            }
-        }
+        }   
 
         private void OnUpdateReplenishment(object sender, EventArgs e)
         {
@@ -305,6 +280,32 @@ namespace BRB6
                 
             }
         }
-       
+
+#if ANDROID
+        public void OnPageKeyDown(Keycode keyCode, KeyEvent e)
+        {
+           switch (keyCode)
+           {
+            case Keycode.F1:
+            OnClickPrintBlock(null, EventArgs.Empty);
+               return;
+            case Keycode.F2:
+            OnF2(null, EventArgs.Empty);
+               return;
+            case Keycode.F4:
+            OnF4(null, EventArgs.Empty);
+               return;
+            case Keycode.F5:
+            OnF5(null, EventArgs.Empty);
+               return;
+            case Keycode.F6:
+            OnClickPrintOne(null, EventArgs.Empty);
+               return;
+
+            default:
+               return;
+           }
+         }
+#endif
     }
 }
