@@ -17,6 +17,7 @@ namespace BRB6.View
         private Connector c = Connector.GetInstance();
         private TypeDoc TypeDoc;
         DB db = DB.GetDB();
+        BL.BL Bl = BL.BL.GetBL();
         private ObservableCollection<DocVM> _MyDocsR;
         public ObservableCollection<DocVM> MyDocsR { get { return _MyDocsR; } set { _MyDocsR = value; OnPropertyChanged(nameof(MyDocsR)); } }
         bool _IsVisZKPO = false;
@@ -65,8 +66,8 @@ namespace BRB6.View
             }
             c.LoadDocsDataAsync(TypeDoc.CodeDoc, null, false);
 
-            if (Config.IsFilterSave && ZKPOstr.Length > 2) MyDocsR = new ObservableCollection<DocVM>(db.GetDoc(TypeDoc, null, ZKPOstr));
-            else MyDocsR = new ObservableCollection<DocVM>(db.GetDoc(TypeDoc));
+            if (Config.IsFilterSave && ZKPOstr.Length > 2) MyDocsR = Bl.SetColorType(db.GetDoc(TypeDoc, null, ZKPOstr));
+            else MyDocsR = Bl.SetColorType(db.GetDoc(TypeDoc));
 
             if (MyDocsR.Count > 0)
             {
@@ -105,14 +106,14 @@ namespace BRB6.View
             else
             { 
                 ZKPOEntry.Text = string.Empty;
-                MyDocsR = new ObservableCollection<DocVM>(db.GetDoc(TypeDoc));
+                MyDocsR = Bl.SetColorType(db.GetDoc(TypeDoc));
             }
         }
 
         private void FilterDocs(object sender, EventArgs e)
         {
             if (ZKPOstr.Length > 2)
-                MyDocsR = new ObservableCollection<DocVM>(db.GetDoc(TypeDoc, null, ZKPOstr));
+                MyDocsR = Bl.SetColorType(db.GetDoc(TypeDoc, null, ZKPOstr));
             if (MyDocsR.Count > 0)
             {
                 MyDocsR[0].SelectedColor = true;
@@ -125,7 +126,7 @@ namespace BRB6.View
             IsVisBarCode= !IsVisBarCode;
             BarcodeScaner.CameraEnabled = IsVisBarCode;
         }
-        void BarCode(string pBarCode) { MyDocsR = new ObservableCollection<DocVM>(db.GetDoc(TypeDoc, pBarCode, null));  }
+        void BarCode(string pBarCode) { MyDocsR = Bl.SetColorType(db.GetDoc(TypeDoc, pBarCode, null));  }
         public void Dispose() {  Config.BarCode -= BarCode;  }
 
         private void UpDown(int key)
@@ -188,7 +189,7 @@ namespace BRB6.View
             if (e.BarcodeResults.Length > 0)
             {
                 BarcodeScaner.PauseScanning = true;
-                MyDocsR = new ObservableCollection<DocVM>(db.GetDoc(TypeDoc, e.BarcodeResults[0].DisplayValue, null));
+                MyDocsR = Bl.SetColorType(db.GetDoc(TypeDoc, e.BarcodeResults[0].DisplayValue, null));
                 Task.Run(async () => {
                     await Task.Delay(1000);
                     BarcodeScaner.PauseScanning = false;

@@ -55,8 +55,13 @@ namespace BRB6.View
             if (r != null)
             {
                 MyDocWares.Clear();
+                int index = 0;
                 foreach (var item in r)
+                {
+                    item.Even = (index % 2 == 0);
                     MyDocWares.Add(item);
+                    index++;
+                }
             }
         }
         protected override void OnDisappearing()

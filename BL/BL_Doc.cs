@@ -45,6 +45,16 @@ namespace BL
 
             }
         }
+        public ObservableCollection<DocVM> SetColorType(IEnumerable<DocVM> pDocs)
+        {
+            int index = 0;
+            foreach (var pDoc in pDocs)
+            {
+                pDoc.Even = (index % 2 == 0);
+                index++;
+            }
 
+            return new ObservableCollection<DocVM>(pDocs);
+        }
     }
 }
