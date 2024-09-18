@@ -12,6 +12,7 @@ namespace BL
     public partial class BL
     {
         WaresPrice WP;
+        WaresPrice[] WPH = new WaresPrice[2];
 
         public (WaresPrice, string) FoundWares(string pBarCode, int PackageNumber, int LineNumber, bool pIsHandInput, bool pIsDoubleScan, bool IsOnline = true)
         {
@@ -48,7 +49,47 @@ namespace BL
             return (WP, MessageDoubleScan);
         }
 
-        private string SearchDoubleScan(WaresPrice CheckWP)
+        private string SearchDoubleScanNew(WaresPrice CheckWP, int PackageNumber, int LineNumber)
+        {          
+            string Res = "";
+            for (int i = WPH.Count()-1; i >= 0; i--)
+            {
+                if (WPH[i] == null) continue;
+                eCheck R= SearchDoubleScanNew(CheckWP, WPH[i] );
+                if (R == eCheck.Same) break;
+                if (R == eCheck.Ok)
+                {
+                    SaveDoubleScan(100, CheckWP, PackageNumber, LineNumber);                    
+                    for (int j = 0; j < WPH.Count() ; j--) WPH[j] = null;                   
+                    break;
+                }
+
+                if (R == eCheck.Bad && i == 0)
+                {
+                    if (WPH[1] != null)
+                    {
+                        for (int j = 0; j < WPH.Count(); j--)                        
+                            SaveDoubleScan(WPH[j].IsBarCode?101:102 , CheckWP, PackageNumber, LineNumber);                        
+                        WPH[0] = WPH[1];
+                    }
+                    WPH[1] = CheckWP;
+                }
+            }
+            if (WPH[0] == null) WPH[0] = CheckWP;
+            if (WPH[0] == null) Res = "Скануйте цінник чи товар";
+            else Res = (CheckWP.IsBarCode? "Скануйте цінник": "Скануйте товар");
+
+            return Res;
+        }
+        enum eCheck { Ok,Same,Bad }
+        private eCheck SearchDoubleScanNew(WaresPrice pWP, WaresPrice pS)
+        {
+            if (pWP.CodeWares == pS.CodeWares)
+                if (pWP.IsBarCode == !pS.IsBarCode) return eCheck.Ok; else return eCheck.Same;
+            return eCheck.Bad;
+        }
+
+            private string SearchDoubleScan(WaresPrice CheckWP)
         {
             string MessageDoubleScan;
             if (WP == null)
