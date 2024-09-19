@@ -76,10 +76,10 @@ namespace BL
                         WPH[1] = CheckWP;
                     }
                 }
-                if (WPH[0] == null) Res = "Скануйте цінник чи товар";
+                if (WPH[0] == null) CheckWP.StateDoubleScan = eCheckWareScaned.Success; //Res = "Скануйте цінник чи товар";
                 if (WPH[0] == null) WPH[0] = CheckWP;
-                
-                else Res = (CheckWP.IsBarCode ? "Скануйте цінник" : "Скануйте товар");
+
+                else CheckWP.StateDoubleScan=(CheckWP.IsBarCode ? eCheckWareScaned.WareScaned : eCheckWareScaned.PriceTagScaned); //"Скануйте цінник" : "Скануйте товар");
             }
             return Res;
         }
