@@ -50,39 +50,41 @@ namespace BL
         }
 
         private string SearchDoubleScanNew(WaresPrice CheckWP, int PackageNumber, int LineNumber)
-        {          
+        {
             string Res = "";
-            for (int i = WPH.Count()-1; i >= 0; i--)
-            {
-                if (WPH[i] == null) continue;
-                eCheck R= SearchDoubleScanNew(CheckWP, WPH[i] );
-                if (R == eCheck.Same) break;
-                if (R == eCheck.Ok)
+            if (CheckWP?.CodeWares != 0){
+                for (int i = WPH.Count() - 1; i >= 0; i--)
                 {
-                    SaveDoubleScan(100, CheckWP, PackageNumber, LineNumber);                    
-                    for (int j = 0; j < WPH.Count() ; j--) WPH[j] = null;                   
-                    break;
-                }
-
-                if (R == eCheck.Bad && i == 0)
-                {
-                    if (WPH[1] != null)
+                    if (WPH[i] == null) continue;
+                    eCheck R = CompareDoubleScan(CheckWP, WPH[i]);
+                    if (R == eCheck.Same) break;
+                    if (R == eCheck.Ok)
                     {
-                        for (int j = 0; j < WPH.Count(); j--)                        
-                            SaveDoubleScan(WPH[j].IsBarCode?101:102 , CheckWP, PackageNumber, LineNumber);                        
-                        WPH[0] = WPH[1];
+                        SaveDoubleScan(100, CheckWP, PackageNumber, LineNumber);
+                        for (int j = 0; j < WPH.Count(); j--) WPH[j] = null;
+                        break;
                     }
-                    WPH[1] = CheckWP;
-                }
-            }
-            if (WPH[0] == null) WPH[0] = CheckWP;
-            if (WPH[0] == null) Res = "Скануйте цінник чи товар";
-            else Res = (CheckWP.IsBarCode? "Скануйте цінник": "Скануйте товар");
 
+                    if (R == eCheck.Bad && i == 0)
+                    {
+                        if (WPH[1] != null)
+                        {
+                           // for (int j = 0; j < WPH.Count(); j--)
+                                SaveDoubleScan(WPH[0].IsBarCode ? 101 : 102, CheckWP, PackageNumber, LineNumber);
+                            WPH[0] = WPH[1];
+                        }
+                        WPH[1] = CheckWP;
+                    }
+                }
+                if (WPH[0] == null) Res = "Скануйте цінник чи товар";
+                if (WPH[0] == null) WPH[0] = CheckWP;
+                
+                else Res = (CheckWP.IsBarCode ? "Скануйте цінник" : "Скануйте товар");
+            }
             return Res;
         }
         enum eCheck { Ok,Same,Bad }
-        private eCheck SearchDoubleScanNew(WaresPrice pWP, WaresPrice pS)
+        private eCheck CompareDoubleScan(WaresPrice pWP, WaresPrice pS)
         {
             if (pWP.CodeWares == pS.CodeWares)
                 if (pWP.IsBarCode == !pS.IsBarCode) return eCheck.Ok; else return eCheck.Same;
