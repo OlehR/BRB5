@@ -16,6 +16,7 @@ namespace BRB6.View
         public ObservableCollection<DocWaresEx> DocWares { get; set; } = new ObservableCollection<DocWaresEx>();
         public ManualInput (DocId pDocId, TypeDoc pTypeDoc)
         {
+            NokeyBoard();
             TypeDoc = pTypeDoc;
             Doc = new DocVM(pDocId);
             var r = db.GetDocWares(Doc, 1, eTypeOrder.Scan);

@@ -22,8 +22,6 @@ namespace BRB6.View
         //private object Sender;
         private int ShelfType;
         public bool IsSoftKeyboard { get { return Config.IsSoftKeyboard; } }
-        private string CurrentCodeWares;
-        private int CurrentEntryType;
         CameraView BarcodeScaner;
         public PlanCheckerPrice(DocVM pDoc, int Selection)
         {
@@ -33,6 +31,7 @@ namespace BRB6.View
             // TODO Xamarin.Forms.Device.RuntimePlatform is no longer supported. Use Microsoft.Maui.Devices.DeviceInfo.Platform instead. For more details see https://learn.microsoft.com/en-us/dotnet/maui/migration/forms-projects#device-changes
             NavigationPage.SetHasNavigationBar(this, Device.RuntimePlatform == Device.iOS || Config.TypeScaner == eTypeScaner.BitaHC61 || Config.TypeScaner == eTypeScaner.Zebra || Config.TypeScaner == eTypeScaner.PM550 || Config.TypeScaner == eTypeScaner.PM351);
             InitializeComponent();
+            NokeyBoard();
 
             GetData();
 
@@ -81,25 +80,11 @@ namespace BRB6.View
                 BarcodeScaner.OnDetectionFinished += CameraView_OnDetectionFinished;
                 GridZxing.Children.Add(BarcodeScaner);
             }
-
-            if (!IsSoftKeyboard)
-            {
-                MessagingCenter.Subscribe<KeyEventMessage>(this, "BackPressed", message => { KeyBack(); });
-                MessagingCenter.Subscribe<KeyEventMessage>(this, "EnterPressed", message => { SaveAndFocusNext(CurrentCodeWares, CurrentEntryType); });
-            }
         }
         protected override void OnDisappearing()
         {
-            //if (IsVisScan) zxing.IsScanning = false;
-            base.OnDisappearing();
-
-            if (!IsSoftKeyboard)
-            {
-                MessagingCenter.Unsubscribe<KeyEventMessage>(this, "BackPressed");
-                MessagingCenter.Unsubscribe<KeyEventMessage>(this, "EnterPressed");
-            }
-
             if (IsVisScan) BarcodeScaner.CameraEnabled = false;
+            base.OnDisappearing();
         }
 
         public void Dispose()  { Config.BarCode -= BarCode; }
@@ -171,30 +156,10 @@ namespace BRB6.View
                     if (nextEntry != null)
                     {
                         nextEntry.Focus();
-                        CurrentCodeWares = nextEntry.AutomationId;
-                        CurrentEntryType = Type == 1 ? 2 : 1;
                     }
                 });
             }
         }
-
-
-        private async void KeyBack()  {  await Navigation.PopAsync();   }
-
-        private void TextChangedAdd(object sender, TextChangedEventArgs e)
-        {
-            var entry = sender as Entry;
-            CurrentCodeWares = entry.AutomationId;
-            CurrentEntryType = 2;
-        }
-
-        private void TextChangedAvailable(object sender, TextChangedEventArgs e)
-        {
-            var entry = sender as Entry;
-            CurrentCodeWares = entry.AutomationId;
-            CurrentEntryType = 1;
-        }
-
         private void CameraView_OnDetectionFinished(object sender, OnDetectionFinishedEventArg e)
         {
             if (e.BarcodeResults.Length > 0)
@@ -208,15 +173,6 @@ namespace BRB6.View
             }
         }
     }
-    public class KeyboardTypeDataTemplateSelector : DataTemplateSelector
-    {
-        public DataTemplate SoftKeyboardTemplate { get; set; }
-        public DataTemplate HardKeyboardTemplate { get; set; }
-
-        protected override DataTemplate OnSelectTemplate(object item, BindableObject container)
-        {
-            return Config.IsSoftKeyboard ? SoftKeyboardTemplate : HardKeyboardTemplate;
-        }
-    }
+    
    
 }

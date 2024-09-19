@@ -6,6 +6,9 @@ using Microsoft.Maui.Controls.Compatibility;
 using BRB5;
 using Grid = Microsoft.Maui.Controls.Grid;
 using BarcodeScanning;
+#if ANDROID
+using Android.Views;
+#endif
 
 namespace BRB6.View
 {
@@ -14,6 +17,7 @@ namespace BRB6.View
         private Connector c = Connector.GetInstance();
         private TypeDoc TypeDoc;
         DB db = DB.GetDB();
+        BL.BL Bl = BL.BL.GetBL();
         private ObservableCollection<DocVM> _MyDocsR;
         public ObservableCollection<DocVM> MyDocsR { get { return _MyDocsR; } set { _MyDocsR = value; OnPropertyChanged(nameof(MyDocsR)); } }
         bool _IsVisZKPO = false;
@@ -30,6 +34,7 @@ namespace BRB6.View
 
         public Docs(TypeDoc pTypeDoc )
         {
+            NokeyBoard();
             TypeDoc = pTypeDoc;
             Config.BarCode = BarCode;
             BindingContext = this;
@@ -55,16 +60,14 @@ namespace BRB6.View
             }
             if (!IsSoftKeyboard)
             {
-                MessagingCenter.Subscribe<KeyEventMessage>(this, "F1Pressed", message => { ZKPO(null, EventArgs.Empty); });
-                MessagingCenter.Subscribe<KeyEventMessage>(this, "F2Pressed", message => { Up(); });
-                MessagingCenter.Subscribe<KeyEventMessage>(this, "F4Pressed", message => { Down(); });
-                MessagingCenter.Subscribe<KeyEventMessage>(this, "F3Pressed", message => { SelectKey(); });
-                MessagingCenter.Subscribe<KeyEventMessage>(this, "EnterPressed", message => { EnterKey(); });
+#if ANDROID
+            MainActivity.Key+= OnPageKeyDown;
+#endif
             }
             c.LoadDocsDataAsync(TypeDoc.CodeDoc, null, false);
 
-            if (Config.IsFilterSave && ZKPOstr.Length > 2) MyDocsR = new ObservableCollection<DocVM>(db.GetDoc(TypeDoc, null, ZKPOstr));
-            else MyDocsR = new ObservableCollection<DocVM>(db.GetDoc(TypeDoc));
+            if (Config.IsFilterSave && ZKPOstr.Length > 2) MyDocsR = Bl.SetColorType(db.GetDoc(TypeDoc, null, ZKPOstr));
+            else MyDocsR = Bl.SetColorType(db.GetDoc(TypeDoc));
 
             if (MyDocsR.Count > 0)
             {
@@ -79,11 +82,9 @@ namespace BRB6.View
             if (IsVisScan) BarcodeScaner.CameraEnabled = false;
             if (!IsSoftKeyboard)
             {
-                MessagingCenter.Unsubscribe<KeyEventMessage>(this, "F1Pressed");
-                MessagingCenter.Unsubscribe<KeyEventMessage>(this, "F2Pressed");
-                MessagingCenter.Unsubscribe<KeyEventMessage>(this, "F3Pressed");
-                MessagingCenter.Unsubscribe<KeyEventMessage>(this, "F4Pressed");
-                MessagingCenter.Unsubscribe<KeyEventMessage>(this, "EnterPressed");
+#if ANDROID
+            MainActivity.Key-= OnPageKeyDown;
+#endif
             }
             if (!Config.IsFilterSave)
             {
@@ -105,14 +106,14 @@ namespace BRB6.View
             else
             { 
                 ZKPOEntry.Text = string.Empty;
-                MyDocsR = new ObservableCollection<DocVM>(db.GetDoc(TypeDoc));
+                MyDocsR = Bl.SetColorType(db.GetDoc(TypeDoc));
             }
         }
 
         private void FilterDocs(object sender, EventArgs e)
         {
             if (ZKPOstr.Length > 2)
-                MyDocsR = new ObservableCollection<DocVM>(db.GetDoc(TypeDoc, null, ZKPOstr));
+                MyDocsR = Bl.SetColorType(db.GetDoc(TypeDoc, null, ZKPOstr));
             if (MyDocsR.Count > 0)
             {
                 MyDocsR[0].SelectedColor = true;
@@ -125,7 +126,7 @@ namespace BRB6.View
             IsVisBarCode= !IsVisBarCode;
             BarcodeScaner.CameraEnabled = IsVisBarCode;
         }
-        void BarCode(string pBarCode) { MyDocsR = new ObservableCollection<DocVM>(db.GetDoc(TypeDoc, pBarCode, null));  }
+        void BarCode(string pBarCode) { MyDocsR = Bl.SetColorType(db.GetDoc(TypeDoc, pBarCode, null));  }
         public void Dispose() {  Config.BarCode -= BarCode;  }
 
         private void UpDown(int key)
@@ -182,20 +183,41 @@ namespace BRB6.View
             var selectedItem = (DocVM)ListDocs.SelectedItem;
             if (selectedItem != null) await Navigation.PushAsync(new DocItem(selectedItem, TypeDoc));            
         }
-
-        private void EnterKey() { if(IsVisZKPO) FilterDocs(null, null); }
-      
+              
         private void CameraView_OnDetectionFinished(object sender, BarcodeScanning.OnDetectionFinishedEventArg e)
         {
             if (e.BarcodeResults.Length > 0)
             {
                 BarcodeScaner.PauseScanning = true;
-                MyDocsR = new ObservableCollection<DocVM>(db.GetDoc(TypeDoc, e.BarcodeResults[0].DisplayValue, null));
+                MyDocsR = Bl.SetColorType(db.GetDoc(TypeDoc, e.BarcodeResults[0].DisplayValue, null));
                 Task.Run(async () => {
                     await Task.Delay(1000);
                     BarcodeScaner.PauseScanning = false;
                 });
             }
         }
+
+#if ANDROID
+        public void OnPageKeyDown(Keycode keyCode, KeyEvent e)
+        {
+           switch (keyCode)
+           {
+            case Keycode.F1:
+               ZKPO(null, EventArgs.Empty); 
+               return;
+            case Keycode.F2:
+               Up(); 
+               return;
+            case Keycode.F3:
+               SelectKey();
+               return;
+            case Keycode.F4:
+               Down();
+               return;
+            default:
+               return;
+           }
+         }
+#endif
     }
 }

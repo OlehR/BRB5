@@ -39,6 +39,7 @@ namespace BRB5.Model
         ///public Keyboard Keyboard { get { return CodeUnit == 7 ? Keyboard.Telephone : Keyboard.Numeric; } }
 
         public ParseBarCode ParseBarCode { get; set; }
+        public bool Even { get; set; } = false;
 
         //public boolean IsRecord = false;
         // 3 - червоний, 2- оранжевий, 1 - жовтий, 0 - зелений, -1 - білий, інше грязно жовтий-ранжевий.
@@ -48,45 +49,40 @@ namespace BRB5.Model
             {
                 /*  if(!DocSetting.IsViewPlan)
                       return "fff3cd";*/
-                switch (Ord)
-                {
-                    case 3:
-                        return "#FFB0B0";
-                    case 2:
-                        return "#FFC050";
-                    case 1:
-                        return "#FFFF80";
-                    case 0:
-                        return "#80FF80";
-                    default:
-                        return "#fff3cd";
-                }
+
+                if (Even)
+                    switch (Ord)
+                    {
+                        case 3:
+                            return "#FFB0B0";
+                        case 2:
+                            return "#FFC050";
+                        case 1:
+                            return "#FFFF80";
+                        case 0:
+                            return "#80FF80";
+                        default:
+                            return "#fff3cd";
+                    }
+                else
+                    switch (Ord)
+                    {
+                        case 3:
+                            return "#FFD1D1";
+                        case 2:
+                            return "#ffdd8a";
+                        case 1:
+                            return "#ffffb7";
+                        case 0:
+                            return "#c4ffc4";
+                        case -1:
+                            return "#ffffff";
+                        default:
+                            return "#fff3cd";
+                    }
             }
         }
 
-        public string GetLightBackgroundColor
-        {
-            get
-            {
-                /*  if(!DocSetting.IsViewPlan)
-                      return "fff3cd";*/
-                switch (Ord)
-                {
-                    case 3:
-                        return "#FFD1D1";
-                    case 2:
-                        return "#ffdd8a";
-                    case 1:
-                        return "#ffffb7";
-                    case 0:
-                        return "#c4ffc4";
-                    case -1:
-                        return "#ffffff";
-                    default:
-                        return "#fff3cd";
-                }
-            }        
-        }
         /*
         public string GetNameUnit() { return NameUnit + "X"; }
         public string GetInputQuantity() { return InputQuantity == 0.0d ? "" : string.format(CodeUnit == config.GetCodeUnitWeight() ? "%.3f" : "%.0f", InputQuantity); }

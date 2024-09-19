@@ -1,99 +1,10 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+<controls:BaseContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" 
              xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
              xmlns:controls="clr-namespace:BRB6.View"
              xmlns:scanner="clr-namespace:BarcodeScanning;assembly=BarcodeScanning.Native.Maui"
              x:Class="BRB6.View.PlanCheckerPrice">
-    <!--xmlns:effects="clr-namespace:Xamarin.KeyboardHelper;assembly=Xamarin.KeyboardHelper"-->
-    <ContentPage.Resources>
-        <ResourceDictionary>
-            <DataTemplate x:Key="softKeyboardTemplate">
-                <ViewCell>
-                    <Grid  Margin="2,2,2,0" BackgroundColor="{Binding GetBackgroundColorDocWares}" >
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="1*" />
-                            <ColumnDefinition Width="2*" />
-                            <ColumnDefinition Width="2*" />
-                        </Grid.ColumnDefinitions>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="auto"/>
-                            <RowDefinition/>
-                        </Grid.RowDefinitions>
-
-                        <Label   Text="{Binding NameWares}" Grid.ColumnSpan="3" FontSize="Medium" />
-                        <Label   Text="{Binding CodeWares}" Grid.Row="1" FontSize="Medium" />
-
-                        <Frame  Style="{StaticResource FrameStyle}"  Grid.Column="1"  Grid.Row="1">
-                            <controls:CustomEntry Style="{StaticResource EntryStyle}" 
-                          AutomationId="{Binding CodeWares}"
-                          Completed="SaveItemAvailable"
-                          Unfocused="SaveItem"
-                          Focused="EntryFocused"
-                          Text="{Binding InputQuantity}" 
-                          Keyboard="Telephone"/>
-                        </Frame>
-                        <Frame  Style="{StaticResource FrameStyle}"  Grid.Column="2"  Grid.Row="1">
-                            <controls:CustomEntry Style="{StaticResource EntryStyle}"                                                               
-                          AutomationId="{Binding CodeWares}"
-                          Completed="SaveItemAdd"
-                          Unfocused="SaveItem"
-                          Focused="EntryFocused"
-                          Text="{Binding QuantityOld}"
-                          Keyboard="Telephone"/>
-                        </Frame>
-                    </Grid>
-
-                </ViewCell>
-            </DataTemplate>
-            <DataTemplate x:Key="hardKeyboardTemplate">
-                <ViewCell>
-                    <Grid  Margin="2,2,2,0" BackgroundColor="{Binding GetBackgroundColorDocWares}" >
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="1*" />
-                            <ColumnDefinition Width="2*" />
-                            <ColumnDefinition Width="2*" />
-                        </Grid.ColumnDefinitions>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="auto"/>
-                            <RowDefinition/>
-                        </Grid.RowDefinitions>
-
-                        <Label   Text="{Binding NameWares}" Grid.ColumnSpan="3" FontSize="Medium" />
-                        <Label   Text="{Binding CodeWares}" Grid.Row="1" FontSize="Medium" />
-
-                        <Frame  Style="{StaticResource FrameStyle}"  Grid.Column="1"  Grid.Row="1">
-                            <controls:CustomEntry Style="{StaticResource EntryStyle}" 
-                                   AutomationId="{Binding CodeWares}"
-                                   TextChanged="TextChangedAvailable"
-                                   Text="{Binding InputQuantity}" 
-                                   Keyboard="Telephone"/>
-                            <!--effects:KeyboardEffect.EnableKeyboard="False"
-                                <controls:CustomEntry.Effects>
-                                    <effects:KeyboardEnableEffect/>
-                                </controls:CustomEntry.Effects>
-                            </controls:CustomEntry>-->
-                        </Frame>
-                        <Frame  Style="{StaticResource FrameStyle}"  Grid.Column="2"  Grid.Row="1">
-                            <controls:CustomEntry Style="{StaticResource EntryStyle}"
-                                   AutomationId="{Binding CodeWares}"
-                                   TextChanged="TextChangedAdd"
-                                   Keyboard="Telephone"/>
-                            <!--effects:KeyboardEffect.EnableKeyboard="{Binding IsSoftKeyboard}"
-                                <controls:CustomEntry.Effects>
-                                    <effects:KeyboardEnableEffect/>
-                                </controls:CustomEntry.Effects>
-                            </controls:CustomEntry>-->
-                        </Frame>
-                    </Grid>
-
-                </ViewCell>
-            </DataTemplate>
-            <controls:KeyboardTypeDataTemplateSelector x:Key="keyboardTypeDataTemplateSelector"
-                                                   SoftKeyboardTemplate="{StaticResource softKeyboardTemplate}"
-                                                   HardKeyboardTemplate="{StaticResource hardKeyboardTemplate}" />
-        </ResourceDictionary>
-    </ContentPage.Resources>
     <ContentPage.Content>
         <StackLayout>
             <Grid x:Name="GridZxing" IsVisible="{Binding IsVisScan}" 
@@ -103,8 +14,49 @@
                       x:Name="ListWares" VerticalOptions="CenterAndExpand"
                       BackgroundColor="LightGray"
                       SeparatorVisibility="None"
-                      HasUnevenRows="True"
-                      ItemTemplate="{StaticResource keyboardTypeDataTemplateSelector}"/>
+                      HasUnevenRows="True">
+                <ListView.ItemTemplate>
+
+                    <DataTemplate >
+                        <ViewCell>
+                            <Grid  Margin="2,2,2,0" BackgroundColor="{Binding GetBackgroundColorDocWares}" >
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="1*" />
+                                    <ColumnDefinition Width="2*" />
+                                    <ColumnDefinition Width="2*" />
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="auto"/>
+                                    <RowDefinition/>
+                                </Grid.RowDefinitions>
+
+                                <Label   Text="{Binding NameWares}" Grid.ColumnSpan="3" FontSize="Medium" />
+                                <Label   Text="{Binding CodeWares}" Grid.Row="1" FontSize="Medium" />
+
+                                <Frame  Style="{StaticResource FrameStyle}"  Grid.Column="1"  Grid.Row="1">
+                                    <controls:CustomEntry Style="{StaticResource EntryStyle}" 
+                          AutomationId="{Binding CodeWares}"
+                          Completed="SaveItemAvailable"
+                          Unfocused="SaveItem"
+                          Focused="EntryFocused"
+                          Text="{Binding InputQuantity}" 
+                          Keyboard="Telephone"/>
+                                </Frame>
+                                <Frame  Style="{StaticResource FrameStyle}"  Grid.Column="2"  Grid.Row="1">
+                                    <controls:CustomEntry Style="{StaticResource EntryStyle}"                                                               
+                          AutomationId="{Binding CodeWares}"
+                          Completed="SaveItemAdd"
+                          Unfocused="SaveItem"
+                          Focused="EntryFocused"
+                          Text="{Binding QuantityOld}"
+                          Keyboard="Telephone"/>
+                                </Frame>
+                            </Grid>
+
+                        </ViewCell>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
 
             <Grid VerticalOptions="End" >
                 <Label HorizontalOptions="Center" Text="Зберегти" FontSize="24">
@@ -117,4 +69,4 @@
 
         </StackLayout>
     </ContentPage.Content>
-</ContentPage>
+</controls:BaseContentPage>

@@ -4,18 +4,12 @@
                           xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
                           xmlns:controls="clr-namespace:BRB6.View"
                           x:Class="BRB6.View.RaitingTemplateCreate">
-    <!--xmlns:effects="clr-namespace:Xamarin.KeyboardHelper;assembly=Xamarin.KeyboardHelper"-->
     <ContentPage.Content>
         <StackLayout Margin="5">
             <Label Text="Назва" />
             <Frame Style="{StaticResource FrameStyle}">
                 <controls:CustomEntry Style="{StaticResource EntryStyle}"
                                       Text="{Binding RT.Text}" />
-                <!--effects:KeyboardEffect.EnableKeyboard="{Binding IsSoftKeyboard}"
-                    <controls:CustomEntry.Effects>
-                        <effects:KeyboardEnableEffect/>
-                    </controls:CustomEntry.Effects>
-                </controls:CustomEntry>-->
             </Frame>
 
             <StackLayout Orientation="Horizontal">

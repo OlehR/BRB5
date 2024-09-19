@@ -4,7 +4,6 @@
                           xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
                           xmlns:controls="clr-namespace:BRB6.View"
                           x:Class="BRB6.View.DocScan">
-    <!--xmlns:effects="clr-namespace:Xamarin.KeyboardHelper;assembly=Xamarin.KeyboardHelper"-->
     <ContentPage.Content>
 
             <StackLayout IsEnabled="True" >
@@ -36,22 +35,12 @@
                                                   Text="{Binding ScanData.BarCode}"
                                                   IsReadOnly="True"
                                                   Placeholder="баркод" />
-                            <!--effects:KeyboardEffect.EnableKeyboard="{Binding IsSoftKeyboard}"
-                                <controls:CustomEntry.Effects>
-                                    <effects:KeyboardEnableEffect/>
-                                </controls:CustomEntry.Effects>
-                            </controls:CustomEntry>-->
                         </Frame>
                         <Frame Style="{StaticResource FrameStyle}"
                                Grid.Column="1">
                             <controls:CustomEntry Style="{StaticResource EntryStyle}"
                                                   Text="{Binding ScanData.BeforeQuantity}"
                                                   IsReadOnly="True" />
-                            <!--effects:KeyboardEffect.EnableKeyboard="{Binding IsSoftKeyboard}"
-                                <controls:CustomEntry.Effects>
-                                    <effects:KeyboardEnableEffect/>
-                                </controls:CustomEntry.Effects>
-                            </controls:CustomEntry>-->
                         </Frame>
 
                         <Grid Grid.Row="1">
@@ -71,11 +60,6 @@
                                                        Completed="CompletedInputQ"
                                                       Placeholder="к-сть"
                                                       Keyboard="Telephone" />
-                                <!--effects:KeyboardEffect.EnableKeyboard="{Binding IsSoftKeyboard}"
-                                    <controls:CustomEntry.Effects>
-                                        <effects:KeyboardEnableEffect/>
-                                    </controls:CustomEntry.Effects>
-                                </controls:CustomEntry>-->
                             </Frame>
 
                             <Label Text="{Binding ScanData.NameUnit}" Grid.Column="1" />
@@ -86,11 +70,6 @@
                                 <controls:CustomEntry Style="{StaticResource EntryStyle}"
                                                       Text="{Binding ScanData.Coefficient}"
                                                       IsReadOnly="True" />
-                                <!--effects:KeyboardEffect.EnableKeyboard="{Binding IsSoftKeyboard}"
-                                    <controls:CustomEntry.Effects>
-                                        <effects:KeyboardEnableEffect/>
-                                    </controls:CustomEntry.Effects>
-                                </controls:CustomEntry>-->
                             </Frame>
                         </Grid>
 
@@ -100,11 +79,6 @@
                             <controls:CustomEntry Style="{StaticResource EntryStyle}"
                                                   Text="{Binding ScanData.QuantityBarCode}"
                                                   IsReadOnly="True" />
-                            <!--effects:KeyboardEffect.EnableKeyboard="{Binding IsSoftKeyboard}"
-                                <controls:CustomEntry.Effects>
-                                    <effects:KeyboardEnableEffect/>
-                                </controls:CustomEntry.Effects>
-                            </controls:CustomEntry>-->
                         </Frame>
                     </Grid>
 

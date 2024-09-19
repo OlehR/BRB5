@@ -5,7 +5,6 @@
                           xmlns:controls="clr-namespace:BRB6.View"
                           xmlns:scanner="clr-namespace:BarcodeScanning;assembly=BarcodeScanning.Native.Maui"
                           x:Class="BRB6.PriceCheck">
-    <!--xmlns:effects="clr-namespace:Xamarin.KeyboardHelper;assembly=Xamarin.KeyboardHelper"-->
     <ContentPage.Content>
         <StackLayout BackgroundColor="{Binding ColorPrintColorType}" Spacing="0">
 
@@ -134,17 +133,10 @@
                     <controls:CustomEntry Keyboard="Numeric" Style="{StaticResource EntryStyle}"
                                           Text="{Binding WP.BarCodes}" 
                                           x:Name="BarCodeInput"
-                                          TextChanged="EntryTextChanged"
                                           AutomationId="BarcodeEntry"
                                           Focused="BarCodeFocused"
                                           IsReadOnly="{Binding IsVisDoubleScan}"
-                                          Unfocused="BarCodeHandInput"
                                           Completed="BarCodeHandInput"/>
-                    <!--effects:KeyboardEffect.EnableKeyboard="{Binding IsSoftKeyboard}"
-                        <controls:CustomEntry.Effects>
-                            <effects:KeyboardEnableEffect/>
-                        </controls:CustomEntry.Effects>
-                    </controls:CustomEntry>-->
                 </Frame>
             </Grid>
 
@@ -159,17 +151,11 @@
                        Grid.Column="1">
                     <controls:CustomEntry Style="{StaticResource EntryStyle}"
                                           Text=""    
-                                          TextChanged="EntryTextChanged"
                                           AutomationId="ReplenishmentEntry"
                                           x:Name="NumberOfReplenishment"
                                           Unfocused="OnUpdateReplenishment"
                                           Completed="OnUpdateReplenishment"
                                           Keyboard="Numeric" />
-                    <!--effects:KeyboardEffect.EnableKeyboard="{Binding IsSoftKeyboard}"
-                        <controls:CustomEntry.Effects>
-                            <effects:KeyboardEnableEffect/>
-                        </controls:CustomEntry.Effects>
-                    </controls:CustomEntry>-->
                 </Frame>
             </Grid>
 

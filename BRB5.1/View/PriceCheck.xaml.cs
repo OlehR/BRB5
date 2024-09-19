@@ -4,6 +4,9 @@ using BL;
 using BRB5;
 using BarcodeScanning;
 using CommunityToolkit.Maui.Core.Platform;
+#if ANDROID
+using Android.Views;
+#endif
 
 //using BRB5.Connector;
 namespace BRB6
@@ -62,7 +65,6 @@ namespace BRB6
         public bool IsMultyLabel { get { return _IsMultyLabel; } set { _IsMultyLabel = value; OnPropertyChanged(nameof(IsMultyLabel)); OnPropertyChanged(nameof(F5Text)); } }
         public string F5Text { get { return IsMultyLabel ? "Дубл." : "Унік."; } }
         public bool IsVisScan { get { return Config.TypeScaner == eTypeScaner.Camera; } }
-        private string CurrentEntry = "BarcodeEntry";
         /// <summary>
         /// 0 - нічого , 1 - сканований цінник, 2 - сканований товар, 3 - штрихкод товату не підходить, 4 - цінник не підходить, 5 - успішно
         /// </summary>
@@ -78,7 +80,9 @@ namespace BRB6
         CameraView BarcodeScaner;
         public PriceCheck(TypeDoc pTypeDoc)
         {
-            InitializeComponent();            
+            InitializeComponent();
+            NokeyBoard();
+
             var r = db.GetCountScanCode();
             IsVisDoubleScan = pTypeDoc.CodeDoc == 15;
 
@@ -101,6 +105,51 @@ namespace BRB6
             this.BindingContext = this;
         }
 
+        protected override void OnAppearing()
+        {
+            base.OnAppearing();
+
+            if (!IsSoftKeyboard)
+            {                
+#if ANDROID
+            MainActivity.Key+= OnPageKeyDown;
+#endif
+            }
+            if (IsVisScan)
+            {
+                BarcodeScaner = new CameraView
+                {
+                    VerticalOptions = LayoutOptions.FillAndExpand,
+                    HorizontalOptions = LayoutOptions.FillAndExpand,
+                    CameraEnabled = true,
+                    VibrationOnDetected = false,
+                    BarcodeSymbologies = BarcodeFormats.Ean13 | BarcodeFormats.Ean8 | BarcodeFormats.QRCode,
+
+                };
+
+                BarcodeScaner.OnDetectionFinished += CameraView_OnDetectionFinished;
+
+                GridZxing.Children.Add(BarcodeScaner);
+
+            }
+            if (!IsVisScan) 
+                BarCodeInput.Focus();
+            if (IsVisDoubleScan) MessageDoubleScan = "Скануйте цінник чи товар";
+        }
+
+        protected override void OnDisappearing()
+        {
+            base.OnDisappearing();
+            if (IsVisScan) BarcodeScaner.CameraEnabled = false;
+
+            if (!IsSoftKeyboard)
+            {
+#if ANDROID
+            MainActivity.Key-= OnPageKeyDown;
+#endif
+            }
+            bl.SendLogPrice();
+        }
         void BarCode(string pBarCode)=>FoundWares(pBarCode, false);
 
         void FoundWares(string pBarCode, bool pIsHandInput = false)
@@ -126,65 +175,11 @@ namespace BRB6
                 }
 
                 Config.OnProgress?.Invoke(0.9d);
-                if (!IsVisScan)
-                {
-                    BarCodeFocused(null, null);
-                }
+                
+                BarCodeFocused(null, null);
+                
             }                
 
-        }
-
-        protected override void OnAppearing()
-        {
-            base.OnAppearing();
-
-            if (!IsSoftKeyboard)
-            {
-                MessagingCenter.Subscribe<KeyEventMessage>(this, "F1Pressed", message => { OnClickPrintBlock(null, EventArgs.Empty); });
-                MessagingCenter.Subscribe<KeyEventMessage>(this, "F2Pressed", message => { OnF2(null, EventArgs.Empty); });
-                MessagingCenter.Subscribe<KeyEventMessage>(this, "F4Pressed", message => { OnF4(null, EventArgs.Empty); });
-                MessagingCenter.Subscribe<KeyEventMessage>(this, "F5Pressed", message => { OnF5(null, EventArgs.Empty); });
-                MessagingCenter.Subscribe<KeyEventMessage>(this, "F6Pressed", message => { OnClickPrintOne(null, EventArgs.Empty); });
-                MessagingCenter.Subscribe<KeyEventMessage>(this, "BackPressed", message => { KeyBack(); });
-                MessagingCenter.Subscribe<KeyEventMessage>(this, "EnterPressed", message => { KeyEnter(); });
-            }
-            if (IsVisScan)
-            {
-                BarcodeScaner = new CameraView
-                {
-                    VerticalOptions = LayoutOptions.FillAndExpand,
-                    HorizontalOptions = LayoutOptions.FillAndExpand,
-                    CameraEnabled = true,
-                    VibrationOnDetected = false,
-                    BarcodeSymbologies = BarcodeFormats.Ean13 | BarcodeFormats.Ean8 | BarcodeFormats.QRCode,
-
-                };
-
-                BarcodeScaner.OnDetectionFinished += CameraView_OnDetectionFinished;
-
-                GridZxing.Children.Add(BarcodeScaner);
-
-            }
-            if (!IsVisScan) BarCodeInput.Focus();
-            if (IsVisDoubleScan) MessageDoubleScan = "Скануйте цінник чи товар";
-        }
-
-        protected override void OnDisappearing()
-        {
-            base.OnDisappearing();
-            if (IsVisScan) BarcodeScaner.CameraEnabled = false;
-
-            if (!IsSoftKeyboard)
-            {
-                MessagingCenter.Unsubscribe<KeyEventMessage>(this, "F1Pressed");
-                MessagingCenter.Unsubscribe<KeyEventMessage>(this, "F2Pressed");
-                MessagingCenter.Unsubscribe<KeyEventMessage>(this, "F4Pressed");
-                MessagingCenter.Unsubscribe<KeyEventMessage>(this, "F5Pressed");
-                MessagingCenter.Unsubscribe<KeyEventMessage>(this, "F6Pressed");
-                MessagingCenter.Unsubscribe<KeyEventMessage>(this, "BackPressed");
-                MessagingCenter.Unsubscribe<KeyEventMessage>(this, "EnterPressed");
-            }
-            bl.SendLogPrice();
         }
 
         public void Dispose() { Config.BarCode -= BarCode;   }
@@ -229,12 +224,12 @@ namespace BRB6
 
         private void BarCodeFocused(object sender, FocusEventArgs e)
         {
-            Dispatcher.Dispatch(async () =>
+            Dispatcher.Dispatch(() =>
             {
-                if (!BarCodeInput.IsFocused)  BarCodeInput.Focus();
                 BarCodeInput.CursorPosition = 0;
                 BarCodeInput.SelectionLength = BarCodeInput.Text == null ? 0 : BarCodeInput.Text.Length;
-                var isHide = await BarCodeInput.HideKeyboardAsync(CancellationToken.None);
+                if (!BarCodeInput.IsFocused|| IsVisScan) 
+                    BarCodeInput.Focus();
             });
         }
 
@@ -242,26 +237,7 @@ namespace BRB6
         {
             if (IsEnabledPrint && WP!=null)
                 _ = DisplayAlert("Друк", bl.c.PrintHTTP(new[] { WP.CodeWares }), "OK");
-        }
-    
-        private async void KeyBack()  { await Navigation.PopAsync();    }
-
-        private void EntryTextChanged(object sender, TextChangedEventArgs e) {  CurrentEntry = ((Entry)sender).AutomationId;   }
-        private void KeyEnter()
-        {
-            if (IsVisDoubleScan)
-                //TEMP!!
-                return;
-            switch (CurrentEntry)
-            {
-                case "BarcodeEntry":
-                    BarCodeHandInput(null,null);
-                    break;
-                case "ReplenishmentEntry":
-                    OnUpdateReplenishment(null, null);
-                    break;
-            }
-        }
+        }   
 
         private void OnUpdateReplenishment(object sender, EventArgs e)
         {
@@ -305,5 +281,31 @@ namespace BRB6
             }
         }
 
+#if ANDROID
+        public void OnPageKeyDown(Keycode keyCode, KeyEvent e)
+        {
+           switch (keyCode)
+           {
+            case Keycode.F1:
+            OnClickPrintBlock(null, EventArgs.Empty);
+               return;
+            case Keycode.F2:
+            OnF2(null, EventArgs.Empty);
+               return;
+            case Keycode.F4:
+            OnF4(null, EventArgs.Empty);
+               return;
+            case Keycode.F5:
+            OnF5(null, EventArgs.Empty);
+               return;
+            case Keycode.F6:
+            OnClickPrintOne(null, EventArgs.Empty);
+               return;
+
+            default:
+               return;
+           }
+         }
+#endif
     }
 }

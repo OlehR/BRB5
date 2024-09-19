@@ -140,8 +140,12 @@ namespace BRB5.Model
         private bool _SelectedColor = false;
         [JsonIgnore]
         [Ignore]
-        public bool SelectedColor { get { return _SelectedColor; } set { _SelectedColor = value;   OnPropertyChanged(nameof(GetColor)); OnPropertyChanged(nameof(GetLightColor)); } } 
+        public bool SelectedColor { get { return _SelectedColor; } set { _SelectedColor = value;   OnPropertyChanged(nameof(GetColor)); } }
 
+
+        [JsonIgnore]
+        [Ignore]
+        public bool Even { get; set; } = false;
         // 9 - червоний, 2- оранжевий, 1 - жовтий, 0 - зелений, інше грязно жовтий-ранжевий.
         [JsonIgnore]
         public string GetColor
@@ -149,40 +153,34 @@ namespace BRB5.Model
             get
             {
                 if (SelectedColor) return "#50c878";
-                switch (Color)
-                {
-                    case 9:
-                        return "#FFB0B0"; //Червоний
-                    case 2:
-                        return "#FFC050"; //Оранжевий
-                    case 0:
-                        return "#FFFF80"; //Жовтий
-                    case 1:
-                        return "#80FF80"; //Зелений
-                    default:
-                        return "#fff3cd";
-                }
-            }
-        }
-        [JsonIgnore]
-        public string GetLightColor
-        {
-            get
-            {
-                if (SelectedColor) return "#50c878";
-                switch (Color)
-                {
-                    case 9:
-                        return "#FFD1D1"; //Червоний
-                    case 2:
-                        return "#ffdd8a"; //Оранжевий
-                    case 0:
-                        return "#ffffb7"; //Жовтий
-                    case 1:
-                        return "#c4ffc4"; //Зелений
-                    default:
-                        return "#fff3cd";
-                }
+                if (Even)
+                    switch (Color)
+                    {
+                        case 9:
+                            return "#FFB0B0"; //Червоний
+                        case 2:
+                            return "#FFC050"; //Оранжевий
+                        case 0:
+                            return "#FFFF80"; //Жовтий
+                        case 1:
+                            return "#80FF80"; //Зелений
+                        default:
+                            return "#fff3cd";
+                    }
+                else
+                    switch (Color)
+                    {
+                        case 9:
+                            return "#FFD1D1"; //Червоний
+                        case 2:
+                            return "#ffdd8a"; //Оранжевий
+                        case 0:
+                            return "#ffffb7"; //Жовтий
+                        case 1:
+                            return "#c4ffc4"; //Зелений
+                        default:
+                            return "#fff3cd";
+                    }
             }
         }
         //public Color GetColor { get { return Color == 0?new Color(0xdcdcdc) : new Color(Color); } }

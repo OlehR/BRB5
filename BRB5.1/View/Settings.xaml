@@ -6,7 +6,6 @@
             xmlns:iOsSpecific="clr-namespace:Microsoft.Maui.Controls.PlatformConfiguration.iOSSpecific;assembly=Microsoft.Maui.Controls"
             x:Class="BRB6.View.Settings"
             iOsSpecific:Page.UseSafeArea="True">
-    <!--xmlns:effects="clr-namespace:Xamarin.KeyboardHelper;assembly=Xamarin.KeyboardHelper"-->
     <controls:BaseContentPage Title="Налаштування">
         <ContentPage.Content>
             <StackLayout>
@@ -96,11 +95,6 @@
                     <Frame Style="{StaticResource FrameStyle}" WidthRequest="50">
                         <controls:CustomEntry Style="{StaticResource EntryStyle}" Keyboard="Numeric"
                           Text="{Binding Compress}"/>
-                        <!--effects:KeyboardEffect.EnableKeyboard="{Binding IsSoftKeyboard}"
-                            <controls:CustomEntry.Effects>
-                                <effects:KeyboardEnableEffect/>
-                            </controls:CustomEntry.Effects>
-                        </controls:CustomEntry>-->
                     </Frame>
                 </StackLayout>
 
@@ -176,31 +170,16 @@
                 <Frame Style="{StaticResource FrameStyle}">
                     <controls:CustomEntry Style="{StaticResource EntryStyle}"
                                           Text="{Binding ApiUrl1}"/>
-                    <!--effects:KeyboardEffect.EnableKeyboard="{Binding IsSoftKeyboard}"
-                        <controls:CustomEntry.Effects>
-                            <effects:KeyboardEnableEffect/>
-                        </controls:CustomEntry.Effects>
-                    </controls:CustomEntry>-->
                 </Frame>
 
                 <Frame Style="{StaticResource FrameStyle}" IsVisible="{Binding IsVisApi3}">
                     <controls:CustomEntry Style="{StaticResource EntryStyle}"
                                           Text="{Binding ApiUrl2}" IsVisible="{Binding IsVisApi3}"/>
-                    <!--effects:KeyboardEffect.EnableKeyboard="{Binding IsSoftKeyboard}"
-                        <controls:CustomEntry.Effects>
-                            <effects:KeyboardEnableEffect/>
-                        </controls:CustomEntry.Effects>
-                    </controls:CustomEntry>-->
                 </Frame>
 
                 <Frame Style="{StaticResource FrameStyle}" IsVisible="{Binding IsVisApi3}">
                     <controls:CustomEntry Style="{StaticResource EntryStyle}"
                                           Text="{Binding ApiUrl3}" IsVisible="{Binding IsVisApi3}" />
-                    <!--effects:KeyboardEffect.EnableKeyboard="{Binding IsSoftKeyboard}"
-                        <controls:CustomEntry.Effects>
-                            <effects:KeyboardEnableEffect/>
-                        </controls:CustomEntry.Effects>
-                    </controls:CustomEntry>-->
                 </Frame>
 
                 <Grid>
