@@ -348,11 +348,17 @@ namespace BRB5
 
     public enum eCheckWareScaned
     {
+        [Description("Скануйте цінник чи товар")]
         Nothing = 0,
+        [Description("Скануйте товар")]
         PriceTagScaned = 1,
+        [Description("Скануйте цінник")]
         WareScaned = 2,
+        [Description("")]
         WareNotFit = 3,
+        [Description("")]
         PriceTagNotFit = 4,
+        [Description("Збережено")]
         Success = 5,
     }
 }

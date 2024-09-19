@@ -91,7 +91,7 @@ namespace BL
             return eCheck.Bad;
         }
 
-            private string SearchDoubleScan(WaresPrice CheckWP)
+        private string SearchDoubleScan(WaresPrice CheckWP)
         {
             string MessageDoubleScan;
             if (WP == null)

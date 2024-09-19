@@ -72,8 +72,8 @@ namespace BRB6
         public eCheckWareScaned IsWareScaned { get { return _IsWareScaned; } set { _IsWareScaned = value; OnPropertyChanged(nameof(ColorDoubleScan)); OnPropertyChanged(nameof(IsWareScaned)); OnPropertyChanged(nameof(ButtonDoubleScan)); } }
         public bool IsVisDoubleScan { get; set; }
         public bool IsVisBarcode { get { return !IsVisDoubleScan; } }
-        private string _MessageDoubleScan;
-        public string MessageDoubleScan {  get { return _MessageDoubleScan; } set { _MessageDoubleScan = value; OnPropertyChanged(nameof(MessageDoubleScan)); } }
+       // private string _MessageDoubleScan;
+        public string MessageDoubleScan { get { return EnumMethods.GetDescription(WP.StateDoubleScan); } } //set {  OnPropertyChanged(nameof(MessageDoubleScan)); } }
         public string ButtonDoubleScan { get { return IsWareScaned == eCheckWareScaned.Nothing || IsWareScaned == eCheckWareScaned.Success ? "" :  IsWareScaned == eCheckWareScaned.WareScaned || IsWareScaned == eCheckWareScaned.PriceTagNotFit ? "Відсутній ціник" : "Відсутній товар"; } }
         public string ColorDoubleScan { get { return IsWareScaned == eCheckWareScaned.Success ? "#C5FFC4" : IsWareScaned == eCheckWareScaned.WareNotFit || IsWareScaned== eCheckWareScaned.PriceTagNotFit ? "#FFC4C4" : 
                                                      IsWareScaned == eCheckWareScaned.PriceTagScaned || IsWareScaned == eCheckWareScaned.WareScaned ? "#FEFFC4" : "#FFFFFF"; } }
@@ -134,7 +134,7 @@ namespace BRB6
             }
             if (!IsVisScan) 
                 BarCodeInput.Focus();
-            if (IsVisDoubleScan) MessageDoubleScan = "Скануйте цінник чи товар";
+            if (IsVisDoubleScan) WP.StateDoubleScan = eCheckWareScaned.Nothing;
         }
 
         protected override void OnDisappearing()
