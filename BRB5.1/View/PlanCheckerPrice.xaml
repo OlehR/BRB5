@@ -10,53 +10,53 @@
             <Grid x:Name="GridZxing" IsVisible="{Binding IsVisScan}" 
                     HeightRequest="140"/>
 
-            <ListView ItemsSource="{Binding WaresList}"
-                      x:Name="ListWares" VerticalOptions="CenterAndExpand"
-                      BackgroundColor="LightGray"
-                      SeparatorVisibility="None"
-                      HasUnevenRows="True">
-                <ListView.ItemTemplate>
+            <CollectionView ItemsSource="{Binding WaresList}" 
+                            SelectionMode="Single"
+                x:Name="ListWares" VerticalOptions="CenterAndExpand"
+                BackgroundColor="LightGray">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Grid  Margin="2,2,2,0" BackgroundColor="{Binding GetBackgroundColorDocWares}">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="5*" />
+                                <ColumnDefinition Width="2*" />
+                            </Grid.ColumnDefinitions>
 
-                    <DataTemplate >
-                        <ViewCell>
-                            <Grid  Margin="2,2,2,0" BackgroundColor="{Binding GetBackgroundColorDocWares}" >
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="1*" />
-                                    <ColumnDefinition Width="2*" />
-                                    <ColumnDefinition Width="2*" />
-                                </Grid.ColumnDefinitions>
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="auto"/>
-                                    <RowDefinition/>
-                                </Grid.RowDefinitions>
+                            <StackLayout>
+                                <StackLayout.GestureRecognizers>
+                                    <TapGestureRecognizer Tapped="OnTapped" />
+                                </StackLayout.GestureRecognizers>
 
-                                <Label   Text="{Binding NameWares}" Grid.ColumnSpan="3" FontSize="Medium" />
-                                <Label   Text="{Binding CodeWares}" Grid.Row="1" FontSize="Medium" />
+                                <Label Text="{Binding NameWares}"  FontSize="Medium"/>
+                                <Label Text="{Binding CodeWares}" FontSize="Medium"/>
+                            </StackLayout>
 
-                                <Frame  Style="{StaticResource FrameStyle}"  Grid.Column="1"  Grid.Row="1">
-                                    <controls:CustomEntry Style="{StaticResource EntryStyle}" 
-                          AutomationId="{Binding CodeWares}"
-                          Completed="SaveItemAvailable"
-                          Unfocused="SaveItem"
-                          Focused="EntryFocused"
-                          Text="{Binding InputQuantity}" 
-                          Keyboard="Telephone"/>
+                            <StackLayout Grid.Column="1">
+                                <Frame Style="{StaticResource FrameStyle}" >
+                                    <controls:CustomEntry Style="{StaticResource EntryStyle}"  
+                                                          AutomationId="{Binding CodeWares}"
+                                                          Focused="EntryFocused"
+                                                          Text="{Binding InputQuantity}" 
+                                                          Unfocused="SaveItem"
+                                                          Completed="SaveItem"
+                                                          Keyboard="Telephone" />
                                 </Frame>
-                                <Frame  Style="{StaticResource FrameStyle}"  Grid.Column="2"  Grid.Row="1">
-                                    <controls:CustomEntry Style="{StaticResource EntryStyle}"                                                               
-                          AutomationId="{Binding CodeWares}"
-                          Completed="SaveItemAdd"
-                          Unfocused="SaveItem"
-                          Focused="EntryFocused"
-                          Text="{Binding QuantityOld}"
-                          Keyboard="Telephone"/>
+                                <Frame Style="{StaticResource FrameStyle}" >
+                                    <controls:CustomEntry Style="{StaticResource EntryStyle}"  
+                                                          AutomationId="{Binding CodeWares}"
+                                                          Unfocused="SaveItem"
+                                                        Focused="EntryFocused"
+                                                          Completed="SaveItem"
+                                                        Text="{Binding QuantityOld}"
+                                                        Keyboard="Telephone" />
                                 </Frame>
-                            </Grid>
-
-                        </ViewCell>
+                            </StackLayout>
+                            
+                        </Grid>
                     </DataTemplate>
-                </ListView.ItemTemplate>
-            </ListView>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+
 
             <Grid VerticalOptions="End" >
                 <Label HorizontalOptions="Center" Text="Зберегти" FontSize="24">

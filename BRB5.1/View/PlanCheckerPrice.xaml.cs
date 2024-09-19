@@ -35,15 +35,6 @@ namespace BRB6.View
 
             GetData();
 
-            ListWares.ItemTapped += (object sender, ItemTappedEventArgs e) => {
-                if (e.Item == null) return;
-                var temp = e.Item as DocWaresEx;
-                ((ListView)sender).SelectedItem = null;
-
-                if (IsVisScan) BarcodeScaner.PauseScanning = true;
-                _ = Navigation.PushAsync(new WareInfo(new ParseBarCode() { CodeWares = temp.CodeWares}));
-            };
-
             if (!IsVisScan)
                 Config.BarCode = BarCode;
             this.BindingContext = this;
@@ -98,12 +89,17 @@ namespace BRB6.View
 
             if (tempSelected != null) Dispatcher.Dispatch(() =>
             {
-                ListWares.ScrollTo(tempSelected, ScrollToPosition.Start, false);
+                ListWares.ScrollTo(tempSelected, position: ScrollToPosition.Start, animate: false);
                 var index = WaresList.IndexOf(tempSelected);
-                var list = ListWares.TemplatedItems.ToList();
-                var Scaned = (((list[index] as ViewCell).View as Grid).Children.ElementAt(2) as Frame).Content as Entry;
+                if (index >= 0)
+                {
+                    var nextItem = WaresList.ElementAtOrDefault(index + 1);
+                    if (nextItem != null) ListWares.ScrollTo(nextItem, position: ScrollToPosition.Center, animate: false);
 
-                Scaned.Focus();
+                    //var list = ListWares.TemplatedItems.ToList();
+                    //var Scaned = (((list[index] as ViewCell).View as Grid).Children.ElementAt(2) as Frame).Content as Entry;
+                    //Scaned.Focus();
+                }
             });
             else _ = DisplayAlert("", "Товар відсутній", "ok"); 
         }
@@ -114,50 +110,24 @@ namespace BRB6.View
             _ = DisplayAlert("Збереження", res.TextError, "ok");            
         }
 
-        private void SaveItemAvailable(object sender, EventArgs e) {    SaveAndFocusNext((sender as Entry).AutomationId, 1);   }
-
         private void EntryFocused(object sender, FocusEventArgs e)
         {
             var entry = sender as Entry;
-            if (IsVisScan)
                 Dispatcher.Dispatch(() =>
                 {
                     entry.CursorPosition = 0;
                     entry.SelectionLength = entry.Text == null ? 0 : entry.Text.Length;
                 });
         }
-
-        private void SaveItemAdd(object sender, EventArgs e)    {  SaveAndFocusNext((sender as Entry).AutomationId, 2);   }
-
-        private void SaveItem(object sender, FocusEventArgs e)   {   SaveAndFocusNext((sender as Entry).AutomationId, 3);    }
-
-        private void SaveAndFocusNext(string codeWares, int Type)
+        private void SaveItem(object sender, EventArgs e)
         {
-            var tempSelected = WaresList.FirstOrDefault(item => item.CodeWares.ToString() == codeWares);
+            var tempCodeWares = ((Entry)sender).AutomationId; 
+            var tempSelected = WaresList.FirstOrDefault(item => item.CodeWares.ToString() == tempCodeWares);
             if (tempSelected != null)
             {
                 tempSelected.Quantity = tempSelected.InputQuantity;
                 tempSelected.CodeReason = ShelfType;
                 db.ReplaceDocWares(tempSelected);
-            }
-
-            if (Type == 3) return;
-
-            var list = ListWares.TemplatedItems.ToList();
-            var index = WaresList.IndexOf(tempSelected);
-            var nextIndex = (index + 1) >= list.Count ? -1 : index + 1;
-
-            if (Type == 1 || nextIndex >= 0)
-            {
-                Dispatcher.Dispatch(() =>
-                {
-                    var nextEntry = (((list[Type == 1 ? index : nextIndex] as ViewCell).View as Grid).Children.ElementAt(Type == 1 ? 3 : 2) as Frame).Content as Entry;
-
-                    if (nextEntry != null)
-                    {
-                        nextEntry.Focus();
-                    }
-                });
             }
         }
         private void CameraView_OnDetectionFinished(object sender, OnDetectionFinishedEventArg e)
@@ -172,7 +142,17 @@ namespace BRB6.View
                 });
             }
         }
-    }
-    
+
+        private void OnTapped(object sender, TappedEventArgs e)
+        {
+            var stackLayout = sender as Microsoft.Maui.Controls.StackLayout;
+            var tappedItem = stackLayout.BindingContext as DocWaresEx;
+
+            if (tappedItem == null) return;
+            if (IsVisScan) BarcodeScaner.PauseScanning = true;
+            _ = Navigation.PushAsync(new WareInfo(new ParseBarCode() { CodeWares = tappedItem.CodeWares }));
+        }
+
+    }    
    
 }
