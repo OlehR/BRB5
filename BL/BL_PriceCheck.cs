@@ -57,6 +57,7 @@ namespace BL
                     {
                         SaveDoubleScan(100, CheckWP, PackageNumber, LineNumber);
                         for (int j = 0; j < WPH.Count(); j++) WPH[j] = null;
+                        CheckWP.StateDoubleScan = eCheckWareScaned.Success; //Res = "Скануйте цінник чи товар";
                         break;
                     }
 
@@ -71,9 +72,8 @@ namespace BL
                         CheckWP.StateDoubleScan = eCheckWareScaned.Bad; 
                         WPH[1] = CheckWP;
                     }
-                }
-                if (WPH[0] == null) 
-                    CheckWP.StateDoubleScan = eCheckWareScaned.Success; //Res = "Скануйте цінник чи товар";
+                }                
+                    
                 if (WPH[0] == null) WPH[0] = CheckWP;
 
                 if(CheckWP.StateDoubleScan != eCheckWareScaned.Bad&& CheckWP.StateDoubleScan != eCheckWareScaned.Success) 
