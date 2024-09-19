@@ -34,9 +34,10 @@ namespace BL
             {
                 SearchDoubleScan(CheckWP,PackageNumber, LineNumber);                
             }
-            else
+            if (!pIsDoubleScan|| (CheckWP.PriceOld >0&& CheckWP.Price != CheckWP.PriceOld) ||(CheckWP.PriceOptOld > 0 && CheckWP.PriceOpt != CheckWP.PriceOptOld))
             {
                 //WP = CheckWP;
+                CheckWP.StateDoubleScan = eCheckWareScaned.BadPrice;
                 l = new LogPrice(CheckWP, IsOnline, PackageNumber, LineNumber);
                 db.InsLogPrice(l);
             }
@@ -55,7 +56,7 @@ namespace BL
                     if (R == eCheck.Ok)
                     {
                         SaveDoubleScan(100, CheckWP, PackageNumber, LineNumber);
-                        for (int j = 0; j < WPH.Count(); j--) WPH[j] = null;
+                        for (int j = 0; j < WPH.Count(); j++) WPH[j] = null;
                         break;
                     }
 
@@ -71,10 +72,12 @@ namespace BL
                         WPH[1] = CheckWP;
                     }
                 }
-                if (WPH[0] == null) CheckWP.StateDoubleScan = eCheckWareScaned.Success; //Res = "Скануйте цінник чи товар";
+                if (WPH[0] == null) 
+                    CheckWP.StateDoubleScan = eCheckWareScaned.Success; //Res = "Скануйте цінник чи товар";
                 if (WPH[0] == null) WPH[0] = CheckWP;
 
-                if(CheckWP.StateDoubleScan != eCheckWareScaned.Bad) CheckWP.StateDoubleScan=(CheckWP.IsBarCode ? eCheckWareScaned.WareScaned : eCheckWareScaned.PriceTagScaned); //"Скануйте цінник" : "Скануйте товар");
+                if(CheckWP.StateDoubleScan != eCheckWareScaned.Bad&& CheckWP.StateDoubleScan != eCheckWareScaned.Success) 
+                    CheckWP.StateDoubleScan=(CheckWP.IsBarCode ? eCheckWareScaned.WareScaned : eCheckWareScaned.PriceTagScaned); //"Скануйте цінник" : "Скануйте товар");
             }            
         }
         enum eCheck { Ok,Same,Bad }

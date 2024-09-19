@@ -361,6 +361,8 @@ namespace BRB5
         [Description("Скануйте цінник чи товар")]
         Success = 5,
         [Description("Невірне сканування")]
-        Bad =6
+        Bad = 6,
+        [Description("Невірна ціна")]
+        BadPrice = 7,
     }
 }

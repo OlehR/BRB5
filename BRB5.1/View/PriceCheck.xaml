@@ -163,7 +163,7 @@
                 <Frame HasShadow="False"  BackgroundColor="{Binding ColorDoubleScan}">
                     <Label FontSize="Large" Text="{Binding MessageDoubleScan}"/>
                 </Frame>
-                <Button Text="{Binding ButtonDoubleScan}" Clicked="DoubleScanReact"/>
+                <!--<Button Text="{Binding ButtonDoubleScan}" Clicked="DoubleScanReact"/>-->
             </StackLayout>            
             
             <Grid VerticalOptions="EndAndExpand">

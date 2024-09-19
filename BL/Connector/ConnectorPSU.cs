@@ -85,8 +85,8 @@ namespace BL.Connector
                     try
                     {
                         String[] str = pBarCode.Split('-');
-                        if (str.Length == 3)
-                            res.PriceOpt = Convert.ToInt32(str[2]) / 100m;
+                        if (str.Length == 3 )
+                            res.PriceOpt = str[2].ToInt() / 100m;
                         if (str.Length >= 2) {
                             res.Price = Convert.ToInt32(str[1]) / 100m;
                             res.CodeWares = Convert.ToInt32(str[0]);
