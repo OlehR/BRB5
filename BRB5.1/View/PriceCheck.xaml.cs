@@ -69,11 +69,11 @@ namespace BRB6
         /// 0 - нічого , 1 - сканований цінник, 2 - сканований товар, 3 - штрихкод товату не підходить, 4 - цінник не підходить, 5 - успішно
         /// </summary>
         private eCheckWareScaned _IsWareScaned = eCheckWareScaned.Nothing;
-        public eCheckWareScaned IsWareScaned { get { return _IsWareScaned; } set { _IsWareScaned = value; OnPropertyChanged(nameof(ColorDoubleScan)); OnPropertyChanged(nameof(IsWareScaned)); OnPropertyChanged(nameof(ButtonDoubleScan)); } }
+        public eCheckWareScaned IsWareScaned { get { return _IsWareScaned; } set { _IsWareScaned = value; OnPropertyChanged(nameof(ColorDoubleScan)); OnPropertyChanged(nameof(IsWareScaned)); OnPropertyChanged(nameof(ButtonDoubleScan)); OnPropertyChanged(nameof(MessageDoubleScan)); } }
         public bool IsVisDoubleScan { get; set; }
         public bool IsVisBarcode { get { return !IsVisDoubleScan; } }
        // private string _MessageDoubleScan;
-        public string MessageDoubleScan { get { return EnumMethods.GetDescription(WP.StateDoubleScan); } } //set {  OnPropertyChanged(nameof(MessageDoubleScan)); } }
+        public string MessageDoubleScan { get { return EnumMethods.GetDescription(WP?.StateDoubleScan??eCheckWareScaned.Success); } } //set {  OnPropertyChanged(nameof(MessageDoubleScan)); } }
         public string ButtonDoubleScan { get { return IsWareScaned == eCheckWareScaned.Nothing || IsWareScaned == eCheckWareScaned.Success ? "" :  IsWareScaned == eCheckWareScaned.WareScaned || IsWareScaned == eCheckWareScaned.PriceTagNotFit ? "Відсутній ціник" : "Відсутній товар"; } }
         public string ColorDoubleScan { get { return IsWareScaned == eCheckWareScaned.Success ? "#C5FFC4" : IsWareScaned == eCheckWareScaned.WareNotFit || IsWareScaned== eCheckWareScaned.PriceTagNotFit ? "#FFC4C4" : 
                                                      IsWareScaned == eCheckWareScaned.PriceTagScaned || IsWareScaned == eCheckWareScaned.WareScaned ? "#FEFFC4" : "#FFFFFF"; } }
@@ -82,6 +82,7 @@ namespace BRB6
         {
             InitializeComponent();
             NokeyBoard();
+            bl.ClearWPH();
 
             var r = db.GetCountScanCode();
             IsVisDoubleScan = pTypeDoc.CodeDoc == 15;
@@ -134,7 +135,7 @@ namespace BRB6
             }
             if (!IsVisScan) 
                 BarCodeInput.Focus();
-            if (IsVisDoubleScan) WP.StateDoubleScan = eCheckWareScaned.Nothing;
+            //if (IsVisDoubleScan && WP!=null) WP.StateDoubleScan = eCheckWareScaned.Nothing;
         }
 
         protected override void OnDisappearing()
@@ -159,7 +160,7 @@ namespace BRB6
                 LineNumber++;
                 Config.OnProgress?.Invoke(0.2d);
 
-                (WP, MessageDoubleScan) = bl.FoundWares(pBarCode, PackageNumber, LineNumber, pIsHandInput, IsVisDoubleScan, IsOnline);
+                WP = bl.FoundWares(pBarCode, PackageNumber, LineNumber, pIsHandInput, IsVisDoubleScan, IsOnline);
 
                 if (WP != null)
                 {
@@ -253,15 +254,15 @@ namespace BRB6
             {
                 bl.SaveDoubleScan(102, WP, PackageNumber, LineNumber);
                 WP = null;
-                IsWareScaned = eCheckWareScaned.Nothing;
-                MessageDoubleScan = "Скануйте цінник чи товар";
+                //IsWareScaned = eCheckWareScaned.Nothing;
+                //MessageDoubleScan = "Скануйте цінник чи товар";
             }
             else if (IsWareScaned == eCheckWareScaned.WareScaned || IsWareScaned == eCheckWareScaned.PriceTagNotFit)//Відсутній ціник
             {
                 bl.SaveDoubleScan(101, WP, PackageNumber, LineNumber);
                 WP = null;
-                IsWareScaned = eCheckWareScaned.Nothing;
-                MessageDoubleScan = "Скануйте цінник чи товар";
+                //IsWareScaned = eCheckWareScaned.Nothing;
+                //MessageDoubleScan = "Скануйте цінник чи товар";
             }
 
         }

@@ -11,13 +11,13 @@ namespace BL
 {
     public partial class BL
     {
-        WaresPrice WP;
+        //WaresPrice WP;
         WaresPrice[] WPH = new WaresPrice[2];
 
-        public (WaresPrice, string) FoundWares(string pBarCode, int PackageNumber, int LineNumber, bool pIsHandInput, bool pIsDoubleScan, bool IsOnline = true)
+        public void ClearWPH() { WPH[0] = null; WPH[1]=null; }
+        public WaresPrice  FoundWares(string pBarCode, int PackageNumber, int LineNumber, bool pIsHandInput, bool pIsDoubleScan, bool IsOnline = true)
         {
-            WaresPrice CheckWP;
-            string MessageDoubleScan = string.Empty;
+            WaresPrice CheckWP;            
             LogPrice l;
 
             if (IsOnline)
@@ -32,26 +32,20 @@ namespace BL
 
             if (pIsDoubleScan)
             {
-                MessageDoubleScan = SearchDoubleScan(CheckWP);
-                if (WP.StateDoubleScan == eCheckWareScaned.Success)
-                {
-                    l = new LogPrice(100, WP, PackageNumber, LineNumber);
-                    db.InsLogPrice(l);
-                }
+                SearchDoubleScan(CheckWP,PackageNumber, LineNumber);                
             }
             else
             {
-                WP = CheckWP;
-                l = new LogPrice(WP, IsOnline, PackageNumber, LineNumber);
+                //WP = CheckWP;
+                l = new LogPrice(CheckWP, IsOnline, PackageNumber, LineNumber);
                 db.InsLogPrice(l);
             }
 
-            return (WP, MessageDoubleScan);
+            return CheckWP;
         }
 
-        private string SearchDoubleScanNew(WaresPrice CheckWP, int PackageNumber, int LineNumber)
+        private void SearchDoubleScan(WaresPrice CheckWP, int PackageNumber, int LineNumber)
         {
-            string Res = "";
             if (CheckWP?.CodeWares != 0){
                 for (int i = WPH.Count() - 1; i >= 0; i--)
                 {
@@ -73,15 +67,15 @@ namespace BL
                                 SaveDoubleScan(WPH[0].IsBarCode ? 101 : 102, CheckWP, PackageNumber, LineNumber);
                             WPH[0] = WPH[1];
                         }
+                        CheckWP.StateDoubleScan = eCheckWareScaned.Bad; 
                         WPH[1] = CheckWP;
                     }
                 }
                 if (WPH[0] == null) CheckWP.StateDoubleScan = eCheckWareScaned.Success; //Res = "Скануйте цінник чи товар";
                 if (WPH[0] == null) WPH[0] = CheckWP;
 
-                else CheckWP.StateDoubleScan=(CheckWP.IsBarCode ? eCheckWareScaned.WareScaned : eCheckWareScaned.PriceTagScaned); //"Скануйте цінник" : "Скануйте товар");
-            }
-            return Res;
+                if(CheckWP.StateDoubleScan != eCheckWareScaned.Bad) CheckWP.StateDoubleScan=(CheckWP.IsBarCode ? eCheckWareScaned.WareScaned : eCheckWareScaned.PriceTagScaned); //"Скануйте цінник" : "Скануйте товар");
+            }            
         }
         enum eCheck { Ok,Same,Bad }
         private eCheck CompareDoubleScan(WaresPrice pWP, WaresPrice pS)
@@ -91,7 +85,7 @@ namespace BL
             return eCheck.Bad;
         }
 
-        private string SearchDoubleScan(WaresPrice CheckWP)
+        /*private string SearchDoubleScan(WaresPrice CheckWP)
         {
             string MessageDoubleScan;
             if (WP == null)
@@ -180,13 +174,13 @@ namespace BL
             
             return MessageDoubleScan;
         }
-    
+    */
     
         public void SaveDoubleScan(int Status, WaresPrice pWP, int PackageNumber, int LineNumber)
         {
             var l = new LogPrice(Status, pWP, PackageNumber, LineNumber);
             db.InsLogPrice(l);
-            WP = null;
+            //WP = null;
         }
 
         public ObservableCollection<DocWaresEx> GetDataPCP(IEnumerable<DocWares> tempInfo, DocVM Doc, int ShelfType)
