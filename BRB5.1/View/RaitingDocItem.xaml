@@ -27,7 +27,7 @@
 
                 <Grid x:Name="GridZxing" IsVisible="{Binding IsVisBarCode}" HeightRequest="150"/>
 
-                <ListView x:Name="ListQuestions" CachingStrategy="RecycleElementAndDataTemplate"
+                <ListView x:Name="ListQuestions" 
                           HasUnevenRows="True"
                           ItemsSource="{Binding Questions}">
                     <ListView.Header>

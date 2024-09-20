@@ -80,17 +80,15 @@
                     <CheckBox IsChecked="{Binding IsFilterSave}"  Grid.Row="1" />
                     <Label Text="Фільтр"  Grid.Column="1" Grid.Row="1" />
 
-                    <CheckBox IsChecked="{Binding IsFullScreenScan}"  Grid.Row="1"  Grid.Column="2"/>
-                    <Label Text="Скан full screen"  Grid.Column="3" Grid.Row="1" />
                 </Grid>
 
 
 
-                <Picker Title="Якість фото"
+                <Picker Title="Якість фото" IsVisible="{Binding IsVisScan}"
                         ItemsSource="{Binding ListPhotoQuality}"
                         SelectedIndex="{Binding SelectedPhotoQuality}"
                         HorizontalOptions="Fill" />
-                <StackLayout Orientation="Horizontal"  >
+                <StackLayout Orientation="Horizontal"  IsVisible="{Binding IsVisScan}">
                     <Label Text="Стискання(відсотки)" />
                     <Frame Style="{StaticResource FrameStyle}" WidthRequest="50">
                         <controls:CustomEntry Style="{StaticResource EntryStyle}" Keyboard="Numeric"

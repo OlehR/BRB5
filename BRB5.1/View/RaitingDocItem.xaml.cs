@@ -327,7 +327,7 @@ namespace BRB6
 
         private void ShowButton(object sender, EventArgs e)
         {
-            switch ((sender as ImageButton).AutomationId)
+            switch (((ImageButton)sender).AutomationId)
             {
                 case "All":
                     Choice = eTypeChoice.All;
