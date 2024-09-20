@@ -97,20 +97,17 @@
                     <Label Text="{Binding WP.TermsForIlliquidWare}" TextColor="DarkBlue" FontAttributes="Bold"/>
                 </StackLayout>
 
-                <ListView HasUnevenRows="True" ItemsSource="{Binding WP.RestWarehouse}">
-                    <ListView.Header>
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="7*"/>
-                                <ColumnDefinition Width="3*"/>
-                                <ColumnDefinition Width="3*"/>
-                            </Grid.ColumnDefinitions>
-                            <Label FontAttributes="Bold" TextColor="Gray" Text="Склад" Grid.Column="0"/>
-                            <Label FontAttributes="Bold" TextColor="Gray" Text="Кількість" Grid.Column="1"/>
-                            <Label FontAttributes="Bold" TextColor="Gray" Text="Дата" Grid.Column="2"/>
-                        </Grid>
-                    </ListView.Header>
-
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="7*"/>
+                            <ColumnDefinition Width="3*"/>
+                            <ColumnDefinition Width="3*"/>
+                        </Grid.ColumnDefinitions>
+                        <Label FontAttributes="Bold" TextColor="Gray" Text="Склад" Grid.Column="0"/>
+                        <Label FontAttributes="Bold" TextColor="Gray" Text="Кількість" Grid.Column="1"/>
+                        <Label FontAttributes="Bold" TextColor="Gray" Text="Дата" Grid.Column="2"/>
+                    </Grid>
+                <ListView HasUnevenRows="True" ItemsSource="{Binding WP.RestWarehouse}" VerticalOptions="Fill">
                     <ListView.ItemTemplate>
                         <DataTemplate xmlns:brb5="clr-namespace:BRB6">
                             <ViewCell>
