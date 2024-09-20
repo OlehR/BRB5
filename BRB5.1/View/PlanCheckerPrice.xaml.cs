@@ -87,22 +87,40 @@ namespace BRB6.View
 
             var tempSelected = WaresList.FirstOrDefault(item => item.CodeWares == temp?.CodeWares);
 
-            if (tempSelected != null) Dispatcher.Dispatch(() =>
+            if (tempSelected != null)
             {
-                ListWares.ScrollTo(tempSelected, position: ScrollToPosition.Start, animate: false);
-                var index = WaresList.IndexOf(tempSelected);
-                if (index >= 0)
+                Dispatcher.Dispatch(() =>
                 {
-                    var nextItem = WaresList.ElementAtOrDefault(index + 1);
-                    if (nextItem != null) ListWares.ScrollTo(nextItem, position: ScrollToPosition.Center, animate: false);
+                    // Scroll to the selected item using the ScrollTo method
+                    ListWares.ScrollTo(tempSelected, position: ScrollToPosition.Start, animate: false);
 
-                    //var list = ListWares.TemplatedItems.ToList();
-                    //var Scaned = (((list[index] as ViewCell).View as Grid).Children.ElementAt(2) as Frame).Content as Entry;
-                    //Scaned.Focus();
-                }
-            });
-            else _ = DisplayAlert("", "Товар відсутній", "ok"); 
+                    // Get the IVisualTreeElement for the CollectionView
+                    var visualCollectionViewElement = (IVisualTreeElement)ListWares;
+
+                    // Get the root views and their descendants
+                    var rootViewsAndTheirDescendants = visualCollectionViewElement.GetVisualTreeDescendants();
+
+                    // Find the Entry with the matching AutomationId (CodeWares)
+                    var entryToFocus = rootViewsAndTheirDescendants
+                        .OfType<Entry>()
+                        .FirstOrDefault(e => e.AutomationId == tempSelected.CodeWares.ToString());
+
+                    if (entryToFocus != null)
+                    {
+                        // Optionally move the Entry to a specific position before focusing
+                        entryToFocus.TranslateTo(0, 0);
+
+                        // Focus the Entry
+                        entryToFocus.Focus();
+                    }
+                });
+            }
+            else
+            {
+                _ = DisplayAlert("", "Товар відсутній", "OK");
+            }
         }
+
 
         private void Save(object sender, EventArgs e)
         {

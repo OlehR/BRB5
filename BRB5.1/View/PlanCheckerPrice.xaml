@@ -11,12 +11,13 @@
                     HeightRequest="140"/>
 
             <CollectionView ItemsSource="{Binding WaresList}" 
-                            SelectionMode="Single"
-                x:Name="ListWares" VerticalOptions="CenterAndExpand"
+                SelectionMode="Single"
+                x:Name="ListWares" 
+                VerticalOptions="CenterAndExpand"
                 BackgroundColor="LightGray">
                 <CollectionView.ItemTemplate>
                     <DataTemplate>
-                        <Grid  Margin="2,2,2,0" BackgroundColor="{Binding GetBackgroundColorDocWares}">
+                        <Grid Margin="2,2,2,0" BackgroundColor="{Binding GetBackgroundColorDocWares}">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="5*" />
                                 <ColumnDefinition Width="2*" />
@@ -27,35 +28,35 @@
                                     <TapGestureRecognizer Tapped="OnTapped" />
                                 </StackLayout.GestureRecognizers>
 
-                                <Label Text="{Binding NameWares}"  FontSize="Medium"/>
+                                <Label Text="{Binding NameWares}" FontSize="Medium"/>
                                 <Label Text="{Binding CodeWares}" FontSize="Medium"/>
                             </StackLayout>
 
                             <StackLayout Grid.Column="1">
-                                <Frame Style="{StaticResource FrameStyle}" >
+                                <Frame Style="{StaticResource FrameStyle}">
                                     <controls:CustomEntry Style="{StaticResource EntryStyle}"  
-                                                          AutomationId="{Binding CodeWares}"
-                                                          Focused="EntryFocused"
-                                                          Text="{Binding InputQuantity}" 
-                                                          Unfocused="SaveItem"
-                                                          Completed="SaveItem"
-                                                          Keyboard="Telephone" />
+                                              AutomationId="{Binding CodeWares}"
+                                              Focused="EntryFocused"
+                                              Text="{Binding InputQuantity}" 
+                                              Unfocused="SaveItem"
+                                              Completed="SaveItem"
+                                              Keyboard="Telephone" />
                                 </Frame>
-                                <Frame Style="{StaticResource FrameStyle}" >
+                                <Frame Style="{StaticResource FrameStyle}">
                                     <controls:CustomEntry Style="{StaticResource EntryStyle}"  
-                                                          AutomationId="{Binding CodeWares}"
-                                                          Unfocused="SaveItem"
-                                                        Focused="EntryFocused"
-                                                          Completed="SaveItem"
-                                                        Text="{Binding QuantityOld}"
-                                                        Keyboard="Telephone" />
+                                              AutomationId="{Binding CodeWares}"
+                                              Unfocused="SaveItem"
+                                              Focused="EntryFocused"
+                                              Completed="SaveItem"
+                                              Text="{Binding QuantityOld}"
+                                              Keyboard="Telephone" />
                                 </Frame>
                             </StackLayout>
-                            
                         </Grid>
                     </DataTemplate>
                 </CollectionView.ItemTemplate>
             </CollectionView>
+
 
 
             <Grid VerticalOptions="End" >
