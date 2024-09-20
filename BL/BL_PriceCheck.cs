@@ -74,7 +74,7 @@ namespace BL
                     }
                 }                
                     
-                if (WPH[0] == null) WPH[0] = CheckWP;
+                if (WPH[0] == null && CheckWP.StateDoubleScan != eCheckWareScaned.Success) WPH[0] = CheckWP;
 
                 if(CheckWP.StateDoubleScan != eCheckWareScaned.Bad&& CheckWP.StateDoubleScan != eCheckWareScaned.Success) 
                     CheckWP.StateDoubleScan=(CheckWP.IsBarCode ? eCheckWareScaned.WareScaned : eCheckWareScaned.PriceTagScaned); //"Скануйте цінник" : "Скануйте товар");
