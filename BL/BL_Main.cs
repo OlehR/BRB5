@@ -63,7 +63,7 @@ namespace BL
             Config.IsSound = db.GetConfig<bool>("IsSound");
             Config.IsTest = db.GetConfig<bool>("IsTest");
             Config.IsFilterSave = db.GetConfig<bool>("IsFilterSave"); 
-            Config.IsFullScreenScan = db.GetConfig<bool>("IsFullScreenScan");
+            //Config.IsFullScreenScan = db.GetConfig<bool>("IsFullScreenScan");
             Config.ApiUrl1 = db.GetConfig<string>("ApiUrl1");
             Config.ApiUrl2 = db.GetConfig<string>("ApiUrl2");
             Config.ApiUrl3 = db.GetConfig<string>("ApiUrl3");
