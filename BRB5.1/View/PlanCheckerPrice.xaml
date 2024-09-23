@@ -40,7 +40,7 @@
                                               Text="{Binding InputQuantity}" 
                                               Unfocused="SaveItem"
                                               Completed="SaveItem"
-                                              Keyboard="Telephone" />
+                                              Keyboard="{OnPlatform Telephone, iOS=Default}" />
                                 </Frame>
                                 <Frame Style="{StaticResource FrameStyle}">
                                     <controls:CustomEntry Style="{StaticResource EntryStyle}"  
@@ -49,7 +49,7 @@
                                               Focused="EntryFocused"
                                               Completed="SaveItem"
                                               Text="{Binding QuantityOld}"
-                                              Keyboard="Telephone" />
+                                              Keyboard="{OnPlatform Telephone, iOS=Default}" />
                                 </Frame>
                             </StackLayout>
                         </Grid>

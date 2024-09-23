@@ -12,7 +12,7 @@
                     <local:CustomEntry Style="{StaticResource EntryStyle}"
                                           Placeholder="ЗКПО"
                                           Text="{Binding ZKPOstr}"
-                                          Keyboard="Numeric"
+                                          Keyboard="{OnPlatform Numeric, iOS=Default}"
                                           x:Name="ZKPOEntry"
                                           Completed="FilterDocs" />
 

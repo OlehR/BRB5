@@ -79,7 +79,7 @@
                                            Grid.Column="1">
                                         <controls:CustomEntry
                                             Style="{StaticResource EntryStyle}"
-                                            Keyboard="Numeric"
+                                            Keyboard="{OnPlatform Numeric, iOS=Default}"
                                             Text="{Binding InputQuantity}" />
                                     </Frame>
 

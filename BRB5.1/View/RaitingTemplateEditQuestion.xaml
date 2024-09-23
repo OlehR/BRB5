@@ -22,7 +22,7 @@
             <Frame Style="{StaticResource FrameStyle}">
                 <controls:CustomEntry Style="{StaticResource EntryStyle}"
                           Text="{Binding RQ.ValueRating}" 
-                          Keyboard="Numeric"/>
+                          Keyboard="{OnPlatform Numeric, iOS=Default}"/>
             </Frame>
             
             <Label Text="Оцінки" />
