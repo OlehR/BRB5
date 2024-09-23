@@ -130,7 +130,9 @@
 
                 <Label Text="Штрих код:" />
                 <Frame Style="{StaticResource FrameStyle}" Grid.Column="1">
-                    <controls:CustomEntry Keyboard="Numeric" Style="{StaticResource EntryStyle}"
+                    <controls:CustomEntry Keyboard="{OnPlatform Numeric, iOS=Default}"
+                                          ReturnType="Done"
+                                          Style="{StaticResource EntryStyle}"
                                           Text="{Binding WP.BarCodes}" 
                                           x:Name="BarCodeInput"
                                           AutomationId="BarcodeEntry"
