@@ -14,6 +14,7 @@ namespace BRB6.PlatformDependency
 {
     internal class UtilAndroid
     {
+
         void InstallAPK()
         {
             var context = Android.App.Application.Context;
