@@ -23,14 +23,14 @@
 		<Nullable>enable</Nullable>
 
 		<!-- Display name -->
-		<ApplicationTitle>BRB5.1</ApplicationTitle>
+		<ApplicationTitle>BRB6</ApplicationTitle>
 
 		<!-- App Identifier -->
-		<ApplicationId>BRB6</ApplicationId>
+		<ApplicationId>ua.UniCS.TM.BRB6</ApplicationId>
 
 		<!-- Versions -->
-		<ApplicationDisplayVersion>6.0.1</ApplicationDisplayVersion>
-		<ApplicationVersion>6001</ApplicationVersion>
+		<ApplicationDisplayVersion>6.0.3</ApplicationDisplayVersion>
+		<ApplicationVersion>6003</ApplicationVersion>
 
 		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">11.0</SupportedOSPlatformVersion>		
 		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">21.0</SupportedOSPlatformVersion>	
@@ -64,6 +64,7 @@
 	</ItemGroup>
   
 	<ItemGroup>
+	  <None Remove="Platforms\Android\Resources\xml\provider_paths.xml" />
 	  <None Remove="Resources\Images\add.png" />
 	  <None Remove="Resources\Images\all.png" />
 	  <None Remove="Resources\Images\back.png" />
