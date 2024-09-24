@@ -11,12 +11,14 @@ using Android.Runtime;
 using Android.Views;
 using BRB6.View;
 using BRB6.PlatformDependency;
+using Android.Content;
 
 namespace BRB6
 {
     [Activity(Theme = "@style/Maui.SplashTheme", MainLauncher = true, LaunchMode = LaunchMode.SingleTop, ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation | ConfigChanges.UiMode | ConfigChanges.ScreenLayout | ConfigChanges.SmallestScreenSize | ConfigChanges.Density)]
     public class MainActivity : MauiAppCompatActivity
     {
+        MyBroadcastReceiver BR;
         public static Action<Keycode, KeyEvent> Key;
         protected override void OnCreate(Bundle savedInstanceState)
         {
@@ -27,7 +29,7 @@ namespace BRB6
             //DB db = DB.GetDB(ProtoBRB.GetPathDB);
             // Path.Combine(Android.OS.Environment.ExternalStorageDirectory.AbsolutePath, Android.OS.Environment.DirectoryDownloads);
             ProtoBRB.SetPath(Path.Combine(Android.App.Application.Context.GetExternalFilesDir("").AbsolutePath, Android.OS.Environment.DirectoryDownloads));
-            UtilAndroid.InstallAPK();
+            //UtilAndroid.InstallAPK();
             //Config.PathDownloads = Path.Combine(Android.App.Application.Context.GetExternalFilesDir("").AbsolutePath, Android.OS.Environment.DirectoryDownloads);
             Config.SN = GetDeviceId();
             //Config.Ver = int.Parse(AppInfo.VersionString.Replace(".", ""));
@@ -37,6 +39,8 @@ namespace BRB6
             Config.NativeBase = new Native();
             //FileLogger.PathLog = Path.Combine(Config.PathDownloads, "Log");
             FileLogger.WriteLogMessage("Start", eTypeLog.Expanded);
+            if (Config.TypeScaner == eTypeScaner.PM351)
+                BR = new MyBroadcastReceiver();
 
             /*
             try
@@ -75,6 +79,14 @@ namespace BRB6
         {
             Key?.Invoke(keyCode, e);
             return base.OnKeyDown(keyCode, e);
+        }
+
+        protected override void OnResume()
+        {
+            base.OnResume();           
+            if (BR != null)
+                RegisterReceiver(BR, new IntentFilter(MyBroadcastReceiver.IntentEvent));
+           
         }
     }
 }
