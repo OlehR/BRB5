@@ -20,7 +20,7 @@
                            Grid.Column="1" />
                 </Grid>
 
-                <Picker Title="Торговий зал"
+                <Picker Title="Оберіть торговий зал"
                         ItemsSource="{Binding ListWarehouse}"
                         ItemDisplayBinding="{Binding Name}"
                         SelectedIndex="{Binding SelectedWarehouse}"
