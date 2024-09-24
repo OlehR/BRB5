@@ -17,6 +17,7 @@ namespace BRB6
         {
             InitializeComponent();
             MainPage = new NavigationPage(new MainPage());
+            Application.Current.UserAppTheme = AppTheme.Light;
         }
 
         protected override void OnStart()

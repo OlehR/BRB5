@@ -365,7 +365,7 @@ namespace BRB6
         private BRB5.Model.RaitingDocItem GetRaiting(object sender)
         {
             Microsoft.Maui.Controls.View V = (Microsoft.Maui.Controls.View)sender;
-            return V.BindingContext as BRB5.Model.RaitingDocItem;
+            return (BRB5.Model.RaitingDocItem)V.BindingContext;
         }
     }
 }

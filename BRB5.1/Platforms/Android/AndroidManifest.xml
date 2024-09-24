@@ -29,5 +29,12 @@
   <uses-permission android:name="android.permission.INSTALL_PACKAGES" />
   <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
   <uses-permission android:name="android.permission.REQUEST_DELETE_PACKAGES" />
-  <uses-permission android:name="android.permission.DELETE_PACKAGES" />  
+  <uses-permission android:name="android.permission.DELETE_PACKAGES" />
+  <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
+  <uses-permission android:name="android.permission.READ_MEDIA_VIDEO" />
+  <queries>
+    <intent>
+      <action android:name="android.media.action.IMAGE_CAPTURE" />
+    </intent>
+  </queries>
 </manifest>

@@ -182,6 +182,7 @@
                                                         Placeholder="Введіть коментар"
                                                         Text="{Binding Note}"
                                                         AutoSize="TextChanges"
+                                                        Unfocused="Editor_Completed"
                                                         Completed="Editor_Completed" />
                                             </StackLayout>
                                         </Grid>

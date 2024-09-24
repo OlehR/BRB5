@@ -140,6 +140,7 @@ namespace BRB6.View
 
             foreach (var file in files)
             {
+                if (file== null) continue;
                 var ext = Path.GetExtension(file.FullPath);
                 var FileName = $"{Raiting.Id}_{DateTime.Now:yyyyMMdd_HHmmssfff}";
                 var newFile = Path.Combine(dir, FileName + ext);
