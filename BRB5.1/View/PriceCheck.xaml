@@ -157,7 +157,7 @@
                                           x:Name="NumberOfReplenishment"
                                           Unfocused="OnUpdateReplenishment"
                                           Completed="OnUpdateReplenishment"
-                                          Keyboard="Numeric" />
+                                          Keyboard="{OnPlatform Numeric, iOS=Default}" />
                 </Frame>
             </Grid>
 

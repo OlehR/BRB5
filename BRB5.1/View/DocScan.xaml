@@ -59,7 +59,7 @@
                                                       TextChanged="CalcQuantity"
                                                        Completed="CompletedInputQ"
                                                       Placeholder="к-сть"
-                                                      Keyboard="Telephone" />
+                                                      Keyboard="{OnPlatform Telephone, iOS=Default}" />
                             </Frame>
 
                             <Label Text="{Binding ScanData.NameUnit}" Grid.Column="1" />
