@@ -104,7 +104,6 @@ namespace BRB6.View
                 db.ReplaceRaitingDocItem(Raiting);
             }
         }
-
         private async void OnPhotosAdd(object sender, EventArgs e)
         {
             var cts = new CancellationTokenSource();
@@ -115,7 +114,24 @@ namespace BRB6.View
                 // Cancel the operation after 5 minutes
                 cts.CancelAfter(TimeSpan.FromMinutes(5));
 
-                // Picking images and videos (one at a time in MAUI)
+#if ANDROID
+        // Android: Use FilePicker to pick multiple photos or videos
+        var result = await FilePicker.Default.PickMultipleAsync(new PickOptions
+        {
+            PickerTitle = "Pick multiple photos or videos",
+            FileTypes = new FilePickerFileType(new Dictionary<DevicePlatform, IEnumerable<string>>
+            {
+                { DevicePlatform.Android, new[] { "image/*", "video/*" } }
+            })
+        });
+
+        if (result != null)
+        {
+            files = result.ToList();
+        }
+
+#elif IOS
+                // iOS: Use MediaPicker to pick photos and videos separately
                 var pickPhotoTask = MediaPicker.PickPhotoAsync(new MediaPickerOptions
                 {
                     Title = "Select an Image"
@@ -131,16 +147,17 @@ namespace BRB6.View
 
                 // Collect the results
                 files = new List<FileResult> { await pickPhotoTask, await pickVideoTask };
+#endif
             }
-            catch (OperationCanceledException)   {  /* handling a cancellation request  */  }
-            catch (Exception)   {   /* handling other exceptions*/     }
-            finally  {  cts.Dispose();  }
+            catch (OperationCanceledException) { /*Handle cancellation*/ }
+            catch (Exception) { /*Handle other exceptions*/ }
+            finally { cts.Dispose(); }
 
-            if (files == null)  return;            
+            if (files == null) return;
 
             foreach (var file in files)
             {
-                if (file== null) continue;
+                if (file == null) continue;
                 var ext = Path.GetExtension(file.FullPath);
                 var FileName = $"{Raiting.Id}_{DateTime.Now:yyyyMMdd_HHmmssfff}";
                 var newFile = Path.Combine(dir, FileName + ext);
