@@ -14,8 +14,7 @@ namespace BRB6.PlatformDependency
 {
     internal class UtilAndroid
     {
-
-        void InstallAPK()
+        public static void InstallAPK()
         {
             var context = Android.App.Application.Context;
             var path = Path.Combine(Android.App.Application.Context.GetExternalFilesDir("").AbsolutePath, "BRB6.apk");

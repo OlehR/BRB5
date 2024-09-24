@@ -10,6 +10,7 @@ using BRB5.Model;
 using Android.Runtime;
 using Android.Views;
 using BRB6.View;
+using BRB6.PlatformDependency;
 
 namespace BRB6
 {
@@ -26,6 +27,7 @@ namespace BRB6
             //DB db = DB.GetDB(ProtoBRB.GetPathDB);
             // Path.Combine(Android.OS.Environment.ExternalStorageDirectory.AbsolutePath, Android.OS.Environment.DirectoryDownloads);
             ProtoBRB.SetPath(Path.Combine(Android.App.Application.Context.GetExternalFilesDir("").AbsolutePath, Android.OS.Environment.DirectoryDownloads));
+            UtilAndroid.InstallAPK();
             //Config.PathDownloads = Path.Combine(Android.App.Application.Context.GetExternalFilesDir("").AbsolutePath, Android.OS.Environment.DirectoryDownloads);
             Config.SN = GetDeviceId();
             //Config.Ver = int.Parse(AppInfo.VersionString.Replace(".", ""));
