@@ -137,16 +137,11 @@ namespace BRB6.View
                     Title = "Select an Image"
                 });
 
-                var pickVideoTask = MediaPicker.PickVideoAsync(new MediaPickerOptions
-                {
-                    Title = "Select a Video"
-                });
-
                 // Await both tasks
-                await Task.WhenAll(pickPhotoTask, pickVideoTask);
+                await Task.WhenAll(pickPhotoTask);
 
                 // Collect the results
-                files = new List<FileResult> { await pickPhotoTask, await pickVideoTask };
+                files = new List<FileResult> { await pickPhotoTask};
 #endif
             }
             catch (OperationCanceledException) { /*Handle cancellation*/ }

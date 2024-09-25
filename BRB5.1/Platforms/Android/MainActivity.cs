@@ -26,7 +26,7 @@ namespace BRB6
             base.OnCreate(savedInstanceState);
             
             //Config.Company = db.GetConfig<eCompany>("Company");
-            //DB db = DB.GetDB(ProtoBRB.GetPathDB);
+            DB db = DB.GetDB(ProtoBRB.GetPathDB);
             // Path.Combine(Android.OS.Environment.ExternalStorageDirectory.AbsolutePath, Android.OS.Environment.DirectoryDownloads);
             ProtoBRB.SetPath(Path.Combine(Android.App.Application.Context.GetExternalFilesDir("").AbsolutePath, Android.OS.Environment.DirectoryDownloads));
             //UtilAndroid.InstallAPK();
@@ -42,7 +42,7 @@ namespace BRB6
             if (Config.TypeScaner == eTypeScaner.PM351)
                 BR = new MyBroadcastReceiver();
 
-            /*
+            
             try
             {
             ///!!!!=TMP копіювання бази
@@ -59,7 +59,7 @@ namespace BRB6
             {
                 FileLogger.WriteLogMessage(e.Message);
             }
-            */
+            
             //Config.TypeScaner = App.GetTypeScaner();
             //if (Config.TypeScaner == eTypeScaner.PM351)
             //    BR = new MyBroadcastReceiver();
