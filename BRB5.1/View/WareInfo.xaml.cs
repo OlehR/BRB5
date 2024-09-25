@@ -28,7 +28,7 @@ namespace BRB6.View
             InitializeComponent();
             c = Connector.GetInstance();
             // TODO Xamarin.Forms.Device.RuntimePlatform is no longer supported. Use Microsoft.Maui.Devices.DeviceInfo.Platform instead. For more details see https://learn.microsoft.com/en-us/dotnet/maui/migration/forms-projects#device-changes
-            NavigationPage.SetHasNavigationBar(this, Device.RuntimePlatform == Device.iOS);            
+            NavigationPage.SetHasNavigationBar(this, DeviceInfo.Platform == DevicePlatform.iOS);            
             WP = c.GetPrice(parseBarCode, eTypePriceInfo.Full);           
             if (WP.ActionType > 0)  IsVisPromotion = true;            
             ImageUri = Config.ApiUrl1+$"Wares/{WP.CodeWares:D9}.png";            
@@ -39,7 +39,7 @@ namespace BRB6.View
                 CacheValidity = new TimeSpan(7, 0, 0, 0)
             };
             // TODO Xamarin.Forms.Device.RuntimePlatform is no longer supported. Use Microsoft.Maui.Devices.DeviceInfo.Platform instead. For more details see https://learn.microsoft.com/en-us/dotnet/maui/migration/forms-projects#device-changes
-            if (Device.RuntimePlatform == Device.iOS) 
+            if (DeviceInfo.Platform == DevicePlatform.iOS) 
             {
                 WareImageIOS.IsVisible = true; 
                 WareImage.IsVisible = false;
@@ -52,7 +52,7 @@ namespace BRB6.View
         {
             IsNotFullScreenImg = !IsNotFullScreenImg;
             // TODO Xamarin.Forms.Device.RuntimePlatform is no longer supported. Use Microsoft.Maui.Devices.DeviceInfo.Platform instead. For more details see https://learn.microsoft.com/en-us/dotnet/maui/migration/forms-projects#device-changes
-            if (Device.RuntimePlatform == Device.iOS)
+            if (DeviceInfo.Platform == DevicePlatform.iOS)
                  IsVisIOSFull = !IsVisIOSFull;
             else IsFullScreenImg = !IsFullScreenImg;
         }
