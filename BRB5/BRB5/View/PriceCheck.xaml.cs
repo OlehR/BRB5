@@ -111,8 +111,8 @@ namespace BRB5
         {
             LineNumber++;
             Config.OnProgress?.Invoke(0.2d);
-            
-            (WP, MessageDoubleScan) = bl.FoundWares(pBarCode, PackageNumber, LineNumber, pIsHandInput, IsVisDoubleScan, IsOnline);
+            MessageDoubleScan = "";
+            WP  = bl.FoundWares(pBarCode, PackageNumber, LineNumber, pIsHandInput, IsVisDoubleScan, IsOnline);
 
             if (WP != null)
             {

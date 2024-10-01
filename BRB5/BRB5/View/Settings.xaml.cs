@@ -84,7 +84,7 @@ namespace BRB5.View
         public bool IsSound { get { return Config.IsSound; } set { Config.IsSound = value; } }
         public bool IsTest { get { return Config.IsTest; } set { Config.IsTest = value; } }
         public bool IsFilterSave { get { return Config.IsFilterSave; } set { Config.IsFilterSave = value; } }     
-        public bool IsFullScreenScan { get { return Config.IsFullScreenScan; } set { Config.IsFullScreenScan = value; } }
+        public bool IsFullScreenScan { get; set; }  //{ get { return Config.IsFullScreenScan; } set { Config.IsFullScreenScan = value; } }
 
         public string ApiUrl1 { get { return Config.ApiUrl1; } set { Config.ApiUrl1 = value; OnPropertyChanged(nameof(ApiUrl1)); } }
         public string ApiUrl2 { get { return Config.ApiUrl2; } set { Config.ApiUrl2 = value; OnPropertyChanged(nameof(ApiUrl2)); } }
@@ -140,7 +140,7 @@ namespace BRB5.View
 
         private void OnClickSave(object sender, EventArgs e)
         {
-            Bl.SaveSettings(IsAutoLogin, IsVibration, IsViewAllWH, IsSound, IsTest, IsFilterSave, IsFullScreenScan, ApiUrl1, ApiUrl2, ApiUrl3, Compress, 
+            Bl.SaveSettings(IsAutoLogin, IsVibration, IsViewAllWH, IsSound, IsTest, IsFilterSave, /*IsFullScreenScan,*/ ApiUrl1, ApiUrl2, ApiUrl3, Compress, 
                 (eCompany)SelectedCompany, (eTypeLog)SelectedTypeLog, (ePhotoQuality)SelectedPhotoQuality, (eTypeUsePrinter)SelectedTypePrinter, 
                 SelectedWarehouse, ListWarehouse[SelectedWarehouse].Code, Warehouses);
         }
