@@ -9,6 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Utils;
+using BL.Connector;
 
 namespace BL
 {
@@ -76,7 +77,8 @@ namespace BL
             var tempstr = db.GetConfig<string>("CodesWarehouses");
             if (!string.IsNullOrEmpty(tempstr)) Config.CodesWarehouses = JsonConvert.DeserializeObject<List<int>>(tempstr);
             FileLogger.TypeLog = db.GetConfig<eTypeLog>("TypeLog");
-            
+            c=Connector.Connector.GetInstance();
+
 
         }
 

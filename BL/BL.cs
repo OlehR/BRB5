@@ -164,7 +164,6 @@ namespace BL
             return res;
         }
 
-
         public  Warehouse GetWarehouse(int pCodeWarehouse)
         {
             var Warehouses = db.GetWarehouse();
