@@ -109,6 +109,9 @@
 	  <Compile Update="View\DocItem.xaml.cs">
 	    <DependentUpon>%(Filename)</DependentUpon>
 	  </Compile>
+	  <Compile Update="View\ExpirationDate.xaml.cs">
+	    <DependentUpon>ExpirationDate.xaml</DependentUpon>
+	  </Compile>
 	  <Compile Update="View\Docs.xaml.cs">
 	    <DependentUpon>%(Filename)</DependentUpon>
 	  </Compile>
@@ -172,6 +175,9 @@
 	  </MauiXaml>
 	  <MauiXaml Update="View\DocItem.xaml">
 	    <SubType>Designer</SubType>
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="View\ExpirationDate.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="View\Docs.xaml">

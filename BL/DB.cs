@@ -107,6 +107,7 @@ CREATE TABLE DocWares (
     Quantity    NUMBER  NOT NULL,   
     QuantityOld NUMBER ,   
     CodeReason  INTEGER,
+    ExpirationDate TIMESTAMP,
     DTInsert    TIMESTAMP       DEFAULT (DATETIME('NOW', 'LOCALTIME') )
 );
 CREATE UNIQUE INDEX DocWaresTNO ON DocWares ( TypeDoc, NumberDoc, OrderDoc, CodeReason);
@@ -119,9 +120,12 @@ CREATE TABLE DocWaresSample (
     CodeWares   INTEGER         NOT NULL,
     Quantity     NUMBER,
     QuantityMin NUMBER,
-    QuantityMax NUMBER, --NUMERIC (12, 3),
+    QuantityMax NUMBER,
     Name         TEXT,
-    BarCode      TEXT);
+    BarCode      TEXT,
+    ExpirationDate TIMESTAMP,
+    Expiration NUMBER
+);
 CREATE INDEX DOCWaresSampleBC ON DocWaresSample (BarCode);
 CREATE UNIQUE INDEX DOCWaresSampleTNC ON DocWaresSample (TypeDoc, NumberDoc, CodeWares);
 
@@ -613,16 +617,16 @@ and bc.BarCode=?
 
         public bool ReplaceDocWaresSample(IEnumerable<DocWaresSample> pDWS)
         {
-            string Sql = @"replace into DocWaresSample ( TypeDoc, NumberDoc, OrderDoc, CodeWares, Quantity, QuantityMin, QuantityMax, Name, BarCode) values 
-                                                       (@TypeDoc,@NumberDoc,@OrderDoc,@CodeWares,@Quantity,@QuantityMin,@QuantityMax,@Name,@BarCode)";
+            string Sql = @"replace into DocWaresSample ( TypeDoc, NumberDoc, OrderDoc, CodeWares, Quantity, QuantityMin, QuantityMax, Name, BarCode, ExpirationDate, Expiration) values 
+                                                       (@TypeDoc,@NumberDoc,@OrderDoc,@CodeWares,@Quantity,@QuantityMin,@QuantityMax,@Name,@BarCode,@ExpirationDate,@Expiration)";
             return db.ReplaceAll(pDWS) >= 0;
         }
 
         public bool ReplaceDocWares(DocWares pDW)
         {
             //if(!pDW.GetType().Name.Equals("DocWares"))
-            string Sql = $@"replace into DocWares ( TypeDoc, NumberDoc, OrderDoc, CodeWares, Quantity, QuantityOld, CodeReason) values 
-                                                 ({pDW.TypeDoc},'{pDW.NumberDoc}',{pDW.OrderDoc},{pDW.CodeWares},{pDW.Quantity},{pDW.QuantityOld},{pDW.CodeReason})";
+            string Sql = $@"replace into DocWares ( TypeDoc, NumberDoc, OrderDoc, CodeWares, Quantity, QuantityOld, CodeReason,ExpirationDate) values 
+                                                 ({pDW.TypeDoc},'{pDW.NumberDoc}',{pDW.OrderDoc},{pDW.CodeWares},{pDW.Quantity},{pDW.QuantityOld},{pDW.CodeReason},{pDW.ExpirationDate})";
             try
             {
                 return db.Execute(Sql) >= 0;

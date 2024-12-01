@@ -3,7 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.2.32630.192
 MinimumVisualStudioVersion = 10.0.40219.1
-
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BRB5.iOS", "BRB5\BRB5.iOS\BRB5.iOS.csproj", "{1A78A11A-9A06-4AF6-83B3-C73ECBBA83D6}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BRB5", "BRB5\BRB5\BRB5.csproj", "{502D0E43-AF3B-40D7-AF22-14503EE2BEA0}"
@@ -20,8 +19,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BRB5Core", "BRB5\BRB5Core\B
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Xamarin", "Xamarin", "{3849F8B5-62E9-498E-ADA6-C062145A09CE}"
 EndProject
-
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Utils", "Utils\Utils.csproj", "{32057FB8-281C-4EAA-A36A-E1F6E3DBA8B4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BRB6", "BRB5.1\BRB6.csproj", "{CBE5524D-A234-49C4-9DFA-D92A981DE6F1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,7 +33,6 @@ Global
 		Release|iPhoneSimulator = Release|iPhoneSimulator
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		
 		{1A78A11A-9A06-4AF6-83B3-C73ECBBA83D6}.Debug|Any CPU.ActiveCfg = Debug|iPhone
 		{1A78A11A-9A06-4AF6-83B3-C73ECBBA83D6}.Debug|Any CPU.Build.0 = Debug|iPhone
 		{1A78A11A-9A06-4AF6-83B3-C73ECBBA83D6}.Debug|Any CPU.Deploy.0 = Debug|iPhone
@@ -129,7 +128,7 @@ Global
 		{0FFBBAF5-B8E2-4501-B121-92F4C6ACF72D}.Release|iPhone.ActiveCfg = Release|Any CPU
 		{0FFBBAF5-B8E2-4501-B121-92F4C6ACF72D}.Release|iPhone.Build.0 = Release|Any CPU
 		{0FFBBAF5-B8E2-4501-B121-92F4C6ACF72D}.Release|iPhoneSimulator.ActiveCfg = Release|Any CPU
-		{0FFBBAF5-B8E2-4501-B121-92F4C6ACF72D}.Release|iPhoneSimulator.Build.0 = Release|Any CPU		
+		{0FFBBAF5-B8E2-4501-B121-92F4C6ACF72D}.Release|iPhoneSimulator.Build.0 = Release|Any CPU
 		{32057FB8-281C-4EAA-A36A-E1F6E3DBA8B4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{32057FB8-281C-4EAA-A36A-E1F6E3DBA8B4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{32057FB8-281C-4EAA-A36A-E1F6E3DBA8B4}.Debug|iPhone.ActiveCfg = Debug|Any CPU
@@ -142,12 +141,29 @@ Global
 		{32057FB8-281C-4EAA-A36A-E1F6E3DBA8B4}.Release|iPhone.Build.0 = Release|Any CPU
 		{32057FB8-281C-4EAA-A36A-E1F6E3DBA8B4}.Release|iPhoneSimulator.ActiveCfg = Release|Any CPU
 		{32057FB8-281C-4EAA-A36A-E1F6E3DBA8B4}.Release|iPhoneSimulator.Build.0 = Release|Any CPU
+		{CBE5524D-A234-49C4-9DFA-D92A981DE6F1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CBE5524D-A234-49C4-9DFA-D92A981DE6F1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CBE5524D-A234-49C4-9DFA-D92A981DE6F1}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{CBE5524D-A234-49C4-9DFA-D92A981DE6F1}.Debug|iPhone.ActiveCfg = Debug|Any CPU
+		{CBE5524D-A234-49C4-9DFA-D92A981DE6F1}.Debug|iPhone.Build.0 = Debug|Any CPU
+		{CBE5524D-A234-49C4-9DFA-D92A981DE6F1}.Debug|iPhone.Deploy.0 = Debug|Any CPU
+		{CBE5524D-A234-49C4-9DFA-D92A981DE6F1}.Debug|iPhoneSimulator.ActiveCfg = Debug|Any CPU
+		{CBE5524D-A234-49C4-9DFA-D92A981DE6F1}.Debug|iPhoneSimulator.Build.0 = Debug|Any CPU
+		{CBE5524D-A234-49C4-9DFA-D92A981DE6F1}.Debug|iPhoneSimulator.Deploy.0 = Debug|Any CPU
+		{CBE5524D-A234-49C4-9DFA-D92A981DE6F1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CBE5524D-A234-49C4-9DFA-D92A981DE6F1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CBE5524D-A234-49C4-9DFA-D92A981DE6F1}.Release|Any CPU.Deploy.0 = Release|Any CPU
+		{CBE5524D-A234-49C4-9DFA-D92A981DE6F1}.Release|iPhone.ActiveCfg = Release|Any CPU
+		{CBE5524D-A234-49C4-9DFA-D92A981DE6F1}.Release|iPhone.Build.0 = Release|Any CPU
+		{CBE5524D-A234-49C4-9DFA-D92A981DE6F1}.Release|iPhone.Deploy.0 = Release|Any CPU
+		{CBE5524D-A234-49C4-9DFA-D92A981DE6F1}.Release|iPhoneSimulator.ActiveCfg = Release|Any CPU
+		{CBE5524D-A234-49C4-9DFA-D92A981DE6F1}.Release|iPhoneSimulator.Build.0 = Release|Any CPU
+		{CBE5524D-A234-49C4-9DFA-D92A981DE6F1}.Release|iPhoneSimulator.Deploy.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		
 		{1A78A11A-9A06-4AF6-83B3-C73ECBBA83D6} = {3849F8B5-62E9-498E-ADA6-C062145A09CE}
 		{502D0E43-AF3B-40D7-AF22-14503EE2BEA0} = {3849F8B5-62E9-498E-ADA6-C062145A09CE}
 		{1FF34556-44A7-476C-AB44-365DA9BA59CC} = {3849F8B5-62E9-498E-ADA6-C062145A09CE}

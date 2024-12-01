@@ -46,6 +46,7 @@ namespace BRB5.Model
         //public string InputQuantityStr { private get { return _InputQuantity.ToString(); } set { 
         //        _InputQuantity = Convert.ToDecimal(value); } }
         public int CodeReason { get; set; }
+        public DateTime ExpirationDate { get; set; }
         public DateTime DTInsert { get; set; }
         public int Scaned { get { return InputQuantity > 0 ? 2 : 0; } set { OnPropertyChanged(nameof(GetBackgroundColorDocWares)); } }
         public string GetBackgroundColorDocWares

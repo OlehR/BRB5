@@ -107,6 +107,9 @@ namespace BRB6
                 case eKindDoc.PlanCheck:
                     await Navigation.PushAsync(new PlanCheckPrice());
                     break;
+                case eKindDoc.ExpirationDate:
+                    await Navigation.PushAsync(new ExpirationDate());
+                    break;
                 case eKindDoc.NotDefined:
                     Dispatcher.Dispatch(() =>
                     {
