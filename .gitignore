@@ -20,3 +20,4 @@ obj
 /BRB5.1/BRB6.csproj.user
 
 .DS_Store
+*.log
