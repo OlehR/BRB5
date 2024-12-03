@@ -222,6 +222,21 @@ CREATE TABLE RaitingDocItem(
     DTInsert    TIMESTAMP  DEFAULT (DATETIME('NOW', 'LOCALTIME'))
 );
 CREATE UNIQUE INDEX RaitingDocItemId ON RaitingDocItem (TypeDoc,NumberDoc,Id);
+
+
+CREATE TABLE DocWaresExpiration (   
+    NumberDoc   TEXT,
+    DocId      TEXT NOT NULL,
+    OrderDoc    INTEGER         NOT NULL,
+    CodeWares   INTEGER         NOT NULL,
+    Quantity     NUMBER, 
+    ExpirationDate TIMESTAMP,    
+    QuantityInput     NUMBER,  
+    ExpirationDateInput TIMESTAMP,
+    Expiration NUMBER,
+    DaysLeft TEXT
+);
+CREATE UNIQUE INDEX DocWaresExpirationTNC ON DocWaresExpiration (NumberDoc,DocId,OrderDoc, CodeWares);
 ";
 
         public string PathNameDB { get { return Path.Combine(BaseDir, NameDB); } }
@@ -771,5 +786,12 @@ and bc.BarCode=?
                     GROUP BY PackageNumber";            
             return db.Query<PrintBlockItems>(Sql);
         }
+
+        public bool ReplaceDocWaresExpiration(IEnumerable<DocWaresExpiration> pDWS)
+        {
+            string Sql = @"replace into DocWaresExpiration ( NumberDoc, DocId, OrderDoc, CodeWares, Quantity, ExpirationDateInput, QuantityInput, ExpirationDate, Expiration, DaysLeft) values 
+                                                           (@NumberDoc,@DocId,@OrderDoc,@CodeWares,@Quantity,@ExpirationDateInput,@QuantityInput,@ExpirationDate,@Expiration,@DaysLeft)";
+            return db.ReplaceAll(pDWS) >= 0;
+        }    
     }
 }
