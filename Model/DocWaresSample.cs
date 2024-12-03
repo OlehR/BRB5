@@ -1,4 +1,6 @@
 ﻿
+using System;
+
 namespace BRB5.Model
 {
     public class DocWaresSample : DocWaresId
@@ -22,5 +24,14 @@ namespace BRB5.Model
         /// Штрихкод ОЗ
         /// </summary>
         public string BarCode { get; set; }
+
+        public DateTime ExpirationDate { get; set; }
+
+        public decimal Expiration { get; set; }
+
+        /// <summary>
+        /// Додаткова інформація      
+        /// </summary>
+        public string ExtInfo { get; set; }
     }
 }

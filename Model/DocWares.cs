@@ -40,8 +40,7 @@ namespace BRB5.Model
         public decimal QuantityOld { get { return _QuantityOld; } set { _QuantityOld = value; OnPropertyChanged("QuantityOld"); } }
         //public string QuantityOldStr { set { _QuantityOld = Convert.ToDecimal(value); } }
 
-        private decimal _InputQuantity;
-       
+        private decimal _InputQuantity;       
         public decimal InputQuantity { get { return _InputQuantity; } set { _InputQuantity = value; OnPropertyChanged("InputQuantity"); OnPropertyChanged(nameof(Scaned)); OnPropertyChanged(nameof(GetBackgroundColorDocWares)); } }
         //public string InputQuantityStr { private get { return _InputQuantity.ToString(); } set { 
         //        _InputQuantity = Convert.ToDecimal(value); } }
