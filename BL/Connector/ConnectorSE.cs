@@ -606,6 +606,19 @@ namespace BL.Connector
             }
             return null;
         }
+
+        public override async Task<IEnumerable<DocWaresExpiration>> GetExpirationDateAsync(int pCodeWarehouse)
+        {
+            //HttpResult result = Http.HTTPRequest(0, "GetExpirationDate", pCodeWarehouse.ToString(), null, null, null);
+            HttpResult result = await Http.HTTPRequestAsync("http://192.168.99.243", "/DCT/GetExpirationDate", pCodeWarehouse.ToString(), null, null);
+ 
+            if (result.HttpState == eStateHTTP.HTTP_OK)
+            {
+                var res = JsonConvert.DeserializeObject<IEnumerable<DocWaresExpiration>>(result.Result);
+                return res;
+            }  
+            return null;
+        }
     }
     class Answer
     {

@@ -130,6 +130,7 @@ namespace BL.Connector
         public virtual async Task<Result<IEnumerable<Doc>>> GetRaitingDocsAsync() { throw new NotImplementedException(); }
         public virtual Result<IEnumerable<DocVM>> GetPromotion(int pCodeWarehouse) { throw new NotImplementedException(); }
         public virtual Result<IEnumerable<DocWares>> GetPromotionData(string pNumberDoc) { throw new NotImplementedException(); }
+        public virtual async Task<IEnumerable<DocWaresExpiration>> GetExpirationDateAsync(int pCodeWarehouse) { throw new NotImplementedException(); }        
     }
 
     public class LoginServer

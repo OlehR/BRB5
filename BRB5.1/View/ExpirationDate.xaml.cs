@@ -30,8 +30,7 @@ namespace BRB6.View
         public bool IsViewOut { get { return false; } }// TypeDoc.IsViewOut; } }
         public bool IsSoftKeyboard { get { return Config.IsSoftKeyboard; } }
         public bool IsVisScan { get { return Config.TypeScaner == eTypeScaner.Camera; } }
-        CameraView BarcodeScaner;
-
+        CameraView BarcodeScaner;       
         public ExpirationDate()
         {
             NokeyBoard();
@@ -45,7 +44,13 @@ namespace BRB6.View
                 new DocVM() { NumberDoc = "2", Description = "Фреш"},
                 new DocVM() { NumberDoc = "0", Description = "Добавити"}
             };
+
             InitializeComponent();
+            _ = Task.Run(async () =>
+            {
+                var r = await c.GetExpirationDateAsync(Config.CodeWarehouse);
+                db.ReplaceDocWaresExpiration(r);
+            });           
         }
 
         protected override void OnAppearing()

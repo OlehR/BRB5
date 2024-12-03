@@ -789,6 +789,7 @@ and bc.BarCode=?
 
         public bool ReplaceDocWaresExpiration(IEnumerable<DocWaresExpiration> pDWS)
         {
+            db.Execute("delete from DocWaresExpiration");
             string Sql = @"replace into DocWaresExpiration ( NumberDoc, DocId, OrderDoc, CodeWares, Quantity, ExpirationDateInput, QuantityInput, ExpirationDate, Expiration, DaysLeft) values 
                                                            (@NumberDoc,@DocId,@OrderDoc,@CodeWares,@Quantity,@ExpirationDateInput,@QuantityInput,@ExpirationDate,@Expiration,@DaysLeft)";
             return db.ReplaceAll(pDWS) >= 0;
