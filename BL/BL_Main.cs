@@ -77,7 +77,7 @@ namespace BL
             var tempstr = db.GetConfig<string>("CodesWarehouses");
             if (!string.IsNullOrEmpty(tempstr)) Config.CodesWarehouses = JsonConvert.DeserializeObject<List<int>>(tempstr);
             FileLogger.TypeLog = db.GetConfig<eTypeLog>("TypeLog");
-            c=Connector.Connector.GetInstance();
+            c=Connector.ConnectorBase.GetInstance();
 
 
         }

@@ -41,7 +41,7 @@ namespace BRB6.View
             NokeyBoard();
             DocId = pDocId;
             TypeDoc = pTypeDoc != null ? pTypeDoc : Config.GetDocSetting(pDocId.TypeDoc);
-            c = Connector.GetInstance();
+            c = ConnectorBase.GetInstance();
             var tempListWares = db.GetDocWares(pDocId, 2, eTypeOrder.Scan);
             foreach (var t in tempListWares) { t.Ord = -1; }
             ListWares = tempListWares == null ? new ObservableCollection<DocWaresEx>() : new ObservableCollection<DocWaresEx>(tempListWares);

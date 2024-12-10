@@ -2,6 +2,7 @@
 using BL.Connector;
 using BRB5;
 using BRB5.Model;
+using BRB5.Model.DB;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using SQLite;
@@ -14,6 +15,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using Utils;
+using static System.Net.Mime.MediaTypeNames;
 
 
 
@@ -223,20 +225,28 @@ CREATE TABLE RaitingDocItem(
 );
 CREATE UNIQUE INDEX RaitingDocItemId ON RaitingDocItem (TypeDoc,NumberDoc,Id);
 
-
-CREATE TABLE DocWaresExpiration (   
+CREATE TABLE DocWaresExpirationSample ( 
     NumberDoc   TEXT,
-    DocId      TEXT NOT NULL,
-    OrderDoc    INTEGER         NOT NULL,
+    DocId      TEXT NOT NULL,    
     CodeWares   INTEGER         NOT NULL,
     Quantity     NUMBER, 
-    ExpirationDate TIMESTAMP,    
-    QuantityInput     NUMBER,  
-    ExpirationDateInput TIMESTAMP,
+    ExpirationDate TIMESTAMP,
     Expiration NUMBER,
     DaysLeft TEXT
 );
-CREATE UNIQUE INDEX DocWaresExpirationTNC ON DocWaresExpiration (NumberDoc,DocId,OrderDoc, CodeWares);
+CREATE UNIQUE INDEX DocWaresExpirationSampleTNC ON DocWaresExpirationSample 
+        (NumberDoc, DocId, CodeWares);
+
+CREATE TABLE DocWaresExpiration(   
+    DateDoc    DATE  NOT NULL,
+    NumberDoc   TEXT,
+    DocId      TEXT NOT NULL,   
+    CodeWares   INTEGER         NOT NULL,    
+    QuantityInput     NUMBER,  
+    ExpirationDateInput TIMESTAMP
+);
+CREATE UNIQUE INDEX DocWaresExpirationTNC ON DocWaresExpiration (DateDoc, NumberDoc, DocId, CodeWares);
+
 ";
 
         public string PathNameDB { get { return Path.Combine(BaseDir, NameDB); } }
@@ -787,12 +797,100 @@ and bc.BarCode=?
             return db.Query<PrintBlockItems>(Sql);
         }
 
+        
+        public bool ReplaceDocWaresExpirationSample(IEnumerable<DocWaresExpirationSample> pDWS)
+        {
+            db.Execute("delete from DocWaresExpirationSample");
+            //string Sql = @"replace into DocWaresExpirationSample ( NumberDoc, DocId, CodeWares, Quantity, ExpirationDate, Expiration, DaysLeft) values 
+            //                                                     (@NumberDoc,@DocId,@CodeWares,@Quantity,@ExpirationDate,@Expiration,@DaysLeft)";
+            return db.ReplaceAll(pDWS) >= 0;
+        }
+
+        
+
         public bool ReplaceDocWaresExpiration(IEnumerable<DocWaresExpiration> pDWS)
         {
             db.Execute("delete from DocWaresExpiration");
-            string Sql = @"replace into DocWaresExpiration ( NumberDoc, DocId, OrderDoc, CodeWares, Quantity, ExpirationDateInput, QuantityInput, ExpirationDate, Expiration, DaysLeft) values 
-                                                           (@NumberDoc,@DocId,@OrderDoc,@CodeWares,@Quantity,@ExpirationDateInput,@QuantityInput,@ExpirationDate,@Expiration,@DaysLeft)";
+            string Sql = @"replace into DocWaresExpiration ( DateDoc, NumberDoc, DocId, CodeWares,  ExpirationDateInput, QuantityInput) values 
+                                                           (@DateDoc,@NumberDoc,@DocId,@CodeWares,@ExpirationDateInput,@QuantityInput)";
             return db.ReplaceAll(pDWS) >= 0;
-        }    
+        }
+
+        public ExpirationDateElementVM GetScanDataExpiration(string pNumberDoc, ParseBarCode pParseBarCode)
+        {
+            ExpirationDateElementVM res = null;
+            //Cursor mCur = null;
+            string sql;
+
+            if (pParseBarCode == null)
+                return null;
+            try
+            {
+                    if (pParseBarCode.BarCode != null)
+                    {
+                        sql = $@"select w.CODEWARES as CodeWares,w.NAMEWARES as NameWares,au.COEFFICIENT as Coefficient,bc.CODEUNIT as CodeUnit, ud.ABRUNIT as NameUnit,
+                                 bc.BARCODE as BarCode ,w.CODEUNIT as BaseCodeUnit 
+                                from BARCODE bc 
+                                join ADDITIONUNIT au on bc.CODEWARES=au.CODEWARES and au.CODEUNIT=bc.CODEUNIT 
+                                join wares w on w.CODEWARES=bc.CODEWARES 
+                                join UNITDIMENSION ud on bc.CODEUNIT=ud.CODEUNIT 
+                                where bc.BARCODE=?";
+                        var r = db.Query<ExpirationDateElementVM>(sql, pParseBarCode.BarCode);
+                        if (r != null && r.Count() == 1)
+                            res = r.First();
+                        // Пошук по штрихкоду виробника
+                        if (pParseBarCode.BarCode.Length == 13 && res == null)
+                        {
+                            sql = $@"select bc.codewares as CodeWares,bc.BARCODE as BarCode from BARCODE bc 
+                                     join wares w on bc.codewares=w.codewares and w.codeunit={Config.GetCodeUnitWeight}
+                                     where substr(bc.BARCODE,1,6)=?";
+                            var rr = db.Query<ExpirationDateElementVM>(sql, pParseBarCode.BarCode.Substring(0, 6));
+
+                            foreach (var el in rr)
+                            {
+                                if (pParseBarCode.BarCode.Substring(0, el.BarCode.Length).Equals(el.BarCode))
+                                {
+                                    pParseBarCode.CodeWares = el.CodeWares;
+                                    decimal Quantity = 0m;
+                                    Decimal.TryParse(pParseBarCode.BarCode.Substring(8, 12), out Quantity);
+                                    pParseBarCode.Quantity = Quantity;
+                                    res = GetScanDataExpiration(pNumberDoc, pParseBarCode);//CodeWares, pIsOnlyBarCode,false);                                                                  
+                                }
+                            }
+                        }
+                        //if (res != null) res.ParseBarCode = pParseBarCode;
+                        // return res;
+                    }
+                
+                // Пошук по коду
+                if (res == null && (pParseBarCode.CodeWares > 0 || pParseBarCode.Article > 0))
+                {
+                    String Find = pParseBarCode.CodeWares > 0 ? $"w.code_wares={pParseBarCode.CodeWares}" : $"w.ARTICL='{pParseBarCode.Article:D8}'";
+                    sql = @"select  DES.NumberDoc,DES.DocId, w.CodeWares,w.NAMEWARES as NameWares, au.COEFFICIENT as Coefficient,w.CODEUNIT as CodeUnit, ud.ABRUNIT as NameUnit,
+                            ( select group_concat(bc.BarCode,',') from BarCode bc where bc.CodeWares=w.CodeWares ) as BARCODE  ,w.CODEUNIT as BaseCodeUnit,
+                            des.Quantity,des.Expiration,des.ExpirationDate,des.DaysLeft
+                                from WARES w 
+                                join ADDITIONUNIT au on w.CODEWARES=au.CODEWARES and au.CODEUNIT=w.CODEUNIT 
+                                join UNITDIMENSION ud on w.CODEUNIT=ud.CODEUNIT 
+                                join DocWaresExpirationSample DES on w.CodeWares=DES.CodeWares
+                                left join DocWaresExpiration DE on DES.CodeWares=DE.CodeWares and DE.DocId=DES.DocId                                
+                                where DE.CodeWares is null and" + Find;
+                    var r = db.Query<ExpirationDateElementVM>(sql);
+                    if (r != null && r.Count() == 1)
+                    {
+                        // @TypeDoc as TypeDoc, @NumberDoc as NumberDoc,
+                        res = r.First();
+                    }
+
+                }
+
+            }
+            catch (Exception e)
+            {
+                //Utils.WriteLog("e", TAG, "GetScanData >>", e);
+            }
+            return res;
+           
+        }
     }
 }

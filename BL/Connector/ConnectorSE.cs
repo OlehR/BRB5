@@ -15,6 +15,8 @@ using System.Threading.Tasks;
 using System.Net.NetworkInformation;
 using System.Security.Cryptography;
 using System.Threading;
+using System.Drawing;
+using BRB5.Model.DB;
 
 namespace BL.Connector
 {
@@ -28,8 +30,13 @@ namespace BL.Connector
         public int userId { get; set; }
         public string userName { get; set; }
     }
-    public class ConnectorSE : Connector
+    public class ConnectorSE : ConnectorBase
     {
+
+        public ConnectorSE()
+        {
+            PercentColor = new PercentColor[4] { new PercentColor(10, Color.Green, "72301609"), new PercentColor(25, Color.Yellow, "72301616"), new PercentColor(50, Color.Orange, "72301623"), new PercentColor(75, Color.Pink, "72301630") };
+        }
         /// <summary>
         /// Список Документів доступних по ролі
         /// </summary>
@@ -607,14 +614,14 @@ namespace BL.Connector
             return null;
         }
 
-        public override async Task<IEnumerable<DocWaresExpiration>> GetExpirationDateAsync(int pCodeWarehouse)
+        public override async Task<IEnumerable<DocWaresExpirationSample>> GetExpirationDateAsync(int pCodeWarehouse)
         {
             //HttpResult result = Http.HTTPRequest(0, "GetExpirationDate", pCodeWarehouse.ToString(), null, null, null);
             HttpResult result = await Http.HTTPRequestAsync("http://192.168.99.243", "/DCT/GetExpirationDate", pCodeWarehouse.ToString(), null, null);
  
             if (result.HttpState == eStateHTTP.HTTP_OK)
             {
-                var res = JsonConvert.DeserializeObject<IEnumerable<DocWaresExpiration>>(result.Result);
+                var res = JsonConvert.DeserializeObject<IEnumerable<DocWaresExpirationSample>>(result.Result);
                 return res;
             }  
             return null;

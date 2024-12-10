@@ -6,6 +6,10 @@ using Microsoft.Maui.Controls.Compatibility;
 using BRB5;
 using Grid = Microsoft.Maui.Controls.Grid;
 using BarcodeScanning;
+using Newtonsoft.Json;
+using BRB5.Model.DB;
+
+
 #if ANDROID
 using Android.Views;
 #endif
@@ -14,7 +18,7 @@ namespace BRB6.View
 {
     public partial class ExpirationDate
     {
-        private Connector c = Connector.GetInstance();
+        private Connector c = ConnectorBase.GetInstance();
         //private TypeDoc TypeDoc;
         DB db = DB.GetDB();
         BL.BL Bl = BL.BL.GetBL();
@@ -41,15 +45,21 @@ namespace BRB6.View
             _MyDocsR = new ObservableCollection<DocVM>() 
             { 
                 new DocVM() { NumberDoc = "3", Description = "Нефреш"},
-                new DocVM() { NumberDoc = "2", Description = "Фреш"},
-                new DocVM() { NumberDoc = "0", Description = "Добавити"}
+                new DocVM() { NumberDoc = "2", Description = "Фреш"}               
             };
 
             InitializeComponent();
             _ = Task.Run(async () =>
             {
-                var r = await c.GetExpirationDateAsync(Config.CodeWarehouse);
-                db.ReplaceDocWaresExpiration(r);
+                try { 
+                 var res = JsonConvert.DeserializeObject<IEnumerable<DocWaresExpirationSample>>(DataJson.ExpirationWares);
+
+                //await c.GetExpirationDateAsync(Config.CodeWarehouse);
+                db.ReplaceDocWaresExpirationSample(res);
+            }catch(Exception e)
+                {
+                    Console.WriteLine(e.Message);
+                }
             });           
         }
 
@@ -108,7 +118,7 @@ namespace BRB6.View
         {
             var s = sender as Grid;
             var vDoc = s.BindingContext as DocVM;
-            await Navigation.PushAsync(new ExpirationDateElement());
+            await Navigation.PushAsync(new ExpiretionDateItem(vDoc));
         }
 
         private void ZKPO(object sender, EventArgs e)

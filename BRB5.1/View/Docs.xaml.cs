@@ -14,7 +14,7 @@ namespace BRB6.View
 {
     public partial class Docs
     {
-        private Connector c = Connector.GetInstance();
+        private Connector c = ConnectorBase.GetInstance();
         private TypeDoc TypeDoc;
         DB db = DB.GetDB();
         BL.BL Bl = BL.BL.GetBL();

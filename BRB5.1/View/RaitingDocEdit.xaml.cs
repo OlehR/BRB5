@@ -41,7 +41,7 @@ namespace BRB6.View
         public RaitingDocEdit (DocVM doc, TypeDoc vTypeDoc)
 		{
 			InitializeComponent ();
-            c = Connector.GetInstance();
+            c = ConnectorBase.GetInstance();
             RD = doc;
             TypeDoc = vTypeDoc;
             SelectedTemplate = RT.FindIndex(t => t.IdTemplate == RD.IdTemplate);

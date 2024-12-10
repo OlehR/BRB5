@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Linq;
 using BRB5;
+using BL.Connector;
 
 namespace BL
 {
@@ -18,7 +19,7 @@ namespace BL
         }
 
         public DB db = DB.GetDB();
-        public Connector.Connector c = Connector.Connector.GetInstance();
+        public BRB5.Model.Connector c = ConnectorBase.GetInstance();
         public void SendLogPrice()
         {
             for (int i = 0; i < 20; i++)

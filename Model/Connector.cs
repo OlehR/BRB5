@@ -1,46 +1,21 @@
 ﻿using BRB5;
-using BRB5.Model;
+using BRB5.Model.DB;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BL.Connector
+namespace BRB5.Model
 {
     public class ObservableInt { }
     public class Connector
     {
-        protected static string TAG = "BRB5/Connector";
-        
-        private static Connector Instance = null;
+        protected static string TAG = "BRB5.Model/Connector";
+        protected static Connector Instance = null;
         public Action<string> OnSave { get; set; }
         public volatile bool IsStopSave  = false;
         public volatile bool IsSaving = false;
-        protected DB db = DB.GetDB();
-        protected GetDataHTTP Http = GetDataHTTP.GetInstance();
-
-        public static Connector GetInstance()
-        {
-            if (Instance == null || Instance is Connector)
-            {
-                switch (Config.Company)
-                {
-                    case eCompany.Sim23:
-                        Instance = new ConnectorSE();
-                        break;
-                    case eCompany.Sim23FTP:
-                        Instance = new ConnectorSE_FTP();
-                        break;
-                    case eCompany.SparPSU:
-                    case eCompany.VPSU:
-                        Instance = new ConnectorPSU();
-                        break; 
-                       default: Instance = new ConnectorPSU();
-                        break;
-                }
-            }
-            return Instance;
-        }
 
         //Логін
         public virtual Task<Result> LoginAsync(string pLogin, string pPassWord, eLoginServer pLoginServer) { throw new NotImplementedException(); }
@@ -130,7 +105,10 @@ namespace BL.Connector
         public virtual async Task<Result<IEnumerable<Doc>>> GetRaitingDocsAsync() { throw new NotImplementedException(); }
         public virtual Result<IEnumerable<DocVM>> GetPromotion(int pCodeWarehouse) { throw new NotImplementedException(); }
         public virtual Result<IEnumerable<DocWares>> GetPromotionData(string pNumberDoc) { throw new NotImplementedException(); }
-        public virtual async Task<IEnumerable<DocWaresExpiration>> GetExpirationDateAsync(int pCodeWarehouse) { throw new NotImplementedException(); }        
+        public virtual async Task<IEnumerable<DocWaresExpirationSample>> GetExpirationDateAsync(int pCodeWarehouse) { throw new NotImplementedException(); }
+
+        static public PercentColor[] PercentColor = new PercentColor[0];
+        
     }
 
     public class LoginServer

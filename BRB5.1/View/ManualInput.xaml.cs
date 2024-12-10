@@ -10,7 +10,7 @@ namespace BRB6.View
     {
         private readonly TypeDoc TypeDoc;
         private DocVM Doc;
-        private Connector c = Connector.GetInstance();
+        private Connector c = ConnectorBase.GetInstance();
         protected DB db = DB.GetDB();
         public bool IsSoftKeyboard { get { return Config.IsSoftKeyboard; } }
         public ObservableCollection<DocWaresEx> DocWares { get; set; } = new ObservableCollection<DocWaresEx>();

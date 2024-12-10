@@ -19,7 +19,7 @@ namespace BL.Connector
         public int IdTempate { get; set; }
     }
 
-    public class ConnectorSE_FTP : Connector
+    public class ConnectorSE_FTP : ConnectorBase
     {
 
         //DB Db = new DB();

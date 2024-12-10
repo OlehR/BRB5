@@ -11,8 +11,8 @@
     </ContentPage.Resources>
     <VerticalStackLayout >
         <VerticalStackLayout BackgroundColor="LightCoral" Padding="5">
-            <Label Text="назва" FontSize="Large" FontAttributes="Bold"/>
-            <Label Text="штихкод" FontSize="Large" />
+            <Label Text="{Binding NameWares}" FontSize="Large" FontAttributes="Bold"/>
+            <Label Text="{Binding BarCode}" FontSize="Large" />
             <HorizontalStackLayout Spacing="20">
                 <Label Text="артикул" FontSize="Medium"  />
 

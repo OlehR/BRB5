@@ -26,7 +26,7 @@ namespace BRB6.View
         public WareInfo(ParseBarCode parseBarCode)
         {
             InitializeComponent();
-            c = Connector.GetInstance();
+            c = ConnectorBase.GetInstance();
             // TODO Xamarin.Forms.Device.RuntimePlatform is no longer supported. Use Microsoft.Maui.Devices.DeviceInfo.Platform instead. For more details see https://learn.microsoft.com/en-us/dotnet/maui/migration/forms-projects#device-changes
             NavigationPage.SetHasNavigationBar(this, DeviceInfo.Platform == DevicePlatform.iOS);            
             WP = c.GetPrice(parseBarCode, eTypePriceInfo.Full);           

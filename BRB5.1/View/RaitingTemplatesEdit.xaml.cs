@@ -21,7 +21,7 @@ namespace BRB6.View
         public RaitingTemplatesEdit()
         {
             InitializeComponent();
-            c = Connector.GetInstance();
+            c = ConnectorBase.GetInstance();
             this.BindingContext = this;
         }
         protected override void OnAppearing()

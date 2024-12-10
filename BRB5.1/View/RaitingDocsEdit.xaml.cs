@@ -20,7 +20,7 @@ namespace BRB6.View
 			InitializeComponent ();
             TypeDoc = vTypeDoc;
             TypeDoc.CodeDoc = 11;
-            c = Connector.GetInstance();  
+            c = ConnectorBase.GetInstance();  
             this.BindingContext = this;
         }
         protected override void OnAppearing()

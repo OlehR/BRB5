@@ -20,7 +20,7 @@ namespace BRB6
         {
             TypeDoc = pTypeDoc;
             _ = LocationBrb.GetCurrentLocation(db.GetWarehouse());
-            c = Connector.GetInstance();
+            c = ConnectorBase.GetInstance();
             InitializeComponent();
             Routing.RegisterRoute(nameof(RaitingDocItem), typeof(RaitingDocItem));
             // TODO Xamarin.Forms.Device.RuntimePlatform is no longer supported. Use Microsoft.Maui.Devices.DeviceInfo.Platform instead. For more details see https://learn.microsoft.com/en-us/dotnet/maui/migration/forms-projects#device-changes

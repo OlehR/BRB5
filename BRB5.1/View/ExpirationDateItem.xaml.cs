@@ -10,7 +10,7 @@ using Android.Views;
 
 namespace BRB6.View
 {
-    public partial class DocItem 
+    public partial class ExpiretionDateItem 
     {
         private readonly TypeDoc TypeDoc;
         
@@ -33,10 +33,9 @@ namespace BRB6.View
         bool _IsVisibleDocF6 = false;
         public bool IsVisibleDocF6 { get { return _IsVisibleDocF6; } set { _IsVisibleDocF6 = value; OnPropertyChanged("IsVisibleDocF6"); } } 
         public ObservableCollection<DocWaresEx> MyDocWares { get; set; } = new ObservableCollection<DocWaresEx>();
-        public DocItem(DocId pDocId,  TypeDoc pTypeDoc)
+        public ExpiretionDateItem(DocId pDocId)
         {
-            NokeyBoard();
-            TypeDoc = pTypeDoc;
+            NokeyBoard();           
             Doc = new DocVM(pDocId);           
             BindingContext = this;
             InitializeComponent();
@@ -120,17 +119,5 @@ namespace BRB6.View
            }
          }
 #endif
-    }
-    public class AlternateColorDataTemplateSelector : DataTemplateSelector
-    {
-        public DataTemplate EvenTemplate { get; set; }
-        public DataTemplate UnevenTemplate { get; set; }
-
-        private int indexer = 0;
-        protected override DataTemplate OnSelectTemplate(object item, BindableObject container)
-        {
-            // TODO: Maybe some more error handling here
-            return indexer++ % 2 == 0 ? EvenTemplate : UnevenTemplate;
-        }
-    }
+    }    
 }

@@ -12,7 +12,7 @@ using BRB5;
 
 namespace BL.Connector
 {
-    public class ConnectorPSU : Connector
+    public class ConnectorPSU : ConnectorBase
     {
         public override IEnumerable<LoginServer> LoginServer() { return new List<LoginServer>()
             {new  LoginServer (){Code=eLoginServer.Central,Name = "ЦБ"}}; }

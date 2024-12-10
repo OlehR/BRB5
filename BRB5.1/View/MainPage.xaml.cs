@@ -133,7 +133,7 @@ namespace BRB6
             _ = LocationBrb.GetCurrentLocation(db.GetWarehouse());
             Login = db.GetConfig<string>("Login");
             Bl.Init();
-            c = Connector.GetInstance();
+            c = ConnectorBase.GetInstance();
             if (c != null)
             {
                 LS = c.LoginServer();

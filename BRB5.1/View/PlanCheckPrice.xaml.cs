@@ -17,7 +17,7 @@ namespace BRB6.View
         public PlanCheckPrice()
         {
             InitializeComponent();
-            c = Connector.GetInstance();
+            c = ConnectorBase.GetInstance();
 
             var temp = c.GetPromotion(Config.CodeWarehouse);
             if (temp.Info == null)
