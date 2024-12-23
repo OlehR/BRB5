@@ -879,7 +879,7 @@ and bc.BarCode=?
                 if (res == null && (pParseBarCode.CodeWares > 0 || pParseBarCode.Article > 0))
                 {
                     String Find = pParseBarCode.CodeWares > 0 ? $"w.code_wares={pParseBarCode.CodeWares}" : $"w.ARTICL='{pParseBarCode.Article:D8}'";
-                    sql = @"select  DES.NumberDoc,DES.DocId, w.CodeWares,w.NAMEWARES as NameWares, au.COEFFICIENT as Coefficient,w.CODEUNIT as CodeUnit, ud.ABRUNIT as NameUnit,
+                    sql = $@"select  DES.NumberDoc,DES.DocId, w.CodeWares,w.NAMEWARES as NameWares, au.COEFFICIENT as Coefficient,w.CODEUNIT as CodeUnit, ud.ABRUNIT as NameUnit,
                             ( select group_concat(bc.BarCode,',') from BarCode bc where bc.CodeWares=w.CodeWares ) as BARCODE  ,w.CODEUNIT as BaseCodeUnit,
                             des.Quantity,des.Expiration,des.ExpirationDate,des.DaysLeft
                                 from WARES w 
@@ -887,13 +887,28 @@ and bc.BarCode=?
                                 join UNITDIMENSION ud on w.CODEUNIT=ud.CODEUNIT 
                                 join DocWaresExpirationSample DES on w.CodeWares=DES.CodeWares
                                 left join DocWaresExpiration DE on DES.CodeWares=DE.CodeWares and DE.DocId=DES.DocId                                
-                                where DE.CodeWares is null and " + Find;
+                                where DE.CodeWares is null and DES.NumberDoc = {pNumberDoc} and " + Find+ @"
+                            order by des.ExpirationDate";
                     var r = db.Query<ExpirationDateElementVM>(sql);
-                    if (r != null && r.Count() == 1)
+                    if (r != null && r.Count() >= 1)
                     {
                         // @TypeDoc as TypeDoc, @NumberDoc as NumberDoc,
                         res = r.First();
                     }
+                    if (res == null)
+                    {
+                        sql = $@"select  {pNumberDoc} NumberDoc,0 as DocId, w.CodeWares,w.NAMEWARES as NameWares, au.COEFFICIENT as Coefficient,w.CODEUNIT as CodeUnit, ud.ABRUNIT as NameUnit,
+                            ( select group_concat(bc.BarCode,',') from BarCode bc where bc.CodeWares=w.CodeWares ) as BARCODE  ,w.CODEUNIT as BaseCodeUnit,
+                            0 as Quantity, --des.Expiration,des.ExpirationDate,
+                            w.DaysLeft
+                                from WARES w 
+                                join ADDITIONUNIT au on w.CODEWARES=au.CODEWARES and au.CODEUNIT=w.CODEUNIT 
+                                join UNITDIMENSION ud on w.CODEUNIT=ud.CODEUNIT                                                               
+                                where DE.CodeWares is null and " + Find + @"
+                            order by des.ExpirationDate";
+
+                    }
+
 
                 }
 
@@ -908,15 +923,16 @@ and bc.BarCode=?
 
         public IEnumerable<ExpirationDateElementVM> GetDataExpiration(string pNumberDoc)
         {
-            string sql = @"select  DES.NumberDoc,DES.DocId, w.CodeWares,w.NAMEWARES as NameWares, au.COEFFICIENT as Coefficient,w.CODEUNIT as CodeUnit, ud.ABRUNIT as NameUnit,
-                            ( select group_concat(bc.BarCode,',') from BarCode bc where bc.CodeWares=w.CodeWares ) as BARCODE  ,w.CODEUNIT as BaseCodeUnit,
+            string sql = @"select  DES.NumberDoc,DES.DocId, w.CodeWares,w.NameWares as NameWares, au.Coefficient as Coefficient,w.CodeUnit as CodeUnit, ud.ABRUNIT as NameUnit,
+                            ( select group_concat(bc.BarCode,',') from BarCode bc where bc.CodeWares=w.CodeWares ) as BARCODE  ,w.CodeUnit as BaseCodeUnit,
                             des.Quantity,des.Expiration,des.ExpirationDate,des.DaysLeft
                                 from WARES w 
                                 join ADDITIONUNIT au on w.CODEWARES=au.CODEWARES and au.CODEUNIT=w.CODEUNIT 
                                 join UNITDIMENSION ud on w.CODEUNIT=ud.CODEUNIT 
                                 join DocWaresExpirationSample DES on w.CodeWares=DES.CodeWares
                                 left join DocWaresExpiration DE on DES.CodeWares=DE.CodeWares and DE.DocId=DES.DocId                                
-                                where DES.NumberDoc = ?";
+                                where DES.NumberDoc = ?
+                                order by case when DE.CodeWares is null then 1 else 0 end, w.NameWares";
             try
             {
                 return db.Query<ExpirationDateElementVM>(sql,  pNumberDoc );
