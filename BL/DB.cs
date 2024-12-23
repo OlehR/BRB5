@@ -821,12 +821,9 @@ and bc.BarCode=?
 
 
 
-        public bool ReplaceDocWaresExpiration(IEnumerable<DocWaresExpiration> pDWS)
+        public bool ReplaceDocWaresExpiration(DocWaresExpiration pDWS)
         {
-            db.Execute("delete from DocWaresExpiration");
-            //string Sql = @"replace into DocWaresExpiration ( DateDoc, NumberDoc, DocId, CodeWares,  ExpirationDateInput, QuantityInput) values 
-            //                                               (@DateDoc,@NumberDoc,@DocId,@CodeWares,@ExpirationDateInput,@QuantityInput)";
-            return db.ReplaceAll(pDWS) >= 0;
+            return db.InsertOrReplace(pDWS) >= 0;
         }
 
         public ExpirationDateElementVM GetScanDataExpiration(string pNumberDoc, ParseBarCode pParseBarCode)

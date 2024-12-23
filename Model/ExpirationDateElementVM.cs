@@ -74,8 +74,10 @@ namespace BRB5.Model
                 return "#fff3cd";
             }
         }
-            //public string GetBackgroundColor { get { return "#fff3cd"; } }
-        
-        
+        //public string GetBackgroundColor { get { return "#fff3cd"; } }
+        public DocWaresExpiration GetDocWaresExpiration()
+        {
+            return new DocWaresExpiration() { CodeWares = CodeWares, DocId = DocId, DateDoc = DateTime.Today, NumberDoc = NumberDoc, QuantityInput = QuantityInput, ExpirationDateInput = ExpirationDateInput };
+        }
     }
 }
