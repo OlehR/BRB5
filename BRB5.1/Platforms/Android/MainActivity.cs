@@ -46,7 +46,8 @@ namespace BRB6
             try
             {
             ///!!!!=TMP копіювання бази
-                string path1 = Config.PathDownloads; //Path.Combine(Android.OS.Environment.ExternalStorageDirectory.AbsolutePath, Android.OS.Environment.DirectoryDownloads);
+                string path1 = // Config.PathDownloads; //
+                                                     Path.Combine(Android.OS.Environment.ExternalStorageDirectory.AbsolutePath, Android.OS.Environment.DirectoryDownloads);
 
                 var FileDestination = Path.Combine(path1, "brb5.db");
                 if (File.Exists(FileDestination)) File.Delete(FileDestination);

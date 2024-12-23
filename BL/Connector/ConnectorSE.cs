@@ -46,14 +46,15 @@ namespace BL.Connector
         {
             var Res = new List<TypeDoc>();
             if (pLS == eLoginServer.Local)
-                Res.Add( new TypeDoc() { CodeDoc = 0, KindDoc = eKindDoc.PriceCheck, NameDoc = "Прайсчекер" });
+                Res.Add(new TypeDoc() { CodeDoc = 0, KindDoc = eKindDoc.PriceCheck, NameDoc = "Прайсчекер" });
             if (pLS == eLoginServer.Bitrix)
             {
                 Res.Add(new TypeDoc() { CodeDoc = 11, KindDoc = eKindDoc.RaitingDoc, NameDoc = "Опитування", DayBefore = 4 });
                 Res.Add(new TypeDoc() { CodeDoc = -1, KindDoc = eKindDoc.RaitingTempate, NameDoc = "Шаблони Опитування" });
-                Res.Add(new TypeDoc() { CodeDoc = 12, KindDoc = eKindDoc.RaitingTemplateCreate, NameDoc = "Керування Опитуваннями" });
-                Res.Add(new TypeDoc() { CodeDoc = 100, KindDoc = eKindDoc.ExpirationDate, NameDoc = "Терміни придатності" });
+                Res.Add(new TypeDoc() { CodeDoc = 12, KindDoc = eKindDoc.RaitingTemplateCreate, NameDoc = "Керування Опитуваннями" });               
             }
+            if (pLS == eLoginServer.Central)
+                Res.Add(new TypeDoc() { CodeDoc = 100, KindDoc = eKindDoc.ExpirationDate, NameDoc = "Терміни придатності" });
             return Res;
         }
 
@@ -64,7 +65,7 @@ namespace BL.Connector
                 new  LoginServer (){Code=eLoginServer.Central,Name = "ЦБ"},
              new  LoginServer (){Code=eLoginServer.Bitrix,Name = "Бітрікс"}};//
         }
-        
+
         public override async Task<Result> LoginAsync(string pLogin, string pPassWord, eLoginServer pLoginServer)
         {
             Result Res = new Result();
@@ -107,7 +108,7 @@ namespace BL.Connector
                 HttpResult res = await Http.HTTPRequestAsync(pLoginServer == eLoginServer.Central ? 1 : 0, "login", "{\"login\" : \"" + pLogin + "\"}", "application/json", pLogin, pPassWord);
                 if (res.HttpState == eStateHTTP.HTTP_UNAUTHORIZED || res.HttpState == eStateHTTP.HTTP_Not_Define_Error)
                 {
-                    //Utils.WriteLog("e", TAG, "Login >>" + res.HttpState.toString());
+                    //Utils.WriteLog("e", TAG, "Login >>" + res.HttpState.ToString());
                     return new Result(-1, res.HttpState.ToString(), "Неправильний логін або пароль");
                 }
                 else if (res.HttpState != eStateHTTP.HTTP_OK)
@@ -125,8 +126,8 @@ namespace BL.Connector
                         if (r.State == 0)
                         {
                             Config.Role = (eRole)r.Profile;
-                            Config.CodeUser = r.data.userId;
-                            Config.NameUser = r.data.userName;
+                            Config.CodeUser = r.data?.userId ?? 0;
+                            Config.NameUser = r.data?.userName;
                             FileLogger.WriteLogMessage($"ConnectorPSU.Login=>(pLogin=>{pLogin}, pPassWord=>{pPassWord},pLoginServer=>{pLoginServer}) Res=>({Res.State},{Res.Info},{Res.TextError})", eTypeLog.Full);
                             return Res;
                         }
@@ -148,8 +149,63 @@ namespace BL.Connector
         }
 
         //Завантаження довідників.
-        public override async Task<Result> LoadGuidDataAsync(bool IsFull) { return new Result(); }
+        public override async Task<Result> LoadGuidDataAsync(bool pIsFull)
+        {
+            try
+            {
+                Config.OnProgress?.Invoke(5);
+                HttpResult res = await Http.HTTPRequestAsync(Config.IsLoginCO ? 1 : 0, "nomenclature", null, "application/json", Config.Login, Config.Password,60);//;charset=utf-8
 
+                if (res.HttpState == eStateHTTP.HTTP_OK)
+                {
+                    //Log.d(TAG, "LoadData=>" + res.Result.length());
+                    Config.OnProgress?.Invoke(0.4);
+                    InputData data = JsonConvert.DeserializeObject<InputData>(res.Result);
+                    // Log.d(TAG, "Parse JSON");
+                    Config.OnProgress?.Invoke(0.60);
+                    if (data.Nomenclature?.Any() == true)
+                        db.ReplaceWares(data.Nomenclature.Select(el => el.GetWares), pIsFull);
+                    //Log.d(TAG, "Nomenclature");
+                    Config.OnProgress?.Invoke(0.70);
+                    if (data.Units?.Any() == true)
+                        db.ReplaceAdditionUnit(data.Units.Select(el => el.GetAdditionUnit), pIsFull);
+                    //Log.d(TAG, "Units");
+                    Config.OnProgress?.Invoke(0.80);
+                    if (data.Barcodes?.Any() == true)
+                        db.ReplaceBarCode(data.Barcodes.Select(el => el.GetBarCode));
+                    //Log.d(TAG, "Barcodes");
+                    Config.OnProgress?.Invoke(0.90);
+                    db.ReplaceUnitDimension(data.Dimentions.Select(el => el.GetUnitDimension), pIsFull);
+                    //Log.d(TAG, "GroupWares");
+                    Config.OnProgress?.Invoke(0.95);
+                    if (data.Parents?.Any() == true)
+                    {
+                        foreach (GroupWares el in data.Parents?.Where(el => (el.CodeGroup == 26 || el.CodeGroup == 47)))
+                            el.IsAlcohol = true;
+                        db.ReplaceGroupWares(data.Parents, pIsFull);
+                    }
+                } //else Log.d(TAG, res.HttpState.name());
+
+                res = await Http.HTTPRequestAsync(1, "reasons", null, "application/json", Config.Login, Config.Password);
+                if (res.HttpState == eStateHTTP.HTTP_OK)
+                {
+                    Config.OnProgress?.Invoke(0.95);
+                    var Reasons = JsonConvert.DeserializeObject<IEnumerable<Reason>>(res.Result);
+                    db.ReplaceReason(Reasons.Select(el=>el.GetReason), pIsFull);
+                }
+
+                await GetDaysLeft();
+                Config.OnProgress?.Invoke(1);
+                return new Result();
+            }
+            catch (Exception e)
+            {
+                FileLogger.WriteLogMessage(this, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+                return new Result(e);
+                //            Toast toast = Toast.makeText(Config.instance().context, "Помилка завантаження довідників=>" + e.getMessage(), Toast.LENGTH_LONG);
+                //           toast.show();
+            }
+        }
 
         public override ParseBarCode ParsedBarCode(string pBarCode, bool pIsOnlyBarCode)
         {
@@ -189,7 +245,7 @@ namespace BL.Connector
             return new Result(res);
         }
 
-        public override async Task<Result> LoadDocsDataAsync(int pTypeDoc, string pNumberDoc,  bool pIsClear)
+        public override async Task<Result> LoadDocsDataAsync(int pTypeDoc, string pNumberDoc, bool pIsClear)
         {
             int temp = 0;
             var Res = new Result();
@@ -211,15 +267,22 @@ namespace BL.Connector
                         var p = JsonConvert.DeserializeObject<Data>(result2.Result, new IsoDateTimeConverter { DateTimeFormat = "dd.MM.yyyy HH:mm:ss" });
 
                         var Doc = p.data.Select(elp => new Doc()
-                                { TypeDoc = pTypeDoc, IdTemplate= elp.templateId, NumberDoc = elp.planId.ToString(), DateDoc = elp.date, CodeWarehouse = elp.shopId, Description =
-                                                                        t.data?.Where(el => el.templateId == elp.templateId)?.FirstOrDefault()?.templateName }).ToList();
+                        {
+                            TypeDoc = pTypeDoc,
+                            IdTemplate = elp.templateId,
+                            NumberDoc = elp.planId.ToString(),
+                            DateDoc = elp.date,
+                            CodeWarehouse = elp.shopId,
+                            Description =
+                                                                        t.data?.Where(el => el.templateId == elp.templateId)?.FirstOrDefault()?.templateName
+                        }).ToList();
                         db.ReplaceDoc(Doc);
 
-                        var RaitingTemplate = t.data.Select(el => new RaitingTemplate() { IdTemplate = el.templateId, Text = el.templateName  });
+                        var RaitingTemplate = t.data.Select(el => new RaitingTemplate() { IdTemplate = el.templateId, Text = el.templateName });
                         db.ReplaceRaitingTemplate(RaitingTemplate);
                         foreach (var item in t.data)
                         {
-                           // if (item.questions != null && item.sections != null)
+                            // if (item.questions != null && item.sections != null)
                             {
                                 try
                                 {
@@ -240,7 +303,7 @@ namespace BL.Connector
                             }
                         }
 
-              
+
 
                         /*
                         foreach (var elp in p.data)
@@ -272,8 +335,7 @@ namespace BL.Connector
                         return Res;
                     }
                     catch (Exception e)
-                    {
-                        var aa = temp;
+                    {                        
                         Res = new Result(-1, e.Message);
                         FileLogger.WriteLogMessage($"ConnectorPSU.LoadDocsData=>(pTypeDoc=>{pTypeDoc}, pNumberDoc=>{pNumberDoc},pIsClear=>{pIsClear}) Res=>({Res.State},{Res.Info},{Res.TextError})", eTypeLog.Error);
                         return Res;
@@ -282,7 +344,7 @@ namespace BL.Connector
             else
             {
                 var ds = Config.GetDocSetting(pTypeDoc);
-                String CodeWarehouse = Config.CodeWarehouse.ToString();
+                string CodeWarehouse = Config.CodeWarehouse.ToString();
 
                 int CodeApi = 0;
                 if (ds != null)
@@ -299,8 +361,8 @@ namespace BL.Connector
                         CodeWarehouse = Wh.Number;
                 }
 
-                String NameApi = "documents";
-                String AddPar = "";
+                string NameApi = "documents";
+                string AddPar = "";
                 if (pTypeDoc >= 8 && pTypeDoc <= 9)
                 {
                     NameApi = "docmoveoz";
@@ -327,7 +389,7 @@ namespace BL.Connector
 
                         if (pIsClear)
                         {
-                            // String sql = "DELETE FROM DOC; DELETE FROM DOC_WARES_sample; DELETE FROM DOC_WARES;";
+                            // string sql = "DELETE FROM DOC; DELETE FROM DOC_WARES_sample; DELETE FROM DOC_WARES;";
                             db.db.Execute("DELETE FROM DOC");
                             db.db.Execute("DELETE FROM DocWaresSample");
                             db.db.Execute("DELETE FROM DocWares");
@@ -350,18 +412,17 @@ namespace BL.Connector
                         db.ReplaceDocWaresSample(data.DocWaresSample);
 
                         Config.OnProgress?.Invoke(100);
+                        FileLogger.WriteLogMessage($"ConnectorPSU.LoadDocsData=>(pTypeDoc=>{pTypeDoc}, pNumberDoc=>{pNumberDoc},pIsClear=>{pIsClear}) Res=>({Res.State},{Res.Info},{Res.TextError})", eTypeLog.Full);
+
                         return Res;
                     }
-
                 }
                 catch (Exception e)
                 {
-                    //Utils.WriteLog("e", TAG, "LoadDocsData=>", e);
+                    FileLogger.WriteLogMessage(this, System.Reflection.MethodBase.GetCurrentMethod().Name, e);                    
                 }
                 return Res;
-            }
-            FileLogger.WriteLogMessage($"ConnectorPSU.LoadDocsData=>(pTypeDoc=>{pTypeDoc}, pNumberDoc=>{pNumberDoc},pIsClear=>{pIsClear}) Res=>({Res.State},{Res.Info},{Res.TextError})", eTypeLog.Full);
-            return Res;
+            }            
         }
 
         public override async Task<Result<IEnumerable<RaitingTemplate>>> GetRaitingTemplateAsync() { return null; }
@@ -397,7 +458,13 @@ namespace BL.Connector
                 RaitingDocItem e = pR.FirstOrDefault(d => d.Id == -1);
                 if (e == null || e.Id == 0)
                     e = pR.FirstOrDefault();
-                var r = new RequestSendRaiting() { userId = Config.CodeUser, action = "results", answers = RD, planId = int.Parse(e.NumberDoc), text = e.Note,
+                var r = new RequestSendRaiting()
+                {
+                    userId = Config.CodeUser,
+                    action = "results",
+                    answers = RD,
+                    planId = int.Parse(e.NumberDoc),
+                    text = e.Note,
                     dateStart = pDoc.DTStart,
                     dateEnd = pDoc.DTEnd
                 };
@@ -413,7 +480,7 @@ namespace BL.Connector
 
                 var sw = Stopwatch.StartNew();
 
-                HttpResult result =await Http.HTTPRequestAsync(2, "", data, "application/json",null,null,90);
+                HttpResult result = await Http.HTTPRequestAsync(2, "", data, "application/json", null, null, 90);
 
                 sw.Stop();
                 TimeSpan TimeLoad = sw.Elapsed;
@@ -428,9 +495,9 @@ namespace BL.Connector
                 else
                 {
                     var res = JsonConvert.DeserializeObject<AnswerSendRaiting>(result.Result);
-                    
+
                     if (res.success)
-                    {                      
+                    {
                         Res = await SendRaitingFilesAsync(e.NumberDoc);
                         OnSave?.Invoke($"Документ {pDoc.NumberDoc} Успішно відправлено");
                     }
@@ -444,12 +511,12 @@ namespace BL.Connector
                 OnSave?.Invoke($"Помилка збереження =>{Res.TextError}");
             }
             FileLogger.WriteLogMessage($"ConnectorPSU.SendRaiting=>(NumberDoc=>{pDoc.NumberDoc}) Res=>({Res.State},{Res.Info},{Res.TextError})");
-            
+
             return Res;
         }
         CultureInfo provider = CultureInfo.InvariantCulture;
-       
-        object Lock=new object();
+
+        object Lock = new object();
         /// <summary>
         /// Вивантажеємо на сервер файли Рейтингів
         /// pMaxSecondSend - скільки часу відправляти, 0 - без обмежень.
@@ -457,19 +524,19 @@ namespace BL.Connector
         /// </summary>
         /// <returns></returns>
         public override async Task<Result> SendRaitingFilesAsync(string pNumberDoc, int pTry = 2, int pMaxSecondSend = 0, int pSecondSkip = 0)
-        {            
+        {
             FileLogger.WriteLogMessage($"SendRaitingFiles Start pNumberDoc=>{pNumberDoc} pTry=>{pTry} pMaxSecondSend=>{pMaxSecondSend} pSecondSkip=>pSecondSkip", eTypeLog.Full);
 
             int i = 30;
-            while(IsSaving && i-->0)
+            while (IsSaving && i-- > 0)
             {
-              if (!IsStopSave) IsStopSave = true;
-              Thread.Sleep(500);
+                if (!IsStopSave) IsStopSave = true;
+                Thread.Sleep(500);
             }
             if (IsSaving)
             {
                 string mes = $"Збереження файлів зупинено, Оскільки попередне збереження не завершилось.";
-                FileLogger.WriteLogMessage(this, System.Reflection.MethodBase.GetCurrentMethod().Name,mes);
+                FileLogger.WriteLogMessage(this, System.Reflection.MethodBase.GetCurrentMethod().Name, mes);
                 OnSave?.Invoke(mes);
                 return new Result(-1, "StopSave", mes);
             }
@@ -478,7 +545,7 @@ namespace BL.Connector
                 IsSaving = true;
                 IsStopSave = false;
                 var StartTime = DateTime.Now;
-                
+
                 int Sucsses = 0, Error = 0;
                 Result LastError = null;
                 var Res = new Result();
@@ -500,7 +567,7 @@ namespace BL.Connector
                 i = 0;
                 OnSave?.Invoke($"Файлів для передачі=>{Files.Count()}");
                 foreach (var f in Files)
-                {                    
+                {
                     if (pMaxSecondSend > 0 && (DateTime.Now - StartTime).TotalSeconds > pMaxSecondSend) continue;
                     try
                     {
@@ -513,7 +580,8 @@ namespace BL.Connector
                             OnSave?.Invoke($"Файл пропущено=>{Path.GetFileName(f)}");
                             continue;
                         }
-                    }catch(Exception e)
+                    }
+                    catch (Exception e)
                     {
                         FileLogger.WriteLogMessage($"SendRaitingFiles Error=> {e.Message}", eTypeLog.Error);
                         OnSave?.Invoke($"помилка при передачі {Path.GetFileName(f)} Error=>{e.Message}");
@@ -529,7 +597,7 @@ namespace BL.Connector
                         var sw = Stopwatch.StartNew();
                         R.file = Convert.ToBase64String(File.ReadAllBytes(f));
                         R.fileExt = Path.GetExtension(f).Substring(1);
-                        R.questionId = int.Parse(Path.GetFileName(f).Split('_')[0]);                         
+                        R.questionId = int.Parse(Path.GetFileName(f).Split('_')[0]);
 
                         sw.Stop();
                         TimeSpan TimeLoad = sw.Elapsed;
@@ -537,7 +605,7 @@ namespace BL.Connector
                         string data = JsonConvert.SerializeObject(R);
                         HttpResult result = await Http.HTTPRequestAsync(2, "", data, "application/json", null, null, 60, false);
                         R.file = null;
-        
+
                         if (result.HttpState == eStateHTTP.HTTP_OK)
                         {
                             var res = JsonConvert.DeserializeObject<Answer>(result.Result);
@@ -548,7 +616,7 @@ namespace BL.Connector
                                 var FileTo = Path.Combine(DirArx, pNumberDoc, Path.GetFileName(f));
                                 File.Copy(f, FileTo, true);
                                 File.Delete(f);
-                                Sucsses++;                               
+                                Sucsses++;
                             }
                             else
                             {
@@ -557,8 +625,8 @@ namespace BL.Connector
                             }
                             sw.Stop();
                             TimeSpan TimeSend = sw.Elapsed;
-                            string text = res.success? $"[({i}:{Error})/{Files.Length}] {Path.GetFileName(f)}=> ({data.Length / (1024 * 1024 * TimeSend.TotalSeconds):n2}Mb/c;{((double)data.Length) / (1024d * 1024d):n2}Mb;{TimeSend.TotalSeconds:n1}c))":
-                               $"[({i},{Error})/{Files.Length}] Файл не передано=>{Path.GetFileName(f)}" ;
+                            string text = res.success ? $"[({i}:{Error})/{Files.Length}] {Path.GetFileName(f)}=> ({data.Length / (1024 * 1024 * TimeSend.TotalSeconds):n2}Mb/c;{((double)data.Length) / (1024d * 1024d):n2}Mb;{TimeSend.TotalSeconds:n1}c))" :
+                               $"[({i},{Error})/{Files.Length}] Файл не передано=>{Path.GetFileName(f)}";
                             OnSave?.Invoke(text);
                             FileLogger.WriteLogMessage(this, System.Reflection.MethodBase.GetCurrentMethod().Name, text, eTypeLog.Full);
                         }
@@ -578,13 +646,13 @@ namespace BL.Connector
                     }
                 }
                 Res = LastError ?? Res;
-                Res.TextError = (Error>0?$"Не вдалось відправити {Error} файлів{Environment.NewLine}" :"") + $"Успішно відправлено {Sucsses} файлів {Res.TextError}";
+                Res.TextError = (Error > 0 ? $"Не вдалось відправити {Error} файлів{Environment.NewLine}" : "") + $"Успішно відправлено {Sucsses} файлів {Res.TextError}";
 
-                OnSave?.Invoke(Error>0? $"Не передано=>{Error} з {Files.Count()}": $"Файли успішно передані =>{Files.Count()}");
-                
+                OnSave?.Invoke(Error > 0 ? $"Не передано=>{Error} з {Files.Count()}" : $"Файли успішно передані =>{Files.Count()}");
+
                 IsSaving = false;
-                if ( !IsStopSave && pTry > 1 && Error > 0 && (double)Error / (double)Files.Length < 0.25d)
-                    return await SendRaitingFilesAsync(pNumberDoc, --pTry);                
+                if (!IsStopSave && pTry > 1 && Error > 0 && (double)Error / (double)Files.Length < 0.25d)
+                    return await SendRaitingFilesAsync(pNumberDoc, --pTry);
                 return Res;
             }
             finally { IsSaving = false; }
@@ -599,7 +667,7 @@ namespace BL.Connector
             HttpResult result;
             try
             {
-                result = Http.HTTPRequest(1, "StoreSettings", "{}", "application/json","brb", "brb"); //charset=utf-8;
+                result = Http.HTTPRequest(1, "StoreSettings", "{}", "application/json", "brb", "brb"); //charset=utf-8;
 
                 if (result.HttpState == eStateHTTP.HTTP_OK)
                 {
@@ -618,14 +686,38 @@ namespace BL.Connector
         {
             //HttpResult result = Http.HTTPRequest(0, "GetExpirationDate", pCodeWarehouse.ToString(), null, null, null);
             HttpResult result = await Http.HTTPRequestAsync("http://192.168.99.243", "/DCT/GetExpirationDate", pCodeWarehouse.ToString(), null, null);
- 
+
             if (result.HttpState == eStateHTTP.HTTP_OK)
             {
                 var res = JsonConvert.DeserializeObject<IEnumerable<DocWaresExpirationSample>>(result.Result);
                 return res;
-            }  
+            }
+
+            result = await Http.HTTPRequestAsync("http://192.168.99.243", "/DCT/GetExpirationWares", null, null, null);
+          
+            if (result.HttpState == eStateHTTP.HTTP_OK)
+            {
+                //Config.OnProgress?.Invoke(0.95);
+                var Reasons = JsonConvert.DeserializeObject<IEnumerable<ExpirationWares>>(result.Result);
+                //db.ReplaceReason(Reasons.Select(el => el.GetReason), pIsFull);
+            }
+            Config.OnProgress?.Invoke(1);
+
             return null;
         }
+
+        public override async Task<IEnumerable<ExpirationWares>> GetDaysLeft()
+        {
+            HttpResult result = await Http.HTTPRequestAsync("http://192.168.99.243", "/DCT/GetExpirationDate", "", null, null);
+            if (result.HttpState == eStateHTTP.HTTP_OK)
+            {
+                var res = JsonConvert.DeserializeObject<IEnumerable<ExpirationWares>>(result.Result);
+                db.ReplaceExpirationWares(res);
+                return res;
+            }
+            return null;
+        }
+
     }
     class Answer
     {
@@ -741,7 +833,7 @@ namespace BL.Connector
     }
     public class LogPriceSE
     {
-        //public string GetJsonSE() { return "{\"Barcode\":\"" + BarCode + "\",\"Code\":\"" + CodeWares + "\",\"Status\":" + Status + ",\"LineNumber\":" + LineNumber + ",\"NumberOfReplenishment\":" + Double.tostring(NumberOfReplenishment) + "}"; }
+        //public string GetJsonSE() { return "{\"Barcode\":\"" + BarCode + "\",\"Code\":\"" + CodeWares + "\",\"Status\":" + Status + ",\"LineNumber\":" + LineNumber + ",\"NumberOfReplenishment\":" + Double.ToString(NumberOfReplenishment) + "}"; }
         public LogPriceSE(LogPrice pLP)
         {
             BarCode = pLP.BarCode;
@@ -775,26 +867,111 @@ namespace BL.Connector
     class InputWarehouse
     {
         public int Code { get; set; }
-        public String StoreCode { get; set; } //Number
-        public String Name { get; set; } //Url
-        public String Unit { get; set; } //Name
-        public String InternalIP { get; set; }
-        public String ExternalIP { get; set; }
-        public String latitude { get; set; }
-        public String longitude { get; set; }
+        public string StoreCode { get; set; } //Number
+        public string Name { get; set; } //Url
+        public string Unit { get; set; } //Name
+        public string InternalIP { get; set; }
+        public string ExternalIP { get; set; }
+        public string latitude { get; set; }
+        public string longitude { get; set; }
         public Warehouse GetWarehouse()
         {
-            return new Warehouse() { Code = Code, Number = StoreCode, Name = Unit, Url = Name, InternalIP = InternalIP, ExternalIP = ExternalIP,Location=$"{latitude},{longitude}"};
+            return new Warehouse() { Code = Code, Number = StoreCode, Name = Unit, Url = Name, InternalIP = InternalIP, ExternalIP = ExternalIP, Location = $"{latitude},{longitude}" };
         }
-
     }
     class InputDocs
     {
         public Doc[] Doc { get; set; }
         public DocWaresSample[] DocWaresSample { get; set; }
-
     }
 
 
+    class InputData
+    {
+        public IEnumerable<Nomenclature> Nomenclature { get; set; }
+        public IEnumerable<Units> Units { get; set; }
+        public IEnumerable<Barcode> Barcodes { get; set; }
+        public IEnumerable<UnitDimension> Dimentions { get; set; }
+        public IEnumerable<GroupWares> Parents { get; set; }
 
+    }
+    class Nomenclature
+    {
+        public string CODE_WARES { get; set; }//int
+        public string CodeGroup { get; set; }
+        public string NAME_WARES { get; set; }
+        public string ARTICL { get; set; }
+        public string CODE_UNIT { get; set; }//int
+        public string DESCRIPTION { get; set; }
+        public string VAT { get; set; }//int
+        public int VAT_OPERATION { get; set; } = 0;
+
+        public Wares GetWares
+        {
+            get
+            {
+                return new Wares()
+                {
+                    CodeWares = CODE_WARES.ToInt(),
+                    CodeGroup = CodeGroup.ToInt(),
+                    NameWares = NAME_WARES,
+                    Articl = ARTICL,
+                    CodeUnit = CODE_UNIT.ToInt(),
+                    Description = DESCRIPTION,
+                    Vat = VAT.ToInt(),
+                    VatOperation = VAT_OPERATION
+                };
+            }
+        }
+    }
+    class Units
+    {
+        public string CODE_WARES { get; set; }//
+        public string CODE_UNIT { get; set; }//
+        public string COEF_WARES { get; set; }//double
+        public BRB5.Model.DB.AdditionUnit GetAdditionUnit
+        {
+            get
+            {
+                return new BRB5.Model.DB.AdditionUnit()
+                { CodeWares = CODE_WARES.ToInt(), CodeUnit = CODE_UNIT.ToInt(), Coefficient = COEF_WARES.ToDecimal() };
+            }
+        }
+
+
+    }
+
+    public class Barcode
+    {
+        public string CODE_WARES { get; set; } //int
+        public string CODE_UNIT { get; set; } //int
+        public string BAR_CODE { get; set; }
+        public BRB5.Model.DB.BARCode GetBarCode { get { return new BARCode() { CodeWares = CODE_WARES.ToInt(), CodeUnit = CODE_UNIT.ToInt(), BarCode = BAR_CODE }; } }
+    }
+
+    public class UnitDimension
+    {
+        public string CODE_UNIT { get; set; }//
+        public string NAME_UNIT { get; set; }
+        public string ABR_UNIT { get; set; }
+        public string DESCRIPTION_TEXT { get; set; }
+
+        public BRB5.Model.DB.UnitDimension GetUnitDimension
+        {
+            get
+            {
+                return new BRB5.Model.DB.UnitDimension()
+                { CodeUnit = CODE_UNIT.ToInt(), NameUnit = NAME_UNIT, AbrUnit = ABR_UNIT, Description = DESCRIPTION_TEXT };
+            }
+        }
+    }
+
+    public class Reason
+    {
+        public int code { get; set; }
+        public string reason { get; set; }
+        public BRB5.Model.DB.Reason GetReason {get {return new BRB5.Model.DB.Reason() { CodeReason = code, NameReason = reason }; }}
+    }
 }
+
+

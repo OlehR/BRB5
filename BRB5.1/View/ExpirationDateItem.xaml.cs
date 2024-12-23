@@ -12,9 +12,10 @@ namespace BRB6.View
 {
     public partial class ExpiretionDateItem 
     {
-        private readonly TypeDoc TypeDoc;
-        
-        private DocVM Doc;
+        string NumberDoc;
+        //private readonly TypeDoc TypeDoc;
+
+        //private DocVM Doc;
         private Connector c = ConnectorBase.GetInstance(); 
         protected DB db = DB.GetDB();
         string _NumberOutInvoice = "";
@@ -23,8 +24,7 @@ namespace BRB6.View
             get { 
                 var list = new List<DataStr>();
                 for(int i=0; i<10; i++)
-                    list.Add(new DataStr(DateTime.Today.AddDays(-1 * i)));
-                
+                    list.Add(new DataStr(DateTime.Today.AddDays(-1 * i)));                
                 return list;
                 }
         }
@@ -32,13 +32,15 @@ namespace BRB6.View
         public bool IsSoftKeyboard { get {  return Config.IsSoftKeyboard; } }
         bool _IsVisibleDocF6 = false;
         public bool IsVisibleDocF6 { get { return _IsVisibleDocF6; } set { _IsVisibleDocF6 = value; OnPropertyChanged("IsVisibleDocF6"); } } 
-        public ObservableCollection<DocWaresEx> MyDocWares { get; set; } = new ObservableCollection<DocWaresEx>();
-        public ExpiretionDateItem(DocId pDocId)
+        public ObservableCollection<ExpirationDateElementVM> MyDocWares { get; set; } = new ObservableCollection<ExpirationDateElementVM>();
+        public ExpiretionDateItem(string pNumberDoc)
         {
+            NumberDoc=pNumberDoc;
             NokeyBoard();           
-            Doc = new DocVM(pDocId);           
+           // Doc = new DocVM(pDocId);           
             BindingContext = this;
             InitializeComponent();
+            Config.BarCode = BarCode;
         }
         protected override void OnAppearing()
         {
@@ -50,14 +52,14 @@ namespace BRB6.View
             MainActivity.Key+= OnPageKeyDown;
 #endif
             }
-            var r = db.GetDocWares(Doc, 1, eTypeOrder.Scan);
+            var r = db.GetDataExpiration(NumberDoc);
             if (r != null)
             {
                 MyDocWares.Clear();
                 int index = 0;
                 foreach (var item in r)
                 {
-                    item.Even = (index % 2 == 0);
+                    //item.Even = (index % 2 == 0);
                     MyDocWares.Add(item);
                     index++;
                 }
@@ -74,9 +76,21 @@ namespace BRB6.View
 #endif
             }
         }
+
+        public void Dispose() { Config.BarCode -= BarCode; }
+        void BarCode(string pBarCode) 
+        {            
+            Task.Run(async () =>
+            {
+                ParseBarCode pbc = c.ParsedBarCode(pBarCode, false);
+                var r = db.GetScanDataExpiration(NumberDoc, pbc);
+            MainThread.BeginInvokeOnMainThread (async() =>
+                await Navigation.PushAsync(new ExpirationDateElement(r)));
+            });
+        }
         private void F2Save(object sender, EventArgs e)
         {
-            Doc.NumberOutInvoice = NumberOutInvoice;
+         /*   Doc.NumberOutInvoice = NumberOutInvoice;
             Doc.DateOutInvoice = ListDataStr[SelectedDataStr].DateString;
             var r = c.SendDocsData(Doc, db.GetDocWares(Doc, 2, eTypeOrder.Scan));
             if (r.State != 0) _ = DisplayAlert("Помилка", r.TextError, "OK");
@@ -85,10 +99,10 @@ namespace BRB6.View
                 var toast = Toast.Make("Документ успішно збережений");
                 _ = toast.Show();
                 //_ = this.DisplayToastAsync("Документ успішно збережений");
-            }
+            }*/
         }
-        private async void F3Scan(object sender, EventArgs e) { await Navigation.PushAsync(new DocScan(Doc, TypeDoc)); }
-        private async void F4WrOff(object sender, EventArgs e) { await Navigation.PushAsync(new ManualInput(Doc, TypeDoc));  }
+        private async void F3Scan(object sender, EventArgs e) { /*await Navigation.PushAsync(new DocScan(Doc, TypeDoc)); */}
+        private async void F4WrOff(object sender, EventArgs e) { /*await Navigation.PushAsync(new ManualInput(Doc, TypeDoc)); */ }
         private void F6Doc(object sender, EventArgs e)
         {
             IsVisibleDocF6 = !IsVisibleDocF6;
@@ -99,7 +113,7 @@ namespace BRB6.View
 #if ANDROID
         public void OnPageKeyDown(Keycode keyCode, KeyEvent e)
         {
-           switch (keyCode)
+           /*switch (keyCode)
            {
             case Keycode.F2:
                F2Save(null, EventArgs.Empty);
@@ -116,7 +130,7 @@ namespace BRB6.View
 
             default:
                return;
-           }
+           }*/
          }
 #endif
     }    

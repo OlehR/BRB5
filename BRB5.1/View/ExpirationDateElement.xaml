@@ -62,9 +62,9 @@
                 <ColumnDefinition Width="1*"/>
                 <ColumnDefinition Width="2*"/>
             </Grid.ColumnDefinitions>
-            <DatePicker Date="{Binding}" Format="dd.MM.yyyy" />
+            <DatePicker Date="{Binding ExpirationDate}" Format="dd.MM.yyyy" />
             <Frame Style="{StaticResource FrameStyle}" Grid.Column="1">
-                <Entry Text="{Binding}" Keyboard="Numeric"  
+                <Entry Text="{Binding QuantityInput}" Keyboard="Numeric"  
                        Style="{StaticResource EntryStyle}"/>
             </Frame>
             <Button Text="Додати" Grid.Column="2" Padding="5,2"/>

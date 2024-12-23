@@ -3,7 +3,8 @@ using Android.Runtime;
 
 namespace BRB6
 {
-    [Application]
+    //[Application]
+    [Application(UsesCleartextTraffic = true)]
     public class MainApplication : MauiApplication
     {
         public MainApplication(IntPtr handle, JniHandleOwnership ownership)

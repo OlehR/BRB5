@@ -107,6 +107,9 @@ namespace BRB5.Model
         public virtual Result<IEnumerable<DocWares>> GetPromotionData(string pNumberDoc) { throw new NotImplementedException(); }
         public virtual async Task<IEnumerable<DocWaresExpirationSample>> GetExpirationDateAsync(int pCodeWarehouse) { throw new NotImplementedException(); }
 
+        public virtual async Task<IEnumerable<ExpirationWares>> GetDaysLeft() { throw new NotImplementedException(); }
+
+
         static public PercentColor[] PercentColor = new PercentColor[0];
         
     }
@@ -117,5 +120,5 @@ namespace BRB5.Model
         public string Name { get;set;}
     }
 
-    
+
 }

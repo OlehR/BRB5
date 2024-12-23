@@ -118,7 +118,7 @@ namespace BRB6.View
         {
             var s = sender as Grid;
             var vDoc = s.BindingContext as DocVM;
-            await Navigation.PushAsync(new ExpiretionDateItem(vDoc));
+            await Navigation.PushAsync(new ExpiretionDateItem(vDoc.NumberDoc));
         }
 
         private void ZKPO(object sender, EventArgs e)
@@ -204,8 +204,8 @@ namespace BRB6.View
         private async void SelectKey()
         {
             var selectedItem = (DocVM)ListDocs.SelectedItem;
-            if (selectedItem != null) ;
-                await Navigation.PushAsync(new ExpirationDateElement());            
+            //if (selectedItem != null) ;
+             //   await Navigation.PushAsync(new ExpirationDateElement());            
         }
               
         private void CameraView_OnDetectionFinished(object sender, BarcodeScanning.OnDetectionFinishedEventArg e)

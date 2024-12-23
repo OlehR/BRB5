@@ -58,7 +58,7 @@
                     </Grid>
                 </ListView.Header>
                 <ListView.ItemTemplate>
-                    <DataTemplate x:DataType="Model:DocWaresEx">
+                    <DataTemplate x:DataType="Model:ExpirationDateElementVM">
                         <ViewCell>
                             <Grid RowSpacing="1"
               ColumnSpacing="1"
@@ -82,7 +82,7 @@
                    Grid.Column="0"
                    BackgroundColor="{Binding GetBackgroundColor}" />
 
-                                <Label Text="{Binding InputQuantity}"
+                                <Label Text="{Binding QuantityInput}"
                    Grid.Row="1"
                    Grid.Column="1"
                    BackgroundColor="{Binding GetBackgroundColor}" />

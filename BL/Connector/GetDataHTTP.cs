@@ -60,13 +60,18 @@ namespace BL.Connector
                 handler.ServerCertificateCustomValidationCallback = (sender, cert, chain, sslPolicyErrors) => { return true; };
 
                 HttpClient client;
-                if (string.IsNullOrEmpty(pLogin))
-                    client = new HttpClient();
+                client = new HttpClient(handler);
+
+                if (string.IsNullOrEmpty(pLogin)) ;
+                // client = new HttpClient();
                 else
                 {
-                    var credentials = new NetworkCredential(pLogin, pPassWord);
-                    handler.Credentials = credentials;
-                    client = new HttpClient(handler);
+                    //var credentials = new NetworkCredential(pLogin, pPassWord);
+                    // handler.Credentials = credentials;
+                    client = new HttpClient();
+                    string encoded = System.Convert.ToBase64String(Encoding.GetEncoding("ISO-8859-1").GetBytes(pLogin + ":" + pPassWord));
+                    client.DefaultRequestHeaders.Add("Authorization", "Basic " + encoded);
+
                 }
 
                 client.Timeout = TimeSpan.FromSeconds(pTimeOut);
