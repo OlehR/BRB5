@@ -4,7 +4,7 @@ using System.Text;
 
 namespace BRB5.Model.DB
 {
-    public class DocWaresExpirationSample
+    public class DocWaresExpirationSample 
     {        //NumberDoc, DocId, CodeWares, Quantity, ExpirationDate, Expiration, DaysLeft
 
         public string NumberDoc { get; set; }

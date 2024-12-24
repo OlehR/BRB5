@@ -22,33 +22,28 @@
             <Grid IsVisible="{Binding IsVisBarCode}" HeightRequest="150" x:Name="GridZxing"/>
             
             <ListView ItemsSource="{Binding MyDocsR}" x:Name="ListDocs" VerticalOptions="CenterAndExpand"
-                      SeparatorVisibility="None"                      
+                      SeparatorVisibility="None"   
+                      ItemTapped="OpenDoc"                   
                       CachingStrategy="RecycleElement"
                       HasUnevenRows="True" >
                 <ListView.ItemTemplate>
                     <DataTemplate  x:DataType="Model:DocVM">
                         <ViewCell>
-                            <Grid RowSpacing="1"
-              ColumnSpacing="1"
-              Padding="1"
-              BackgroundColor="#adaea7">
-                                <Grid.GestureRecognizers>
-                                    <TapGestureRecognizer Tapped="OpenDoc" />
-                                </Grid.GestureRecognizers>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="1*" />                                    
-                                </Grid.ColumnDefinitions>                                
-                                <Label Text="{Binding Description}"
-                                       FontSize="24"
-                   BackgroundColor="{Binding GetColor}" />
-                                
-                            </Grid>
+                            <ViewCell.View>
+                                <Grid Margin="5" Padding="5"  BackgroundColor="#E0E0E0">
+                                    <Label Text="{Binding Description}"
+                                       TextColor="{AppThemeBinding Light='#000000', Dark='#FFFFFF'}"
+                                        FontSize="Large"
+                                        HorizontalOptions="CenterAndExpand"
+                                        VerticalOptions="CenterAndExpand"/>
+                                </Grid>
+                            </ViewCell.View>
                         </ViewCell>
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>
 
-            <StackLayout VerticalOptions="End" Orientation="Horizontal" Spacing="1">
+            <StackLayout VerticalOptions="End" Orientation="Horizontal" Spacing="1" IsVisible="False">
                 <Label Text="F1-"
                        IsVisible="{Binding IsViewOut}"
                        FontSize="16"
