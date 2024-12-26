@@ -24,7 +24,8 @@
                     </local:CustomEntry>
                 </Frame>
             </StackLayout>
-            <ListView CachingStrategy="RecycleElementAndDataTemplate"
+            <ListView CachingStrategy ="RecycleElement"
+                      ItemTapped="OpenElement"   
                       VerticalOptions="CenterAndExpand"
                       ItemsSource="{Binding MyDocWares}" SeparatorVisibility="None">
                 <ListView.Header>
@@ -93,7 +94,8 @@
                 </ListView.ItemTemplate>
             </ListView>
 
-            <StackLayout VerticalOptions="End" Orientation="Horizontal">
+            
+            <StackLayout VerticalOptions="End" Orientation="Horizontal" IsVisible="False">
 
                 <Label Text="F2-"
                        FontSize="16"
@@ -152,6 +154,7 @@
                 </Label>
 
             </StackLayout>
+            
         </StackLayout>
     </ContentPage.Content>
 </local:BaseContentPage>

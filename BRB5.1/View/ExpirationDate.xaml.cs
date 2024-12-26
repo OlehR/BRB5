@@ -114,10 +114,10 @@ namespace BRB6.View
                 ZKPOEntry.Text = string.Empty;
             }
         }
-        private async void OpenDoc(object sender, EventArgs e)
+        private async void OpenDoc(object sender, ItemTappedEventArgs e)
         {
-            var s = sender as Grid;
-            var vDoc = s.BindingContext as DocVM;
+            if (e.Item == null) return;
+            var vDoc = e.Item as DocVM;
             await Navigation.PushAsync(new ExpiretionDateItem(vDoc.NumberDoc));
         }
 

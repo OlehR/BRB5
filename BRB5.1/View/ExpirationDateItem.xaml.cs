@@ -110,6 +110,13 @@ namespace BRB6.View
         }
         private void DocNameFocus(object sender, FocusEventArgs e) {  DocName.Focus(); }
 
+        private void OpenElement(object sender, ItemTappedEventArgs e)
+        {
+            if (e.Item == null) return;
+            var vItem = e.Item as ExpirationDateElementVM;
+            MainThread.BeginInvokeOnMainThread(async () =>
+                await Navigation.PushAsync(new ExpirationDateElement(vItem)));
+        }
 #if ANDROID
         public void OnPageKeyDown(Keycode keyCode, KeyEvent e)
         {
