@@ -154,7 +154,7 @@ namespace BL.Connector
             try
             {
                 Config.OnProgress?.Invoke(5);
-                HttpResult res = await Http.HTTPRequestAsync(Config.IsLoginCO ? 1 : 0, "nomenclature", null, "application/json", Config.Login, Config.Password,60);//;charset=utf-8
+                HttpResult res = await Http.HTTPRequestAsync(Config.IsLoginCO ? 1 : 0, "nomenclature", null, "application/json", Config.Login, Config.Password,120);//;charset=utf-8
 
                 if (res.HttpState == eStateHTTP.HTTP_OK)
                 {
@@ -684,19 +684,21 @@ namespace BL.Connector
 
         public override async Task<Result<IEnumerable<DocWaresExpirationSample>>> GetExpirationDateAsync(int pCodeWarehouse)
         {
+            Config.OnProgress?.Invoke(1);
             //HttpResult result = Http.HTTPRequest(0, "GetExpirationDate", pCodeWarehouse.ToString(), null, null, null);
-            HttpResult result = await Http.HTTPRequestAsync("http://192.168.99.243", "/DCT/GetExpirationDate", pCodeWarehouse.ToString(), null, null);
+            HttpResult result = await Http.HTTPRequestAsync(3, "DCT/GetExpirationDate", pCodeWarehouse.ToString(), null, null);
 
             if (result.HttpState == eStateHTTP.HTTP_OK)
             {
+                Config.OnProgress?.Invoke(0.5);
                 var res = JsonConvert.DeserializeObject<Result<IEnumerable<DocWaresExpirationSample>>>(result.Result);
 
-                result = await Http.HTTPRequestAsync("http://192.168.99.243", "/DCT/GetExpirationWares", null, null, null);
+                result = await Http.HTTPRequestAsync(3, "DCT/GetExpirationWares", null, null, null);
                 if (result.HttpState == eStateHTTP.HTTP_OK)
                 {
                     Config.OnProgress?.Invoke(0.95);
-                    var Reasons = JsonConvert.DeserializeObject<IEnumerable<ExpirationWares>>(result.Result);
-                    //db.ReplaceReason(Reasons.Select(el => el.GetReason), pIsFull);
+                    var ExpirationWares = JsonConvert.DeserializeObject<IEnumerable<ExpirationWares>>(result.Result);
+                    db.ReplaceExpirationWares(ExpirationWares);
                 }
                 Config.OnProgress?.Invoke(1);
                 return res;
@@ -708,7 +710,7 @@ namespace BL.Connector
 
         public override async Task<Result<IEnumerable<ExpirationWares>>> GetDaysLeft()
         {
-            HttpResult result = await Http.HTTPRequestAsync("http://192.168.99.243", "/DCT/GetExpirationDate", "", null, null);
+            HttpResult result = await Http.HTTPRequestAsync(3, "DCT/GetExpirationDate", "", null, null);
             if (result.HttpState == eStateHTTP.HTTP_OK)
             {
                 var res = JsonConvert.DeserializeObject<Result<IEnumerable<ExpirationWares>>>(result.Result);
@@ -721,7 +723,7 @@ namespace BL.Connector
 
         public override async Task<Result> SaveExpirationDate(DocWaresExpirationSave pED) 
         {
-            HttpResult result = await Http.HTTPRequestAsync("http://192.168.99.243", "/DCT/GetExpirationDate", "", null, null);
+            HttpResult result = await Http.HTTPRequestAsync(3, "DCT/GetExpirationDate", "", null, null);
             if (result.HttpState == eStateHTTP.HTTP_OK)
             {
                 var res = JsonConvert.DeserializeObject<Result>(result.Result);               

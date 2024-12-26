@@ -50,31 +50,25 @@ namespace BL
 
         public string[] GenApiUrl()
         {
-            var result = new string[3];
-
+            var result = new string[4];
+            result[0] = "";
+            result[1] = "";
+            result[2] = "";
+            result[3] = "";
             switch (Config.Company)
             {
-                case eCompany.NotDefined:
-                    result[0] = "";
-                    result[1] = "";
-                    result[2] = "";
+                case eCompany.Sim23FTP:
+                case eCompany.NotDefined:  
                     break;
                 case eCompany.Sim23:
-
-                    result[0] = "http://93.183.216.37:80/dev1/hs/TSD/";//
-                    result[1] = "http://qlik.sim23.ua/TK/hs/TSD/";// ;http://vpn.sim23.ua/TK/hs/TSD/";  //"http://37.53.84.148/TK/hs/TSD/";// "http://93.183.216.37/TK/hs/TSD/;http://37.53.84.148/TK/hs/TSD/";
+                    result[0] = "http://93.183.216.37:80/dev1/hs/TSD/";
+                    result[1] = "http://qlik.sim23.ua/TK/hs/TSD/;http://vpn.sim23.ua/TK/hs/TSD/";  //"http://37.53.84.148/TK/hs/TSD/";// "http://93.183.216.37/TK/hs/TSD/;http://37.53.84.148/TK/hs/TSD/";
                     result[2] = "https://bitrix.sim23.ua/rest/233/ax02yr7l9hia35vj/";
-                    break;
-                case eCompany.Sim23FTP:
-                    result[0] = "";
-                    result[1] = "";
-                    result[2] = "";
-                    break;
+                    result[3] = "http://vpn.sim23.ua:6380/";
+                    break; 
                 case eCompany.VPSU:
                 case eCompany.SparPSU:
-                    result[0] = "https://apitest.spar.uz.ua/";
-                    result[1] = "";
-                    result[2] = "";
+                    result[0] = "https://apitest.spar.uz.ua/";                    
                     break;
             }
             return result;
