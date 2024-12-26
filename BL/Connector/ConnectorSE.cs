@@ -694,7 +694,7 @@ namespace BL.Connector
                 result = await Http.HTTPRequestAsync("http://192.168.99.243", "/DCT/GetExpirationWares", null, null, null);
                 if (result.HttpState == eStateHTTP.HTTP_OK)
                 {
-                    //Config.OnProgress?.Invoke(0.95);
+                    Config.OnProgress?.Invoke(0.95);
                     var Reasons = JsonConvert.DeserializeObject<IEnumerable<ExpirationWares>>(result.Result);
                     //db.ReplaceReason(Reasons.Select(el => el.GetReason), pIsFull);
                 }
