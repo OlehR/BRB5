@@ -7,7 +7,7 @@ using System.Globalization;
 
 namespace BRB6
 {
-    public class ProtoBRB
+    public static class ProtoBRB
     {
         public static string GetPathDB
         {
@@ -57,6 +57,11 @@ namespace BRB6
             if (Config.Model.Equals("HC61") || Config.Manufacturer.Contains("Bita"))
                 return eTypeScaner.BitaHC61;
             return eTypeScaner.Camera;
+        }
+
+        public static Microsoft.Maui.Graphics.Color ToColor(this System.Drawing.Color color)
+        {
+            return Microsoft.Maui.Graphics.Color.FromRgb(color.R, color.G, color.B);
         }
     }
 }

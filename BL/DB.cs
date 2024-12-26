@@ -894,7 +894,7 @@ and bc.BarCode=?
                     }
                     if (res == null)
                     {
-                        sql = $@"select  {pNumberDoc} NumberDoc,0 as DocId, w.CodeWares,w.NAMEWARES as NameWares, au.COEFFICIENT as Coefficient,w.CODEUNIT as CodeUnit, ud.ABRUNIT as NameUnit,
+                        sql = $@"select  {pNumberDoc} NumberDoc,'zz'||hex(randomblob(15)) as DocId, w.CodeWares,w.NAMEWARES as NameWares, au.COEFFICIENT as Coefficient,w.CODEUNIT as CodeUnit, ud.ABRUNIT as NameUnit,
                             ( select group_concat(bc.BarCode,',') from BarCode bc where bc.CodeWares=w.CodeWares ) as BARCODE  ,w.CODEUNIT as BaseCodeUnit,
                             0 as Quantity, --des.Expiration,des.ExpirationDate,
                             w.DaysLeft
@@ -929,10 +929,22 @@ and bc.BarCode=?
                                 join DocWaresExpirationSample DES on w.CodeWares=DES.CodeWares
                                 left join DocWaresExpiration DE on DES.CodeWares=DE.CodeWares and DE.DocId=DES.DocId                                
                                 where DES.NumberDoc = ?
-                                order by case when DE.CodeWares is null then 1 else 0 end, w.NameWares";
+                                order by case when DE.CodeWares is null then 1 else 0 end, w.NameWares
+                        union all 
+        select  DES.NumberDoc,DES.DocId, w.CodeWares,w.NameWares as NameWares, au.Coefficient as Coefficient,w.CodeUnit as CodeUnit, ud.ABRUNIT as NameUnit,
+                            ( select group_concat(bc.BarCode,',') from BarCode bc where bc.CodeWares=w.CodeWares ) as BARCODE  ,w.CodeUnit as BaseCodeUnit,
+                            des.Quantity,des.Expiration,des.ExpirationDate,des.DaysLeft
+                                from WARES w 
+                                join ADDITIONUNIT au on w.CODEWARES=au.CODEWARES and au.CODEUNIT=w.CODEUNIT 
+                                join UNITDIMENSION ud on w.CODEUNIT=ud.CODEUNIT 
+                                join DocWaresExpiration DE on w.CodeWares=DE.CodeWares
+                                left join DocWaresExpirationSample DES on DES.CodeWares=DE.CodeWares and DE.DocId=DES.DocId                                                               
+                                where DES.CodeWares is null and DE.NumberDoc = ?
+                                order by case when DE.CodeWares is null then 1 else 0 end, w.NameWares
+";
             try
             {
-                return db.Query<ExpirationDateElementVM>(sql,  pNumberDoc );
+                return db.Query<ExpirationDateElementVM>(sql, pNumberDoc, pNumberDoc);
             }
             catch (Exception e)
             {
