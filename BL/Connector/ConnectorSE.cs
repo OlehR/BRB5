@@ -689,33 +689,33 @@ namespace BL.Connector
 
             if (result.HttpState == eStateHTTP.HTTP_OK)
             {
-                var res = JsonConvert.DeserializeObject<IEnumerable<DocWaresExpirationSample>>(result.Result);
+                var res = JsonConvert.DeserializeObject<Result<IEnumerable<DocWaresExpirationSample>>>(result.Result);
+
+                result = await Http.HTTPRequestAsync("http://192.168.99.243", "/DCT/GetExpirationWares", null, null, null);
+                if (result.HttpState == eStateHTTP.HTTP_OK)
+                {
+                    //Config.OnProgress?.Invoke(0.95);
+                    var Reasons = JsonConvert.DeserializeObject<IEnumerable<ExpirationWares>>(result.Result);
+                    //db.ReplaceReason(Reasons.Select(el => el.GetReason), pIsFull);
+                }
+                Config.OnProgress?.Invoke(1);
                 return res;
             }
-
-            result = await Http.HTTPRequestAsync("http://192.168.99.243", "/DCT/GetExpirationWares", null, null, null);
-          
-            if (result.HttpState == eStateHTTP.HTTP_OK)
-            {
-                //Config.OnProgress?.Invoke(0.95);
-                var Reasons = JsonConvert.DeserializeObject<IEnumerable<ExpirationWares>>(result.Result);
-                //db.ReplaceReason(Reasons.Select(el => el.GetReason), pIsFull);
-            }
+            
             Config.OnProgress?.Invoke(1);
-
-            return null;
+            return new Result<IEnumerable<DocWaresExpirationSample>>(result,null);
         }
 
-        public override async Task<IEnumerable<ExpirationWares>> GetDaysLeft()
+        public override async Task<Result<IEnumerable<ExpirationWares>>> GetDaysLeft()
         {
             HttpResult result = await Http.HTTPRequestAsync("http://192.168.99.243", "/DCT/GetExpirationDate", "", null, null);
             if (result.HttpState == eStateHTTP.HTTP_OK)
             {
-                var res = JsonConvert.DeserializeObject<IEnumerable<ExpirationWares>>(result.Result);
-                db.ReplaceExpirationWares(res);
+                var res = JsonConvert.DeserializeObject<Result<IEnumerable<ExpirationWares>>>(result.Result);
+                db.ReplaceExpirationWares(res.Info);
                 return res;
             }
-            return null;
+            return new Result<IEnumerable<ExpirationWares>>(result,null);
         }
 
 
