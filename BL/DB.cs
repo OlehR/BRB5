@@ -241,7 +241,8 @@ CREATE TABLE DocWaresExpirationSample (
     Quantity     NUMBER, 
     ExpirationDate TIMESTAMP,
     Expiration NUMBER,
-    DaysLeft TEXT
+    DaysLeft TEXT,
+    OrderDoc    INTEGER NOT NULL DEFAULT (0)
 );
 CREATE UNIQUE INDEX DocWaresExpirationSampleTNC ON DocWaresExpirationSample 
         (NumberDoc, DocId, CodeWares);

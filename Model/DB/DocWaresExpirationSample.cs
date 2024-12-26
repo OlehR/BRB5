@@ -14,6 +14,7 @@ namespace BRB5.Model.DB
         public decimal Expiration { get; set; }
         public DateTime ExpirationDate { get; set; }        
         public string DaysLeft { get; set; }
+        public int OrderDoc { get; set; }
 
     }
 }

@@ -682,7 +682,7 @@ namespace BL.Connector
             return null;
         }
 
-        public override async Task<IEnumerable<DocWaresExpirationSample>> GetExpirationDateAsync(int pCodeWarehouse)
+        public override async Task<Result<IEnumerable<DocWaresExpirationSample>>> GetExpirationDateAsync(int pCodeWarehouse)
         {
             //HttpResult result = Http.HTTPRequest(0, "GetExpirationDate", pCodeWarehouse.ToString(), null, null, null);
             HttpResult result = await Http.HTTPRequestAsync("http://192.168.99.243", "/DCT/GetExpirationDate", pCodeWarehouse.ToString(), null, null);
@@ -716,6 +716,18 @@ namespace BL.Connector
                 return res;
             }
             return null;
+        }
+
+
+        public override async Task<Result> SaveExpirationDate(DocWaresExpirationSave pED) 
+        {
+            HttpResult result = await Http.HTTPRequestAsync("http://192.168.99.243", "/DCT/GetExpirationDate", "", null, null);
+            if (result.HttpState == eStateHTTP.HTTP_OK)
+            {
+                var res = JsonConvert.DeserializeObject<Result>(result.Result);               
+                return res;
+            }
+            return new Result(result);
         }
 
     }
