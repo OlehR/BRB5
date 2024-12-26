@@ -33,37 +33,39 @@ namespace BRB6.View
         bool _IsVisibleDocF6 = false;
         public bool IsVisibleDocF6 { get { return _IsVisibleDocF6; } set { _IsVisibleDocF6 = value; OnPropertyChanged("IsVisibleDocF6"); } } 
         public ObservableCollection<ExpirationDateElementVM> MyDocWares { get; set; } = new ObservableCollection<ExpirationDateElementVM>();
+        private ExpirationDateElementVM SelectedWare;
         public ExpiretionDateItem(string pNumberDoc)
         {
             NumberDoc=pNumberDoc;
-            NokeyBoard();           
-           // Doc = new DocVM(pDocId);           
+            NokeyBoard();
+            // Doc = new DocVM(pDocId);           
             BindingContext = this;
             InitializeComponent();
             Config.BarCode = BarCode;
+
+            var r = db.GetDataExpiration(NumberDoc);
+            if (r != null)
+            {
+                int index = 0;
+                foreach (var item in r)
+                {
+                    MyDocWares.Add(item);
+                    index++;
+                }
+                AddCustomItems();
+            }
         }
         protected override void OnAppearing()
         {
             base.OnAppearing();
 
-            if(!IsSoftKeyboard)
+            if (!IsSoftKeyboard)
             {
 #if ANDROID
-            MainActivity.Key+= OnPageKeyDown;
+                MainActivity.Key += OnPageKeyDown;
 #endif
             }
-            var r = db.GetDataExpiration(NumberDoc);
-            if (r != null)
-            {
-                MyDocWares.Clear();
-                int index = 0;
-                foreach (var item in r)
-                {
-                    //item.Even = (index % 2 == 0);
-                    MyDocWares.Add(item);
-                    index++;
-                }
-            }
+            
         }
         protected override void OnDisappearing()
         {
@@ -84,10 +86,76 @@ namespace BRB6.View
             {
                 ParseBarCode pbc = c.ParsedBarCode(pBarCode, false);
                 var r = db.GetScanDataExpiration(NumberDoc, pbc);
+                SelectedWare = r;
             MainThread.BeginInvokeOnMainThread (async() =>
                 await Navigation.PushAsync(new ExpirationDateElement(r)));
             });
         }
+        private void AddCustomItems()
+        {
+            foreach (var item in MyDocWares)
+            {
+                var grid = new Grid
+                {
+                    ColumnSpacing = 1,
+                    RowSpacing = 1,
+                    BackgroundColor = Color.FromArgb("#adaea7"),
+                    Padding = 1,
+                    ColumnDefinitions =
+                    {
+                        new ColumnDefinition { Width = GridLength.Star },
+                        new ColumnDefinition { Width = GridLength.Star }
+                    },
+                    RowDefinitions =
+                    {
+                        new RowDefinition { Height = GridLength.Auto },
+                        new RowDefinition { Height = GridLength.Auto }
+                    },
+                    BindingContext = item,
+                    AutomationId = $"Grid_{item.CodeWares}"
+                };
+
+                // Додавання NameWares
+                var nameWaresLabel = new Label
+                {
+                    Text = item.NameWares, // Прив'язка до властивості NameWares у елементі колекції
+                    BackgroundColor = item.GetPercentColor.Color.ToColor(),
+                };
+                Grid.SetColumnSpan(nameWaresLabel, 2);
+                Grid.SetRow(nameWaresLabel, 0);
+                grid.Children.Add(nameWaresLabel);
+
+                // Додавання CodeWares
+                var codeWaresLabel = new Label
+                {
+                    Text = item.CodeWares.ToString(), // Прив'язка до властивості CodeWares у елементі колекції
+                    BackgroundColor = item.GetPercentColor.Color.ToColor()
+                };
+                Grid.SetRow(codeWaresLabel, 1);
+                Grid.SetColumn(codeWaresLabel, 0);
+                grid.Children.Add(codeWaresLabel);
+
+                // Додавання QuantityInput
+                var quantityInputLabel = new Label
+                {
+                    Text = item.QuantityInput.ToString(), // Прив'язка до властивості QuantityInput у елементі колекції
+                    BackgroundColor = item.GetPercentColor.Color.ToColor()
+                };
+                Grid.SetRow(quantityInputLabel, 1);
+                Grid.SetColumn(quantityInputLabel, 1);
+                grid.Children.Add(quantityInputLabel);
+
+                // Додавання TapGestureRecognizer
+                var tapGestureRecognizer = new TapGestureRecognizer();
+                tapGestureRecognizer.Tapped += OpenElement;
+                grid.GestureRecognizers.Add(tapGestureRecognizer);
+
+                // Додавання Grid до StackLayout
+                WareItemsContainer.Children.Add(grid);
+            }
+        }
+
+
         private void F2Save(object sender, EventArgs e)
         {
          /*   Doc.NumberOutInvoice = NumberOutInvoice;
@@ -110,13 +178,17 @@ namespace BRB6.View
         }
         private void DocNameFocus(object sender, FocusEventArgs e) {  DocName.Focus(); }
 
-        private void OpenElement(object sender, ItemTappedEventArgs e)
+        private void OpenElement(object sender, EventArgs e)
         {
-            if (e.Item == null) return;
-            var vItem = e.Item as ExpirationDateElementVM;
+            var s = sender as Grid;
+            var vItem = s.BindingContext as ExpirationDateElementVM; 
+            if (vItem == null)  return;
+
+            SelectedWare = vItem;
             MainThread.BeginInvokeOnMainThread(async () =>
                 await Navigation.PushAsync(new ExpirationDateElement(vItem)));
         }
+
 #if ANDROID
         public void OnPageKeyDown(Keycode keyCode, KeyEvent e)
         {

@@ -23,7 +23,6 @@ public partial class ExpirationDateElement : BaseContentPage
         DM.ExpirationDateInput = DM.ExpirationDate;
         DM.ProductionDateInput = DM.ExpirationDate.AddDays(-(double)DM.Expiration);
 
-        QuantityEntry.Focus();
         InitializeComponent();
 		this.BindingContext = DM;
     }
