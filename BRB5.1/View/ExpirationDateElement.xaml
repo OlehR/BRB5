@@ -11,7 +11,7 @@
         </ResourceDictionary>
     </ContentPage.Resources>
     <VerticalStackLayout >
-        <VerticalStackLayout BackgroundColor="LightCoral" Padding="5">
+        <VerticalStackLayout BackgroundColor="{Binding GetPercentColor.Color.ToColor}" Padding="5">
             <Label Text="{Binding NameWares}" FontSize="Large" FontAttributes="Bold"/>
             <Label Text="{Binding BarCode}" FontSize="Large" />
             <HorizontalStackLayout Spacing="20">

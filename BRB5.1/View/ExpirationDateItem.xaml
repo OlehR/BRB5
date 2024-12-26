@@ -24,7 +24,7 @@
                     </local:CustomEntry>
                 </Frame>
             </StackLayout>
-            <ListView CachingStrategy ="RecycleElement"
+            <!--<ListView CachingStrategy ="RecycleElement"
                       ItemTapped="OpenElement"   
                       VerticalOptions="CenterAndExpand"
                       ItemsSource="{Binding MyDocWares}" SeparatorVisibility="None">
@@ -92,10 +92,43 @@
                         </ViewCell>
                     </DataTemplate>
                 </ListView.ItemTemplate>
-            </ListView>
+            </ListView>-->
 
+
+            <!-- Контейнер для елементів -->
+            <Grid RowSpacing="1"
+       ColumnSpacing="1"
+       Padding="1"
+       BackgroundColor="#adaea7">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="1*" />
+                    <ColumnDefinition Width="1*" />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition />
+                    <RowDefinition />
+                </Grid.RowDefinitions>
+
+                <Label Text="Назва"
+            Grid.ColumnSpan="2"
+            BackgroundColor="White" />
+
+                <Label Text="Код"
+            Grid.Row="1"
+            Grid.Column="0"
+            BackgroundColor="White" />
+
+                <Label Text="Факт"
+            Grid.Row="1"
+            Grid.Column="1"
+            BackgroundColor="White" />
+
+            </Grid>
+            <ScrollView  VerticalOptions="CenterAndExpand">
+                <StackLayout x:Name="WareItemsContainer" />
+            </ScrollView>
             
-            <StackLayout VerticalOptions="End" Orientation="Horizontal" IsVisible="False">
+            <StackLayout VerticalOptions="End" Orientation="Horizontal" >
 
                 <Label Text="F2-"
                        FontSize="16"
