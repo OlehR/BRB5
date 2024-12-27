@@ -17,7 +17,7 @@ namespace BRB5.Model
 
         private DateTime _ExpirationDateInput;
         private DateTime _ProductionDateInput;
-        public DateTime ExpirationDateInput { get => _ExpirationDateInput; set {_ExpirationDateInput = value; OnPropertyChanged(nameof(ExpirationDateInput));  } }
+        public DateTime ExpirationDateInput { get => _ExpirationDateInput; set {_ExpirationDateInput = value; OnPropertyChanged(nameof(ExpirationDateInput)); OnPropertyChanged(nameof(GetPercentColor)); } }
         public DateTime ProductionDateInput { get => _ProductionDateInput; set { _ProductionDateInput = value; OnPropertyChanged(nameof(ProductionDateInput)); } }
         public string NameWares { get; set; }
         public string BarCode { get; set; }
