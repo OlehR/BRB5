@@ -9,7 +9,7 @@
     <ContentPage.Content>
         <StackLayout>
 
-            <StackLayout IsVisible="{Binding IsVisibleDocF6}">
+            <!--<StackLayout IsVisible="{Binding IsVisibleDocF6}">
                 <Picker Title="дата"
                         Unfocused="DocNameFocus"
                         x:Name="DocDate"
@@ -23,7 +23,7 @@
                                           Text="{Binding NumberOutInvoice}" >
                     </local:CustomEntry>
                 </Frame>
-            </StackLayout>
+            </StackLayout>-->
             <!--<ListView CachingStrategy ="RecycleElement"
                       ItemTapped="OpenElement"   
                       VerticalOptions="CenterAndExpand"
@@ -101,8 +101,9 @@
        Padding="1"
        BackgroundColor="#adaea7">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="1*" />
-                    <ColumnDefinition Width="1*" />
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
                 </Grid.ColumnDefinitions>
                 <Grid.RowDefinitions>
                     <RowDefinition />
@@ -110,7 +111,7 @@
                 </Grid.RowDefinitions>
 
                 <Label Text="Назва"
-            Grid.ColumnSpan="2"
+            Grid.ColumnSpan="3"
             BackgroundColor="White" />
 
                 <Label Text="Код"
@@ -121,6 +122,11 @@
                 <Label Text="Факт"
             Grid.Row="1"
             Grid.Column="1"
+            BackgroundColor="White" />
+
+                <Label Text="Введено"
+            Grid.Row="1"
+            Grid.Column="2"
             BackgroundColor="White" />
 
             </Grid>
@@ -144,7 +150,7 @@
                     </Label.GestureRecognizers>
                 </Label>
 
-                <Label Text="F3-"
+                <!--<Label Text="F3-"
                        FontSize="16"
                        Grid.Column="6"
                        TextColor="#ff5c5c"
@@ -184,7 +190,7 @@
                     <Label.GestureRecognizers>
                         <TapGestureRecognizer Tapped="F6Doc" />
                     </Label.GestureRecognizers>
-                </Label>
+                </Label>-->
 
             </StackLayout>
             

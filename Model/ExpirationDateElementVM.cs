@@ -10,10 +10,10 @@ using Utils;
 
 namespace BRB5.Model
 {
-    public class ExpirationDateElementVM: DocWaresExpirationSample, INotifyPropertyChanged
+    public class ExpirationDateElementVM: DocWaresExpirationSample, INotifyPropertyChanged, ICloneable
     {
-
-        public decimal QuantityInput { get; set; }
+        private decimal _QuantityInput;
+        public decimal QuantityInput { get => _QuantityInput; set { _QuantityInput = value; OnPropertyChanged(nameof(QuantityInput)); } }
 
         private DateTime _ExpirationDateInput;
         private DateTime _ProductionDateInput;
@@ -89,6 +89,10 @@ namespace BRB5.Model
         protected virtual void OnPropertyChanged(string propertyName)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+        public object Clone()
+        {
+            return this.MemberwiseClone();
         }
     }
 }

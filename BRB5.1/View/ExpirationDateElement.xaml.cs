@@ -10,11 +10,14 @@ public partial class ExpirationDateElement : BaseContentPage
 
     DB db = DB.GetDB();
     public ExpirationDateElementVM DM { get; set; } = new();
+    private ExpirationDateElementVM _DM;
     public ExpirationDateElement(ExpirationDateElementVM pED)
 	{
         InitializeComponent();
         NokeyBoard();
-        DM =pED;
+        _DM =pED;
+
+        DM = (ExpirationDateElementVM)pED.Clone();
 
         DM.QuantityInput = DM.Quantity;
 
@@ -55,11 +58,21 @@ public partial class ExpirationDateElement : BaseContentPage
     private void OnAdd(object sender, EventArgs e)
     {
         db.ReplaceDocWaresExpiration(null);
+
+        _DM.ExpirationDateInput = DM.ExpirationDateInput;
+        _DM.QuantityInput = DM.QuantityInput;
+
+        _ = Navigation.PopAsync();
     }
 
     private void OnNotFound(object sender, EventArgs e)
     {
         DM.QuantityInput = 0;
         db.ReplaceDocWaresExpiration(DM.GetDocWaresExpiration());
+
+        _DM.ExpirationDateInput = DM.ExpirationDateInput;
+        _DM.QuantityInput = DM.QuantityInput;
+
+        _ = Navigation.PopAsync();
     }
 }

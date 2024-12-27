@@ -4,22 +4,25 @@
              x:Class="BRB6.Template.WareItemTemplate">
     <Grid ColumnSpacing="1" RowSpacing="1" Padding="1" 
        BackgroundColor="#adaea7">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="*" />
-            </Grid.ColumnDefinitions>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
-            </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
 
-            <!-- Назва товару -->
-            <Label x:Name="NameWaresLabel" Grid.ColumnSpan="2" Grid.Row="0" />
+        <!-- Назва товару -->
+        <Label x:Name="NameWaresLabel" Grid.ColumnSpan="3" Grid.Row="0" />
 
-            <!-- Код товару -->
-            <Label x:Name="CodeWaresLabel" Grid.Column="0" Grid.Row="1" />
+        <!-- Код товару -->
+        <Label x:Name="CodeWaresLabel" Grid.Column="0" Grid.Row="1" />
 
-            <!-- Кількість -->
-            <Label x:Name="QuantityInputLabel" Grid.Column="1" Grid.Row="1" />
-        </Grid>
+        <!-- Кількість -->
+        <Label x:Name="QuantityLabel" Grid.Column="1" Grid.Row="1" />
+        <!-- Кількість введена -->
+        <Label x:Name="QuantityInputLabel" Grid.Column="2" Grid.Row="1" />
+    </Grid>
 </ContentView>

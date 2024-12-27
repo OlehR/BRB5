@@ -16,12 +16,15 @@ public partial class WareItemTemplate : ContentView
         // Прив’язка даних до Label
         NameWaresLabel.SetBinding(Label.TextProperty, new Binding("NameWares"));
         CodeWaresLabel.SetBinding(Label.TextProperty, new Binding("CodeWares"));
+        QuantityLabel.SetBinding(Label.TextProperty, new Binding("Quantity"));
         QuantityInputLabel.SetBinding(Label.TextProperty, new Binding("QuantityInput"));
 
         // Прив’язка кольору (новий Binding для кожної властивості)
         NameWaresLabel.SetBinding(Label.BackgroundColorProperty, new Binding("GetPercentColor.Color", converter: new ColorConverter()));
         CodeWaresLabel.SetBinding(Label.BackgroundColorProperty, new Binding("GetPercentColor.Color", converter: new ColorConverter()));
+        QuantityLabel.SetBinding(Label.BackgroundColorProperty, new Binding("GetPercentColor.Color", converter: new ColorConverter())); 
         QuantityInputLabel.SetBinding(Label.BackgroundColorProperty, new Binding("GetPercentColor.Color", converter: new ColorConverter()));
+
     }
 }
 
