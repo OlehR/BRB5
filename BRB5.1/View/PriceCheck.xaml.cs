@@ -103,11 +103,11 @@ namespace BRB6
             }
             if (!IsVisScan)
              Config.BarCode = BarCode;
-
-            Config.OnProgress += (pProgress) => MainThread.BeginInvokeOnMainThread (() => PB = pProgress);
+            
             this.BindingContext = this;
         }
 
+        void Progress(double pProgress) => MainThread.BeginInvokeOnMainThread(() => PB = pProgress);
         protected override void OnAppearing()
         {
             base.OnAppearing();
@@ -138,6 +138,7 @@ namespace BRB6
             if (!IsVisScan) 
                 BarCodeInput.Focus();
             //if (IsVisDoubleScan && WP!=null) WP.StateDoubleScan = eCheckWareScaned.Nothing;
+            Config.OnProgress += Progress;
         }
 
         protected override void OnDisappearing()
@@ -152,6 +153,7 @@ namespace BRB6
 #endif
             }
             bl.SendLogPrice();
+            Config.OnProgress -= Progress;
         }
         void BarCode(string pBarCode)=>FoundWares(pBarCode, false);
 

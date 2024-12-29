@@ -259,8 +259,7 @@ namespace BL.Connector
                             NumberDoc = elp.planId.ToString(),
                             DateDoc = elp.date,
                             CodeWarehouse = elp.shopId,
-                            Description =
-                                                                        t.data?.Where(el => el.templateId == elp.templateId)?.FirstOrDefault()?.templateName
+                            Description = t.data?.Where(el => el.templateId == elp.templateId)?.FirstOrDefault()?.templateName
                         }).ToList();
                         db.ReplaceDoc(Doc);
 
@@ -358,7 +357,7 @@ namespace BL.Connector
                 if (pTypeDoc == -1)
                     LoadGuidDataAsync((pTypeDoc == -1));
 
-                Config.OnProgress?.Invoke(5);
+                Config.OnProgress?.Invoke(0.05);
                 HttpResult result;
                 try
                 {
@@ -369,7 +368,7 @@ namespace BL.Connector
 
                     if (result.HttpState == eStateHTTP.HTTP_OK)
                     {
-                        Config.OnProgress?.Invoke(40);
+                        Config.OnProgress?.Invoke(0.40);
                         var data = JsonConvert.DeserializeObject<InputDocs>(result.Result);
 
 
@@ -391,13 +390,13 @@ namespace BL.Connector
                         }
                         db.ReplaceDoc(data.Doc);
 
-                        Config.OnProgress?.Invoke(60);
+                        Config.OnProgress?.Invoke(0.60);
                         foreach (var v in data.DocWaresSample)
                             v.TypeDoc += (pTypeDoc == 9 ? 1 : 0);
 
                         db.ReplaceDocWaresSample(data.DocWaresSample);
 
-                        Config.OnProgress?.Invoke(100);
+                        Config.OnProgress?.Invoke(0.100);
                         FileLogger.WriteLogMessage($"ConnectorPSU.LoadDocsData=>(pTypeDoc=>{pTypeDoc}, pNumberDoc=>{pNumberDoc},pIsClear=>{pIsClear}) Res=>({Res.State},{Res.Info},{Res.TextError})", eTypeLog.Full);
 
                         return Res;

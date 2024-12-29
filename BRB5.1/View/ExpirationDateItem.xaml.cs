@@ -47,19 +47,12 @@ namespace BRB6.View
             // Doc = new DocVM(pDocId);          
             InitializeComponent();
             Config.BarCode = BarCode;
-
-            var r = db.GetDataExpiration(NumberDoc);
-            if (r != null)
+            
+            Task.Run(() =>
             {
-                int index = 0;
-                foreach (var item in r)
-                {
-                    MyDocWares.Add(item);
-                    index++;
-                }
                 AddCustomItems();
-                BindingContext = this;
-            }
+            });
+            BindingContext = this;
         }
         protected override void OnAppearing()
         {
@@ -70,7 +63,7 @@ namespace BRB6.View
 #if ANDROID
                 MainActivity.Key += OnPageKeyDown;
 #endif
-            }
+            }          
 
         }
         protected override void OnDisappearing()
@@ -174,7 +167,7 @@ namespace BRB6.View
         //}
         private void AddCustomItems()
         {
-            foreach (var item in MyDocWares)
+            foreach (var item in db.GetDataExpiration(NumberDoc))
             {
                 var wareItemTemplate = new WareItemTemplate();
                 wareItemTemplate.BindData(item);
@@ -185,8 +178,12 @@ namespace BRB6.View
                 wareItemTemplate.GestureRecognizers.Add(tapGestureRecognizer);
 
                 // Додайте шаблон до StackLayout
-                WareItemsContainer.Children.Add(wareItemTemplate);
+                MainThread.BeginInvokeOnMainThread(() =>
+                {
+                    WareItemsContainer.Children.Add(wareItemTemplate);
+                });
             }
+            
         }
 
 

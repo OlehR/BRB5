@@ -10,8 +10,6 @@ using Newtonsoft.Json;
 using BRB5.Model.DB;
 using Utils;
 
-
-
 #if ANDROID
 using Android.Views;
 #endif
@@ -21,7 +19,7 @@ namespace BRB6.View
     public partial class ExpirationDate
     {
 
-        double _PB = 0.5;
+        double _PB = 0.95;
         public double PB { get { return _PB; } set { _PB = value; OnPropertyChanged(nameof(PB)); } }
         private Connector c = ConnectorBase.GetInstance();
         //private TypeDoc TypeDoc;
@@ -42,6 +40,7 @@ namespace BRB6.View
         CameraView BarcodeScaner;       
         public ExpirationDate()
         {
+            Config.OnProgress += Progress;
             NokeyBoard();
             //TypeDoc = pTypeDoc;
             Config.BarCode = BarCode;
@@ -52,7 +51,7 @@ namespace BRB6.View
                 new DocVM() { NumberDoc = "3", Description = "Нефреш"},
                 new DocVM() { NumberDoc = "2", Description = "Фреш"}               
             };
-            Config.OnProgress += (pProgress) => MainThread.BeginInvokeOnMainThread(() => PB = pProgress);
+            
             InitializeComponent();
             _ = Task.Run(async () =>
             {
@@ -70,7 +69,7 @@ namespace BRB6.View
                 }
             });           
         }
-
+        void Progress(double pProgress) => MainThread.BeginInvokeOnMainThread(() => PB = pProgress);
         protected override void OnAppearing()
         {
             base.OnAppearing();
@@ -105,6 +104,7 @@ namespace BRB6.View
                 ListDocs.SelectedItem = MyDocsR[0];
             }       
             OnPropertyChanged(nameof(MyDocsR));
+            Config.OnProgress += Progress;
         }
         protected override void OnDisappearing()
         {
@@ -121,6 +121,7 @@ namespace BRB6.View
                 IsVisZKPO = false;
                 ZKPOEntry.Text = string.Empty;
             }
+            Config.OnProgress -= Progress;
         }
         private async void OpenDoc(object sender, ItemTappedEventArgs e)
         {

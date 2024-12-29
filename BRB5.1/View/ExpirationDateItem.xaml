@@ -132,7 +132,7 @@
             BackgroundColor="White" />
 
             </Grid>
-            <ScrollView  VerticalOptions="CenterAndExpand">
+            <ScrollView  VerticalOptions="Start">
                 <StackLayout x:Name="WareItemsContainer" />
             </ScrollView>
             

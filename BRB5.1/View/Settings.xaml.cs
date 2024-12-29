@@ -57,7 +57,6 @@ namespace BRB6.View
                 {
                     var t = db.GetWarehouse();
                     wh = db.GetWarehouse()?.OrderBy(q => q.Name).ToList();
-
                 }
                 catch (Exception ex)
                 {
@@ -97,8 +96,8 @@ namespace BRB6.View
         {
             InitializeComponent();
             // TODO Xamarin.Forms.Device.RuntimePlatform is no longer supported. Use Microsoft.Maui.Devices.DeviceInfo.Platform instead. For more details see https://learn.microsoft.com/en-us/dotnet/maui/migration/forms-projects#device-changes
-            NavigationPage.SetHasNavigationBar(this, Device.RuntimePlatform == Device.iOS);
-
+            NavigationPage.SetHasNavigationBar(this, DeviceInfo.Platform == DevicePlatform.iOS);
+            
             c = ConnectorBase.GetInstance();
 
             Warehouses = new ObservableCollection<Warehouse>(ListWarehouse);
@@ -114,10 +113,20 @@ namespace BRB6.View
                 ((ListView)sender).SelectedItem = null;
             };
             if(Config.Company==eCompany.NotDefined) CurrentPage = Children[1];
-            this.BindingContext = this;
-            Config.OnProgress += (pProgress) => MainThread.BeginInvokeOnMainThread(() => PB = pProgress);
+            this.BindingContext = this;            
         }
 
+        void Progress(double pProgress) => MainThread.BeginInvokeOnMainThread(() => PB = pProgress);
+        protected override void OnAppearing()
+        {
+            base.OnAppearing();
+            Config.OnProgress += Progress;
+        }
+        protected override void OnDisappearing()
+        {
+            base.OnDisappearing();
+            Config.OnProgress -= Progress;
+        }
         private void OnClickLoad(object sender, EventArgs e)
         {
             c.LoadGuidDataAsync(true);
