@@ -177,6 +177,9 @@
 	    <SubType>Designer</SubType>
 	    <Generator></Generator>
 	  </MauiXaml>
+	  <MauiXaml Update="Template\WareItemTemplate.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
 	  <MauiXaml Update="View\ExpirationDateItem.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
