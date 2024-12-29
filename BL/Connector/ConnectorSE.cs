@@ -20,19 +20,8 @@ using BRB5.Model.DB;
 
 namespace BL.Connector
 {
-    class ResultLogin : Result
-    {
-        public int? Profile { get; set; } = 10;
-        public LoginData data { get; set; }
-    }
-    class LoginData
-    {
-        public int userId { get; set; }
-        public string userName { get; set; }
-    }
     public class ConnectorSE : ConnectorBase
     {
-
         public ConnectorSE()
         {
             PercentColor = new PercentColor[4] { new PercentColor(10, Color.Green, "72301609"), new PercentColor(25, Color.Yellow, "72301616"), new PercentColor(50, Color.Orange, "72301623"), new PercentColor(75, Color.Pink, "72301630") };
@@ -51,7 +40,7 @@ namespace BL.Connector
             {
                 Res.Add(new TypeDoc() { CodeDoc = 11, KindDoc = eKindDoc.RaitingDoc, NameDoc = "Опитування", DayBefore = 4 });
                 Res.Add(new TypeDoc() { CodeDoc = -1, KindDoc = eKindDoc.RaitingTempate, NameDoc = "Шаблони Опитування" });
-                Res.Add(new TypeDoc() { CodeDoc = 12, KindDoc = eKindDoc.RaitingTemplateCreate, NameDoc = "Керування Опитуваннями" });               
+                Res.Add(new TypeDoc() { CodeDoc = 12, KindDoc = eKindDoc.RaitingTemplateCreate, NameDoc = "Керування Опитуваннями" });
             }
             if (pLS == eLoginServer.Central)
                 Res.Add(new TypeDoc() { CodeDoc = 100, KindDoc = eKindDoc.ExpirationDate, NameDoc = "Терміни придатності" });
@@ -154,7 +143,7 @@ namespace BL.Connector
             try
             {
                 Config.OnProgress?.Invoke(5);
-                HttpResult res = await Http.HTTPRequestAsync(Config.IsLoginCO ? 1 : 0, "nomenclature", null, "application/json", Config.Login, Config.Password,120);//;charset=utf-8
+                HttpResult res = await Http.HTTPRequestAsync(Config.IsLoginCO ? 1 : 0, "nomenclature", null, "application/json", Config.Login, Config.Password, 120);//;charset=utf-8
 
                 if (res.HttpState == eStateHTTP.HTTP_OK)
                 {
@@ -191,7 +180,7 @@ namespace BL.Connector
                 {
                     Config.OnProgress?.Invoke(0.95);
                     var Reasons = JsonConvert.DeserializeObject<IEnumerable<Reason>>(res.Result);
-                    db.ReplaceReason(Reasons.Select(el=>el.GetReason), pIsFull);
+                    db.ReplaceReason(Reasons.Select(el => el.GetReason), pIsFull);
                 }
 
                 await GetDaysLeft();
@@ -335,7 +324,7 @@ namespace BL.Connector
                         return Res;
                     }
                     catch (Exception e)
-                    {                        
+                    {
                         Res = new Result(-1, e.Message);
                         FileLogger.WriteLogMessage($"ConnectorPSU.LoadDocsData=>(pTypeDoc=>{pTypeDoc}, pNumberDoc=>{pNumberDoc},pIsClear=>{pIsClear}) Res=>({Res.State},{Res.Info},{Res.TextError})", eTypeLog.Error);
                         return Res;
@@ -419,10 +408,10 @@ namespace BL.Connector
                 }
                 catch (Exception e)
                 {
-                    FileLogger.WriteLogMessage(this, System.Reflection.MethodBase.GetCurrentMethod().Name, e);                    
+                    FileLogger.WriteLogMessage(this, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
                 }
                 return Res;
-            }            
+            }
         }
 
         public override async Task<Result<IEnumerable<RaitingTemplate>>> GetRaitingTemplateAsync() { return null; }
@@ -681,7 +670,6 @@ namespace BL.Connector
             }
             return null;
         }
-
         public override async Task<Result<IEnumerable<DocWaresExpirationSample>>> GetExpirationDateAsync(int pCodeWarehouse)
         {
             Config.OnProgress?.Invoke(1);
@@ -703,9 +691,8 @@ namespace BL.Connector
                 Config.OnProgress?.Invoke(1);
                 return res;
             }
-            
             Config.OnProgress?.Invoke(1);
-            return new Result<IEnumerable<DocWaresExpirationSample>>(result,null);
+            return new Result<IEnumerable<DocWaresExpirationSample>>(result, null);
         }
 
         public override async Task<Result<IEnumerable<ExpirationWares>>> GetDaysLeft()
@@ -717,21 +704,33 @@ namespace BL.Connector
                 db.ReplaceExpirationWares(res.Info);
                 return res;
             }
-            return new Result<IEnumerable<ExpirationWares>>(result,null);
+            return new Result<IEnumerable<ExpirationWares>>(result, null);
         }
 
 
-        public override async Task<Result> SaveExpirationDate(DocWaresExpirationSave pED) 
+        public override async Task<Result> SaveExpirationDate(DocWaresExpirationSave pED)
         {
             HttpResult result = await Http.HTTPRequestAsync(3, "DCT/GetExpirationDate", "", null, null);
             if (result.HttpState == eStateHTTP.HTTP_OK)
             {
-                var res = JsonConvert.DeserializeObject<Result>(result.Result);               
+                var res = JsonConvert.DeserializeObject<Result>(result.Result);
                 return res;
             }
             return new Result(result);
         }
+    }
 
+    #region Class
+
+    class ResultLogin : Result
+    {
+        public int? Profile { get; set; } = 10;
+        public LoginData data { get; set; }
+    }
+    class LoginData
+    {
+        public int userId { get; set; }
+        public string userName { get; set; }
     }
     class Answer
     {
@@ -984,8 +983,9 @@ namespace BL.Connector
     {
         public int code { get; set; }
         public string reason { get; set; }
-        public BRB5.Model.DB.Reason GetReason {get {return new BRB5.Model.DB.Reason() { CodeReason = code, NameReason = reason }; }}
+        public BRB5.Model.DB.Reason GetReason { get { return new BRB5.Model.DB.Reason() { CodeReason = code, NameReason = reason }; } }
     }
+    #endregion
 }
 
 
