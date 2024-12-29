@@ -87,6 +87,7 @@ namespace BRB6.View
         public string ApiUrl1 { get { return Config.ApiUrl1; } set { Config.ApiUrl1 = value; OnPropertyChanged(nameof(ApiUrl1)); } }
         public string ApiUrl2 { get { return Config.ApiUrl2; } set { Config.ApiUrl2 = value; OnPropertyChanged(nameof(ApiUrl2)); } }
         public string ApiUrl3 { get { return Config.ApiUrl3; } set { Config.ApiUrl3 = value; OnPropertyChanged(nameof(ApiUrl3)); } }
+        public string ApiUrl4 { get { return Config.ApiUrl4; } set { Config.ApiUrl4 = value; OnPropertyChanged(nameof(ApiUrl4)); } }
         public int Compress { get { return Config.Compress; } set { Config.Compress = value; OnPropertyChanged(nameof(Compress)); } }
         public ObservableCollection<Warehouse> Warehouses { get; set; }
 
@@ -133,13 +134,14 @@ namespace BRB6.View
             ApiUrl1 = temp[0];
             ApiUrl2 = temp[1];
             ApiUrl3 = temp[2];
+            ApiUrl4 = temp[3];
         }
 
         private void OnClickIP(object sender, EventArgs e)  {   }
 
         private void OnClickSave(object sender, EventArgs e)
         {
-            Bl.SaveSettings(IsAutoLogin, IsVibration, IsViewAllWH, IsSound, IsTest, IsFilterSave, /*IsFullScreenScan,*/ ApiUrl1, ApiUrl2, ApiUrl3, Compress, 
+            Bl.SaveSettings(IsAutoLogin, IsVibration, IsViewAllWH, IsSound, IsTest, IsFilterSave, /*IsFullScreenScan,*/ ApiUrl1, ApiUrl2, ApiUrl3, ApiUrl4, Compress, 
                 (eCompany)SelectedCompany, (eTypeLog)SelectedTypeLog, (ePhotoQuality)SelectedPhotoQuality, (eTypeUsePrinter)SelectedTypePrinter, 
                 SelectedWarehouse, SelectedWarehouse !=-1? ListWarehouse[SelectedWarehouse].Code:-2, Warehouses);
         }

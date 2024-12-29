@@ -8,6 +8,8 @@ using Grid = Microsoft.Maui.Controls.Grid;
 using BarcodeScanning;
 using Newtonsoft.Json;
 using BRB5.Model.DB;
+using Utils;
+
 
 
 #if ANDROID
@@ -52,13 +54,12 @@ namespace BRB6.View
             _ = Task.Run(async () =>
             {
                 try { 
-                 var res = JsonConvert.DeserializeObject<IEnumerable<DocWaresExpirationSample>>(DataJson.ExpirationWares);
-
-                //await c.GetExpirationDateAsync(Config.CodeWarehouse);
-                db.ReplaceDocWaresExpirationSample(res);
+                 var res = //JsonConvert.DeserializeObject<IEnumerable<DocWaresExpirationSample>>(DataJson.ExpirationWares);
+                await c.GetExpirationDateAsync(Config.CodeWarehouse);
+                db.ReplaceDocWaresExpirationSample(res.Info);
             }catch(Exception e)
                 {
-                    Console.WriteLine(e.Message);
+                    FileLogger.WriteLogMessage(this, "ExpirationDate", e);
                 }
             });           
         }

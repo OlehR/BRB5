@@ -24,13 +24,14 @@ namespace BL.Connector
             var ApiUrl1 = db.GetConfig<string>("ApiUrl1");
             var ApiUrl2 = db.GetConfig<string>("ApiUrl2");
             var ApiUrl3 = db.GetConfig<string>("ApiUrl3");
-            Init(new string[] { ApiUrl1, ApiUrl2, ApiUrl3 });
+            var ApiUrl4 = db.GetConfig<string>("ApiUrl4");
+            Init(new string[] { ApiUrl1, ApiUrl2, ApiUrl3, ApiUrl4 });
         }
         
         public void Init(string[] pUrl)
         {
             DefaultApi = new int[pUrl.Length];
-            Url = new string[3][];
+            Url = new string[4][];
             for (int i = 0; i < pUrl.Length; i++)
             {
                 DefaultApi[i] = 0;

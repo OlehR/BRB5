@@ -674,20 +674,20 @@ namespace BL.Connector
         {
             Config.OnProgress?.Invoke(1);
             //HttpResult result = Http.HTTPRequest(0, "GetExpirationDate", pCodeWarehouse.ToString(), null, null, null);
-            HttpResult result = await Http.HTTPRequestAsync(3, "DCT/GetExpirationDate", pCodeWarehouse.ToString(), null, null);
+            HttpResult result = await Http.HTTPRequestAsync(3, "DCT/GetExpirationDate", pCodeWarehouse.ToString(), "application/json", null);
 
             if (result.HttpState == eStateHTTP.HTTP_OK)
             {
                 Config.OnProgress?.Invoke(0.5);
                 var res = JsonConvert.DeserializeObject<Result<IEnumerable<DocWaresExpirationSample>>>(result.Result);
 
-                result = await Http.HTTPRequestAsync(3, "DCT/GetExpirationWares", null, null, null);
+               /* result = await Http.HTTPRequestAsync(3, "DCT/GetExpirationWares", null, null, null);
                 if (result.HttpState == eStateHTTP.HTTP_OK)
                 {
                     Config.OnProgress?.Invoke(0.95);
                     var ExpirationWares = JsonConvert.DeserializeObject<IEnumerable<ExpirationWares>>(result.Result);
                     db.ReplaceExpirationWares(ExpirationWares);
-                }
+                }*/
                 Config.OnProgress?.Invoke(1);
                 return res;
             }

@@ -68,6 +68,7 @@ namespace BL
             Config.ApiUrl1 = db.GetConfig<string>("ApiUrl1");
             Config.ApiUrl2 = db.GetConfig<string>("ApiUrl2");
             Config.ApiUrl3 = db.GetConfig<string>("ApiUrl3");
+            Config.ApiUrl4 = db.GetConfig<string>("ApiUrl4");
             Config.DateLastLoadGuid = db.GetConfig<DateTime>("DateLastLoadGuid");
             Config.CodeWarehouse = db.GetConfig<int>("CodeWarehouse");
             Config.TypeUsePrinter = db.GetConfig<eTypeUsePrinter>("TypeUsePrinter");

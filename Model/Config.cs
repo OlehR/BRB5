@@ -27,6 +27,7 @@ namespace BRB5.Model
         public static string ApiUrl2 { get; set; }
 
         public static string ApiUrl3 { get; set; }
+        public static string ApiUrl4 { get; set; }
 
         public static string SN;
         public static DateTime DateLastLoadGuid { get; set; }

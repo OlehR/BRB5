@@ -24,7 +24,7 @@ namespace BL
             }
         }
         public void SaveSettings(bool IsAutoLogin, bool IsVibration, bool IsViewAllWH, bool IsSound, bool IsTest, bool IsFilterSave,/* bool IsFullScreenScan,*/ string ApiUrl1,
-            string ApiUrl2, string ApiUrl3, int Compress, eCompany SelectedCompany, eTypeLog SelectedTypeLog, ePhotoQuality SelectedPhotoQuality, 
+            string ApiUrl2, string ApiUrl3, string ApiUrl4, int Compress, eCompany SelectedCompany, eTypeLog SelectedTypeLog, ePhotoQuality SelectedPhotoQuality, 
             eTypeUsePrinter SelectedTypePrinter, int SelectedWarehouse, int ListWarehouseCode, ObservableCollection<Warehouse> Warehouses)
         {
             db.SetConfig<bool>("IsAutoLogin", IsAutoLogin);
@@ -38,6 +38,7 @@ namespace BL
             db.SetConfig<string>("ApiUrl1", ApiUrl1 ?? "");
             db.SetConfig<string>("ApiUrl2", ApiUrl2 ?? "");
             db.SetConfig<string>("ApiUrl3", ApiUrl3 ?? "");
+            db.SetConfig<string>("ApiUrl4", ApiUrl4 ?? "");
             db.SetConfig<int>("Compress", Compress);
 
             db.SetConfig<eCompany>("Company", SelectedCompany);
