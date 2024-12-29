@@ -7,7 +7,9 @@
                        x:Class="BRB6.View.ExpiretionDateItem">
 
     <ContentPage.Content>
-        <StackLayout>
+
+        <Grid>
+        <StackLayout  x:Name="MainContent" IsVisible="True">
 
             <!--<StackLayout IsVisible="{Binding IsVisibleDocF6}">
                 <Picker Title="дата"
@@ -195,5 +197,11 @@
             </StackLayout>
             
         </StackLayout>
+            <ContentView x:Name="AlternateContent" IsVisible="False" BackgroundColor="LightGray">
+                <Label Text="This is the alternate content view." 
+                       HorizontalOptions="Center" 
+                       VerticalOptions="Center" />
+            </ContentView>
+        </Grid>
     </ContentPage.Content>
 </local:BaseContentPage>

@@ -208,9 +208,9 @@ namespace BRB6.View
         private void F6Doc(object sender, EventArgs e)
         {
             IsVisibleDocF6 = !IsVisibleDocF6;
-            if (IsVisibleDocF6) DocDate.Focus();
+            //if (IsVisibleDocF6) DocDate.Focus();
         }
-        private void DocNameFocus(object sender, FocusEventArgs e) { DocName.Focus(); }
+        private void DocNameFocus(object sender, FocusEventArgs e) {/* DocName.Focus();*/ }
 
         private void OpenElement(object sender, EventArgs e)
         {
@@ -219,9 +219,11 @@ namespace BRB6.View
             if (vItem == null) return;
 
             SelectedWare = vItem;
-            MainThread.BeginInvokeOnMainThread(async () =>
-                await Navigation.PushAsync(new ExpirationDateElement(vItem)));
-            //s.BackgroundColor = vItem.GetPercentColor.Color.ToColor();
+
+            MainThread.BeginInvokeOnMainThread(async () => await Navigation.PushAsync(new ExpirationDateElement(vItem)));
+            //MainContent.IsVisible = !MainContent.IsVisible;
+            //AlternateContent.IsVisible = !AlternateContent.IsVisible;
+
         }
 
 #if ANDROID
