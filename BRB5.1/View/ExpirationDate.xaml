@@ -43,6 +43,11 @@
                 </ListView.ItemTemplate>
             </ListView>
 
+
+            <ProgressBar ScaleY="2"
+             Progress="{Binding PB}"
+             VerticalOptions="EndAndExpand"
+             ProgressColor="Black" />
             <StackLayout VerticalOptions="End" Orientation="Horizontal" Spacing="1" IsVisible="False">
                 <Label Text="F1-"
                        IsVisible="{Binding IsViewOut}"

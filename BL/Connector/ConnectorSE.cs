@@ -142,7 +142,7 @@ namespace BL.Connector
         {
             try
             {
-                Config.OnProgress?.Invoke(5);
+                Config.OnProgress?.Invoke(0.03);
                 HttpResult res = await Http.HTTPRequestAsync(Config.IsLoginCO ? 1 : 0, "nomenclature", null, "application/json", Config.Login, Config.Password, 120);//;charset=utf-8
 
                 if (res.HttpState == eStateHTTP.HTTP_OK)
@@ -182,7 +182,6 @@ namespace BL.Connector
                     var Reasons = JsonConvert.DeserializeObject<IEnumerable<Reason>>(res.Result);
                     db.ReplaceReason(Reasons.Select(el => el.GetReason), pIsFull);
                 }
-
                 await GetDaysLeft();
                 Config.OnProgress?.Invoke(1);
                 return new Result();
@@ -190,9 +189,7 @@ namespace BL.Connector
             catch (Exception e)
             {
                 FileLogger.WriteLogMessage(this, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return new Result(e);
-                //            Toast toast = Toast.makeText(Config.instance().context, "Помилка завантаження довідників=>" + e.getMessage(), Toast.LENGTH_LONG);
-                //           toast.show();
+                return new Result(e);                
             }
         }
 
@@ -504,8 +501,7 @@ namespace BL.Connector
             return Res;
         }
         CultureInfo provider = CultureInfo.InvariantCulture;
-
-        object Lock = new object();
+        
         /// <summary>
         /// Вивантажеємо на сервер файли Рейтингів
         /// pMaxSecondSend - скільки часу відправляти, 0 - без обмежень.
@@ -651,72 +647,98 @@ namespace BL.Connector
         /// Завантаження Списку складів (HTTP)
         /// </summary>
         /// <returns></returns>
-        public override IEnumerable<Warehouse> LoadWarehouse()
+        public override async Task<Result<IEnumerable<Warehouse>>> LoadWarehouse()
         {
             HttpResult result;
             try
             {
-                result = Http.HTTPRequest(1, "StoreSettings", "{}", "application/json", "brb", "brb"); //charset=utf-8;
+                result = await Http.HTTPRequestAsync(1, "StoreSettings", "{}", "application/json", "brb", "brb"); //charset=utf-8;
 
                 if (result.HttpState == eStateHTTP.HTTP_OK)
                 {
                     var res = JsonConvert.DeserializeObject<IEnumerable<InputWarehouse>>(result.Result);
-                    return res.Select(el => el.GetWarehouse()).ToList();
+                    var R = res.Select(el => el.GetWarehouse()).ToList();
+                    db.ReplaceWarehouse(R);
+                    return new Result<IEnumerable<Warehouse>>(result,R);
                 }
+                else 
+                    return new Result<IEnumerable<Warehouse>>(result,null);
             }
             catch (Exception e)
             {
-                //Utils.WriteLog("e", TAG, "LoadWarehouse=>", e);
+                FileLogger.WriteLogMessage(this, System.Reflection.MethodBase.GetCurrentMethod().Name, e);                
             }
             return null;
         }
         public override async Task<Result<IEnumerable<DocWaresExpirationSample>>> GetExpirationDateAsync(int pCodeWarehouse)
         {
-            Config.OnProgress?.Invoke(1);
-            //HttpResult result = Http.HTTPRequest(0, "GetExpirationDate", pCodeWarehouse.ToString(), null, null, null);
-            HttpResult result = await Http.HTTPRequestAsync(3, "DCT/GetExpirationDate", pCodeWarehouse.ToString(), "application/json", null);
-
-            if (result.HttpState == eStateHTTP.HTTP_OK)
+            try
             {
-                Config.OnProgress?.Invoke(0.5);
-                var res = JsonConvert.DeserializeObject<Result<IEnumerable<DocWaresExpirationSample>>>(result.Result);
+                //HttpResult result = Http.HTTPRequest(0, "GetExpirationDate", pCodeWarehouse.ToString(), null, null, null);
+                HttpResult result = await Http.HTTPRequestAsync(3, "DCT/GetExpirationDate", pCodeWarehouse.ToString(), "application/json", null);
 
-               /* result = await Http.HTTPRequestAsync(3, "DCT/GetExpirationWares", null, null, null);
                 if (result.HttpState == eStateHTTP.HTTP_OK)
                 {
-                    Config.OnProgress?.Invoke(0.95);
-                    var ExpirationWares = JsonConvert.DeserializeObject<IEnumerable<ExpirationWares>>(result.Result);
-                    db.ReplaceExpirationWares(ExpirationWares);
-                }*/
-                Config.OnProgress?.Invoke(1);
-                return res;
+                    Config.OnProgress?.Invoke(0.5);
+                    var res = JsonConvert.DeserializeObject<Result<IEnumerable<DocWaresExpirationSample>>>(result.Result);
+
+                    /* result = await Http.HTTPRequestAsync(3, "DCT/GetExpirationWares", null, null, null);
+                     if (result.HttpState == eStateHTTP.HTTP_OK)
+                     {
+                         Config.OnProgress?.Invoke(0.95);
+                         var ExpirationWares = JsonConvert.DeserializeObject<IEnumerable<ExpirationWares>>(result.Result);
+                         db.ReplaceExpirationWares(ExpirationWares);
+                     }*/
+                    return res;
+                }
+                else
+                    return new Result<IEnumerable<DocWaresExpirationSample>>(result, null);
             }
-            Config.OnProgress?.Invoke(1);
-            return new Result<IEnumerable<DocWaresExpirationSample>>(result, null);
+            catch (Exception e)
+            {
+                FileLogger.WriteLogMessage(this, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+                return new Result<IEnumerable<DocWaresExpirationSample>>(e);
+            }
+                
         }
 
         public override async Task<Result<IEnumerable<ExpirationWares>>> GetDaysLeft()
         {
-            HttpResult result = await Http.HTTPRequestAsync(3, "DCT/GetExpirationDate", "", null, null);
-            if (result.HttpState == eStateHTTP.HTTP_OK)
+            try
             {
-                var res = JsonConvert.DeserializeObject<Result<IEnumerable<ExpirationWares>>>(result.Result);
-                db.ReplaceExpirationWares(res.Info);
-                return res;
+                HttpResult result = await Http.HTTPRequestAsync(3, "DCT/GetExpirationWares", "", "application/json", null);
+                if (result.HttpState == eStateHTTP.HTTP_OK)
+                {
+                    var res = JsonConvert.DeserializeObject<Result<IEnumerable<ExpirationWares>>>(result.Result);
+                    db.ReplaceExpirationWares(res.Info);
+                    return res;
+                }
+                return new Result<IEnumerable<ExpirationWares>>(result, null);
             }
-            return new Result<IEnumerable<ExpirationWares>>(result, null);
+            catch (Exception e)
+            {
+                FileLogger.WriteLogMessage(this, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+                return new Result<IEnumerable<ExpirationWares>>(e);
+            }
         }
-
 
         public override async Task<Result> SaveExpirationDate(DocWaresExpirationSave pED)
         {
-            HttpResult result = await Http.HTTPRequestAsync(3, "DCT/GetExpirationDate", "", null, null);
-            if (result.HttpState == eStateHTTP.HTTP_OK)
+            try
             {
-                var res = JsonConvert.DeserializeObject<Result>(result.Result);
-                return res;
+                HttpResult result = await Http.HTTPRequestAsync(3, "DCT/GetExpirationDate", "application/json", null, null);
+                if (result.HttpState == eStateHTTP.HTTP_OK)
+                {
+                    var res = JsonConvert.DeserializeObject<Result>(result.Result);
+                    return res;
+                }
+                return new Result(result);
             }
-            return new Result(result);
+            catch (Exception e)
+            {
+                FileLogger.WriteLogMessage(this, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+                return new Result(e);
+            }
         }
     }
 

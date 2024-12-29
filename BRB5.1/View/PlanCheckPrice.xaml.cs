@@ -19,7 +19,7 @@ namespace BRB6.View
             InitializeComponent();
             c = ConnectorBase.GetInstance();
 
-            var temp = c.GetPromotion(Config.CodeWarehouse);
+            var temp = c.GetPromotion(Config.CodeWarehouse).Result;
             if (temp.Info == null)
             {
                 PromotionList = new ObservableCollection<DocVM>();

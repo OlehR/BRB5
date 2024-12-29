@@ -55,8 +55,8 @@ namespace BRB6.View
             {
                 RD.IdTemplate = RT.ElementAt(SelectedTemplate).IdTemplate;
                 RD.CodeWarehouse = ListWarehouse.ElementAt(SelectedWarehouse).CodeWarehouse;
-
-                _ = DisplayAlert("збереження", c.SaveDocRaiting(RD).TextError, "OK");
+                var r = await c.SaveDocRaiting(RD);
+                _ = DisplayAlert("збереження", r.TextError, "OK");
 
                 await Navigation.PopAsync();
             } else _ = DisplayAlert("збереження", "заповніть всі дані", "OK");

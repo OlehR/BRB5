@@ -9,6 +9,7 @@ using System.Collections.ObjectModel;
 using System.Net.Mime;
 using System.Threading.Tasks;
 using BRB5;
+using System.Security.Cryptography;
 
 namespace BL.Connector
 {
@@ -39,9 +40,8 @@ namespace BL.Connector
                 }
                 catch (Exception e)
                 {
-                    var r = new Result(-1, e.Message);
-                    FileLogger.WriteLogMessage($"ConnectorPSU.Login=>(pLogin=>{pLogin}, pPassWord=>{pPassWord},pLoginServer=>{pLoginServer}) Res=>({r.State},{r.Info},{r.TextError})", eTypeLog.Error);
-                    return r;
+                    FileLogger.WriteLogMessage(this, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+                    return new Result(e);
                 }
 
         }
@@ -66,7 +66,7 @@ namespace BL.Connector
                 }
                 catch (Exception e)
                 {
-                    //Utils.WriteLog("e", TAG, "ParsedBarCode=> " + pBarCode, e);
+                    FileLogger.WriteLogMessage(this, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
                 }
             }
 
@@ -95,7 +95,7 @@ namespace BL.Connector
                     }
                     catch (Exception e)
                     {
-                        //Utils.WriteLog("e", TAG, "PriceBarCode", e);
+                        FileLogger.WriteLogMessage(this, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
                     }
                 }
                 else
@@ -146,7 +146,8 @@ namespace BL.Connector
                     res.StateHTTP = result.HttpState;                    
                 }
                 catch (Exception e)
-                {               
+                {
+                    FileLogger.WriteLogMessage(this, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
                     return new WaresPrice(-1, e.Message);
                 }
             res.ParseBarCode = pBC;
@@ -259,7 +260,7 @@ namespace BL.Connector
         /// <param name="pProgress"></param>
         /// <param name="pIsClear"></param>
         /// <returns></returns>
-        public override async Task<Result> LoadDocsDataAsync(int pTypeDoc, string pNumberDoc, bool pIsClear) 
+        public override async Task<Result> LoadDocsDataAsync(int pTypeDoc, string pNumberDoc, bool pIsClear)
         {
 
             if (pTypeDoc == 11)
@@ -273,14 +274,12 @@ namespace BL.Connector
                     }
                     db.ReplaceDoc(temp.Info);
 
-                    //var RT=GetRaitingTemplateAsync();
-
                 }
                 return new Result();
             }
             else
             {
-                string data = JsonConvert.SerializeObject(new ApiDoc() { CodeData = 150, TypeDoc = pTypeDoc,CodeWarehouse=Config.CodeWarehouse,Ver=5136 });
+                string data = JsonConvert.SerializeObject(new ApiDoc() { CodeData = 150, TypeDoc = pTypeDoc, CodeWarehouse = Config.CodeWarehouse, Ver = 5136 });
                 HttpResult result = await Http.HTTPRequestAsync(0, "znp/", data, "application/json");//
 
                 if (result.HttpState == eStateHTTP.HTTP_OK)
@@ -289,16 +288,16 @@ namespace BL.Connector
                     foreach (var el in lines)
                     {
                         string Sql = el.Replace("_", "").Replace(";;", "");
-                        if(Sql.Length>20)
-                        try
-                        {
-                                Console.WriteLine(Sql.Substring(0, 20) + $" Length=>{Sql.Length}") ;
-                            db.db.Execute(Sql);
-                        }
-                        catch (Exception e)
-                        {
-                            Console.WriteLine(Sql +Environment.NewLine+ e.Message);
-                        }
+                        if (Sql.Length > 20)
+                            try
+                            {
+                                Console.WriteLine(Sql.Substring(0, 20) + $" Length=>{Sql.Length}");
+                                db.db.Execute(Sql);
+                            }
+                            catch (Exception e)
+                            {
+                                FileLogger.WriteLogMessage(this, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+                            }
                     }
                 }
                 return null;
@@ -330,8 +329,8 @@ namespace BL.Connector
             }
             catch (Exception e)
             {
-                //Utils.WriteLog("e",TAG, "SyncDocsData=>" +data,e);
-                return new Result(-1, e.Message + data);
+                FileLogger.WriteLogMessage(this, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+                return new Result(e);
             }
         }
 
@@ -341,20 +340,28 @@ namespace BL.Connector
             public IEnumerable<object[]> Warehouse  { get; set; }
         }
 
-        public override IEnumerable<Warehouse> LoadWarehouse()
+        public override async Task<Result<IEnumerable<Warehouse>>> LoadWarehouse()
         {
-            string data = JsonConvert.SerializeObject(new Api() { CodeData = 210 });
-            HttpResult result = Http.HTTPRequest(0, "znp/", data, "application/json","brb","brb");//
-
-            if (result.HttpState == eStateHTTP.HTTP_OK)
+            try
             {
-                var r = JsonConvert.DeserializeObject<WarehouseIn>(result.Result);               
-                   
-                var res = r.Warehouse.Select(el => new Warehouse() { Code = Convert.ToInt32(el[0]), Name = el[1].ToString() });
-                db.ReplaceWarehouse(res);
-                return res;
+                string data = JsonConvert.SerializeObject(new Api() { CodeData = 210 });
+                HttpResult result = Http.HTTPRequest(0, "znp/", data, "application/json", "brb", "brb");//
+
+                if (result.HttpState == eStateHTTP.HTTP_OK)
+                {
+                    var r = JsonConvert.DeserializeObject<WarehouseIn>(result.Result);
+
+                    var res = r.Warehouse.Select(el => new Warehouse() { Code = Convert.ToInt32(el[0]), Name = el[1].ToString() });
+                    db.ReplaceWarehouse(res);
+                    return new Result<IEnumerable<Warehouse>>(result, res);
+                }
+                return new Result<IEnumerable<Warehouse>>(result, null);
             }
-            return null;
+            catch (Exception e)
+            {
+                FileLogger.WriteLogMessage(this, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+                return new Result<IEnumerable<Warehouse>>(e);
+            }
         }
 
         /// <summary>
@@ -379,13 +386,13 @@ namespace BL.Connector
             }
             catch (Exception e)
             {
-                //Utils.WriteLog("e", TAG, "printHTTP  >>", e);
+                FileLogger.WriteLogMessage(this, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
                 return e.Message;
             }
         }
 
-        public override Result<int> GetIdRaitingTemplate() {
-            HttpResult result = Http.HTTPRequest(0, "DCT/Raitting/GetIdRaitingTemplate", null, "application/json", "brb", "brb");//
+        public override async Task<Result<int>> GetIdRaitingTemplate() {
+            HttpResult result = await Http.HTTPRequestAsync(0, "DCT/Raitting/GetIdRaitingTemplate", null, "application/json", "brb", "brb");//
 
             if (result.HttpState == eStateHTTP.HTTP_OK)
             {
@@ -395,9 +402,9 @@ namespace BL.Connector
             return null;
         }
 
-        public override Result GetNumberDocRaiting()
+        public override async Task<Result> GetNumberDocRaiting()
         {
-            HttpResult result = Http.HTTPRequest(0, "DCT/Raitting/GetNumberDocRaiting", null, "application/json", "brb", "brb");//
+            HttpResult result = await Http.HTTPRequestAsync(0, "DCT/Raitting/GetNumberDocRaiting", null, "application/json", "brb", "brb");//
 
             if (result.HttpState == eStateHTTP.HTTP_OK)
             {
@@ -407,9 +414,9 @@ namespace BL.Connector
             return null;
         }
 
-        public override Result SaveTemplate(RaitingTemplate pRT)
+        public override async Task<Result> SaveTemplate(RaitingTemplate pRT)
         {
-            HttpResult result = Http.HTTPRequest(0, "DCT/Raitting/SaveTemplate", pRT.ToJSON("yyyy-MM-ddTHH:mm:ss"), "application/json", "brb", "brb");//
+            HttpResult result = await Http.HTTPRequestAsync(0, "DCT/Raitting/SaveTemplate", pRT.ToJSON("yyyy-MM-ddTHH:mm:ss"), "application/json", "brb", "brb");//
 
             if (result.HttpState == eStateHTTP.HTTP_OK)
             {
@@ -419,9 +426,9 @@ namespace BL.Connector
             return null;
         }
 
-        public override Result SaveDocRaiting(DocVM pDoc)
+        public override async Task<Result> SaveDocRaiting(DocVM pDoc)
         {
-            HttpResult result = Http.HTTPRequest(0, "DCT/Raitting/SaveDocRaiting", pDoc.ToJSON("yyyy-MM-ddTHH:mm:ss"), "application/json", "brb", "brb");//
+            HttpResult result = await Http.HTTPRequestAsync(0, "DCT/Raitting/SaveDocRaiting", pDoc.ToJSON("yyyy-MM-ddTHH:mm:ss"), "application/json", "brb", "brb");//
 
             if (result.HttpState == eStateHTTP.HTTP_OK)
             {
@@ -468,8 +475,8 @@ namespace BL.Connector
         }
 
 
-        public override Result<IEnumerable<DocVM>> GetPromotion(int pCodeWarehouse) {
-            HttpResult result = Http.HTTPRequest(0, "DCT/CheckPromotion/Doc", pCodeWarehouse.ToJSON(), "application/json", "brb", "brb");
+        public override async Task<Result<IEnumerable<DocVM>>> GetPromotion(int pCodeWarehouse) {
+            HttpResult result = await Http.HTTPRequestAsync(0, "DCT/CheckPromotion/Doc", pCodeWarehouse.ToJSON(), "application/json", "brb", "brb");
 
             if (result.HttpState == eStateHTTP.HTTP_OK)
             {
@@ -478,8 +485,8 @@ namespace BL.Connector
             }
             return null;
         }
-        public override Result<IEnumerable<DocWares>> GetPromotionData(string pNumberDoc) {
-            HttpResult result = Http.HTTPRequest(0, "DCT/CheckPromotion/GetPromotionData", "\"" + pNumberDoc + "\"", "application/json", "brb", "brb");
+        public override async Task<Result<IEnumerable<DocWares>>> GetPromotionData(string pNumberDoc) {
+            HttpResult result = await Http.HTTPRequestAsync(0, "DCT/CheckPromotion/GetPromotionData", "\"" + pNumberDoc + "\"", "application/json", "brb", "brb");
 
             if (result.HttpState == eStateHTTP.HTTP_OK)
             {

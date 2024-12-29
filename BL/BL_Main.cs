@@ -23,10 +23,9 @@ namespace BL
             db.SetConfig<string>("Password", Password);
             db.SetConfig<eLoginServer>("LoginServer", Config.LoginServer);
             Config.Login = Login;
-            Config.Password = Password;              
+            Config.Password = Password;
 
-            var Wh = c.LoadWarehouse();
-            var rrr = db.ReplaceWarehouse(Wh);
+            Task.Run(async() => await c.LoadWarehouse());            
 
             long SizeDel = 0, SizeUse = 0;
             if (Config.Company == eCompany.Sim23 && DeviceAndroid)

@@ -40,9 +40,9 @@ namespace BRB6.View
             this.BindingContext = this;
         }
 
-        private void GetData()
+        private async void GetData()
         {
-            var temp = c.GetPromotionData(Doc.NumberDoc);
+            var temp = await c.GetPromotionData(Doc.NumberDoc);
             if (temp == null || temp.Info == null)
             {
                 WaresList = new ObservableCollection<DocWaresEx>();

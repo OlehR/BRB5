@@ -20,6 +20,9 @@ namespace BRB6.View
 {
     public partial class ExpirationDate
     {
+
+        double _PB = 0.5;
+        public double PB { get { return _PB; } set { _PB = value; OnPropertyChanged(nameof(PB)); } }
         private Connector c = ConnectorBase.GetInstance();
         //private TypeDoc TypeDoc;
         DB db = DB.GetDB();
@@ -49,15 +52,19 @@ namespace BRB6.View
                 new DocVM() { NumberDoc = "3", Description = "Нефреш"},
                 new DocVM() { NumberDoc = "2", Description = "Фреш"}               
             };
-
+            Config.OnProgress += (pProgress) => MainThread.BeginInvokeOnMainThread(() => PB = pProgress);
             InitializeComponent();
             _ = Task.Run(async () =>
             {
+                Config.OnProgress.Invoke(0.1);
                 try { 
                  var res = //JsonConvert.DeserializeObject<IEnumerable<DocWaresExpirationSample>>(DataJson.ExpirationWares);
                 await c.GetExpirationDateAsync(Config.CodeWarehouse);
-                db.ReplaceDocWaresExpirationSample(res.Info);
-            }catch(Exception e)
+                    Config.OnProgress.Invoke(0.8);
+                    db.ReplaceDocWaresExpirationSample(res.Info);
+                    Config.OnProgress.Invoke(1);
+                }
+                catch(Exception e)
                 {
                     FileLogger.WriteLogMessage(this, "ExpirationDate", e);
                 }

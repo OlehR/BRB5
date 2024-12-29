@@ -89,22 +89,22 @@ namespace BRB5.Model
         /// <returns></returns>
         public virtual IEnumerable<TypeDoc> GetTypeDoc(eRole pRole, eLoginServer pLS, eGroup pGroup = eGroup.NotDefined) { throw new NotImplementedException(); }
 
-        public virtual IEnumerable<Warehouse> LoadWarehouse() { throw new NotImplementedException(); }
+        public virtual async Task<Result<IEnumerable<Warehouse>>> LoadWarehouse() { throw new NotImplementedException(); }
 
         public virtual IEnumerable<LoginServer> LoginServer() { throw new NotImplementedException(); }
 
-        public virtual Result<int> GetIdRaitingTemplate() { throw new NotImplementedException(); }
+        public virtual async Task<Result<int>> GetIdRaitingTemplate() { throw new NotImplementedException(); }
 
-        public virtual Result GetNumberDocRaiting() { throw new NotImplementedException(); }
+        public virtual async Task<Result> GetNumberDocRaiting() { throw new NotImplementedException(); }
 
-        public virtual Result SaveTemplate(RaitingTemplate pRT) { throw new NotImplementedException(); }        
+        public virtual async Task<Result> SaveTemplate(RaitingTemplate pRT) { throw new NotImplementedException(); }        
 
-        public virtual Result SaveDocRaiting(DocVM pDoc) { throw new NotImplementedException(); }
+        public virtual async Task<Result> SaveDocRaiting(DocVM pDoc) { throw new NotImplementedException(); }
 
         public virtual async Task<Result<IEnumerable<RaitingTemplate>>> GetRaitingTemplateAsync() { throw new NotImplementedException(); }
         public virtual async Task<Result<IEnumerable<Doc>>> GetRaitingDocsAsync() { throw new NotImplementedException(); }
-        public virtual Result<IEnumerable<DocVM>> GetPromotion(int pCodeWarehouse) { throw new NotImplementedException(); }
-        public virtual Result<IEnumerable<DocWares>> GetPromotionData(string pNumberDoc) { throw new NotImplementedException(); }
+        public virtual async Task<Result<IEnumerable<DocVM>>> GetPromotion(int pCodeWarehouse) { throw new NotImplementedException(); }
+        public virtual async Task<Result<IEnumerable<DocWares>>> GetPromotionData(string pNumberDoc) { throw new NotImplementedException(); }
         public virtual async Task<Result<IEnumerable<DocWaresExpirationSample>>> GetExpirationDateAsync(int pCodeWarehouse) { throw new NotImplementedException(); }
 
         public virtual async Task<Result<IEnumerable<ExpirationWares>>> GetDaysLeft() { throw new NotImplementedException(); }

@@ -31,7 +31,7 @@ namespace BRB6
         public bool IsVisRepl { get { return _IsVisRepl; } set { _IsVisRepl = value; OnPropertyChanged("IsVisRepl"); } }
         public bool IsSoftKeyboard { get { return Config.IsSoftKeyboard; } }
         double _PB = 0;
-        public double PB { get { return _PB; } set { _PB = value; OnPropertyChanged("PB"); } }
+        public double PB { get { return _PB; } set { _PB = value; OnPropertyChanged(nameof(PB)); } }
 
         WaresPrice _WP;
         public WaresPrice WP { get { return _WP; } set { _WP = value; OnPropertyChanged("WP"); OnPropertyChanged("TextColorPrice");
@@ -104,7 +104,7 @@ namespace BRB6
             if (!IsVisScan)
              Config.BarCode = BarCode;
 
-            Config.OnProgress += (pProgress) => Dispatcher.Dispatch(() => PB = pProgress);
+            Config.OnProgress += (pProgress) => MainThread.BeginInvokeOnMainThread (() => PB = pProgress);
             this.BindingContext = this;
         }
 

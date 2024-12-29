@@ -8,7 +8,8 @@
             iOsSpecific:Page.UseSafeArea="True">
     <controls:BaseContentPage Title="Налаштування">
         <ContentPage.Content>
-            <StackLayout>
+            <StackLayout>               
+                
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*" />
@@ -97,7 +98,7 @@
                 </StackLayout>
 
                 <ProgressBar ScaleY="2"
-                             Progress="1"
+                            Progress="{Binding PB}"
                              VerticalOptions="EndAndExpand"
                              ProgressColor="Black" />
 

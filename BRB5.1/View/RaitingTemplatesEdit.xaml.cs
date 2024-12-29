@@ -38,7 +38,11 @@ namespace BRB6.View
 
         }
 
-        private async void Create(object sender, EventArgs e)  { await Navigation.PushAsync(new RaitingTemplateCreate(c.GetIdRaitingTemplate().Info)); }
+        private async void Create(object sender, EventArgs e)  
+        {
+            var r = await c.GetIdRaitingTemplate();
+            await Navigation.PushAsync(new RaitingTemplateCreate(r.Info)); 
+        }
 
         private async void Edit(object sender, EventArgs e)
         {
@@ -73,7 +77,7 @@ namespace BRB6.View
             }
         }
                 
-        private void SaveRaiting(object sender, EventArgs e)
+        private async void SaveRaiting(object sender, EventArgs e)
         {
             var b = sender as ImageButton;
             var s = b.Parent as Grid;
@@ -81,7 +85,8 @@ namespace BRB6.View
             var vRaitingTemplate = s.BindingContext as RaitingTemplate;
             db.ReplaceRaitingTemplate(new List<RaitingTemplate>() { vRaitingTemplate });
             vRaitingTemplate.Item = db.GetRaitingTemplateItem(vRaitingTemplate);
-            _ = DisplayAlert("збереження", c.SaveTemplate(vRaitingTemplate).TextError, "OK");
+            var r = await c.SaveTemplate(vRaitingTemplate);
+            _ = DisplayAlert("збереження", r?.TextError, "OK");
         }
 
         private async void Download(object sender, EventArgs e)

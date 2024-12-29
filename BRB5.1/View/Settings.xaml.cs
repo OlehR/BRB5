@@ -17,6 +17,8 @@ namespace BRB6.View
         public string SN { get { return "SN:"+ Config.SN; } }
         public bool IsVisScan { get { return Config.TypeScaner == eTypeScaner.Camera; } }
 
+        double _PB = 0.5;
+        public double PB { get { return _PB; } set { _PB = value; OnPropertyChanged(nameof(PB)); } }
         public List<string> ListTypeUsePrinter
         {
             get
@@ -113,6 +115,7 @@ namespace BRB6.View
             };
             if(Config.Company==eCompany.NotDefined) CurrentPage = Children[1];
             this.BindingContext = this;
+            Config.OnProgress += (pProgress) => MainThread.BeginInvokeOnMainThread(() => PB = pProgress);
         }
 
         private void OnClickLoad(object sender, EventArgs e)
