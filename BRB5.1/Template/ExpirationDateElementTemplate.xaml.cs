@@ -17,7 +17,7 @@ public partial class ExpirationDateElementTemplate : ContentView
 
         var backgroundColorBinding = new Binding
         {
-            Path = "GetPercentColor.Color",
+            Path = "DM.GetPercentColor.Color",
             Converter = new ColorConverter()
         };
         StackBackground.SetBinding(Label.BackgroundColorProperty, backgroundColorBinding);
@@ -77,6 +77,11 @@ public partial class ExpirationDateElementTemplate : ContentView
         _DM.QuantityInput = DM.QuantityInput;
 
         // _ = Navigation.PopAsync();
+        RequestReturnToMainContent?.Invoke();
+    }
+
+    private void Back(object sender, EventArgs e)
+    {
         RequestReturnToMainContent?.Invoke();
     }
 }

@@ -16,49 +16,36 @@
         </StackLayout>
     </NavigationPage.TitleView>
     <ContentPage.Content>
+        <Grid>
 
-        <VerticalStackLayout>
-        <VerticalStackLayout  x:Name="MainContent" IsVisible="True">            
-            <Grid RowSpacing="1"
-                ColumnSpacing="1"
-                Padding="1"
-                BackgroundColor="#adaea7">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition/>
-                    <ColumnDefinition/>
-                    <ColumnDefinition/>
-                </Grid.ColumnDefinitions>
+            <Grid x:Name="MainContent" IsVisible="True" >
                 <Grid.RowDefinitions>
-                    <RowDefinition />
+                    <RowDefinition Height="auto"/>
                     <RowDefinition />
                 </Grid.RowDefinitions>
+                <Grid RowSpacing="1"  ColumnSpacing="1"  Padding="1" BackgroundColor="#adaea7">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition />
+                        <RowDefinition />
+                    </Grid.RowDefinitions>
 
-                <Label Text="Назва"
-            Grid.ColumnSpan="3"
-            BackgroundColor="White" />
+                    <Label Text="Назва" Grid.ColumnSpan="3" BackgroundColor="White" />
+                    <Label Text="Код" Grid.Row="1" Grid.Column="0" BackgroundColor="White" />
+                    <Label Text="Факт" Grid.Row="1" Grid.Column="1" BackgroundColor="White" />
+                    <Label Text="Введено" Grid.Row="1" Grid.Column="2" BackgroundColor="White" />
 
-                <Label Text="Код"
-            Grid.Row="1"
-            Grid.Column="0"
-            BackgroundColor="White" />
-
-                <Label Text="Факт"
-            Grid.Row="1"
-            Grid.Column="1"
-            BackgroundColor="White" />
-
-                <Label Text="Введено"
-            Grid.Row="1"
-            Grid.Column="2"
-            BackgroundColor="White" />
-
-            </Grid>
-                <ScrollView VerticalScrollBarVisibility="Always"  >
+                </Grid>
+                <ScrollView  Grid.Row="1">
                     <VerticalStackLayout x:Name="WareItemsContainer" />
                 </ScrollView>
+            </Grid>
                       
-        </VerticalStackLayout>
             <ContentView x:Name="AlternateContent" IsVisible="False" />
-        </VerticalStackLayout>
+        </Grid>
     </ContentPage.Content>
 </local:BaseContentPage>

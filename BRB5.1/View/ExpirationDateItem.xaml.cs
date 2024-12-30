@@ -100,6 +100,8 @@ namespace BRB6.View
             foreach (var item in db.GetDataExpiration(NumberDoc))
             {
                 var wareItemTemplate = new WareItemTemplate();
+
+                item.ExpirationDateInput = item.ExpirationDate;
                 wareItemTemplate.BindData(item);
 
                 // Додайте подію натискання

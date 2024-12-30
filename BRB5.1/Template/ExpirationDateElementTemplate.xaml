@@ -89,5 +89,8 @@
 
         </Grid>
 
+        <Button Text="Назад" Clicked="Back"/>
+
+
     </VerticalStackLayout>
 </ContentView>
