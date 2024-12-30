@@ -37,13 +37,7 @@ public partial class ExpirationDateElementTemplate : ContentView
         DM.ExpirationDateInput = DM.ExpirationDate;
         DM.ProductionDateInput = DM.ExpirationDate.AddDays(-(double)DM.Expiration);
         OnPropertyChanged(nameof(DM));
-    }
-    void BarCode(string pBarCode) => CheckDiscount(pBarCode);
-
-    void CheckDiscount(string pBarCode)
-    {
-
-    }
+    } 
 
     private void ExpirationDateSelected(object sender, DateChangedEventArgs e)
     {
@@ -64,7 +58,6 @@ public partial class ExpirationDateElementTemplate : ContentView
         _DM.ExpirationDateInput = DM.ExpirationDateInput;
         _DM.QuantityInput = DM.QuantityInput;
 
-        //_ = Navigation.PopAsync();
         RequestReturnToMainContent?.Invoke();
     }
 
@@ -76,7 +69,6 @@ public partial class ExpirationDateElementTemplate : ContentView
         _DM.ExpirationDateInput = DM.ExpirationDateInput;
         _DM.QuantityInput = DM.QuantityInput;
 
-        // _ = Navigation.PopAsync();
         RequestReturnToMainContent?.Invoke();
     }
 

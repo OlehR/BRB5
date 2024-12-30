@@ -6,6 +6,8 @@ using BRB5;
 using CommunityToolkit.Maui.Alerts;
 using System.Globalization;
 using BRB6.Template;
+using static Android.Icu.Text.CaseMap;
+
 
 
 #if ANDROID
@@ -90,11 +92,31 @@ namespace BRB6.View
             {
                 ParseBarCode pbc = c.ParsedBarCode(pBarCode, false);
                 var r = db.GetScanDataExpiration(NumberDoc, pbc);
-                SelectedWare = r;
-                MainThread.BeginInvokeOnMainThread(async () =>
-                    await Navigation.PushAsync(new ExpirationDateElement(r)));
+                if (r != null)
+                {
+                    SelectedWare = r;
+                    MainThread.BeginInvokeOnMainThread(() =>
+                    {
+                        // Hide MainContent and show AlternateContent
+                        MainContent.IsVisible = false;
+                        AlternateContent.IsVisible = true;
+                        (AlternateContent.Content as ExpirationDateElementTemplate).Set(r);
+                    });
+                }
             });
+
+            if (AlternateContent.IsVisible)   CheckDiscount(pBarCode);
         }
+
+        void CheckDiscount(string pBarCode)
+        {
+            if (SelectedWare != null)
+            {
+                if (SelectedWare.GetPercentColor.BarCode.Equals(pBarCode)) _ = DisplayAlert("", "Штрихкод підходить", "Ok");
+                else _ = DisplayAlert("", "Штрихкод не підходить", "Ok");
+            }
+        }
+
         private void AddCustomItems()
         {
             foreach (var item in db.GetDataExpiration(NumberDoc))
@@ -154,19 +176,14 @@ namespace BRB6.View
                 // Hide MainContent and show AlternateContent
                 MainContent.IsVisible = false;
                 AlternateContent.IsVisible = true;
-
-
                 (AlternateContent.Content as ExpirationDateElementTemplate).Set(vItem);
             });
         }
         private void BackToMainContent()
         {
-            // Ensure MainContent is visible
             MainContent.IsVisible = true;
-
-            // Hide AlternateContent and clear its content
             AlternateContent.IsVisible = false;
-            //AlternateContent.Content = null;
+            SelectedWare = null;
         }
 
 #if ANDROID
