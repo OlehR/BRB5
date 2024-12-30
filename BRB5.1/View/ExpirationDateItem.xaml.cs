@@ -21,6 +21,8 @@ namespace BRB6.View
 
         //private DocVM Doc;
         private Connector c = ConnectorBase.GetInstance();
+        ExpirationDateElementVM _VM;
+        ExpirationDateElementVM VM { get { return _VM; } set { _VM = value; OnPropertyChanged(nameof(VM)); } } 
         protected DB db = DB.GetDB();
         string _NumberOutInvoice = "";
         public string NumberOutInvoice { get { return _NumberOutInvoice; } set { _NumberOutInvoice = value; OnPropertyChanged("NumberOutInvoice"); } }
@@ -53,6 +55,9 @@ namespace BRB6.View
                 AddCustomItems();
             });
             BindingContext = this;
+            var expirationDateTemplate = new ExpirationDateElementTemplate();
+            expirationDateTemplate.RequestReturnToMainContent += BackToMainContent;
+            AlternateContent.Content = expirationDateTemplate;
         }
         protected override void OnAppearing()
         {
@@ -90,81 +95,6 @@ namespace BRB6.View
                     await Navigation.PushAsync(new ExpirationDateElement(r)));
             });
         }
-        //private void AddCustomItems()
-        //{
-        //    foreach (var item in MyDocWares)
-        //    {
-        //        var grid = new Grid
-        //        {
-        //            ColumnSpacing = 1,
-        //            RowSpacing = 1,
-        //            BackgroundColor = Color.FromArgb("#adaea7"),
-        //            Padding = 1,
-        //            ColumnDefinitions =
-        //            {
-        //                new ColumnDefinition { Width = GridLength.Star },
-        //                new ColumnDefinition { Width = GridLength.Star }
-        //            },
-        //            RowDefinitions =
-        //            {
-        //                new RowDefinition { Height = GridLength.Auto },
-        //                new RowDefinition { Height = GridLength.Auto }
-        //            },
-        //            BindingContext = item,
-        //            AutomationId = $"Grid_{item.CodeWares}"
-        //        };
-
-
-        //        // Прив'язка кольору через GetPercentColor
-        //        var backgroundColorBinding1 = new Binding
-        //        {
-        //            Path = "GetPercentColor.Color", // Прив'язуємо до властивості Color у GetPercentColor
-        //            Converter = new ColorConverter() // Використовуємо конвертер для перетворення кольору
-        //        };
-        //        // Додавання NameWares
-        //        var nameWaresLabel = new Label();
-        //        nameWaresLabel.SetBinding(Label.TextProperty, new Binding("NameWares"));
-        //        nameWaresLabel.SetBinding(Label.BackgroundColorProperty, backgroundColorBinding1);
-        //        Grid.SetColumnSpan(nameWaresLabel, 2);
-        //        Grid.SetRow(nameWaresLabel, 0);
-        //        grid.Children.Add(nameWaresLabel);
-
-        //        // Прив'язка кольору через GetPercentColor
-        //        var backgroundColorBinding2 = new Binding
-        //        {
-        //            Path = "GetPercentColor.Color", // Прив'язуємо до властивості Color у GetPercentColor
-        //            Converter = new ColorConverter() // Використовуємо конвертер для перетворення кольору
-        //        };
-        //        // Додавання CodeWares
-        //        var codeWaresLabel = new Label();
-        //        codeWaresLabel.SetBinding(Label.TextProperty, new Binding("CodeWares"));
-        //        codeWaresLabel.SetBinding(Label.BackgroundColorProperty, backgroundColorBinding2);
-        //        Grid.SetRow(codeWaresLabel, 1);
-        //        Grid.SetColumn(codeWaresLabel, 0);
-        //        grid.Children.Add(codeWaresLabel);
-        //        // Прив'язка кольору через GetPercentColor
-        //        var backgroundColorBinding3 = new Binding
-        //        {
-        //            Path = "GetPercentColor.Color", // Прив'язуємо до властивості Color у GetPercentColor
-        //            Converter = new ColorConverter() // Використовуємо конвертер для перетворення кольору
-        //        };
-        //        // Додавання QuantityInput
-        //        var quantityInputLabel = new Label();
-        //        quantityInputLabel.SetBinding(Label.TextProperty, new Binding("QuantityInput"));
-        //        quantityInputLabel.SetBinding(Label.BackgroundColorProperty, backgroundColorBinding3);
-        //        Grid.SetRow(quantityInputLabel, 1);
-        //        Grid.SetColumn(quantityInputLabel, 1);
-        //        grid.Children.Add(quantityInputLabel);
-
-        //        // Додавання TapGestureRecognizer
-        //        var tapGestureRecognizer = new TapGestureRecognizer();
-        //        tapGestureRecognizer.Tapped += OpenElement;
-        //        grid.GestureRecognizers.Add(tapGestureRecognizer);
-
-        //        // Додавання Grid до StackLayout
-        //        WareItemsContainer.Children.Add(grid);
-        //    }
-        //}
         private void AddCustomItems()
         {
             foreach (var item in db.GetDataExpiration(NumberDoc))
@@ -217,10 +147,24 @@ namespace BRB6.View
 
             SelectedWare = vItem;
 
-            MainThread.BeginInvokeOnMainThread(async () => await Navigation.PushAsync(new ExpirationDateElement(vItem)));
-            //MainContent.IsVisible = !MainContent.IsVisible;
-            //AlternateContent.IsVisible = !AlternateContent.IsVisible;
+            MainThread.BeginInvokeOnMainThread(() =>
+            {
+                // Hide MainContent and show AlternateContent
+                MainContent.IsVisible = false;
+                AlternateContent.IsVisible = true;
 
+
+                (AlternateContent.Content as ExpirationDateElementTemplate).Set(vItem);
+            });
+        }
+        private void BackToMainContent()
+        {
+            // Ensure MainContent is visible
+            MainContent.IsVisible = true;
+
+            // Hide AlternateContent and clear its content
+            AlternateContent.IsVisible = false;
+            //AlternateContent.Content = null;
         }
 
 #if ANDROID
