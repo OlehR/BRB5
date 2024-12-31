@@ -722,10 +722,12 @@ namespace BL.Connector
         }
 
         public override async Task<Result> SaveExpirationDate(DocWaresExpirationSave pED)
-        {
+        {         
             try
             {
-                HttpResult result = await Http.HTTPRequestAsync(3, "DCT/GetExpirationDate", "application/json", null, null);
+                AppContext.SetSwitch("System.Reflection.NullabilityInfoContext.IsSupported", true);
+                string Data = pED.ToJSON("yyyy-MM-dd");
+                HttpResult result = await Http.HTTPRequestAsync(3, "DCT/SaveExpirationDate", Data, "application/json", null);
                 if (result.HttpState == eStateHTTP.HTTP_OK)
                 {
                     var res = JsonConvert.DeserializeObject<Result>(result.Result);

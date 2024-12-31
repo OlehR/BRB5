@@ -885,7 +885,7 @@ and bc.BarCode=?
                                 join UNITDIMENSION ud on w.CODEUNIT=ud.CODEUNIT 
                                 join DocWaresExpirationSample DES on w.CodeWares=DES.CodeWares
                                 left join DocWaresExpiration DE on DES.CodeWares=DE.CodeWares and DE.DocId=DES.DocId                                
-                                where DE.CodeWares is null and DES.NumberDoc = {pNumberDoc} and " + Find+ @"
+                                where DE.CodeWares is null and DES.NumberDoc = {pNumberDoc} and " + Find + @"
                             order by des.ExpirationDate";
                     var r = db.Query<ExpirationDateElementVM>(sql);
                     if (r != null && r.Count() >= 1)
@@ -949,13 +949,13 @@ and bc.BarCode=?
             }
             catch (Exception e)
             {
-                FileLogger.WriteLogMessage(this, System.Reflection.MethodBase.GetCurrentMethod().Name, e);                
+                FileLogger.WriteLogMessage(this, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
             }
             return null;
         }
 
 
-        public bool ReplaceWares(IEnumerable<Wares> pR, bool pIsFull=false)
+        public bool ReplaceWares(IEnumerable<Wares> pR, bool pIsFull = false)
         {
             if (pIsFull) ExecSQL("DELETE FROM Wares");
             return db.ReplaceAll(pR) >= 0;
@@ -995,13 +995,19 @@ and bc.BarCode=?
             int c = 0;
             try
             {
-                db.RunInTransaction(delegate  { foreach (var el in pEW) c += db.Execute("Update Wares set DaysLeft=? where CodeWares=?", el.DaysLeft,el.CodeWares ); });
+                db.RunInTransaction(delegate { foreach (var el in pEW) c += db.Execute("Update Wares set DaysLeft=? where CodeWares=?", el.DaysLeft, el.CodeWares); });
             }
             catch (Exception e)
             {
                 FileLogger.WriteLogMessage(this, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
             }
             return c > 0;
+        }
+
+        public IEnumerable<DocWaresExpiration> GetDocWaresExpiration(string pNumberDoc)
+        {
+            string sql = "select * from DocWaresExpiration where DATE(DateDoc) = DATE('now') and NumberDoc=?";
+            return db.Query<DocWaresExpiration>(sql, pNumberDoc);
         }
     }
 }

@@ -172,18 +172,22 @@ namespace BRB6.View
         }
 
 
+
+/* Unmerged change from project 'BRB6 (net8.0-ios)'
+Before:
         private void F2Save(object sender, EventArgs e)
         {
-            /*   Doc.NumberOutInvoice = NumberOutInvoice;
-               Doc.DateOutInvoice = ListDataStr[SelectedDataStr].DateString;
-               var r = c.SendDocsData(Doc, db.GetDocWares(Doc, 2, eTypeOrder.Scan));
-               if (r.State != 0) _ = DisplayAlert("Помилка", r.TextError, "OK");
-               else
-               {
-                   var toast = Toast.Make("Документ успішно збережений");
-                   _ = toast.Show();
-                   //_ = this.DisplayToastAsync("Документ успішно збережений");
-               }*/
+After:
+        private void F2SaveAsync(object sender, EventArgs e)
+        {
+*/
+        private  void F2Save(object sender, EventArgs e)
+        {
+            Task.Run(async() =>
+            {
+                var D = db.GetDocWaresExpiration(NumberDoc);
+                var r = await c.SaveExpirationDate(new BRB5.Model.DB.DocWaresExpirationSave() { CodeWarehouse = Config.CodeWarehouse, Wares = D });
+            });
         }
         private async void F3Scan(object sender, EventArgs e) { /*await Navigation.PushAsync(new DocScan(Doc, TypeDoc)); */}
         private async void F4WrOff(object sender, EventArgs e) { /*await Navigation.PushAsync(new ManualInput(Doc, TypeDoc)); */ }
