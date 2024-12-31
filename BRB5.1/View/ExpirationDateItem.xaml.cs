@@ -6,7 +6,8 @@ using BRB5;
 using CommunityToolkit.Maui.Alerts;
 using System.Globalization;
 using BRB6.Template;
-using static Android.Icu.Text.CaseMap;
+using CommunityToolkit.Maui.Core;
+
 
 
 
@@ -112,10 +113,40 @@ namespace BRB6.View
         {
             if (SelectedWare != null)
             {
-                if (SelectedWare.GetPercentColor.BarCode.Equals(pBarCode)) _ = DisplayAlert("", "Штрихкод підходить", "Ok");
-                else _ = DisplayAlert("", "Штрихкод не підходить", "Ok");
+                if (SelectedWare.GetPercentColor.BarCode.Equals(pBarCode))
+                {
+                    var toast = Toast.Make("Штрихкод підходить", ToastDuration.Short, 20);
+                    _ = toast.Show();
+
+                    //save status!!!
+
+                    BackToMainContent();
+                }
+                else  _ = DisplayAlert("", "Штрихкод не підходить", "Ok");                   
+                
             }
         }
+        public async void ScrollToSelectedWare()
+        {
+            if (SelectedWare == null)
+                return;
+
+            // Iterate through the children of WareItemsContainer
+            foreach (var child in WareItemsContainer.Children)
+            {
+                if (child is Microsoft.Maui.Controls.View view && view.BindingContext is ExpirationDateElementVM itemModel &&
+                    itemModel.CodeWares == SelectedWare.CodeWares)
+                {
+                    var childBounds = view.Bounds;
+
+                    // Ensure you're calling ScrollToAsync on the correct ScrollView instance
+                    await ScrollView.ScrollToAsync(0, childBounds.Y, false);
+                    break;
+                }
+            }
+        }
+
+
 
         private void AddCustomItems()
         {
@@ -181,6 +212,7 @@ namespace BRB6.View
         }
         private void BackToMainContent()
         {
+            ScrollToSelectedWare();
             MainContent.IsVisible = true;
             AlternateContent.IsVisible = false;
             SelectedWare = null;

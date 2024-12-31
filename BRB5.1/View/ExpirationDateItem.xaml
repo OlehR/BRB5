@@ -40,7 +40,7 @@
                     <Label Text="Введено" Grid.Row="1" Grid.Column="2" BackgroundColor="White" />
 
                 </Grid>
-                <ScrollView  Grid.Row="1">
+                <ScrollView x:Name="ScrollView" Grid.Row="1">
                     <VerticalStackLayout x:Name="WareItemsContainer" />
                 </ScrollView>
             </Grid>
