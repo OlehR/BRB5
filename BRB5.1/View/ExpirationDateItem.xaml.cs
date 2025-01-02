@@ -8,9 +8,6 @@ using System.Globalization;
 using BRB6.Template;
 using CommunityToolkit.Maui.Core;
 
-
-
-
 #if ANDROID
 using Android.Views;
 #endif
@@ -177,6 +174,14 @@ namespace BRB6.View
                 MainThread.BeginInvokeOnMainThread(async () => await toast.Show());
             });
         }
+
+        protected override bool OnBackButtonPressed()
+        {
+            if (MainContent.IsVisible) return base.OnBackButtonPressed();
+            else BackToMainContent();
+            return true;
+        }
+
         private void DocNameFocus(object sender, FocusEventArgs e) {/* DocName.Focus();*/ }
 
         private void OpenElement(object sender, EventArgs e)
