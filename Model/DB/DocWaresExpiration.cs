@@ -16,6 +16,7 @@ namespace BRB5.Model.DB
 
     public class DocWaresExpirationSave
     {
+        public string NumberDoc { get; set; }
         public int CodeWarehouse { get; set; }
         public IEnumerable<DocWaresExpiration> Wares { get; set; }
     }

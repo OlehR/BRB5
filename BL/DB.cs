@@ -904,44 +904,38 @@ and bc.BarCode=?
                                 join UNITDIMENSION ud on w.CODEUNIT=ud.CODEUNIT                                                               
                                 where DE.CodeWares is null and " + Find + @"
                             order by des.ExpirationDate";
-
                     }
-
-
                 }
-
             }
             catch (Exception e)
             {
                 FileLogger.WriteLogMessage(this, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
             }
             return res;
-
         }
 
         public IEnumerable<ExpirationDateElementVM> GetDataExpiration(string pNumberDoc)
         {
-            string sql = @"select  DES.NumberDoc,DES.DocId, w.CodeWares,w.NameWares as NameWares, au.Coefficient as Coefficient,w.CodeUnit as CodeUnit, ud.ABRUNIT as NameUnit,
+            string sql = @"select DES.OrderDoc, DES.NumberDoc,DES.DocId, w.CodeWares,w.NameWares as NameWares, au.Coefficient as Coefficient,w.CodeUnit as CodeUnit, ud.ABRUNIT as NameUnit,
                             ( select group_concat(bc.BarCode,',') from BarCode bc where bc.CodeWares=w.CodeWares ) as BARCODE  ,w.CodeUnit as BaseCodeUnit,
                             des.Quantity,des.Expiration,des.ExpirationDate,des.DaysLeft
                                 from WARES w 
                                 join ADDITIONUNIT au on w.CODEWARES=au.CODEWARES and au.CODEUNIT=w.CODEUNIT 
                                 join UNITDIMENSION ud on w.CODEUNIT=ud.CODEUNIT 
-                                join DocWaresExpirationSample DES on w.CodeWares=DES.CodeWares
-                                left join DocWaresExpiration DE on DES.CodeWares=DE.CodeWares and DE.DocId=DES.DocId                                
-                                where DES.NumberDoc = ?
-                                --order by case when DE.CodeWares is null then 1 else 0 end, w.NameWares
+                                join DocWaresExpirationSample DES on w.CodeWares=DES.CodeWares 
+                                left join DocWaresExpiration DE on DES.CodeWares=DE.CodeWares and DE.DocId=DES.DocId and DATE(DE.DateDoc) = DATE('now')                             
+                                where DES.NumberDoc = ?                                
                         union all 
-        select  DES.NumberDoc,DES.DocId, w.CodeWares,w.NameWares as NameWares, au.Coefficient as Coefficient,w.CodeUnit as CodeUnit, ud.ABRUNIT as NameUnit,
+        select DES.OrderDoc, DES.NumberDoc,DES.DocId, w.CodeWares,w.NameWares as NameWares, au.Coefficient as Coefficient,w.CodeUnit as CodeUnit, ud.ABRUNIT as NameUnit,
                             ( select group_concat(bc.BarCode,',') from BarCode bc where bc.CodeWares=w.CodeWares ) as BARCODE  ,w.CodeUnit as BaseCodeUnit,
                             des.Quantity,des.Expiration,des.ExpirationDate,des.DaysLeft
                                 from WARES w 
                                 join ADDITIONUNIT au on w.CODEWARES=au.CODEWARES and au.CODEUNIT=w.CODEUNIT 
                                 join UNITDIMENSION ud on w.CODEUNIT=ud.CODEUNIT 
-                                join DocWaresExpiration DE on w.CodeWares=DE.CodeWares
+                                join DocWaresExpiration DE on w.CodeWares=DE.CodeWares and DATE(DE.DateDoc) = DATE('now')
                                 left join DocWaresExpirationSample DES on DES.CodeWares=DE.CodeWares and DE.DocId=DES.DocId                                                               
                                 where DES.CodeWares is null and DE.NumberDoc = ?
-                                --order by case when DE.CodeWares is null then 1 else 0 end, w.NameWares
+                                order by 1
 ";
             try
             {
