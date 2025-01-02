@@ -18,12 +18,15 @@ public partial class WareItemTemplate : ContentView
         CodeWaresLabel.SetBinding(Label.TextProperty, new Binding("CodeWares"));
         QuantityLabel.SetBinding(Label.TextProperty, new Binding("Quantity"));
         QuantityInputLabel.SetBinding(Label.TextProperty, new Binding("QuantityInput"));
+        ExpirationDateInputLabel.SetBinding(Label.TextProperty, new Binding("ExpirationDateInput", stringFormat: "{0:dd.MM.yyyy}"));
+
 
         // Прив’язка кольору (новий Binding для кожної властивості)
         NameWaresLabel.SetBinding(Label.BackgroundColorProperty, new Binding("GetPercentColor.Color", converter: new ColorConverter()));
         CodeWaresLabel.SetBinding(Label.BackgroundColorProperty, new Binding("GetPercentColor.Color", converter: new ColorConverter()));
         QuantityLabel.SetBinding(Label.BackgroundColorProperty, new Binding("GetPercentColor.Color", converter: new ColorConverter())); 
         QuantityInputLabel.SetBinding(Label.BackgroundColorProperty, new Binding("GetPercentColor.Color", converter: new ColorConverter()));
+        ExpirationDateInputLabel.SetBinding(Label.BackgroundColorProperty, new Binding("GetPercentColor.Color", converter: new ColorConverter()));
 
     }
 }

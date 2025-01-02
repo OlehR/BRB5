@@ -5,9 +5,16 @@
                        xmlns:local="clr-namespace:BRB6.View"
                       xmlns:Model="clr-namespace:BRB5.Model;assembly=BRB5.Model"
                        x:Class="BRB6.View.ExpiretionDateItem">
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <Style TargetType="Label">
+                <Setter Property="TextColor" Value="Black" />
+            </Style>
+        </ResourceDictionary>
+    </ContentPage.Resources>
     <NavigationPage.TitleView>
         <StackLayout Spacing="10" Orientation="Horizontal">
-            <Label Text="F-2 Зберегти" HorizontalOptions="End"
+            <Label Text="F2- Зберегти" HorizontalOptions="End"
                VerticalOptions="Center"  >
                 <Label.GestureRecognizers>
                     <TapGestureRecognizer Tapped="F2Save" />
@@ -25,9 +32,9 @@
                 </Grid.RowDefinitions>
                 <Grid RowSpacing="1"  ColumnSpacing="1"  Padding="1" BackgroundColor="#adaea7">
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition/>
-                        <ColumnDefinition/>
-                        <ColumnDefinition/>
+                        <ColumnDefinition Width="2*"/>
+                        <ColumnDefinition Width="2*"/>
+                        <ColumnDefinition Width="5*"/>
                     </Grid.ColumnDefinitions>
                     <Grid.RowDefinitions>
                         <RowDefinition />

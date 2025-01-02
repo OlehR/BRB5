@@ -41,8 +41,6 @@ namespace BRB6.View
         }
         public int SelectedDataStr { get; set; } = 0;
         public bool IsSoftKeyboard { get { return Config.IsSoftKeyboard; } }
-        bool _IsVisibleDocF6 = false;
-        public bool IsVisibleDocF6 { get { return _IsVisibleDocF6; } set { _IsVisibleDocF6 = value; OnPropertyChanged("IsVisibleDocF6"); } }
         public ObservableCollection<ExpirationDateElementVM> MyDocWares { get; set; } = new ObservableCollection<ExpirationDateElementVM>();
         private ExpirationDateElementVM SelectedWare;
         public ExpiretionDateItem(string pNumberDoc)
@@ -146,8 +144,6 @@ namespace BRB6.View
             }
         }
 
-
-
         private void AddCustomItems()
         {
             foreach (var item in db.GetDataExpiration(NumberDoc))
@@ -171,30 +167,15 @@ namespace BRB6.View
             
         }
 
-
-
-/* Unmerged change from project 'BRB6 (net8.0-ios)'
-Before:
         private void F2Save(object sender, EventArgs e)
-        {
-After:
-        private void F2SaveAsync(object sender, EventArgs e)
-        {
-*/
-        private  void F2Save(object sender, EventArgs e)
         {
             Task.Run(async() =>
             {
                 var D = db.GetDocWaresExpiration(NumberDoc);
                 var r = await c.SaveExpirationDate(new BRB5.Model.DB.DocWaresExpirationSave() { CodeWarehouse = Config.CodeWarehouse, Wares = D });
+                var toast = Toast.Make("Збереження: "+ r.TextError, ToastDuration.Long, 14);
+                MainThread.BeginInvokeOnMainThread(async () => await toast.Show());
             });
-        }
-        private async void F3Scan(object sender, EventArgs e) { /*await Navigation.PushAsync(new DocScan(Doc, TypeDoc)); */}
-        private async void F4WrOff(object sender, EventArgs e) { /*await Navigation.PushAsync(new ManualInput(Doc, TypeDoc)); */ }
-        private void F6Doc(object sender, EventArgs e)
-        {
-            IsVisibleDocF6 = !IsVisibleDocF6;
-            //if (IsVisibleDocF6) DocDate.Focus();
         }
         private void DocNameFocus(object sender, FocusEventArgs e) {/* DocName.Focus();*/ }
 
@@ -225,24 +206,14 @@ After:
 #if ANDROID
         public void OnPageKeyDown(Keycode keyCode, KeyEvent e)
         {
-            /*switch (keyCode)
+            switch (keyCode)
             {
-             case Keycode.F2:
-                F2Save(null, EventArgs.Empty);
-                return;
-             case Keycode.F3:
-                F3Scan(null, EventArgs.Empty);
-                return;
-             case Keycode.F4:
-                F4WrOff(null, EventArgs.Empty); 
-                return;
-             case Keycode.F6:
-                F6Doc(null, EventArgs.Empty);
-                return;
-
-             default:
-                return;
-            }*/
+                case Keycode.F2:
+                    F2Save(null, EventArgs.Empty);
+                    return;
+                default:
+                    return;
+            }
         }
 #endif
     }
