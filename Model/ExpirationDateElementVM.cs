@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -17,7 +18,7 @@ namespace BRB5.Model
 
         private DateTime _ExpirationDateInput;
         private DateTime _ProductionDateInput;
-        public DateTime ExpirationDateInput { get => _ExpirationDateInput; set {_ExpirationDateInput = value; OnPropertyChanged(nameof(ExpirationDateInput)); OnPropertyChanged(nameof(GetPercentColor)); } }
+        public DateTime ExpirationDateInput { get => _ExpirationDateInput; set {_ExpirationDateInput = value; OnPropertyChanged(nameof(ExpirationDateInput)); OnPropertyChanged(nameof(GetPercentColor)); OnPropertyChanged(nameof(GetColor)); } }
         public DateTime ProductionDateInput { get => _ProductionDateInput; set { _ProductionDateInput = value; OnPropertyChanged(nameof(ProductionDateInput)); } }
         public string NameWares { get; set; }
         public string BarCode { get; set; }
@@ -26,6 +27,7 @@ namespace BRB5.Model
 
         public int[] DaysRight { get { return DaysLeft?.Split(';')?.Select(e => e.ToInt()).ToArray() ?? new int[0]; } }
 
+        public Color GetColor { get { return (ExpirationDateInput == default ? GetPercentColor?.ColorLight: GetPercentColor?.ColorNormal)??Color.LightGray ;  } }
         public PercentColor GetPercentColor { get { int i = GetColourIndex(); 
                 return i < 0 || Connector.PercentColor == null || i >= Connector.PercentColor.Length ? null : Connector.PercentColor[i]; } }
 
@@ -34,54 +36,13 @@ namespace BRB5.Model
             int i = 0;
             while (i < DaysRight.Length)
             {
-                if ((ExpirationDateInput-DateTime.Today).Days >= DaysRight[i]) break;
+                if (((ExpirationDateInput==default? ExpirationDate : ExpirationDateInput) -DateTime.Today).Days >= DaysRight[i]) break;
                 i++;
             }
             return i - 1;
         }
 
-        public string GetBackgroundColor
-        {
-            get
-            {
-                /*  if(!DocSetting.IsViewPlan)
-                      return "fff3cd";*/
-                /*
-                if (Even)
-                    switch (Ord)
-                    {
-                        case 3:
-                            return "#FFB0B0";
-                        case 2:
-                            return "#FFC050";
-                        case 1:
-                            return "#FFFF80";
-                        case 0:
-                            return "#80FF80";
-                        default:
-                            return "#fff3cd";
-                    }
-                else
-                    switch (Ord)
-                    {
-                        case 3:
-                            return "#FFD1D1";
-                        case 2:
-                            return "#ffdd8a";
-                        case 1:
-                            return "#ffffb7";
-                        case 0:
-                            return "#c4ffc4";
-                        case -1:
-                            return "#ffffff";
-                        default:
-                            return "#fff3cd";
-                    }*/
-                return "#fff3cd";
-            }
-        }
-        //public string GetBackgroundColor { get { return "#fff3cd"; } }
-        public DocWaresExpiration GetDocWaresExpiration()
+               public DocWaresExpiration GetDocWaresExpiration()
         {
             return new DocWaresExpiration() { CodeWares = CodeWares, DocId = DocId, DateDoc = DateTime.Today, NumberDoc = NumberDoc, QuantityInput = QuantityInput, ExpirationDateInput = ExpirationDateInput };
         }

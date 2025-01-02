@@ -24,7 +24,11 @@ namespace BL.Connector
     {
         public ConnectorSE()
         {
-            PercentColor = new PercentColor[4] { new PercentColor(10, Color.Green, "72301609"), new PercentColor(25, Color.Yellow, "72301616"), new PercentColor(50, Color.Orange, "72301623"), new PercentColor(75, Color.Pink, "72301630") };
+            PercentColor = new PercentColor[4] { 
+                new PercentColor(10, Color.FromArgb(0xC6F8BD), Color.Green, "72301609"), 
+                new PercentColor(25, Color.FromArgb(0xF7FAB2), Color.Yellow, "72301616"), 
+                new PercentColor(50, Color.FromArgb(0xFFD7A6), Color.Orange ,  "72301623"), 
+                new PercentColor(75,Color.FromArgb(0xFDABAB) , Color.Pink, "72301630") };
         }
         /// <summary>
         /// Список Документів доступних по ролі

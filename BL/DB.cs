@@ -919,6 +919,7 @@ and bc.BarCode=?
             string sql = @"select DES.OrderDoc, DES.NumberDoc,DES.DocId, w.CodeWares,w.NameWares as NameWares, au.Coefficient as Coefficient,w.CodeUnit as CodeUnit, ud.ABRUNIT as NameUnit,
                             ( select group_concat(bc.BarCode,',') from BarCode bc where bc.CodeWares=w.CodeWares ) as BARCODE  ,w.CodeUnit as BaseCodeUnit,
                             des.Quantity,des.Expiration,des.ExpirationDate,des.DaysLeft
+,DE.ExpirationDateInput, DE.QuantityInput
                                 from WARES w 
                                 join ADDITIONUNIT au on w.CODEWARES=au.CODEWARES and au.CODEUNIT=w.CODEUNIT 
                                 join UNITDIMENSION ud on w.CODEUNIT=ud.CODEUNIT 
@@ -928,7 +929,8 @@ and bc.BarCode=?
                         union all 
         select DES.OrderDoc, DES.NumberDoc,DES.DocId, w.CodeWares,w.NameWares as NameWares, au.Coefficient as Coefficient,w.CodeUnit as CodeUnit, ud.ABRUNIT as NameUnit,
                             ( select group_concat(bc.BarCode,',') from BarCode bc where bc.CodeWares=w.CodeWares ) as BARCODE  ,w.CodeUnit as BaseCodeUnit,
-                            des.Quantity,des.Expiration,des.ExpirationDate,des.DaysLeft
+                            des.Quantity,des.Expiration,des.ExpirationDate,des.DaysLeft,
+DE.ExpirationDateInput, DE.QuantityInput
                                 from WARES w 
                                 join ADDITIONUNIT au on w.CODEWARES=au.CODEWARES and au.CODEUNIT=w.CODEUNIT 
                                 join UNITDIMENSION ud on w.CODEUNIT=ud.CODEUNIT 

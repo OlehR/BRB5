@@ -34,6 +34,7 @@
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="2*"/>
                         <ColumnDefinition Width="2*"/>
+                        <ColumnDefinition Width="3*"/>
                         <ColumnDefinition Width="5*"/>
                     </Grid.ColumnDefinitions>
                     <Grid.RowDefinitions>
@@ -41,10 +42,11 @@
                         <RowDefinition />
                     </Grid.RowDefinitions>
 
-                    <Label Text="Назва" Grid.ColumnSpan="3" BackgroundColor="White" />
+                    <Label Text="Назва" Grid.ColumnSpan="4" BackgroundColor="White" />
                     <Label Text="Код" Grid.Row="1" Grid.Column="0" BackgroundColor="White" />
                     <Label Text="Факт" Grid.Row="1" Grid.Column="1" BackgroundColor="White" />
-                    <Label Text="Введено" Grid.Row="1" Grid.Column="2" BackgroundColor="White" />
+                    <Label Text="План" Grid.Row="1" Grid.Column="2" BackgroundColor="White" />
+                    <Label Text="Введено" Grid.Row="1" Grid.Column="3" BackgroundColor="White" />
 
                 </Grid>
                 <ScrollView x:Name="ScrollView" Grid.Row="1">

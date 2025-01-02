@@ -7,6 +7,7 @@
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="2*" />
             <ColumnDefinition Width="2*" />
+            <ColumnDefinition Width="3*" />
             <ColumnDefinition Width="2*" />
             <ColumnDefinition Width="3*" />
         </Grid.ColumnDefinitions>
@@ -16,16 +17,18 @@
         </Grid.RowDefinitions>
 
         <!-- Назва товару -->
-        <Label x:Name="NameWaresLabel" Grid.ColumnSpan="4" Grid.Row="0" />
+        <Label x:Name="NameWaresLabel" Grid.ColumnSpan="5" Grid.Row="0" />
 
         <!-- Код товару -->
         <Label x:Name="CodeWaresLabel" Grid.Column="0" Grid.Row="1" />
 
         <!-- Кількість -->
         <Label x:Name="QuantityLabel" Grid.Column="1" Grid.Row="1" />
-        <!-- Кількість введена -->
-        <Label x:Name="QuantityInputLabel" Grid.Column="2" Grid.Row="1" />
 
-        <Label x:Name="ExpirationDateInputLabel" Grid.Column="3" Grid.Row="1" />
+        <Label x:Name="ExpirationDateLabel" Grid.Column="2" Grid.Row="1" />
+        <!-- Кількість введена -->
+        <Label x:Name="QuantityInputLabel" Grid.Column="3" Grid.Row="1" />
+
+        <Label x:Name="ExpirationDateInputLabel" Grid.Column="4" Grid.Row="1" />
     </Grid>
 </ContentView>

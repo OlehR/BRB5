@@ -150,7 +150,7 @@ namespace BRB6.View
             {
                 var wareItemTemplate = new WareItemTemplate();
 
-                item.ExpirationDateInput = item.ExpirationDate;
+                //item.ExpirationDateInput = item.ExpirationDate;
                 wareItemTemplate.BindData(item);
 
                 // Додайте подію натискання
