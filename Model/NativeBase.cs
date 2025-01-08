@@ -21,5 +21,6 @@ namespace BRB5.Model
                 return ms.ToArray();
             }
         }
+        public virtual string GetIP() { return null; }
     }
 }

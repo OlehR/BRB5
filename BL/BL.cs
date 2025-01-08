@@ -5,6 +5,7 @@ using System.Text;
 using System.Linq;
 using BRB5;
 using BL.Connector;
+using Utils;
 
 namespace BL
 {
@@ -176,5 +177,7 @@ namespace BL
                      return el;
             return null;
         }
+
+       
     }
 }

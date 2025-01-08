@@ -1,5 +1,10 @@
-﻿using Android.Graphics;
+﻿using Android.App;
+using Android.Content;
+using Android.Graphics;
+using Android.Net;
+using Android.Net.Wifi;
 using BRB5.Model;
+using System.Net;
 
 namespace BRB6
 {
@@ -29,5 +34,22 @@ namespace BRB6
                 return ms.ToArray();
             }
         }
+
+        public override string GetIP()
+        {
+            string Res = null ;
+            /*WifiManager wifiManager = (WifiManager)Android.App.Application.Context.GetSystemService(Service.WifiService);
+            int ipaddress = wifiManager.ConnectionInfo.IpAddress;
+            IPAddress ipAddr = new IPAddress(ipaddress);
+            Res = ipAddr.ToString();*/
+            var connectivityManager = (ConnectivityManager)Platform.AppContext.GetSystemService(Context.ConnectivityService);
+            var linkProperties = connectivityManager?.GetLinkProperties(connectivityManager?.ActiveNetwork);
+
+            if (linkProperties != null)            
+                foreach (var linkAddress in linkProperties.LinkAddresses)                
+                    if (linkAddress?.Address is Java.Net.Inet4Address inet4Address)                    
+                        Res = inet4Address.HostAddress;                    
+            return Res;
+        }        
     }
 }

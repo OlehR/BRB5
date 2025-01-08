@@ -65,7 +65,7 @@ namespace BL
                     result[0] = "http://93.183.216.37:80/dev1/hs/TSD/";
                     result[1] = "http://qlik.sim23.ua/TK/hs/TSD/;http://vpn.sim23.ua/TK/hs/TSD/";  //"http://37.53.84.148/TK/hs/TSD/";// "http://93.183.216.37/TK/hs/TSD/;http://37.53.84.148/TK/hs/TSD/";
                     result[2] = "https://bitrix.sim23.ua/rest/233/ax02yr7l9hia35vj/";
-                    result[3] = "http://vpn.sim23.ua:6380/";
+                    result[3] = "http://10.100.0.34;http://vpn.sim23.ua:6380/";
                     break; 
                 case eCompany.VPSU:
                 case eCompany.SparPSU:
@@ -73,6 +73,33 @@ namespace BL
                     break;
             }
             return result;
+        }
+        public Warehouse FindWhIP(IEnumerable<Warehouse> pWarehouses)
+        {
+            Warehouse res = null;
+            if (pWarehouses == null)
+                return res;
+            try
+            {
+                string Ip = Config.NativeBase.GetIP();
+                if (Ip == null)
+                    return res;
+                String[] IP = Ip.Split('.');//192.168.1.235
+                if (IP.Length != 4)
+                    return res;
+                foreach (var el in pWarehouses)
+                {
+                    if (el.InternalIP == null) continue;
+                    String[] WhIp = el.InternalIP.Split('.');
+                    if (WhIp.Length != 4) continue;
+                    if (IP[0].Equals(WhIp[0]) && IP[1].Equals(WhIp[1]) && IP[2].Equals(WhIp[2])) return el;
+                }
+            }
+            catch (Exception e)
+            {
+                FileLogger.WriteLogMessage(this, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+            }
+            return res;
         }
     }
 }
