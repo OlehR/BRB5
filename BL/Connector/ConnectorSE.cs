@@ -10,10 +10,7 @@ using Utils;
 using System.Diagnostics;
 using BRB5;
 using System.Globalization;
-using static System.Net.Mime.MediaTypeNames;
 using System.Threading.Tasks;
-using System.Net.NetworkInformation;
-using System.Security.Cryptography;
 using System.Threading;
 using System.Drawing;
 using BRB5.Model.DB;
@@ -97,8 +94,9 @@ namespace BL.Connector
                 }
             }
             else
+            if (pLoginServer == eLoginServer.Local)
             {
-                HttpResult res = await Http.HTTPRequestAsync(pLoginServer == eLoginServer.Central ? 1 : 0, "login", "{\"login\" : \"" + pLogin + "\"}", "application/json", pLogin, pPassWord);
+                HttpResult res = await Http.HTTPRequestAsync(0, "login", "{\"login\" : \"" + pLogin + "\"}", "application/json", pLogin, pPassWord);
                 if (res.HttpState == eStateHTTP.HTTP_UNAUTHORIZED || res.HttpState == eStateHTTP.HTTP_Not_Define_Error)
                 {
                     //Utils.WriteLog("e", TAG, "Login >>" + res.HttpState.ToString());
@@ -115,7 +113,6 @@ namespace BL.Connector
                     try
                     {
                         var r = JsonConvert.DeserializeObject<ResultLogin>(res.Result);
-
                         if (r.State == 0)
                         {
                             Config.Role = (eRole)r.Profile;
@@ -139,10 +136,54 @@ namespace BL.Connector
                     }
                 }
             }
+            else
+            if (pLoginServer == eLoginServer.Central)
+            {
+                User Data = new User() { Login = pLogin, PassWord = pPassWord };
+                HttpResult result = await Http.HTTPRequestAsync(3, "DCT/Login", Data.ToJson(), "application/json", null);
+                if (result.HttpState == eStateHTTP.HTTP_OK)
+                {
+                    Result<User> res = JsonConvert.DeserializeObject<Result<User>>(result.Result);
+                    Config.Role = res.Info?.Role ?? 0;
+                    Config.CodeUser = res.Info?.CodeUser ?? 0;
+                    Config.NameUser = res.Info?.NameUser;
+                    FileLogger.WriteLogMessage($"ConnectorPSU.Login=>(pLogin=>{pLogin}, pPassWord=>{pPassWord},pLoginServer=>{pLoginServer}) Res=>({Res.State},{Res.Info},{Res.TextError})", eTypeLog.Full);
+                    return res.GetResult;
+                }
+                else
+                    return new Result(result);                
+            }
+            return new Result(-1,"Невідомий сервер");
+        }
+
+        public override async Task<Result> LoadGuidDataAsync(bool pIsFull)
+        {
+            try
+            {
+                Config.OnProgress?.Invoke(0.03);
+                AppContext.SetSwitch("System.Reflection.NullabilityInfoContext.IsSupported", true);
+                string Data = Config.CodeWarehouse.ToString();
+                HttpResult result = await Http.HTTPRequestAsync(3, "DCT/GetGuid", Data, "application/json", null);
+                Config.OnProgress?.Invoke(0.4);
+                if (result.HttpState == eStateHTTP.HTTP_OK)
+                {
+                    var res = JsonConvert.DeserializeObject<Result<BRB5.Model.Guid>>(result.Result);
+                    Config.OnProgress?.Invoke(0.60);
+                    SaveGuide(res.Info, pIsFull);                    
+                }                
+                //await GetDaysLeft();
+                Config.OnProgress?.Invoke(1);               
+                return new Result(result);
+            }
+            catch (Exception e)
+            {
+                FileLogger.WriteLogMessage(this, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+                return new Result(e);
+            }
         }
 
         //Завантаження довідників.
-        public override async Task<Result> LoadGuidDataAsync(bool pIsFull)
+        /*public override async Task<Result> LoadGuidDataAsync(bool pIsFull)
         {
             try
             {
@@ -195,7 +236,7 @@ namespace BL.Connector
                 FileLogger.WriteLogMessage(this, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
                 return new Result(e);                
             }
-        }
+        }*/
 
         public override ParseBarCode ParsedBarCode(string pBarCode, bool pIsOnlyBarCode)
         {
@@ -669,9 +710,9 @@ namespace BL.Connector
             }
             catch (Exception e)
             {
-                FileLogger.WriteLogMessage(this, System.Reflection.MethodBase.GetCurrentMethod().Name, e);                
-            }
-            return null;
+                FileLogger.WriteLogMessage(this, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+                return new Result<IEnumerable<Warehouse>>(e);
+            }            
         }
         public override async Task<Result<IEnumerable<DocWaresExpirationSample>>> GetExpirationDateAsync(int pCodeWarehouse)
         {
@@ -705,7 +746,7 @@ namespace BL.Connector
                 
         }
 
-        public override async Task<Result<IEnumerable<ExpirationWares>>> GetDaysLeft()
+       /* public override async Task<Result<IEnumerable<ExpirationWares>>> GetDaysLeft()
         {
             try
             {
@@ -723,7 +764,7 @@ namespace BL.Connector
                 FileLogger.WriteLogMessage(this, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
                 return new Result<IEnumerable<ExpirationWares>>(e);
             }
-        }
+        }*/
 
         public override async Task<Result> SaveExpirationDate(DocWaresExpirationSave pED)
         {         
@@ -955,7 +996,7 @@ namespace BL.Connector
                     CodeWares = CODE_WARES.ToInt(),
                     CodeGroup = CodeGroup.ToInt(),
                     NameWares = NAME_WARES,
-                    Articl = ARTICL,
+                    Article = ARTICL,
                     CodeUnit = CODE_UNIT.ToInt(),
                     Description = DESCRIPTION,
                     Vat = VAT.ToInt(),

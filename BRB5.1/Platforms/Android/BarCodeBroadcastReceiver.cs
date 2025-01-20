@@ -16,7 +16,7 @@ namespace BRB6
 {
     [BroadcastReceiver(Enabled = true)]
     [Service(Exported = true)]
-    [IntentFilter(new[] { "device.scanner.EVENT", "ua.uz.vopak.brb4", "com.symbol.datawedge.api.ACTION", "com.scanner.broadcast" })]
+    [IntentFilter(["device.scanner.EVENT", "ua.uz.vopak.brb4", "com.symbol.datawedge.api.ACTION", "com.scanner.broadcast"])]
     public class MyBroadcastReceiver : BroadcastReceiver
     {
         public MyBroadcastReceiver() 

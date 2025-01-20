@@ -25,16 +25,19 @@ namespace BL
             Config.Login = Login;
             Config.Password = Password;
 
-            Task.Run(async() => await c.LoadWarehouse());            
+            //Task.Run(async() => await c.LoadWarehouse());          
 
             long SizeDel = 0, SizeUse = 0;
             if (Config.Company == eCompany.Sim23 && DeviceAndroid)
-            {
-                var a = db.GetDoc(Config.GetDocSetting(11));
-                (SizeDel, SizeUse) = FileAndDir.DelDir(Config.PathFiles, a.Select(el => el.NumberDoc));
-                FileLogger.WriteLogMessage($"{Config.PathFiles} => SizeDel={SizeDel}, SizeUse=>{SizeUse}");
-                (SizeDel, SizeUse) = FileAndDir.DelDir(Path.Combine(Config.PathFiles, "arx"), a.Select(el => el.NumberDoc));
-                FileLogger.WriteLogMessage($"{Path.Combine(Config.PathFiles, "arx")} => SizeDel={SizeDel}, SizeUse=>{SizeUse}");
+            {   var TypeDoc = Config.GetDocSetting(11);
+                if (TypeDoc != null)
+                {
+                    var a = db.GetDoc(TypeDoc);
+                    (SizeDel, SizeUse) = FileAndDir.DelDir(Config.PathFiles, a.Select(el => el.NumberDoc));
+                    FileLogger.WriteLogMessage($"{Config.PathFiles} => SizeDel={SizeDel}, SizeUse=>{SizeUse}");
+                    (SizeDel, SizeUse) = FileAndDir.DelDir(Path.Combine(Config.PathFiles, "arx"), a.Select(el => el.NumberDoc));
+                    FileLogger.WriteLogMessage($"{Path.Combine(Config.PathFiles, "arx")} => SizeDel={SizeDel}, SizeUse=>{SizeUse}");
+                }
             }
 
             if (Config.DateLastLoadGuid.Date != DateTime.Today.Date)
@@ -48,9 +51,7 @@ namespace BL
                         db.SetConfig<DateTime>("DateLastLoadGuid", Config.DateLastLoadGuid);
                     }
                 });
-
             }
-
         }
 
         public void Init()

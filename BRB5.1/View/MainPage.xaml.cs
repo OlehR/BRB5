@@ -38,8 +38,7 @@ namespace BRB6
             Init();
             if (Config.Company == eCompany.NotDefined) _= Navigation.PushAsync(new Settings());                
             BindingContext = this;
-        }        
-
+        }  
         private void OnButtonLogin(object sender, System.EventArgs e)
         {
             _ = Task.Run(async () =>
@@ -47,18 +46,16 @@ namespace BRB6
                 var r = await c.LoginAsync(Login, Password, Config.LoginServer);
                 if (r.State == 0)
                 {
+                    Config.TypeDoc = c.GetTypeDoc(Config.Role, Config.LoginServer);
                     Dispatcher.Dispatch(() =>
                     {
-                        OCTypeDoc?.Clear();
-                        Config.TypeDoc = c.GetTypeDoc(Config.Role, Config.LoginServer);
+                        OCTypeDoc?.Clear();                        
                         //OCTypeDoc = new ObservableCollection<TypeDoc>(Config.TypeDoc);
                         foreach (var i in Config.TypeDoc) OCTypeDoc.Add(i);
                         SLLogin.IsVisible = false;
                         ListDocs.IsVisible = true;
                     });
-
-                    // TODO Xamarin.Forms.Device.RuntimePlatform is no longer supported. Use Microsoft.Maui.Devices.DeviceInfo.Platform instead. For more details see https://learn.microsoft.com/en-us/dotnet/maui/migration/forms-projects#device-changes
-                    Bl.OnButtonLogin(Login, Password, Device.RuntimePlatform == Device.Android);
+                   Bl.OnButtonLogin(Login, Password, DeviceInfo.Platform == DevicePlatform.Android);
                 }
                 else
                     Dispatcher.Dispatch(() =>
@@ -126,7 +123,6 @@ namespace BRB6
             // Скидання вибраного елемента, щоб зняти виділення
             ((ListView)sender).SelectedItem = null;
         }
-
 
         void Init()
         {

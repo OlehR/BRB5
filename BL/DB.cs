@@ -14,6 +14,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 using Utils;
 using static System.Net.Mime.MediaTypeNames;
 
@@ -45,22 +46,22 @@ namespace BL
         public static DB GetDB(string pPathDB = null)
         {
             if (!string.IsNullOrEmpty(pPathDB))
-            { BaseDir = pPathDB; Db = null; }
-            if (Db == null)
+            { BaseDir = pPathDB;}
+            if (!string.IsNullOrEmpty(BaseDir) && Db == null)
                 Db = new DB();
             return Db;
         }
 
         public SQLiteConnection db;
-        const string NameDB = "BRB5.db";
-        public static string BaseDir = Path.GetTempPath();
+        const string NameDB = "BRB6.db";
+        public static string BaseDir = null;
 
         const string SqlCreateDB = @"
 CREATE TABLE Wares (
     CodeWares          INTEGER  NOT NULL,
     CodeGroup          INTEGER  NOT NULL,
     NameWares          TEXT     NOT NULL,
-    Articl              TEXT,
+    Article              TEXT,
     CodeBrand          INTEGER,
     ArticlWaresBrand  TEXT,
     CodeUnit           INTEGER  NOT NULL,
@@ -258,7 +259,7 @@ CREATE TABLE DocWaresExpiration(
 CREATE UNIQUE INDEX DocWaresExpirationTNC ON DocWaresExpiration (DateDoc, NumberDoc, DocId, CodeWares);
 
 ";
-
+        int Ver = 2;
         public string PathNameDB { get { return Path.Combine(BaseDir, NameDB); } }
 
         public DB(string pBaseDir) : this() { BaseDir = pBaseDir; }
@@ -268,14 +269,44 @@ CREATE UNIQUE INDEX DocWaresExpirationTNC ON DocWaresExpiration (DateDoc, Number
 
             if (!File.Exists(PathNameDB))
             {
-                db = new SQLiteConnection(PathNameDB, false);
-                //Створюємо базу       
-                foreach (var el in SqlCreateDB.Split(';'))
-                    if (el.Length > 4)
-                        db.Execute(el);
+                CreateDB();
             }
             else
                 db = new SQLiteConnection(PathNameDB, false);
+
+            if (GetVersion < Ver)
+                CreateDB();
+
+        }
+
+        bool CreateDB()
+        {
+            try
+            {
+                if (File.Exists(PathNameDB))
+                {
+                    db?.Close();
+                    Task.Delay(100);
+                    File.Delete(PathNameDB);
+                }
+                if (!File.Exists(PathNameDB))
+                {
+                    db = new SQLiteConnection(PathNameDB, false);
+                    //Створюємо базу       
+                    foreach (var el in SqlCreateDB.Split(';'))
+                        if (el.Length > 4)
+                            db.Execute(el);
+                    SetVersion(Ver);
+                    return true;
+                }
+                else
+                    return false;
+            }
+            catch (Exception ex)
+            {
+                FileLogger.WriteLogMessage(this, "DB.CreateDB", ex);
+                return false;
+            }
         }
 
         public bool SetConfig<T>(string pName, T pValue)
@@ -308,6 +339,9 @@ CREATE UNIQUE INDEX DocWaresExpirationTNC ON DocWaresExpiration (DateDoc, Number
             return Res;
         }
 
+        public int GetVersion => db.ExecuteScalar<int>("PRAGMA user_version");
+
+        public bool SetVersion(int pVer) => db.Execute($"PRAGMA user_version={pVer}") > 0;
         public bool ExecSQL(string pSQL) => db.Execute(pSQL) > 0;
 
         public IEnumerable<DocWaresEx> GetDocWares(DocId pDocId, int pTypeResult, eTypeOrder pTypeOrder, int pCodeReason = 0)
@@ -538,7 +572,7 @@ and bc.BarCode=?
                 // Пошук по коду
                 if (res == null && (pParseBarCode.CodeWares > 0 || pParseBarCode.Article > 0))
                 {
-                    String Find = pParseBarCode.CodeWares > 0 ? $"w.code_wares={pParseBarCode.CodeWares}" : $"w.ARTICL='{pParseBarCode.Article:D8}'";
+                    String Find = pParseBarCode.CodeWares > 0 ? $"w.code_wares={pParseBarCode.CodeWares}" : $"w.ARTICLE='{pParseBarCode.Article:D8}'";
                     sql = @"select w.CODEWARES,w.NAMEWARES as NameWares, au.COEFFICIENT as Coefficient,w.CODEUNIT as CodeUnit, ud.ABRUNIT as NameUnit,
                             '' as BARCODE  ,w.CODEUNIT as BaseCodeUnit 
                                 from WARES w 
@@ -876,7 +910,7 @@ and bc.BarCode=?
                 // Пошук по коду
                 if (res == null && (pParseBarCode.CodeWares > 0 || pParseBarCode.Article > 0))
                 {
-                    String Find = pParseBarCode.CodeWares > 0 ? $"w.code_wares={pParseBarCode.CodeWares}" : $"w.ARTICL='{pParseBarCode.Article:D8}'";
+                    String Find = pParseBarCode.CodeWares > 0 ? $"w.code_wares={pParseBarCode.CodeWares}" : $"w.ARTICLE='{pParseBarCode.Article:D8}'";
                     sql = $@"select  DES.NumberDoc,DES.DocId, w.CodeWares,w.NAMEWARES as NameWares, au.COEFFICIENT as Coefficient,w.CODEUNIT as CodeUnit, ud.ABRUNIT as NameUnit,
                             ( select group_concat(bc.BarCode,',') from BarCode bc where bc.CodeWares=w.CodeWares ) as BARCODE  ,w.CODEUNIT as BaseCodeUnit,
                             des.Quantity,des.Expiration,des.ExpirationDate,des.DaysLeft

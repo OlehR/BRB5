@@ -4,8 +4,7 @@ using System.Text;
 
 namespace BRB5.Model
 {
-    public enum eTypeUser
-    { }
+    
 
     public class User
     {
@@ -14,6 +13,6 @@ namespace BRB5.Model
         public string BarCode { get; set; }
         public string Login { get; set; }
         public string PassWord { get; set; }
-        public eTypeUser TypeUser { get; set; }
+        public eRole Role { get; set; }
     }
 }
