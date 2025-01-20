@@ -28,7 +28,6 @@ namespace BRB6
         public bool IsSoftKeyboard { get { return Config.IsSoftKeyboard; } }
         public MainPage()
         {
-
             ProtoBRB.Init();
             db = DB.GetDB(ProtoBRB.GetPathDB);
             Bl = BL.BL.GetBL();
@@ -72,14 +71,26 @@ namespace BRB6
             // Отримання вибраного елемента
             var vTypeDoc = e.Item as TypeDoc;
 
-            var cameraStatus = await Permissions.CheckStatusAsync<Permissions.Camera>();
-
-            if (cameraStatus != PermissionStatus.Granted)
-                cameraStatus = await Permissions.RequestAsync<Permissions.Camera>();
-
-            if (cameraStatus != PermissionStatus.Granted)
+            if (Config.TypeScaner == eTypeScaner.Camera)
             {
-                await DisplayAlert("Error", "Need camera permission", "OK", FlowDirection.MatchParent);
+                var cameraStatus = await Permissions.CheckStatusAsync<Permissions.Camera>();
+                if (cameraStatus != PermissionStatus.Granted)
+                    cameraStatus = await Permissions.RequestAsync<Permissions.Camera>();
+
+                if (cameraStatus != PermissionStatus.Granted)
+                {
+                    await DisplayAlert("Error", "Need camera permission", "OK", FlowDirection.MatchParent);
+                    return;
+                }
+            }
+
+            var FileStatus = await Permissions.CheckStatusAsync<Permissions.StorageWrite >();
+            if (FileStatus != PermissionStatus.Granted)
+                FileStatus = await Permissions.RequestAsync<Permissions.StorageWrite>();
+
+            if (FileStatus != PermissionStatus.Granted)
+            {
+                await DisplayAlert("Error", "Need StorageWrite permission", "OK", FlowDirection.MatchParent);
                 return;
             }
 

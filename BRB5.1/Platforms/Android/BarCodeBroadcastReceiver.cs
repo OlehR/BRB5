@@ -76,6 +76,7 @@ namespace BRB6
                 //FileLogger.WriteLogMessage($"MyBroadcastReceiver BarCodeScaner=>{Res}");
                 if (Res != null && !Res.Equals("READ_FAIL"))
                 {
+                    Res=Res.Replace("\n", "");
                    // FileLogger.WriteLogMessage($"MyBroadcastReceiver Invoke=>{Res}");
                     Config.BarCode?.Invoke(Res);
                 }
