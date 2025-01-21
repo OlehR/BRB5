@@ -8,15 +8,17 @@ using BRB5;
 using BRB5.Model;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
+using Utils;
 //using Utils;
 
 namespace BRB6
 {
     [BroadcastReceiver(Enabled = true)]
     [Service(Exported = true)]
-    [IntentFilter(["device.scanner.EVENT", "ua.uz.vopak.brb4", "com.symbol.datawedge.api.ACTION", "com.scanner.broadcast"])]
+    [IntentFilter(["device.scanner.EVENT", "ua.uz.vopak.brb4", "ua.UniCS.TM.BRB", "com.scanner.broadcast"],Categories = [Intent.CategoryDefault] )]
     public class MyBroadcastReceiver : BroadcastReceiver
     {
         public MyBroadcastReceiver() 
@@ -35,6 +37,7 @@ namespace BRB6
                         Res = "ua.uz.vopak.brb4";
                         break;
                     case eTypeScaner.BitaHC61:
+                    case eTypeScaner.ChainwayC61:
                         Res = "com.scanner.broadcast" ;
                         break;
                 }
@@ -53,6 +56,7 @@ namespace BRB6
                         Res = "com.symbol.datawedge.data_string";
                         break;
                     case eTypeScaner.BitaHC61:
+                    case eTypeScaner.ChainwayC61:
                         Res = "data";
                         break;
                 }
@@ -75,17 +79,14 @@ namespace BRB6
                     Res = intent.GetStringExtra(IntentEventValue);
                 //FileLogger.WriteLogMessage($"MyBroadcastReceiver BarCodeScaner=>{Res}");
                 if (Res != null && !Res.Equals("READ_FAIL"))
-                {
-                    Res=Res.Replace("\n", "");
-                   // FileLogger.WriteLogMessage($"MyBroadcastReceiver Invoke=>{Res}");
-                    Config.BarCode?.Invoke(Res);
-                }
-                
+                {                    
+                    Config.BarCode?.Invoke(Res.Replace("\n", ""));
+                }                
             }
             catch (Exception e)
             {
                 var m = e.Message;
-                //FileLogger.WriteLogMessage($"MyBroadcastReceiver Exception=>{m}");
+                FileLogger.WriteLogMessage(this, "MyBroadcastReceiver.OnReceive", e);                
             }
         }
     }

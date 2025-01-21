@@ -309,6 +309,7 @@ namespace BRB5
         PM351,
         Camera,
         BitaHC61,
+        ChainwayC61,
         KeyBoard
     }
     public enum eTermsForIlliquidWare

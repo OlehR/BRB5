@@ -7,6 +7,7 @@
         <action android:name="ua.uz.vopak.brb4" />
         <action android:name="com.symbol.datawedge.api.ACTION" />
         <action android:name="com.scanner.broadcast" />
+        <action android:name="ua.UniCS.TM.BRB" />        
       </intent-filter>
     </receiver>
     <provider

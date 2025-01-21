@@ -39,9 +39,8 @@ namespace BRB6
             Config.NativeBase = new Native();
             //FileLogger.PathLog = Path.Combine(Config.PathDownloads, "Log");
             FileLogger.WriteLogMessage("Start", eTypeLog.Expanded);
-            if (Config.TypeScaner == eTypeScaner.PM351)
+            if (Config.TypeScaner == eTypeScaner.PM351 || Config.TypeScaner == eTypeScaner.BitaHC61 || Config.TypeScaner == eTypeScaner.Zebra  )
                 BR = new MyBroadcastReceiver();
-
             
             try
             {
@@ -49,7 +48,7 @@ namespace BRB6
                 string path1 = // Config.PathDownloads; //
                                                      Path.Combine(Android.OS.Environment.ExternalStorageDirectory.AbsolutePath, Android.OS.Environment.DirectoryDownloads);
 
-                var FileDestination = Path.Combine(path1, "brb5.db");
+                var FileDestination = Path.Combine(path1, "brb6.db");
                 if (File.Exists(FileDestination)) File.Delete(FileDestination);
 
                 byte[] buffer = File.ReadAllBytes(db.PathNameDB);
@@ -84,10 +83,21 @@ namespace BRB6
 
         protected override void OnResume()
         {
-            base.OnResume();           
+            base.OnResume();
             if (BR != null)
-                RegisterReceiver(BR, new IntentFilter(MyBroadcastReceiver.IntentEvent));
-           
+            {
+                var I = new IntentFilter(MyBroadcastReceiver.IntentEvent);
+                I.AddCategory(Intent.CategoryDefault);
+                RegisterReceiver(BR, I);// "android.intent.category.DEFAULT"
+            }
+
+        }
+        protected override void OnPause()
+        {
+            if(BR != null)
+            UnregisterReceiver(BR);
+            // Code omitted for clarity
+            base.OnPause();
         }
     }
 }
