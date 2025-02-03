@@ -4,6 +4,7 @@ using BRB5.Model;
 using BRB6.View;
 using BL;
 using BRB5;
+using Docs = BRB6.View.Docs;
 
 //[assembly: Xamarin.Forms.Dependency(typeof(AndroidStorageManager))]
 

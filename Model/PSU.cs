@@ -40,7 +40,7 @@ namespace BRB5.Model
         }
         public eTypePriceInfo TypePriceInfo { get; set; } = eTypePriceInfo.Short;
         public string BarCode { get; set; }
-        public int CodeWares { get; set; }
+        public long CodeWares { get; set; }
         public int Article { get; set; }
         IEnumerable<int> _WareHouses = null;
         public IEnumerable<int> WareHouses { get { return _WareHouses?? Config.CodesWarehouses; } set { _WareHouses=value;} }

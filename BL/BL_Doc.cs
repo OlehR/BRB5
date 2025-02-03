@@ -11,7 +11,7 @@ namespace BL
 {
     public partial class BL
     {
-        public decimal CountBeforeQuantity(int pCodeWares, ObservableCollection<DocWaresEx> ListWares)
+        public decimal CountBeforeQuantity(long pCodeWares, ObservableCollection<DocWaresEx> ListWares)
         {
             decimal res = 0;
             if (ListWares.Count() > 0)

@@ -795,7 +795,7 @@ and bc.BarCode=?
             return null;
         }
 
-        public IEnumerable<int> GetPrintPackageCodeWares(int pActionType, int pPackageNumber, bool pIsMultyLabel)
+        public IEnumerable<long> GetPrintPackageCodeWares(int pActionType, int pPackageNumber, bool pIsMultyLabel)
         {
             string ActionType = "";
             if (pActionType == 0)

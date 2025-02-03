@@ -369,7 +369,7 @@ namespace BL.Connector
         /// </summary>
         /// <param name="codeWares">Список товарів</param>
         /// <returns></returns>        
-        public override string PrintHTTP(IEnumerable<int> pCodeWares) 
+        public override string PrintHTTP(IEnumerable<long> pCodeWares) 
         {
             string Data = string.Join(",", pCodeWares);
 
