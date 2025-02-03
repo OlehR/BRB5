@@ -18,7 +18,7 @@ namespace BRB6.PlatformDependency
         {
             var context = Android.App.Application.Context;
             var path = Path.Combine(Android.App.Application.Context.GetExternalFilesDir("").AbsolutePath, "BRB6.apk");
-            Java.IO.File file = new Java.IO.File(path);
+            Java.IO.File file = new(path);
 
             using (Android.Content.Intent install = new Android.Content.Intent(Android.Content.Intent.ActionView))
             {
