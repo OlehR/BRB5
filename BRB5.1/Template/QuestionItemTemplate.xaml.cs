@@ -16,9 +16,11 @@ namespace BRB6.Template;
 public partial class QuestionItemTemplate : ContentView
 {
     BL.BL Bl = BL.BL.GetBL();
-    public QuestionItemTemplate()
+    BRB5.Model.RaitingDocItem Question {  get; set; }
+    public QuestionItemTemplate(BRB5.Model.RaitingDocItem pQuestion)
 	{
 		InitializeComponent();
+        Question = pQuestion;
 	}
 
     private void OnButtonClicked(object sender, EventArgs e)
