@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace BRB5.Model
 {
@@ -22,5 +23,7 @@ namespace BRB5.Model
             }
         }
         public virtual string GetIP() { return null; }
+        public virtual async Task<bool> CheckNewVerAsync() { return false; }
+        public virtual async Task InstallAsync() { }
     }
 }

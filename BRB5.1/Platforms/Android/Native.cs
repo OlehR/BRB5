@@ -4,7 +4,9 @@ using Android.Graphics;
 using Android.Net;
 using Android.Net.Wifi;
 using BRB5.Model;
+using BRB6.PlatformDependency;
 using System.Net;
+using Utils;
 
 namespace BRB6
 {
@@ -50,6 +52,13 @@ namespace BRB6
                     if (linkAddress?.Address is Java.Net.Inet4Address inet4Address)                    
                         Res = inet4Address.HostAddress;                    
             return Res;
-        }        
+        }
+
+        public override async Task<bool> CheckNewVerAsync() {
+            var versionString = AppInfo.BuildString;
+            var ver = await UtilAndroid.DownloadStringAsync("https://raw.githubusercontent.com/OlehR/BRB5/master/Apk/Ver.txt");
+            return ver.ToInt() > versionString.ToInt();
+        }
+        public override async Task InstallAsync() { await UtilAndroid.InstallAPKAsync(); }
     }
 }
