@@ -94,6 +94,9 @@ namespace BRB5.Model
         //Залишок по складу браку
         public IEnumerable<RestWarehouse> RestWarehouse { get; set; }
         public eCheckWareScaned StateDoubleScan { get; set; }
+
+        public string Country { get; set; }
+
     }
     public class RestWarehouse
     {
