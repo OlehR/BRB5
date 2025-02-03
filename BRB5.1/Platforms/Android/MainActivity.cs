@@ -35,7 +35,7 @@ namespace BRB6
             //Config.Ver = int.Parse(AppInfo.VersionString.Replace(".", ""));
             //Config.Manufacturer = DeviceInfo.Manufacturer;
             //Config.Model = DeviceInfo.Model;
-            
+         
             Config.NativeBase = new Native();
             //FileLogger.PathLog = Path.Combine(Config.PathDownloads, "Log");
             FileLogger.WriteLogMessage("Start", eTypeLog.Expanded);
