@@ -388,7 +388,8 @@ namespace BL.Connector
                     if (result.HttpState == eStateHTTP.HTTP_OK)
                     {
                         var res = JsonConvert.DeserializeObject<Result<IEnumerable<Doc>>>(result.Result);
-                        return res;
+
+                        return new Result();
                     }
                     return new Result(result);
                 }
@@ -951,7 +952,7 @@ namespace BL.Connector
             NumberOfReplenishment = pLP.NumberOfReplenishment;
         }
         public string BarCode { get; set; }
-        public int Code { get; set; }
+        public long Code { get; set; }
         public int Status { get; set; }
         public int LineNumber { get; set; }
         public double NumberOfReplenishment { get; set; }

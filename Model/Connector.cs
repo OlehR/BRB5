@@ -65,7 +65,7 @@ namespace BRB5.Model
         /// </summary>
         /// <param name="codeWares">Список товарів</param>
         /// <returns></returns>        
-        public virtual string PrintHTTP(IEnumerable<int> pCodeWares) { throw new NotImplementedException(); }
+        public virtual string PrintHTTP(IEnumerable<long> pCodeWares) { throw new NotImplementedException(); }
 
         /// <summary>
         /// Розбір штрихкоду по правилам компанії

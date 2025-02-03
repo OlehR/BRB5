@@ -12,7 +12,7 @@ namespace BRB5.Model
         [JsonIgnore]
         public string StartString { get; set; } = null;
         public string BarCode { get; set; } = null;
-        public int CodeWares { get; set; } = 0;
+        public long CodeWares { get; set; } = 0;
         [JsonIgnore]
         public decimal Price { get; set; } = 0m;
         [JsonIgnore]

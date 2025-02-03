@@ -74,7 +74,7 @@ namespace BL
             if (Config.TypeUsePrinter == eTypeUsePrinter.StationaryWithCut || Config.TypeUsePrinter == eTypeUsePrinter.StationaryWithCutAuto)
                return c.PrintHTTP(codeWares);
             else
-                foreach (int CodeWares in codeWares) {
+                foreach (long CodeWares in codeWares) {
                     PrintLabel(CodeWares);
                 }
             return null;
@@ -82,7 +82,7 @@ namespace BL
            
         }
 
-        public void PrintLabel(int pCodeWares)
+        public void PrintLabel(long pCodeWares)
         {
          /*   boolean isError = false;
             if (codeWares == null)
@@ -150,7 +150,7 @@ namespace BL
               if (Config.Company == eCompany.Sim23 && pTypeDoc == 7 && PBarcode.CodeWares != 0)
             { //Якщо ревізія а товар не знайдено
 
-                DocWaresSample DWS = new DocWaresSample() { TypeDoc = pTypeDoc, NumberDoc = pNumberDoc, OrderDoc = 100000 + PBarcode.CodeWares,
+                DocWaresSample DWS = new DocWaresSample() { TypeDoc = pTypeDoc, NumberDoc = pNumberDoc, OrderDoc = 100000 + (int)PBarcode.CodeWares,
                     Quantity = 1m, QuantityMax = 1d, Name = pBarCode };
                 
                 db.ReplaceDocWaresSample(new DocWaresSample[] { DWS});
