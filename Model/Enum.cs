@@ -8,10 +8,11 @@ namespace BRB5
     public enum eCompany
     {
         NotDefined = 0,
-        SparPSU,
+        PSU,
         Sim23,
-        VPSU,
-        Sim23FTP
+        Universal
+        //VPSU,
+        //Sim23FTP
     }
 
     public enum eLoginServer

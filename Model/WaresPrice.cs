@@ -17,7 +17,7 @@ namespace BRB5.Model
         }
         public WaresPrice(HttpResult pHttp, string pInfo=null) : base(pHttp, pInfo) { }
         public WaresPrice(int pState = 0, string pTextError = "Ok", string pInfo = "") : base(pState, pTextError, pInfo) { }
-        public int CodeWares { get; set; }
+        public long CodeWares { get; set; }
         public string Name { get; set; }
 
         //зберігаємо в копійках із за відсутності Decimal

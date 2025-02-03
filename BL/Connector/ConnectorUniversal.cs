@@ -17,152 +17,44 @@ using BRB5.Model.DB;
 
 namespace BL.Connector
 {
-    public class ConnectorSE : ConnectorBase
+    public class ConnectorUniversal : ConnectorBase
     {
-        public ConnectorSE()
+        public ConnectorUniversal()
         {
-            PercentColor = new PercentColor[6]  {
-                new PercentColor(10, Color.FromArgb(0xC6F8BD), Color.WhiteSmoke, ""), //Товар з хорошим строком
-                new PercentColor(10, Color.FromArgb(0xC6F8BD), Color.LightGreen, "72301609"),  //10%
-                new PercentColor(25, Color.FromArgb(0xF7FAB2), Color.Yellow, "72301616"),  //25%
-                new PercentColor(50, Color.FromArgb(0xFFD7A6), Color.Orange ,  "72301623"), //50%
-                new PercentColor(75, Color.FromArgb(0xFDABAB) , Color.Pink, "72301630") , //75%
-                new PercentColor(10, Color.FromArgb(0xC6F8BD), Color.Gray, "") //Протермінований товар
-            };
-
+            PercentColor = new PercentColor[4] { 
+                new PercentColor(10, Color.FromArgb(0xC6F8BD), Color.LightGreen, "72301609"), 
+                new PercentColor(25, Color.FromArgb(0xF7FAB2), Color.Yellow, "72301616"), 
+                new PercentColor(50, Color.FromArgb(0xFFD7A6), Color.Orange ,  "72301623"), 
+                new PercentColor(75,Color.FromArgb(0xFDABAB) , Color.Pink, "72301630") };
         }
+
+        IEnumerable<TypeDoc> TypeDoc;
         /// <summary>
         /// Список Документів доступних по ролі
         /// </summary>
         /// <param name="pRole"></param>
         /// <returns></returns>
         public override IEnumerable<TypeDoc> GetTypeDoc(eRole pRole, eLoginServer pLS, eGroup pGroup = eGroup.NotDefined)
-        {
-            var Res = new List<TypeDoc>();
-            if (pLS == eLoginServer.Local)
-                Res.Add(new TypeDoc() { CodeDoc = 0, KindDoc = eKindDoc.PriceCheck, NameDoc = "Прайсчекер" });
-            if (pLS == eLoginServer.Bitrix)
-            {
-                Res.Add(new TypeDoc() { CodeDoc = 11, KindDoc = eKindDoc.RaitingDoc, NameDoc = "Опитування", DayBefore = 4 });
-                Res.Add(new TypeDoc() { CodeDoc = -1, KindDoc = eKindDoc.RaitingTempate, NameDoc = "Шаблони Опитування" });
-                Res.Add(new TypeDoc() { CodeDoc = 12, KindDoc = eKindDoc.RaitingTemplateCreate, NameDoc = "Керування Опитуваннями" });
-            }
-            if (pLS == eLoginServer.Central)
-                Res.Add(new TypeDoc() { CodeDoc = 100, KindDoc = eKindDoc.ExpirationDate, NameDoc = "Терміни придатності" });
-            return Res;
+        {            
+            return TypeDoc;
         }
 
-        public override ParseBarCode ParsedBarCode(string pBarCode, bool pIsOnlyBarCode)
-        {
-            pBarCode = pBarCode.Trim();
-            ParseBarCode Res = new ParseBarCode() { BarCode = pBarCode };
-            if (pBarCode.Length > 2 && pBarCode.Substring(0, 2).Equals("29") && pBarCode.Length == 13)
-            {
-                Res.CodeWares = Convert.ToInt32(pBarCode.Substring(2, 8));
-                Res.Price = Convert.ToDecimal(pBarCode.Substring(8, 13));
-            }
-            return Res;
-        }
-
-        public override IEnumerable<LoginServer> LoginServer()
-        {
-            return new List<LoginServer>()
-            {new  LoginServer (){Code=eLoginServer.Local,Name = "Магазин"},
-                new  LoginServer (){Code=eLoginServer.Central,Name = "ЦБ"},
-             new  LoginServer (){Code=eLoginServer.Bitrix,Name = "Бітрікс"}};//
-        }
+        public override IEnumerable<LoginServer> LoginServer() => new List<LoginServer>() { new LoginServer() { Code = eLoginServer.Central, Name = "ЦБ" } };
 
         public override async Task<Result> LoginAsync(string pLogin, string pPassWord, eLoginServer pLoginServer)
         {
-            Result Res = new Result();
-            if (pLoginServer == eLoginServer.Bitrix)
-            {
-                string data = JsonConvert.SerializeObject(new RequestLogin() { action = "auth", login = pLogin, password = pPassWord });
-                HttpResult result = await Http.HTTPRequestAsync(2, "", data, "application/json");
-                if (result.HttpState != eStateHTTP.HTTP_OK)
-                {
-                    Res = new Result(result);
-                    FileLogger.WriteLogMessage($"ConnectorPSU.Login=>(pLogin=>{pLogin}, pPassWord=>{pPassWord},pLoginServer=>{pLoginServer}) Res=>({Res.State},{Res.Info},{Res.TextError})", eTypeLog.Full);
-                    return Res;
-                }
-                else
-                {
-                    try
-                    {
-                        var t = JsonConvert.DeserializeObject<AnswerLogin>(result.Result);
-                        if (!t.success || t.data.userId <= 0)
-                        {
-                            Res = new Result(-1, "Не успішна авторизація. Можливо невірний логін чи пароль");
-                            FileLogger.WriteLogMessage($"ConnectorPSU.Login=>(pLogin=>{pLogin}, pPassWord=>{pPassWord},pLoginServer=>{pLoginServer}) Res=>({Res.State},{Res.Info},{Res.TextError})", eTypeLog.Expanded);
-                            return Res;
-                        }
-                        Config.CodeUser = t.data.userId;
-                        Res = new Result();
-                        FileLogger.WriteLogMessage($"ConnectorPSU.Login=>(pLogin=>{pLogin}, pPassWord=>{pPassWord},pLoginServer=>{pLoginServer}) Res=>({Res.State},{Res.Info},{Res.TextError})", eTypeLog.Expanded);
-                        return Res;
-                    }
-                    catch (Exception e)
-                    {
-                        Res = new Result(e);
-                        FileLogger.WriteLogMessage($"ConnectorPSU.Login=>(pLogin=>{pLogin}, pPassWord=>{pPassWord},pLoginServer=>{pLoginServer}) Res=>({Res.State},{Res.Info},{Res.TextError})", eTypeLog.Error);
-                        return Res;
-                    }
-                }
-            }
-            else
-            if (pLoginServer == eLoginServer.Local)
-            {
-                HttpResult res = await Http.HTTPRequestAsync(0, "login", "{\"login\" : \"" + pLogin + "\"}", "application/json", pLogin, pPassWord);
-                if (res.HttpState == eStateHTTP.HTTP_UNAUTHORIZED || res.HttpState == eStateHTTP.HTTP_Not_Define_Error)
-                {
-                    //Utils.WriteLog("e", TAG, "Login >>" + res.HttpState.ToString());
-                    return new Result(-1, res.HttpState.ToString(), "Неправильний логін або пароль");
-                }
-                else if (res.HttpState != eStateHTTP.HTTP_OK)
-                {
-                    Res = new Result(res, "Ви не підключені до мережі " + Config.Company.ToString());
-                    FileLogger.WriteLogMessage($"ConnectorPSU.Login=>(pLogin=>{pLogin}, pPassWord=>{pPassWord},pLoginServer=>{pLoginServer}) Res=>({Res.State},{Res.Info},{Res.TextError})", eTypeLog.Expanded);
-                    return Res;
-                }
-                else
-                {
-                    try
-                    {
-                        var r = JsonConvert.DeserializeObject<ResultLogin>(res.Result);
-                        if (r.State == 0)
-                        {
-                            Config.Role = (eRole)r.Profile;
-                            Config.CodeUser = r.data?.userId ?? 0;
-                            Config.NameUser = r.data?.userName;
-                            FileLogger.WriteLogMessage($"ConnectorPSU.Login=>(pLogin=>{pLogin}, pPassWord=>{pPassWord},pLoginServer=>{pLoginServer}) Res=>({Res.State},{Res.Info},{Res.TextError})", eTypeLog.Full);
-                            return Res;
-                        }
-                        else
-                        {
-                            Res = new Result(r.State, r.TextError, "Неправильний логін або пароль");
-                            FileLogger.WriteLogMessage($"ConnectorPSU.Login=>(pLogin=>{pLogin}, pPassWord=>{pPassWord},pLoginServer=>{pLoginServer}) Res=>({Res.State},{Res.Info},{Res.TextError})", eTypeLog.Expanded);
-                            return Res;
-                        }
-                    }
-                    catch (Exception e)
-                    {
-                        Res = new Result(-1, e.Message);
-                        FileLogger.WriteLogMessage($"ConnectorPSU.Login=>(pLogin=>{pLogin}, pPassWord=>{pPassWord},pLoginServer=>{pLoginServer}) Res=>({Res.State},{Res.Info},{Res.TextError})", eTypeLog.Error);
-                        return Res;
-                    }
-                }
-            }
-            else
+            Result Res = new Result();            
             if (pLoginServer == eLoginServer.Central)
             {
                 User Data = new User() { Login = pLogin, PassWord = pPassWord };
-                HttpResult result = await Http.HTTPRequestAsync(3, "DCT/Login", Data.ToJson(), "application/json", null);
+                HttpResult result = await Http.HTTPRequestAsync(0, "DCT/Login", Data.ToJson(), "application/json", null);
                 if (result.HttpState == eStateHTTP.HTTP_OK)
                 {
                     Result<User> res = JsonConvert.DeserializeObject<Result<User>>(result.Result);
                     Config.Role = res.Info?.Role ?? 0;
                     Config.CodeUser = res.Info?.CodeUser ?? 0;
                     Config.NameUser = res.Info?.NameUser;
+                    TypeDoc = res.Info?.TypeDoc;
                     FileLogger.WriteLogMessage($"ConnectorPSU.Login=>(pLogin=>{pLogin}, pPassWord=>{pPassWord},pLoginServer=>{pLoginServer}) Res=>({Res.State},{Res.Info},{Res.TextError})", eTypeLog.Full);
                     return res.GetResult;
                 }
@@ -179,7 +71,7 @@ namespace BL.Connector
                 Config.OnProgress?.Invoke(0.03);
                 AppContext.SetSwitch("System.Reflection.NullabilityInfoContext.IsSupported", true);
                 string Data = Config.CodeWarehouse.ToString();
-                HttpResult result = await Http.HTTPRequestAsync(3, "DCT/GetGuid", Data, "application/json", null);
+                HttpResult result = await Http.HTTPRequestAsync(0, "DCT/GetGuid", Data, "application/json", null);
                 Config.OnProgress?.Invoke(0.4);
                 if (result.HttpState == eStateHTTP.HTTP_OK)
                 {
@@ -197,72 +89,28 @@ namespace BL.Connector
                 return new Result(e);
             }
         }
-
-        //Завантаження довідників.
-        /*public override async Task<Result> LoadGuidDataAsync(bool pIsFull)
+        
+        public override ParseBarCode ParsedBarCode(string pBarCode, bool pIsOnlyBarCode)
         {
-            try
+            pBarCode = pBarCode.Trim();
+            ParseBarCode Res = new ParseBarCode() { BarCode = pBarCode };
+            if (pBarCode.Length > 2 && pBarCode.Substring(0, 2).Equals("29") && pBarCode.Length == 13)
             {
-                Config.OnProgress?.Invoke(0.03);
-                HttpResult res = await Http.HTTPRequestAsync(Config.IsLoginCO ? 1 : 0, "nomenclature", null, "application/json", Config.Login, Config.Password, 120);//;charset=utf-8
-
-                if (res.HttpState == eStateHTTP.HTTP_OK)
-                {
-                    //Log.d(TAG, "LoadData=>" + res.Result.length());
-                    Config.OnProgress?.Invoke(0.4);
-                    InputData data = JsonConvert.DeserializeObject<InputData>(res.Result);
-                    // Log.d(TAG, "Parse JSON");
-                    Config.OnProgress?.Invoke(0.60);
-                    if (data.Nomenclature?.Any() == true)
-                        db.ReplaceWares(data.Nomenclature.Select(el => el.GetWares), pIsFull);
-                    //Log.d(TAG, "Nomenclature");
-                    Config.OnProgress?.Invoke(0.70);
-                    if (data.Units?.Any() == true)
-                        db.ReplaceAdditionUnit(data.Units.Select(el => el.GetAdditionUnit), pIsFull);
-                    //Log.d(TAG, "Units");
-                    Config.OnProgress?.Invoke(0.80);
-                    if (data.Barcodes?.Any() == true)
-                        db.ReplaceBarCode(data.Barcodes.Select(el => el.GetBarCode));
-                    //Log.d(TAG, "Barcodes");
-                    Config.OnProgress?.Invoke(0.90);
-                    db.ReplaceUnitDimension(data.Dimentions.Select(el => el.GetUnitDimension), pIsFull);
-                    //Log.d(TAG, "GroupWares");
-                    Config.OnProgress?.Invoke(0.95);
-                    if (data.Parents?.Any() == true)
-                    {
-                        foreach (GroupWares el in data.Parents?.Where(el => (el.CodeGroup == 26 || el.CodeGroup == 47)))
-                            el.IsAlcohol = true;
-                        db.ReplaceGroupWares(data.Parents, pIsFull);
-                    }
-                } //else Log.d(TAG, res.HttpState.name());
-
-                res = await Http.HTTPRequestAsync(1, "reasons", null, "application/json", Config.Login, Config.Password);
-                if (res.HttpState == eStateHTTP.HTTP_OK)
-                {
-                    Config.OnProgress?.Invoke(0.95);
-                    var Reasons = JsonConvert.DeserializeObject<IEnumerable<Reason>>(res.Result);
-                    db.ReplaceReason(Reasons.Select(el => el.GetReason), pIsFull);
-                }
-                await GetDaysLeft();
-                Config.OnProgress?.Invoke(1);
-                return new Result();
+                Res.CodeWares = Convert.ToInt32(pBarCode.Substring(2, 8));
+                Res.Price = Convert.ToDecimal(pBarCode.Substring(8, 13));
             }
-            catch (Exception e)
-            {
-                FileLogger.WriteLogMessage(this, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return new Result(e);                
-            }
-        }*/
+            return Res;
+        }
 
         public override WaresPrice GetPrice(ParseBarCode pBC, eTypePriceInfo pTP = eTypePriceInfo.Short)
         {
-            string vCode = pBC.CodeWares > 0 ? $"code={pBC.CodeWares}" : $"BarCode = {pBC.BarCode}";
+            /*string vCode = pBC.CodeWares > 0 ? $"code={pBC.CodeWares}" : $"BarCode = {pBC.BarCode}";
             HttpResult result = Http.HTTPRequest(0, $"PriceTagInfo?{vCode}", null, null, null, null);
             if (result.HttpState == eStateHTTP.HTTP_OK)
             {
                 var res = JsonConvert.DeserializeObject<WaresPriceSE>(result.Result);
                 return res.GetWaresPrice;
-            }
+            }*/
             //LI.resHttp = res.Result;
             //LI.HttpState = res.HttpState;
             //return LI;
@@ -284,8 +132,7 @@ namespace BL.Connector
         {
             int temp = 0;
             var Res = new Result();
-            //Опитування
-            if (pTypeDoc == 11) 
+            /*if (pTypeDoc == 11)
             {
                 string data = JsonConvert.SerializeObject(new Request() { userId = Config.CodeUser, action = "templates" });
                 HttpResult result = await Http.HTTPRequestAsync(2, "", data, "application/json");//
@@ -338,33 +185,6 @@ namespace BL.Connector
                             }
                         }
 
-
-
-                        /*
-                        foreach (var elp in p.data)
-                        {
-                            var DocNumber = elp.planId.ToString();
-                            AddDoc = false;
-
-                            foreach (var elt in t.data.Where(el => el.templateId == elp.templateId))
-                            {
-                                if (!AddDoc)
-                                {
-                                    d.Add(new Doc()
-                                    { TypeDoc = pTypeDoc, NumberDoc = DocNumber, DateDoc = elp.date, CodeWarehouse = elp.shopId, Description = elt.templateName });
-                                }
-                                if (elt.sections != null)
-                                    foreach (var el in elt.sections)
-                                        r.Add(new Model.RaitingDocItem() { TypeDoc = pTypeDoc, NumberDoc = DocNumber, Id = -el.sectionId, Parent = -el.parentId, Text = el.text,  RatingTemplate = 8, OrderRS = el.sectionId });
-                                if (elt.questions != null)
-                                    foreach (var el in elt.questions)
-                                        r.Add(new Model.RaitingDocItem() { TypeDoc = pTypeDoc, NumberDoc = DocNumber, Id = el.questionId, Parent = -el.sectionId, Text = el.text,  RatingTemplate = el.RatingTemplate, OrderRS = el.questionId });
-
-                                r.Add(new Model.RaitingDocItem() { TypeDoc = pTypeDoc, NumberDoc = DocNumber, Id = -1, Parent = 9999999, Text = "Всього",  RatingTemplate = 8, OrderRS = 9999999 });
-                            }
-                        }
-                        */
-
                         FileLogger.WriteLogMessage($"ConnectorPSU.LoadDocsData=>(pTypeDoc=>{pTypeDoc}, pNumberDoc=>{pNumberDoc},pIsClear=>{pIsClear}) Res=>(Doc=>{Doc.Count()},{Res.State},{Res.Info},{Res.TextError})", eTypeLog.Full);
 
                         return Res;
@@ -375,28 +195,6 @@ namespace BL.Connector
                         FileLogger.WriteLogMessage($"ConnectorPSU.LoadDocsData=>(pTypeDoc=>{pTypeDoc}, pNumberDoc=>{pNumberDoc},pIsClear=>{pIsClear}) Res=>({Res.State},{Res.Info},{Res.TextError})", eTypeLog.Error);
                         return Res;
                     }
-            }
-            else
-            //Список лотів
-            if (pTypeDoc == 14) 
-            {
-                try
-                {
-                    AppContext.SetSwitch("System.Reflection.NullabilityInfoContext.IsSupported", true);
-                    GetDocs Data = new GetDocs() { CodeWarehouse=Config.CodeWarehouse,TypeDoc = pTypeDoc, NumberDoc = pNumberDoc};
-                    HttpResult result = await Http.HTTPRequestAsync(3, "DCT/LoadDocs", Data.ToJson(), "application/json", null);
-                    if (result.HttpState == eStateHTTP.HTTP_OK)
-                    {
-                        var res = JsonConvert.DeserializeObject<Result<IEnumerable<Doc>>>(result.Result);
-                        return res;
-                    }
-                    return new Result(result);
-                }
-                catch (Exception e)
-                {
-                    FileLogger.WriteLogMessage(this, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                    return new Result(e);
-                }               
             }
             else
             {
@@ -477,9 +275,8 @@ namespace BL.Connector
                 catch (Exception e)
                 {
                     FileLogger.WriteLogMessage(this, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                }
-                return Res;
-            }
+                }*/
+                return Res;            
         }
 
         public override async Task<Result<IEnumerable<RaitingTemplate>>> GetRaitingTemplateAsync() { return null; }
@@ -502,8 +299,10 @@ namespace BL.Connector
         /// <returns></returns>
         public override async Task<Result> SendRaitingAsync(IEnumerable<RaitingDocItem> pR, DocVM pDoc)
         {
+            
             OnSave?.Invoke($"Зберігаємо документ=>{pDoc.NumberDoc}");
             var Res = new Result();
+            /*
             try
             {
                 var RD = new List<Raitings>();
@@ -568,7 +367,7 @@ namespace BL.Connector
                 OnSave?.Invoke($"Помилка збереження =>{Res.TextError}");
             }
             FileLogger.WriteLogMessage($"ConnectorPSU.SendRaiting=>(NumberDoc=>{pDoc.NumberDoc}) Res=>({Res.State},{Res.Info},{Res.TextError})");
-
+            */
             return Res;
         }
         CultureInfo provider = CultureInfo.InvariantCulture;
@@ -582,7 +381,7 @@ namespace BL.Connector
         public override async Task<Result> SendRaitingFilesAsync(string pNumberDoc, int pTry = 2, int pMaxSecondSend = 0, int pSecondSkip = 0)
         {
             FileLogger.WriteLogMessage($"SendRaitingFiles Start pNumberDoc=>{pNumberDoc} pTry=>{pTry} pMaxSecondSend=>{pMaxSecondSend} pSecondSkip=>pSecondSkip", eTypeLog.Full);
-
+            /*
             int i = 30;
             while (IsSaving && i-- > 0)
             {
@@ -712,6 +511,8 @@ namespace BL.Connector
                 return Res;
             }
             finally { IsSaving = false; }
+            */
+            return null;
         }
 
         /// <summary>
@@ -720,7 +521,7 @@ namespace BL.Connector
         /// <returns></returns>
         public override async Task<Result<IEnumerable<Warehouse>>> LoadWarehouse()
         {
-            HttpResult result;
+            /*HttpResult result;
             try
             {
                 result = await Http.HTTPRequestAsync(1, "StoreSettings", "{}", "application/json", "brb", "brb"); //charset=utf-8;
@@ -739,14 +540,15 @@ namespace BL.Connector
             {
                 FileLogger.WriteLogMessage(this, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
                 return new Result<IEnumerable<Warehouse>>(e);
-            }            
+            }  */
+            return null;
         }
         public override async Task<Result<IEnumerable<DocWaresExpirationSample>>> GetExpirationDateAsync(int pCodeWarehouse)
         {
             try
             {
                 //HttpResult result = Http.HTTPRequest(0, "GetExpirationDate", pCodeWarehouse.ToString(), null, null, null);
-                HttpResult result = await Http.HTTPRequestAsync(3, "DCT/GetExpirationDate", pCodeWarehouse.ToString(), "application/json", null);
+                HttpResult result = await Http.HTTPRequestAsync(0, "DCT/GetExpirationDate", pCodeWarehouse.ToString(), "application/json", null);
 
                 if (result.HttpState == eStateHTTP.HTTP_OK)
                 {
@@ -769,29 +571,8 @@ namespace BL.Connector
             {
                 FileLogger.WriteLogMessage(this, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
                 return new Result<IEnumerable<DocWaresExpirationSample>>(e);
-            }
-                
+            }                
         }
-
-       /* public override async Task<Result<IEnumerable<ExpirationWares>>> GetDaysLeft()
-        {
-            try
-            {
-                HttpResult result = await Http.HTTPRequestAsync(3, "DCT/GetExpirationWares", "", "application/json", null);
-                if (result.HttpState == eStateHTTP.HTTP_OK)
-                {
-                    var res = JsonConvert.DeserializeObject<Result<IEnumerable<ExpirationWares>>>(result.Result);
-                    db.ReplaceExpirationWares(res.Info);
-                    return res;
-                }
-                return new Result<IEnumerable<ExpirationWares>>(result, null);
-            }
-            catch (Exception e)
-            {
-                FileLogger.WriteLogMessage(this, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return new Result<IEnumerable<ExpirationWares>>(e);
-            }
-        }*/
 
         public override async Task<Result> SaveExpirationDate(DocWaresExpirationSave pED)
         {         
@@ -799,7 +580,7 @@ namespace BL.Connector
             {
                 AppContext.SetSwitch("System.Reflection.NullabilityInfoContext.IsSupported", true);
                 string Data = pED.ToJSON("yyyy-MM-dd");
-                HttpResult result = await Http.HTTPRequestAsync(3, "DCT/SaveExpirationDate", Data, "application/json", null);
+                HttpResult result = await Http.HTTPRequestAsync(0, "DCT/SaveExpirationDate", Data, "application/json", null);
                 if (result.HttpState == eStateHTTP.HTTP_OK)
                 {
                     var res = JsonConvert.DeserializeObject<Result>(result.Result);
@@ -815,272 +596,6 @@ namespace BL.Connector
         }
     }
 
-    #region Class
-
-    class ResultLogin : Result
-    {
-        public int? Profile { get; set; } = 10;
-        public LoginData data { get; set; }
-    }
-    class LoginData
-    {
-        public int userId { get; set; }
-        public string userName { get; set; }
-    }
-    class Answer
-    {
-        public bool success { get; set; }
-    }
-
-    class Request
-    {
-        public string token { get; set; } = "jO0qyQ6PqBXr4HGqCu7T";
-        public string action { get; set; }
-        public int? userId { get; set; }
-    }
-
-    class RequestLogin : Request
-    {
-        public string login { get; set; }
-        public string password { get; set; }
-    }
-
-    class DataLogin
-    {
-        public int userId { get; set; }
-        public string userName { get; set; }
-    }
-
-
-    class AnswerLogin : Answer
-    {
-        public DataLogin data { get; set; }
-    }
-
-    class Section
-    {
-        public int sectionId { get; set; }
-        public string text { get; set; }
-        public int parentId { get; set; }
-        public int Order { get; set; }
-    }
-
-    class Questions
-    {
-        public int questionId { get; set; }
-        public int sectionId { get; set; }
-        public string text { get; set; }
-        public int value { get; set; }
-        public int[] answers { get; set; }
-        public int RatingTemplate { get { int r = 0; for (int i = 0; i < answers.Length; i++) r += 1 << (answers[i] - 1); return r; } }
-        public int Order { get; set; }
-    }
-
-    class DataTemplate
-    {
-        public int templateId { get; set; }
-        public string templateName { get; set; }
-        //public DateTime updated { get; set; }
-        public IEnumerable<Section> sections { get; set; }
-        public IEnumerable<Questions> questions { get; set; }
-    }
-
-    class Template : Answer
-    {
-        public IEnumerable<DataTemplate> data { get; set; }
-    }
-
-    class DataData
-    {
-        public int planId { get; set; }
-        public int templateId { get; set; }
-        public int shopId { get; set; }
-        public DateTime date { get; set; }
-    }
-
-    class Data : Answer
-    {
-        public IEnumerable<DataData> data { get; set; }
-    }
-
-    class Raitings
-    {
-        public int questionId { get; set; }
-        public int value { get; set; }
-        public string comment { get; set; }
-    }
-
-    class RequestSendRaiting : Request
-    {
-        public int planId { get; set; }
-        public string text { get; set; }
-        public IEnumerable<Raitings> answers { get; set; }
-        public DateTime dateStart { get; set; }
-        public DateTime dateEnd { get; set; }
-    }
-
-    class AnswerDataRaiting
-    {
-        public int questionId { get; set; }
-        public int answerId { get; set; }
-    }
-
-    class AnswerSendRaiting : Answer
-    {
-        public IEnumerable<AnswerDataRaiting> data { get; set; }
-        public IEnumerable<string> errors { get; set; }
-    }
-
-    class RequestSendRaitingFile : Request
-    {
-        public int planId { get; set; }
-        public int questionId { get; set; }
-        public string file { get; set; }
-        public string fileExt { get; set; }
-        public DateTime DT { get; set; }
-    }
-    public class LogPriceSE
-    {
-        //public string GetJsonSE() { return "{\"Barcode\":\"" + BarCode + "\",\"Code\":\"" + CodeWares + "\",\"Status\":" + Status + ",\"LineNumber\":" + LineNumber + ",\"NumberOfReplenishment\":" + Double.ToString(NumberOfReplenishment) + "}"; }
-        public LogPriceSE(LogPrice pLP)
-        {
-            BarCode = pLP.BarCode;
-            Code = pLP.CodeWares;
-            Status = pLP.Status;
-            LineNumber = pLP.LineNumber;
-            NumberOfReplenishment = pLP.NumberOfReplenishment;
-        }
-        public string BarCode { get; set; }
-        public int Code { get; set; }
-        public int Status { get; set; }
-        public int LineNumber { get; set; }
-        public double NumberOfReplenishment { get; set; }
-    }
-
-    public class WaresPriceSE
-    {
-        public int Code { get; set; }
-        public string Name { get; set; }
-        public decimal Price { get; set; }
-        public string BarCodes { get; set; }
-        public string Unit { get; set; }
-        public string Article { get; set; }
-        public int ActionType { get; set; }
-        public decimal PromotionPrice { get; set; }
-        public WaresPrice GetWaresPrice
-        {
-            get { return new WaresPrice() { CodeWares = Code, Name = Name, Price = Price, BarCodes = BarCodes, Unit = Unit, Article = Article, ActionType = ActionType, PriceOpt = PromotionPrice }; }
-        }
-    }
-    class InputWarehouse
-    {
-        public int Code { get; set; }
-        public string StoreCode { get; set; } //Number
-        public string Name { get; set; } //Url
-        public string Unit { get; set; } //Name
-        public string InternalIP { get; set; }
-        public string ExternalIP { get; set; }
-        public string latitude { get; set; }
-        public string longitude { get; set; }
-        public Warehouse GetWarehouse()
-        {
-            return new Warehouse() { Code = Code, Number = StoreCode, Name = Unit, Url = Name, InternalIP = InternalIP, ExternalIP = ExternalIP, Location = $"{latitude},{longitude}" };
-        }
-    }
-    class InputDocs
-    {
-        public Doc[] Doc { get; set; }
-        public DocWaresSample[] DocWaresSample { get; set; }
-    }
-
-
-    class InputData
-    {
-        public IEnumerable<Nomenclature> Nomenclature { get; set; }
-        public IEnumerable<Units> Units { get; set; }
-        public IEnumerable<Barcode> Barcodes { get; set; }
-        public IEnumerable<UnitDimension> Dimentions { get; set; }
-        public IEnumerable<GroupWares> Parents { get; set; }
-
-    }
-    class Nomenclature
-    {
-        public string CODE_WARES { get; set; }//int
-        public string CodeGroup { get; set; }
-        public string NAME_WARES { get; set; }
-        public string ARTICL { get; set; }
-        public string CODE_UNIT { get; set; }//int
-        public string DESCRIPTION { get; set; }
-        public string VAT { get; set; }//int
-        public int VAT_OPERATION { get; set; } = 0;
-
-        public Wares GetWares
-        {
-            get
-            {
-                return new Wares()
-                {
-                    CodeWares = CODE_WARES.ToInt(),
-                    CodeGroup = CodeGroup.ToInt(),
-                    NameWares = NAME_WARES,
-                    Article = ARTICL,
-                    CodeUnit = CODE_UNIT.ToInt(),
-                    Description = DESCRIPTION,
-                    Vat = VAT.ToInt(),
-                    VatOperation = VAT_OPERATION
-                };
-            }
-        }
-    }
-    class Units
-    {
-        public string CODE_WARES { get; set; }//
-        public string CODE_UNIT { get; set; }//
-        public string COEF_WARES { get; set; }//double
-        public BRB5.Model.DB.AdditionUnit GetAdditionUnit
-        {
-            get
-            {
-                return new BRB5.Model.DB.AdditionUnit()
-                { CodeWares = CODE_WARES.ToInt(), CodeUnit = CODE_UNIT.ToInt(), Coefficient = COEF_WARES.ToDecimal() };
-            }
-        }
-
-
-    }
-
-    public class Barcode
-    {
-        public string CODE_WARES { get; set; } //int
-        public string CODE_UNIT { get; set; } //int
-        public string BAR_CODE { get; set; }
-        public BRB5.Model.DB.BARCode GetBarCode { get { return new BARCode() { CodeWares = CODE_WARES.ToInt(), CodeUnit = CODE_UNIT.ToInt(), BarCode = BAR_CODE }; } }
-    }
-
-    public class UnitDimension
-    {
-        public string CODE_UNIT { get; set; }//
-        public string NAME_UNIT { get; set; }
-        public string ABR_UNIT { get; set; }
-        public string DESCRIPTION_TEXT { get; set; }
-
-        public BRB5.Model.DB.UnitDimension GetUnitDimension
-        {
-            get
-            {
-                return new BRB5.Model.DB.UnitDimension()
-                { CodeUnit = CODE_UNIT.ToInt(), NameUnit = NAME_UNIT, AbrUnit = ABR_UNIT, Description = DESCRIPTION_TEXT };
-            }
-        }
-    }
-
-    public class Reason
-    {
-        public int code { get; set; }
-        public string reason { get; set; }
-        public BRB5.Model.DB.Reason GetReason { get { return new BRB5.Model.DB.Reason() { CodeReason = code, NameReason = reason }; } }
-    }
-    #endregion
 }
 
 

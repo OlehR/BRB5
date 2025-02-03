@@ -27,11 +27,11 @@ namespace BL.Connector
                     case eCompany.Sim23:
                         Instance = new ConnectorSE();
                         break;
-                    case eCompany.Sim23FTP:
-                        Instance = new ConnectorSE_FTP();
-                        break;
-                    case eCompany.SparPSU:
-                    case eCompany.VPSU:
+                    //case eCompany.Sim23FTP:
+                    //    Instance = new ConnectorSE_FTP();
+                    //    break;
+                    case eCompany.PSU:
+                    //case eCompany.VPSU:
                         Instance = new ConnectorPSU();
                         break;
                     default:

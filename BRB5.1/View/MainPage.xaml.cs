@@ -166,7 +166,6 @@ namespace BRB6
             ListDocs.IsVisible = false;
             SLLogin.IsVisible = true;
         }
-
         private void BackToMainList(object sender, EventArgs e)
         {
             Dispatcher.Dispatch(() =>

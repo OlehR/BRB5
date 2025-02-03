@@ -20,7 +20,7 @@ namespace BRB5.Model
         public int IsSend { get; set; }
         public int ActionType { get; set; }
         public int PackageNumber { get; set; }
-        public int CodeWares { get; set; }
+        public long CodeWares { get; set; }
         public string Article { get; set; }
         public int LineNumber { get; set; }
         [Ignore]

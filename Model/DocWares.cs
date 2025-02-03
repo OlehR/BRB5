@@ -20,7 +20,7 @@ namespace BRB5.Model
         /// порядок по порядку в документі
         /// </summary>
         public int OrderDoc { get; set; }
-        public int CodeWares { get; set; }
+        public long CodeWares { get; set; }
         public string QuantityStr { set { Quantity = Convert.ToDecimal(value); } }
         public decimal Quantity { get; set; }
     }

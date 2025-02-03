@@ -33,13 +33,15 @@ namespace BRB5.Model
 
         int GetColourIndex()
         {
+            int Days = ((ExpirationDateInput == default ? ExpirationDate : ExpirationDateInput) - DateTime.Today).Days;
+            if (Days < 0) return Connector.PercentColor.Length - 1; //Якщо протерміновано
             int i = 0;
-            while (i < DaysRight.Length)
+            while (i < DaysRight.Length && i< Connector.PercentColor.Length-2)
             {
-                if (((ExpirationDateInput==default? ExpirationDate : ExpirationDateInput) -DateTime.Today).Days >= DaysRight[i]) break;
+                if (DaysRight[i]==-1|| Days >= DaysRight[i]) break;
                 i++;
             }
-            return i - 1;
+            return i;
         }
 
                public DocWaresExpiration GetDocWaresExpiration()

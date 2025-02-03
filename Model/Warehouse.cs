@@ -29,6 +29,7 @@ namespace BRB5.Model
         {
             get
             {
+                if (string.IsNullOrEmpty(Address)) return null;
                 var l = Address.Split('-');
                 return (l.Length < 2 || l[1].Length < 2) ? Address : l[1];  
             }
@@ -42,14 +43,13 @@ namespace BRB5.Model
         /// </summary>
         public string Location { get;set;}
 
-        public double GPSX { get { return Location.Split(',').Length == 2 ? Location.Split(',')[0].ToDouble():0d; } }
-        public double GPSY { get { return Location.Split(',').Length == 2 ? Location.Split(',')[1].ToDouble():0d; } }
+        public double GPSX { get { return Location?.Split(',').Length == 2 ? Location.Split(',')[0].ToDouble():0d; } }
+        public double GPSY { get { return Location?.Split(',').Length == 2 ? Location.Split(',')[1].ToDouble():0d; } }
         /// <summary>
         /// Дистанція
         /// </summary>
         [Ignore]
         public double Distance { get; set; }
-
 
         private bool _IsChecked;
         [Ignore]
