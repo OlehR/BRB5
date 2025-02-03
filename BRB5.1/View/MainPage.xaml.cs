@@ -157,7 +157,16 @@ namespace BRB6
                 OnButtonLogin(null, null);
             }           
         }
+        protected override async void OnAppearing()
+        {
+            base.OnAppearing();
 
+            if (await Config.NativeBase.CheckNewVerAsync())
+            {
+                var res = await DisplayAlert("Update Available", "A new version is available. Do you want to install it?", "Yes", "No");
+                if (res)  Config.NativeBase.InstallAsync();
+            }
+        }
         protected override void OnDisappearing()  {  base.OnDisappearing(); }
 
         private async void OnSettingsClicked(object sender, EventArgs e) { await Navigation.PushAsync(new Settings());  }
