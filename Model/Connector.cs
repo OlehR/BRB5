@@ -107,7 +107,7 @@ namespace BRB5.Model
         public virtual async Task<Result<IEnumerable<DocWares>>> GetPromotionData(string pNumberDoc) { throw new NotImplementedException(); }
         public virtual async Task<Result<IEnumerable<DocWaresExpirationSample>>> GetExpirationDateAsync(int pCodeWarehouse) { throw new NotImplementedException(); }
 
-        public virtual async Task<Result<IEnumerable<ExpirationWares>>> GetDaysLeft() { throw new NotImplementedException(); }
+        //public virtual async Task<Result<IEnumerable<ExpirationWares>>> GetDaysLeft() { throw new NotImplementedException(); }
 
         public virtual async Task<Result> SaveExpirationDate(DocWaresExpirationSave pED) { throw new NotImplementedException(); }
 
@@ -121,6 +121,15 @@ namespace BRB5.Model
         public eLoginServer Code { get;set;}   
         public string Name { get;set;}
     }
-
+    public class Guid
+    {
+        public IEnumerable<UnitDimension> UnitDimension { get; set;}
+        public IEnumerable<AdditionUnit> AdditionUnit { get; set; }
+        public IEnumerable<Wares> Wares { get; set; }
+        public IEnumerable<BARCode> BarCode { get; set; }
+        public IEnumerable<Warehouse> Warehouse { get; set; }
+        public IEnumerable<GroupWares> GroupWares { get; set; }
+        public IEnumerable<Reason> Reason { get; set; }
+    }
 
 }

@@ -28,7 +28,6 @@ namespace BRB6
         public bool IsSoftKeyboard { get { return Config.IsSoftKeyboard; } }
         public MainPage()
         {
-
             ProtoBRB.Init();
             db = DB.GetDB(ProtoBRB.GetPathDB);
             Bl = BL.BL.GetBL();
@@ -38,8 +37,7 @@ namespace BRB6
             Init();
             if (Config.Company == eCompany.NotDefined) _= Navigation.PushAsync(new Settings());                
             BindingContext = this;
-        }        
-
+        }  
         private void OnButtonLogin(object sender, System.EventArgs e)
         {
             _ = Task.Run(async () =>
@@ -47,18 +45,16 @@ namespace BRB6
                 var r = await c.LoginAsync(Login, Password, Config.LoginServer);
                 if (r.State == 0)
                 {
+                    Config.TypeDoc = c.GetTypeDoc(Config.Role, Config.LoginServer);
                     Dispatcher.Dispatch(() =>
                     {
-                        OCTypeDoc?.Clear();
-                        Config.TypeDoc = c.GetTypeDoc(Config.Role, Config.LoginServer);
+                        OCTypeDoc?.Clear();                        
                         //OCTypeDoc = new ObservableCollection<TypeDoc>(Config.TypeDoc);
                         foreach (var i in Config.TypeDoc) OCTypeDoc.Add(i);
                         SLLogin.IsVisible = false;
                         ListDocs.IsVisible = true;
                     });
-
-                    // TODO Xamarin.Forms.Device.RuntimePlatform is no longer supported. Use Microsoft.Maui.Devices.DeviceInfo.Platform instead. For more details see https://learn.microsoft.com/en-us/dotnet/maui/migration/forms-projects#device-changes
-                    Bl.OnButtonLogin(Login, Password, Device.RuntimePlatform == Device.Android);
+                   Bl.OnButtonLogin(Login, Password, DeviceInfo.Platform == DevicePlatform.Android);
                 }
                 else
                     Dispatcher.Dispatch(() =>
@@ -75,14 +71,26 @@ namespace BRB6
             // Отримання вибраного елемента
             var vTypeDoc = e.Item as TypeDoc;
 
-            var cameraStatus = await Permissions.CheckStatusAsync<Permissions.Camera>();
-
-            if (cameraStatus != PermissionStatus.Granted)
-                cameraStatus = await Permissions.RequestAsync<Permissions.Camera>();
-
-            if (cameraStatus != PermissionStatus.Granted)
+            if (Config.TypeScaner == eTypeScaner.Camera)
             {
-                await DisplayAlert("Error", "Need camera permission", "OK", FlowDirection.MatchParent);
+                var cameraStatus = await Permissions.CheckStatusAsync<Permissions.Camera>();
+                if (cameraStatus != PermissionStatus.Granted)
+                    cameraStatus = await Permissions.RequestAsync<Permissions.Camera>();
+
+                if (cameraStatus != PermissionStatus.Granted)
+                {
+                    await DisplayAlert("Error", "Need camera permission", "OK", FlowDirection.MatchParent);
+                    return;
+                }
+            }
+
+            var FileStatus = await Permissions.CheckStatusAsync<Permissions.StorageWrite >();
+            if (FileStatus != PermissionStatus.Granted)
+                FileStatus = await Permissions.RequestAsync<Permissions.StorageWrite>();
+
+            if (FileStatus != PermissionStatus.Granted)
+            {
+                await DisplayAlert("Error", "Need StorageWrite permission", "OK", FlowDirection.MatchParent);
                 return;
             }
 
@@ -126,7 +134,6 @@ namespace BRB6
             // Скидання вибраного елемента, щоб зняти виділення
             ((ListView)sender).SelectedItem = null;
         }
-
 
         void Init()
         {

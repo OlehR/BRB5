@@ -25,12 +25,12 @@ namespace BRB5
 
     public enum eRole
     {
-        NotDefined,
-        Admin,
-        User,
-        Auditor,
-        Client,
-        Manager
+        NotDefined = 0,
+        Admin = 1,
+        User = 2,
+        Auditor = 3,
+        Client = 4,
+        Manager = 5
     }
 
     public enum eTypeControlDoc
@@ -309,6 +309,7 @@ namespace BRB5
         PM351,
         Camera,
         BitaHC61,
+        ChainwayC61,
         KeyBoard
     }
     public enum eTermsForIlliquidWare

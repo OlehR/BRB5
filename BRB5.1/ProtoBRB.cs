@@ -56,6 +56,9 @@ namespace BRB6
                 return eTypeScaner.PM351;
             if (Config.Model.Equals("HC61") || Config.Manufacturer.Contains("Bita"))
                 return eTypeScaner.BitaHC61;
+            if (Config.Model.Equals("C61") || Config.Manufacturer.Contains("CHAINWAY"))
+                return eTypeScaner.ChainwayC61;
+
             return eTypeScaner.Camera;
         }
 

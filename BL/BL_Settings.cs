@@ -65,7 +65,7 @@ namespace BL
                     result[0] = "http://93.183.216.37:80/dev1/hs/TSD/";
                     result[1] = "http://qlik.sim23.ua/TK/hs/TSD/;http://vpn.sim23.ua/TK/hs/TSD/";  //"http://37.53.84.148/TK/hs/TSD/";// "http://93.183.216.37/TK/hs/TSD/;http://37.53.84.148/TK/hs/TSD/";
                     result[2] = "https://bitrix.sim23.ua/rest/233/ax02yr7l9hia35vj/";
-                    result[3] = "http://10.100.0.34;http://vpn.sim23.ua:6380/";
+                    result[3] = "http://10.100.0.34/;http://vpn.sim23.ua:6380/";
                     break; 
                 case eCompany.VPSU:
                 case eCompany.SparPSU:

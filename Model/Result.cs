@@ -38,8 +38,7 @@ namespace BRB5.Model
         {
             State = -1;
             TextError = e.Message + "\n" + e.StackTrace;
-        }
-
+        }        
     }
 
     public class Result<T>
@@ -82,7 +81,7 @@ namespace BRB5.Model
             State = -1;
             TextError = e.Message + "\n" + e.StackTrace;
         }
-
+        public Result GetResult { get { return new Result { State=State, TextError = TextError }; } }
     }
 
 }

@@ -9,7 +9,7 @@ namespace BRB5.Model.DB
         public int CodeWares { get; set; }
         public int CodeGroup { get; set; }
         public string NameWares { get; set; }
-        public string Articl { get; set; }
+        public string Article { get; set; }
         public int CodeBrand { get; set; }
         public string ArticlWaresBrand { get; set; }
         public int CodeUnit { get; set; }
@@ -19,5 +19,6 @@ namespace BRB5.Model.DB
         public string NameWaresReceipt { get; set; }
         public int CodeWaresRelative { get; set; }
         //public DateTime DateInsert
+        public string DaysLeft { get; set; }
     }
 }
