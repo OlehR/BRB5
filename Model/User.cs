@@ -4,8 +4,6 @@ using System.Text;
 
 namespace BRB5.Model
 {
-    
-
     public class User
     {
         public int CodeUser { get; set; }
@@ -14,5 +12,6 @@ namespace BRB5.Model
         public string Login { get; set; }
         public string PassWord { get; set; }
         public eRole Role { get; set; }
+        public IEnumerable<TypeDoc> TypeDoc { get; set; }
     }
 }

@@ -132,4 +132,17 @@ namespace BRB5.Model
         public IEnumerable<Reason> Reason { get; set; }
     }
 
+    public class GetDocs
+    {
+        public int CodeWarehouse { get; set; }
+        public int TypeDoc { get; set; }
+        public string NumberDoc { get; set; }
+    }
+
+    public class Docs
+    {
+        public IEnumerable<Doc> Doc {  get; set; }
+        public IEnumerable<DocWares> Wares { get; set; }
+    }
+
 }

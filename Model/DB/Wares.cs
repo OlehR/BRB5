@@ -6,7 +6,7 @@ namespace BRB5.Model.DB
 {
     public class Wares
     {
-        public int CodeWares { get; set; }
+        public long CodeWares { get; set; }
         public int CodeGroup { get; set; }
         public string NameWares { get; set; }
         public string Article { get; set; }

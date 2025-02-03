@@ -169,7 +169,7 @@ namespace BRB6.View
             Task.Run(async() =>
             {
                 var D = db.GetDocWaresExpiration(NumberDoc);
-                var r = await c.SaveExpirationDate(new BRB5.Model.DB.DocWaresExpirationSave() { CodeWarehouse = Config.CodeWarehouse, Wares = D });
+                var r = await c.SaveExpirationDate(new BRB5.Model.DB.DocWaresExpirationSave() { CodeWarehouse = Config.CodeWarehouse, NumberDoc= NumberDoc, Wares = D });
                 var toast = Toast.Make("Збереження: "+ r.TextError, ToastDuration.Long, 14);
                 MainThread.BeginInvokeOnMainThread(async () => await toast.Show());
             });

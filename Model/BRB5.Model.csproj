@@ -10,6 +10,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\UniCS.TM\Utils\Utils.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Reference Include="Utils">
       <HintPath>..\DLL\Utils.dll</HintPath>
     </Reference>
