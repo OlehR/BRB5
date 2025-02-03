@@ -17,7 +17,8 @@ namespace BRB5.Model
             BarCode = pBarCode;
         }
         public int Percent { get; set; }
-       // public Color Color { get { return IsLight ? ColorLight : ColorNormal; } }
+        // public Color Color { get { return IsLight ? ColorLight : ColorNormal; } }
+        [Obsolete("ColorLight is deprecated, please use ColorNormal instead.")]
         public Color ColorLight { get; set; }
         public Color ColorNormal { get; set; }
         public string BarCode { get; set; }

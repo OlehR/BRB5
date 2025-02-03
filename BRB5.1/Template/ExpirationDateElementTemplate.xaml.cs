@@ -1,4 +1,5 @@
 using BL;
+using BRB5;
 using BRB5.Model;
 using BRB6.View;
 
@@ -13,8 +14,9 @@ public partial class ExpirationDateElementTemplate : ContentView
     private ExpirationDateElementVM _DM;
     public ExpirationDateElementTemplate()
     {
-        InitializeComponent();       
+        InitializeComponent();
 
+        NokeyBoard();
         var backgroundColorBinding = new Binding
         {
             Path = "DM.GetColor",
@@ -30,14 +32,15 @@ public partial class ExpirationDateElementTemplate : ContentView
         _DM = pED;
 
         DM = (ExpirationDateElementVM)pED.Clone();
-        DM.QuantityInput = DM.Quantity;
+        DM.QuantityInput = DM.QuantityInput ?? DM.Quantity;
 
         if (DM.ExpirationDate == DateTime.MinValue) DM.ExpirationDate = DateTime.Today;
 
         DM.ExpirationDateInput = DM.ExpirationDate;
         DM.ProductionDateInput = DM.ExpirationDate.AddDays(-(double)DM.Expiration);
+
         OnPropertyChanged(nameof(DM));
-    } 
+    }
 
     private void ExpirationDateSelected(object sender, DateChangedEventArgs e)
     {
@@ -74,8 +77,34 @@ public partial class ExpirationDateElementTemplate : ContentView
         RequestReturnToMainContent?.Invoke();
     }
 
+    private void QuantityFocused(object sender, FocusEventArgs e)
+    {
+        Dispatcher.Dispatch(() =>
+        {
+            QuantityEntry.CursorPosition = 0;
+            QuantityEntry.SelectionLength = QuantityEntry.Text == null ? 0 : QuantityEntry.Text.Length;
+            
+        });
+    }
+
     private void Back(object sender, EventArgs e)
     {
         RequestReturnToMainContent?.Invoke();
+    }
+
+    protected void NokeyBoard()
+    {
+        Microsoft.Maui.Handlers.EntryHandler.Mapper.AppendToMapping("MyCustomization", (handler, view) =>
+        {
+            if (Config.TypeScaner != eTypeScaner.Camera)
+            {
+                if (view is CustomEntry)
+                {
+#if ANDROID
+                    handler.PlatformView.ShowSoftInputOnFocus = false;
+#endif
+                }
+            }
+        });
     }
 }

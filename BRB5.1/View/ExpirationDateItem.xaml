@@ -30,7 +30,7 @@
                     <RowDefinition Height="auto"/>
                     <RowDefinition />
                 </Grid.RowDefinitions>
-                <Grid RowSpacing="1"  ColumnSpacing="1"  Padding="1" BackgroundColor="#adaea7">
+                <!--<Grid RowSpacing="1"  ColumnSpacing="1"  Padding="1" BackgroundColor="#adaea7">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="2*"/>
                         <ColumnDefinition Width="2*"/>
@@ -48,7 +48,7 @@
                     <Label Text="План" Grid.Row="1" Grid.Column="2" BackgroundColor="White" />
                     <Label Text="Введено" Grid.Row="1" Grid.Column="3" BackgroundColor="White" />
 
-                </Grid>
+                </Grid>-->
                 <ScrollView x:Name="ScrollView" Grid.Row="1">
                     <VerticalStackLayout x:Name="WareItemsContainer" />
                 </ScrollView>

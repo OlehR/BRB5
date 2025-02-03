@@ -13,8 +13,11 @@ namespace BRB5.Model
 {
     public class ExpirationDateElementVM: DocWaresExpirationSample, INotifyPropertyChanged, ICloneable
     {
-        private decimal _QuantityInput;
-        public decimal QuantityInput { get => _QuantityInput; set { _QuantityInput = value; OnPropertyChanged(nameof(QuantityInput)); } }
+        private decimal? _QuantityInput;
+        public decimal? QuantityInput { get => _QuantityInput; set { _QuantityInput = value; OnPropertyChanged(nameof(QuantityInput));
+                OnPropertyChanged(nameof(GetNameWareColor)); OnPropertyChanged(nameof(DisplayedQuantity)); OnPropertyChanged(nameof(DisplayedExpirationDate)); } }
+        public decimal DisplayedQuantity { get => QuantityInput ?? Quantity; }
+        public DateTime DisplayedExpirationDate { get => QuantityInput == null ? ExpirationDate : ExpirationDateInput; }
 
         private DateTime _ExpirationDateInput;
         private DateTime _ProductionDateInput;
@@ -27,7 +30,7 @@ namespace BRB5.Model
 
         public int[] DaysRight { get { return DaysLeft?.Split(';')?.Select(e => e.ToInt()).ToArray() ?? new int[0]; } }
 
-        public Color GetColor { get { return (ExpirationDateInput == default ? GetPercentColor?.ColorLight: GetPercentColor?.ColorNormal)??Color.LightGray ;  } }
+        public Color GetColor { get { return GetPercentColor?.ColorNormal??Color.LightGray ;  } }
         public PercentColor GetPercentColor { get { int i = GetColourIndex(); 
                 return i < 0 || Connector.PercentColor == null || i >= Connector.PercentColor.Length ? null : Connector.PercentColor[i]; } }
 
@@ -43,10 +46,12 @@ namespace BRB5.Model
             }
             return i;
         }
+        public Color GetNameWareColor { get { return QuantityInput== null? Color.White : Color.FromArgb(0xD4D8F2) ; } }
 
-               public DocWaresExpiration GetDocWaresExpiration()
+
+        public DocWaresExpiration GetDocWaresExpiration()
         {
-            return new DocWaresExpiration() { CodeWares = CodeWares, DocId = DocId, DateDoc = DateTime.Today, NumberDoc = NumberDoc, QuantityInput = QuantityInput, ExpirationDateInput = ExpirationDateInput };
+            return new DocWaresExpiration() { CodeWares = CodeWares, DocId = DocId, DateDoc = DateTime.Today, NumberDoc = NumberDoc, QuantityInput = QuantityInput??0, ExpirationDateInput = ExpirationDateInput };
         }
         public event PropertyChangedEventHandler PropertyChanged;
         protected virtual void OnPropertyChanged(string propertyName)
