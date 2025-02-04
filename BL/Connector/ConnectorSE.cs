@@ -387,8 +387,12 @@ namespace BL.Connector
                     HttpResult result = await Http.HTTPRequestAsync(3, "DCT/LoadDocs", Data.ToJson(), "application/json", null);
                     if (result.HttpState == eStateHTTP.HTTP_OK)
                     {
-                        var res = JsonConvert.DeserializeObject<Result<IEnumerable<Doc>>>(result.Result);
-
+                        var res = JsonConvert.DeserializeObject<Result<Docs>>(result.Result);
+                        if (res.State == 0)
+                        {
+                            db.ReplaceDoc(res.Info.Doc);
+                            db.ReplaceDocWaresSample(res.Info.Wares);
+                        }
                         return new Result();
                     }
                     return new Result(result);
