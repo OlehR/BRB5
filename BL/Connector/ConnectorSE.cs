@@ -48,7 +48,10 @@ namespace BL.Connector
                 Res.Add(new TypeDoc() { CodeDoc = 12, KindDoc = eKindDoc.RaitingTemplateCreate, NameDoc = "Керування Опитуваннями" });
             }
             if (pLS == eLoginServer.Central)
+            {
                 Res.Add(new TypeDoc() { CodeDoc = 100, KindDoc = eKindDoc.ExpirationDate, NameDoc = "Терміни придатності" });
+                Res.Add(new TypeDoc() { CodeDoc = 14, KindDoc = eKindDoc.LotsCheck, NameDoc = "Перевірка лотів" });
+            }
             return Res;
         }
 

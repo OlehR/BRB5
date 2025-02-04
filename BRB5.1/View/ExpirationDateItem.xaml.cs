@@ -84,6 +84,7 @@ namespace BRB6.View
         public void Dispose() { Config.BarCode -= BarCode; }
         void BarCode(string pBarCode)
         {
+
             Task.Run(async () =>
             {
                 ParseBarCode pbc = c.ParsedBarCode(pBarCode, false);
@@ -91,6 +92,8 @@ namespace BRB6.View
                 if (r != null)
                 {
                     SelectedWare = r;
+                    ScrollToSelectedWare();
+
                     MainThread.BeginInvokeOnMainThread(() =>
                     {
                         // Hide MainContent and show AlternateContent
@@ -102,6 +105,7 @@ namespace BRB6.View
             });
 
             if (AlternateContent.IsVisible)   CheckDiscount(pBarCode);
+
         }
 
         void CheckDiscount(string pBarCode)
@@ -206,7 +210,6 @@ namespace BRB6.View
         }
         private void BackToMainContent()
         {
-            ScrollToSelectedWare();
             MainContent.IsVisible = true;
             AlternateContent.IsVisible = false;
             SelectedWare = null;
