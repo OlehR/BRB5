@@ -29,7 +29,6 @@ namespace BL.Connector
                 new PercentColor(75, Color.FromArgb(0xE874FF), Color.FromArgb(0xE874FF), "72301630") , //75%
                 new PercentColor(10, Color.Gray, Color.Gray, "") //Протермінований товар
             };
-
         }
         /// <summary>
         /// Список Документів доступних по ролі
@@ -112,7 +111,7 @@ namespace BL.Connector
             else
             if (pLoginServer == eLoginServer.Local)
             {
-                HttpResult res = await Http.HTTPRequestAsync(0, "login", "{\"login\" : \"" + pLogin + "\"}", "application/json", pLogin, pPassWord);
+                HttpResult res = await Http.HTTPRequestAsync(1, "login", "{\"login\" : \"" + pLogin + "\"}", "application/json", pLogin, pPassWord);
                 if (res.HttpState == eStateHTTP.HTTP_UNAUTHORIZED || res.HttpState == eStateHTTP.HTTP_Not_Define_Error)
                 {
                     //Utils.WriteLog("e", TAG, "Login >>" + res.HttpState.ToString());
@@ -156,7 +155,7 @@ namespace BL.Connector
             if (pLoginServer == eLoginServer.Central)
             {
                 User Data = new User() { Login = pLogin, PassWord = pPassWord };
-                HttpResult result = await Http.HTTPRequestAsync(3, "DCT/Login", Data.ToJson(), "application/json", null);
+                HttpResult result = await Http.HTTPRequestAsync(0, "DCT/Login", Data.ToJson(), "application/json", null);
                 if (result.HttpState == eStateHTTP.HTTP_OK)
                 {
                     Result<User> res = JsonConvert.DeserializeObject<Result<User>>(result.Result);
@@ -179,7 +178,7 @@ namespace BL.Connector
                 Config.OnProgress?.Invoke(0.03);
                 AppContext.SetSwitch("System.Reflection.NullabilityInfoContext.IsSupported", true);
                 string Data = Config.CodeWarehouse.ToString();
-                HttpResult result = await Http.HTTPRequestAsync(3, "DCT/GetGuid", Data, "application/json", null);
+                HttpResult result = await Http.HTTPRequestAsync(0, "DCT/GetGuid", Data, "application/json", null);
                 Config.OnProgress?.Invoke(0.4);
                 if (result.HttpState == eStateHTTP.HTTP_OK)
                 {
@@ -384,7 +383,7 @@ namespace BL.Connector
                 {
                     AppContext.SetSwitch("System.Reflection.NullabilityInfoContext.IsSupported", true);
                     GetDocs Data = new GetDocs() { CodeWarehouse=Config.CodeWarehouse,TypeDoc = pTypeDoc, NumberDoc = pNumberDoc};
-                    HttpResult result = await Http.HTTPRequestAsync(3, "DCT/LoadDocs", Data.ToJson(), "application/json", null);
+                    HttpResult result = await Http.HTTPRequestAsync(0, "DCT/LoadDocs", Data.ToJson(), "application/json", null);
                     if (result.HttpState == eStateHTTP.HTTP_OK)
                     {
                         var res = JsonConvert.DeserializeObject<Result<Docs>>(result.Result);
@@ -751,7 +750,7 @@ namespace BL.Connector
             try
             {
                 //HttpResult result = Http.HTTPRequest(0, "GetExpirationDate", pCodeWarehouse.ToString(), null, null, null);
-                HttpResult result = await Http.HTTPRequestAsync(3, "DCT/GetExpirationDate", pCodeWarehouse.ToString(), "application/json", null);
+                HttpResult result = await Http.HTTPRequestAsync(0, "DCT/GetExpirationDate", pCodeWarehouse.ToString(), "application/json", null);
 
                 if (result.HttpState == eStateHTTP.HTTP_OK)
                 {
@@ -804,7 +803,7 @@ namespace BL.Connector
             {
                 AppContext.SetSwitch("System.Reflection.NullabilityInfoContext.IsSupported", true);
                 string Data = pED.ToJSON("yyyy-MM-dd");
-                HttpResult result = await Http.HTTPRequestAsync(3, "DCT/SaveExpirationDate", Data, "application/json", null);
+                HttpResult result = await Http.HTTPRequestAsync(0, "DCT/SaveExpirationDate", Data, "application/json", null);
                 if (result.HttpState == eStateHTTP.HTTP_OK)
                 {
                     var res = JsonConvert.DeserializeObject<Result>(result.Result);
