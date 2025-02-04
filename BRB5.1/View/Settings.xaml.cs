@@ -113,8 +113,48 @@ namespace BRB6.View
                 ((ListView)sender).SelectedItem = null;
             };
             if(Config.Company==eCompany.NotDefined) CurrentPage = Children[1];
-            this.BindingContext = this;            
+            this.BindingContext = this;
+            Config.BarCode = BarCode;
         }
+
+        void BarCode(string pBarCode)
+        {
+            if (pBarCode == null) return;
+            if (pBarCode.StartsWith("BRB6=>"))
+            {
+                var temp = pBarCode[6..].Split(';');
+                foreach (var el in temp)
+                {
+                    var t = el.Split('=');
+                    if (t.Length == 2)
+                    {
+                        switch (t[0])
+                        {
+                            case "ApiUrl1": ApiUrl1 = t[1]; break;
+                            case "ApiUrl2": ApiUrl2 = t[1]; break;
+                            case "ApiUrl3": ApiUrl3 = t[1]; break;
+                            case "ApiUrl4": ApiUrl4 = t[1]; break;
+                            case "Compress": Compress = t[1].ToInt(); break;
+                            case "Company": SelectedCompany = ListCompany.FindIndex(x => x == t[1]); break;
+                            case "TypePrinter": SelectedTypePrinter = Enum.GetNames(typeof(eTypeUsePrinter)).ToList().FindIndex(x => x == t[1]); break;
+                            case "TypeLog": SelectedTypeLog = ListTypeLog.FindIndex(x => x == t[1]); break;
+                            case "PhotoQuality": SelectedPhotoQuality = Enum.GetNames(typeof(ePhotoQuality)).ToList().FindIndex(x => x == t[1]); break;
+                            case "Warehouse": SelectedWarehouse = ListWarehouse.FindIndex(x => x.Code == t[1].ToInt()); break;
+                            case "IsViewAllWH": IsViewAllWH = t[1].Equals("true"); break;
+                            case "IsAutoLogin": IsAutoLogin = t[1].Equals("true"); break;
+                            case "IsVibration": IsVibration = t[1].Equals("true"); break;
+                            case "IsSound": IsSound = t[1].Equals("true"); break;
+                            case "IsTest": IsTest = t[1].Equals("true"); break;
+                            case "IsFilterSave": IsFilterSave = t[1].Equals("true"); break;
+                                //case "IsFullScreenScan": IsFullScreenScan = t[1].ToBool(); break;
+                        }
+                    }
+                }
+            }
+            OnClickSave(null,null);
+        }
+        public void Dispose() { Config.BarCode -= BarCode; }
+
 
         void Progress(double pProgress) => MainThread.BeginInvokeOnMainThread(() => PB = pProgress);
         protected override void OnAppearing()

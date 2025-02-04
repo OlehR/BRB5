@@ -146,7 +146,7 @@ namespace BRB6.View
             //int i = 0;
             foreach (var item in db.GetDataExpiration(NumberDoc))
             {
-                if(item.ExpirationDate==default) continue;
+                //if(item.ExpirationDate==default) continue;
                 //if (i++ > 5) break;
 
                 var wareItemTemplate = new WareItemTemplate();
