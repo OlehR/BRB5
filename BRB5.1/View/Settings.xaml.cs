@@ -68,7 +68,8 @@ namespace BRB6.View
             }
         }        
 
-        public int SelectedWarehouse { get { return ListWarehouse?.FindIndex(x => x.Code == Config.CodeWarehouse)??0 ; } set { Config.CodeWarehouse = ListWarehouse[value].Code; } }
+        public int SelectedWarehouse { get { return ListWarehouse?.FindIndex(x => x.Code == Config.CodeWarehouse)??0 ; } 
+            set { Config.CodeWarehouse = ListWarehouse[value].Code; OnPropertyChanged(nameof(SelectedWarehouse)); } }
 
         public int SelectedCompany { get { return ListCompany.FindIndex(x => x == Enum.GetName(typeof(eCompany),Config.Company)); } set { Config.Company = (eCompany)value; OnPropertyChanged(nameof(IsVisApi3)); } }
         public int SelectedTypePrinter { get { return Enum.GetNames(typeof(eTypeUsePrinter)).ToList().FindIndex(x => x == Enum.GetName(typeof(eTypeUsePrinter), Config.TypeUsePrinter)); } set { Config.TypeUsePrinter = (eTypeUsePrinter)value; } }
@@ -152,6 +153,7 @@ namespace BRB6.View
                 }
             }
             OnClickSave(null,null);
+            Application.Current.Quit();
         }
         public void Dispose() { Config.BarCode -= BarCode; }
 
@@ -189,7 +191,28 @@ namespace BRB6.View
             ApiUrl4 = temp[3];
         }
 
-        private void OnClickIP(object sender, EventArgs e)  {   }
+        private async void OnClickIP(object sender, EventArgs e)
+        {
+            string currentIP = Config.NativeBase.GetIP();
+            if (currentIP == null)
+            {
+                await DisplayAlert("Error", "Unable to retrieve IP address.", "OK");
+                return;
+            }
+
+            var matchingWarehouseIndex = ListWarehouse.FindIndex(warehouse =>
+                warehouse.InternalIP.Split('.').Take(3).SequenceEqual(currentIP.Split('.').Take(3)));
+
+            if (matchingWarehouseIndex != -1)
+            {
+                SelectedWarehouse = matchingWarehouseIndex;
+                ApiUrl2 = ListWarehouse[matchingWarehouseIndex].Url;
+            }
+            else
+            {
+                await DisplayAlert("Info", "No matching warehouse found.", "OK");
+            }
+        }
 
         private void OnClickSave(object sender, EventArgs e)
         {
@@ -202,5 +225,6 @@ namespace BRB6.View
             var temp = sender as CheckBox;
             Bl.RefreshWarehouses(temp.AutomationId, temp.IsChecked);
         }
+
     }
 }
