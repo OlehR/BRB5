@@ -38,7 +38,7 @@ namespace BRB6.View
         }
         public int SelectedDataStr { get; set; } = 0;
         public bool IsSoftKeyboard { get { return Config.IsSoftKeyboard; } }
-        public ObservableCollection<ExpirationDateElementVM> MyDocWares { get; set; } = new ObservableCollection<ExpirationDateElementVM>();
+        //public ObservableCollection<ExpirationDateElementVM> MyDocWares { get; set; } = new ObservableCollection<ExpirationDateElementVM>();
         private ExpirationDateElementVM SelectedWare;
         public ExpiretionDateItem(string pNumberDoc)
         {
@@ -87,21 +87,26 @@ namespace BRB6.View
             Task.Run(async () =>
             {
                 ParseBarCode pbc = c.ParsedBarCode(pBarCode, false);
+
                 var r = db.GetScanDataExpiration(NumberDoc, pbc);
                 if (r != null)
                 {
+                    r = WareItemsContainer.Children
+                        .OfType<Microsoft.Maui.Controls.View>()
+                        .Select(view => view.BindingContext as ExpirationDateElementVM)
+                        .FirstOrDefault(ware => ware != null && ware.CodeWares == r.CodeWares) ?? r;
+
                     SelectedWare = r;
+                    ScrollToSelectedWare();
+
                     MainThread.BeginInvokeOnMainThread(() =>
                     {
-                        // Hide MainContent and show AlternateContent
-                        MainContent.IsVisible = false;
-                        AlternateContent.IsVisible = true;
-                        (AlternateContent.Content as ExpirationDateElementTemplate).Set(r);
+                        HandleSelectedWare(r);
                     });
                 }
             });
 
-            if (AlternateContent.IsVisible)   CheckDiscount(pBarCode);
+            if (AlternateContent.IsVisible) CheckDiscount(pBarCode);
         }
 
         void CheckDiscount(string pBarCode)
@@ -198,20 +203,22 @@ namespace BRB6.View
 
             MainThread.BeginInvokeOnMainThread(() =>
             {
-                // Hide MainContent and show AlternateContent
-                MainContent.IsVisible = false;
-                AlternateContent.IsVisible = true;
-                (AlternateContent.Content as ExpirationDateElementTemplate).Set(vItem);
+                HandleSelectedWare(vItem);
             });
         }
         private void BackToMainContent()
         {
-            ScrollToSelectedWare();
             MainContent.IsVisible = true;
             AlternateContent.IsVisible = false;
             SelectedWare = null;
         }
-
+        private void HandleSelectedWare(ExpirationDateElementVM selectedWare)
+        {
+            // Hide MainContent and show AlternateContent
+            MainContent.IsVisible = false;
+            AlternateContent.IsVisible = true;
+            (AlternateContent.Content as ExpirationDateElementTemplate).Set(selectedWare);
+        }
 #if ANDROID
         public void OnPageKeyDown(Keycode keyCode, KeyEvent e)
         {

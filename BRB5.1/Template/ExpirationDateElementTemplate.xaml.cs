@@ -58,11 +58,12 @@ public partial class ExpirationDateElementTemplate : ContentView
 
     private void OnAdd(object sender, EventArgs e)
     {
-        db.ReplaceDocWaresExpiration(DM.GetDocWaresExpiration());
+        if (!String.IsNullOrEmpty(DM.DocId)&& !String.IsNullOrEmpty(DM.NumberDoc)) {
+            db.ReplaceDocWaresExpiration(DM.GetDocWaresExpiration());
 
-        _DM.ExpirationDateInput = DM.ExpirationDateInput;
-        _DM.QuantityInput = DM.QuantityInput;
-
+            _DM.ExpirationDateInput = DM.ExpirationDateInput;
+            _DM.QuantityInput = DM.QuantityInput;
+        }
         RequestReturnToMainContent?.Invoke();
     }
 

@@ -22,10 +22,11 @@
                 </Grid>
 
                 <Picker Title="Оберіть торговий зал"
-                        ItemsSource="{Binding ListWarehouse}"
-                        ItemDisplayBinding="{Binding Name}"
-                        SelectedIndex="{Binding SelectedWarehouse}"
-                        HorizontalOptions="Fill" />
+                        x:Name="WarehousePicker"
+                            ItemsSource="{Binding ListWarehouse}"
+                            ItemDisplayBinding="{Binding Name}"
+                            SelectedIndex="{Binding SelectedWarehouse}"
+                            HorizontalOptions="Fill" />
                 <StackLayout Orientation="Horizontal" >
                     <CheckBox IsChecked="{Binding IsViewAllWH}" />
                     <Label Text="Показувати всі склади"  />

@@ -92,7 +92,7 @@ namespace BRB6
             if (FileStatus != PermissionStatus.Granted)
             {
                 await DisplayAlert("Error", "Need StorageWrite permission", "OK", FlowDirection.MatchParent);
-                return;
+                //return;
             }
 
             switch (vTypeDoc.KindDoc)
@@ -118,6 +118,9 @@ namespace BRB6
                     break;
                 case eKindDoc.ExpirationDate:
                     await Navigation.PushAsync(new ExpirationDate());
+                    break;
+                case eKindDoc.LotsCheck:
+                    await Navigation.PushAsync(new LotsCheck());
                     break;
                 case eKindDoc.NotDefined:
                     Dispatcher.Dispatch(() =>
