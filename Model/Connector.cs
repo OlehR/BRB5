@@ -142,7 +142,7 @@ namespace BRB5.Model
     public class Docs
     {
         public IEnumerable<Doc> Doc {  get; set; }
-        public IEnumerable<DocWares> Wares { get; set; }
+        public IEnumerable<DocWaresSample> Wares { get; set; }
     }
 
 }
