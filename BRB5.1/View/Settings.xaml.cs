@@ -196,21 +196,22 @@ namespace BRB6.View
             string currentIP = Config.NativeBase.GetIP();
             if (currentIP == null)
             {
-                await DisplayAlert("Error", "Unable to retrieve IP address.", "OK");
+                await DisplayAlert("Помилка", "Не вдається отримати IP-адресу.", "OK");
                 return;
             }
+            if (ListWarehouse.Any() && ListWarehouse.First().Name != "ddd") {
+                var matchingWarehouseIndex = ListWarehouse.FindIndex(warehouse =>
+                    warehouse.InternalIP.Split('.').Take(3).SequenceEqual(currentIP.Split('.').Take(3)));
 
-            var matchingWarehouseIndex = ListWarehouse.FindIndex(warehouse =>
-                warehouse.InternalIP.Split('.').Take(3).SequenceEqual(currentIP.Split('.').Take(3)));
-
-            if (matchingWarehouseIndex != -1)
-            {
-                SelectedWarehouse = matchingWarehouseIndex;
-                ApiUrl2 = ListWarehouse[matchingWarehouseIndex].Url;
-            }
-            else
-            {
-                await DisplayAlert("Info", "No matching warehouse found.", "OK");
+                if (matchingWarehouseIndex != -1)
+                {
+                    SelectedWarehouse = matchingWarehouseIndex;
+                    ApiUrl2 = ListWarehouse[matchingWarehouseIndex].Url;
+                }
+                else
+                {
+                    await DisplayAlert("Info", "Відповідний магазин не знайдено.", "OK");
+                } 
             }
         }
 
