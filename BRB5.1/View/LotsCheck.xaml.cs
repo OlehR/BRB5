@@ -18,4 +18,9 @@ public partial class LotsCheck : ContentPage
 	{
 		InitializeComponent();
 	}
+
+    private void OpenDoc(object sender, TappedEventArgs e)
+    {
+
+    }
 }

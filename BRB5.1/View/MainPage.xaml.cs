@@ -91,7 +91,7 @@ namespace BRB6
 
             if (FileStatus != PermissionStatus.Granted)
             {
-                await DisplayAlert("Error", "Need StorageWrite permission", "OK", FlowDirection.MatchParent);
+                //await DisplayAlert("Error", "Need StorageWrite permission", "OK", FlowDirection.MatchParent);
                 //return;
             }
 
