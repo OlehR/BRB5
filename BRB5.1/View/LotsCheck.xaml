@@ -3,6 +3,35 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="BRB6.View.LotsCheck">
     <VerticalStackLayout>
-        
+        <ListView ItemsSource="{Binding MyDocsR}" x:Name="ListDocs" VerticalOptions="CenterAndExpand"
+          SeparatorVisibility="None"         
+          HasUnevenRows="True" >
+            <ListView.ItemTemplate>
+                <DataTemplate  >
+                    <ViewCell>
+                        <Grid RowSpacing="1" ColumnSpacing="1" Padding="1" BackgroundColor="#adaea7">
+                            <Grid.GestureRecognizers>
+                                <TapGestureRecognizer Tapped="OpenDoc" />
+                            </Grid.GestureRecognizers>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="5*" />
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition />
+                                <RowDefinition Height="auto" />
+                            </Grid.RowDefinitions>
+
+                            <Label Text="{Binding DateDoc}"  BackgroundColor="{Binding GetColor}" />
+
+                            <Label Text="{Binding NumberDoc}" Grid.Column="1"  BackgroundColor="{Binding GetColor}" />
+                            <Label Text="{Binding }"  Grid.Row="1"  BackgroundColor="{Binding GetColor}" />
+
+                            <Label Text="{Binding }" Grid.Column="1" Grid.Row="1" BackgroundColor="{Binding GetColor}"  />
+                        </Grid>
+                    </ViewCell>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
     </VerticalStackLayout>
 </ContentPage>

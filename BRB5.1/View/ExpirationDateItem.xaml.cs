@@ -208,6 +208,23 @@ namespace BRB6.View
         }
         private void BackToMainContent()
         {
+            if (SelectedWare != null)
+            {
+                var existingItem = WareItemsContainer.Children
+                    .OfType<Microsoft.Maui.Controls.View>()
+                    .Select(view => view.BindingContext as ExpirationDateElementVM)
+                    .FirstOrDefault(ware => ware != null && ware.CodeWares == SelectedWare.CodeWares);
+
+                if (existingItem == null)
+                {
+                    var wareItemTemplate = new WareItemTemplate();
+                    var tapGestureRecognizer = new TapGestureRecognizer();
+                    tapGestureRecognizer.Tapped += OpenElement;
+                    wareItemTemplate.GestureRecognizers.Add(tapGestureRecognizer);
+                    wareItemTemplate.BindData(SelectedWare);
+                    WareItemsContainer.Children.Add(wareItemTemplate);
+                }
+            }
             MainContent.IsVisible = true;
             AlternateContent.IsVisible = false;
             SelectedWare = null;
