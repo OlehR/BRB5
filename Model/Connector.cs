@@ -41,7 +41,7 @@ namespace BRB5.Model
         /// <param name="pWares"></param>
         /// <param name="pIsClose"></param>
         /// <returns></returns>
-        public virtual Result SendDocsData(DocVM pDoc, IEnumerable<DocWares> pWares) { throw new NotImplementedException(); }
+        public virtual async Task<Result> SendDocsDataAsync(DocVM pDoc, IEnumerable<DocWares> pWares) { throw new NotImplementedException(); }
 
         //Збереження ПРосканованих товарів в 1С
         public virtual Result SendLogPrice(IEnumerable<LogPrice> pList) { throw new NotImplementedException(); }
@@ -144,5 +144,10 @@ namespace BRB5.Model
         public IEnumerable<Doc> Doc {  get; set; }
         public IEnumerable<DocWaresSample> Wares { get; set; }
     }
-    
+    public class SaveDoc
+    {
+        public Doc Doc { get; set; }
+        public IEnumerable<DocWares> Wares { get; set; }
+    }
+
 }
