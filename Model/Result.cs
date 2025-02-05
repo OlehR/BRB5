@@ -62,7 +62,7 @@ namespace BRB5.Model
             TextError = pTextError;            
         }
 
-        public Result(HttpResult httpResult, T pInfo )
+        public Result(HttpResult httpResult, T pInfo =default )
         {
             StateHTTP = httpResult.HttpState;
 

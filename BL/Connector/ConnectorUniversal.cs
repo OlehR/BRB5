@@ -288,7 +288,7 @@ namespace BL.Connector
         /// <param name="pWares"></param>
         /// <param name="pIsClose"></param>
         /// <returns></returns>
-        public override Result SendDocsData(DocVM pDoc, IEnumerable<DocWares> pWares)
+        public override async Task<Result> SendDocsDataAsync(DocVM pDoc, IEnumerable<DocWares> pWares)
         {
             return null;
         }

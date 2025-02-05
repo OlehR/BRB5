@@ -75,11 +75,12 @@ namespace BRB6.View
 #endif
             }
         }
-        private void F2Save(object sender, EventArgs e)
+
+        private async void F2Save(object sender, EventArgs e)
         {
             Doc.NumberOutInvoice = NumberOutInvoice;
             Doc.DateOutInvoice = ListDataStr[SelectedDataStr].DateString;
-            var r = c.SendDocsData(Doc, db.GetDocWares(Doc, 2, eTypeOrder.Scan));
+            var r = await c.SendDocsDataAsync(Doc, db.GetDocWares(Doc, 2, eTypeOrder.Scan));
             if (r.State != 0) _ = DisplayAlert("Помилка", r.TextError, "OK");
             else
             {

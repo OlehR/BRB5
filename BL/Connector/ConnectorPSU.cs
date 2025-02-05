@@ -312,14 +312,14 @@ namespace BL.Connector
         /// <param name="pWares"></param>
         /// <param name="pIsClose"></param>
         /// <returns></returns>
-        public override Result SendDocsData(DocVM pDoc, IEnumerable<DocWares> pWares)
+        public  override async Task<Result> SendDocsDataAsync(DocVM pDoc, IEnumerable<DocWares> pWares)
         {
             var r = pWares.Select(el => new decimal[] { el.OrderDoc, el.CodeWares, el.InputQuantity });
             var res = new ApiSaveDoc(153, pDoc.TypeDoc, pDoc.NumberDoc, r);
             String data = res.ToJSON();
             try
             {
-                HttpResult result = Http.HTTPRequest(0, "znp/", data, "application/json", null, null);
+                HttpResult result = await Http.HTTPRequestAsync(0, "znp/", data, "application/json", null, null);
                 if (result.HttpState != eStateHTTP.HTTP_OK)
                 {
                     return new Result(result);

@@ -122,9 +122,9 @@ namespace BRB6.View
         }
 
 
-        private void Save(object sender, EventArgs e)
+        private async void Save(object sender, EventArgs e)
         {
-            var res = c.SendDocsData(Doc, WaresList);
+            var res = await c.SendDocsDataAsync(Doc, WaresList);
             _ = DisplayAlert("Збереження", res.TextError, "ok");            
         }
 

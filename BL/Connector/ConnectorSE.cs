@@ -489,18 +489,51 @@ namespace BL.Connector
             }
         }
 
+        public override async Task<Result<string>> GetNameWarehouseFromDoc(DocId pD)
+        {
+            try
+            {
+                HttpResult result = await Http.HTTPRequestAsync(0, "DCT/LoadDocs", pD.ToJson(), "application/json", null);
+                if (result.HttpState == eStateHTTP.HTTP_OK)
+                {
+                    var res = JsonConvert.DeserializeObject<Result<string>>(result.Result);
+                    if (res.State == 0) return res;
+                }
+                return new Result<string>(result);
+            }
+            catch (Exception e)
+            {
+                FileLogger.WriteLogMessage(this, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+                return new Result<string>(e);
+            }
+        }
+
         public override async Task<Result<IEnumerable<RaitingTemplate>>> GetRaitingTemplateAsync() { return null; }
 
         /// <summary>
         /// Вивантаження документів з ТЗД (HTTP)
         /// </summary>
         /// <param name="pDoc"></param>
-        /// <param name="pWares"></param>
-        /// <param name="pIsClose"></param>
+        /// <param name="pWares"></param>       
         /// <returns></returns>
-        public override Result SendDocsData(DocVM pDoc, IEnumerable<DocWares> pWares)
+        public override async Task<Result> SendDocsDataAsync(DocVM pDoc, IEnumerable<DocWares> pWares)
         {
-            return null;
+            try
+            {
+                SaveDoc Data = new SaveDoc() { Doc = pDoc, Wares = pWares };
+                HttpResult result = await Http.HTTPRequestAsync(0, "DCT/SaveDoc", Data.ToJson(), "application/json", null);
+                if (result.HttpState == eStateHTTP.HTTP_OK)
+                {
+                    var res = JsonConvert.DeserializeObject<Result>(result.Result);
+                    if (res.State == 0) return res;
+                }
+                return new Result(result);
+            }
+            catch (Exception e)
+            {
+                FileLogger.WriteLogMessage(this, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+                return new Result(e);
+            }
         }
         /// <summary>
         /// Вивантаження Рейтингів
