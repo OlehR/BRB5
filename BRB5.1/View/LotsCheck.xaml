@@ -23,11 +23,9 @@
                             </Grid.RowDefinitions>
 
                             <Label Text="{Binding DateDoc}"  BackgroundColor="{Binding GetColor}" />
-
                             <Label Text="{Binding NumberDoc}" Grid.Column="1"  BackgroundColor="{Binding GetColor}" />
-                            <Label Text="{Binding }"  Grid.Row="1"  BackgroundColor="{Binding GetColor}" />
-
-                            <Label Text="{Binding }" Grid.Column="1" Grid.Row="1" BackgroundColor="{Binding GetColor}"  />
+                            <Label Text="{Binding ExtInfo}" Grid.Column="1" Grid.Row="1" BackgroundColor="{Binding GetColor}"  />
+                            
                         </Grid>
                     </ViewCell>
                 </DataTemplate>
