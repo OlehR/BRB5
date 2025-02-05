@@ -71,6 +71,7 @@ CREATE TABLE Wares (
     NameWaresReceipt  TEXT,
     CodeWaresRelative INTEGER,
     DaysLeft        TEXT,
+    Expiration NUMBER   NOT NULL DEFAULT 0,
     DateInsert         DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP);
 CREATE UNIQUE INDEX WaresId ON Wares (CodeWares);
 
@@ -259,7 +260,7 @@ CREATE TABLE DocWaresExpiration(
 CREATE UNIQUE INDEX DocWaresExpirationTNC ON DocWaresExpiration (DateDoc, NumberDoc, DocId, CodeWares);
 
 ";
-        int Ver = 2;
+        int Ver = 3;
         public string PathNameDB { get { return Path.Combine(BaseDir, NameDB); } }
 
         public DB(string pBaseDir) : this() { BaseDir = pBaseDir; }
@@ -871,7 +872,7 @@ and bc.BarCode=?
                 return null;
             try
             {
-                if (pParseBarCode.BarCode != null)
+                if (pParseBarCode.BarCode != null && pParseBarCode.CodeWares == 0 && pParseBarCode.Article == 0)
                 {
                     sql = $@"select w.CODEWARES as CodeWares,w.NAMEWARES as NameWares,au.COEFFICIENT as Coefficient,bc.CODEUNIT as CodeUnit, ud.ABRUNIT as NameUnit,
                                  bc.BARCODE as BarCode ,w.CODEUNIT as BaseCodeUnit 
@@ -882,35 +883,36 @@ and bc.BarCode=?
                                 where bc.BARCODE=?";
                     var r = db.Query<ExpirationDateElementVM>(sql, pParseBarCode.BarCode);
                     if (r != null && r.Count() == 1)
+                    {
                         res = r.First();
+                        pParseBarCode.CodeWares=res.CodeWares;
+                        res = GetScanDataExpiration(pNumberDoc, pParseBarCode);
+                        return res;
+                    }
                     // Пошук по штрихкоду виробника
                     if (pParseBarCode.BarCode.Length == 13 && res == null)
                     {
                         sql = $@"select bc.codewares as CodeWares,bc.BARCODE as BarCode from BARCODE bc 
                                      join wares w on bc.codewares=w.codewares and w.codeunit={Config.GetCodeUnitWeight}
                                      where substr(bc.BARCODE,1,6)=?";
-                        var rr = db.Query<ExpirationDateElementVM>(sql, pParseBarCode.BarCode.Substring(0, 6));
+                        var rr = db.Query<ExpirationDateElementVM>(sql, pParseBarCode.BarCode[..6]);
 
                         foreach (var el in rr)
                         {
-                            if (pParseBarCode.BarCode.Substring(0, el.BarCode.Length).Equals(el.BarCode))
+                            if (pParseBarCode.BarCode[..el.BarCode.Length].Equals(el.BarCode))
                             {
-                                pParseBarCode.CodeWares = el.CodeWares;
-                                decimal Quantity = 0m;
-                                Decimal.TryParse(pParseBarCode.BarCode.Substring(8, 12), out Quantity);
-                                pParseBarCode.Quantity = Quantity;
-                                res = GetScanDataExpiration(pNumberDoc, pParseBarCode);//CodeWares, pIsOnlyBarCode,false);                                                                  
+                                pParseBarCode.CodeWares = el.CodeWares;                                
+                                pParseBarCode.Quantity = pParseBarCode.BarCode.Substring(8, 12).ToDecimal();
+                                res = GetScanDataExpiration(pNumberDoc, pParseBarCode);                                                             
                             }
                         }
-                    }
-                    //if (res != null) res.ParseBarCode = pParseBarCode;
-                    // return res;
+                    } 
                 }
 
                 // Пошук по коду
                 if (res == null && (pParseBarCode.CodeWares > 0 || pParseBarCode.Article > 0))
                 {
-                    String Find = pParseBarCode.CodeWares > 0 ? $"w.code_wares={pParseBarCode.CodeWares}" : $"w.ARTICLE='{pParseBarCode.Article:D8}'";
+                    String Find = pParseBarCode.CodeWares > 0 ? $"w.CodeWares={pParseBarCode.CodeWares}" : $"w.ARTICLE='{pParseBarCode.Article:D8}'";
                     sql = $@"select  DES.NumberDoc,DES.DocId, w.CodeWares,w.NAMEWARES as NameWares, au.COEFFICIENT as Coefficient,w.CODEUNIT as CodeUnit, ud.ABRUNIT as NameUnit,
                             ( select group_concat(bc.BarCode,',') from BarCode bc where bc.CodeWares=w.CodeWares ) as BARCODE  ,w.CODEUNIT as BaseCodeUnit,
                             des.Quantity,des.Expiration,des.ExpirationDate,des.DaysLeft
@@ -919,10 +921,10 @@ and bc.BarCode=?
                                 join UNITDIMENSION ud on w.CODEUNIT=ud.CODEUNIT 
                                 join DocWaresExpirationSample DES on w.CodeWares=DES.CodeWares
                                 left join DocWaresExpiration DE on DES.CodeWares=DE.CodeWares and DE.DocId=DES.DocId                                
-                                where DE.CodeWares is null and DES.NumberDoc = {pNumberDoc} and " + Find + @"
-                            order by des.ExpirationDate";
+                                where DES.NumberDoc = {pNumberDoc} and " + Find + @"
+                            order by case when DE.CodeWares is null then 1 else 0 end,  des.ExpirationDate";
                     var r = db.Query<ExpirationDateElementVM>(sql);
-                    if (r != null && r.Count() >= 1)
+                    if (r?.Count() >= 1)
                     {
                         // @TypeDoc as TypeDoc, @NumberDoc as NumberDoc,
                         res = r.First();
@@ -931,13 +933,18 @@ and bc.BarCode=?
                     {
                         sql = $@"select  {pNumberDoc} NumberDoc,'zz'||hex(randomblob(15)) as DocId, w.CodeWares,w.NAMEWARES as NameWares, au.COEFFICIENT as Coefficient,w.CODEUNIT as CodeUnit, ud.ABRUNIT as NameUnit,
                             ( select group_concat(bc.BarCode,',') from BarCode bc where bc.CodeWares=w.CodeWares ) as BARCODE  ,w.CODEUNIT as BaseCodeUnit,
-                            0 as Quantity, --des.Expiration,des.ExpirationDate,
+                            0 as Quantity, w.Expiration,--des.ExpirationDate,
                             w.DaysLeft
                                 from WARES w 
                                 join ADDITIONUNIT au on w.CODEWARES=au.CODEWARES and au.CODEUNIT=w.CODEUNIT 
                                 join UNITDIMENSION ud on w.CODEUNIT=ud.CODEUNIT                                                               
-                                where DE.CodeWares is null and " + Find + @"
-                            order by des.ExpirationDate";
+                                where " + Find;
+                        r = db.Query<ExpirationDateElementVM>(sql);
+                        if (r?.Count() >= 1)
+                        {
+                            // @TypeDoc as TypeDoc, @NumberDoc as NumberDoc,
+                            res = r.First();
+                        }
                     }
                 }
             }

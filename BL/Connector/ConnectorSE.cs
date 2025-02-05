@@ -69,8 +69,8 @@ namespace BL.Connector
         public override IEnumerable<LoginServer> LoginServer()
         {
             return new List<LoginServer>()
-            {new  LoginServer (){Code=eLoginServer.Local,Name = "Магазин"},
-                new  LoginServer (){Code=eLoginServer.Central,Name = "ЦБ"},
+            { new  LoginServer (){Code=eLoginServer.Central,Name = "ЦБ"},
+                new  LoginServer (){Code=eLoginServer.Local,Name = "Магазин"},
              new  LoginServer (){Code=eLoginServer.Bitrix,Name = "Бітрікс"}};//
         }
 
@@ -158,7 +158,7 @@ namespace BL.Connector
             if (pLoginServer == eLoginServer.Central)
             {
                 User Data = new User() { Login = pLogin, PassWord = pPassWord };
-                HttpResult result = await Http.HTTPRequestAsync(0, "DCT/Login", Data.ToJson(), "application/json", null);
+                HttpResult result = await Http.HTTPRequestAsync(0, "DCT/Login", Data.ToJson(), "application/json", null,null,5);
                 if (result.HttpState == eStateHTTP.HTTP_OK)
                 {
                     Result<User> res = JsonConvert.DeserializeObject<Result<User>>(result.Result);

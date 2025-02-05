@@ -20,5 +20,6 @@ namespace BRB5.Model.DB
         public int CodeWaresRelative { get; set; }
         //public DateTime DateInsert
         public string DaysLeft { get; set; }
+        public decimal Expiration { get; set; }
     }
 }
