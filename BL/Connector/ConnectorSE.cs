@@ -69,8 +69,8 @@ namespace BL.Connector
         public override IEnumerable<LoginServer> LoginServer()
         {
             return new List<LoginServer>()
-            {new  LoginServer (){Code=eLoginServer.Local,Name = "Магазин"},
-                new  LoginServer (){Code=eLoginServer.Central,Name = "ЦБ"},
+            { new  LoginServer (){Code=eLoginServer.Central,Name = "ЦБ"},
+                new  LoginServer (){Code=eLoginServer.Local,Name = "Магазин"},
              new  LoginServer (){Code=eLoginServer.Bitrix,Name = "Бітрікс"}};//
         }
 

@@ -71,6 +71,7 @@ CREATE TABLE Wares (
     NameWaresReceipt  TEXT,
     CodeWaresRelative INTEGER,
     DaysLeft        TEXT,
+    Expiration NUMBER   NOT NULL DEFAULT 0,
     DateInsert         DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP);
 CREATE UNIQUE INDEX WaresId ON Wares (CodeWares);
 
@@ -259,7 +260,7 @@ CREATE TABLE DocWaresExpiration(
 CREATE UNIQUE INDEX DocWaresExpirationTNC ON DocWaresExpiration (DateDoc, NumberDoc, DocId, CodeWares);
 
 ";
-        int Ver = 2;
+        int Ver = 3;
         public string PathNameDB { get { return Path.Combine(BaseDir, NameDB); } }
 
         public DB(string pBaseDir) : this() { BaseDir = pBaseDir; }
@@ -889,22 +890,18 @@ and bc.BarCode=?
                         sql = $@"select bc.codewares as CodeWares,bc.BARCODE as BarCode from BARCODE bc 
                                      join wares w on bc.codewares=w.codewares and w.codeunit={Config.GetCodeUnitWeight}
                                      where substr(bc.BARCODE,1,6)=?";
-                        var rr = db.Query<ExpirationDateElementVM>(sql, pParseBarCode.BarCode.Substring(0, 6));
+                        var rr = db.Query<ExpirationDateElementVM>(sql, pParseBarCode.BarCode[..6]);
 
                         foreach (var el in rr)
                         {
-                            if (pParseBarCode.BarCode.Substring(0, el.BarCode.Length).Equals(el.BarCode))
+                            if (pParseBarCode.BarCode[..el.BarCode.Length].Equals(el.BarCode))
                             {
-                                pParseBarCode.CodeWares = el.CodeWares;
-                                decimal Quantity = 0m;
-                                Decimal.TryParse(pParseBarCode.BarCode.Substring(8, 12), out Quantity);
-                                pParseBarCode.Quantity = Quantity;
-                                res = GetScanDataExpiration(pNumberDoc, pParseBarCode);//CodeWares, pIsOnlyBarCode,false);                                                                  
+                                pParseBarCode.CodeWares = el.CodeWares;                                
+                                pParseBarCode.Quantity = pParseBarCode.BarCode.Substring(8, 12).ToDecimal();
+                                res = GetScanDataExpiration(pNumberDoc, pParseBarCode);                                                             
                             }
                         }
-                    }
-                    //if (res != null) res.ParseBarCode = pParseBarCode;
-                    // return res;
+                    }                    
                 }
 
                 // Пошук по коду
@@ -919,10 +916,10 @@ and bc.BarCode=?
                                 join UNITDIMENSION ud on w.CODEUNIT=ud.CODEUNIT 
                                 join DocWaresExpirationSample DES on w.CodeWares=DES.CodeWares
                                 left join DocWaresExpiration DE on DES.CodeWares=DE.CodeWares and DE.DocId=DES.DocId                                
-                                where DE.CodeWares is null and DES.NumberDoc = {pNumberDoc} and " + Find + @"
-                            order by des.ExpirationDate";
+                                where DES.NumberDoc = {pNumberDoc} and " + Find + @"
+                            order by case when DE.CodeWares is null then 1 else 0 end,  des.ExpirationDate";
                     var r = db.Query<ExpirationDateElementVM>(sql);
-                    if (r != null && r.Count() >= 1)
+                    if (r?.Count() >= 1)
                     {
                         // @TypeDoc as TypeDoc, @NumberDoc as NumberDoc,
                         res = r.First();
