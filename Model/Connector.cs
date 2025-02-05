@@ -33,7 +33,7 @@ namespace BRB5.Model
         /// <returns></returns>
         public virtual async Task<Result> LoadDocsDataAsync(int pTypeDoc, string pNumberDoc, bool pIsClear) { throw new NotImplementedException(); }
 
-
+        public virtual async Task<Result<string>> GetNameWarehouseFromDoc(DocId pD) { throw new NotImplementedException(); }
         /// <summary>
         /// Вивантаження документів з ТЗД (HTTP)
         /// </summary>
@@ -144,5 +144,5 @@ namespace BRB5.Model
         public IEnumerable<Doc> Doc {  get; set; }
         public IEnumerable<DocWaresSample> Wares { get; set; }
     }
-
+    
 }

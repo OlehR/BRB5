@@ -489,6 +489,25 @@ namespace BL.Connector
             }
         }
 
+        public override async Task<Result<string>> GetNameWarehouseFromDoc(DocId pD)
+        {
+            try
+            {
+                HttpResult result = await Http.HTTPRequestAsync(0, "DCT/LoadDocs", pD.ToJson(), "application/json", null);
+                if (result.HttpState == eStateHTTP.HTTP_OK)
+                {
+                    var res = JsonConvert.DeserializeObject<Result<string>>(result.Result);
+                    if (res.State == 0) return res;
+                }
+                return new Result<string>(result);
+            }
+            catch (Exception e)
+            {
+                FileLogger.WriteLogMessage(this, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+                return new Result<string>(e);
+            }
+        }
+
         public override async Task<Result<IEnumerable<RaitingTemplate>>> GetRaitingTemplateAsync() { return null; }
 
         /// <summary>
@@ -500,6 +519,7 @@ namespace BL.Connector
         /// <returns></returns>
         public override Result SendDocsData(DocVM pDoc, IEnumerable<DocWares> pWares)
         {
+            
             return null;
         }
         /// <summary>
