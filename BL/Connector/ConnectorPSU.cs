@@ -249,6 +249,7 @@ namespace BL.Connector
 
         public override async Task<Result> LoadGuidDataAsync(bool IsFull)
         {
+            await LoadWarehouse();
             return await LoadDocsDataAsync(-1, null,  true);
         }
 
