@@ -49,7 +49,7 @@ namespace BL.Connector
             if (pLS == eLoginServer.Central)
             {
                 Res.Add(new TypeDoc() { CodeDoc = 100, KindDoc = eKindDoc.ExpirationDate, NameDoc = "Терміни придатності" });
-                //Res.Add(new TypeDoc() { CodeDoc = 14, KindDoc = eKindDoc.LotsCheck, NameDoc = "Перевірка лотів" });
+                Res.Add(new TypeDoc() { CodeDoc = 14, KindDoc = eKindDoc.LotsCheck, NameDoc = "Перевірка лотів" });
             }
             return Res;
         }

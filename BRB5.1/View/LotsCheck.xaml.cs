@@ -14,10 +14,18 @@ public partial class LotsCheck : ContentPage
 
     private ObservableCollection<DocVM> _MyDocsR;
     public ObservableCollection<DocVM> MyDocsR { get { return _MyDocsR; } set { _MyDocsR = value; OnPropertyChanged(nameof(MyDocsR)); } }
-    public LotsCheck()
+    public LotsCheck(TypeDoc vTypeDoc)
 	{
 		InitializeComponent();
-	}
+        TypeDoc = vTypeDoc;
+    }
+    protected override void OnAppearing()
+    {
+        base.OnAppearing();
+
+        c.LoadDocsDataAsync(TypeDoc.CodeDoc, null, false);
+        MyDocsR = new ObservableCollection<DocVM>(db.GetDoc(TypeDoc));
+    }
 
     private void OpenDoc(object sender, TappedEventArgs e)
     {
