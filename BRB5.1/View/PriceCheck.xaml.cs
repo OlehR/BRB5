@@ -21,6 +21,7 @@ namespace BRB6
         public int SelectedPrintBlockItems { get { return ListPrintBlockItems.Count > 0 ? ListPrintBlockItems.Last().PackageNumber : -1; }  }
         public bool IsVisPriceNormal { get { return WP != null && (WP.PriceOld != WP.PriceNormal); } }
         public bool IsVisPriceOpt { get { return WP != null && (WP.PriceOpt != 0 || WP.PriceOptOld != 0); } }
+        public bool IsVisPriceOptQ { get { return WP != null && WP.QuantityOpt != 0 ; } }
 
         public bool IsVisF4 { get { return Config.Company == eCompany.Sim23; } }
         public string F4Text { get { return IsOnline ? "OnLine" : "OffLine"; } }
@@ -36,7 +37,7 @@ namespace BRB6
         WaresPrice _WP;
         public WaresPrice WP { get { return _WP; } set { _WP = value; OnPropertyChanged("WP"); OnPropertyChanged("TextColorPrice");
                 OnPropertyChanged("IsVisPriceOpt"); OnPropertyChanged(nameof(IsVisPriceNormal)); OnPropertyChanged("TextColorHttp");
-                OnPropertyChanged("ColorPrintColorType");
+                OnPropertyChanged("ColorPrintColorType"); OnPropertyChanged("IsVisPriceOptQ");
             } }
         //ZXingScannerView zxing;
         //ZXingDefaultOverlay overlay;
