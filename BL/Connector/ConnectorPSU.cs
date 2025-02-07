@@ -257,8 +257,7 @@ namespace BL.Connector
         /// Завантаження документів в ТЗД (HTTP)
         /// </summary>
         /// <param name="pTypeDoc">0-всі документи</param>
-        /// <param name="pNumberDoc"></param>
-        /// <param name="pProgress"></param>
+        /// <param name="pNumberDoc"></param>        
         /// <param name="pIsClear"></param>
         /// <returns></returns>
         public override async Task<Result> LoadDocsDataAsync(int pTypeDoc, string pNumberDoc, bool pIsClear)
