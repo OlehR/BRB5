@@ -120,7 +120,7 @@ namespace BRB6
                     await Navigation.PushAsync(new ExpirationDate());
                     break;
                 case eKindDoc.LotsCheck:
-                    await Navigation.PushAsync(new LotsCheck());
+                    await Navigation.PushAsync(new LotsCheck(vTypeDoc));
                     break;
                 case eKindDoc.NotDefined:
                     Dispatcher.Dispatch(() =>

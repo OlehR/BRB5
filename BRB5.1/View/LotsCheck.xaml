@@ -2,34 +2,19 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="BRB6.View.LotsCheck">
-    <VerticalStackLayout>
-        <ListView ItemsSource="{Binding MyDocsR}" x:Name="ListDocs" VerticalOptions="CenterAndExpand"
-          SeparatorVisibility="None"         
-          HasUnevenRows="True" >
-            <ListView.ItemTemplate>
-                <DataTemplate  >
-                    <ViewCell>
-                        <Grid RowSpacing="1" ColumnSpacing="1" Padding="1" BackgroundColor="#adaea7">
-                            <Grid.GestureRecognizers>
-                                <TapGestureRecognizer Tapped="OpenDoc" />
-                            </Grid.GestureRecognizers>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*" />
-                                <ColumnDefinition Width="5*" />
-                            </Grid.ColumnDefinitions>
-                            <Grid.RowDefinitions>
-                                <RowDefinition />
-                                <RowDefinition Height="auto" />
-                            </Grid.RowDefinitions>
-
-                            <Label Text="{Binding DateDoc}"  BackgroundColor="{Binding GetColor}" />
-                            <Label Text="{Binding NumberDoc}" Grid.Column="1"  BackgroundColor="{Binding GetColor}" />
-                            <Label Text="{Binding ExtInfo}" Grid.Column="1" Grid.Row="1" BackgroundColor="{Binding GetColor}"  />
-                            
-                        </Grid>
-                    </ViewCell>
-                </DataTemplate>
-            </ListView.ItemTemplate>
-        </ListView>
-    </VerticalStackLayout>
+    <NavigationPage.TitleView>
+        <StackLayout Spacing="10" Orientation="Horizontal">
+            <Label Text="F2- Зберегти" HorizontalOptions="End"
+            VerticalOptions="Center"  >
+                <Label.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="F2Save" />
+                </Label.GestureRecognizers>
+            </Label>
+        </StackLayout>
+    </NavigationPage.TitleView>
+    <Grid>
+        <ScrollView>
+            <VerticalStackLayout x:Name="StackLayoutDocs" VerticalOptions="CenterAndExpand"/>
+        </ScrollView>
+    </Grid>
 </ContentPage>
