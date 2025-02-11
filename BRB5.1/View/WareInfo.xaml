@@ -107,7 +107,7 @@
                         <Label FontAttributes="Bold" TextColor="Gray" Text="Кількість" Grid.Column="1"/>
                         <Label FontAttributes="Bold" TextColor="Gray" Text="Дата" Grid.Column="2"/>
                     </Grid>
-                <ListView HasUnevenRows="True" ItemsSource="{Binding WP.RestWarehouse}" VerticalOptions="Fill">
+                <!--<ListView HasUnevenRows="True" ItemsSource="{Binding WP.RestWarehouse}" VerticalOptions="Fill">
                     <ListView.ItemTemplate>
                         <DataTemplate xmlns:brb5="clr-namespace:BRB6">
                             <ViewCell>
@@ -126,7 +126,13 @@
                             </ViewCell>
                         </DataTemplate>
                     </ListView.ItemTemplate>
-                </ListView>
+                </ListView>-->
+
+                <Grid>
+                    <ScrollView>
+                        <VerticalStackLayout x:Name="RestWarehouseList" VerticalOptions="CenterAndExpand"/>
+                    </ScrollView>
+                </Grid>
             </StackLayout>
         </StackLayout>
     </ContentPage.Content>

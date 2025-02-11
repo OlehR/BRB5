@@ -55,7 +55,6 @@ namespace BRB6.View
                 List<Warehouse> wh = null;
                 try
                 {
-                    var t = db.GetWarehouse();
                     wh = db.GetWarehouse()?.OrderBy(q => q.Name).ToList();
                 }
                 catch (Exception ex)
