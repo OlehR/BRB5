@@ -493,7 +493,7 @@ namespace BL.Connector
         {
             try
             {
-                HttpResult result = await Http.HTTPRequestAsync(0, "DCT/LoadDocs", pD.ToJson(), "application/json", null);
+                HttpResult result = await Http.HTTPRequestAsync(0, "DCT/GetNameWarehouseFromDoc", pD.ToJson(), "application/json", null);
                 if (result.HttpState == eStateHTTP.HTTP_OK)
                 {
                     var res = JsonConvert.DeserializeObject<Result<string>>(result.Result);
