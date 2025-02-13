@@ -22,6 +22,7 @@ namespace BRB6.View
         public bool IsEnabledPrint { get { return Config.TypeUsePrinter != eTypeUsePrinter.NotDefined; } }
         public UriImageSource Picture { get; set; }
         public Uri UriPicture { get { return new Uri(Config.ApiUrl1 + $"Wares/{WP.CodeWares:D9}.png"); } }
+        private int InfoHeight;
 
         public WareInfo(ParseBarCode parseBarCode)
         {
@@ -29,8 +30,9 @@ namespace BRB6.View
             c = ConnectorBase.GetInstance();
             // TODO Xamarin.Forms.Device.RuntimePlatform is no longer supported. Use Microsoft.Maui.Devices.DeviceInfo.Platform instead. For more details see https://learn.microsoft.com/en-us/dotnet/maui/migration/forms-projects#device-changes
             NavigationPage.SetHasNavigationBar(this, DeviceInfo.Platform == DevicePlatform.iOS);            
-            WP = c.GetPrice(parseBarCode, eTypePriceInfo.Full);
+            WP = c.GetPrice(parseBarCode, eTypePriceInfo.Full);                
             if (WP.RestWarehouse != null)  RestWarehouseListShow(WP.RestWarehouse);
+            if (WP.Сondition != null) FillConditionList(WP.Сondition);
             if (WP.ActionType > 0)  IsVisPromotion = true;            
             ImageUri = Config.ApiUrl1+$"Wares/{WP.CodeWares:D9}.png";            
             Picture  = new UriImageSource
@@ -46,6 +48,7 @@ namespace BRB6.View
                 WareImage.IsVisible = false;
             } 
             this.BindingContext = this;
+            CalculateAndSetScrollViewHeight();
         }
         private void RestWarehouseListShow(IEnumerable<RestWarehouse> warehouses)
         {
@@ -105,7 +108,50 @@ namespace BRB6.View
                 RestWarehouseList.Children.Add(grid);
             }
         }
-    
+        public void FillConditionList(IEnumerable<СonditionClass> conditions)
+        {
+            ConditionList.Children.Clear();
+
+            foreach (var condition in conditions)
+            {
+                var stackLayout = new StackLayout
+                {
+                    Orientation = StackOrientation.Horizontal
+                };
+
+                var conditionLabel = new Label
+                {
+                    Text = condition.Сondition
+                };
+
+                var contrLabel = new Label
+                {
+                    Text = condition.Contr
+                };
+
+                stackLayout.Children.Add(conditionLabel);
+                stackLayout.Children.Add(contrLabel);
+
+                ConditionList.Children.Add(stackLayout);
+            }
+        }
+        private void CalculateAndSetScrollViewHeight()
+        {
+            var mainDisplayInfo = DeviceDisplay.Current.MainDisplayInfo;
+            var screenHeight = mainDisplayInfo.Height / mainDisplayInfo.Density;
+            var navigationBarHeight = GetNavigationBarHeight();
+            var imageHeight = WareImage.HeightRequest;
+            var scrollViewHeight = screenHeight - imageHeight - navigationBarHeight;
+            WareInfoMainScrollView.HeightRequest = scrollViewHeight;
+        }
+
+        private double GetNavigationBarHeight()
+        {
+            const double navigationBarHeightDp = 36;
+            var density = DeviceDisplay.Current.MainDisplayInfo.Density;
+            return navigationBarHeightDp * density;
+        }
+
         private void OnClickPrint(object sender, EventArgs e) {  if (IsEnabledPrint)  _ = DisplayAlert("Друк", c.PrintHTTP(new[] { WP.CodeWares }), "OK");     }
         private void OnImageTapped(object sender, EventArgs e)
         {
