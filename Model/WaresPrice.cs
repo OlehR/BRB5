@@ -97,11 +97,21 @@ namespace BRB5.Model
 
         public string Country { get; set; }
 
+        public string Parent { get; set; }
+        public IEnumerable<СonditionClass> Сondition { get; set; }
+
     }
     public class RestWarehouse
     {
         public string NameWarehouse  { get; set; }
         public decimal Quantity { get; set; }
-        public DateTime Date { get; set; }
+        public DateTime Date { get; set; }        
     }
+
+    public class СonditionClass
+    {
+        public string Contr { get; set; }
+        public string Сondition { get; set; }
+    }
+    
 }

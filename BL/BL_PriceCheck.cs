@@ -22,7 +22,7 @@ namespace BL
 
             if (IsOnline)
             {
-                CheckWP = c.GetPrice(c.ParsedBarCode(pBarCode, pIsHandInput), eTypePriceInfo.Full);
+                CheckWP = c.GetPrice(c.ParsedBarCode(pBarCode, pIsHandInput), eTypePriceInfo.Normal);
             }
             else
             {
