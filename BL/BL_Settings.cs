@@ -25,7 +25,7 @@ namespace BL
         }
         public void SaveSettings(bool IsAutoLogin, bool IsVibration, bool IsViewAllWH, bool IsSound, bool IsTest, bool IsFilterSave,/* bool IsFullScreenScan,*/ string ApiUrl1,
             string ApiUrl2, string ApiUrl3, string ApiUrl4, int Compress, eCompany SelectedCompany, eTypeLog SelectedTypeLog, ePhotoQuality SelectedPhotoQuality, 
-            eTypeUsePrinter SelectedTypePrinter, int SelectedWarehouse, int ListWarehouseCode, ObservableCollection<Warehouse> Warehouses)
+            eTypeUsePrinter SelectedTypePrinter, int SelectedWarehouse, int ListWarehouseCode, IEnumerable<Warehouse> Warehouses)
         {
             db.SetConfig<bool>("IsAutoLogin", IsAutoLogin);
             db.SetConfig<bool>("IsVibration", IsVibration);

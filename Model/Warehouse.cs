@@ -53,7 +53,7 @@ namespace BRB5.Model
 
         private bool _IsChecked;
         [Ignore]
-        public bool IsChecked { get { return _IsChecked; } set { _IsChecked = value; OnPropertyChanged(nameof(IsChecked)); } }
+        public bool IsChecked { get => _IsChecked; set { _IsChecked = value; OnPropertyChanged(nameof(IsChecked)); } }
 
         public event PropertyChangedEventHandler PropertyChanged;
         protected virtual void OnPropertyChanged(string propertyName)

@@ -214,8 +214,22 @@
     <controls:BaseContentPage Title="Склади">
         <ContentPage.Content>
             <StackLayout>
+                <StackLayout Orientation="Horizontal" >
+                    
+                </StackLayout>
 
-                <ListView HasUnevenRows="True" ItemsSource="{Binding Warehouses}" x:Name="LWH" VerticalOptions="CenterAndExpand">
+                <Grid >
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="1*" />
+                        <ColumnDefinition Width="5*" />
+                    </Grid.ColumnDefinitions>
+
+                    <CheckBox IsChecked="{Binding IsFilterWHChecked}" CheckedChanged="CheckFilterWH" />
+                    <Frame Style="{StaticResource FrameStyle}" Margin="5" Grid.Column="1">
+                        <controls:CustomEntry Style="{StaticResource EntryStyle}" TextChanged="FilterWH" Text="{Binding TextFilterWH}" />
+                    </Frame>
+                </Grid>
+                <!--<ListView HasUnevenRows="True" ItemsSource="{Binding Warehouses}" x:Name="LWH" VerticalOptions="CenterAndExpand">
                     <ListView.ItemTemplate>
                         <DataTemplate xmlns:brb5="clr-namespace:BRB6">
                             <ViewCell>
@@ -229,7 +243,14 @@
                             </ViewCell>
                         </DataTemplate>
                     </ListView.ItemTemplate>
-                </ListView>
+                </ListView>-->
+
+
+                <Grid VerticalOptions="CenterAndExpand">
+                    <ScrollView>
+                        <VerticalStackLayout x:Name="FilterWarehouseList" />
+                    </ScrollView>
+                </Grid>
 
                 <Button Text="Зберегти"
                         HorizontalOptions="Fill"

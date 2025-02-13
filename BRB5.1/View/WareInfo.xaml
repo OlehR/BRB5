@@ -107,26 +107,6 @@
                         <Label FontAttributes="Bold" TextColor="Gray" Text="Кількість" Grid.Column="1"/>
                         <Label FontAttributes="Bold" TextColor="Gray" Text="Дата" Grid.Column="2"/>
                     </Grid>
-                <!--<ListView HasUnevenRows="True" ItemsSource="{Binding WP.RestWarehouse}" VerticalOptions="Fill">
-                    <ListView.ItemTemplate>
-                        <DataTemplate xmlns:brb5="clr-namespace:BRB6">
-                            <ViewCell>
-                                <ViewCell.View>
-                                    <Grid>
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="7*"/>
-                                            <ColumnDefinition Width="2*"/>
-                                            <ColumnDefinition Width="3*"/>
-                                        </Grid.ColumnDefinitions>
-                                        <Label Text="{Binding NameWarehouse}" TextColor="Black" Grid.Column="0" LineBreakMode="NoWrap"/>
-                                        <Label Text="{Binding Quantity}" Grid.Column="1" TextColor="Black" FontAttributes="Bold" LineBreakMode="NoWrap"/>
-                                        <Label Text="{Binding Date,StringFormat='{0:dd.MM.yyyy}'}" Grid.Column="2" LineBreakMode="NoWrap"/>
-                                    </Grid>
-                                </ViewCell.View>
-                            </ViewCell>
-                        </DataTemplate>
-                    </ListView.ItemTemplate>
-                </ListView>-->
 
                 <Grid>
                     <ScrollView>

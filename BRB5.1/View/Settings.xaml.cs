@@ -91,7 +91,12 @@ namespace BRB6.View
         public string ApiUrl4 { get { return Config.ApiUrl4; } set { Config.ApiUrl4 = value; OnPropertyChanged(nameof(ApiUrl4)); } }
         public int Compress { get { return Config.Compress; } set { Config.Compress = value; OnPropertyChanged(nameof(Compress)); } }
         public ObservableCollection<Warehouse> Warehouses { get; set; }
+        public ObservableCollection<Warehouse> FilteredWarehouses { get; set; } = new ObservableCollection<Warehouse>();
 
+        bool _IsFilterWHChecked = false;
+        private bool IsFilterWHChecked { get { return _IsFilterWHChecked; } set { _IsFilterWHChecked = value;
+                OnPropertyChanged(nameof(IsFilterWHChecked)); OnPropertyChanged(nameof(Warehouses));  } }
+        private string TextFilterWH { get; set; }
         public Settings()
         {
             InitializeComponent();
@@ -101,18 +106,28 @@ namespace BRB6.View
             c = ConnectorBase.GetInstance();
 
             Warehouses = new ObservableCollection<Warehouse>(ListWarehouse);
-            if (Config.CodesWarehouses != null) {
-                foreach (int i in Config.CodesWarehouses) {
+            if (Config.CodesWarehouses != null)
+            {
+                foreach (int i in Config.CodesWarehouses)
+                {
                     var temp = Warehouses.FirstOrDefault(x => x.CodeWarehouse == i);
                     if (temp != null) temp.IsChecked = true;
-                } }
-            LWH.ItemTapped += (object sender, ItemTappedEventArgs e) => {
-                if (e.Item == null) return;
-                var temp = e.Item as Warehouse;
-                temp.IsChecked = !temp.IsChecked;
-                ((ListView)sender).SelectedItem = null;
-            };
-            if(Config.Company==eCompany.NotDefined) CurrentPage = Children[1];
+                }
+            }
+
+            FilteredWarehouses = new ObservableCollection<Warehouse>(Warehouses);
+
+            FillFilterWarehouseList();
+
+            //LWH.ItemTapped += (object sender, ItemTappedEventArgs e) => {
+            //    if (e.Item == null) return;
+            //    var temp = e.Item as Warehouse;
+            //    temp.IsChecked = !temp.IsChecked;
+            //    ((ListView)sender).SelectedItem = null;
+            //};
+            FillFilterWarehouseList();
+
+            if (Config.Company==eCompany.NotDefined) CurrentPage = Children[1];
             this.BindingContext = this;
             Config.BarCode = BarCode;
         }
@@ -224,6 +239,80 @@ namespace BRB6.View
         {
             var temp = sender as CheckBox;
             Bl.RefreshWarehouses(temp.AutomationId, temp.IsChecked);
+        }
+        private void FillFilterWarehouseList()
+        {
+            FilterWarehouseList.Children.Clear();
+            foreach (var warehouse in Warehouses)
+            {
+                var stackLayout = new StackLayout { Orientation = StackOrientation.Horizontal };
+                var checkBox = new CheckBox();
+                checkBox.SetBinding(CheckBox.IsCheckedProperty, new Binding("IsChecked", source: warehouse));
+                checkBox.AutomationId = warehouse.CodeWarehouse.ToString();
+                checkBox.CheckedChanged += RefreshWarehouses;
+                var label = new Label { Text = warehouse.Name, FontSize = 20, TextColor = Colors.Black };
+
+                stackLayout.Children.Add(checkBox);
+                stackLayout.Children.Add(label);
+
+                var tapGestureRecognizer = new TapGestureRecognizer();
+                tapGestureRecognizer.Tapped += (s, e) =>
+                {
+                    warehouse.IsChecked = !warehouse.IsChecked;
+                    Bl.RefreshWarehouses(warehouse.CodeWarehouse.ToString(), warehouse.IsChecked);
+                };
+                stackLayout.GestureRecognizers.Add(tapGestureRecognizer);
+
+                FilterWarehouseList.Children.Add(stackLayout);
+            }
+        }
+        private void FilterWH(object sender, TextChangedEventArgs e)
+        {
+            string filterText = e.NewTextValue?.ToLower() ?? string.Empty;
+            var filteredWarehouses = Warehouses
+                .Where(wh => wh.Name.ToLower().Contains(filterText))
+                .ToList();
+
+            FilteredWarehouses.Clear();
+            foreach (var warehouse in filteredWarehouses)
+            {
+                FilteredWarehouses.Add(warehouse);
+            }
+
+            FilterWarehouseList.Children.Clear();
+            foreach (var warehouse in FilteredWarehouses)
+            {
+                var stackLayout = new StackLayout { Orientation = StackOrientation.Horizontal };
+                var checkBox = new CheckBox();
+                checkBox.SetBinding(CheckBox.IsCheckedProperty, new Binding("IsChecked", source: warehouse));
+                checkBox.AutomationId = warehouse.CodeWarehouse.ToString();
+                checkBox.CheckedChanged += RefreshWarehouses;
+                var label = new Label { Text = warehouse.Name, FontSize = 20, TextColor = Colors.Black };
+
+                stackLayout.Children.Add(checkBox);
+                stackLayout.Children.Add(label);
+
+                var tapGestureRecognizer = new TapGestureRecognizer();
+                tapGestureRecognizer.Tapped += (s, e) =>
+                {
+                    warehouse.IsChecked = !warehouse.IsChecked;
+                    Bl.RefreshWarehouses(warehouse.CodeWarehouse.ToString(), warehouse.IsChecked);
+                };
+                stackLayout.GestureRecognizers.Add(tapGestureRecognizer);
+
+                FilterWarehouseList.Children.Add(stackLayout);
+            }
+        }
+
+
+        private void CheckFilterWH(object sender, CheckedChangedEventArgs e)
+        {
+            bool isChecked = e.Value;
+            foreach (var warehouse in FilteredWarehouses)
+            {
+                warehouse.IsChecked = isChecked;
+                Bl.RefreshWarehouses(warehouse.CodeWarehouse.ToString(), warehouse.IsChecked);
+            }
         }
 
     }
