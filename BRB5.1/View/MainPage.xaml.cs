@@ -80,7 +80,7 @@ namespace BRB6
 
                 if (cameraStatus != PermissionStatus.Granted)
                 {
-                    await DisplayAlert("Error", "Need camera permission", "OK", FlowDirection.MatchParent);
+                    await DisplayAlert("Помилка", "Потрібен дозвіл камери", "OK", FlowDirection.MatchParent);
                     return;
                 }
             }
@@ -91,7 +91,7 @@ namespace BRB6
 
             if (FileStatus != PermissionStatus.Granted)
             {
-                //await DisplayAlert("Error", "Need StorageWrite permission", "OK", FlowDirection.MatchParent);
+                //await DisplayAlert("Помилка", "Потрібен дозвіл StorageWrite", "OK", FlowDirection.MatchParent);
                 //return;
             }
 
@@ -166,7 +166,7 @@ namespace BRB6
 
             if (await Config.NativeBase.CheckNewVerAsync())
             {
-                var res = await DisplayAlert("Update Available", "A new version is available. Do you want to install it?", "Yes", "No");
+                var res = await DisplayAlert("Оновлення доступне", "Доступна нова версія. Бажаєте встановити?", "Yes", "No");
                 if (res)  Config.NativeBase.InstallAsync();
             }
         }
