@@ -13,7 +13,7 @@
                            HorizontalOptions="FillAndExpand"
                            VerticalOptions="Start" />
 
-                    <StackLayout Spacing="0" Orientation="Horizontal" HorizontalOptions="EndAndExpand" IsVisible="{Binding IsVisTotal}">
+                    <StackLayout Spacing="0" Orientation="Horizontal" HorizontalOptions="EndAndExpand" IsVisible="{Binding Question.IsVisTotal}">
                         <Label Text="{Binding SumValueRating}" FontSize="22" />
                         <Label Text="/" FontSize="22" />
                         <Label Text="{Binding ValueRating}" FontSize="22" />

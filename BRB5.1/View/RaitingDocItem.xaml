@@ -27,7 +27,7 @@
 
                 <Grid x:Name="GridZxing" IsVisible="{Binding IsVisBarCode}" HeightRequest="150"/>
 
-                <ListView x:Name="ListQuestions" 
+                <!--<ListView x:Name="ListQuestions" 
                           HasUnevenRows="True"
                           ItemsSource="{Binding Questions}">
                     <ListView.Header>
@@ -192,8 +192,17 @@
                             </ViewCell>
                         </DataTemplate>
                     </ListView.ItemTemplate>
-                </ListView>
+                </ListView>-->
 
+                <StackLayout Orientation="Horizontal">
+                    <Label Text="Список Запитань"
+                    FontSize="25"
+                    BackgroundColor="#c5cae9"
+                    HorizontalOptions="FillAndExpand" />
+                </StackLayout>
+                <ScrollView>
+                    <StackLayout x:Name="QuestionsStackLayout" />
+                </ScrollView>
             </StackLayout>
 
             <Grid AbsoluteLayout.LayoutBounds="0, 1, 1, .1" AbsoluteLayout.LayoutFlags="All">

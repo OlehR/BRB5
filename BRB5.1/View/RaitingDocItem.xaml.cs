@@ -8,6 +8,7 @@ using BRB5;
 using Grid = Microsoft.Maui.Controls.Grid;
 using StackLayout = Microsoft.Maui.Controls.StackLayout;
 using BarcodeScanning;
+using BRB6.Template;
 
 namespace BRB6
 {
@@ -127,6 +128,7 @@ namespace BRB6
 
             Bl.StartTimerRDI();
             if (IsRefreshList)Bl.LoadDataRDI(cDoc,GetData);
+
             IsRefreshList = true;
             _ = LocationBrb.GetCurrentLocation(Bl.db.GetWarehouse());
         }
@@ -138,6 +140,19 @@ namespace BRB6
             if (IsVisScan) BarcodeScaner.CameraEnabled = false;
         }
 
+        private void PopulateQuestions()
+        {
+            //var tempStack = new StackLayout();  
+            Dispatcher.Dispatch(() =>
+            {
+                foreach (var question in All)
+                {
+                    var questionTemplate = new QuestionItemTemplate(question);
+                    QuestionsStackLayout.Children.Add(questionTemplate);
+                }
+                //QuestionsStackLayout.Children.Add(tempStack);
+            });
+        }
         void ViewDoc()
         {
             Dispatcher.Dispatch(() =>
@@ -167,6 +182,7 @@ namespace BRB6
             IsVisibleBarcodeScanning = All.Any(el => el.Id == -1);
             OnPropertyChanged(nameof(IsVisibleBarcodeScanning));
             ViewDoc();
+            PopulateQuestions();
         }   
 
         private void OnButtonClicked(object sender, System.EventArgs e)
@@ -321,7 +337,7 @@ namespace BRB6
                 Bl.db.ReplaceRaitingDocItem(temp);
                 Questions[Questions.IndexOf(temp)] = temp;
 
-                ListQuestions.ScrollTo(Questions.Last(), ScrollToPosition.Center, false);
+                //ListQuestions.ScrollTo(Questions.Last(), ScrollToPosition.Center, false);
             });
         }
 
@@ -346,7 +362,7 @@ namespace BRB6
                     break;
             }
             ViewDoc();
-            ListQuestions.ScrollTo( Questions.First(), ScrollToPosition.Start, false);
+            //ListQuestions.ScrollTo( Questions.First(), ScrollToPosition.Start, false);
         }
 
         private void CameraView_OnDetectionFinished(object sender, BarcodeScanning.OnDetectionFinishedEventArg e)

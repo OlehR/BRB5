@@ -21,7 +21,8 @@ public partial class QuestionItemTemplate : ContentView
 	{
 		InitializeComponent();
         Question = pQuestion;
-	}
+        BindingContext = Question;
+    }
 
     private void OnButtonClicked(object sender, EventArgs e)
     {
