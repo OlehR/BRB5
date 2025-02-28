@@ -142,23 +142,20 @@ namespace BRB6
 
         private void PopulateQuestions()
         {
-            //var tempStack = new StackLayout();  
-            Dispatcher.Dispatch(() =>
+            foreach (var question in All)
             {
-                foreach (var question in All)
+                var questionTemplate = new QuestionItemTemplate(question);
+                MainThread.BeginInvokeOnMainThread(() =>
                 {
-                    var questionTemplate = new QuestionItemTemplate(question);
                     QuestionsStackLayout.Children.Add(questionTemplate);
-                }
-                //QuestionsStackLayout.Children.Add(tempStack);
-            });
+                });
+            }
         }
         void ViewDoc()
         {
             Dispatcher.Dispatch(() =>
             {
                 ObservableCollection<BRB5.Model.RaitingDocItem> tempQuestions = new();
-
               
                 foreach (var el in All.Where(el => (el.IsHead || el.Parent == 9999999 || // Заголовки Всього
                 Choice == eTypeChoice.All ||                                             // Розгорнути      
@@ -182,7 +179,10 @@ namespace BRB6
             IsVisibleBarcodeScanning = All.Any(el => el.Id == -1);
             OnPropertyChanged(nameof(IsVisibleBarcodeScanning));
             ViewDoc();
-            PopulateQuestions();
+            Task.Run(() =>
+            {
+                PopulateQuestions();
+            });
         }   
 
         private void OnButtonClicked(object sender, System.EventArgs e)

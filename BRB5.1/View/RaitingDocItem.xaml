@@ -200,9 +200,12 @@
                     BackgroundColor="#c5cae9"
                     HorizontalOptions="FillAndExpand" />
                 </StackLayout>
-                <ScrollView>
-                    <StackLayout x:Name="QuestionsStackLayout" />
-                </ScrollView>
+
+                <Grid VerticalOptions="CenterAndExpand">
+                    <ScrollView>
+                        <StackLayout x:Name="QuestionsStackLayout"/>
+                    </ScrollView>
+                </Grid>
             </StackLayout>
 
             <Grid AbsoluteLayout.LayoutBounds="0, 1, 1, .1" AbsoluteLayout.LayoutFlags="All">
