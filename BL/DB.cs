@@ -556,18 +556,15 @@ and bc.BarCode=?
 
                             foreach (var el in rr)
                             {
-                                if (pParseBarCode.BarCode.Substring(0, el.BarCode.Length).Equals(el.BarCode))
+                                if (pParseBarCode.BarCode[..el.BarCode.Length].Equals(el.BarCode))
                                 {
                                     pParseBarCode.CodeWares = el.CodeWares;
-                                    decimal Quantity = 0m;
-                                    Decimal.TryParse(pParseBarCode.BarCode.Substring(8, 12), out Quantity);
-                                    pParseBarCode.Quantity = Quantity;
-                                    res = GetScanData(pDocId, pParseBarCode);//CodeWares, pIsOnlyBarCode,false);                                                                  
+                                    pParseBarCode.Quantity = pParseBarCode.BarCode.Substring(8, 12).ToDecimal();
+                                    res = GetScanData(pDocId, pParseBarCode);
                                 }
                             }
                         }
                         if (res != null) res.ParseBarCode = pParseBarCode;
-                        // return res;
                     }
                 }
                 // Пошук по коду
@@ -581,14 +578,9 @@ and bc.BarCode=?
                                 join UNITDIMENSION ud on w.CODEUNIT=ud.CODEUNIT 
                                 where " + Find;
                     var r = db.Query<DocWaresEx>(sql);
-                    if (r != null && r.Count() == 1)
-                    {
-                        // @TypeDoc as TypeDoc, @NumberDoc as NumberDoc,
+                    if (r != null && r.Count() == 1)                    
                         res = r.First();
-                    }
-
                 }
-
             }
             catch (Exception e)
             {
@@ -611,7 +603,6 @@ and bc.BarCode=?
                     res.QuantityOrder = el.QuantityOrder;
                     res.IsRecord = el.IsRecord;
                 }
-
             }
             //Log.d(TAG, "Found in DB  >>" + (model == null ? "Not Found" : model.NameWares));
             if (res != null)
