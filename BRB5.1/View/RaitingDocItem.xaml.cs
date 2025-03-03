@@ -144,11 +144,16 @@ namespace BRB6
         {
             foreach (var question in All)
             {
-                var questionTemplate = new QuestionItemTemplate(question);
-                MainThread.BeginInvokeOnMainThread(() =>
+                if (question.IsHead)
                 {
-                    QuestionsStackLayout.Children.Add(questionTemplate);
-                });
+                    var questionTemplate = new QuestionHeadTemplate(question);
+                    MainThread.BeginInvokeOnMainThread(() => { QuestionsStackLayout.Children.Add(questionTemplate); });
+                }
+                else
+                {
+                    var questionTemplate = new QuestionItemTemplate(question);
+                    MainThread.BeginInvokeOnMainThread(() => { QuestionsStackLayout.Children.Add(questionTemplate); });
+                }
             }
         }
         void ViewDoc()

@@ -5,7 +5,7 @@
 
     <ContentView.Content>
         <Grid BackgroundColor="#e6e6e6">
-            <StackLayout BackgroundColor="#e6e6e6" IsVisible="{Binding IsItem}">
+            <StackLayout BackgroundColor="#e6e6e6">
                 <StackLayout Orientation="Horizontal">
                     <Label Text="{Binding Text}" 
                            FontSize="22" 
