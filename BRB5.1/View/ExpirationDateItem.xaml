@@ -14,8 +14,10 @@
     </ContentPage.Resources>
     <NavigationPage.TitleView>
         <StackLayout Spacing="10" Orientation="Horizontal">
-            <Label Text="F2- Зберегти" HorizontalOptions="End"
-               VerticalOptions="Center"  >
+            <Label Text="F2- Зберегти" x:Name="TopSave"
+                   HorizontalOptions="End"
+                   VerticalOptions="Center"  
+                   IsVisible="True">
                 <Label.GestureRecognizers>
                     <TapGestureRecognizer Tapped="F2Save" />
                 </Label.GestureRecognizers>
