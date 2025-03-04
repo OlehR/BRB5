@@ -2,14 +2,14 @@ using BL;
 using BRB5;
 using BRB5.Model;
 using BRB6.View;
+//using Intents;
 
 namespace BRB6.Template;
 
 public partial class ExpirationDateElementTemplate : ContentView
 {
     DB db = DB.GetDB();
-
-    public event Action RequestReturnToMainContent;
+    public event Action<ExpirationDateElementVM> RequestReturnToMainContent;
     public ExpirationDateElementVM DM { get; set; } = new();
     private ExpirationDateElementVM _DM;
     public ExpirationDateElementTemplate()
@@ -30,7 +30,6 @@ public partial class ExpirationDateElementTemplate : ContentView
     public void Set(ExpirationDateElementVM pED)
     {
         _DM = pED;
-
         DM = (ExpirationDateElementVM)pED.Clone();
         DM.QuantityInput = DM.QuantityInput ?? DM.Quantity;
 
@@ -58,13 +57,16 @@ public partial class ExpirationDateElementTemplate : ContentView
 
     private void OnAdd(object sender, EventArgs e)
     {
-        if (!String.IsNullOrEmpty(DM.DocId)&& !String.IsNullOrEmpty(DM.NumberDoc)) {
+        if (!String.IsNullOrEmpty(DM.DocId) && !String.IsNullOrEmpty(DM.NumberDoc))
+        {
             db.ReplaceDocWaresExpiration(DM.GetDocWaresExpiration());
-
-            _DM.ExpirationDateInput = DM.ExpirationDateInput;
-            _DM.QuantityInput = DM.QuantityInput;
+            if (_DM.DocId?.Equals(DM.DocId) == true)
+            {
+                _DM.ExpirationDateInput = DM.ExpirationDateInput;
+                _DM.QuantityInput = DM.QuantityInput;
+            }
         }
-        RequestReturnToMainContent?.Invoke();
+        RequestReturnToMainContent?.Invoke(DM);
     }
 
     private void OnNotFound(object sender, EventArgs e)
@@ -74,14 +76,13 @@ public partial class ExpirationDateElementTemplate : ContentView
 
         _DM.ExpirationDateInput = DM.ExpirationDateInput;
         _DM.QuantityInput = DM.QuantityInput;
-
-        RequestReturnToMainContent?.Invoke();
+        RequestReturnToMainContent?.Invoke(_DM);
     }
 
     private void OnAddNewItem(object sender, EventArgs e)
-    {        
+    { 
         DM.Quantity = 0;
-        DM.DocId = "zz" + DateTime.Now.ToString("yyyyMMddHHmmssffff") ;        
+        DM.DocId = "zz" + DateTime.Now.ToString("yyyyMMddHHmmssffff") ;
         DM.ExpirationDateInput = DateTime.Now.Date;
         DM.QuantityInput = 0;
     }
@@ -98,7 +99,7 @@ public partial class ExpirationDateElementTemplate : ContentView
 
     private void Back(object sender, EventArgs e)
     {
-        RequestReturnToMainContent?.Invoke();
+        RequestReturnToMainContent?.Invoke(_DM);
     }
 
     protected void NokeyBoard()

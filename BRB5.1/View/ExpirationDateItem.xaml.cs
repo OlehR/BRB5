@@ -5,6 +5,8 @@ using CommunityToolkit.Maui.Alerts;
 using System.Globalization;
 using BRB6.Template;
 using CommunityToolkit.Maui.Core;
+using Microsoft.Maui.Controls;
+using Microsoft.Maui.Controls.Internals;
 
 #if ANDROID
 using Android.Views;
@@ -148,19 +150,11 @@ namespace BRB6.View
             //int i = 0;
             foreach (var item in db.GetDataExpiration(NumberDoc))
             {
+                if(string.IsNullOrEmpty( item.DocId))
+                    item.DocId = "zz" + DateTime.Now.ToString("yyyyMMddHHmmssffff");
                 //if(item.ExpirationDate==default) continue;
                 //if (i++ > 5) break;
-
-                var wareItemTemplate = new WareItemTemplate();
-
-                //item.ExpirationDateInput = item.ExpirationDate;
-                wareItemTemplate.BindData(item);
-
-                // Додайте подію натискання
-                var tapGestureRecognizer = new TapGestureRecognizer();
-                tapGestureRecognizer.Tapped += OpenElement;
-                wareItemTemplate.GestureRecognizers.Add(tapGestureRecognizer);
-
+                var wareItemTemplate = CreateWareItemTemplate(item);                
                 // Додайте шаблон до StackLayout
                 MainThread.BeginInvokeOnMainThread(() =>
                 {
@@ -205,30 +199,59 @@ namespace BRB6.View
                 HandleSelectedWare(vItem);
             });
         }
-        private void BackToMainContent()
+        private void BackToMainContent(ExpirationDateElementVM pEDE = null)
         {
-            if (SelectedWare != null)
+            if (pEDE != null)
             {
                 var existingItem = WareItemsContainer.Children
                     .OfType<Microsoft.Maui.Controls.View>()
                     .Select(view => view.BindingContext as ExpirationDateElementVM)
-                    .FirstOrDefault(ware => ware != null && ware.CodeWares == SelectedWare.CodeWares && SelectedWare?.DocId.Equals(ware.DocId)==true);
+                    .FirstOrDefault(ware => ware != null && ware.CodeWares == pEDE.CodeWares && pEDE?.DocId.Equals(ware?.DocId)==true);
 
                 if (existingItem == null)
                 {
-                    var wareItemTemplate = new WareItemTemplate();
-                    var tapGestureRecognizer = new TapGestureRecognizer();
-                    tapGestureRecognizer.Tapped += OpenElement;
-                    wareItemTemplate.GestureRecognizers.Add(tapGestureRecognizer);
-                    wareItemTemplate.BindData(SelectedWare);
-                    WareItemsContainer.Children.Add(wareItemTemplate);
+                    Insert(pEDE);
+                    //WareItemsContainer.Children.Add(CreateWareItemTemplate(pEDE));
                 }
             }
             MainContent.IsVisible = true; 
             TopSave.IsVisible = true;
             AlternateContent.IsVisible = false;
-            SelectedWare = null;
+            pEDE = null;
         }
+
+        WareItemTemplate CreateWareItemTemplate(ExpirationDateElementVM pE)
+        {
+            var wareItemTemplate = new WareItemTemplate();
+            var tapGestureRecognizer = new TapGestureRecognizer();
+            tapGestureRecognizer.Tapped += OpenElement;
+            wareItemTemplate.GestureRecognizers.Add(tapGestureRecognizer);
+            wareItemTemplate.BindData(pE);            
+            return wareItemTemplate;
+        }
+        /// <summary>
+        /// вставляє елемент після першого найденого аналогічного, або вкінці якщо не знайдено
+        /// </summary>
+        /// <param name="pEDE"></param>
+        void Insert(ExpirationDateElementVM pEDE)
+        {
+            int ind = -1;
+            foreach (var el in WareItemsContainer.Children.OfType<Microsoft.Maui.Controls.View>())
+            {
+                var d = el.BindingContext as ExpirationDateElementVM;
+                if (d.CodeWares == pEDE.CodeWares)
+                {
+                    ind = WareItemsContainer.Children.IndexOf(el);
+                    break;
+                }
+            }
+            var WIT = CreateWareItemTemplate(pEDE);
+            if (ind >= 0)
+                WareItemsContainer.Children.Insert(ind+1, WIT);
+            else
+                WareItemsContainer.Children.Add(WIT);
+        }
+        
         private void HandleSelectedWare(ExpirationDateElementVM selectedWare)
         {
             // Hide MainContent and show AlternateContent
