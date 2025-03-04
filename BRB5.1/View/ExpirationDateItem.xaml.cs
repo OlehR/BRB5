@@ -1,8 +1,6 @@
 ﻿using BRB5.Model;
-using System.Collections.ObjectModel;
 using BL.Connector;
 using BL;
-using BRB5;
 using CommunityToolkit.Maui.Alerts;
 using System.Globalization;
 using BRB6.Template;
@@ -94,7 +92,7 @@ namespace BRB6.View
                     r = WareItemsContainer.Children
                         .OfType<Microsoft.Maui.Controls.View>()
                         .Select(view => view.BindingContext as ExpirationDateElementVM)
-                        .FirstOrDefault(ware => ware != null && ware.CodeWares == r.CodeWares) ?? r;
+                        .FirstOrDefault(ware => ware != null && ware.CodeWares == r.CodeWares && r.DocId.Equals(ware.DocId) ) ?? r;
 
                     SelectedWare = r;
                     ScrollToSelectedWare();
@@ -135,10 +133,9 @@ namespace BRB6.View
             foreach (var child in WareItemsContainer.Children)
             {
                 if (child is Microsoft.Maui.Controls.View view && view.BindingContext is ExpirationDateElementVM itemModel &&
-                    itemModel.CodeWares == SelectedWare.CodeWares)
+                    itemModel.CodeWares == SelectedWare.CodeWares && itemModel?.DocId.Equals(SelectedWare.DocId)==true  )
                 {
                     var childBounds = view.Bounds;
-
                     // Ensure you're calling ScrollToAsync on the correct ScrollView instance
                     await ScrollView.ScrollToAsync(0, childBounds.Y, false);
                     break;
@@ -169,8 +166,7 @@ namespace BRB6.View
                 {
                     WareItemsContainer.Children.Add(wareItemTemplate);
                 });
-            }
-            
+            }            
         }
 
         private void F2Save(object sender, EventArgs e)
@@ -216,7 +212,7 @@ namespace BRB6.View
                 var existingItem = WareItemsContainer.Children
                     .OfType<Microsoft.Maui.Controls.View>()
                     .Select(view => view.BindingContext as ExpirationDateElementVM)
-                    .FirstOrDefault(ware => ware != null && ware.CodeWares == SelectedWare.CodeWares);
+                    .FirstOrDefault(ware => ware != null && ware.CodeWares == SelectedWare.CodeWares && SelectedWare?.DocId.Equals(ware.DocId)==true);
 
                 if (existingItem == null)
                 {

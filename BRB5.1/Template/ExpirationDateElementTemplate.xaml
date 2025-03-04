@@ -44,7 +44,7 @@
                 <ColumnDefinition Width="1*"/>
                 <ColumnDefinition Width="1*"/>
             </Grid.ColumnDefinitions>
-            <ImageButton Source="add.png" Aspect="AspectFit" HeightRequest="80" Grid.Column="1" Clicked="OnNotFound"/>
+            <ImageButton Source="add.png" Aspect="AspectFit" HeightRequest="80" Grid.Column="1" Clicked="OnAddNewItem"/>
             <ImageButton Source="minus.png" Aspect="AspectFit" HeightRequest="80" Grid.Column="2" Clicked="OnNotFound"/>
             <VerticalStackLayout>
                 <Grid>

@@ -78,6 +78,14 @@ public partial class ExpirationDateElementTemplate : ContentView
         RequestReturnToMainContent?.Invoke();
     }
 
+    private void OnAddNewItem(object sender, EventArgs e)
+    {        
+        DM.Quantity = 0;
+        DM.DocId = "zz" + DateTime.Now.ToString("yyyyMMddHHmmssffff") ;        
+        DM.ExpirationDateInput = DateTime.Now.Date;
+        DM.QuantityInput = 0;
+    }
+
     private void QuantityFocused(object sender, FocusEventArgs e)
     {
         Dispatcher.Dispatch(() =>
