@@ -19,7 +19,7 @@
     </NavigationPage.TitleView>
     <ContentPage.Content>
         <StackLayout>            
-            <ListView ItemsSource="{Binding MyDocsR}" x:Name="ListDocs" VerticalOptions="FillAndExpand"
+            <!--<ListView ItemsSource="{Binding MyDocsR}" x:Name="ListDocs" VerticalOptions="FillAndExpand"
                       SeparatorVisibility="None"   
                       ItemTapped="OpenDoc" 
                       HasUnevenRows="True" >
@@ -27,31 +27,34 @@
                     <DataTemplate  x:DataType="Model:DocExpiration">
                         <ViewCell>
                             <ViewCell.View>
-                                <Grid Margin="5" Padding="5"  BackgroundColor="#E0E0E0">
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="3*" />
-                                        <ColumnDefinition Width="*" />
-                                    </Grid.ColumnDefinitions>
+                                <StackLayout Orientation="Horizontal" Margin="5" Padding="5"  BackgroundColor="#E0E0E0">
                                     <Label Text="{Binding Description}"
                                        TextColor="{AppThemeBinding Light='#000000', Dark='#FFFFFF'}"
-                                        FontSize="Large"
+                                        FontSize="Large" HorizontalOptions="FillAndExpand" 
                                         VerticalOptions="CenterAndExpand"/>
-                                    <HorizontalStackLayout Spacing="1" Grid.Column="1">
+                                    <HorizontalStackLayout Spacing="1" 
+                                                           VerticalOptions="CenterAndExpand"
+                                                           HorizontalOptions="End" >
                                         <Label Text="{Binding CountInput}"/>
                                         <Label Text="/"/>
                                         <Label Text="{Binding Count}"/>
                                     </HorizontalStackLayout>
-                                </Grid>
+                                </StackLayout>
                             </ViewCell.View>
                         </ViewCell>
                     </DataTemplate>
                 </ListView.ItemTemplate>
-            </ListView>
+            </ListView>-->
 
+            <Grid VerticalOptions="StartAndExpand">
+                <ScrollView>
+                    <StackLayout x:Name="DocsStackLayout" Spacing="10" />
+                </ScrollView>
+            </Grid>
 
             <ProgressBar ScaleY="2"
              Progress="{Binding PB}"
-             VerticalOptions="EndAndExpand"
+             VerticalOptions="End"
              ProgressColor="Black" />
         </StackLayout>
     </ContentPage.Content>

@@ -9,6 +9,8 @@ using BarcodeScanning;
 using Newtonsoft.Json;
 using BRB5.Model.DB;
 using Utils;
+using Microsoft.Maui.Controls;
+
 
 #if ANDROID
 using Android.Views;
@@ -32,14 +34,15 @@ namespace BRB6.View
         public bool IsSoftKeyboard { get { return Config.IsSoftKeyboard; } }
         public ExpirationDate()
         {
+            InitializeComponent();
             Config.OnProgress += Progress;
             NokeyBoard();
             //TypeDoc = pTypeDoc;
             BindingContext = this;
+            var docs = db.GetDocExpiration();
+            _MyDocsR = new ObservableCollection<DocExpiration>(docs.Concat(docs).Concat(docs));
 
-            _MyDocsR = new ObservableCollection<DocExpiration>(db.GetDocExpiration());
-            
-            InitializeComponent();
+            PopulateDocs();
             _ = Task.Run(async () =>
             {
                 Config.OnProgress.Invoke(0.1);
@@ -81,13 +84,55 @@ namespace BRB6.View
             }
             Config.OnProgress -= Progress;
         }
-        private async void OpenDoc(object sender, ItemTappedEventArgs e)
+        private async void OpenDoc(DocExpiration doc)
         {
-            if (e.Item == null) return;
-            var vDoc = e.Item as DocExpiration;
-            await Navigation.PushAsync(new ExpiretionDateItem(vDoc.NumberDoc));
-        }             
-       
+            await Navigation.PushAsync(new ExpiretionDateItem(doc.NumberDoc));
+        }
+
+        private void PopulateDocs()
+        {
+            if (MyDocsR != null)
+            {
+                foreach (var doc in MyDocsR)
+                {
+                    var stackLayout = new Microsoft.Maui.Controls.StackLayout
+                    {
+                        Orientation = StackOrientation.Horizontal,
+                        Padding = new Thickness(5),
+                        BackgroundColor = Color.FromArgb("#E0E0E0")
+                    };
+
+                    var descriptionLabel = new Label
+                    {
+                        Text = doc.Description,
+                        TextColor = Application.Current.RequestedTheme == AppTheme.Light ? Colors.Black : Colors.White,
+                        FontSize = 20,
+                        HorizontalOptions = LayoutOptions.FillAndExpand,
+                        VerticalOptions = LayoutOptions.CenterAndExpand
+                    };
+                    stackLayout.Children.Add(descriptionLabel);
+
+                    var countStack = new HorizontalStackLayout
+                    {
+                        Spacing = 1,
+                        VerticalOptions = LayoutOptions.CenterAndExpand,
+                        HorizontalOptions = LayoutOptions.End
+                    };
+                    countStack.Children.Add(new Label { Text = doc.CountInput.ToString() });
+                    countStack.Children.Add(new Label { Text = "/" });
+                    countStack.Children.Add(new Label { Text = doc.Count.ToString() });
+                    stackLayout.Children.Add(countStack);
+
+                    var tapGestureRecognizer = new TapGestureRecognizer();
+                    tapGestureRecognizer.Tapped += (s, e) => OpenDoc(doc);
+                    stackLayout.GestureRecognizers.Add(tapGestureRecognizer);
+
+
+                    DocsStackLayout.Children.Add(stackLayout);
+                }
+            }
+        }
+
         private void F2Save(object sender, TappedEventArgs e)
         {
 
