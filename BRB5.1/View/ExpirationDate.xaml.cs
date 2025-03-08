@@ -39,8 +39,7 @@ namespace BRB6.View
             NokeyBoard();
             //TypeDoc = pTypeDoc;
             BindingContext = this;
-            var docs = db.GetDocExpiration();
-            _MyDocsR = new ObservableCollection<DocExpiration>(docs.Concat(docs).Concat(docs));
+            _MyDocsR = new ObservableCollection<DocExpiration>(db.GetDocExpiration());
 
             PopulateDocs();
             _ = Task.Run(async () =>
