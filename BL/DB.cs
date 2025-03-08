@@ -852,6 +852,26 @@ and bc.BarCode=?
         {
             return db.InsertOrReplace(pDWS) >= 0;
         }
+        
+        public IEnumerable<DocExpiration> GetDocExpiration()
+        {
+            string sql = @"select gw.CodeGroup,gw.NameGroup,count(*) as Count,sum(d.CountInput) as CountInput from
+(select DES.DocId,DES.CodeWares, case when de.DocId is  null then 0 else 1 end as CountInput
+ from DocWaresExpirationSample DES 
+   left join DocWaresExpiration DE on DES.CodeWares=DE.CodeWares and DE.DocId=DES.DocId and DATE(DE.DateDoc) = DATE('now')                             
+                                                               
+                        union all 
+        select  DES.DocId,DES.CodeWares,1 as nn
+                                from DocWaresExpiration DE
+                                left join DocWaresExpirationSample DES on DES.CodeWares=DE.CodeWares and DE.DocId=DES.DocId                                                               
+                                where DATE(DE.DateDoc) = DATE('now')
+                                ) d
+join Wares w on d.CodeWares=w.CodeWares
+join GroupWares gw on w.codeGroup=gw.CodeGroup
+group by gw.CodeGroup,gw.NameGroup
+order by gw.NameGroup";
+            return db.Query<DocExpiration>(sql);
+        }
 
         public ExpirationDateElementVM GetScanDataExpiration(string pNumberDoc, ParseBarCode pParseBarCode)
         {
@@ -911,7 +931,7 @@ and bc.BarCode=?
                                 join ADDITIONUNIT au on w.CODEWARES=au.CODEWARES and au.CODEUNIT=w.CODEUNIT 
                                 join UNITDIMENSION ud on w.CODEUNIT=ud.CODEUNIT 
                                 join DocWaresExpirationSample DES on w.CodeWares=DES.CodeWares
-                                left join DocWaresExpiration DE on DES.CodeWares=DE.CodeWares and DE.DocId=DES.DocId                                
+                                left join DocWaresExpiration DE on DES.CodeWares=DE.CodeWares and DE.DocId=DES.DocId and DATE(DE.DateDoc) = DATE('now')                              
                                 where DES.NumberDoc = {pNumberDoc} and " + Find + @"
                             order by case when DE.CodeWares is null then 1 else 0 end,  des.ExpirationDate";
                     var r = db.Query<ExpirationDateElementVM>(sql);
@@ -945,7 +965,7 @@ and bc.BarCode=?
             }
             return res;
         }
-
+        
         public IEnumerable<ExpirationDateElementVM> GetDataExpiration(string pNumberDoc)
         {
             string sql = @"select DES.OrderDoc, DES.NumberDoc,DES.DocId, w.CodeWares,w.NameWares as NameWares, au.Coefficient as Coefficient,w.CodeUnit as CodeUnit, ud.ABRUNIT as NameUnit,

@@ -28,7 +28,7 @@ namespace BRB5.Model
         public int CodeUnit { get; set; }
         public string NameUnit { get; set; }
 
-        public int[] DaysRight { get { return DaysLeft?.Split(';')?.Select(e => e.ToInt()).ToArray() ?? new int[0]; } }
+        public int[] DaysRight { get { return DaysLeft?.Split(';')?.Select(e => (int)e.ToDecimal()).ToArray() ?? new int[0]; } }
 
         public Color GetColor { get { return GetPercentColor?.ColorNormal??Color.LightGray ;  } }
         public PercentColor GetPercentColor { get { int i = GetColourIndex(); 
