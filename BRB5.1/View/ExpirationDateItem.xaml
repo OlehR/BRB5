@@ -12,7 +12,7 @@
             </Style>
         </ResourceDictionary>
     </ContentPage.Resources>
-    <NavigationPage.TitleView>
+    <!--<NavigationPage.TitleView>
         <StackLayout Spacing="10" Orientation="Horizontal">
             <Label Text="F2- Зберегти" x:Name="TopSave"
                    HorizontalOptions="End"
@@ -23,7 +23,7 @@
                 </Label.GestureRecognizers>
             </Label>
         </StackLayout>
-    </NavigationPage.TitleView>
+    </NavigationPage.TitleView>-->
     <ContentPage.Content>
         <Grid>
 

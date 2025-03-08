@@ -165,16 +165,16 @@ namespace BRB6.View
 
         private void F2Save(object sender, EventArgs e)
         {
-            if (MainContent.IsVisible)
-            {
-                Task.Run(async () =>
-                {
-                    var D = db.GetDocWaresExpiration(NumberDoc);
-                    var r = await c.SaveExpirationDate(new BRB5.Model.DB.DocWaresExpirationSave() { CodeWarehouse = Config.CodeWarehouse, NumberDoc = NumberDoc, Wares = D });
-                    var toast = Toast.Make("Збереження: " + r.TextError, ToastDuration.Long, 14);
-                    MainThread.BeginInvokeOnMainThread(async () => await toast.Show());
-                });
-            }
+            //if (MainContent.IsVisible)
+            //{
+            //    Task.Run(async () =>
+            //    {
+            //        var D = db.GetDocWaresExpiration(NumberDoc);
+            //        var r = await c.SaveExpirationDate(new BRB5.Model.DB.DocWaresExpirationSave() { CodeWarehouse = Config.CodeWarehouse, NumberDoc = NumberDoc, Wares = D });
+            //        var toast = Toast.Make("Збереження: " + r.TextError, ToastDuration.Long, 14);
+            //        MainThread.BeginInvokeOnMainThread(async () => await toast.Show());
+            //    });
+            //}
         }
 
         protected override bool OnBackButtonPressed()
@@ -215,7 +215,7 @@ namespace BRB6.View
                 }
             }
             MainContent.IsVisible = true; 
-            TopSave.IsVisible = true;
+            //TopSave.IsVisible = true;
             AlternateContent.IsVisible = false;
             pEDE = null;
         }
@@ -256,7 +256,7 @@ namespace BRB6.View
         {
             // Hide MainContent and show AlternateContent
             MainContent.IsVisible = false;
-            TopSave.IsVisible = false;
+            //TopSave.IsVisible = false;
             AlternateContent.IsVisible = true;
             (AlternateContent.Content as ExpirationDateElementTemplate).Set(selectedWare);
         }
