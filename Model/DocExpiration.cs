@@ -8,7 +8,7 @@ namespace BRB5.Model
     public class DocExpiration
     {    
         public string NumberDoc { get; set; }        
-        public int Description { get; set; }
+        public string Description { get; set; }
         public int Count { get; set; }
         public int CountInput { get; set; }
     }
