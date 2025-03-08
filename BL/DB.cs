@@ -855,7 +855,7 @@ and bc.BarCode=?
         
         public IEnumerable<DocExpiration> GetDocExpiration()
         {
-            string sql = @"select gw.CodeGroup,gw.NameGroup,count(*) as Count,sum(d.CountInput) as CountInput from
+            string sql = @"select gw.CodeGroup as NumberDoc,gw.NameGroup as Description,count(*) as Count,sum(d.CountInput) as CountInput from
 (select DES.DocId,DES.CodeWares, case when de.DocId is  null then 0 else 1 end as CountInput
  from DocWaresExpirationSample DES 
    left join DocWaresExpiration DE on DES.CodeWares=DE.CodeWares and DE.DocId=DES.DocId and DATE(DE.DateDoc) = DATE('now')                             
