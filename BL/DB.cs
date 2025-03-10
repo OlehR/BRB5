@@ -951,10 +951,12 @@ order by gw.NameGroup";
                                 join UNITDIMENSION ud on w.CODEUNIT=ud.CODEUNIT                                                               
                                 where " + Find;
                         r = db.Query<ExpirationDateElementVM>(sql);
+                        
                         if (r?.Count() >= 1)
                         {
                             // @TypeDoc as TypeDoc, @NumberDoc as NumberDoc,
                             res = r.First();
+                            res.ExpirationDate= new DateTime(DateTime.Now.Date.Year, DateTime.Now.Date.Month, 1);
                         }
                     }
                 }

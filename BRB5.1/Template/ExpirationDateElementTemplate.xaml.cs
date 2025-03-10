@@ -83,7 +83,7 @@ public partial class ExpirationDateElementTemplate : ContentView
     { 
         DM.Quantity = 0;
         DM.DocId = "zz" + DateTime.Now.ToString("yyyyMMddHHmmssffff") ;
-        DM.ExpirationDateInput = DateTime.Now.Date;
+        DM.ExpirationDateInput = new DateTime( DateTime.Now.Date.Year, DateTime.Now.Date.Month, 1);
         //DM.ProductionDateInput = DM.ExpirationDate.AddDays(-(double)DM.Expiration);
         DM.QuantityInput = 0;
     }
