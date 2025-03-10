@@ -858,13 +858,12 @@ and bc.BarCode=?
             string sql = @"select gw.CodeGroup as NumberDoc,gw.NameGroup as Description,count(*) as Count,sum(d.CountInput) as CountInput from
 (select DES.DocId,DES.CodeWares, case when de.DocId is  null then 0 else 1 end as CountInput
  from DocWaresExpirationSample DES 
-   left join DocWaresExpiration DE on DES.CodeWares=DE.CodeWares and DE.DocId=DES.DocId and DATE(DE.DateDoc) = DATE('now')                             
-                                                               
+   left join DocWaresExpiration DE on DES.CodeWares=DE.CodeWares and DE.DocId=DES.DocId and DATE(DE.DateDoc) = DATE('now')                                                               
                         union all 
-        select  DES.DocId,DES.CodeWares,1 as nn
+        select  DE.DocId,DE.CodeWares,1 as nn
                                 from DocWaresExpiration DE
                                 left join DocWaresExpirationSample DES on DES.CodeWares=DE.CodeWares and DE.DocId=DES.DocId                                                               
-                                where DATE(DE.DateDoc) = DATE('now')
+                                where DATE(DE.DateDoc) = DATE('now') and DES.CodeWares is null
                                 ) d
 join Wares w on d.CodeWares=w.CodeWares
 join GroupWares gw on w.codeGroup=gw.CodeGroup
@@ -932,7 +931,7 @@ order by gw.NameGroup";
                                 join UNITDIMENSION ud on w.CODEUNIT=ud.CODEUNIT 
                                 join DocWaresExpirationSample DES on w.CodeWares=DES.CodeWares
                                 left join DocWaresExpiration DE on DES.CodeWares=DE.CodeWares and DE.DocId=DES.DocId and DATE(DE.DateDoc) = DATE('now')                              
-                                where DES.NumberDoc = {pNumberDoc} and " + Find + @"
+                                where {Find}
                             order by case when DE.CodeWares is null then 1 else 0 end,  des.ExpirationDate";
                     var r = db.Query<ExpirationDateElementVM>(sql);
                     if (r?.Count() >= 1)
