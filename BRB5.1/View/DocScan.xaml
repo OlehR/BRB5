@@ -15,6 +15,7 @@
                     <Grid.RowDefinitions>
                         <RowDefinition Height="auto" />
                         <RowDefinition Height="2*" />
+                        <RowDefinition Height="2*" />
                         <RowDefinition Height="5*" />
                     </Grid.RowDefinitions>
 
@@ -82,7 +83,14 @@
                         </Frame>
                     </Grid>
 
-                    <ListView Grid.Row="2" ItemsSource="{Binding ListWares}" x:Name="ListViewWares" SeparatorVisibility="None" HasUnevenRows="True" >
+                    <Grid x:Name="ReasonOptions" Grid.Row="2" IsVisible="False">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                    </Grid>
+                    
+                    <ListView Grid.Row="3" ItemsSource="{Binding ListWares}" x:Name="ListViewWares" SeparatorVisibility="None" HasUnevenRows="True" >
                         <ListView.Header>
                             <Grid RowSpacing="1"
                                   ColumnSpacing="1"

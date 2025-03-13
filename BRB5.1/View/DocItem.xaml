@@ -33,26 +33,28 @@
                           Padding="1"
                           BackgroundColor="#adaea7">
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="1*" />
-                            <ColumnDefinition Width="1*" />
+                            <ColumnDefinition Width="3*" />
+                            <ColumnDefinition Width="2*" />
+                            <ColumnDefinition Width="2*" />
+                            <ColumnDefinition Width="3*" />
                         </Grid.ColumnDefinitions>
-                        <Grid.RowDefinitions>
-                            <RowDefinition />
-                            <RowDefinition />
-                        </Grid.RowDefinitions>
 
-                        <Label Text="Назва"
+                        <!--<Label Text="Назва"
                                Grid.ColumnSpan="2"
-                               BackgroundColor="White" />
+                               BackgroundColor="White" />-->
 
                         <Label Text="Код"
-                               Grid.Row="1"
                                Grid.Column="0"
                                BackgroundColor="White" />
 
-                        <Label Text="Факт"
-                               Grid.Row="1"
+                        <Label Text="План"
                                Grid.Column="1"
+                               BackgroundColor="White" />
+                        <Label Text="Факт"
+                               Grid.Column="2"
+                               BackgroundColor="White" />
+                        <Label Text="Проблемні"
+                               Grid.Column="3"
                                BackgroundColor="White" />
 
                     </Grid>
@@ -65,8 +67,10 @@
               Padding="1"
               BackgroundColor="#adaea7">
                                 <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="1*" />
-                                    <ColumnDefinition Width="1*" />
+                                    <ColumnDefinition Width="3*" />
+                                    <ColumnDefinition Width="2*" />
+                                    <ColumnDefinition Width="2*" />
+                                    <ColumnDefinition Width="3*" />
                                 </Grid.ColumnDefinitions>
                                 <Grid.RowDefinitions>
                                     <RowDefinition />
@@ -74,7 +78,7 @@
                                 </Grid.RowDefinitions>
 
                                 <Label Text="{Binding NameWares}"
-                   Grid.ColumnSpan="2"
+                   Grid.ColumnSpan="4"
                    BackgroundColor="{Binding GetBackgroundColor}" />
 
                                 <Label Text="{Binding CodeWares}"
@@ -82,9 +86,19 @@
                    Grid.Column="0"
                    BackgroundColor="{Binding GetBackgroundColor}" />
 
-                                <Label Text="{Binding InputQuantity}"
+                                <Label Text="{Binding QuantityOrder}"
                    Grid.Row="1"
                    Grid.Column="1"
+                   BackgroundColor="{Binding GetBackgroundColor}" />
+
+                                <Label Text="{Binding InputQuantity}"
+                   Grid.Row="1"
+                   Grid.Column="2"
+                   BackgroundColor="{Binding GetBackgroundColor}" />
+
+                                <Label Text="{Binding QuantityReason}"
+                   Grid.Row="1"
+                   Grid.Column="3"
                    BackgroundColor="{Binding GetBackgroundColor}" />
 
                             </Grid>
