@@ -17,9 +17,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using Utils;
 using static System.Net.Mime.MediaTypeNames;
-
-
-
 public static class ProtoDB
 {
  
@@ -1057,6 +1054,11 @@ DE.ExpirationDateInput, DE.QuantityInput
         {
             string sql = "select * from DocWaresExpiration where DATE(DateDoc) = DATE('now') --and NumberDoc=?";
             return db.Query<DocWaresExpiration>(sql);//, pNumberDoc);
+        }
+        public IEnumerable<BRB5.Model.DB.Reason> GetReason()
+        {
+            string Sql = "Select * FROM Reason";
+            return db.Query<BRB5.Model.DB.Reason>(Sql);
         }
     }
 }
