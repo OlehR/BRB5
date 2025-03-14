@@ -24,6 +24,7 @@ namespace BRB6.View
         public int OrderDoc { get; set; }
         public bool IsSoftKeyboard { get { return Config.IsSoftKeyboard; } }
         public bool IsVisScan { get { return Config.TypeScaner == eTypeScaner.Camera; } }
+        public bool IsViewReason { get { return TypeDoc.IsViewReason; } }
         private DocId DocId;
         private bool _IsVisQ = false;
         public bool IsVisQ { get { return _IsVisQ; } set { _IsVisQ = value; OnPropertyChanged(nameof(IsVisQ)); } }
@@ -34,8 +35,12 @@ namespace BRB6.View
         private string TempBarcode;
         public IEnumerable<BRB5.Model.DB.Reason> Reason { get; set; }
 
+        private Grid _selectedGrid;
+
         CameraView BarcodeScaner;
         //ZXingScannerView zxing;
+        private ObservableCollection<DocWaresEx> _originalListWares;
+
         public DocScan(DocId pDocId, TypeDoc pTypeDoc = null)
         {
             InitializeComponent();
@@ -45,13 +50,16 @@ namespace BRB6.View
             c = ConnectorBase.GetInstance();
             var tempListWares = db.GetDocWares(pDocId, 2, eTypeOrder.Scan);
             foreach (var t in tempListWares) { t.Ord = -1; }
-            ListWares = tempListWares == null ? new ObservableCollection<DocWaresEx>() : new ObservableCollection<DocWaresEx>(tempListWares);
+            _originalListWares = tempListWares == null ? new ObservableCollection<DocWaresEx>() : new ObservableCollection<DocWaresEx>(tempListWares);
+            ListWares = new ObservableCollection<DocWaresEx>(_originalListWares);
             OrderDoc = ListWares.Count > 0 ? ListWares.First().OrderDoc : 0;
-            if (ListWares.Count > 0)  ListViewWares.SelectedItem = ListWares[0];
-            // TODO Xamarin.Forms.Device.RuntimePlatform is no longer supported. Use Microsoft.Maui.Devices.DeviceInfo.Platform instead. For more details see https://learn.microsoft.com/en-us/dotnet/maui/migration/forms-projects#device-changes
-            NavigationPage.SetHasNavigationBar(this, Device.RuntimePlatform == Device.iOS || Config.TypeScaner == eTypeScaner.BitaHC61 || Config.TypeScaner == eTypeScaner.ChainwayC61 || Config.TypeScaner == eTypeScaner.Zebra || Config.TypeScaner == eTypeScaner.PM550 || Config.TypeScaner == eTypeScaner.PM351);
+            if (ListWares.Count > 0) ListViewWares.SelectedItem = ListWares[0];
+            NavigationPage.SetHasNavigationBar(this, DeviceInfo.Platform == DevicePlatform.iOS || Config.TypeScaner == eTypeScaner.BitaHC61 || Config.TypeScaner == eTypeScaner.ChainwayC61 || Config.TypeScaner == eTypeScaner.Zebra || Config.TypeScaner == eTypeScaner.PM550 || Config.TypeScaner == eTypeScaner.PM351);
+            Reason = db.GetReason();
             PopulateReasonOptions();
             this.BindingContext = this;
+
+            ListViewWares.ItemTapped += OnListViewWaresItemTapped;
         }
         void BarCode(string pBarCode)
         {
@@ -256,15 +264,6 @@ namespace BRB6.View
 
             int row = 0, column = 0;
 
-            // Initialize Reason property with specified elements
-            Reason = new List<BRB5.Model.DB.Reason>
-    {
-        new BRB5.Model.DB.Reason { CodeReason = 1, NameReason = "бій" },
-        new BRB5.Model.DB.Reason { CodeReason = 2, NameReason = "брак" },
-        new BRB5.Model.DB.Reason { CodeReason = 3, NameReason = "акцизна марка" },
-        new BRB5.Model.DB.Reason { CodeReason = 4, NameReason = "пломба" }
-    };
-
             if (Reason == null) return;
 
             foreach (var reason in Reason)
@@ -273,7 +272,7 @@ namespace BRB6.View
                 {
                     Margin = new Thickness(5),
                     Padding = new Thickness(5),
-                    BackgroundColor = Color.FromHex("#E0E0E0"),
+                    BackgroundColor = Color.FromArgb("#E0E0E0"),
                     BindingContext = reason
                 };
 
@@ -312,17 +311,51 @@ namespace BRB6.View
 
         private void OnReasonTapped(Grid selectedGrid)
         {
-            foreach (var child in ReasonOptions.Children)
+            var reason = (BRB5.Model.DB.Reason)selectedGrid.BindingContext;
+
+            if (_selectedGrid == selectedGrid)
             {
-                if (child is Grid grid)
+                // Deselect the currently selected grid
+                selectedGrid.BackgroundColor = Color.FromArgb("#E0E0E0");
+                _selectedGrid = null;
+                if (ScanData != null)
                 {
-                    grid.BackgroundColor = Color.FromHex("#E0E0E0");
+                    ScanData.CodeReason = 0; // Set to 0 when deselected
                 }
             }
+            else
+            {
+                // Reset the background color of the previously selected grid
+                if (_selectedGrid != null)
+                {
+                    _selectedGrid.BackgroundColor = Color.FromArgb("#E0E0E0");
+                }
 
-            selectedGrid.BackgroundColor = Color.FromHex("#FFD700"); // Highlight color
+                // Highlight the newly selected grid
+                selectedGrid.BackgroundColor = Color.FromArgb("#FFD700");
+                _selectedGrid = selectedGrid;
+                if (ScanData != null)
+                {
+                    ScanData.CodeReason = reason.CodeReason; // Set to the selected reason's CodeReason
+                }
+            }
         }
 
+        private void OnListViewWaresItemTapped(object sender, ItemTappedEventArgs e)
+        {
+            if (ScanData == null) return;
+
+            if (ListWares.Count == _originalListWares.Count)
+            {
+                ListWares = new ObservableCollection<DocWaresEx>(_originalListWares.Where(w => w.CodeWares == ScanData.CodeWares));
+            }
+            else
+            {
+                ListWares = new ObservableCollection<DocWaresEx>(_originalListWares);
+            }
+
+            OnPropertyChanged(nameof(ListWares));
+        }
 
 
 

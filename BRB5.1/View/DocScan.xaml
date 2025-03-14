@@ -83,7 +83,7 @@
                         </Frame>
                     </Grid>
 
-                    <Grid x:Name="ReasonOptions" Grid.Row="2" IsVisible="False">
+                <Grid x:Name="ReasonOptions" Grid.Row="2" IsVisible="{Binding IsViewReason}">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*" />
                             <ColumnDefinition Width="*" />
