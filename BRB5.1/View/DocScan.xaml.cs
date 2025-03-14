@@ -32,6 +32,7 @@ namespace BRB6.View
         private string _DisplayQuestion;
         public string DisplayQuestion { get { return _DisplayQuestion; } set { _DisplayQuestion = value; OnPropertyChanged(nameof(DisplayQuestion)); } }
         private string TempBarcode;
+        public IEnumerable<BRB5.Model.DB.Reason> Reason { get; set; }
 
         CameraView BarcodeScaner;
         //ZXingScannerView zxing;
@@ -49,6 +50,7 @@ namespace BRB6.View
             if (ListWares.Count > 0)  ListViewWares.SelectedItem = ListWares[0];
             // TODO Xamarin.Forms.Device.RuntimePlatform is no longer supported. Use Microsoft.Maui.Devices.DeviceInfo.Platform instead. For more details see https://learn.microsoft.com/en-us/dotnet/maui/migration/forms-projects#device-changes
             NavigationPage.SetHasNavigationBar(this, Device.RuntimePlatform == Device.iOS || Config.TypeScaner == eTypeScaner.BitaHC61 || Config.TypeScaner == eTypeScaner.ChainwayC61 || Config.TypeScaner == eTypeScaner.Zebra || Config.TypeScaner == eTypeScaner.PM550 || Config.TypeScaner == eTypeScaner.PM351);
+            PopulateReasonOptions();
             this.BindingContext = this;
         }
         void BarCode(string pBarCode)
@@ -241,6 +243,89 @@ namespace BRB6.View
         }
 
         private void CompletedInputQ(object sender, EventArgs e) {  AddWare(); }
+
+        private void PopulateReasonOptions()
+        {
+            ReasonOptions.Children.Clear();
+            ReasonOptions.RowDefinitions.Clear();
+            ReasonOptions.ColumnDefinitions.Clear();
+
+            // Define two columns
+            ReasonOptions.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
+            ReasonOptions.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
+
+            int row = 0, column = 0;
+
+            // Initialize Reason property with specified elements
+            Reason = new List<BRB5.Model.DB.Reason>
+    {
+        new BRB5.Model.DB.Reason { CodeReason = 1, NameReason = "бій" },
+        new BRB5.Model.DB.Reason { CodeReason = 2, NameReason = "брак" },
+        new BRB5.Model.DB.Reason { CodeReason = 3, NameReason = "акцизна марка" },
+        new BRB5.Model.DB.Reason { CodeReason = 4, NameReason = "пломба" }
+    };
+
+            if (Reason == null) return;
+
+            foreach (var reason in Reason)
+            {
+                var reasonGrid = new Grid
+                {
+                    Margin = new Thickness(5),
+                    Padding = new Thickness(5),
+                    BackgroundColor = Color.FromHex("#E0E0E0"),
+                    BindingContext = reason
+                };
+
+                var reasonLabel = new Label
+                {
+                    Text = reason.NameReason,
+                    FontSize = Device.GetNamedSize(NamedSize.Medium, typeof(Label)),
+                    HorizontalOptions = LayoutOptions.CenterAndExpand,
+                    VerticalOptions = LayoutOptions.CenterAndExpand
+                };
+
+                reasonGrid.Children.Add(reasonLabel);
+                reasonGrid.GestureRecognizers.Add(new TapGestureRecognizer
+                {
+                    Command = new Command(() => OnReasonTapped(reasonGrid))
+                });
+
+                // Add a new row definition if needed
+                if (column == 0)
+                {
+                    ReasonOptions.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
+                }
+
+                ReasonOptions.Children.Add(reasonGrid);
+                Grid.SetRow(reasonGrid, row);
+                Grid.SetColumn(reasonGrid, column);
+
+                column++;
+                if (column >= 2)
+                {
+                    column = 0;
+                    row++;
+                }
+            }
+        }
+
+        private void OnReasonTapped(Grid selectedGrid)
+        {
+            foreach (var child in ReasonOptions.Children)
+            {
+                if (child is Grid grid)
+                {
+                    grid.BackgroundColor = Color.FromHex("#E0E0E0");
+                }
+            }
+
+            selectedGrid.BackgroundColor = Color.FromHex("#FFD700"); // Highlight color
+        }
+
+
+
+
 #if ANDROID
         public void OnPageKeyDown(Keycode keyCode, KeyEvent e)
         { 
