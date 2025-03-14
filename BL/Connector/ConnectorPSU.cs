@@ -273,21 +273,20 @@ namespace BL.Connector
                         doc.TypeDoc = pTypeDoc;
                     }
                     db.ReplaceDoc(temp.Info);
-
                 }
                 return new Result();
             }
             else
             {
                 string data = JsonConvert.SerializeObject(new ApiDoc() { CodeData = 150, TypeDoc = pTypeDoc, CodeWarehouse = Config.CodeWarehouse, Ver = 5136 });
-                HttpResult result = await Http.HTTPRequestAsync(0, "znp/", data, "application/json");//
+                HttpResult result = await Http.HTTPRequestAsync(0, "znp/", data, "application/json",null,null,30d);//
 
                 if (result.HttpState == eStateHTTP.HTTP_OK)
                 {
                     string[] lines = result.Result.Split(new String[] { ";;;" }, StringSplitOptions.RemoveEmptyEntries);
                     foreach (var el in lines)
                     {
-                        string Sql = el.Replace("_", "").Replace(";;", "");
+                        string Sql = el.Replace("_", "").Replace(";;", "").Replace("'ARTICL'", "'ARTICLE'");
                         if (Sql.Length > 20)
                             try
                             {
