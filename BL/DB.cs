@@ -1056,7 +1056,7 @@ DE.ExpirationDateInput, DE.QuantityInput
         public IEnumerable<DocWaresExpiration> GetDocWaresExpiration(string pNumberDoc)
         {
             string sql = "select * from DocWaresExpiration where DATE(DateDoc) = DATE('now') --and NumberDoc=?";
-            return db.Query<DocWaresExpiration>(sql, pNumberDoc);
+            return db.Query<DocWaresExpiration>(sql);//, pNumberDoc);
         }
     }
 }

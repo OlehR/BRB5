@@ -10,6 +10,10 @@ using Newtonsoft.Json;
 using BRB5.Model.DB;
 using Utils;
 using Microsoft.Maui.Controls;
+using CommunityToolkit.Maui.Alerts;
+using CommunityToolkit.Maui.Core;
+
+
 
 
 #if ANDROID
@@ -134,6 +138,17 @@ namespace BRB6.View
 
         private void F2Save(object sender, TappedEventArgs e)
         {
+            //if (MainContent.IsVisible)
+            //{
+            Task.Run(async () =>
+            {
+                var D = db.GetDocWaresExpiration("");
+                var r = await c.SaveExpirationDate(new BRB5.Model.DB.DocWaresExpirationSave() { CodeWarehouse = Config.CodeWarehouse, NumberDoc = "", Wares = D });
+                var toast = Toast.Make("Збереження: " + r.TextError, ToastDuration.Long, 14);
+                MainThread.BeginInvokeOnMainThread(async () => await toast.Show());
+
+            });
+            //}
 
         }
 

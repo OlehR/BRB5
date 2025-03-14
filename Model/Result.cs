@@ -11,7 +11,7 @@ namespace BRB5.Model
         public string Info { get; set; }
         public eStateHTTP StateHTTP { get; set; }
 
-        public Result() { }        
+        public Result():this(0) { }        
 
         public Result(int pState = 0, string pTextError = "Ok", string pInfo = "")
         {
