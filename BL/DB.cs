@@ -688,9 +688,10 @@ and bc.BarCode=?
         {
             //if(!pDW.GetType().Name.Equals("DocWares"))
             string Sql = $@"replace into DocWares ( TypeDoc, NumberDoc, OrderDoc, CodeWares, Quantity, QuantityOld, CodeReason,ExpirationDate) values 
-                                                 ({pDW.TypeDoc},'{pDW.NumberDoc}',{pDW.OrderDoc},{pDW.CodeWares},{pDW.Quantity},{pDW.QuantityOld},{pDW.CodeReason},{pDW.ExpirationDate})";
+                                                 ({pDW.TypeDoc},'{pDW.NumberDoc}',{pDW.OrderDoc},{pDW.CodeWares},{pDW.Quantity},{pDW.QuantityOld},{pDW.CodeReason},'{pDW.ExpirationDate}')";
             try
             {
+                //return db.InsertOrReplace(pDW)>0;
                 return db.Execute(Sql) >= 0;
             }
             catch (Exception e)
