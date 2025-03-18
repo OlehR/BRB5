@@ -35,7 +35,7 @@ namespace BRB5.Model
         // Лоти  3- недостача. //2 - надлишок, // 1 - є з причиною // 0 - все ОК.
         // Ревізія. // 0- Зеленим кольором пораховані, 2- оранжевим додані вручну, 0- жовтим непораховані.
         private int _Ord;
-        public int Ord{ get { return _Ord; } set { _Ord = value; OnPropertyChanged("GetLightBackgroundColor"); } }
+        public int Ord{ get { return _Ord; } set { _Ord = value; OnPropertyChanged(nameof(GetBackgroundColor)); } }
         ///public Keyboard Keyboard { get { return CodeUnit == 7 ? Keyboard.Telephone : Keyboard.Numeric; } }
 
         public ParseBarCode ParseBarCode { get; set; }

@@ -100,8 +100,11 @@
                                     <ColumnDefinition Width="1*" />
                                     <ColumnDefinition Width="12*" />
                                     <ColumnDefinition Width="3*" />
-                                    <ColumnDefinition Width="2*" />
+                                    <ColumnDefinition Width="3*" />
                                 </Grid.ColumnDefinitions>
+                            <Grid.GestureRecognizers>
+                                <TapGestureRecognizer Tapped="OnListViewWaresItemTapped" />
+                            </Grid.GestureRecognizers>
 
                                 <Label Text="№"
                                        BackgroundColor="White" />
@@ -111,7 +114,7 @@
                                 <Label Text="к-сть"
                                        Grid.Column="2"
                                        BackgroundColor="White" />
-                                <Label Text="ст."
+                                <Label Text="прич"
                                        Grid.Column="3"
                                        BackgroundColor="White" />
                             </Grid>
@@ -128,20 +131,24 @@
                                             <ColumnDefinition Width="1*" />
                                             <ColumnDefinition Width="12*" />
                                             <ColumnDefinition Width="3*" />
-                                            <ColumnDefinition Width="2*" />
+                                            <ColumnDefinition Width="3*" />
                                         </Grid.ColumnDefinitions>
 
-                                        <Label Text="{Binding OrderDoc}" 
-                                               BackgroundColor="{Binding GetLightBackgroundColor}" />
+                                    <Grid.GestureRecognizers>
+                                        <TapGestureRecognizer Tapped="OnListViewWaresItemTapped" />
+                                    </Grid.GestureRecognizers>
+                                        
+                                    <Label Text="{Binding OrderDoc}" 
+                                               BackgroundColor="{Binding GetBackgroundColor}" />
                                         <Label Text="{Binding NameWares}"
                                                Grid.Column="1" LineBreakMode="NoWrap"
-                                               BackgroundColor="{Binding GetLightBackgroundColor}" />
+                                               BackgroundColor="{Binding GetBackgroundColor}" />
                                         <Label Text="{Binding InputQuantity}"
                                                Grid.Column="2" LineBreakMode="NoWrap"
-                                               BackgroundColor="{Binding GetLightBackgroundColor}" />
-                                        <Label Text="{Binding QuantityOld}"
+                                               BackgroundColor="{Binding GetBackgroundColor}" />
+                                    <Label Text="{Binding CodeReason}"
                                                Grid.Column="3" LineBreakMode="NoWrap"
-                                               BackgroundColor="{Binding GetLightBackgroundColor}" />
+                                               BackgroundColor="{Binding GetBackgroundColor}" />
 
                                     </Grid>
                                 </ViewCell>

@@ -58,8 +58,6 @@ namespace BRB6.View
             Reason = db.GetReason();
             PopulateReasonOptions();
             this.BindingContext = this;
-
-            ListViewWares.ItemTapped += OnListViewWaresItemTapped;
         }
         void BarCode(string pBarCode)
         {
@@ -341,7 +339,7 @@ namespace BRB6.View
             }
         }
 
-        private void OnListViewWaresItemTapped(object sender, ItemTappedEventArgs e)
+        private void OnListViewWaresItemTapped(object sender, TappedEventArgs e)
         {
             if (ScanData == null) return;
 
@@ -356,9 +354,6 @@ namespace BRB6.View
 
             OnPropertyChanged(nameof(ListWares));
         }
-
-
-
 #if ANDROID
         public void OnPageKeyDown(Keycode keyCode, KeyEvent e)
         { 
@@ -379,7 +374,7 @@ namespace BRB6.View
             default:
                return;
            }
-         }
+         }  
 #endif
     }
 }
