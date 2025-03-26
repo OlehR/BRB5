@@ -1,32 +1,26 @@
-﻿using BL;
-using BRB5.Model;
+﻿using BRB5.Model;
 using Utils;
 using BRB6.View;
-using System.Collections.ObjectModel;
-using System.Text.RegularExpressions;
-using Microsoft.Maui.Controls.Compatibility;
 using BRB5;
-using Grid = Microsoft.Maui.Controls.Grid;
-using StackLayout = Microsoft.Maui.Controls.StackLayout;
-using BarcodeScanning;
-
 
 namespace BRB6.Template;
 
-public partial class QuestionItemTemplate : ContentView
+public partial class QuestionItemTemplate : ContentView, IViewRDI
 {
     BL.BL Bl = BL.BL.GetBL();
-    BRB5.Model.RaitingDocItem Question {  get; set; }
-    public QuestionItemTemplate(BRB5.Model.RaitingDocItem pQuestion)
+    public Action<object , EventArgs> OnButtonClick { get; set; }
+    public BRB5.Model.RaitingDocItem Data {  get; set; }
+    public QuestionItemTemplate(BRB5.Model.RaitingDocItem pQuestion, Action<object, EventArgs> pOnButtonClick=null)
 	{
 		InitializeComponent();
-        Question = pQuestion;
-        BindingContext = Question;
+        Data = pQuestion;
+        BindingContext = Data;
+        OnButtonClick = pOnButtonClick;
     }
 
     private void OnButtonClicked(object sender, EventArgs e)
     {
-
+        OnButtonClick?.Invoke(sender, e);
     }
     private void EditPhoto(object sender, System.EventArgs e)
     {

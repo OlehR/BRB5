@@ -28,14 +28,24 @@ namespace BL.Connector
                 new PercentColor(75,Color.FromArgb(0xFDABAB) , Color.Pink, "72301630") };
         }
 
-        IEnumerable<TypeDoc> TypeDoc;
+        IEnumerable<TypeDoc> TypeDoc=null;
         /// <summary>
         /// Список Документів доступних по ролі
         /// </summary>
         /// <param name="pRole"></param>
         /// <returns></returns>
         public override IEnumerable<TypeDoc> GetTypeDoc(eRole pRole, eLoginServer pLS, eGroup pGroup = eGroup.NotDefined)
-        {            
+        {
+            /*if (TypeDoc == null)
+            {
+                HttpResult result = await Http.HTTPRequestAsync(0, "DCT/GetTypeDoc", "", "application/json", null);
+                if (result.HttpState == eStateHTTP.HTTP_OK)
+                {
+                    var res = JsonConvert.DeserializeObject<Result<IEnumerable<TypeDoc>>>(result.Result);
+                    if (res.State == 0)
+                        TypeDoc = res.Info;
+                }
+            } */ 
             return TypeDoc;
         }
 
@@ -130,153 +140,28 @@ namespace BL.Connector
 
         public override async Task<Result> LoadDocsDataAsync(int pTypeDoc, string pNumberDoc, bool pIsClear)
         {
-            int temp = 0;
-            var Res = new Result();
-            /*if (pTypeDoc == 11)
+            try
             {
-                string data = JsonConvert.SerializeObject(new Request() { userId = Config.CodeUser, action = "templates" });
-                HttpResult result = await Http.HTTPRequestAsync(2, "", data, "application/json");//
-
-                string data2 = JsonConvert.SerializeObject(new Request() { userId = Config.CodeUser, action = "plans" });
-                HttpResult result2 = await Http.HTTPRequestAsync(2, "", data2, "application/json");//
-
-                if (result.HttpState != eStateHTTP.HTTP_OK || result2.HttpState != eStateHTTP.HTTP_OK)
-                    return new Result(result.HttpState != eStateHTTP.HTTP_OK ? result : result2);
-                else
-                    try
+                AppContext.SetSwitch("System.Reflection.NullabilityInfoContext.IsSupported", true);
+                GetDocs Data = new GetDocs() { CodeWarehouse = Config.CodeWarehouse, TypeDoc = pTypeDoc, NumberDoc = pNumberDoc };
+                HttpResult result = await Http.HTTPRequestAsync(0, "DCT/LoadDoc", Data.ToJson(), "application/json", null);
+                if (result.HttpState == eStateHTTP.HTTP_OK)
+                {
+                    var res = JsonConvert.DeserializeObject<Result<Docs>>(result.Result);
+                    if (res.State == 0)
                     {
-                        //bool AddDoc;
-                        var t = JsonConvert.DeserializeObject<Template>(result.Result);
-                        var p = JsonConvert.DeserializeObject<Data>(result2.Result, new IsoDateTimeConverter { DateTimeFormat = "dd.MM.yyyy HH:mm:ss" });
-
-                        var Doc = p.data.Select(elp => new Doc()
-                        {
-                            TypeDoc = pTypeDoc,
-                            IdTemplate = elp.templateId,
-                            NumberDoc = elp.planId.ToString(),
-                            DateDoc = elp.date,
-                            CodeWarehouse = elp.shopId,
-                            Description = t.data?.Where(el => el.templateId == elp.templateId)?.FirstOrDefault()?.templateName
-                        }).ToList();
-                        db.ReplaceDoc(Doc);
-
-                        var RaitingTemplate = t.data.Select(el => new RaitingTemplate() { IdTemplate = el.templateId, Text = el.templateName });
-                        db.ReplaceRaitingTemplate(RaitingTemplate);
-                        foreach (var item in t.data)
-                        {
-                            // if (item.questions != null && item.sections != null)
-                            {
-                                try
-                                {
-                                    temp = item.templateId;
-                                    var tt = item.sections.Select(el =>
-                                            new RaitingTemplateItem() { IdTemplate = item.templateId, Id = -el.sectionId, Parent = -el.parentId, Text = el.text, RatingTemplate = 8, OrderRS = el.sectionId }).ToList();
-                                    tt.Add(new RaitingTemplateItem() { IdTemplate = item.templateId, Id = -1, Parent = 9999999, Text = "Всього", RatingTemplate = 8, OrderRS = 9999999 });
-
-                                    db.ReplaceRaitingTemplateItem(tt);
-                                    tt = item.questions.Select(el =>
-                                            new RaitingTemplateItem() { IdTemplate = item.templateId, Id = el.questionId, Parent = -el.sectionId, Text = el.text, RatingTemplate = el.RatingTemplate, OrderRS = el.questionId }).ToList();
-                                    db.ReplaceRaitingTemplateItem(tt);
-                                }
-                                catch (Exception e)
-                                {
-                                    var aa = temp;
-                                }
-                            }
-                        }
-
-                        FileLogger.WriteLogMessage($"ConnectorPSU.LoadDocsData=>(pTypeDoc=>{pTypeDoc}, pNumberDoc=>{pNumberDoc},pIsClear=>{pIsClear}) Res=>(Doc=>{Doc.Count()},{Res.State},{Res.Info},{Res.TextError})", eTypeLog.Full);
-
-                        return Res;
+                        db.ReplaceDoc(res.Info.Doc);
+                        db.ReplaceDocWaresSample(res.Info.Wares);
                     }
-                    catch (Exception e)
-                    {
-                        Res = new Result(-1, e.Message);
-                        FileLogger.WriteLogMessage($"ConnectorPSU.LoadDocsData=>(pTypeDoc=>{pTypeDoc}, pNumberDoc=>{pNumberDoc},pIsClear=>{pIsClear}) Res=>({Res.State},{Res.Info},{Res.TextError})", eTypeLog.Error);
-                        return Res;
-                    }
+                    return new Result();
+                }
+                return new Result(result);
             }
-            else
+            catch (Exception e)
             {
-                var ds = Config.GetDocSetting(pTypeDoc);
-                string CodeWarehouse = Config.CodeWarehouse.ToString();
-
-                int CodeApi = 0;
-                if (ds != null)
-                    CodeApi = ds.CodeApi;
-                else
-                    if (pTypeDoc <= 0 && Config.IsLoginCO) CodeApi = 1;
-
-                if (pTypeDoc >= 7 && pTypeDoc <= 9)
-                {
-                    BL bl = BL.GetBL();
-
-                    Warehouse Wh = bl.GetWarehouse(Config.CodeWarehouse);
-                    if (Wh != null)
-                        CodeWarehouse = Wh.Number;
-                }
-
-                string NameApi = "documents";
-                string AddPar = "";
-                if (pTypeDoc >= 8 && pTypeDoc <= 9)
-                {
-                    NameApi = "docmoveoz";
-                    AddPar = "&TypeMove=" + (pTypeDoc == 8 ? "0" : "1");
-                }
-
-                if (pTypeDoc == -1)
-                    LoadGuidDataAsync((pTypeDoc == -1));
-
-                Config.OnProgress?.Invoke(0.05);
-                HttpResult result;
-                try
-                {
-                    if ((pTypeDoc >= 5 && pTypeDoc <= 9) || (pTypeDoc <= 0 && Config.IsLoginCO))
-                        result = Http.HTTPRequest(CodeApi, NameApi + (pTypeDoc == 5 ? "\\" + pNumberDoc : "?StoreSetting=" + CodeWarehouse) + AddPar, null, "application/json;charset=utf-8", Config.Login, Config.Password);
-                    else
-                        result = Http.HTTPRequest(CodeApi, "documents", null, "application/json;charset=utf-8", Config.Login, Config.Password);
-
-                    if (result.HttpState == eStateHTTP.HTTP_OK)
-                    {
-                        Config.OnProgress?.Invoke(0.40);
-                        var data = JsonConvert.DeserializeObject<InputDocs>(result.Result);
-
-
-                        if (pIsClear)
-                        {
-                            // string sql = "DELETE FROM DOC; DELETE FROM DOC_WARES_sample; DELETE FROM DOC_WARES;";
-                            db.db.Execute("DELETE FROM DOC");
-                            db.db.Execute("DELETE FROM DocWaresSample");
-                            db.db.Execute("DELETE FROM DocWares");
-                        }
-                        else
-                            db.db.Execute("update doc set state=-1 where type_doc not in (5,6)" + (pTypeDoc > 0 ? $" and type_doc={pTypeDoc}" : ""));
-
-                        foreach (Doc v in data.Doc)
-                        {
-                            //v.TypeDoc = ConvertTypeDoc(v.TypeDoc);
-                            //v.DateDoc = v.DateDoc.Substring(0, 10);
-                            v.TypeDoc += (pTypeDoc == 9 ? 1 : 0);
-                        }
-                        db.ReplaceDoc(data.Doc);
-
-                        Config.OnProgress?.Invoke(0.60);
-                        foreach (var v in data.DocWaresSample)
-                            v.TypeDoc += (pTypeDoc == 9 ? 1 : 0);
-
-                        db.ReplaceDocWaresSample(data.DocWaresSample);
-
-                        Config.OnProgress?.Invoke(0.100);
-                        FileLogger.WriteLogMessage($"ConnectorPSU.LoadDocsData=>(pTypeDoc=>{pTypeDoc}, pNumberDoc=>{pNumberDoc},pIsClear=>{pIsClear}) Res=>({Res.State},{Res.Info},{Res.TextError})", eTypeLog.Full);
-
-                        return Res;
-                    }
-                }
-                catch (Exception e)
-                {
-                    FileLogger.WriteLogMessage(this, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                }*/
-                return Res;            
+                FileLogger.WriteLogMessage(this, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+                return new Result(e);
+            }     
         }
 
         public override async Task<Result<IEnumerable<RaitingTemplate>>> GetRaitingTemplateAsync() { return null; }
@@ -290,6 +175,13 @@ namespace BL.Connector
         /// <returns></returns>
         public override async Task<Result> SendDocsDataAsync(DocVM pDoc, IEnumerable<DocWares> pWares)
         {
+             HttpResult result = await Http.HTTPRequestAsync(0, "DCT/GetTypeDoc", "", "application/json", null);
+             if (result.HttpState == eStateHTTP.HTTP_OK)
+             {
+                 var res = JsonConvert.DeserializeObject<Result<IEnumerable<TypeDoc>>>(result.Result);
+                 if (res.State == 0)
+                     TypeDoc = res.Info;
+             }
             return null;
         }
         /// <summary>
