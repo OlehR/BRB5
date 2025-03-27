@@ -117,7 +117,7 @@ public partial class LotsCheck : ContentPage
         }
     }
 
-    private void OpenDoc(object sender, TappedEventArgs e)
+    private async void OpenDoc(object sender, TappedEventArgs e)
     {
         if (SelectedDoc != null)
             SelectedDoc.SelectedColor = false;
@@ -126,6 +126,7 @@ public partial class LotsCheck : ContentPage
             SelectedDoc = doc;
             doc.SelectedColor = true;
             ScrollToSelected();
+            await Navigation.PushAsync(new DocItem(doc, TypeDoc));
         }
     }
 
