@@ -6,19 +6,13 @@
     <ContentView.Content>
         <Grid BackgroundColor="#e6e6e6">
             <StackLayout BackgroundColor="#e6e6e6">
-                <StackLayout Orientation="Horizontal">
+                <Grid >
                     <Label Text="{Binding Text}" 
                            FontSize="22" 
                            LineBreakMode="WordWrap"
                            HorizontalOptions="FillAndExpand"
                            VerticalOptions="Start" />
-
-                    <StackLayout Spacing="0" Orientation="Horizontal" HorizontalOptions="EndAndExpand" IsVisible="{Binding Question.IsVisTotal}">
-                        <Label Text="{Binding SumValueRating}" FontSize="22" />
-                        <Label Text="/" FontSize="22" />
-                        <Label Text="{Binding ValueRating}" FontSize="22" />
-                    </StackLayout>
-                </StackLayout>
+                </Grid>
                 <Grid Margin="0" Padding="0">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="1*" />
@@ -103,12 +97,21 @@
                                  Clicked="EditPhoto" />
 
                 </Grid>
-                <Editor IsVisible="{Binding IsItem}"
-                        Placeholder="Введіть коментар"
-                        Text="{Binding Note}"
-                        AutoSize="TextChanges"
-                        Unfocused="Editor_Completed"
-                        Completed="Editor_Completed" />
+                <Grid>
+                    <Editor IsVisible="{Binding IsItem}"
+                            Placeholder="Введіть коментар"
+                            Text="{Binding Note}"
+                            AutoSize="TextChanges"
+                            Unfocused="Editor_Completed"
+                            Completed="Editor_Completed" />
+
+                    <StackLayout Spacing="0" Orientation="Horizontal" HorizontalOptions="EndAndExpand" IsVisible="{Binding IsVisTotal}">
+                        <Label Text="{Binding SumValueRating}" FontSize="22" />
+                        <Label Text="/" FontSize="22" />
+                        <Label Text="{Binding ValueRating}" FontSize="22" />
+                    </StackLayout>
+                </Grid>
+                
             </StackLayout>
         </Grid>
     </ContentView.Content>
