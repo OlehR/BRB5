@@ -7,6 +7,8 @@ using System.Text;
 using System.Threading.Tasks;
 using Utils;
 using BRB5;
+using System.IO;
+using System.Net.Http.Headers;
 
 namespace BL.Connector
 {
@@ -150,13 +152,12 @@ namespace BL.Connector
            
         }
 
-        public HttpResult GetFile(string pURL,string pDir)
+        public static HttpResult GetFile(string pURL,string pDir)
         {
             pDir = Config.PathFiles;
             try
             {
                 WebClient webClient = new WebClient();
-
                 webClient.DownloadFile(new Uri(pURL), pDir);
             }
             catch(Exception e)
@@ -164,6 +165,27 @@ namespace BL.Connector
                 FileLogger.WriteLogMessage(e.Message, eTypeLog.Error); 
             }
             return new HttpResult();
+        }
+
+        public static async Task<string> UploadFileAsync(string url, string filePath)
+        {
+            using (var httpClient = new HttpClient())
+            {
+                using (var form = new MultipartFormDataContent())
+                {
+                    using (var fileStream = new FileStream(filePath, FileMode.Open, FileAccess.Read))
+                    {
+                        var streamContent = new StreamContent(fileStream);
+                        streamContent.Headers.ContentType = new MediaTypeHeaderValue("application/octet-stream");
+                        form.Add(streamContent, "formFile", Path.GetFileName(filePath));
+
+                        var response = await httpClient.PostAsync(url, form);
+                        response.EnsureSuccessStatusCode();
+
+                        return await response.Content.ReadAsStringAsync();
+                    }
+                }
+            }
         }
     }
 }
