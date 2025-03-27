@@ -9,6 +9,7 @@ using Grid = Microsoft.Maui.Controls.Grid;
 using StackLayout = Microsoft.Maui.Controls.StackLayout;
 using BarcodeScanning;
 using BRB6.Template;
+using System.Runtime.CompilerServices;
 
 namespace BRB6
 {
@@ -19,12 +20,14 @@ namespace BRB6
     {       
         BL.BL Bl = BL.BL.GetBL();
         DocVM cDoc;
+        bool IsLoad = false;
         
         bool _IsVisBarCode = false;
         public bool IsVisBarCode { get { return _IsVisBarCode; } set { _IsVisBarCode = value; OnPropertyChanged(nameof(IsVisBarCode)); } }
-        ObservableCollection<BRB5.Model.RaitingDocItem> _Questions;
-        public ObservableCollection<BRB5.Model.RaitingDocItem> Questions { get { return _Questions; } set { _Questions = value; OnPropertyChanged(nameof(Questions)); } }
+        //ObservableCollection<BRB5.Model.RaitingDocItem> _Questions;
+        //public ObservableCollection<BRB5.Model.RaitingDocItem> Questions { get { return _Questions; } set { _Questions = value; OnPropertyChanged(nameof(Questions)); } }
         IEnumerable<BRB5.Model.RaitingDocItem> All;
+        List<IViewRDI> AllViewRDI;
 
         int CountAll, CountChoice;
         public bool IsSave { get { return CountAll == CountChoice; } }
@@ -74,7 +77,7 @@ namespace BRB6
         bool IsAllOpen { get; set; } = true;
         public string TextAllOpen { get { return IsAllOpen ? "Згорнути" : "Розгорнути"; }  }
         private bool IsRefreshList = true;
-        private eTypeChoice _typeChoice = eTypeChoice.OnlyHead;
+        private eTypeChoice _typeChoice = eTypeChoice.NotDefine;
         public eTypeChoice Choice { get { return _typeChoice; } set { _typeChoice = value; OnPropertyChanged(nameof(OpacityAll)); OnPropertyChanged(nameof(OpacityOnlyHead)); OnPropertyChanged(nameof(OpacityNoAnswer)); } }
         public double OpacityAll { get { return Choice == eTypeChoice.All ? 1d : 0.4d; } }
         public double OpacityOnlyHead { get { return Choice == eTypeChoice.OnlyHead ? 1d : 0.4d; } }
@@ -93,7 +96,7 @@ namespace BRB6
             this.BindingContext = this;
             Bl.InitTimerRDI(cDoc);            
            
-            Questions = new ObservableCollection<BRB5.Model.RaitingDocItem>();
+            //Questions = new ObservableCollection<BRB5.Model.RaitingDocItem>();
             Bl.c.OnSave += (Res) => Dispatcher.Dispatch(() =>
             {
                 TextSave += Res + Environment.NewLine;
@@ -106,6 +109,7 @@ namespace BRB6
                 OnPropertyChanged(nameof(NameWarehouse));
                 OnPropertyChanged(nameof(SizeWarehouse));
             };
+            Bl.LoadDataRDI(cDoc, GetData);
         }
 
         protected override void OnAppearing()
@@ -127,7 +131,7 @@ namespace BRB6
             }
 
             Bl.StartTimerRDI();
-            if (IsRefreshList)Bl.LoadDataRDI(cDoc,GetData);
+            //if (IsRefreshList)Bl.LoadDataRDI(cDoc,GetData);
 
             IsRefreshList = true;
             _ = LocationBrb.GetCurrentLocation(Bl.db.GetWarehouse());
@@ -140,42 +144,68 @@ namespace BRB6
             if (IsVisScan) BarcodeScaner.CameraEnabled = false;
         }
 
-        private void PopulateQuestions()
+        void BildViewRDI()
+        {
+            AllViewRDI = new List<IViewRDI>();
+            foreach (var el in All)
+            {
+                IViewRDI e = el.IsHead ? new QuestionHeadTemplate(el, OnButtonClicked, OnHeadTapped) : new QuestionItemTemplate(el, OnButtonClicked);
+                //if(el.IsHead) 
+                MainThread.BeginInvokeOnMainThread(() => { QuestionsStackLayout.Children.Add(e); });
+                AllViewRDI.Add(e);
+            }
+            IsLoad = true;
+            Choice = eTypeChoice.All;
+        }
+        /*private void PopulateQuestions()
         {
             foreach (var question in All)
             {
                 if (question.IsHead)
                 {
-                    var questionTemplate = new QuestionHeadTemplate(question);
+                    var questionTemplate = new QuestionHeadTemplate(question, OnButtonClicked);
                     MainThread.BeginInvokeOnMainThread(() => { QuestionsStackLayout.Children.Add(questionTemplate); });
                 }
                 else
                 {
-                    var questionTemplate = new QuestionItemTemplate(question);
+                    var questionTemplate = new QuestionItemTemplate(question, OnButtonClicked);
                     MainThread.BeginInvokeOnMainThread(() => { QuestionsStackLayout.Children.Add(questionTemplate); });
                 }
             }
-        }
+        }*/
         void ViewDoc()
         {
-            Dispatcher.Dispatch(() =>
+            if (IsLoad)
             {
-                ObservableCollection<BRB5.Model.RaitingDocItem> tempQuestions = new();
-              
-                foreach (var el in All.Where(el => (el.IsHead || el.Parent == 9999999 || // Заголовки Всього
-                Choice == eTypeChoice.All ||                                             // Розгорнути      
-                (Choice == eTypeChoice.NoAnswer && (el.Rating == 0 ||                    //Без відповіді  
-                (el.Rating == 3 && String.IsNullOrEmpty(el.Note) && el.QuantityPhoto == 0)))  //Без опису           
-                )))
+                try
                 {
-                    tempQuestions.Add(el);
+                    IsLoad = false;
+                    MainThread.BeginInvokeOnMainThread(() => { QuestionsStackLayout.Children.Clear(); });
+                    //Dispatcher.Dispatch(() =>
+                    //{
+                    
+                    foreach (var el in AllViewRDI.Where(el => (el.Data.IsHead || el.Data.Parent == 9999999 || // Заголовки Всього
+                    Choice == eTypeChoice.All ||                                             // Розгорнути      
+                    (Choice == eTypeChoice.NoAnswer && (el.Data.Rating == 0 ||                    //Без відповіді  
+                    (el.Data.Rating == 3 && String.IsNullOrEmpty(el.Data.Note) && el.Data.QuantityPhoto == 0)))  //Без опису           
+                    )))
+                    {
+                        MainThread.BeginInvokeOnMainThread(() => { QuestionsStackLayout.Children.Add(el); });
+                    }
+                    RefreshHead();
+                    Bl.CalcValueRating(All);
+                    //});
                 }
-                Questions= tempQuestions;
-                RefreshHead();
-                Bl.CalcValueRating(All);
-            });
+                catch (Exception e)
+                {
+                    FileLogger.WriteLogMessage(this, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+                }
+                finally
+                {
+                    IsLoad = true;
+                }
+            }
         }
-
 
         void GetData(IEnumerable<BRB5.Model.RaitingDocItem> pDocItem)
         {
@@ -183,12 +213,13 @@ namespace BRB6
             All = pDocItem;
             IsVisibleBarcodeScanning = All.Any(el => el.Id == -1);
             OnPropertyChanged(nameof(IsVisibleBarcodeScanning));
-            ViewDoc();
-            Task.Run(() =>
+            BildViewRDI();
+            //ViewDoc();
+            /*Task.Run(() =>
             {
                 PopulateQuestions();
-            });
-        }   
+            });*/
+        }
 
         private void OnButtonClicked(object sender, System.EventArgs e)
         {
@@ -197,7 +228,7 @@ namespace BRB6
             var vQuestion = GetRaiting(sender);//cc.BindingContext as Raiting;
             Bl.ChangeRaiting(vQuestion, button.ClassId, All);
 
-            if (vQuestion.IsHead) ChangeItemBlok(vQuestion);
+            //if (vQuestion.IsHead) ChangeItemBlok(vQuestion);
 
             Bl.CalcSumValueRating(vQuestion, All);
             RefreshHead();
@@ -296,14 +327,43 @@ namespace BRB6
         private void OnHeadTapped(object sender, EventArgs e)
         {
             var s = sender as Grid;
-            var cc = s.Parent as StackLayout;
-            var vRait = cc.BindingContext as BRB5.Model.RaitingDocItem;
+            var cc = s.Parent as QuestionHeadTemplate;
+            var vRait = cc.Data;
             vRait.IsVisible = !vRait.IsVisible;
             Choice = eTypeChoice.NotDefine;
             ChangeItemBlok(vRait);
         }
 
         private void ChangeItemBlok(BRB5.Model.RaitingDocItem vRait)
+        {
+            //MainThread.BeginInvokeOnMainThread(() => { QuestionsStackLayout.Children.Add(el); });
+            Dispatcher.Dispatch(() =>
+            {
+            var aa = QuestionsStackLayout.Children.Select(el => (IViewRDI)el).ToList();
+            int index = 0;
+            foreach (var el in aa)
+            {
+                index++;
+                if (el.Data == vRait)
+                    break;
+            }
+                if (vRait.IsVisible)
+                {
+                    foreach (var el in AllViewRDI.Where(el => el.Data.Parent == vRait.Id))
+                        QuestionsStackLayout.Children.Insert(index++, el);
+                }
+                else
+                {
+                    foreach (var el in AllViewRDI)
+                    {
+                        if (el.Data.Parent == vRait.Id)
+                            QuestionsStackLayout.Children.Remove(el);
+                    }
+                }
+            });
+        }
+
+        /*private void ChangeItemBlok(BRB5.Model.RaitingDocItem vRait)
         {
             Dispatcher.Dispatch(() =>
             {
@@ -321,14 +381,14 @@ namespace BRB6
                     else Questions.Remove(el);
                 }
             });
-        }
+        }*/
 
         private void BarCode(object sender, EventArgs e)
         {
             IsVisBarCode = !IsVisBarCode;
             BarcodeScaner.CameraEnabled = IsVisBarCode;
         }
-        private void OnScanBarCode(string result)
+        /*private void OnScanBarCode(string result)
         {
             Dispatcher.Dispatch(() =>
             {
@@ -344,29 +404,32 @@ namespace BRB6
 
                 //ListQuestions.ScrollTo(Questions.Last(), ScrollToPosition.Center, false);
             });
-        }
+        }*/
 
         private void ShowButton(object sender, EventArgs e)
         {
-            switch (((ImageButton)sender).AutomationId)
+            if (IsLoad)
             {
-                case "All":
-                    Choice = eTypeChoice.All;
-                    foreach (var el in All.Where(el => el.IsHead))
-                        el.IsVisible = true;
-                    break;
-                case "OnlyHead":
-                    Choice = eTypeChoice.OnlyHead;
-                    foreach (var el in All.Where(el => el.IsHead))
-                        el.IsVisible = false;
-                    break;
-                case "NoAnswer":
-                    Choice = eTypeChoice.NoAnswer;
-                    foreach (var el in All.Where(el => el.IsHead))
-                        el.IsVisible = false;
-                    break;
+                switch (((ImageButton)sender).AutomationId)
+                {
+                    case "All":
+                        Choice = eTypeChoice.All;
+                        foreach (var el in All.Where(el => el.IsHead))
+                            el.IsVisible = true;
+                        break;
+                    case "OnlyHead":
+                        Choice = eTypeChoice.OnlyHead;
+                        foreach (var el in All.Where(el => el.IsHead))
+                            el.IsVisible = false;
+                        break;
+                    case "NoAnswer":
+                        Choice = eTypeChoice.NoAnswer;
+                        foreach (var el in All.Where(el => el.IsHead))
+                            el.IsVisible = false;
+                        break;
+                }
+                ViewDoc();
             }
-            ViewDoc();
             //ListQuestions.ScrollTo( Questions.First(), ScrollToPosition.Start, false);
         }
 
@@ -375,7 +438,7 @@ namespace BRB6
             if (e.BarcodeResults.Length > 0)
             {
                 BarcodeScaner.PauseScanning = true;
-                OnScanBarCode(e.BarcodeResults[0].DisplayValue);
+                //OnScanBarCode(e.BarcodeResults[0].DisplayValue);
                 Task.Run(async () => {
                     await Task.Delay(1000);
                     BarcodeScaner.PauseScanning = false;
