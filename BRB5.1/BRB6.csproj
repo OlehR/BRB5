@@ -197,6 +197,9 @@
 	  <MauiXaml Update="Template\WareItemTemplate.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
+	  <MauiXaml Update="View\Act.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
 	  <MauiXaml Update="View\ExpirationDateItem.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>

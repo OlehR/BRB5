@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="BRB6.View.Act"
+             Title="Act">
+    <NavigationPage.TitleView>
+        <StackLayout Spacing="10" Orientation="Horizontal">
+            <Label Text="F1- Сформувати акт" HorizontalOptions="End"
+        VerticalOptions="Center"  >
+                <Label.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="F1Create" />
+                </Label.GestureRecognizers>
+            </Label>
+        </StackLayout>
+    </NavigationPage.TitleView>
+    <Grid>
+        <ScrollView>
+            <VerticalStackLayout x:Name="StackLayoutDocs" VerticalOptions="CenterAndExpand"/>
+        </ScrollView>
+    </Grid>
+</ContentPage>
