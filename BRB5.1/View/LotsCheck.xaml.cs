@@ -24,13 +24,13 @@ public partial class LotsCheck : ContentPage
 	{
 		InitializeComponent();
         TypeDoc = vTypeDoc;
+        PopulateStackLayout();
     }
     protected override void OnAppearing()
     {
         base.OnAppearing();
         Config.BarCode = BarCode;
         _ = c.LoadDocsDataAsync(TypeDoc.CodeDoc, null, false);
-        PopulateStackLayout();
     }
     async void BarCode(string pBarCode) // BarCode
     {
@@ -125,7 +125,6 @@ public partial class LotsCheck : ContentPage
         {
             SelectedDoc = doc;
             doc.SelectedColor = true;
-            ScrollToSelected();
             await Navigation.PushAsync(new DocItem(doc, TypeDoc));
         }
     }
