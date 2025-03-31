@@ -4,6 +4,8 @@ using BL;
 using BRB5;
 using BarcodeScanning;
 using CommunityToolkit.Maui.Core.Platform;
+using UtilNetwork;
+
 #if ANDROID
 using Android.Views;
 #endif

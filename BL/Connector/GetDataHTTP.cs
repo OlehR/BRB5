@@ -9,13 +9,14 @@ using Utils;
 using BRB5;
 using System.IO;
 using System.Net.Http.Headers;
+using UtilNetwork;
 
 namespace BL.Connector
 {
     public class GetDataHTTP
     {
         protected static GetDataHTTP Instance = null;
-        static string[][] Url;
+        public static string[][] Url;
         static int[] DefaultApi;
         
         protected static string TAG = "BRB5/GetDataHTTP";
@@ -55,7 +56,7 @@ namespace BL.Connector
             return Instance;
         }
 
-        public async Task<HttpResult> HTTPRequestAsync(String pURL, String pData, String pContentType, String pLogin, String pPassWord,double pTimeOut=15 )
+        /*public async Task<HttpResult> HTTPRequestAsync(String pURL, String pData, String pContentType, String pLogin, String pPassWord,double pTimeOut=15 )
         {
             try
             {
@@ -101,7 +102,7 @@ namespace BL.Connector
                 return new HttpResult() { HttpState = eStateHTTP.Exeption, Result = e.Message };
             }
         }
-
+*/
         public HttpResult HTTPRequest(int pUrlApi, string pApi, string pData, string pContentType, string pLogin = null, string pPassWord = null, double pTimeOut = 15, bool IsSaveData = true)
         {
             return AsyncHelper.RunSync<HttpResult>(() => HTTPRequestAsync(pUrlApi, pApi, pData, pContentType, pLogin, pPassWord, pTimeOut, IsSaveData));
@@ -124,14 +125,14 @@ namespace BL.Connector
                 HttpResult res = new HttpResult();
                 if (Url != null && Url.Length >= pUrlApi && Url[pUrlApi] != null)
                 {
-                    res = await HTTPRequestAsync(Url[pUrlApi][DefaultApi[pUrlApi]] + pApi, pData, pContentType, pLogin, pPassWord,pTimeOut);
+                    res = await Http.HTTPRequestAsync(Url[pUrlApi][DefaultApi[pUrlApi]] + pApi, pData, pContentType, pLogin, pPassWord,pTimeOut);
                     if (res.HttpState != eStateHTTP.HTTP_OK && res.HttpState != eStateHTTP.HTTP_UNAUTHORIZED)
                     {
                         for (int i = 0; i < Url[pUrlApi].Length; i++)
                         {
                             if (i != DefaultApi[pUrlApi] && !string.IsNullOrEmpty(Url[pUrlApi][i]))
                             {
-                                res = await HTTPRequestAsync(Url[pUrlApi][i] + pApi, pData, pContentType, pLogin, pPassWord, pTimeOut);
+                                res = await Http.HTTPRequestAsync(Url[pUrlApi][i] + pApi, pData, pContentType, pLogin, pPassWord, pTimeOut);
                                 if (res.HttpState == eStateHTTP.HTTP_OK)
                                     DefaultApi[pUrlApi] = i;
                             }
@@ -147,45 +148,8 @@ namespace BL.Connector
             {
                 FileLogger.WriteLogMessage($"GetDataHTTP.HTTPRequest=>{e.Message}/nStackTrace=> {e.StackTrace}", eTypeLog.Error);
                 return new HttpResult() { Result = $"{e.Message}{Environment.NewLine} {e.StackTrace}" };
-            }
-           
-           
+            }        
         }
-
-        public static HttpResult GetFile(string pURL,string pDir)
-        {
-            pDir = Config.PathFiles;
-            try
-            {
-                WebClient webClient = new WebClient();
-                webClient.DownloadFile(new Uri(pURL), pDir);
-            }
-            catch(Exception e)
-            {
-                FileLogger.WriteLogMessage(e.Message, eTypeLog.Error); 
-            }
-            return new HttpResult();
-        }
-
-        public static async Task<string> UploadFileAsync(string url, string filePath)
-        {
-            using (var httpClient = new HttpClient())
-            {
-                using (var form = new MultipartFormDataContent())
-                {
-                    using (var fileStream = new FileStream(filePath, FileMode.Open, FileAccess.Read))
-                    {
-                        var streamContent = new StreamContent(fileStream);
-                        streamContent.Headers.ContentType = new MediaTypeHeaderValue("application/octet-stream");
-                        form.Add(streamContent, "formFile", Path.GetFileName(filePath));
-
-                        var response = await httpClient.PostAsync(url, form);
-                        response.EnsureSuccessStatusCode();
-
-                        return await response.Content.ReadAsStringAsync();
-                    }
-                }
-            }
-        }
+        
     }
 }

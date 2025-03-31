@@ -14,7 +14,7 @@ using System.Threading.Tasks;
 using System.Threading;
 using System.Drawing;
 using BRB5.Model.DB;
-
+using UtilNetwork;
 namespace BL.Connector
 {
     public class ConnectorSE : ConnectorBase

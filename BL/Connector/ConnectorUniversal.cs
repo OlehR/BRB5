@@ -14,6 +14,8 @@ using System.Threading.Tasks;
 using System.Threading;
 using System.Drawing;
 using BRB5.Model.DB;
+using UtilNetwork;
+//using static SQLite.SQLite3;
 
 namespace BL.Connector
 {
@@ -140,28 +142,57 @@ namespace BL.Connector
 
         public override async Task<Result> LoadDocsDataAsync(int pTypeDoc, string pNumberDoc, bool pIsClear)
         {
+            var TD = Config.GetDocSetting(pTypeDoc);
             try
             {
-                AppContext.SetSwitch("System.Reflection.NullabilityInfoContext.IsSupported", true);
-                GetDocs Data = new GetDocs() { CodeWarehouse = Config.CodeWarehouse, TypeDoc = pTypeDoc, NumberDoc = pNumberDoc };
-                HttpResult result = await Http.HTTPRequestAsync(0, "DCT/LoadDoc", Data.ToJson(), "application/json", null);
-                if (result.HttpState == eStateHTTP.HTTP_OK)
+                if (TD?.KindDoc == eKindDoc.RaitingDoc)
                 {
-                    var res = JsonConvert.DeserializeObject<Result<Docs>>(result.Result);
-                    if (res.State == 0)
+                    HttpResult result = await Http.HTTPRequestAsync(0, "/DCT/Raitting/GetRaitingDoc", Config.CodeUser.ToString(), "application/json", null);
+                    if (result.HttpState == eStateHTTP.HTTP_OK)
                     {
-                        db.ReplaceDoc(res.Info.Doc);
-                        db.ReplaceDocWaresSample(res.Info.Wares);
+                        var res = JsonConvert.DeserializeObject<Result<IEnumerable<Doc>>>(result.Result);
+                        if (res.State == 0)                        
+                            db.ReplaceDoc(res.Info);                        
                     }
-                    return new Result();
+                    else
+                        return new Result(result);
+                    result = await Http.HTTPRequestAsync(0, "/DCT/Raitting/GetRaitingTemplate", Config.CodeUser.ToString(), "application/json", null);
+                    if (result.HttpState == eStateHTTP.HTTP_OK)
+                    {
+                        var res = JsonConvert.DeserializeObject<Result<IEnumerable<RaitingTemplate>>>(result.Result);
+                        if (res.State == 0)
+                        {
+                            db.ReplaceRaitingTemplate(res.Info);
+                            foreach (var el in res.Info)                            
+                                db.ReplaceRaitingTemplateItem(el.Item);                            
+                        }
+                        return new Result();
+                    }
+                    return new Result(result);
                 }
-                return new Result(result);
+                else
+                {
+                    AppContext.SetSwitch("System.Reflection.NullabilityInfoContext.IsSupported", true);
+                    GetDocs Data = new GetDocs() { CodeWarehouse = Config.CodeWarehouse, TypeDoc = pTypeDoc, NumberDoc = pNumberDoc };
+                    HttpResult result = await Http.HTTPRequestAsync(0, "DCT/LoadDoc", Data.ToJson(), "application/json", null);
+                    if (result.HttpState == eStateHTTP.HTTP_OK)
+                    {
+                        var res = JsonConvert.DeserializeObject<Result<Docs>>(result.Result);
+                        if (res.State == 0)
+                        {
+                            db.ReplaceDoc(res.Info.Doc);
+                            db.ReplaceDocWaresSample(res.Info.Wares);
+                        }
+                        return new Result();
+                    }
+                    return new Result(result);
+                }
             }
             catch (Exception e)
             {
                 FileLogger.WriteLogMessage(this, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
                 return new Result(e);
-            }     
+            }
         }
 
         public override async Task<Result<IEnumerable<RaitingTemplate>>> GetRaitingTemplateAsync() { return null; }
@@ -191,77 +222,23 @@ namespace BL.Connector
         /// <returns></returns>
         public override async Task<Result> SendRaitingAsync(IEnumerable<RaitingDocItem> pR, DocVM pDoc)
         {
-            
-            OnSave?.Invoke($"Зберігаємо документ=>{pDoc.NumberDoc}");
-            var Res = new Result();
-            /*
             try
             {
-                var RD = new List<Raitings>();
-                foreach (var el in pR)
+                RaitingDocForSave Data = new RaitingDocForSave() { CodeUser = Config.CodeUser, DTEnd = pDoc.DTEnd, DTStart = pDoc.DTStart, Item = pR };
+                HttpResult result = Http.HTTPRequest(0, @"DCT\SaveRaitingAsync", Data.ToJSON(), "application/json;charset=utf-8", Config.Login, Config.Password);
+                if (result.HttpState == eStateHTTP.HTTP_OK)
                 {
-                    RD.Add(new Raitings() { questionId = el.Id, value = el.Rating, comment = el.Note });
+                    return JsonConvert.DeserializeObject<Result>(result.Result);
                 }
-
-                RaitingDocItem e = pR.FirstOrDefault(d => d.Id == -1);
-                if (e == null || e.Id == 0)
-                    e = pR.FirstOrDefault();
-                var r = new RequestSendRaiting()
-                {
-                    userId = Config.CodeUser,
-                    action = "results",
-                    answers = RD,
-                    planId = int.Parse(e.NumberDoc),
-                    text = e.Note,
-                    dateStart = pDoc.DTStart,
-                    dateEnd = pDoc.DTEnd
-                };
-                //var p = JsonConvert.DeserializeObject<Data>(result2.Result);
-                string data = JsonConvert.SerializeObject(r, new IsoDateTimeConverter { DateTimeFormat = "dd.MM.yyyy HH:mm:ss" });
-                //Збереження Json
-                try
-                {
-                    var FileName = Path.Combine(FileLogger.PathLog, $"{pDoc.NumberDoc}_{DateTime.Now:yyyyMMddHHmmssfff}.json");
-                    File.AppendAllText(FileName, data);
-                }
-                catch (Exception) { }
-
-                var sw = Stopwatch.StartNew();
-
-                HttpResult result = await Http.HTTPRequestAsync(2, "", data, "application/json", null, null, 90);
-
-                sw.Stop();
-                TimeSpan TimeLoad = sw.Elapsed;
-                OnSave?.Invoke($"Час збереження відповідей=>{TimeLoad.TotalSeconds}c");
-                FileLogger.WriteLogMessage($"ConnectorPSU.SendRaiting=>(NumberDoc=>{pDoc.NumberDoc}) Res=>({result.HttpState}");
-
-                if (result.HttpState != eStateHTTP.HTTP_OK)
-                {
-                    FileLogger.WriteLogMessage($"ConnectorPSU.SendRaiting=>(NumberDoc=>{pDoc.NumberDoc}) Res=>({Res.State},{Res.Info},{Res.TextError})", eTypeLog.Error);
-                    Res = new Result(result);
-                }
-                else
-                {
-                    var res = JsonConvert.DeserializeObject<AnswerSendRaiting>(result.Result);
-
-                    if (res.success)
-                    {
-                        Res = await SendRaitingFilesAsync(e.NumberDoc);
-                        OnSave?.Invoke($"Документ {pDoc.NumberDoc} Успішно відправлено");
-                    }
-                    else
-                        OnSave?.Invoke($"Помилка збереження документа {pDoc.NumberDoc}");
-                }
+                return new Result(result);
             }
-            catch (Exception ex)
+            catch (Exception e)
             {
-                Res = new Result(ex);
-                OnSave?.Invoke($"Помилка збереження =>{Res.TextError}");
+                FileLogger.WriteLogMessage(this, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+                return new Result(e);
             }
-            FileLogger.WriteLogMessage($"ConnectorPSU.SendRaiting=>(NumberDoc=>{pDoc.NumberDoc}) Res=>({Res.State},{Res.Info},{Res.TextError})");
-            */
-            return Res;
         }
+
         CultureInfo provider = CultureInfo.InvariantCulture;
         
         /// <summary>
@@ -273,7 +250,7 @@ namespace BL.Connector
         public override async Task<Result> SendRaitingFilesAsync(string pNumberDoc, int pTry = 2, int pMaxSecondSend = 0, int pSecondSkip = 0)
         {
             FileLogger.WriteLogMessage($"SendRaitingFiles Start pNumberDoc=>{pNumberDoc} pTry=>{pTry} pMaxSecondSend=>{pMaxSecondSend} pSecondSkip=>pSecondSkip", eTypeLog.Full);
-            /*
+            
             int i = 30;
             while (IsSaving && i-- > 0)
             {
@@ -298,16 +275,10 @@ namespace BL.Connector
                 var Res = new Result();
                 var DirArx = Path.Combine(Config.PathDownloads, "arx");
                 if (!Directory.Exists(DirArx))
-                {
-                    Directory.CreateDirectory(DirArx);
-                }
+                    Directory.CreateDirectory(DirArx);                
 
                 if (!Directory.Exists(Path.Combine(DirArx, pNumberDoc)))
-                {
-                    Directory.CreateDirectory(Path.Combine(DirArx, pNumberDoc));
-                }
-
-                var R = new RequestSendRaitingFile() { planId = int.Parse(pNumberDoc), action = "file", userId = Config.CodeUser };
+                    Directory.CreateDirectory(Path.Combine(DirArx, pNumberDoc));                
 
                 var Files = Directory.GetFiles(Path.Combine(Config.PathFiles, pNumberDoc));
                 FileLogger.WriteLogMessage($"SendRaitingFiles Files=>{Files?.Length}", eTypeLog.Full);
@@ -315,15 +286,16 @@ namespace BL.Connector
                 OnSave?.Invoke($"Файлів для передачі=>{Files.Count()}");
                 foreach (var f in Files)
                 {
+                    var FI = new FileInfo(f);
                     if (pMaxSecondSend > 0 && (DateTime.Now - StartTime).TotalSeconds > pMaxSecondSend) continue;
                     try
                     {
                         string s = Path.GetFileNameWithoutExtension(f).Split('_')[1] + "_" + Path.GetFileNameWithoutExtension(f).Split('_')[2];
                         if (s.Length > 18) { s = s.Substring(0, 18); }
-                        R.DT = DateTime.ParseExact(s, "yyyyMMdd_HHmmssfff", provider);
-                        if (pSecondSkip > 0 && (DateTime.Now - R.DT).TotalSeconds < pSecondSkip)
+                        var DT = DateTime.ParseExact(s, "yyyyMMdd_HHmmssfff", provider);
+                        if (pSecondSkip > 0 && (DateTime.Now - DT).TotalSeconds < pSecondSkip)
                         {
-                            FileLogger.WriteLogMessage($"SendRaitingFiles Skip DateCreateFile File=>{f} {DateTime.Now} / {R.DT}", eTypeLog.Full);
+                            FileLogger.WriteLogMessage($"SendRaitingFiles Skip DateCreateFile File=>{f} {DateTime.Now} / {DT}", eTypeLog.Full);
                             OnSave?.Invoke($"Файл пропущено=>{Path.GetFileName(f)}");
                             continue;
                         }
@@ -342,23 +314,14 @@ namespace BL.Connector
                     try
                     {
                         var sw = Stopwatch.StartNew();
-                        R.file = Convert.ToBase64String(File.ReadAllBytes(f));
-                        R.fileExt = Path.GetExtension(f).Substring(1);
-                        R.questionId = int.Parse(Path.GetFileName(f).Split('_')[0]);
+                        string  RR = await UtilNetwork.Http.UploadFileAsync(GetDataHTTP.Url[0][0] + "DCT/Raitting/UploadFile", f);
 
-                        sw.Stop();
-                        TimeSpan TimeLoad = sw.Elapsed;
-                        sw.Start();
-                        string data = JsonConvert.SerializeObject(R);
-                        HttpResult result = await Http.HTTPRequestAsync(2, "", data, "application/json", null, null, 60, false);
-                        R.file = null;
-
-                        if (result.HttpState == eStateHTTP.HTTP_OK)
+                        if (!string.IsNullOrEmpty(RR))
                         {
-                            var res = JsonConvert.DeserializeObject<Answer>(result.Result);
-                            FileLogger.WriteLogMessage($"ConnectorPSU.SendRaitingFiles  File=>{f} HTTP=>({R.ToJSON()}) HttpState=>{result.HttpState} success=>{res.success}");
+                            var res = JsonConvert.DeserializeObject<Result>(RR);
+                            FileLogger.WriteLogMessage($"ConnectorPSU.SendRaitingFiles  File=>{f} success=>{res.State}");
 
-                            if (res.success)
+                            if (res.State==0)
                             {
                                 var FileTo = Path.Combine(DirArx, pNumberDoc, Path.GetFileName(f));
                                 File.Copy(f, FileTo, true);
@@ -372,7 +335,7 @@ namespace BL.Connector
                             }
                             sw.Stop();
                             TimeSpan TimeSend = sw.Elapsed;
-                            string text = res.success ? $"[({i}:{Error})/{Files.Length}] {Path.GetFileName(f)}=> ({data.Length / (1024 * 1024 * TimeSend.TotalSeconds):n2}Mb/c;{((double)data.Length) / (1024d * 1024d):n2}Mb;{TimeSend.TotalSeconds:n1}c))" :
+                            string text = res.Success ? $"[({i}:{Error})/{Files.Length}] {Path.GetFileName(f)}=> ({FI.Length / (1024 * 1024 * TimeSend.TotalSeconds):n2}Mb/c;{((double)FI.Length) / (1024d * 1024d):n2}Mb;{TimeSend.TotalSeconds:n1}c))" :
                                $"[({i},{Error})/{Files.Length}] Файл не передано=>{Path.GetFileName(f)}";
                             OnSave?.Invoke(text);
                             FileLogger.WriteLogMessage(this, System.Reflection.MethodBase.GetCurrentMethod().Name, text, eTypeLog.Full);
@@ -382,7 +345,7 @@ namespace BL.Connector
                             Error++;
                             FileLogger.WriteLogMessage($"ConnectorPSU.SendRaitingFiles=>(File={f}) Res=>({Res.State},{Res.Info},{Res.TextError})", eTypeLog.Expanded);
                             LastError = Res;
-                            OnSave?.Invoke($"[({i},{Error})/{Files.Length}] Файл не передано=>{Path.GetFileName(f)} {result.HttpState}");
+                            OnSave?.Invoke($"[({i},{Error})/{Files.Length}] Файл не передано=>{Path.GetFileName(f)}");
                         }
                     }
                     catch (Exception e)
@@ -403,7 +366,7 @@ namespace BL.Connector
                 return Res;
             }
             finally { IsSaving = false; }
-            */
+            
             return null;
         }
 

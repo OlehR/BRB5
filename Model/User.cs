@@ -6,6 +6,7 @@ namespace BRB5.Model
 {
     public class User
     {
+        public eLoginServer LoginServer { get; set; }
         public int CodeUser { get; set; }
         public string NameUser { get; set; }
         public string BarCode { get; set; }

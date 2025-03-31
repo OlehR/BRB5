@@ -45,8 +45,7 @@ namespace BRB6
             {
                 var r = await c.LoginAsync(Login, Password, Config.LoginServer);
                 if (r.State == 0)
-                {
-                    Config.TypeDoc = c.GetTypeDoc(Config.Role, Config.LoginServer);
+                {                    
                     Dispatcher.Dispatch(() =>
                     {
                         OCTypeDoc?.Clear();                        

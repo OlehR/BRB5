@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Timers;
@@ -123,6 +124,7 @@ namespace BL
                     var r = db.GetRaitingDocItem(pDoc);
                     DocVM d = db.GetDoc(pDoc);
                     res = await c.SendRaitingAsync(r, d);
+                    c.OnSave?.Invoke(res.TextError);
                     if (res.State == 0)
                     {
                         pDoc.State = 1;

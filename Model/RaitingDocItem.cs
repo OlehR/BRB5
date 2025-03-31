@@ -108,4 +108,15 @@ namespace BRB5.Model
         public bool IsEnableNotKnow { get { return (RatingTemplate & 8) ==8; } set { RatingTemplate = value ? RatingTemplate | 8: RatingTemplate & ( 4 + 2+ 1); OnPropertyChanged(nameof(OpacityNotKnow)); } }    
 
     }
+
+    /// <summary>
+    /// Клас для збереження даних по рейтингу
+    /// </summary>
+    public class RaitingDocForSave
+    {
+        public DateTime DTStart { get; set; }
+        public DateTime DTEnd { get; set; }
+        public int CodeUser { get; set; }
+        public IEnumerable<RaitingDocItem> Item { get; set; }
+    }
 }
