@@ -59,7 +59,7 @@ namespace BL
             switch (Config.Company)
             {
                 //case eCompany.Sim23FTP:
-                case eCompany.NotDefined:  
+                case eCompany.NotDefined:
                     break;
                 case eCompany.Sim23:
                     result[0] = "http://10.100.0.34/;http://vpn.sim23.ua:6380/"; 
@@ -70,6 +70,9 @@ namespace BL
                 //case eCompany.VPSU:
                 case eCompany.PSU:
                     result[0] = "https://apitest.spar.uz.ua/";                    
+                    break;
+                case eCompany.Universal:
+                    result[0] = "http://vpn.sim23.ua:6380/";
                     break;
             }
             return result;

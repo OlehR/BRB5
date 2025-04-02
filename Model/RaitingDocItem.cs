@@ -109,14 +109,29 @@ namespace BRB5.Model
 
     }
 
+    public class RaitingDocItemSave
+    {
+        public RaitingDocItemSave() { }
+        public RaitingDocItemSave(RaitingDocItem pRDI) 
+        {
+            Id = pRDI.Id;
+            Rating = pRDI.Rating;
+            Note = pRDI.Note;
+        }
+        public int Id { get; set; }
+        public int Rating { get; set; }
+        public string Note { get; set; }
+
+    }
     /// <summary>
     /// Клас для збереження даних по рейтингу
     /// </summary>
     public class RaitingDocForSave
     {
+        public string NumberDoc { get; set; }
         public DateTime DTStart { get; set; }
         public DateTime DTEnd { get; set; }
         public int CodeUser { get; set; }
-        public IEnumerable<RaitingDocItem> Item { get; set; }
+        public IEnumerable<RaitingDocItemSave> Item { get; set; }
     }
 }

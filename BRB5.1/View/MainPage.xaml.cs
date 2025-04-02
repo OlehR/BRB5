@@ -48,9 +48,8 @@ namespace BRB6
                 {                    
                     Dispatcher.Dispatch(() =>
                     {
-                        OCTypeDoc?.Clear();                        
-                        //OCTypeDoc = new ObservableCollection<TypeDoc>(Config.TypeDoc);
-                        foreach (var i in Config.TypeDoc) OCTypeDoc.Add(i);
+                        OCTypeDoc?.Clear();
+                        foreach (var i in c.GetTypeDoc(Config.Role, Config.LoginServer)) OCTypeDoc.Add(i);
                         SLLogin.IsVisible = false;
                         ListDocs.IsVisible = true;
                     });
@@ -125,8 +124,8 @@ namespace BRB6
                     Dispatcher.Dispatch(() =>
                     {
                         OCTypeDoc?.Clear();
-                        Config.TypeDoc = c.GetTypeDoc(Config.Role, Config.LoginServer, vTypeDoc.Group);
-                        foreach (var i in Config.TypeDoc) OCTypeDoc.Add(i);
+                        var r = c.GetTypeDoc(Config.Role, Config.LoginServer, vTypeDoc.Group);
+                        foreach (var i in r) OCTypeDoc.Add(i);
                         IsVisibleBack = true;
                     });
                     break;
@@ -184,8 +183,8 @@ namespace BRB6
             {
                 IsVisibleBack = false;
                 OCTypeDoc?.Clear();
-                Config.TypeDoc = c.GetTypeDoc(Config.Role, Config.LoginServer);
-                foreach (var i in Config.TypeDoc) OCTypeDoc.Add(i);
+                var r = c.GetTypeDoc(Config.Role, Config.LoginServer);
+                foreach (var i in r) OCTypeDoc.Add(i);
             });
         }
     }

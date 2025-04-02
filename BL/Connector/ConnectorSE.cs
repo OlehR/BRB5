@@ -540,7 +540,7 @@ namespace BL.Connector
         /// </summary>
         /// <param name="pR"></param>
         /// <returns></returns>
-        public override async Task<Result> SendRaitingAsync(IEnumerable<RaitingDocItem> pR, DocVM pDoc)
+        public override async Task<Result> SendRatingAsync(IEnumerable<RaitingDocItem> pR, DocVM pDoc)
         {
             OnSave?.Invoke($"Зберігаємо документ=>{pDoc.NumberDoc}");
             var Res = new Result();
@@ -595,7 +595,7 @@ namespace BL.Connector
 
                     if (res.success)
                     {
-                        Res = await SendRaitingFilesAsync(e.NumberDoc);
+                        Res = await SendRatingFilesAsync(e.NumberDoc);
                         OnSave?.Invoke($"Документ {pDoc.NumberDoc} Успішно відправлено");
                     }
                     else
@@ -619,7 +619,7 @@ namespace BL.Connector
         /// pSecondSkip - скільки хв не відправляти файл(для фонового відправлення
         /// </summary>
         /// <returns></returns>
-        public override async Task<Result> SendRaitingFilesAsync(string pNumberDoc, int pTry = 2, int pMaxSecondSend = 0, int pSecondSkip = 0)
+        public override async Task<Result> SendRatingFilesAsync(string pNumberDoc, int pTry = 2, int pMaxSecondSend = 0, int pSecondSkip = 0)
         {
             FileLogger.WriteLogMessage($"SendRaitingFiles Start pNumberDoc=>{pNumberDoc} pTry=>{pTry} pMaxSecondSend=>{pMaxSecondSend} pSecondSkip=>pSecondSkip", eTypeLog.Full);
 
@@ -748,7 +748,7 @@ namespace BL.Connector
 
                 IsSaving = false;
                 if (!IsStopSave && pTry > 1 && Error > 0 && (double)Error / (double)Files.Length < 0.25d)
-                    return await SendRaitingFilesAsync(pNumberDoc, --pTry);
+                    return await SendRatingFilesAsync(pNumberDoc, --pTry);
                 return Res;
             }
             finally { IsSaving = false; }

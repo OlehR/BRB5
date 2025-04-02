@@ -34,6 +34,10 @@ namespace BL.Connector
                     //case eCompany.VPSU:
                         Instance = new ConnectorPSU();
                         break;
+                    case eCompany.Universal:
+                        //case eCompany.VPSU:
+                        Instance = new ConnectorUniversal();
+                        break;
                     default:
                         Instance = new ConnectorPSU();
                         break;

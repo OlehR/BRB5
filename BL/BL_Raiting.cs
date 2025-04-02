@@ -111,7 +111,7 @@ namespace BL
 
         private void OnTimedEvent(Object source, ElapsedEventArgs e)
         {
-            var task = Task.Run(() => Bl.c.SendRaitingFilesAsync(cDoc?.NumberDoc, 1, 2 * 60, 5 * 60));
+            var task = Task.Run(() => Bl.c.SendRatingFilesAsync(cDoc?.NumberDoc, 1, 2 * 60, 5 * 60));
         }
 
         public void SaveRDI(DocVM pDoc, Action pAction)
@@ -123,7 +123,7 @@ namespace BL
                 {
                     var r = db.GetRaitingDocItem(pDoc);
                     DocVM d = db.GetDoc(pDoc);
-                    res = await c.SendRaitingAsync(r, d);
+                    res = await c.SendRatingAsync(r, d);
                     c.OnSave?.Invoke(res.TextError);
                     if (res.State == 0)
                     {

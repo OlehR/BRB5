@@ -30,7 +30,8 @@ namespace BL.Connector
                 new PercentColor(75,Color.FromArgb(0xFDABAB) , Color.Pink, "72301630") };
         }
 
-        IEnumerable<TypeDoc> TypeDoc=null;
+       // IEnumerable<TypeDoc> TypeDoc=null;
+        bool isGroup = false;
         /// <summary>
         /// Список Документів доступних по ролі
         /// </summary>
@@ -38,27 +39,22 @@ namespace BL.Connector
         /// <returns></returns>
         public override IEnumerable<TypeDoc> GetTypeDoc(eRole pRole, eLoginServer pLS, eGroup pGroup = eGroup.NotDefined)
         {
-            /*if (TypeDoc == null)
-            {
-                HttpResult result = await Http.HTTPRequestAsync(0, "DCT/GetTypeDoc", "", "application/json", null);
-                if (result.HttpState == eStateHTTP.HTTP_OK)
-                {
-                    var res = JsonConvert.DeserializeObject<Result<IEnumerable<TypeDoc>>>(result.Result);
-                    if (res.State == 0)
-                        TypeDoc = res.Info;
-                }
-            } */ 
-            return TypeDoc;
+            if(!isGroup) return Config.TypeDoc;
+            if (pGroup == eGroup.NotDefined) return Config.TypeDoc.Where(el => el.KindDoc == eKindDoc.NotDefined);
+            return Config.TypeDoc.Where(el => el.Group == pGroup);
         }
 
-        public override IEnumerable<LoginServer> LoginServer() => new List<LoginServer>() { new LoginServer() { Code = eLoginServer.Central, Name = "ЦБ" } };
+        public override IEnumerable<LoginServer> LoginServer() => 
+            new List<LoginServer>() { 
+                new() { Code = eLoginServer.Central, Name = "ЦБ" }, 
+                new() { Code = eLoginServer.Bitrix, Name = "Бітрікс" } };
 
         public override async Task<Result> LoginAsync(string pLogin, string pPassWord, eLoginServer pLoginServer)
         {
             Result Res = new Result();            
-            if (pLoginServer == eLoginServer.Central)
+            if (pLoginServer == eLoginServer.Central || pLoginServer == eLoginServer.Bitrix)
             {
-                User Data = new User() { Login = pLogin, PassWord = pPassWord };
+                User Data = new User() { Login = pLogin, PassWord = pPassWord , LoginServer  = pLoginServer };
                 HttpResult result = await Http.HTTPRequestAsync(0, "DCT/Login", Data.ToJson(), "application/json", null);
                 if (result.HttpState == eStateHTTP.HTTP_OK)
                 {
@@ -66,7 +62,8 @@ namespace BL.Connector
                     Config.Role = res.Info?.Role ?? 0;
                     Config.CodeUser = res.Info?.CodeUser ?? 0;
                     Config.NameUser = res.Info?.NameUser;
-                    TypeDoc = res.Info?.TypeDoc;
+                    Config.TypeDoc = res.Info?.TypeDoc;
+                    isGroup = Config.TypeDoc.Any(el => el.KindDoc == eKindDoc.NotDefined);
                     FileLogger.WriteLogMessage($"ConnectorPSU.Login=>(pLogin=>{pLogin}, pPassWord=>{pPassWord},pLoginServer=>{pLoginServer}) Res=>({Res.State},{Res.Info},{Res.TextError})", eTypeLog.Full);
                     return res.GetResult;
                 }
@@ -147,7 +144,7 @@ namespace BL.Connector
             {
                 if (TD?.KindDoc == eKindDoc.RaitingDoc)
                 {
-                    HttpResult result = await Http.HTTPRequestAsync(0, "/DCT/Raitting/GetRaitingDoc", Config.CodeUser.ToString(), "application/json", null);
+                    HttpResult result = await Http.HTTPRequestAsync(0, "DCT/Rating/GetRatingDoc", $"{Config.CodeUser}", "application/json", null);
                     if (result.HttpState == eStateHTTP.HTTP_OK)
                     {
                         var res = JsonConvert.DeserializeObject<Result<IEnumerable<Doc>>>(result.Result);
@@ -156,7 +153,7 @@ namespace BL.Connector
                     }
                     else
                         return new Result(result);
-                    result = await Http.HTTPRequestAsync(0, "/DCT/Raitting/GetRaitingTemplate", Config.CodeUser.ToString(), "application/json", null);
+                    result = await Http.HTTPRequestAsync(0, "DCT/Rating/GetRatingTemplate", Config.CodeUser.ToString(), "application/json", null);
                     if (result.HttpState == eStateHTTP.HTTP_OK)
                     {
                         var res = JsonConvert.DeserializeObject<Result<IEnumerable<RaitingTemplate>>>(result.Result);
@@ -210,8 +207,8 @@ namespace BL.Connector
              if (result.HttpState == eStateHTTP.HTTP_OK)
              {
                  var res = JsonConvert.DeserializeObject<Result<IEnumerable<TypeDoc>>>(result.Result);
-                 if (res.State == 0)
-                     TypeDoc = res.Info;
+                // if (res.State == 0)
+                //     Config.TypeDoc = res.Info;
              }
             return null;
         }
@@ -220,12 +217,14 @@ namespace BL.Connector
         /// </summary>
         /// <param name="pR"></param>
         /// <returns></returns>
-        public override async Task<Result> SendRaitingAsync(IEnumerable<RaitingDocItem> pR, DocVM pDoc)
+        public override async Task<Result> SendRatingAsync(IEnumerable<RaitingDocItem> pR, DocVM pDoc)
         {
             try
             {
-                RaitingDocForSave Data = new RaitingDocForSave() { CodeUser = Config.CodeUser, DTEnd = pDoc.DTEnd, DTStart = pDoc.DTStart, Item = pR };
-                HttpResult result = Http.HTTPRequest(0, @"DCT\SaveRaitingAsync", Data.ToJSON(), "application/json;charset=utf-8", Config.Login, Config.Password);
+                string Data = new RaitingDocForSave() 
+                { NumberDoc=pDoc.NumberDoc, CodeUser = Config.CodeUser, DTEnd = pDoc.DTEnd, DTStart = pDoc.DTStart, Item = pR.Select(el=>new RaitingDocItemSave(el) ) 
+                }.ToJSON("yyyy-MM-ddTHH:mm:ss.ffff");
+                HttpResult result = Http.HTTPRequest(0, @"DCT\Rating\SaveRating", Data, "application/json", Config.Login, Config.Password,120);
                 if (result.HttpState == eStateHTTP.HTTP_OK)
                 {
                     return JsonConvert.DeserializeObject<Result>(result.Result);
@@ -247,7 +246,7 @@ namespace BL.Connector
         /// pSecondSkip - скільки хв не відправляти файл(для фонового відправлення
         /// </summary>
         /// <returns></returns>
-        public override async Task<Result> SendRaitingFilesAsync(string pNumberDoc, int pTry = 2, int pMaxSecondSend = 0, int pSecondSkip = 0)
+        public override async Task<Result> SendRatingFilesAsync(string pNumberDoc, int pTry = 2, int pMaxSecondSend = 0, int pSecondSkip = 0)
         {
             FileLogger.WriteLogMessage($"SendRaitingFiles Start pNumberDoc=>{pNumberDoc} pTry=>{pTry} pMaxSecondSend=>{pMaxSecondSend} pSecondSkip=>pSecondSkip", eTypeLog.Full);
             
@@ -362,7 +361,7 @@ namespace BL.Connector
 
                 IsSaving = false;
                 if (!IsStopSave && pTry > 1 && Error > 0 && (double)Error / (double)Files.Length < 0.25d)
-                    return await SendRaitingFilesAsync(pNumberDoc, --pTry);
+                    return await SendRatingFilesAsync(pNumberDoc, --pTry);
                 return Res;
             }
             finally { IsSaving = false; }

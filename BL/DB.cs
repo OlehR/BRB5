@@ -969,7 +969,7 @@ order by gw.NameGroup";
         {
             string sql = @"select DES.OrderDoc, DES.NumberDoc,DES.DocId, w.CodeWares,w.NameWares as NameWares, au.Coefficient as Coefficient,w.CodeUnit as CodeUnit, ud.ABRUNIT as NameUnit,
                             ( select group_concat(bc.BarCode,',') from BarCode bc where bc.CodeWares=w.CodeWares ) as BARCODE  ,w.CodeUnit as BaseCodeUnit,
-                            des.Quantity,des.Expiration,des.ExpirationDate,des.DaysLeft
+                            des.Quantity,des.Expiration,des.ExpirationDate,coalesce( des.DaysLeft, w.DaysLeft) as DaysLeft
 ,DE.ExpirationDateInput, DE.QuantityInput
                                 from WARES w 
                                 join ADDITIONUNIT au on w.CODEWARES=au.CODEWARES and au.CODEUNIT=w.CODEUNIT 
@@ -980,7 +980,7 @@ order by gw.NameGroup";
                         union all 
         select DES.OrderDoc, DES.NumberDoc,DES.DocId, w.CodeWares,w.NameWares as NameWares, au.Coefficient as Coefficient,w.CodeUnit as CodeUnit, ud.ABRUNIT as NameUnit,
                             ( select group_concat(bc.BarCode,',') from BarCode bc where bc.CodeWares=w.CodeWares ) as BARCODE  ,w.CodeUnit as BaseCodeUnit,
-                            des.Quantity,des.Expiration,des.ExpirationDate,des.DaysLeft,
+                            des.Quantity,des.Expiration,des.ExpirationDate,w.DaysLeft,
 DE.ExpirationDateInput, DE.QuantityInput
                                 from WARES w 
                                 join ADDITIONUNIT au on w.CODEWARES=au.CODEWARES and au.CODEUNIT=w.CODEUNIT 

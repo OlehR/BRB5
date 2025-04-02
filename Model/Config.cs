@@ -63,12 +63,8 @@ namespace BRB5.Model
                 } return res; } }
 
         public static IEnumerable<TypeDoc> TypeDoc;
-        public static TypeDoc GetDocSetting(int pTypeDoc) {
-            var r = TypeDoc.Where(el => el.CodeDoc == pTypeDoc);
-            if (r.Count() == 1) return r.First();
-            return null; }
+        public static TypeDoc GetDocSetting(int pTypeDoc) => TypeDoc.FirstOrDefault(x => x.CodeDoc == pTypeDoc);
 
-        //public static Warehouse LocationWarehouse = null;
         //static object Lock= new object();
         public static bool IsSoftKeyboard { get { return TypeScaner == eTypeScaner.Camera; } }
 
