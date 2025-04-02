@@ -151,6 +151,20 @@
                     </Label.GestureRecognizers>
                 </Label>
 
+                <Label Text="F5-" IsVisible="{Binding IsVisF5Act}"
+                        FontSize="16"
+                        Grid.Column="6"
+                        TextColor="#ff5c5c"
+                        VerticalOptions="Center" />
+                <Label Text="Акт" IsVisible="{Binding IsVisF5Act}"
+                        FontSize="18"
+                        Grid.Column="7"
+                        TextColor="#816f20">
+                    <Label.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="F5Act" />
+                    </Label.GestureRecognizers>
+                </Label>
+
                 <Label Text="F6-"
                        FontSize="16"
                        Grid.Column="6"

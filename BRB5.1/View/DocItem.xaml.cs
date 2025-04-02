@@ -33,6 +33,7 @@ namespace BRB6.View
         bool _IsVisibleDocF6 = false;
         public bool IsVisibleDocF6 { get { return _IsVisibleDocF6; } set { _IsVisibleDocF6 = value; OnPropertyChanged("IsVisibleDocF6"); } } 
         public ObservableCollection<DocWaresEx> MyDocWares { get; set; } = new ObservableCollection<DocWaresEx>();
+        public bool IsVisF5Act => TypeDoc.KindDoc == eKindDoc.LotsCheck;
         public DocItem(DocId pDocId,  TypeDoc pTypeDoc)
         {
             NokeyBoard();
@@ -97,28 +98,35 @@ namespace BRB6.View
             if (IsVisibleDocF6) DocDate.Focus();
         }
         private void DocNameFocus(object sender, FocusEventArgs e) {  DocName.Focus(); }
+        private async void F5Act(object sender, TappedEventArgs e)
+        {
+            if(TypeDoc.KindDoc==eKindDoc.LotsCheck)  await Navigation.PushAsync(new Act());
+        }
 
 #if ANDROID
         public void OnPageKeyDown(Keycode keyCode, KeyEvent e)
         {
-           switch (keyCode)
-           {
-            case Keycode.F2:
-               F2Save(null, EventArgs.Empty);
-               return;
-            case Keycode.F3:
-               F3Scan(null, EventArgs.Empty);
-               return;
-            case Keycode.F4:
-               F4WrOff(null, EventArgs.Empty); 
-               return;
-            case Keycode.F6:
-               F6Doc(null, EventArgs.Empty);
-               return;
+            switch (keyCode)
+            {
+                case Keycode.F2:
+                    F2Save(null, EventArgs.Empty);
+                    return;
+                case Keycode.F3:
+                    F3Scan(null, EventArgs.Empty);
+                    return;
+                case Keycode.F4:
+                    F4WrOff(null, EventArgs.Empty);
+                    return;
+                case Keycode.F5:
+                    F5Act(null, null);
+                    return;
+                case Keycode.F6:
+                    F6Doc(null, EventArgs.Empty);
+                    return;
 
-            default:
-               return;
-           }
+                default:
+                    return;
+            }
          }
 #endif
     }
