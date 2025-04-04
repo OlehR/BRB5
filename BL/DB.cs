@@ -1,22 +1,15 @@
 ﻿//using BRB5.Model;
-using BL.Connector;
 using BRB5;
 using BRB5.Model;
 using BRB5.Model.DB;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using SQLite;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 using Utils;
-using static System.Net.Mime.MediaTypeNames;
 public static class ProtoDB
 {
  
@@ -473,8 +466,8 @@ CREATE UNIQUE INDEX DocWaresExpirationTNC ON DocWaresExpiration (DateDoc, Number
  left join Warehouse  Wh on d.CodeWarehouse = wh.number 
                                 where TypeDoc = {pTypeDoc.CodeDoc} and DateDoc >= date(datetime(CURRENT_TIMESTAMP,'-{pTypeDoc.DayBefore} day'))" +
                                 (string.IsNullOrEmpty(pBarCode) ? "" : $" and BarCode like'%{pBarCode}%'") +
-                                (string.IsNullOrEmpty(pExFilrer) ? "" : $" and ExtInfo like'%{pExFilrer}%'") +
-" order by DateDoc DESC";
+                                (string.IsNullOrEmpty(pExFilrer) ? "" : $" and ExtInfo like'%{pExFilrer}%'") +@"
+ order by DateDoc DESC";
 
             var res = db.Query<DocVM>(Sql);
             if (!res.Any() && !string.IsNullOrEmpty(pBarCode))
@@ -489,7 +482,6 @@ and bc.BarCode=?
  order by DateDoc DESC";
                 res = db.Query<DocVM>(Sql, pBarCode);
             }
-
             return res;
         }
 
