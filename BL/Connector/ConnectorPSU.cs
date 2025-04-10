@@ -16,6 +16,7 @@ namespace BL.Connector
 {
     public class ConnectorPSU : ConnectorBase
     {
+        ConnectorUniversal CU =  new ConnectorUniversal();
         public override IEnumerable<LoginServer> LoginServer() { return new List<LoginServer>()
             {new  LoginServer (){Code=eLoginServer.Central,Name = "ЦБ"}}; }
 
@@ -165,10 +166,13 @@ namespace BL.Connector
         {
             if (pLogPrice != null && pLogPrice.Count() < 1)
                 return new Result(-1, "Відсутні дані на відправку");
+            return CU.SendLogPrice(pLogPrice);
+            /*if (pLogPrice != null && pLogPrice.Count() < 1)
+                return new Result(-1, "Відсутні дані на відправку");
             var Data = pLogPrice.Select(el => el.GetPSU());
             string data = JsonConvert.SerializeObject(new ApiLogPrice(Data));
             HttpResult result = Http.HTTPRequest(0, "znp/", data, "application/json");
-            return new Result(result);
+            return new Result(result);*/
         }
 
         /// <summary>

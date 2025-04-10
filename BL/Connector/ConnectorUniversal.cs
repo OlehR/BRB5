@@ -129,12 +129,34 @@ namespace BL.Connector
 
         public override Result SendLogPrice(IEnumerable<LogPrice> pLogPrice)
         {
+            try
+            {
+                string Data = new LogPriceSave()
+                {
+                    CodeWarehouse = Config.CodeWarehouse,
+                    CodeUser = Config.CodeUser,
+                    SerialNumber = Config.SN,
+                    LogPrice = pLogPrice
+                }.ToJSON("yyyy-MM-ddTHH:mm:ss.ffff");
+                HttpResult result = Http.HTTPRequest(0, @"DCT\SaveLogPrice", Data, "application/json", Config.Login, Config.Password, 120);
+                if (result.HttpState == eStateHTTP.HTTP_OK)
+                {
+                    return JsonConvert.DeserializeObject<Result>(result.Result);
+                }
+                return new Result(result);
+            }
+            catch (Exception e)
+            {
+                FileLogger.WriteLogMessage(this, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+                return new Result(e);
+            }
+            /*
             if (pLogPrice == null)
                 return new Result();
             StringBuilder sb = new StringBuilder();
             var Data = pLogPrice.Where(el => el.IsGoodBarCode).Select(el => new LogPriceSE(el));
             HttpResult res = Http.HTTPRequest(0, "pricetag", Data.ToJSON(), "application/json;charset=utf-8", Config.Login, Config.Password);
-            return new Result(res);
+            return new Result(res);*/
         }
 
         public override async Task<Result> LoadDocsDataAsync(int pTypeDoc, string pNumberDoc, bool pIsClear)

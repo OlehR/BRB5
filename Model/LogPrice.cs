@@ -14,7 +14,7 @@ namespace BRB5.Model
         /// 100 - Ок Подвійне скануванн,101-Відсутній цінник,102 -відсутній товар
         /// -999 -Ofline,-9 - Проблема,
         /// </summary>
-        public int Status { get; set; }        
+        public int Status { get; set; }
         public DateTime DTInsert { get; set; }
         [Ignore]
         public int IsSend { get; set; }
@@ -38,11 +38,11 @@ namespace BRB5.Model
             PackageNumber = pPackageNumber;
             CodeWares = pWP.CodeWares;
             LineNumber = pLineNumber;
-            Article=pWP.Article;
-            ActionType=pWP.ActionType;
+            Article = pWP.Article;
+            ActionType = pWP.ActionType;
         }
 
-        public LogPrice(int pStatus,WaresPrice pWP, int pPackageNumber = 0, int pLineNumber = 0)
+        public LogPrice(int pStatus, WaresPrice pWP, int pPackageNumber = 0, int pLineNumber = 0)
         {
             BarCode = pWP?.ParseBarCode?.StartString;
             Status = pStatus;
@@ -62,5 +62,12 @@ namespace BRB5.Model
         public bool IsGoodBarCode { get { return BarCode != null && BarCode.Trim().Length > 2 && rg.IsMatch(BarCode.Trim().Replace("-", "")); } }
     }
 
-    
+    public class LogPriceSave
+    {
+        public string SerialNumber { get; set; }
+        public int CodeWarehouse { get; set; }
+        public int CodeUser { get; set; }
+        public IEnumerable<LogPrice> LogPrice { get; set; }
+    }
+
 }
