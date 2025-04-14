@@ -225,14 +225,21 @@ namespace BL.Connector
         /// <returns></returns>
         public override async Task<Result> SendDocsDataAsync(DocVM pDoc, IEnumerable<DocWares> pWares)
         {
-             HttpResult result = await Http.HTTPRequestAsync(0, "DCT/GetTypeDoc", "", "application/json", null);
-             if (result.HttpState == eStateHTTP.HTTP_OK)
-             {
-                 var res = JsonConvert.DeserializeObject<Result<IEnumerable<TypeDoc>>>(result.Result);
-                // if (res.State == 0)
-                //     Config.TypeDoc = res.Info;
-             }
-            return null;
+            try
+            {
+                string Data = new SaveDoc() { Doc = pDoc, Wares = pWares }.ToJson();
+                HttpResult result = await Http.HTTPRequestAsync(0, "DCT/SaveDoc", Data, "application/json", null);
+                if (result.HttpState == eStateHTTP.HTTP_OK)
+                {
+                    return JsonConvert.DeserializeObject<Result>(result.Result);
+                }
+                return new Result(result);
+            }
+            catch (Exception e)
+            {
+                FileLogger.WriteLogMessage(this, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+                return new Result(e);
+            }
         }
         /// <summary>
         /// Вивантаження Рейтингів
