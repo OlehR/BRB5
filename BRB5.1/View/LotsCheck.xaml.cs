@@ -77,7 +77,7 @@ public partial class LotsCheck : ContentPage
             };
 
             var tapGestureRecognizer = new TapGestureRecognizer();
-            tapGestureRecognizer.Tapped += OpenDoc;
+            tapGestureRecognizer.Tapped += SaveLot;
             grid.GestureRecognizers.Add(tapGestureRecognizer);
 
             grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
@@ -117,15 +117,17 @@ public partial class LotsCheck : ContentPage
         }
     }
 
-    private async void OpenDoc(object sender, TappedEventArgs e)
+    private async void SaveLot(object sender, TappedEventArgs e)
     {
         if (SelectedDoc != null)
-            SelectedDoc.SelectedColor = false;
-        if (sender is Grid grid && grid.BindingContext is DocVM doc)
         {
-            SelectedDoc = doc;
-            doc.SelectedColor = true;
-            await Navigation.PushAsync(new DocItem(doc, TypeDoc));
+            var r = await c.SendDocsDataAsync(SelectedDoc, null);
+            if (r.State != 0) _ = DisplayAlert("Помилка", r.TextError, "OK");
+            else
+            {
+                var toast = Toast.Make("Документ успішно збережений");
+                _ = toast.Show();
+            }
         }
     }
 

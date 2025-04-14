@@ -72,7 +72,7 @@ namespace BL
                     result[0] = "https://apitest.spar.uz.ua/";                    
                     break;
                 case eCompany.Universal:
-                    result[0] = "https://dct.sim23.ua/";
+                    result[0] = "https://dct.sim23.ua:5443/";
                     break;
             }
             return result;
