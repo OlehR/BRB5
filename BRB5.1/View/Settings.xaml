@@ -144,7 +144,7 @@
                            Grid.Column="3" />
                 </Grid>
 
-                <Button Text="Сканувати QR"  Clicked="QRCodeScan"  />
+                <Button Text="Сканувати QR" IsVisible="{Binding IsVisScan}" Clicked="QRCodeScan"  />
                 
                 <Grid>
                     <Grid.ColumnDefinitions>
