@@ -39,6 +39,9 @@ namespace BRB5.Model
         ///public Keyboard Keyboard { get { return CodeUnit == 7 ? Keyboard.Telephone : Keyboard.Numeric; } }
 
         public ParseBarCode ParseBarCode { get; set; }
+
+        public IEnumerable<ProblematicItem> ProblematicItems { get; set; }
+        public bool IsVisProblematic { get { return QuantityReason > 0; } } 
         public bool Even { get; set; } = false;
 
         //public boolean IsRecord = false;
@@ -164,7 +167,11 @@ namespace BRB5.Model
 
     }
 
-
+    public class ProblematicItem
+    {
+        public decimal Quantity { get; set; }
+        public string ReasonName { get; set; }
+    }
 
 
 }

@@ -72,7 +72,7 @@ namespace BL
                     result[0] = "https://apitest.spar.uz.ua/";                    
                     break;
                 case eCompany.Universal:
-                    result[0] = "http://vpn.sim23.ua:6380/";
+                    result[0] = "https://dct.sim23.ua/";
                     break;
             }
             return result;
