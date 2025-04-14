@@ -137,7 +137,7 @@ namespace BRB6.View
             Config.BarCode = BarCode;
         }
 
-        void BarCode(string pBarCode)
+        async void BarCode(string pBarCode)
         {
             if (pBarCode == null) return;
             if (pBarCode.StartsWith("BRB6=>"))
@@ -171,9 +171,9 @@ namespace BRB6.View
                     }
                 }
             }
-            OnClickSave(null, null);
+            await DisplayAlert("", "Параметри вступлять в силу після перезапуску", "Перезапуск");
 
-            _= DisplayAlert("", "Параметри вступлять в силу після перезапуску", "Перезапуск");
+            OnClickSave(null, null);
             Application.Current.Quit();
         }
         public void Dispose() { Config.BarCode -= BarCode; }
