@@ -46,10 +46,10 @@ namespace BRB6.View
         {
             base.OnAppearing();
 
-            if(!IsSoftKeyboard)
+            if (!IsSoftKeyboard)
             {
 #if ANDROID
-            MainActivity.Key+= OnPageKeyDown;
+                MainActivity.Key += OnPageKeyDown;
 #endif
             }
             var r = db.GetDocWares(Doc, 1, eTypeOrder.Scan);
@@ -63,6 +63,14 @@ namespace BRB6.View
                     MyDocWares.Add(item);
                     index++;
                 }
+
+                ///temp!!!!
+                MyDocWares[0].QuantityReason = 1;
+                MyDocWares[0].ProblematicItems = new List<ProblematicItem>
+        {
+            new ProblematicItem { Quantity = 5, ReasonName = "Damaged" },
+            new ProblematicItem { Quantity = 3, ReasonName = "Expired" }
+                };
             }
         }
         protected override void OnDisappearing()

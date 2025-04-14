@@ -4,6 +4,7 @@ using BRB5.Model;
 using System.Collections.ObjectModel;
 using Utils;
 using BRB5;
+using BarcodeScanning;
 
 namespace BRB6.View
 {
@@ -97,6 +98,10 @@ namespace BRB6.View
         private bool IsFilterWHChecked { get { return _IsFilterWHChecked; } set { _IsFilterWHChecked = value;
                 OnPropertyChanged(nameof(IsFilterWHChecked)); OnPropertyChanged(nameof(Warehouses));  } }
         private string TextFilterWH { get; set; }
+
+        CameraView BarcodeScaner;
+        bool _IsVisBarCode = false;
+        public bool IsVisBarCode { get { return _IsVisBarCode; } set { _IsVisBarCode = value; OnPropertyChanged(nameof(IsVisBarCode)); } }
         public Settings()
         {
             InitializeComponent();
@@ -166,7 +171,9 @@ namespace BRB6.View
                     }
                 }
             }
-            OnClickSave(null,null);
+            OnClickSave(null, null);
+
+            _= DisplayAlert("", "Параметри вступлять в силу після перезапуску", "Перезапуск");
             Application.Current.Quit();
         }
         public void Dispose() { Config.BarCode -= BarCode; }
@@ -177,11 +184,28 @@ namespace BRB6.View
         {
             base.OnAppearing();
             Config.OnProgress += Progress;
+
+            if (IsVisScan)
+            {
+                BarcodeScaner = new CameraView
+                {
+                    VerticalOptions = LayoutOptions.FillAndExpand,
+                    HorizontalOptions = LayoutOptions.FillAndExpand,
+                    CameraEnabled = false,
+                    VibrationOnDetected = false,
+                    BarcodeSymbologies = BarcodeFormats.Ean13 | BarcodeFormats.Ean8 | BarcodeFormats.QRCode,
+
+                };
+                BarcodeScaner.OnDetectionFinished += CameraView_OnDetectionFinished;
+                GridZxing.Children.Add(BarcodeScaner);
+            }
         }
         protected override void OnDisappearing()
         {
             base.OnDisappearing();
             Config.OnProgress -= Progress;
+
+            if (IsVisScan) BarcodeScaner.CameraEnabled = false;
         }
         private void OnClickLoad(object sender, EventArgs e)
         {
@@ -304,7 +328,18 @@ namespace BRB6.View
             }
         }
 
-
+        private void CameraView_OnDetectionFinished(object sender, BarcodeScanning.OnDetectionFinishedEventArg e)
+        {
+            if (e.BarcodeResults.Length > 0)
+            {
+                BarcodeScaner.PauseScanning = true;
+                BarCode(e.BarcodeResults[0].DisplayValue);
+                Task.Run(async () => {
+                    await Task.Delay(1000);
+                    BarcodeScaner.PauseScanning = false;
+                });
+            }
+        }
         private void CheckFilterWH(object sender, CheckedChangedEventArgs e)
         {
             bool isChecked = e.Value;
@@ -315,5 +350,23 @@ namespace BRB6.View
             }
         }
 
+        private async void QRCodeScan(object sender, EventArgs e)
+        {
+            if (Config.TypeScaner == eTypeScaner.Camera)
+            {
+                var cameraStatus = await Permissions.CheckStatusAsync<Permissions.Camera>();
+                if (cameraStatus != PermissionStatus.Granted)
+                    cameraStatus = await Permissions.RequestAsync<Permissions.Camera>();
+
+                if (cameraStatus != PermissionStatus.Granted)
+                {
+                    await DisplayAlert("Помилка", "Потрібен дозвіл камери", "OK", FlowDirection.MatchParent);
+                    return;
+                }
+            }
+
+            IsVisBarCode = !IsVisBarCode;
+            BarcodeScaner.CameraEnabled = IsVisBarCode;
+        }
     }
 }

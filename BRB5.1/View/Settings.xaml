@@ -115,6 +115,7 @@
     <controls:BaseContentPage Title="Адмін">
         <ContentPage.Content>
             <StackLayout>
+                <Grid IsVisible="{Binding IsVisBarCode}" HeightRequest="150" x:Name="GridZxing"/>
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*" />
@@ -143,6 +144,8 @@
                            Grid.Column="3" />
                 </Grid>
 
+                <Button Text="Сканувати QR"  Clicked="QRCodeScan"  />
+                
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="2*" />
