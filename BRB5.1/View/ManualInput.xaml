@@ -78,6 +78,8 @@
                                            Grid.Row="1"
                                            Grid.Column="1">
                                         <controls:CustomEntry
+                                            Completed ="Save"
+                                            Unfocused="Save"
                                             Style="{StaticResource EntryStyle}"
                                             Keyboard="{OnPlatform Numeric, iOS=Default}"
                                             Text="{Binding InputQuantity}" />

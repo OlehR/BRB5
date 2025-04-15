@@ -26,6 +26,15 @@ namespace BRB6.View
                         DocWares.Add(item);
             BindingContext = this;
             InitializeComponent();
+        }       
+
+        private void Save(object sender, EventArgs e)
+        {
+
+            if (sender is Entry entry)
+            {
+                var docVM = entry.BindingContext as DocVM;
+            }
         }
     }
 }
