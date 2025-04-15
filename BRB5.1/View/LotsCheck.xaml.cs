@@ -20,6 +20,7 @@ public partial class LotsCheck : ContentPage
     private ObservableCollection<DocVM> MyDocs = new ObservableCollection<DocVM>();
 
     private DocVM SelectedDoc;
+    private bool IsWares;
     public LotsCheck(TypeDoc vTypeDoc)
 	{
 		InitializeComponent();
@@ -65,6 +66,9 @@ public partial class LotsCheck : ContentPage
     {
         MyDocs = new ObservableCollection<DocVM>(db.GetDoc(TypeDoc));
 
+        var temp = db.GetDocWares(MyDocs.First(), 1, eTypeOrder.Scan);
+        IsWares = temp?.Any()==true;
+
         foreach (var doc in MyDocs)
         {
             var grid = new Grid
@@ -77,7 +81,7 @@ public partial class LotsCheck : ContentPage
             };
 
             var tapGestureRecognizer = new TapGestureRecognizer();
-            tapGestureRecognizer.Tapped += SaveLot;
+            tapGestureRecognizer.Tapped += OpenDoc;
             grid.GestureRecognizers.Add(tapGestureRecognizer);
 
             grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
@@ -117,17 +121,16 @@ public partial class LotsCheck : ContentPage
         }
     }
 
-    private async void SaveLot(object sender, TappedEventArgs e)
+    private async void OpenDoc(object sender, TappedEventArgs e)
     {
         if (SelectedDoc != null)
+            SelectedDoc.SelectedColor = false;
+        if (sender is Grid grid && grid.BindingContext is DocVM doc)
         {
-            var r = await c.SendDocsDataAsync(SelectedDoc, null);
-            if (r.State != 0) _ = DisplayAlert("Помилка", r.TextError, "OK");
-            else
-            {
-                var toast = Toast.Make("Документ успішно збережений");
-                _ = toast.Show();
-            }
+            SelectedDoc = doc;
+            doc.SelectedColor = true;
+            
+            if(IsWares)  await Navigation.PushAsync(new DocItem(doc, TypeDoc));
         }
     }
 
@@ -152,6 +155,7 @@ public partial class LotsCheck : ContentPage
     }
     private void F2Save(object sender, EventArgs e)
     {
+        if (IsWares) return;
         if (SelectedDoc == null)
             return;
         Task.Run(async () =>
