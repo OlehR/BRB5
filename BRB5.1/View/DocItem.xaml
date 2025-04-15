@@ -24,8 +24,7 @@
                     </local:CustomEntry>
                 </Frame>
             </StackLayout>
-            <ListView CachingStrategy="RecycleElementAndDataTemplate"
-                      VerticalOptions="CenterAndExpand"
+            <!--<ListView VerticalOptions="CenterAndExpand"
                       ItemsSource="{Binding MyDocWares}" SeparatorVisibility="None">
                 <ListView.Header>
                     <Grid RowSpacing="1"
@@ -58,48 +57,49 @@
                 <ListView.ItemTemplate>
                     <DataTemplate x:DataType="Model:DocWaresEx">
                         <ViewCell>
-                            
-                            <Grid RowSpacing="1"
+                            <StackLayout>                                
+
+                                <Grid  RowSpacing="1"
               ColumnSpacing="1"
               Padding="1"
               BackgroundColor="#adaea7">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="3*" />
-                                    <ColumnDefinition Width="2*" />
-                                    <ColumnDefinition Width="2*" />
-                                    <ColumnDefinition Width="3*" />
-                                </Grid.ColumnDefinitions>
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="1*" />
-                                    <RowDefinition Height="1*"/>
-                                    <RowDefinition Height="Auto"/>
-                                </Grid.RowDefinitions>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="3*" />
+                                        <ColumnDefinition Width="2*" />
+                                        <ColumnDefinition Width="2*" />
+                                        <ColumnDefinition Width="3*" />
+                                    </Grid.ColumnDefinitions>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="1*" />
+                                        <RowDefinition Height="1*"/>
+                                    </Grid.RowDefinitions>
 
-                                <Label Text="{Binding NameWares}"
+                                    <Label Text="{Binding NameWares}"
                    Grid.ColumnSpan="4"
                    BackgroundColor="{Binding GetBackgroundColor}" />
 
-                                <Label Text="{Binding CodeWares}"
+                                    <Label Text="{Binding CodeWares}"
                    Grid.Row="1"
                    Grid.Column="0"
                    BackgroundColor="{Binding GetBackgroundColor}" />
 
-                                <Label Text="{Binding QuantityOrder}"
+                                    <Label Text="{Binding QuantityOrder}"
                    Grid.Row="1"
                    Grid.Column="1"
                    BackgroundColor="{Binding GetBackgroundColor}" />
 
-                                <Label Text="{Binding InputQuantity}"
+                                    <Label Text="{Binding InputQuantity}"
                    Grid.Row="1"
                    Grid.Column="2"
                    BackgroundColor="{Binding GetBackgroundColor}" />
 
-                                <Label Text="{Binding QuantityReason}"
+                                    <Label Text="{Binding QuantityReason}"
                    Grid.Row="1"
                    Grid.Column="3"
-                   BackgroundColor="{Binding GetBackgroundColor}" />
+                   BackgroundColor="{Binding GetBackgroundColor}" />                                    
 
-                                <Grid Grid.Row="2" Grid.ColumnSpan="4" IsVisible="{Binding IsVisProblematic}">
+                                </Grid>
+                                <Grid IsVisible="{Binding IsVisProblematic}" >
                                     <CollectionView ItemsSource="{Binding ProblematicItems}">
                                         <CollectionView.ItemTemplate>
                                             <DataTemplate x:DataType="Model:ProblematicItem">
@@ -117,13 +117,42 @@
                                     </CollectionView>
 
                                 </Grid>
-                                
-                            </Grid>
+                            </StackLayout>
                         </ViewCell>
                     </DataTemplate>
                 </ListView.ItemTemplate>
-            </ListView>
+            </ListView>-->
+            <Grid RowSpacing="1"
+      ColumnSpacing="1"
+      Padding="1"
+      BackgroundColor="#adaea7">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="3*" />
+                    <ColumnDefinition Width="2*" />
+                    <ColumnDefinition Width="2*" />
+                    <ColumnDefinition Width="3*" />
+                </Grid.ColumnDefinitions>
 
+                <Label Text="Код"
+           Grid.Column="0"
+           BackgroundColor="White" />
+
+                <Label Text="План"
+           Grid.Column="1"
+           BackgroundColor="White" />
+                <Label Text="Факт"
+           Grid.Column="2"
+           BackgroundColor="White" />
+                <Label Text="Проблемні"
+           Grid.Column="3"
+           BackgroundColor="White" />
+
+            </Grid>
+            <Grid VerticalOptions="CenterAndExpand">
+                <ScrollView>
+                    <StackLayout x:Name="DocWaresStackLayout" />
+                </ScrollView>
+            </Grid>
             <StackLayout VerticalOptions="End" Orientation="Horizontal">
 
                 <Label Text="F2-"

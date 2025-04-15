@@ -63,16 +63,10 @@ namespace BRB6.View
                     MyDocWares.Add(item);
                     index++;
                 }
-
-                ///temp!!!!
-                MyDocWares[0].QuantityReason = 1;
-                MyDocWares[0].ProblematicItems = new List<ProblematicItem>
-        {
-            new ProblematicItem { Quantity = 5, ReasonName = "Damaged" },
-            new ProblematicItem { Quantity = 3, ReasonName = "Expired" }
-                };
+                PopulateDocWaresStackLayout();
             }
         }
+
         protected override void OnDisappearing()
         {
             base.OnDisappearing();
@@ -84,6 +78,131 @@ namespace BRB6.View
 #endif
             }
         }
+        private void PopulateDocWaresStackLayout()
+        {
+            if (MyDocWares == null || !MyDocWares.Any())
+                return;
+
+            DocWaresStackLayout.Children.Clear(); // Clear existing children
+            DocWaresStackLayout.Spacing = 0; // Remove vertical spacing between elements
+
+            foreach (var docWare in MyDocWares)
+            {
+                // Create the main container StackLayout
+                var mainStackLayout = new StackLayout
+                {
+                    Spacing = 0, // Remove spacing between child elements
+                    Padding = new Thickness(0), // Remove padding
+                };
+
+                // Create the first Grid
+                var grid = new Grid
+                {
+                    RowSpacing = 1, 
+                    ColumnSpacing = 1,
+                    Padding = 1,
+                    BackgroundColor = Color.FromArgb("#adaea7"),
+                    BindingContext = docWare
+                };
+
+                grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(3, GridUnitType.Star) });
+                grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(2, GridUnitType.Star) });
+                grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(2, GridUnitType.Star) });
+                grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(3, GridUnitType.Star) });
+
+                grid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Star });
+                grid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Star });
+
+                // Add Labels to the Grid
+                var nameLabel = new Label
+                {
+                    Text = docWare.NameWares,
+                    BackgroundColor = Color.FromArgb(docWare.GetBackgroundColor) // Convert string to Color
+                };
+                Grid.SetColumnSpan(nameLabel, 4); // Set column span using Grid.SetColumnSpan
+                grid.Children.Add(nameLabel);
+
+                var codeLabel = new Label
+                {
+                    Text = docWare.CodeWares.ToString(),
+                    BackgroundColor = Color.FromArgb(docWare.GetBackgroundColor)
+                };
+                Grid.SetRow(codeLabel, 1);
+                Grid.SetColumn(codeLabel, 0);
+                grid.Children.Add(codeLabel);
+
+                var quantityOrderLabel = new Label
+                {
+                    Text = docWare.QuantityOrder.ToString(),
+                    BackgroundColor = Color.FromArgb(docWare.GetBackgroundColor)
+                };
+                Grid.SetRow(quantityOrderLabel, 1);
+                Grid.SetColumn(quantityOrderLabel, 1);
+                grid.Children.Add(quantityOrderLabel);
+
+                var inputQuantityLabel = new Label
+                {
+                    Text = docWare.InputQuantity.ToString(),
+                    BackgroundColor = Color.FromArgb(docWare.GetBackgroundColor)
+                };
+                Grid.SetRow(inputQuantityLabel, 1);
+                Grid.SetColumn(inputQuantityLabel, 2);
+                grid.Children.Add(inputQuantityLabel);
+
+                var quantityReasonLabel = new Label
+                {
+                    Text = docWare.QuantityReason.ToString(),
+                    BackgroundColor = Color.FromArgb(docWare.GetBackgroundColor)
+                };
+                Grid.SetRow(quantityReasonLabel, 1);
+                Grid.SetColumn(quantityReasonLabel, 3);
+                grid.Children.Add(quantityReasonLabel);
+
+                mainStackLayout.Children.Add(grid);
+
+                // Create the second Grid for Problematic Items
+                if (docWare.IsVisProblematic)
+                {
+                    var problematicGrid = new Grid
+                    {
+                        IsVisible = docWare.IsVisProblematic
+                    };
+
+                    var collectionView = new CollectionView
+                    {
+                        ItemsSource = docWare.ProblematicItems,
+                        ItemTemplate = new DataTemplate(() =>
+                        {
+                            var itemGrid = new Grid
+                            {
+                                BackgroundColor = Colors.Beige
+                            };
+
+                            itemGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
+                            itemGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(4, GridUnitType.Star) });
+
+                            var quantityLabel = new Label();
+                            quantityLabel.SetBinding(Label.TextProperty, "Quantity");
+                            itemGrid.Children.Add(quantityLabel);
+
+                            var reasonLabel = new Label();
+                            reasonLabel.SetBinding(Label.TextProperty, "ReasonName");
+                            Grid.SetColumn(reasonLabel, 1);
+                            itemGrid.Children.Add(reasonLabel);
+
+                            return itemGrid;
+                        })
+                    };
+
+                    problematicGrid.Children.Add(collectionView);
+                    mainStackLayout.Children.Add(problematicGrid);
+                }
+
+                // Add the main StackLayout to the parent StackLayout
+                DocWaresStackLayout.Children.Add(mainStackLayout);
+            }
+        }
+
 
         private async void F2Save(object sender, EventArgs e)
         {
