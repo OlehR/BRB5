@@ -4,8 +4,11 @@
              x:Class="BRB6.View.LotsCheck">
     <NavigationPage.TitleView>
         <StackLayout Spacing="10" Orientation="Horizontal">
-            <Label Text="F2- Зберегти" HorizontalOptions="End"
-            VerticalOptions="Center"  >
+            <Label Text="F2- Зберегти" 
+                   x:Name="F2SaveLabel"
+                   HorizontalOptions="End" 
+                   IsVisible="False"  
+                   VerticalOptions="Center"  >
                 <Label.GestureRecognizers>
                     <TapGestureRecognizer Tapped="F2Save" />
                 </Label.GestureRecognizers>

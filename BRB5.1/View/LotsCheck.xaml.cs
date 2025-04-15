@@ -65,9 +65,17 @@ public partial class LotsCheck : ContentPage
     private void PopulateStackLayout()
     {
         MyDocs = new ObservableCollection<DocVM>(db.GetDoc(TypeDoc));
-
-        var temp = db.GetDocWares(MyDocs.First(), 1, eTypeOrder.Scan);
-        IsWares = temp?.Any()==true;
+        var firstDoc = MyDocs.FirstOrDefault();
+        if (firstDoc != null)
+        {
+            var temp = db.GetDocWares(firstDoc, 1, eTypeOrder.Scan);
+            IsWares = temp?.Any() == true;
+            F2SaveLabel.IsVisible = !IsWares;
+        }
+        else
+        {
+            IsWares = false;
+        }
 
         foreach (var doc in MyDocs)
         {
