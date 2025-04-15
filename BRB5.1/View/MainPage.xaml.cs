@@ -24,8 +24,8 @@ namespace BRB6
         public bool IsVisLS { get; set; } = true;
         private bool _IsVisibleBack = false;
         public bool IsVisibleBack { get { return _IsVisibleBack; } set { _IsVisibleBack = value; OnPropertyChanged(nameof(IsVisibleBack)); } }
-        public string Ver { get { return"BRB5 (" + AppInfo.VersionString + ")"; } }
-        public string Company { get { return Enum.GetName(typeof(eCompany), Config.Company); } }
+        public string Ver { get { return"BRB6 (" + AppInfo.VersionString + ")"; } }
+        public string Company { get { return  Config.NameCompany; } }
         public bool IsSoftKeyboard { get { return Config.IsSoftKeyboard; } }
         public MainPage()
         {

@@ -171,6 +171,8 @@ namespace BRB6.View
                     }
                 }
             }
+            Config.CodeWarehouse=0;
+            await c.LoadGuidDataAsync(true);
             await DisplayAlert("", "Параметри вступлять в силу після перезапуску", "Перезапуск");
 
             OnClickSave(null, null);

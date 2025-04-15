@@ -15,6 +15,7 @@ namespace BRB5.Model
         public static string Manufacturer = "";
         public static string Model = "";     
         public static int CodeWarehouse;
+        public static string NameCompany="?";
         public static List<int> CodesWarehouses { get; set; }
         //static eCompany _Company = eCompany.NotDefined;
         public static eTypeScaner TypeScaner;

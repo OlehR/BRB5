@@ -703,9 +703,9 @@ and bc.BarCode=?
             return db.Execute(Sql) >= 0;
         }
 
-        public bool ReplaceWarehouse(IEnumerable<Warehouse> pWh)
+        public bool ReplaceWarehouse(IEnumerable<Warehouse> pWh,bool pIsFull)
         {
-            db.Execute("delete from warehouse");
+            if (pIsFull) db.Execute("delete from warehouse");
             //string Sql = @"replace into Warehouse ( Code, Number, Name, Url, InternalIP, ExternalIP, Location ) values 
             //                                      (@CodeWarehouse,@Number,@Name,@Url,@InternalIP,@ExternalIP,@Location )";
             return db.ReplaceAll(pWh) >= 0;

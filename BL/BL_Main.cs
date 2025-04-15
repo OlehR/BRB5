@@ -75,6 +75,7 @@ namespace BL
             Config.PhotoQuality = db.GetConfig<ePhotoQuality>("PhotoQuality");
             Config.Compress = db.GetConfig<int>("Compress");
             Config.Compress = Config.Compress == 0 ? 80 : Config.Compress;
+            Config.NameCompany = db.GetConfig<string>("NameCompany");
             var tempstr = db.GetConfig<string>("CodesWarehouses");
             if (!string.IsNullOrEmpty(tempstr)) Config.CodesWarehouses = JsonConvert.DeserializeObject<List<int>>(tempstr);
             FileLogger.TypeLog = db.GetConfig<eTypeLog>("TypeLog");

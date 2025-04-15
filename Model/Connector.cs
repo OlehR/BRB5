@@ -123,6 +123,7 @@ namespace BRB5.Model
     }
     public class Guid
     {
+        public string NameCompany { get; set; }
         public IEnumerable<UnitDimension> UnitDimension { get; set;}
         public IEnumerable<AdditionUnit> AdditionUnit { get; set; }
         public IEnumerable<Wares> Wares { get; set; }

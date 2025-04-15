@@ -86,6 +86,7 @@ namespace BL.Connector
                 {
                     var res = JsonConvert.DeserializeObject<Result<BRB5.Model.Guid>>(result.Result);
                     Config.OnProgress?.Invoke(0.60);
+                    
                     SaveGuide(res.Info, pIsFull);                    
                 }                
                 //await GetDaysLeft();
