@@ -138,8 +138,8 @@ CREATE TABLE DocWares (
     ExpirationDate TIMESTAMP,
     DTInsert    TIMESTAMP       DEFAULT (DATETIME('NOW', 'LOCALTIME') )
 );
-CREATE UNIQUE INDEX DocWaresTNO ON DocWares ( TypeDoc, NumberDoc, OrderDoc, CodeReason);
-CREATE INDEX DocWaresTNW ON DocWares (TypeDoc ASC, NumberDoc ASC, CodeWares ASC);
+CREATE INDEX DocWaresTNO ON DocWares (TypeDoc, NumberDoc, OrderDoc, CodeReason);
+CREATE INDEX DocWaresTNW ON DocWares (TypeDoc, NumberDoc, CodeWares );
 
 CREATE TABLE DocWaresSample (
     TypeDoc     INTEGER         NOT NULL DEFAULT (0),

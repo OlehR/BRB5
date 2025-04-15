@@ -37,7 +37,7 @@ namespace BRB5.Model
             CodeReason = pDW.CodeReason;
                 }
         private decimal _QuantityOld;
-        public decimal QuantityOld { get { return _QuantityOld; } set { _QuantityOld = value; OnPropertyChanged("QuantityOld"); } }
+        public decimal QuantityOld { get { return _QuantityOld; } set { _QuantityOld = value; OnPropertyChanged(nameof(QuantityOld)); } }
         //public string QuantityOldStr { set { _QuantityOld = Convert.ToDecimal(value); } }
 
         private decimal _InputQuantity;       

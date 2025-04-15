@@ -33,7 +33,9 @@ namespace BRB6.View
 
             if (sender is Entry entry)
             {
-                var docVM = entry.BindingContext as DocVM;
+                var w = entry.BindingContext as DocWaresEx;
+                w.Quantity = w.InputQuantity;
+                db.ReplaceDocWares(w);
             }
         }
     }

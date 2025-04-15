@@ -51,7 +51,7 @@ namespace BL.Connector
             if (pIsFull)
             {
                 Config.NameCompany = pG.NameCompany;
-                db.SetConfig<string>("NameCompany", Config.NameCompany);
+                db.SetConfig<string>("NameCompany", Config.NameCompany??"?");
             }
             Config.OnProgress?.Invoke(0.60);
             if (pG.Wares?.Any() == true)
