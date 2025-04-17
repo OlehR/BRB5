@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+<controls:BaseContentPage  xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:controls="clr-namespace:BRB6.View"
              x:Class="BRB6.View.Act"
              Title="Act">
     <NavigationPage.TitleView>
@@ -13,9 +14,41 @@
             </Label>
         </StackLayout>
     </NavigationPage.TitleView>
-    <Grid>
-        <ScrollView>
-            <VerticalStackLayout x:Name="StackLayoutDocs" VerticalOptions="CenterAndExpand"/>
-        </ScrollView>
-    </Grid>
-</ContentPage>
+
+
+    <ContentPage.Content>
+        <StackLayout>
+        <Grid RowSpacing="1"
+                ColumnSpacing="1"
+                Padding="1"
+                BackgroundColor="#adaea7">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="3*" />
+                <ColumnDefinition Width="2*" />
+                <ColumnDefinition Width="2*" />
+                <ColumnDefinition Width="3*" />
+            </Grid.ColumnDefinitions>
+
+            <Label Text="Код"
+                    Grid.Column="0"
+                    BackgroundColor="White" />
+            <Label Text="План"
+                    Grid.Column="1"
+                    BackgroundColor="White" />
+            <Label Text="Факт"
+                    Grid.Column="2"
+                    BackgroundColor="White" />
+            <Label Text="Відхилення"
+                    Grid.Column="3"
+                    BackgroundColor="White" />
+
+        </Grid>
+        <Grid VerticalOptions="CenterAndExpand">
+            <ScrollView>
+                <VerticalStackLayout x:Name="StackLayoutDocs" />
+            </ScrollView>
+        </Grid>
+    </StackLayout>
+
+    </ContentPage.Content>
+</controls:BaseContentPage>

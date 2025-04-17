@@ -12,8 +12,7 @@ namespace BRB6.View
 {
     public partial class DocItem 
     {
-        private readonly TypeDoc TypeDoc;
-        
+        private readonly TypeDoc TypeDoc;        
         private DocVM Doc;
         private Connector c = ConnectorBase.GetInstance(); 
         protected DB db = DB.GetDB();
@@ -227,7 +226,7 @@ namespace BRB6.View
         private void DocNameFocus(object sender, FocusEventArgs e) {  DocName.Focus(); }
         private async void F5Act(object sender, TappedEventArgs e)
         {
-            if(TypeDoc.KindDoc==eKindDoc.LotsCheck)  await Navigation.PushAsync(new Act());
+            if(TypeDoc.KindDoc==eKindDoc.LotsCheck)  await Navigation.PushAsync(new Act(Doc, TypeDoc));
         }
 
 #if ANDROID

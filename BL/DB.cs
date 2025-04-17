@@ -1053,5 +1053,28 @@ DE.ExpirationDateInput, DE.QuantityInput
             string Sql = "Select * FROM Reason";
             return db.Query<BRB5.Model.DB.Reason>(Sql);
         }
+
+        public IEnumerable<WaresAct> GetWaresAct(string pNumberDoc)
+        {
+            string sql = @"select dw.CodeWares,sum(fact) as fact,sum(plan) as plan,w.NameWares
+from 
+    (SELECT dw.CodeWares, sum(dw.Quantity) as Fact,0 as plan  from DocWares  dw where dw.TypeDoc=1 and dw.NumberDoc= ?
+        group by dw.CodeWares
+     union all
+     SELECT dw.CodeWares, 0 as Fact,sum(dw.Quantity) as plan  from DocWaresSample  dw where dw.TypeDoc=1  and dw.NumberDoc= ?
+     group by dw.CodeWares) dw
+     join wares w on dw.CodeWares=w.CodeWares
+group by dw.CodeWares, w.NameWares
+";
+            try
+            {
+                return db.Query<WaresAct>(sql, pNumberDoc, pNumberDoc);
+            }
+            catch (Exception e)
+            {
+                FileLogger.WriteLogMessage(this, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+            }
+            return null;
+        }
     }
 }
