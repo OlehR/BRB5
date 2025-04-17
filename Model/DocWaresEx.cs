@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
+using Utils;
 //using Xamarin.Forms;
 
 namespace BRB5.Model
@@ -40,7 +42,9 @@ namespace BRB5.Model
 
         public ParseBarCode ParseBarCode { get; set; }
 
-        public IEnumerable<ProblematicItem> ProblematicItems { get; set; }
+        public string StrReason { set { if (!string.IsNullOrEmpty(value)) { var d = value.Split(';'); ProblematicItems= d.Select(el=> new ReasonItem(el))
+                } } }
+        public IEnumerable<ReasonItem> ProblematicItems { get; set; }
         public bool IsVisProblematic { get { return QuantityReason > 0; } } 
         public bool Even { get; set; } = false;
 
@@ -167,10 +171,22 @@ namespace BRB5.Model
 
     }
 
-    public class ProblematicItem
+    public class ReasonItem
     {
         public decimal Quantity { get; set; }
+        public int CodeReason { get; set; }
         public string ReasonName { get; set; }
+        public  ReasonItem() { }
+        public ReasonItem(string p) 
+        {
+            var d = p.Split(':');
+            if (d.Length > 0)
+                CodeReason = d[0].ToInt();           
+            if (d.Length > 1)
+                Quantity = d[1].ToDecimal();
+            if (d.Length > 2)
+                ReasonName = d[2];
+        }
     }
 
 

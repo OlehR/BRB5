@@ -414,6 +414,38 @@ CREATE UNIQUE INDEX DocWaresExpirationTNC ON DocWaresExpiration (DateDoc, Number
                     var r = db.Query<DocWaresEx>(Sql);
                     return r;
                 }
+                if (pTypeResult == 3)
+                {
+                    Sql = $@"select d.TypeDoc as TypeDoc, d.numberdoc as NumberDoc, 
+max(dw1.orderdoc) as OrderDoc, dw1.CODEWARES as CodeWares,
+    coalesce(dws.name,w.NAMEWARES) as NameWares,
+                        sum(coalesce(dws.quantity,0)) as QuantityOrderStr,
+                        --coalesce(dw1.quantity,0) as InputQuantityStr,
+                        sum(coalesce(dw1.quantity,0)) as InputQuantity,
+                        sum(coalesce(dws.quantitymin,0)) as QuantityMin, 
+                        sum(coalesce(dws.quantitymax,0)) as QuantityMax ,
+                        sum(coalesce(d.IsControl,0)) as IsControl, 
+                        sum(coalesce(dw1.quantityold,0)) as QuantityOld,
+                        dw1.CODEReason as  CodeReason
+                        ,0 as Ord,
+                        w.codeunit as codeunit
+                        ,(  select --dw.CodeReason,dw.quantity,r.NameReason--
+group_concat(dw.CodeReason ||':' || dw.quantity ||':' ||r.NameReason ,';') 
+from  DocWares dw 
+    left join  Reason r on dw.CodeReason=r.CodeReason where dw1.numberdoc = dw.numberdoc and dw.typedoc=dw1.typedoc and dw.CodeWares=dw1.CodeWares ) as StrReason
+                            from Doc d 
+                            join DocWares dw1 on (dw1.numberdoc = d.numberdoc and d.typedoc=dw1.typedoc)
+                            left join Wares w on dw1.codewares = w.codewares 
+                            left join (
+                            select  dws.typedoc ,dws.numberdoc, dws.codewares,dws.name, sum(dws.quantity) as quantity,  min(dws.quantitymin) as quantitymin, max(dws.quantitymax) as quantitymax  
+                                    from   DocWaresSample dws   group by dws.typedoc ,dws.numberdoc,dws.codewares,dws.name
+                            ) as dws on d.numberdoc = dws.numberdoc and d.typedoc=dws.typedoc and dws.codewares = dw1.codewares
+                            where d.typedoc={pDocId.TypeDoc} and  d.numberdoc = '{pDocId.NumberDoc}'
+                            group by d.TypeDoc, d.numberdoc,   dw1.CODEWARES ,coalesce(dws.name,w.NAMEWARES)
+                         order by dw1.orderdoc desc";
+                    var r = db.Query<DocWaresEx>(Sql);
+                    return r;
+                }
 
             }
             catch (Exception e)
