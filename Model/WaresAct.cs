@@ -8,6 +8,7 @@ namespace BRB5.Model
 {
     public class WaresAct
     {
+        public long CodeWares { get; set; }
         public string NameWares { get; set; }
         public decimal Plan { get; set; }
         public decimal Fact { get; set; }

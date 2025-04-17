@@ -1,6 +1,8 @@
 using BRB5;
 using BRB5.Model;
 using System.Collections.ObjectModel;
+using BL;
+
 #if ANDROID
 using Android.Views;
 #endif
@@ -11,7 +13,9 @@ public partial class Act
 {
     private readonly TypeDoc TypeDoc;
     private DocVM Doc;
-    public ObservableCollection<DocWaresEx> MyDocWares { get; set; } = new ObservableCollection<DocWaresEx>();
+    protected DB db = DB.GetDB();
+    public bool IsSoftKeyboard { get { return Config.IsSoftKeyboard; } }
+    public ObservableCollection<WaresAct> MyDocWares { get; set; } = new ObservableCollection<WaresAct>();
     public Act(DocId pDocId, TypeDoc pTypeDoc)
     {
         NokeyBoard();
@@ -20,22 +24,49 @@ public partial class Act
         BindingContext = this;
         InitializeComponent();
     }
+    protected override void OnAppearing()
+    {
+        base.OnAppearing();
 
-    private void PopulateDocWaresStackLayout()
+        if (!IsSoftKeyboard)
+        {
+#if ANDROID
+            MainActivity.Key += OnPageKeyDown;
+#endif
+        }
+        MyDocWares = new ObservableCollection<WaresAct>(db.GetWaresAct(Doc)); 
+        if (MyDocWares != null)
+        {
+            PopulateStackLayoutDocs();
+        }
+    }
+
+    protected override void OnDisappearing()
+    {
+        base.OnDisappearing();
+
+        if (!IsSoftKeyboard)
+        {
+#if ANDROID
+            MainActivity.Key -= OnPageKeyDown;
+#endif
+        }
+    }
+    private void PopulateStackLayoutDocs()
     {
         if (MyDocWares == null || !MyDocWares.Any())
             return;
 
-        StackLayoutDocs.Children.Clear(); // Clear existing children
-        StackLayoutDocs.Spacing = 0; // Remove vertical spacing between elements
+        StackLayoutDocs.Children.Clear(); 
+        StackLayoutDocs.Spacing = 0; 
 
         foreach (var docWare in MyDocWares)
         {
             // Create the main container StackLayout
             var mainStackLayout = new StackLayout
             {
-                Spacing = 0, // Remove spacing between child elements
-                Padding = new Thickness(0), // Remove padding
+                Spacing = 0, 
+                Padding = new Thickness(0), 
             };
 
             // Create the first Grid
@@ -60,7 +91,7 @@ public partial class Act
             var nameLabel = new Label
             {
                 Text = docWare.NameWares,
-                BackgroundColor = Color.FromArgb(docWare.GetBackgroundColor) // Convert string to Color
+                BackgroundColor = Color.FromArgb("#ffffff"),
             };
             Grid.SetColumnSpan(nameLabel, 4); // Set column span using Grid.SetColumnSpan
             grid.Children.Add(nameLabel);
@@ -68,7 +99,7 @@ public partial class Act
             var codeLabel = new Label
             {
                 Text = docWare.CodeWares.ToString(),
-                BackgroundColor = Color.FromArgb(docWare.GetBackgroundColor)
+                BackgroundColor = Color.FromArgb("#ffffff"),
             };
             Grid.SetRow(codeLabel, 1);
             Grid.SetColumn(codeLabel, 0);
@@ -76,8 +107,8 @@ public partial class Act
 
             var quantityOrderLabel = new Label
             {
-                Text = docWare.QuantityOrder.ToString(),
-                BackgroundColor = Color.FromArgb(docWare.GetBackgroundColor)
+                Text = docWare.Plan.ToString(),
+                BackgroundColor = Color.FromArgb("#ffffff"),
             };
             Grid.SetRow(quantityOrderLabel, 1);
             Grid.SetColumn(quantityOrderLabel, 1);
@@ -85,8 +116,8 @@ public partial class Act
 
             var inputQuantityLabel = new Label
             {
-                Text = docWare.InputQuantity.ToString(),
-                BackgroundColor = Color.FromArgb(docWare.GetBackgroundColor)
+                Text = docWare.Fact.ToString(),
+                BackgroundColor = Color.FromArgb("#ffffff"),
             };
             Grid.SetRow(inputQuantityLabel, 1);
             Grid.SetColumn(inputQuantityLabel, 2);
@@ -94,8 +125,9 @@ public partial class Act
 
             var quantityReasonLabel = new Label
             {
-                Text = docWare.QuantityReason.ToString(),
-                BackgroundColor = Color.FromArgb(docWare.GetBackgroundColor)
+                Text = docWare.QuantityDifference.ToString(),
+                BackgroundColor = Color.FromArgb("#ffffff"),
+                TextColor = Color.FromArgb(docWare.GetColor)
             };
             Grid.SetRow(quantityReasonLabel, 1);
             Grid.SetColumn(quantityReasonLabel, 3);
@@ -103,7 +135,6 @@ public partial class Act
 
             mainStackLayout.Children.Add(grid);
 
-            // Add the main StackLayout to the parent StackLayout
             StackLayoutDocs.Children.Add(mainStackLayout);
         }
     }

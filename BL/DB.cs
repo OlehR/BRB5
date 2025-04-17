@@ -1086,21 +1086,21 @@ DE.ExpirationDateInput, DE.QuantityInput
             return db.Query<BRB5.Model.DB.Reason>(Sql);
         }
 
-        public IEnumerable<WaresAct> GetWaresAct(string pNumberDoc)
+        public IEnumerable<WaresAct> GetWaresAct(DocId Doc)
         {
-            string sql = @"select dw.CodeWares,sum(fact) as fact,sum(plan) as plan,w.NameWares
+            string sql = $@"select dw.CodeWares,sum(fact) as fact,sum(plan) as plan,w.NameWares
 from 
-    (SELECT dw.CodeWares, sum(dw.Quantity) as Fact,0 as plan  from DocWares  dw where dw.TypeDoc=1 and dw.NumberDoc= ?
+    (SELECT dw.CodeWares, sum(dw.Quantity) as Fact,0 as plan  from DocWares  dw where dw.TypeDoc={Doc.TypeDoc} and dw.NumberDoc= '{Doc.NumberDoc}'
         group by dw.CodeWares
      union all
-     SELECT dw.CodeWares, 0 as Fact,sum(dw.Quantity) as plan  from DocWaresSample  dw where dw.TypeDoc=1  and dw.NumberDoc= ?
+     SELECT dw.CodeWares, 0 as Fact,sum(dw.Quantity) as plan  from DocWaresSample  dw where dw.TypeDoc={Doc.TypeDoc}  and dw.NumberDoc= '{Doc.NumberDoc}'
      group by dw.CodeWares) dw
      join wares w on dw.CodeWares=w.CodeWares
 group by dw.CodeWares, w.NameWares
 ";
             try
             {
-                return db.Query<WaresAct>(sql, pNumberDoc, pNumberDoc);
+                return db.Query<WaresAct>(sql);
             }
             catch (Exception e)
             {

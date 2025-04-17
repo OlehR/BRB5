@@ -42,7 +42,7 @@ namespace BRB5.Model
 
         public ParseBarCode ParseBarCode { get; set; }
 
-        public string StrReason { set { if (!string.IsNullOrEmpty(value)) { var d = value.Split(';'); ProblematicItems= d.Select(el=> new ReasonItem(el))
+        public string StrReason { set { if (!string.IsNullOrEmpty(value)) { var d = value.Split(';'); ProblematicItems = d.Select(el => new ReasonItem(el));
                 } } }
         public IEnumerable<ReasonItem> ProblematicItems { get; set; }
         public bool IsVisProblematic { get { return QuantityReason > 0; } } 
