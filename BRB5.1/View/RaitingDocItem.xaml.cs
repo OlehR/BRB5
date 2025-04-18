@@ -91,8 +91,7 @@ namespace BRB6
             FileLogger.WriteLogMessage($"Item Start=>{pDoc.NumberDoc}");
             cDoc = pDoc;
             InitializeComponent();
-            // TODO Xamarin.Forms.Device.RuntimePlatform is no longer supported. Use Microsoft.Maui.Devices.DeviceInfo.Platform instead. For more details see https://learn.microsoft.com/en-us/dotnet/maui/migration/forms-projects#device-changes
-            NavigationPage.SetHasNavigationBar(this, Device.RuntimePlatform == Device.iOS);
+            NavigationPage.SetHasNavigationBar(this, DeviceInfo.Platform == DevicePlatform.iOS);
             this.BindingContext = this;
             Bl.InitTimerRDI(cDoc);            
            
