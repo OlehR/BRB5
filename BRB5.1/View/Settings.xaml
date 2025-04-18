@@ -180,12 +180,12 @@
                                           Text="{Binding ApiUrl2}" IsVisible="{Binding IsVisApi3}"/>
                 </Frame>
 
-                <Frame Style="{StaticResource FrameStyle}" IsVisible="{Binding IsVisApi3}">
+                <Frame Style="{StaticResource FrameStyle}" IsVisible="False">
                     <controls:CustomEntry Style="{StaticResource EntryStyle}"
                                           Text="{Binding ApiUrl3}" IsVisible="{Binding IsVisApi3}" />
                 </Frame>
 
-                <Frame Style="{StaticResource FrameStyle}" IsVisible="{Binding IsVisApi3}">
+                <Frame Style="{StaticResource FrameStyle}" IsVisible="False">
                     <controls:CustomEntry Style="{StaticResource EntryStyle}"
                           Text="{Binding ApiUrl4}" IsVisible="{Binding IsVisApi3}" />
                 </Frame>
