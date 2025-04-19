@@ -8,6 +8,9 @@ using Microsoft.Maui.Controls.Compatibility;
 using Microsoft.Maui.Controls;
 using Microsoft.Maui;
 using BRB5;
+using System.Runtime.ExceptionServices;
+using Microsoft.Maui.Controls.Shapes;
+using Utils;
 
 namespace BRB6
 {
@@ -18,6 +21,7 @@ namespace BRB6
             InitializeComponent();
             MainPage = new NavigationPage(new MainPage());
             Application.Current.UserAppTheme = AppTheme.Light;
+            AppDomain.CurrentDomain.FirstChanceException += CurrentDomain_FirstChanceException;
         }
 
         protected override void OnStart()
@@ -31,7 +35,12 @@ namespace BRB6
         protected override void OnResume()
         {
         }
-        
+
+        private void CurrentDomain_FirstChanceException(object sender, FirstChanceExceptionEventArgs e)
+        {      
+                    FileLogger.WriteLogMessage(this, "GlobalException", e.ToJson()); 
+        }
+
 
     }
 }

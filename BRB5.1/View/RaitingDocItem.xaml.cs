@@ -149,12 +149,12 @@ namespace BRB6
             foreach (var el in All)
             {
                 IViewRDI e = el.IsHead ? new QuestionHeadTemplate(el, OnButtonClicked, OnHeadTapped) : new QuestionItemTemplate(el, OnButtonClicked);
-                //if(el.IsHead) 
+                if(el.IsHead) 
                 MainThread.BeginInvokeOnMainThread(() => { QuestionsStackLayout.Children.Add(e); });
                 AllViewRDI.Add(e);
             }
             IsLoad = true;
-            Choice = eTypeChoice.All;
+            Choice = eTypeChoice.OnlyHead;
         }
         /*private void PopulateQuestions()
         {
