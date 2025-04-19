@@ -56,14 +56,11 @@
                     FontSize="Large" BackgroundColor="White" BorderColor="White"
                     Clicked="BackToMainList"
                     Style="{StaticResource ButtonStyle}" />
-            <ListView  HorizontalOptions="CenterAndExpand" 
-          ItemTapped="OnItemTapped"
+            <ListView  ItemTapped="OnItemTapped" x:Name="ListDocsButton"
                   HasUnevenRows="True"
                   ItemsSource="{Binding OCTypeDoc}">
                 <ListView.Header>
                     <StackLayout Orientation="Horizontal">
-                        <!-- <Label Text="Список    Запитань2" FontSize="25"
-                           BackgroundColor="#c5cae9" HorizontalOptions="FillAndExpand" />-->
                     </StackLayout>
                 </ListView.Header>
                 <!-- ItemTapped="OnItemTapped"-->
@@ -75,8 +72,7 @@
                                     <Label Text="{Binding NameDoc}"
                                            TextColor="{AppThemeBinding Light='#000000', Dark='#FFFFFF'}"
                                                 FontSize="Large"
-                                                HorizontalOptions="CenterAndExpand"
-                                                VerticalOptions="CenterAndExpand"/>
+                                                HorizontalOptions="CenterAndExpand"/>
                                 </Grid>
                             </ViewCell.View>
                         </ViewCell>
