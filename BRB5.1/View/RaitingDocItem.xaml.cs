@@ -342,17 +342,20 @@ namespace BRB6
         {
             if (!IsLoad)
                 return;
-                //MainThread.BeginInvokeOnMainThread(() => { QuestionsStackLayout.Children.Add(el); });
-                Dispatcher.Dispatch(async () =>
+            //MainThread.BeginInvokeOnMainThread(() => { QuestionsStackLayout.Children.Add(el); });
+            Dispatcher.Dispatch(async () =>
+        {
+            try
             {
-            var aa = QuestionsStackLayout.Children.Select(el => (IViewRDI)el).ToList();
-            int index = 0;
-            foreach (var el in aa)
-            {
-                index++;
-                if (el.Data == vRait)
-                    break;
-            }
+                IsLoad = false;
+                var aa = QuestionsStackLayout.Children.Select(el => (IViewRDI)el).ToList();
+                int index = 0;
+                foreach (var el in aa)
+                {
+                    index++;
+                    if (el.Data == vRait)
+                        break;
+                }
                 if (vRait.IsVisible)
                 {
                     foreach (var el in AllViewRDI.Where(el => el.Data.Parent == vRait.Id))
@@ -373,7 +376,17 @@ namespace BRB6
                             QuestionsStackLayout.Children.Remove(el);
                     }
                 }
-            });
+            }
+            catch (Exception ex)
+            {
+                FileLogger.WriteLogMessage(this, System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+            }
+            finally
+            {
+                IsLoad = true;
+            }
+        }
+            );
         }
 
         /*private void ChangeItemBlok(BRB5.Model.RaitingDocItem vRait)
