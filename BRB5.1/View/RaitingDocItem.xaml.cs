@@ -336,7 +336,7 @@ namespace BRB6
         private void ChangeItemBlok(BRB5.Model.RaitingDocItem vRait)
         {
             //MainThread.BeginInvokeOnMainThread(() => { QuestionsStackLayout.Children.Add(el); });
-            Dispatcher.Dispatch(() =>
+            Dispatcher.Dispatch(async () =>
             {
             var aa = QuestionsStackLayout.Children.Select(el => (IViewRDI)el).ToList();
             int index = 0;
@@ -349,7 +349,14 @@ namespace BRB6
                 if (vRait.IsVisible)
                 {
                     foreach (var el in AllViewRDI.Where(el => el.Data.Parent == vRait.Id))
+                    {
                         QuestionsStackLayout.Children.Insert(index++, el);
+                        if (DeviceInfo.Platform == DevicePlatform.iOS && QuestionsStackLayout.Children.Count()>65)
+                        {
+                            await DisplayAlert("Увага", "Надто велика кількість елементів для iOS. Згорніть лишні групи.", "OK");
+                            break;
+                        }
+                    }
                 }
                 else
                 {
