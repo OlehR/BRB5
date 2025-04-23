@@ -351,7 +351,7 @@ namespace BRB6
                     foreach (var el in AllViewRDI.Where(el => el.Data.Parent == vRait.Id))
                     {
                         QuestionsStackLayout.Children.Insert(index++, el);
-                        if (DeviceInfo.Platform == DevicePlatform.iOS && QuestionsStackLayout.Children.Count()>65)
+                        if (DeviceInfo.Platform == DevicePlatform.iOS && QuestionsStackLayout.Children.Count > 65)
                         {
                             await DisplayAlert("Увага", "Надто велика кількість елементів для iOS. Згорніть лишні групи.", "OK");
                             break;
