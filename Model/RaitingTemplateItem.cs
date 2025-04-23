@@ -19,7 +19,10 @@ namespace BRB5.Model
         // заголовок групи
         public bool IsHead { get { return Parent==0; } }
       
-        public string Text { get; set; }        
+        public string Text { get; set; }
+
+        public string Explanation { get; set; }
+        
         /// <summary>
         /// Доступні варіанти відповіді 1 -погано + 2-так собі + 4 - добре + 8 - відсутня відповідь
         /// </summary>
