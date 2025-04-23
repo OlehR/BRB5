@@ -43,7 +43,7 @@
                     BackgroundColor="White" />
 
         </Grid>
-        <Grid VerticalOptions="CenterAndExpand">
+        <Grid VerticalOptions="StartAndExpand">
             <ScrollView>
                 <VerticalStackLayout x:Name="StackLayoutDocs" />
             </ScrollView>

@@ -50,7 +50,7 @@
            BackgroundColor="White" />
 
             </Grid>
-            <Grid VerticalOptions="CenterAndExpand">
+            <Grid VerticalOptions="StartAndExpand">
                 <ScrollView>
                     <StackLayout x:Name="DocWaresStackLayout" />
                 </ScrollView>
