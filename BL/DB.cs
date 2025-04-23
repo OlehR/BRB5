@@ -207,6 +207,7 @@ CREATE TABLE RaitingTemplateItem(
     Id INTEGER  NOT NULL,
     Parent INTEGER  NOT NULL,
     Text TEXT,
+    Explanation TEXT,
     RatingTemplate INTEGER         NOT NULL DEFAULT (0),
     OrderRS INTEGER,
     ValueRating         NUMBER   NOT NULL DEFAULT (0),
@@ -643,8 +644,8 @@ and bc.BarCode=?
 
         public IEnumerable<RaitingDocItem> GetRaitingDocItem(DocId pDoc)
         {
-            string sql = $@"select d.TypeDoc,d.NumberDoc,Rs.Id,Rs.Parent as Parent,Rs.Text,Rs.RatingTemplate,R.Rating,R.QuantityPhoto,R.Note,
-                            Rs.OrderRS,Rs.DTDelete,Rs.ValueRating as ValueRating
+            string sql = $@"select d.TypeDoc,d.NumberDoc,Rs.Id, Rs.Parent as Parent, Rs.Text, Rs.Explanation, Rs.RatingTemplate, R.Rating, R.QuantityPhoto, R.Note,
+                            Rs.OrderRS, Rs.DTDelete, Rs.ValueRating as ValueRating
         from Doc d 
          join RaitingTemplateItem as Rs on (d.IdTemplate=RS.IdTemplate ) 
          left join RaitingDocItem R on (d.TypeDoc=R.TypeDoc and d.NumberDoc=R.NumberDoc and Rs.Id=R.id)
@@ -676,6 +677,8 @@ and bc.BarCode=?
         {
             //string Sql = @"replace into RaitingTemplateItem (  IdTemplate, Id, Parent, Text, RatingTemplate, OrderRS,DTDelete ) values 
             //                                         (@IdTemplate,@Id,@Parent,@Text,@RatingTemplate,@OrderRS,@DTDelete)";                                                   
+            foreach (var el in pR) el.Explanation=el.Explanation??el.Text; //!!!TMP Поки не буде приходитиз сервера
+            
             return db.ReplaceAll(pR) >= 0;
         }
 
@@ -703,8 +706,8 @@ and bc.BarCode=?
 
         public bool ReplaceDocWaresSample(IEnumerable<DocWaresSample> pDWS)
         {
-            string Sql = @"replace into DocWaresSample ( TypeDoc, NumberDoc, OrderDoc, CodeWares, Quantity, QuantityMin, QuantityMax, Name, BarCode, ExpirationDate, Expiration) values 
-                                                       (@TypeDoc,@NumberDoc,@OrderDoc,@CodeWares,@Quantity,@QuantityMin,@QuantityMax,@Name,@BarCode,@ExpirationDate,@Expiration)";
+           // string Sql = @"replace into DocWaresSample ( TypeDoc, NumberDoc, OrderDoc, CodeWares, Quantity, QuantityMin, QuantityMax, Name, BarCode, ExpirationDate, Expiration) values 
+           //                                           (@TypeDoc,@NumberDoc,@OrderDoc,@CodeWares,@Quantity,@QuantityMin,@QuantityMax,@Name,@BarCode,@ExpirationDate,@Expiration)";
             return db.ReplaceAll(pDWS) >= 0;
         }
 

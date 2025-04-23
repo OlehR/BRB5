@@ -48,7 +48,9 @@ namespace BRB5.Model
         [JsonIgnore]
         public bool IsItem { get { return !IsHead; } }
         public string Text { get; set; }
-       
+
+        public string Explanation { get; set; }
+
         /// <summary>
         /// Доступні варіанти відповіді 1 -погано + 2-так собі + 4 - добре + 8 - відсутня відповідь
         /// </summary>
