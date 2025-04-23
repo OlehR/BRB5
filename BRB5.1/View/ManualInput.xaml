@@ -15,7 +15,7 @@
             </Frame>
 
             <ListView ItemsSource="{Binding DocWares}"
-                      HorizontalOptions="CenterAndExpand"
+                      HorizontalOptions="StartAndExpand"
                       SeparatorVisibility="None">
                 <ListView.Header>
                     <Grid RowSpacing="1"

@@ -17,7 +17,7 @@
     </NavigationPage.TitleView>
     <Grid>
         <ScrollView>
-            <VerticalStackLayout x:Name="StackLayoutDocs" VerticalOptions="CenterAndExpand"/>
+            <VerticalStackLayout x:Name="StackLayoutDocs" VerticalOptions="StartAndExpand"/>
         </ScrollView>
     </Grid>
 </ContentPage>

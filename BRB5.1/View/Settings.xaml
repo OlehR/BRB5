@@ -249,7 +249,7 @@
                 </ListView>-->
 
 
-                <Grid VerticalOptions="CenterAndExpand">
+                <Grid VerticalOptions="StartAndExpand">
                     <ScrollView>
                         <VerticalStackLayout x:Name="FilterWarehouseList" />
                     </ScrollView>
