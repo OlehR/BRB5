@@ -172,7 +172,7 @@ namespace BRB6
                 }
             }
         }*/
-        void ViewDoc()
+        async void ViewDoc()
         {
             if (IsLoad)
             {
@@ -190,6 +190,11 @@ namespace BRB6
                     )))
                     {
                         MainThread.BeginInvokeOnMainThread(() => { QuestionsStackLayout.Children.Add(el); });
+                        if (DeviceInfo.Platform == DevicePlatform.iOS && QuestionsStackLayout.Children.Count > 65)
+                        {
+                            await DisplayAlert("Увага", "Надто велика кількість елементів для iOS. Згорніть лишні групи.", "OK");
+                            break;
+                        }
                     }
                     RefreshHead();
                     Bl.CalcValueRating(All);
@@ -335,8 +340,10 @@ namespace BRB6
 
         private void ChangeItemBlok(BRB5.Model.RaitingDocItem vRait)
         {
-            //MainThread.BeginInvokeOnMainThread(() => { QuestionsStackLayout.Children.Add(el); });
-            Dispatcher.Dispatch(async () =>
+            if (!IsLoad)
+                return;
+                //MainThread.BeginInvokeOnMainThread(() => { QuestionsStackLayout.Children.Add(el); });
+                Dispatcher.Dispatch(async () =>
             {
             var aa = QuestionsStackLayout.Children.Select(el => (IViewRDI)el).ToList();
             int index = 0;
