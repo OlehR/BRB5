@@ -40,7 +40,9 @@ public partial class QuestionItemTemplate : ContentView, IViewRDI
             double Size = FileAndDir.GetFreeSpace(dir);
             if (Size < 10d * 1024d * 1024d)
             {
-                //await DisplayAlert($"Недостатньо місця", $"Залишок=> {Size / (1024d * 1024):n3} Mb", "OK");
+                var parentPage = this.GetParentPage();
+                if (parentPage != null)
+                    await parentPage.DisplayAlert($"Недостатньо місця", $"Залишок=> {Size / (1024d * 1024):n3} Mb", "OK");
                 return;
             }
             if (!Directory.Exists(dir))
@@ -73,7 +75,9 @@ public partial class QuestionItemTemplate : ContentView, IViewRDI
         catch (Exception ex)
         {
             FileLogger.WriteLogMessage($"Item.TakePhotoAsync", eTypeLog.Error);
-            //await DisplayAlert("Помилка!", ex.Message, "OK");
+            var parentPage = this.GetParentPage();
+            if (parentPage != null)
+                await parentPage.DisplayAlert("Помилка!", ex.Message, "OK");
         }
     }
     private void Editor_Completed(object sender, EventArgs e) => Bl.db.ReplaceRaitingDocItem(GetRaiting(sender));
@@ -81,5 +85,28 @@ public partial class QuestionItemTemplate : ContentView, IViewRDI
     {
         Microsoft.Maui.Controls.View V = (Microsoft.Maui.Controls.View)sender;
         return (BRB5.Model.RaitingDocItem)V.BindingContext;
+    }
+
+    private async void OnQuestionTapped(object sender, TappedEventArgs e)
+    {
+        if (Data?.Explanation != null)
+        {
+            var parentPage = this.GetParentPage();
+            if (parentPage != null)
+                await parentPage.DisplayAlert("Explanation", Data.Explanation, "OK");            
+        }
+    }
+    private Page GetParentPage()
+    {
+        Element parent = this;
+        while (parent != null)
+        {
+            if (parent is Page page)
+            {
+                return page;
+            }
+            parent = parent.Parent;
+        }
+        return null;
     }
 }

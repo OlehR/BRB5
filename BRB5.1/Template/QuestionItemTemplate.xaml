@@ -11,7 +11,11 @@
                            FontSize="22" 
                            LineBreakMode="WordWrap"
                            HorizontalOptions="FillAndExpand"
-                           VerticalOptions="Start" />
+                           VerticalOptions="Start" >
+                        <Label.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="OnQuestionTapped" />
+                        </Label.GestureRecognizers>
+                    </Label>
                 </Grid>
                 <Grid Margin="0" Padding="0">
                     <Grid.ColumnDefinitions>

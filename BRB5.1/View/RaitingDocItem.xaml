@@ -201,7 +201,7 @@
                     HorizontalOptions="FillAndExpand" />
                 </StackLayout>
 
-                <Grid VerticalOptions="CenterAndExpand" HeightRequest="500">
+                <Grid VerticalOptions="StartAndExpand" >
                     <ScrollView>
                         <StackLayout x:Name="QuestionsStackLayout"/>
                     </ScrollView>
