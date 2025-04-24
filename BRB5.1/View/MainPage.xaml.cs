@@ -50,6 +50,13 @@ namespace BRB6
                     {
                         OCTypeDoc?.Clear();
                         foreach (var i in c.GetTypeDoc(Config.Role, Config.LoginServer)) OCTypeDoc.Add(i);
+
+#if IOS          
+                        var screenHeight = DeviceDisplay.MainDisplayInfo.Height / DeviceDisplay.MainDisplayInfo.Density;
+                        var navigationBarHeight = 70;
+                        ListDocsButton.HeightRequest = screenHeight-navigationBarHeight;
+#endif
+
                         SLLogin.IsVisible = false;
                         ListDocs.IsVisible = true;
                     });
