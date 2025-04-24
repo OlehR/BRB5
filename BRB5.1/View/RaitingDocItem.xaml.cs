@@ -91,6 +91,9 @@ namespace BRB6
             FileLogger.WriteLogMessage($"Item Start=>{pDoc.NumberDoc}");
             cDoc = pDoc;
             InitializeComponent();
+
+            Microsoft.Maui.Controls.PlatformConfiguration.iOSSpecific.Page.SetUseSafeArea(this, true);
+
             NavigationPage.SetHasNavigationBar(this, DeviceInfo.Platform == DevicePlatform.iOS);
             this.BindingContext = this;
             Bl.InitTimerRDI(cDoc);            
@@ -114,6 +117,7 @@ namespace BRB6
         protected override void OnAppearing()
         {
             base.OnAppearing();
+            
             if (IsVisScan)
             {
                 BarcodeScaner = new CameraView
@@ -134,6 +138,17 @@ namespace BRB6
 
             IsRefreshList = true;
             _ = LocationBrb.GetCurrentLocation(Bl.db.GetWarehouse());
+
+#if IOS
+            HeaderLabel.SizeChanged += OnElementSizeChanged;
+            BottomGrid.SizeChanged += OnElementSizeChanged;
+
+            // Обчислюємо висоту після рендерингу
+            Dispatcher.Dispatch(() =>
+            {
+                CalculateAvailableHeight();
+            });
+#endif
         }
 
         protected override void OnDisappearing() 
@@ -479,6 +494,20 @@ namespace BRB6
                     BarcodeScaner.PauseScanning = false;
                 });
             }
+        }
+
+        private void OnElementSizeChanged(object sender, EventArgs e)
+        {
+            CalculateAvailableHeight();
+        }
+
+        private void CalculateAvailableHeight()
+        {
+            var screenHeight = DeviceDisplay.MainDisplayInfo.Height / DeviceDisplay.MainDisplayInfo.Density;
+            var navigationBarHeight = 50;
+            double otherElementsHeight = HeaderLabel.Height + GPSLabel.Height + BottomGrid.Height + navigationBarHeight + 60;
+            var availableHeight = screenHeight - otherElementsHeight;
+            QuestionsGrid.HeightRequest = availableHeight;
         }
 
         private BRB5.Model.RaitingDocItem GetRaiting(object sender)
