@@ -166,11 +166,15 @@ namespace BRB6.View
                             case "IsSound": IsSound = t[1].Equals("true"); break;
                             case "IsTest": IsTest = t[1].Equals("true"); break;
                             case "IsFilterSave": IsFilterSave = t[1].Equals("true"); break;
-                                //case "IsFullScreenScan": IsFullScreenScan = t[1].ToBool(); break;
+                            //case "IsFullScreenScan": IsFullScreenScan = t[1].ToBool(); break;
+                            case "NameCompany":
+                                Config.NameCompany = t[1];
+                                db.SetConfig<string>("NameCompany", Config.NameCompany ?? "?");
+                                break;
                         }
                     }
                 }
-            }
+            }     
             Config.CodeWarehouse=0;
             await c.LoadGuidDataAsync(true);
             await DisplayAlert("", "Параметри вступлять в силу після перезапуску", "Перезапуск");
@@ -209,9 +213,9 @@ namespace BRB6.View
 
             if (IsVisScan) BarcodeScaner.CameraEnabled = false;
         }
-        private void OnClickLoad(object sender, EventArgs e)
+        private async void OnClickLoad(object sender, EventArgs e)
         {
-            c.LoadGuidDataAsync(true);
+            await c.LoadGuidDataAsync(true);
             Config.DateLastLoadGuid = DateTime.Now;
             db.SetConfig<DateTime>("DateLastLoadGuid", Config.DateLastLoadGuid);
         }
