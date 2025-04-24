@@ -251,7 +251,7 @@ CREATE TABLE DocWaresExpiration(
 CREATE UNIQUE INDEX DocWaresExpirationTNC ON DocWaresExpiration (DateDoc, NumberDoc, DocId, CodeWares);
 
 ";
-        int Ver = 3;
+        readonly int Ver = 4;
         public string PathNameDB { get { return Path.Combine(BaseDir, NameDB); } }
 
         public DB(string pBaseDir) : this() { BaseDir = pBaseDir; }

@@ -179,26 +179,32 @@ namespace BRB6
                 try
                 {
                     IsLoad = false;
+                    bool IsAddItem = true;   
                     MainThread.BeginInvokeOnMainThread(() => { QuestionsStackLayout.Children.Clear(); });
-                    //Dispatcher.Dispatch(() =>
-                    //{
-                    
+
                     foreach (var el in AllViewRDI.Where(el => (el.Data.IsHead || el.Data.Parent == 9999999 || // Заголовки Всього
                     Choice == eTypeChoice.All ||                                             // Розгорнути      
                     (Choice == eTypeChoice.NoAnswer && (el.Data.Rating == 0 ||                    //Без відповіді  
                     (el.Data.Rating == 3 && String.IsNullOrEmpty(el.Data.Note) && el.Data.QuantityPhoto == 0)))  //Без опису           
                     )))
                     {
-                        MainThread.BeginInvokeOnMainThread(() => { QuestionsStackLayout.Children.Add(el); });
-                        if (DeviceInfo.Platform == DevicePlatform.iOS && QuestionsStackLayout.Children.Count > 65)
-                        {
-                            await DisplayAlert("Увага", "Надто велика кількість елементів для iOS. Згорніть лишні групи.", "OK");
-                            break;
+                        if (IsAddItem || el.Data.IsHead)
+                        {                            
+                            MainThread.BeginInvokeOnMainThread(() => { QuestionsStackLayout.Children.Add(el); });
                         }
+                        if (el.Data.IsHead)
+                            el.Data.IsVisible = IsAddItem;
+                        if (IsAddItem && DeviceInfo.Platform == DevicePlatform.iOS && QuestionsStackLayout.Children.Count > 60)
+                            IsAddItem = false;
                     }
                     RefreshHead();
                     Bl.CalcValueRating(All);
+                    //if (!IsAddItem)
+                    //    MainThread.BeginInvokeOnMainThread(async () =>
+                    //{
+                    //   // await DisplayAlert("Увага", "Надто велика кількість елементів для iOS. Згорніть лишні групи.", "OK");
                     //});
+                    
                 }
                 catch (Exception e)
                 {
@@ -361,9 +367,12 @@ namespace BRB6
                     foreach (var el in AllViewRDI.Where(el => el.Data.Parent == vRait.Id))
                     {
                         QuestionsStackLayout.Children.Insert(index++, el);
-                        if (DeviceInfo.Platform == DevicePlatform.iOS && QuestionsStackLayout.Children.Count > 65)
+                        if (DeviceInfo.Platform == DevicePlatform.iOS && QuestionsStackLayout.Children.Count > 60)
                         {
-                            await DisplayAlert("Увага", "Надто велика кількість елементів для iOS. Згорніть лишні групи.", "OK");
+                            //MainThread.BeginInvokeOnMainThread(async () =>
+                            //{
+                            //    //await DisplayAlert("Увага", "Надто велика кількість елементів для iOS. Згорніть лишні групи.", "OK");
+                            //});
                             break;
                         }
                     }

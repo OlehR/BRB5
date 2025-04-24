@@ -38,7 +38,8 @@ namespace BRB6
 
         private void CurrentDomain_FirstChanceException(object sender, FirstChanceExceptionEventArgs e)
         {      
-                    FileLogger.WriteLogMessage(this, "GlobalException", e.Exception); 
+                    FileLogger.WriteLogMessage(this, "GlobalException", e.Exception);
+            var s = e.Exception.Message;
         }
 
 
