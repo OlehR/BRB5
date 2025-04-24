@@ -88,56 +88,65 @@ namespace BRB6
 
         public RaitingDocItem(DocVM pDoc)
         {
-            FileLogger.WriteLogMessage($"Item Start=>{pDoc.NumberDoc}");
-            cDoc = pDoc;
-            InitializeComponent();
-
-            Microsoft.Maui.Controls.PlatformConfiguration.iOSSpecific.Page.SetUseSafeArea(this, true);
-
-            NavigationPage.SetHasNavigationBar(this, DeviceInfo.Platform == DevicePlatform.iOS);
-            this.BindingContext = this;
-            Bl.InitTimerRDI(cDoc);            
-           
-            //Questions = new ObservableCollection<BRB5.Model.RaitingDocItem>();
-            Bl.c.OnSave += (Res) => Dispatcher.Dispatch(() =>
+            try
             {
-                TextSave += Res + Environment.NewLine;
-                OnPropertyChanged(nameof(TextSave));
-            });
+                FileLogger.WriteLogMessage($"Item Start=>{pDoc.NumberDoc}");
+                cDoc = pDoc;
+                InitializeComponent();
 
-            LocationBrb.OnLocation += (Location) =>
+                Microsoft.Maui.Controls.PlatformConfiguration.iOSSpecific.Page.SetUseSafeArea(this, true);
+
+                NavigationPage.SetHasNavigationBar(this, DeviceInfo.Platform == DevicePlatform.iOS);
+                this.BindingContext = this;
+                Bl.InitTimerRDI(cDoc);
+
+                //Questions = new ObservableCollection<BRB5.Model.RaitingDocItem>();
+                Bl.c.OnSave += (Res) => Dispatcher.Dispatch(() =>
+                {
+                    TextSave += Res + Environment.NewLine;
+                    OnPropertyChanged(nameof(TextSave));
+                });
+
+                LocationBrb.OnLocation += (Location) =>
+                {
+                    OnPropertyChanged(nameof(GetGPSColor));
+                    OnPropertyChanged(nameof(NameWarehouse));
+                    OnPropertyChanged(nameof(SizeWarehouse));
+                };
+                Bl.LoadDataRDI(cDoc, GetData);
+            }
+            catch (Exception ex)
             {
-                OnPropertyChanged(nameof(GetGPSColor));
-                OnPropertyChanged(nameof(NameWarehouse));
-                OnPropertyChanged(nameof(SizeWarehouse));
-            };
-            Bl.LoadDataRDI(cDoc, GetData);
+                FileLogger.WriteLogMessage(this, System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+            }
         }
 
         protected override void OnAppearing()
         {
-            base.OnAppearing();
-            
-            if (IsVisScan)
+            try
             {
-                BarcodeScaner = new CameraView
+                base.OnAppearing();
+
+                if (IsVisScan)
                 {
-                    VerticalOptions = LayoutOptions.FillAndExpand,
-                    HorizontalOptions = LayoutOptions.FillAndExpand,
-                    CameraEnabled = false,
-                    VibrationOnDetected = false,
-                    BarcodeSymbologies = BarcodeFormats.Ean13 | BarcodeFormats.Ean8 | BarcodeFormats.QRCode,
+                    BarcodeScaner = new CameraView
+                    {
+                        VerticalOptions = LayoutOptions.FillAndExpand,
+                        HorizontalOptions = LayoutOptions.FillAndExpand,
+                        CameraEnabled = false,
+                        VibrationOnDetected = false,
+                        BarcodeSymbologies = BarcodeFormats.Ean13 | BarcodeFormats.Ean8 | BarcodeFormats.QRCode,
 
-                };
-                BarcodeScaner.OnDetectionFinished += CameraView_OnDetectionFinished;
-                GridZxing.Children.Add(BarcodeScaner);
-            }
+                    };
+                    BarcodeScaner.OnDetectionFinished += CameraView_OnDetectionFinished;
+                    GridZxing.Children.Add(BarcodeScaner);
+                }
 
-            Bl.StartTimerRDI();
-            //if (IsRefreshList)Bl.LoadDataRDI(cDoc,GetData);
+                Bl.StartTimerRDI();
+                //if (IsRefreshList)Bl.LoadDataRDI(cDoc,GetData);
 
-            IsRefreshList = true;
-            _ = LocationBrb.GetCurrentLocation(Bl.db.GetWarehouse());
+                IsRefreshList = true;
+                _ = LocationBrb.GetCurrentLocation(Bl.db.GetWarehouse());
 
 #if IOS
             HeaderLabel.SizeChanged += OnElementSizeChanged;
@@ -149,6 +158,11 @@ namespace BRB6
                 CalculateAvailableHeight();
             });
 #endif
+            }
+            catch (Exception ex)
+            {
+                FileLogger.WriteLogMessage(this, System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+            }
         }
 
         protected override void OnDisappearing() 
@@ -160,41 +174,42 @@ namespace BRB6
 
         void BildViewRDI()
         {
-            AllViewRDI = new List<IViewRDI>();
+            AllViewRDI = [];
             foreach (var el in All)
             {
                 IViewRDI e = el.IsHead ? new QuestionHeadTemplate(el, OnButtonClicked, OnHeadTapped) : new QuestionItemTemplate(el, OnButtonClicked);
-                if(el.IsHead) 
-                MainThread.BeginInvokeOnMainThread(() => { QuestionsStackLayout.Children.Add(e); });
+                if(el.IsHead || el.Parent == 9999999)
+                    MainThread.BeginInvokeOnMainThread(() => { QuestionsStackLayout.Children.Add(e); });
                 AllViewRDI.Add(e);
             }
             IsLoad = true;
             Choice = eTypeChoice.OnlyHead;
         }
-        /*private void PopulateQuestions()
-        {
-            foreach (var question in All)
-            {
-                if (question.IsHead)
-                {
-                    var questionTemplate = new QuestionHeadTemplate(question, OnButtonClicked);
-                    MainThread.BeginInvokeOnMainThread(() => { QuestionsStackLayout.Children.Add(questionTemplate); });
-                }
-                else
-                {
-                    var questionTemplate = new QuestionItemTemplate(question, OnButtonClicked);
-                    MainThread.BeginInvokeOnMainThread(() => { QuestionsStackLayout.Children.Add(questionTemplate); });
-                }
-            }
-        }*/
+        
         async void ViewDoc()
         {
             if (IsLoad)
             {
                 try
                 {
-                    IsLoad = false;
-                    bool IsAddItem = true;   
+                    IsLoad = false;                   
+                    if (Choice == eTypeChoice.NoAnswer && DeviceInfo.Platform == DevicePlatform.iOS)
+                    {
+                        int n=AllViewRDI.Count(el => ( el.Data.Rating == 0 ||                    //Без відповіді  
+                        (el.Data.Rating == 3 && String.IsNullOrEmpty(el.Data.Note) && el.Data.QuantityPhoto == 0)));  //Без опису      
+                        if (n > 65)
+                        {
+                            MainThread.BeginInvokeOnMainThread(async () =>
+                            {
+                                await DisplayAlert("Увага", "Надто велика кількість елементів для iOS. Дайте відповідь на більше питань.", "OK");
+                            });
+                            Choice = eTypeChoice.NotDefine;
+                            RefreshHead();
+                            return;
+                        }
+                    }
+
+                    bool IsAddItem = true;
                     MainThread.BeginInvokeOnMainThread(() => { QuestionsStackLayout.Children.Clear(); });
 
                     foreach (var el in AllViewRDI.Where(el => (el.Data.IsHead || el.Data.Parent == 9999999 || // Заголовки Всього
@@ -208,18 +223,17 @@ namespace BRB6
                             MainThread.BeginInvokeOnMainThread(() => { QuestionsStackLayout.Children.Add(el); });
                         }
                         if (el.Data.IsHead)
-                            el.Data.IsVisible = IsAddItem;
+                            el.Data.IsVisible = Choice == eTypeChoice.All && IsAddItem;
                         if (IsAddItem && DeviceInfo.Platform == DevicePlatform.iOS && QuestionsStackLayout.Children.Count > 60)
                             IsAddItem = false;
                     }
                     RefreshHead();
                     Bl.CalcValueRating(All);
-                    //if (!IsAddItem)
-                    //    MainThread.BeginInvokeOnMainThread(async () =>
-                    //{
-                    //   // await DisplayAlert("Увага", "Надто велика кількість елементів для iOS. Згорніть лишні групи.", "OK");
-                    //});
-                    
+                    if (!IsAddItem)
+                        MainThread.BeginInvokeOnMainThread(async () =>
+                    {
+                         await DisplayAlert("Увага", "Надто велика кількість елементів для iOS. Згорніть лишні групи.", "OK");
+                    });
                 }
                 catch (Exception e)
                 {
@@ -238,12 +252,7 @@ namespace BRB6
             All = pDocItem;
             IsVisibleBarcodeScanning = All.Any(el => el.Id == -1);
             OnPropertyChanged(nameof(IsVisibleBarcodeScanning));
-            BildViewRDI();
-            //ViewDoc();
-            /*Task.Run(() =>
-            {
-                PopulateQuestions();
-            });*/
+            BildViewRDI();            
         }
 
         private void OnButtonClicked(object sender, System.EventArgs e)
@@ -364,7 +373,7 @@ namespace BRB6
             if (!IsLoad)
                 return;
             //MainThread.BeginInvokeOnMainThread(() => { QuestionsStackLayout.Children.Add(el); });
-            Dispatcher.Dispatch(async () =>
+            //Task.Run(() =>
         {
             try
             {
@@ -381,14 +390,15 @@ namespace BRB6
                 {
                     foreach (var el in AllViewRDI.Where(el => el.Data.Parent == vRait.Id))
                     {
-                        QuestionsStackLayout.Children.Insert(index++, el);
+                        MainThread.BeginInvokeOnMainThread(() => { QuestionsStackLayout.Children.Insert(index++, el); });
+
                         if (DeviceInfo.Platform == DevicePlatform.iOS && QuestionsStackLayout.Children.Count > 60)
                         {
-                            //MainThread.BeginInvokeOnMainThread(async () =>
-                            //{
-                            //    //await DisplayAlert("Увага", "Надто велика кількість елементів для iOS. Згорніть лишні групи.", "OK");
-                            //});
-                            break;
+                                MainThread.BeginInvokeOnMainThread(async () =>
+                                {
+                                    await DisplayAlert("Увага", "Надто велика кількість елементів для iOS. Згорніть лишні групи.", "OK");
+                                });
+                                break;
                         }
                     }
                 }
@@ -397,7 +407,7 @@ namespace BRB6
                     foreach (var el in AllViewRDI)
                     {
                         if (el.Data.Parent == vRait.Id)
-                            QuestionsStackLayout.Children.Remove(el);
+                            MainThread.BeginInvokeOnMainThread(() => { QuestionsStackLayout.Children.Remove(el); });
                     }
                 }
             }
@@ -410,7 +420,7 @@ namespace BRB6
                 IsLoad = true;
             }
         }
-            );
+           // );
         }
 
         /*private void ChangeItemBlok(BRB5.Model.RaitingDocItem vRait)
@@ -469,8 +479,8 @@ namespace BRB6
                         break;
                     case "OnlyHead":
                         Choice = eTypeChoice.OnlyHead;
-                        foreach (var el in All.Where(el => el.IsHead))
-                            el.IsVisible = false;
+                        foreach (var el in All.Where(el => el.IsHead))                            
+                                el.IsVisible = false;
                         break;
                     case "NoAnswer":
                         Choice = eTypeChoice.NoAnswer;
