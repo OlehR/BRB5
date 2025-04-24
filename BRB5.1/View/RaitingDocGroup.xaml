@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="BRB6.View.RaitingDocGroup">
+    <VerticalStackLayout>
+        <Grid x:Name="QuestionsGrid" >
+            <ScrollView>
+                <StackLayout x:Name="QuestionsStackLayout"/>
+            </ScrollView>
+        </Grid>
+    </VerticalStackLayout>
+</ContentPage>
