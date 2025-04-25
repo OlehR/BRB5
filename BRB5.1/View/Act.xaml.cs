@@ -1,7 +1,11 @@
-using BRB5;
+﻿using BRB5;
 using BRB5.Model;
 using System.Collections.ObjectModel;
 using BL;
+using CommunityToolkit.Maui.Alerts;
+using BL.Connector;
+
+
 
 #if ANDROID
 using Android.Views;
@@ -14,6 +18,7 @@ public partial class Act
     private readonly TypeDoc TypeDoc;
     private DocVM Doc;
     protected DB db = DB.GetDB();
+    private Connector c = ConnectorBase.GetInstance();
     public bool IsSoftKeyboard { get { return Config.IsSoftKeyboard; } }
     public ObservableCollection<WaresAct> MyDocWares { get; set; } = new ObservableCollection<WaresAct>();
     public Act(DocId pDocId, TypeDoc pTypeDoc)
@@ -141,9 +146,15 @@ public partial class Act
 
 
 
-    private void F1Create(object sender, TappedEventArgs e)
+    private async void F1Create(object sender, TappedEventArgs e)
     {
-
+        var r = await c.SendDocsDataAsync(Doc, db.GetDocWares(Doc, 2, eTypeOrder.Scan));
+        if (r.State != 0) _ = DisplayAlert("Помилка", r.TextError, "OK");
+        else
+        {
+            var toast = Toast.Make("Документ успішно збережений");
+            _ = toast.Show();
+        }
     }
 
 
@@ -152,8 +163,8 @@ public partial class Act
     {
         switch (keyCode)
         {
-            case Keycode.F2:
-                //F2Save(null, EventArgs.Empty);
+            case Keycode.F1:
+                F1Create(null, null);
                 return;
 
             default:
