@@ -60,7 +60,6 @@ namespace BL.Connector
 
                     Data = new User() { Login = pLogin, PassWord = pPassWord, LoginServer = pLoginServer }.ToJson();
 
-
                     HttpResult result = await Http.HTTPRequestAsync(0, "DCT/Login", Data, "application/json", null);
                     if (result.HttpState == eStateHTTP.HTTP_OK)
                     {

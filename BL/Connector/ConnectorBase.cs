@@ -31,7 +31,7 @@ namespace BL.Connector
                     //    Instance = new ConnectorSE_FTP();
                     //    break;
                     case eCompany.PSU:
-                    //case eCompany.VPSU:
+                        //case eCompany.VPSU:
                         Instance = new ConnectorPSU();
                         break;
                     case eCompany.Universal:
@@ -51,7 +51,7 @@ namespace BL.Connector
             if (pIsFull)
             {
                 Config.NameCompany = pG.NameCompany;
-                db.SetConfig<string>("NameCompany", Config.NameCompany??"?");
+                db.SetConfig<string>("NameCompany", Config.NameCompany ?? "?");
             }
             Config.OnProgress?.Invoke(0.60);
             if (pG.Wares?.Any() == true)
@@ -65,7 +65,10 @@ namespace BL.Connector
             if (pG.BarCode?.Any() == true)
                 db.ReplaceBarCode(pG.BarCode, pIsFull);
             if (pG.Warehouse?.Any() == true)
+            {
+                pG.Warehouse.Last().InternalIP = "192.168.99.1";///!!!!TMP!!!!
                 db.ReplaceWarehouse(pG.Warehouse, pIsFull);
+            }
             Config.OnProgress?.Invoke(0.87);
             //Log.d(TAG, "Barcodes");
             Config.OnProgress?.Invoke(0.90);
