@@ -41,6 +41,7 @@
 	  <CodesignKey>Apple Development: Created via API (S4J9BA3B6S)</CodesignKey>
 	  <CodesignProvision>VS: ua.UniCS.TM.BRB6 Development</CodesignProvision>
 	  <ProvisioningType>automatic</ProvisioningType>
+    <NullabilityInfoContextSupport>true</NullabilityInfoContextSupport>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net8.0-android|AnyCPU'">

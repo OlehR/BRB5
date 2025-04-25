@@ -10,6 +10,7 @@ namespace BRB6
     {
         public static MauiApp CreateMauiApp()
         {
+            AppContext.SetSwitch("System.Reflection.NullabilityInfoContext.IsSupported", true);
             var builder = MauiApp.CreateBuilder();
             builder
                 .UseMauiApp<App>()

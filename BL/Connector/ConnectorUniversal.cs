@@ -51,26 +51,39 @@ namespace BL.Connector
 
         public override async Task<Result> LoginAsync(string pLogin, string pPassWord, eLoginServer pLoginServer)
         {
-            Result Res = new Result();            
-            if (pLoginServer == eLoginServer.Central || pLoginServer == eLoginServer.Bitrix)
+            try
             {
-                User Data = new User() { Login = pLogin, PassWord = pPassWord , LoginServer  = pLoginServer };
-                HttpResult result = await Http.HTTPRequestAsync(0, "DCT/Login", Data.ToJson(), "application/json", null);
-                if (result.HttpState == eStateHTTP.HTTP_OK)
+                Result Res = new Result();
+                if (pLoginServer == eLoginServer.Central || pLoginServer == eLoginServer.Bitrix)
                 {
-                    Result<User> res = JsonConvert.DeserializeObject<Result<User>>(result.Result);
-                    Config.Role = res.Info?.Role ?? 0;
-                    Config.CodeUser = res.Info?.CodeUser ?? 0;
-                    Config.NameUser = res.Info?.NameUser;
-                    Config.TypeDoc = res.Info?.TypeDoc;
-                    isGroup = Config.TypeDoc.Any(el => el.KindDoc == eKindDoc.NotDefined);
-                    FileLogger.WriteLogMessage($"ConnectorPSU.Login=>(pLogin=>{pLogin}, pPassWord=>{pPassWord},pLoginServer=>{pLoginServer}) Res=>({Res.State},{Res.Info},{Res.TextError})", eTypeLog.Full);
-                    return res.GetResult;
+                    string Data;
+
+                    Data = new User() { Login = pLogin, PassWord = pPassWord, LoginServer = pLoginServer }.ToJson();
+
+
+                    HttpResult result = await Http.HTTPRequestAsync(0, "DCT/Login", Data, "application/json", null);
+                    if (result.HttpState == eStateHTTP.HTTP_OK)
+                    {
+                        Result<User> res = JsonConvert.DeserializeObject<Result<User>>(result.Result);
+                        Config.Role = res.Info?.Role ?? 0;
+                        Config.CodeUser = res.Info?.CodeUser ?? 0;
+                        Config.NameUser = res.Info?.NameUser;
+                        Config.TypeDoc = res.Info?.TypeDoc;
+                        isGroup = Config.TypeDoc.Any(el => el.KindDoc == eKindDoc.NotDefined);
+                        FileLogger.WriteLogMessage($"ConnectorPSU.Login=>(pLogin=>{pLogin}, pPassWord=>{pPassWord},pLoginServer=>{pLoginServer}) Res=>({Res.State},{Res.Info},{Res.TextError})", eTypeLog.Full);
+                        return res.GetResult;
+                    }
+                    else
+                        return new Result(result);
                 }
-                else
-                    return new Result(result);                
+                return new Result(-1, "Невідомий сервер");
             }
-            return new Result(-1,"Невідомий сервер");
+            catch (Exception e)
+            {
+                FileLogger.WriteLogMessage(this, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+                return new Result(e);
+            }
+
         }
 
         public override async Task<Result> LoadGuidDataAsync(bool pIsFull)
