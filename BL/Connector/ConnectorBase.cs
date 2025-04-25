@@ -66,7 +66,7 @@ namespace BL.Connector
                 db.ReplaceBarCode(pG.BarCode, pIsFull);
             if (pG.Warehouse?.Any() == true)
             {
-                pG.Warehouse.Last().InternalIP = "192.168.99.1";///!!!!TMP!!!!
+                //pG.Warehouse.Last().InternalIP = "192.168.99.1";///!!!!TMP!!!!
                 db.ReplaceWarehouse(pG.Warehouse, pIsFull);
             }
             Config.OnProgress?.Invoke(0.87);
