@@ -5,6 +5,7 @@ using System.Collections.ObjectModel;
 using Utils;
 using BRB5;
 using BarcodeScanning;
+using CommunityToolkit.Maui.Alerts;
 
 namespace BRB6.View
 {
@@ -251,10 +252,12 @@ namespace BRB6.View
                 {
                     SelectedWarehouse = matchingWarehouseIndex;
                     ApiUrl2 = ListWarehouse[matchingWarehouseIndex].Url;
+                    var toast = Toast.Make($"{ListWarehouse[matchingWarehouseIndex].Name} IP=>{currentIP}");
+                    _ = toast.Show();
                 }
                 else
                 {
-                    await DisplayAlert("Info", "Відповідний магазин не знайдено.", "OK");
+                    await DisplayAlert("Info", $"Відповідний магазин не знайдено. IP{currentIP}", "OK");
                 } 
             }
         }
