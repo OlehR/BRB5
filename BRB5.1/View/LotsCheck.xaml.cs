@@ -23,8 +23,6 @@ public partial class LotsCheck : ContentPage
     private DocVM SelectedDoc;
     private bool IsWares;
     public double height { get { return DeviceDisplay.MainDisplayInfo.Height / DeviceDisplay.MainDisplayInfo.Density - 70; } }
-    public int i { get; set; } = 0;
-    public string iQuan { get { return i.ToString(); } }
     public LotsCheck(TypeDoc vTypeDoc)
     {
         InitializeComponent();
@@ -93,7 +91,10 @@ public partial class LotsCheck : ContentPage
     public void Dispose() { Config.BarCode -= BarCode; }
     private void PopulateStackLayout()
     {
-        StackLayoutDocs.Children.Clear();
+        MainThread.BeginInvokeOnMainThread(() =>
+        {
+            StackLayoutDocs.Children.Clear();
+        });
         MyDocs = new ObservableCollection<DocVM>(db.GetDoc(TypeDoc));
 
 
@@ -109,6 +110,7 @@ public partial class LotsCheck : ContentPage
             IsWares = false;
         }
 
+        var tempStackLayout = new StackLayout();
         foreach (var doc in MyDocs)
         {
             var grid = new Grid
@@ -157,9 +159,13 @@ public partial class LotsCheck : ContentPage
             grid.Children.Add(emptyLabel);
             grid.Children.Add(extInfoStackLayout);
 
-            StackLayoutDocs.Children.Add(grid);
-            i++; OnPropertyChanged(nameof(iQuan));
+            tempStackLayout.Children.Add(grid);
         }
+
+        MainThread.BeginInvokeOnMainThread(() =>
+        {
+            StackLayoutDocs.Children.Add(tempStackLayout);
+        });
     }
 
     private async void OpenDoc(object sender, TappedEventArgs e)

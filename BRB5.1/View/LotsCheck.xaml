@@ -18,9 +18,8 @@
     <StackLayout>
         <Grid HeightRequest="{Binding height}">
             <ScrollView x:Name="DocsScrollView">
-                <VerticalStackLayout x:Name="StackLayoutDocs" VerticalOptions="StartAndExpand"/>
+                <StackLayout x:Name="StackLayoutDocs" />
             </ScrollView>
         </Grid>
     </StackLayout>
-    
 </ContentPage>
