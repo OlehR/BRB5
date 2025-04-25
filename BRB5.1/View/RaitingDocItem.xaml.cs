@@ -358,14 +358,23 @@ namespace BRB6
 
         private void Editor_Completed(object sender, EventArgs e) => Bl.db.ReplaceRaitingDocItem(GetRaiting(sender));        
 
-        private void OnHeadTapped(object sender, EventArgs e)
+        private async void OnHeadTapped(object sender, EventArgs e)
         {
             var s = sender as Grid;
             var cc = s.Parent as QuestionHeadTemplate;
             var vRait = cc.Data;
-            vRait.IsVisible = !vRait.IsVisible;
-            Choice = eTypeChoice.NotDefine;
-            ChangeItemBlok(vRait);
+
+            if(DeviceInfo.Platform == DevicePlatform.iOS )
+            {
+                var relatedItems = All.Where(el => el.Parent == vRait.Id).ToList();
+                await Navigation.PushAsync(new RaitingDocGroup(vRait, relatedItems));
+            }
+            else
+            {
+                vRait.IsVisible = !vRait.IsVisible;
+                Choice = eTypeChoice.NotDefine;
+                ChangeItemBlok(vRait);
+            }
         }
 
         private void ChangeItemBlok(BRB5.Model.RaitingDocItem vRait)
