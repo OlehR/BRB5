@@ -18,20 +18,49 @@ public partial class LotsCheck : ContentPage
     private TypeDoc TypeDoc;
     DB db = DB.GetDB();
     private ObservableCollection<DocVM> MyDocs = new ObservableCollection<DocVM>();
+    public bool IsSoftKeyboard { get { return Config.IsSoftKeyboard; } }
 
     private DocVM SelectedDoc;
     private bool IsWares;
+    public double height { get { return DeviceDisplay.MainDisplayInfo.Height / DeviceDisplay.MainDisplayInfo.Density - 70; } }
+    public int i { get; set; } = 0;
+    public string iQuan { get { return i.ToString(); } }
     public LotsCheck(TypeDoc vTypeDoc)
-	{
-		InitializeComponent();
+    {
+        InitializeComponent();
         TypeDoc = vTypeDoc;
-        PopulateStackLayout();
+
+        Task.Run(async () =>
+        {
+            PopulateStackLayout();
+            await c.LoadDocsDataAsync(TypeDoc.CodeDoc, null, false);
+            PopulateStackLayout();
+        });
+
+        BindingContext = this;
     }
     protected override void OnAppearing()
     {
         base.OnAppearing();
         Config.BarCode = BarCode;
-        _ = c.LoadDocsDataAsync(TypeDoc.CodeDoc, null, false);
+
+        if (!IsSoftKeyboard)
+        {
+#if ANDROID
+            MainActivity.Key += OnPageKeyDown;
+#endif
+        }
+    }
+    protected override void OnDisappearing()
+    {
+        base.OnDisappearing();
+
+        if (!IsSoftKeyboard)
+        {
+#if ANDROID
+            MainActivity.Key -= OnPageKeyDown;
+#endif
+        }
     }
     async void BarCode(string pBarCode) // BarCode
     {
@@ -64,7 +93,10 @@ public partial class LotsCheck : ContentPage
     public void Dispose() { Config.BarCode -= BarCode; }
     private void PopulateStackLayout()
     {
+        StackLayoutDocs.Children.Clear();
         MyDocs = new ObservableCollection<DocVM>(db.GetDoc(TypeDoc));
+
+
         var firstDoc = MyDocs.FirstOrDefault();
         if (firstDoc != null)
         {
@@ -98,14 +130,14 @@ public partial class LotsCheck : ContentPage
             grid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
             grid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
 
-            var dateLabel = new Label {  Text = doc.DateDoc.ToString("dd.MM.yyyy"),  };
+            var dateLabel = new Label { Text = doc.DateDoc.ToString("dd.MM.yyyy"), };
             dateLabel.SetBinding(Label.BackgroundColorProperty, new Binding("GetColor", source: doc));
 
-            var numberLabel = new Label  {  Text = doc.NumberDoc  };
+            var numberLabel = new Label { Text = doc.NumberDoc };
             numberLabel.SetBinding(Label.BackgroundColorProperty, new Binding("GetColor", source: doc));
             Grid.SetColumn(numberLabel, 1);
 
-            var emptyLabel = new Label  {   Text = ""   };
+            var emptyLabel = new Label { Text = "" };
             emptyLabel.SetBinding(Label.BackgroundColorProperty, new Binding("GetColor", source: doc));
             Grid.SetRow(emptyLabel, 1);
 
@@ -126,6 +158,7 @@ public partial class LotsCheck : ContentPage
             grid.Children.Add(extInfoStackLayout);
 
             StackLayoutDocs.Children.Add(grid);
+            i++; OnPropertyChanged(nameof(iQuan));
         }
     }
 
@@ -137,29 +170,28 @@ public partial class LotsCheck : ContentPage
         {
             SelectedDoc = doc;
             doc.SelectedColor = true;
-            
-            if(IsWares)  await Navigation.PushAsync(new DocItem(doc, TypeDoc));
+
+            if (IsWares) await Navigation.PushAsync(new DocItem(doc, TypeDoc));
         }
     }
 
     public async void ScrollToSelected()
     {
-        //if (SelectedWare == null)
-        //    return;
+        if (SelectedDoc == null)
+            return;
 
-        //// Iterate through the children of WareItemsContainer
-        //foreach (var child in WareItemsContainer.Children)
-        //{
-        //    if (child is Microsoft.Maui.Controls.View view && view.BindingContext is ExpirationDateElementVM itemModel &&
-        //        itemModel.CodeWares == SelectedWare.CodeWares)
-        //    {
-        //        var childBounds = view.Bounds;
+        foreach (var child in StackLayoutDocs.Children)
+        {
+            if (child is Microsoft.Maui.Controls.View view && view.BindingContext is DocVM doc &&
+                doc == SelectedDoc)
+            {
+                var childBounds = view.Bounds;
 
-        //        // Ensure you're calling ScrollToAsync on the correct ScrollView instance
-        //        await ScrollView.ScrollToAsync(0, childBounds.Y, false);
-        //        break;
-        //    }
-        //}
+                // Ensure you're calling ScrollToAsync on the correct ScrollView instance
+                await DocsScrollView.ScrollToAsync(0, childBounds.Y, false);
+                break;
+            }
+        }
     }
     private void F2Save(object sender, EventArgs e)
     {
