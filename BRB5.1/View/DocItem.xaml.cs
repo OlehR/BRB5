@@ -213,7 +213,6 @@ namespace BRB6.View
             {
                 var toast = Toast.Make("Документ успішно збережений");
                 _ = toast.Show();
-                //_ = this.DisplayToastAsync("Документ успішно збережений");
             }
         }
         private async void F3Scan(object sender, EventArgs e) { await Navigation.PushAsync(new DocScan(Doc, TypeDoc)); }

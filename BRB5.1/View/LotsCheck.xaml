@@ -15,9 +15,11 @@
             </Label>
         </StackLayout>
     </NavigationPage.TitleView>
-    <Grid>
-        <ScrollView>
-            <VerticalStackLayout x:Name="StackLayoutDocs" VerticalOptions="StartAndExpand"/>
-        </ScrollView>
-    </Grid>
+    <StackLayout>
+        <Grid HeightRequest="{Binding height}">
+            <ScrollView x:Name="DocsScrollView">
+                <StackLayout x:Name="StackLayoutDocs" />
+            </ScrollView>
+        </Grid>
+    </StackLayout>
 </ContentPage>
