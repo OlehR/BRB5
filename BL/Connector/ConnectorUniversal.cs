@@ -331,7 +331,7 @@ namespace BL.Connector
                     if (pMaxSecondSend > 0 && (DateTime.Now - StartTime).TotalSeconds > pMaxSecondSend) continue;
                     try
                     {
-                        string s = Path.GetFileNameWithoutExtension(f).Split('_')[1] + "_" + Path.GetFileNameWithoutExtension(f).Split('_')[2];
+                        string s = Path.GetFileNameWithoutExtension(f).Split('_')[2] + "_" + Path.GetFileNameWithoutExtension(f).Split('_')[3];
                         if (s.Length > 18) { s = s.Substring(0, 18); }
                         var DT = DateTime.ParseExact(s, "yyyyMMdd_HHmmssfff", provider);
                         if (pSecondSkip > 0 && (DateTime.Now - DT).TotalSeconds < pSecondSkip)
@@ -355,6 +355,7 @@ namespace BL.Connector
                     try
                     {
                         var sw = Stopwatch.StartNew();
+                        
                         string  RR = await UtilNetwork.Http.UploadFileAsync(GetDataHTTP.Url[0][0] + "DCT/Raitting/UploadFile", f);
 
                         if (!string.IsNullOrEmpty(RR))

@@ -21,9 +21,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Xamarin", "Xamarin", "{3849
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BRB6", "BRB5.1\BRB6.csproj", "{CBE5524D-A234-49C4-9DFA-D92A981DE6F1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Utils", "..\UniCS.TM\Utils\Utils.csproj", "{49DE7B11-74FE-40A9-A9F4-CEC83A627199}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Utils", "Utils\Utils.csproj", "{49DE7B11-74FE-40A9-A9F4-CEC83A627199}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UtilNetwork", "..\UniCS.TM\UtilNetwork\UtilNetwork.csproj", "{E6CEF2CB-1394-D5D1-F740-F9B05FFA3268}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UtilNetwork", "UtilNetwork\UtilNetwork.csproj", "{E6CEF2CB-1394-D5D1-F740-F9B05FFA3268}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
