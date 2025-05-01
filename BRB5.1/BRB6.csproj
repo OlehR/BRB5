@@ -1,7 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFrameworks>net8.0-android;net8.0-ios</TargetFrameworks>
+    <RuntimeIdentifiers Condition="$(TargetFramework.Contains('-android'))">android-arm;android-arm64</RuntimeIdentifiers>
+		<TargetFrameworks>net9.0-android;net9.0-ios</TargetFrameworks>
     <EmbedAssembliesIntoApk>true</EmbedAssembliesIntoApk>
     <NullabilityInfoContextSupport>true</NullabilityInfoContextSupport>
     <!--
@@ -30,14 +31,14 @@
 		<ApplicationId>ua.UniCS.TM.BRB6</ApplicationId>
 
 		<!-- Versions -->
-		<ApplicationDisplayVersion>6.0.30</ApplicationDisplayVersion>
-		<ApplicationVersion>6030</ApplicationVersion>
+		<ApplicationDisplayVersion>6.0.31</ApplicationDisplayVersion>
+		<ApplicationVersion>6031</ApplicationVersion>
 
-		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">11.0</SupportedOSPlatformVersion>		
+		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">12.2</SupportedOSPlatformVersion>		
 		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">21.0</SupportedOSPlatformVersion>	
   </PropertyGroup>
 
-	<PropertyGroup Condition="'$(TargetFramework)'=='net8.0-ios'">
+	<PropertyGroup Condition="'$(TargetFramework)'=='net9.0-ios'">
 	  <CodesignKey>Apple Development: Created via API (S4J9BA3B6S)</CodesignKey>
 	  <CodesignProvision>VS: ua.UniCS.TM.BRB6 Development</CodesignProvision>
 	  <ProvisioningType>automatic</ProvisioningType>
@@ -93,14 +94,14 @@
 
 	<ItemGroup>
   
-		<PackageReference Include="BarcodeScanning.Native.Maui" Version="1.5.7" />
+		<PackageReference Include="BarcodeScanning.Native.Maui" Version="1.5.9" />
   
-		<PackageReference Include="CommunityToolkit.Maui" Version="9.0.2" />
-		<PackageReference Include="FFImageLoading.Maui" Version="1.2.6" />
-		<PackageReference Include="Microsoft.Maui.Controls" Version="8.0.80" />
-		<PackageReference Include="Microsoft.Maui.Controls.Compatibility" Version="8.0.80" />
-		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="8.0.0" />
-		<PackageReference Include="System.Text.Json" Version="9.0.0" />
+		<PackageReference Include="CommunityToolkit.Maui" Version="11.2.0" />
+		<PackageReference Include="FFImageLoading.Maui" Version="1.2.7" />
+		<PackageReference Include="Microsoft.Maui.Controls" Version="9.0.60" />
+		<PackageReference Include="Microsoft.Maui.Controls.Compatibility" Version="9.0.60" />
+		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="9.0.4" />
+		<PackageReference Include="System.Text.Json" Version="9.0.4" />
 	</ItemGroup>
 
 	<ItemGroup>

@@ -44,6 +44,6 @@
   <string>App needs access to Location to find the nearest store</string>
   
   <key>CFBundleVersion</key>
-	<string>6005</string>
+	<string>6031</string>
 </dict>
 </plist>
