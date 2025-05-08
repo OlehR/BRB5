@@ -7,6 +7,7 @@ using BRB5;
 using BarcodeScanning;
 using CommunityToolkit.Maui.Alerts;
 
+
 namespace BRB6.View
 {
     public partial class Settings : TabbedPage
@@ -50,19 +51,20 @@ namespace BRB6.View
         public List<string> ListTypeLog { get { return Enum.GetNames(typeof(eTypeLog)).ToList(); } }
         public List<string> ListReplenishment { get { return Enum.GetNames(typeof(eTypeLog)).ToList(); } }
 
+        List<Warehouse> wh = null;
         public List<Warehouse> ListWarehouse
         {
             get
             {
-                List<Warehouse> wh = null;
-                try
-                {
-                    wh = db.GetWarehouse()?.OrderBy(q => q.Name).ToList();
-                }
-                catch (Exception ex)
-                {
-                    string msg = ex.Message;
-                }
+                if (wh == null)
+                    try
+                    {
+                        wh = db.GetWarehouse()?.OrderBy(q => q.Name).ToList();
+                    }
+                    catch (Exception ex)
+                    {
+                        string msg = ex.Message;
+                    }
                 if (wh == null || !wh.Any())
                     wh = new List<Warehouse>() { new Warehouse() { Code = 0, Name = "ddd" } };
                 return wh;
@@ -176,8 +178,10 @@ namespace BRB6.View
                     }
                 }
             }     
-            Config.CodeWarehouse=0;
+            Config.CodeWarehouse=0;            
             await c.LoadGuidDataAsync(true);
+            wh = null;
+            OnClickIP(null, null);
             await DisplayAlert("", "Параметри вступлять в силу після перезапуску", "Перезапуск");
 
             OnClickSave(null, null);
@@ -241,7 +245,14 @@ namespace BRB6.View
             string currentIP = Config.NativeBase.GetIP();
             if (currentIP == null)
             {
-                await DisplayAlert("Помилка", "Не вдається отримати IP-адресу.", "OK");
+                if (sender == null)
+                {
+                    var toast = Toast.Make("Не вдається отримати IP-адресу.");
+                    _ = toast.Show();
+                }
+                else
+
+                    await DisplayAlert("Помилка", "Не вдається отримати IP-адресу.", "OK");
                 return;
             }
             if (ListWarehouse.Any() && ListWarehouse.First().Name != "ddd") {
@@ -257,7 +268,13 @@ namespace BRB6.View
                 }
                 else
                 {
-                    await DisplayAlert("Info", $"Відповідний магазин не знайдено. IP{currentIP}", "OK");
+                    if (sender == null)
+                    {
+                        var toast = Toast.Make($"Відповідний магазин не знайдено. IP=>{currentIP}");
+                        _ = toast.Show();
+                    }
+                    else
+                        await DisplayAlert("Info", $"Відповідний магазин не знайдено. IP=>{currentIP}", "OK");
                 } 
             }
         }
