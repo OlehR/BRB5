@@ -13,25 +13,28 @@ using Java.Lang;
 using Microsoft.Maui;
 using Utils;
 using static Android.Gms.Common.Apis.Api;
+using UtilNetwork;
 
 namespace BRB6.PlatformDependency
 {
     internal class UtilAndroid
     {
-        public static async Task InstallAPKAsync()
+        public static async Task InstallAPKAsync(Action<double> pProgress=null)
         {
             try
             {                
                 string path = Path.Combine(Android.App.Application.Context.GetExternalFilesDir("").AbsolutePath, Android.OS.Environment.DirectoryDownloads);
-                string DestinationPath = Path.Combine(path, "ua.UniCS.TM.BRB6.zip");
+                string DestinationPath = Path.Combine(path, "ua.UniCS.TM.BRB6.apk"); //.zip
                 if (File.Exists(DestinationPath))
                     File.Delete(DestinationPath);
-                await DownloadFileAsync("https://raw.githubusercontent.com/OlehR/BRB5/master/Apk/ua.UniCS.TM.BRB6.zip", DestinationPath);
+                
+                                        //"https://raw.githubusercontent.com/OlehR/BRB5/master/Apk/ua.UniCS.TM.BRB6.zip"
+                await Http.DownloadFileWithProgressAsync("https://media.githubusercontent.com/media/OlehR/BRB5/refs/heads/master/Apk/ua.UniCS.TM.BRB6.apk", DestinationPath, pProgress);
 
-                string DestinationPathApk = Path.Combine(path, "ua.UniCS.TM.BRB6.apk");
+                string DestinationPathApk = DestinationPath; /*Path.Combine(path, "ua.UniCS.TM.BRB6.apk");
                 if (File.Exists(DestinationPathApk))
                     File.Delete(DestinationPathApk);
-                System.IO.Compression.ZipFile.ExtractToDirectory(DestinationPath, path);
+                System.IO.Compression.ZipFile.ExtractToDirectory(DestinationPath, path);*/
 
                 var context = Android.App.Application.Context;
                 Java.IO.File file = new(DestinationPathApk);
@@ -53,7 +56,8 @@ namespace BRB6.PlatformDependency
         }
         
 
-        public static async Task DownloadFileAsync(string pUrl, string pDestinationPath)
+
+        /*public static async Task DownloadFileAsync(string pUrl, string pDestinationPath)
         {
             using HttpClient client = new();     
             using HttpResponseMessage response = await client.GetAsync(pUrl, HttpCompletionOption.ResponseHeadersRead);
@@ -62,7 +66,7 @@ namespace BRB6.PlatformDependency
             using Stream stream = await response.Content.ReadAsStreamAsync();
             using FileStream fileStream = new FileStream(pDestinationPath, FileMode.Create, FileAccess.Write, FileShare.None, 8192, true);
             await stream.CopyToAsync(fileStream);
-        }
+        }*/
 
         public static async Task<string> DownloadStringAsync(string pUrl)
         {

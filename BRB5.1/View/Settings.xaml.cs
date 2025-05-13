@@ -142,6 +142,7 @@ namespace BRB6.View
 
         async void BarCode(string pBarCode)
         {
+            QRCodeScan(null,null);
             if (pBarCode == null) return;
             if (pBarCode.StartsWith("BRB6=>"))
             {
@@ -177,15 +178,32 @@ namespace BRB6.View
                         }
                     }
                 }
-            }     
-            Config.CodeWarehouse=0;            
-            await c.LoadGuidDataAsync(true);
-            wh = null;
-            OnClickIP(null, null);
-            await DisplayAlert("", "Параметри вступлять в силу після перезапуску", "Перезапуск");
 
-            OnClickSave(null, null);
-            Application.Current.Quit();
+                Config.CodeWarehouse = 0;
+                OnClickSave(null, null);
+                Connector.CleanConnector();
+                c = ConnectorBase.GetInstance();
+                GetDataHTTP.Init();
+                await c.LoadGuidDataAsync(true);
+                wh = null;
+                OnClickIP(null, null);
+                OnClickSave(null, null);
+                //var toast = Toast.Make("Не вдається отримати IP-адресу.");
+                // = toast.Show();
+                MainThread.BeginInvokeOnMainThread(async () =>
+                {
+                    await DisplayAlert("", "Параметри вступлять в силу після перезапуску", DeviceInfo.Platform == DevicePlatform.Android?"Перезапуск":"Ok");
+                    if(DeviceInfo.Platform == DevicePlatform.Android)
+                        Application.Current.Quit();
+                });
+            }
+            else
+                MainThread.BeginInvokeOnMainThread(async () =>
+                {
+                    await DisplayAlert("", "Даний QR без налаштувань.", "OK");
+                });
+
+           
         }
         public void Dispose() { Config.BarCode -= BarCode; }
 

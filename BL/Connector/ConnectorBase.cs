@@ -15,8 +15,7 @@ namespace BL.Connector
     {
         protected static string TAG = "BRB5/ConnectorBase";
 
-        protected DB db = DB.GetDB();
-        protected GetDataHTTP Http = GetDataHTTP.GetInstance();
+        protected DB db = DB.GetDB(); 
 
         public static BRB5.Model.Connector GetInstance()
         {
@@ -39,7 +38,7 @@ namespace BL.Connector
                         Instance = new ConnectorUniversal();
                         break;
                     default:
-                        Instance = new ConnectorPSU();
+                        Instance = new ConnectorUniversal();
                         break;
                 }
             }

@@ -17,6 +17,9 @@ namespace BRB5.Model
         public volatile bool IsStopSave  = false;
         public volatile bool IsSaving = false;
 
+        public static void CleanConnector()
+        { Instance = null; }
+
         //Логін
         public virtual Task<Result> LoginAsync(string pLogin, string pPassWord, eLoginServer pLoginServer) { throw new NotImplementedException(); }
         //Завантаження довідників.

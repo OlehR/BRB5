@@ -21,6 +21,7 @@ namespace BL.Connector
 {
     public class ConnectorUniversal : ConnectorBase
     {
+        ConnectorBase СonnectorLocal = null;
         public ConnectorUniversal()
         {
             PercentColor = new PercentColor[4] { 
@@ -29,7 +30,7 @@ namespace BL.Connector
                 new PercentColor(50, Color.FromArgb(0xFFD7A6), Color.Orange ,  "72301623"), 
                 new PercentColor(75,Color.FromArgb(0xFDABAB) , Color.Pink, "72301630") };
         }
-
+        bool IsLocalPrice;
        // IEnumerable<TypeDoc> TypeDoc=null;
         bool isGroup = false;
         /// <summary>
@@ -46,8 +47,9 @@ namespace BL.Connector
 
         public override IEnumerable<LoginServer> LoginServer() => 
             new List<LoginServer>() { 
-                new() { Code = eLoginServer.Central, Name = "ЦБ" }, 
-                new() { Code = eLoginServer.Bitrix, Name = "Бітрікс" } };
+                new() { Code = eLoginServer.Central, Name = "ЦБ" }//, 
+                //new() { Code = eLoginServer.Bitrix, Name = "Бітрікс" } 
+            };
 
         public override async Task<Result> LoginAsync(string pLogin, string pPassWord, eLoginServer pLoginServer)
         {
@@ -60,7 +62,7 @@ namespace BL.Connector
 
                     Data = new User() { Login = pLogin, PassWord = pPassWord, LoginServer = pLoginServer }.ToJson();
 
-                    HttpResult result = await Http.HTTPRequestAsync(0, "DCT/Login", Data, "application/json", null);
+                    HttpResult result = await GetDataHTTP.HTTPRequestAsync(0, "DCT/Login", Data, "application/json", null);
                     if (result.HttpState == eStateHTTP.HTTP_OK)
                     {
                         Result<User> res = JsonConvert.DeserializeObject<Result<User>>(result.Result);
@@ -69,6 +71,10 @@ namespace BL.Connector
                         Config.NameUser = res.Info?.NameUser;
                         Config.TypeDoc = res.Info?.TypeDoc;
                         isGroup = Config.TypeDoc.Any(el => el.KindDoc == eKindDoc.NotDefined);
+                        if (res.Info?.LocalConnect == eCompany.Sim23)
+                            СonnectorLocal = new ConnectorSE();
+
+                        IsLocalPrice = Config.TypeDoc?.Where(el => el.KindDoc == eKindDoc.PriceCheck).FirstOrDefault()?.CodeApi==1;
                         FileLogger.WriteLogMessage($"ConnectorPSU.Login=>(pLogin=>{pLogin}, pPassWord=>{pPassWord},pLoginServer=>{pLoginServer}) Res=>({Res.State},{Res.Info},{Res.TextError})", eTypeLog.Full);
                         return res.GetResult;
                     }
@@ -82,7 +88,6 @@ namespace BL.Connector
                 FileLogger.WriteLogMessage(this, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
                 return new Result(e);
             }
-
         }
 
         public override async Task<Result> LoadGuidDataAsync(bool pIsFull)
@@ -92,7 +97,7 @@ namespace BL.Connector
                 Config.OnProgress?.Invoke(0.03);
                 AppContext.SetSwitch("System.Reflection.NullabilityInfoContext.IsSupported", true);
                 string Data = Config.CodeWarehouse.ToString();
-                HttpResult result = await Http.HTTPRequestAsync(0, "DCT/GetGuid", Data, "application/json", null);
+                HttpResult result = await GetDataHTTP.HTTPRequestAsync(0, "DCT/GetGuid", Data, "application/json", null);
                 Config.OnProgress?.Invoke(0.4);
                 if (result.HttpState == eStateHTTP.HTTP_OK)
                 {
@@ -126,18 +131,24 @@ namespace BL.Connector
 
         public override WaresPrice GetPrice(ParseBarCode pBC, eTypePriceInfo pTP = eTypePriceInfo.Short)
         {
-            /*string vCode = pBC.CodeWares > 0 ? $"code={pBC.CodeWares}" : $"BarCode = {pBC.BarCode}";
-            HttpResult result = Http.HTTPRequest(0, $"PriceTagInfo?{vCode}", null, null, null, null);
-            if (result.HttpState == eStateHTTP.HTTP_OK)
+            Config.TypeDoc.Where(el => el.KindDoc == eKindDoc.PriceCheck).FirstOrDefault();
+            WaresPrice Res=null;
+            if (IsLocalPrice)
             {
-                var res = JsonConvert.DeserializeObject<WaresPriceSE>(result.Result);
-                return res.GetWaresPrice;
-            }*/
-            //LI.resHttp = res.Result;
-            //LI.HttpState = res.HttpState;
-            //return LI;
-
-            return null;
+                if (СonnectorLocal != null)
+                    Res = СonnectorLocal.GetPrice(pBC, pTP);
+            }
+            else
+            {
+                ApiPrice Data = new ApiPrice() { CodeWares = pBC.CodeWares, Article= pBC.Article, BarCode = pBC.BarCode, CodeWarehouse = Config.CodeWarehouse };
+                HttpResult result = GetDataHTTP.HTTPRequest(0, "DCT/GetPrice", Data.ToJson(), "application/json", null);
+                if (result.HttpState == eStateHTTP.HTTP_OK)
+                {
+                    var res = JsonConvert.DeserializeObject<Result<WaresPrice>>(result.Result);
+                    return res.Info;
+                }                
+            }
+                return Res;
         }
 
         public override Result SendLogPrice(IEnumerable<LogPrice> pLogPrice)
@@ -151,7 +162,7 @@ namespace BL.Connector
                     SerialNumber = Config.SN,
                     LogPrice = pLogPrice
                 }.ToJSON("yyyy-MM-ddTHH:mm:ss.ffff");
-                HttpResult result = Http.HTTPRequest(0, @"DCT\SaveLogPrice", Data, "application/json", Config.Login, Config.Password, 120);
+                HttpResult result = GetDataHTTP.HTTPRequest(0, @"DCT\SaveLogPrice", Data, "application/json", Config.Login, Config.Password, 120);
                 if (result.HttpState == eStateHTTP.HTTP_OK)
                 {
                     return JsonConvert.DeserializeObject<Result>(result.Result);
@@ -179,7 +190,7 @@ namespace BL.Connector
             {
                 if (TD?.KindDoc == eKindDoc.RaitingDoc)
                 {
-                    HttpResult result = await Http.HTTPRequestAsync(0, "DCT/Rating/GetRatingDoc", $"{Config.CodeUser}", "application/json", null);
+                    HttpResult result = await GetDataHTTP.HTTPRequestAsync(0, "DCT/Rating/GetRatingDoc", $"{Config.CodeUser}", "application/json", null);
                     if (result.HttpState == eStateHTTP.HTTP_OK)
                     {
                         var res = JsonConvert.DeserializeObject<Result<IEnumerable<Doc>>>(result.Result);
@@ -188,7 +199,7 @@ namespace BL.Connector
                     }
                     else
                         return new Result(result);
-                    result = await Http.HTTPRequestAsync(0, "DCT/Rating/GetRatingTemplate", Config.CodeUser.ToString(), "application/json", null);
+                    result = await GetDataHTTP.HTTPRequestAsync(0, "DCT/Rating/GetRatingTemplate", Config.CodeUser.ToString(), "application/json", null);
                     if (result.HttpState == eStateHTTP.HTTP_OK)
                     {
                         var res = JsonConvert.DeserializeObject<Result<IEnumerable<RaitingTemplate>>>(result.Result);
@@ -206,7 +217,7 @@ namespace BL.Connector
                 {
                     AppContext.SetSwitch("System.Reflection.NullabilityInfoContext.IsSupported", true);
                     GetDocs Data = new GetDocs() { CodeWarehouse = Config.CodeWarehouse, TypeDoc = pTypeDoc, NumberDoc = pNumberDoc };
-                    HttpResult result = await Http.HTTPRequestAsync(0, "DCT/LoadDoc", Data.ToJson(), "application/json", null);
+                    HttpResult result = await GetDataHTTP.HTTPRequestAsync(0, "DCT/LoadDoc", Data.ToJson(), "application/json", null);
                     if (result.HttpState == eStateHTTP.HTTP_OK)
                     {
                         var res = JsonConvert.DeserializeObject<Result<Docs>>(result.Result);
@@ -241,7 +252,7 @@ namespace BL.Connector
             try
             {
                 string Data = new SaveDoc() { Doc = pDoc, Wares = pWares }.ToJson();
-                HttpResult result = await Http.HTTPRequestAsync(0, "DCT/SaveDoc", Data, "application/json", null);
+                HttpResult result = await GetDataHTTP.HTTPRequestAsync(0, "DCT/SaveDoc", Data, "application/json", null);
                 if (result.HttpState == eStateHTTP.HTTP_OK)
                 {
                     return JsonConvert.DeserializeObject<Result>(result.Result);
@@ -266,7 +277,7 @@ namespace BL.Connector
                 string Data = new RaitingDocForSave() 
                 { NumberDoc=pDoc.NumberDoc, CodeUser = Config.CodeUser, DTEnd = pDoc.DTEnd, DTStart = pDoc.DTStart, Item = pR.Select(el=>new RaitingDocItemSave(el) ) 
                 }.ToJSON("yyyy-MM-ddTHH:mm:ss.ffff");
-                HttpResult result = Http.HTTPRequest(0, @"DCT\Rating\SaveRating", Data, "application/json", Config.Login, Config.Password,120);
+                HttpResult result = GetDataHTTP.HTTPRequest(0, @"DCT\Rating\SaveRating", Data, "application/json", Config.Login, Config.Password,120);
                 if (result.HttpState == eStateHTTP.HTTP_OK)
                 {
                     return JsonConvert.DeserializeObject<Result>(result.Result);
@@ -421,7 +432,7 @@ namespace BL.Connector
             /*HttpResult result;
             try
             {
-                result = await Http.HTTPRequestAsync(1, "StoreSettings", "{}", "application/json", "brb", "brb"); //charset=utf-8;
+                result = await GetDataHTTP.HTTPRequestAsync(1, "StoreSettings", "{}", "application/json", "brb", "brb"); //charset=utf-8;
 
                 if (result.HttpState == eStateHTTP.HTTP_OK)
                 {
@@ -445,14 +456,14 @@ namespace BL.Connector
             try
             {
                 //HttpResult result = Http.HTTPRequest(0, "GetExpirationDate", pCodeWarehouse.ToString(), null, null, null);
-                HttpResult result = await Http.HTTPRequestAsync(0, "DCT/GetExpirationDate", pCodeWarehouse.ToString(), "application/json", null);
+                HttpResult result = await GetDataHTTP.HTTPRequestAsync(0, "DCT/GetExpirationDate", pCodeWarehouse.ToString(), "application/json", null);
 
                 if (result.HttpState == eStateHTTP.HTTP_OK)
                 {
                     Config.OnProgress?.Invoke(0.5);
                     var res = JsonConvert.DeserializeObject<Result<IEnumerable<DocWaresExpirationSample>>>(result.Result);
 
-                    /* result = await Http.HTTPRequestAsync(3, "DCT/GetExpirationWares", null, null, null);
+                    /* result = await GetDataHTTP.HTTPRequestAsync(3, "DCT/GetExpirationWares", null, null, null);
                      if (result.HttpState == eStateHTTP.HTTP_OK)
                      {
                          Config.OnProgress?.Invoke(0.95);
@@ -477,7 +488,7 @@ namespace BL.Connector
             {
                 AppContext.SetSwitch("System.Reflection.NullabilityInfoContext.IsSupported", true);
                 string Data = pED.ToJSON("yyyy-MM-dd");
-                HttpResult result = await Http.HTTPRequestAsync(0, "DCT/SaveExpirationDate", Data, "application/json", null);
+                HttpResult result = await GetDataHTTP.HTTPRequestAsync(0, "DCT/SaveExpirationDate", Data, "application/json", null);
                 if (result.HttpState == eStateHTTP.HTTP_OK)
                 {
                     var res = JsonConvert.DeserializeObject<Result>(result.Result);

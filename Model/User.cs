@@ -14,5 +14,6 @@ namespace BRB5.Model
         public string PassWord { get; set; }
         public eRole Role { get; set; }
         public IEnumerable<TypeDoc> TypeDoc { get; set; }
+        public eCompany LocalConnect { get; set; }
     }
 }

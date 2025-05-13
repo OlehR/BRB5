@@ -1,14 +1,8 @@
 ﻿using BRB5.Model;
 using System;
-using System.Collections.Generic;
-using System.Net;
-using System.Net.Http;
-using System.Text;
 using System.Threading.Tasks;
 using Utils;
 using BRB5;
-using System.IO;
-using System.Net.Http.Headers;
 using UtilNetwork;
 
 namespace BL.Connector
@@ -21,18 +15,20 @@ namespace BL.Connector
         
         protected static string TAG = "BRB5/GetDataHTTP";
     
-        public GetDataHTTP()
+        static GetDataHTTP()
+        { 
+            Init();
+        }
+        
+        static public void Init()
         {
             var db = DB.GetDB();
             var ApiUrl1 = db.GetConfig<string>("ApiUrl1");
             var ApiUrl2 = db.GetConfig<string>("ApiUrl2");
             var ApiUrl3 = db.GetConfig<string>("ApiUrl3");
             var ApiUrl4 = db.GetConfig<string>("ApiUrl4");
-            Init(new string[] { ApiUrl1, ApiUrl2, ApiUrl3, ApiUrl4 });
-        }
-        
-        public void Init(string[] pUrl)
-        {
+            string[] pUrl = { ApiUrl1, ApiUrl2, ApiUrl3, ApiUrl4 };
+
             DefaultApi = new int[pUrl.Length];
             Url = new string[4][];
             for (int i = 0; i < pUrl.Length; i++)
@@ -44,17 +40,17 @@ namespace BL.Connector
                     Url[i] = Urls;
                 }
             }
-            Instance = this;
+            //Instance = this;
         }
 
-        public static GetDataHTTP GetInstance()
+        /*public static GetDataHTTP GetInstance()
         {
             if (Instance == null)
             {
                Instance =  new GetDataHTTP();
             }
             return Instance;
-        }
+        }*/
 
         /*public async Task<HttpResult> HTTPRequestAsync(String pURL, String pData, String pContentType, String pLogin, String pPassWord,double pTimeOut=15 )
         {
@@ -103,12 +99,12 @@ namespace BL.Connector
             }
         }
 */
-        public HttpResult HTTPRequest(int pUrlApi, string pApi, string pData, string pContentType, string pLogin = null, string pPassWord = null, double pTimeOut = 15, bool IsSaveData = true)
+        static public HttpResult HTTPRequest(int pUrlApi, string pApi, string pData, string pContentType, string pLogin = null, string pPassWord = null, double pTimeOut = 15, bool IsSaveData = true)
         {
             return AsyncHelper.RunSync<HttpResult>(() => HTTPRequestAsync(pUrlApi, pApi, pData, pContentType, pLogin, pPassWord, pTimeOut, IsSaveData));
         }
 
-        public async Task<HttpResult> HTTPRequestAsync(int pUrlApi, string pApi, string pData, string pContentType, string pLogin=null, string pPassWord=null, double pTimeOut = 15,bool IsSaveData=true)
+        static public async Task<HttpResult> HTTPRequestAsync(int pUrlApi, string pApi, string pData, string pContentType, string pLogin=null, string pPassWord=null, double pTimeOut = 15,bool IsSaveData=true)
         { //!!!!TMP
             try
             {

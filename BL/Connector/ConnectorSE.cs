@@ -80,7 +80,7 @@ namespace BL.Connector
             if (pLoginServer == eLoginServer.Bitrix)
             {
                 string data = JsonConvert.SerializeObject(new RequestLogin() { action = "auth", login = pLogin, password = pPassWord });
-                HttpResult result = await Http.HTTPRequestAsync(2, "", data, "application/json");
+                HttpResult result = await GetDataHTTP.HTTPRequestAsync(2, "", data, "application/json");
                 if (result.HttpState != eStateHTTP.HTTP_OK)
                 {
                     Res = new Result(result);
@@ -114,7 +114,7 @@ namespace BL.Connector
             else
             if (pLoginServer == eLoginServer.Local)
             {
-                HttpResult res = await Http.HTTPRequestAsync(1, "login", "{\"login\" : \"" + pLogin + "\"}", "application/json", pLogin, pPassWord);
+                HttpResult res = await GetDataHTTP.HTTPRequestAsync(1, "login", "{\"login\" : \"" + pLogin + "\"}", "application/json", pLogin, pPassWord);
                 if (res.HttpState == eStateHTTP.HTTP_UNAUTHORIZED || res.HttpState == eStateHTTP.HTTP_Not_Define_Error)
                 {
                     //Utils.WriteLog("e", TAG, "Login >>" + res.HttpState.ToString());
@@ -158,7 +158,7 @@ namespace BL.Connector
             if (pLoginServer == eLoginServer.Central)
             {
                 User Data = new User() { Login = pLogin, PassWord = pPassWord };
-                HttpResult result = await Http.HTTPRequestAsync(0, "DCT/Login", Data.ToJson(), "application/json", null,null,5);
+                HttpResult result = await GetDataHTTP.HTTPRequestAsync(0, "DCT/Login", Data.ToJson(), "application/json", null,null,5);
                 if (result.HttpState == eStateHTTP.HTTP_OK)
                 {
                     Result<User> res = JsonConvert.DeserializeObject<Result<User>>(result.Result);
@@ -181,7 +181,7 @@ namespace BL.Connector
                 Config.OnProgress?.Invoke(0.03);
                 AppContext.SetSwitch("System.Reflection.NullabilityInfoContext.IsSupported", true);
                 string Data = Config.CodeWarehouse.ToString();
-                HttpResult result = await Http.HTTPRequestAsync(0, "DCT/GetGuid", Data, "application/json", null);
+                HttpResult result = await GetDataHTTP.HTTPRequestAsync(0, "DCT/GetGuid", Data, "application/json", null);
                 Config.OnProgress?.Invoke(0.4);
                 if (result.HttpState == eStateHTTP.HTTP_OK)
                 {
@@ -206,7 +206,7 @@ namespace BL.Connector
             try
             {
                 Config.OnProgress?.Invoke(0.03);
-                HttpResult res = await Http.HTTPRequestAsync(Config.IsLoginCO ? 1 : 0, "nomenclature", null, "application/json", Config.Login, Config.Password, 120);//;charset=utf-8
+                HttpResult res = await GetDataHTTP.HTTPRequestAsync(Config.IsLoginCO ? 1 : 0, "nomenclature", null, "application/json", Config.Login, Config.Password, 120);//;charset=utf-8
 
                 if (res.HttpState == eStateHTTP.HTTP_OK)
                 {
@@ -238,7 +238,7 @@ namespace BL.Connector
                     }
                 } //else Log.d(TAG, res.HttpState.name());
 
-                res = await Http.HTTPRequestAsync(1, "reasons", null, "application/json", Config.Login, Config.Password);
+                res = await GetDataHTTP.HTTPRequestAsync(1, "reasons", null, "application/json", Config.Login, Config.Password);
                 if (res.HttpState == eStateHTTP.HTTP_OK)
                 {
                     Config.OnProgress?.Invoke(0.95);
@@ -259,7 +259,7 @@ namespace BL.Connector
         public override WaresPrice GetPrice(ParseBarCode pBC, eTypePriceInfo pTP = eTypePriceInfo.Short)
         {
             string vCode = pBC.CodeWares > 0 ? $"code={pBC.CodeWares}" : $"BarCode = {pBC.BarCode}";
-            HttpResult result = Http.HTTPRequest(0, $"PriceTagInfo?{vCode}", null, null, null, null);
+            HttpResult result = GetDataHTTP.HTTPRequest(1, $"PriceTagInfo?{vCode}", null, null, null, null);
             if (result.HttpState == eStateHTTP.HTTP_OK)
             {
                 var res = JsonConvert.DeserializeObject<WaresPriceSE>(result.Result);
@@ -278,7 +278,7 @@ namespace BL.Connector
                 return new Result();
             StringBuilder sb = new StringBuilder();
             var Data = pLogPrice.Where(el => el.IsGoodBarCode).Select(el => new LogPriceSE(el));
-            HttpResult res = Http.HTTPRequest(0, "pricetag", Data.ToJSON(), "application/json;charset=utf-8", Config.Login, Config.Password);
+            HttpResult res = GetDataHTTP.HTTPRequest(0, "pricetag", Data.ToJSON(), "application/json;charset=utf-8", Config.Login, Config.Password);
             return new Result(res);
         }
 
@@ -290,10 +290,10 @@ namespace BL.Connector
             if (pTypeDoc == 11) 
             {
                 string data = JsonConvert.SerializeObject(new Request() { userId = Config.CodeUser, action = "templates" });
-                HttpResult result = await Http.HTTPRequestAsync(2, "", data, "application/json");//
+                HttpResult result = await GetDataHTTP.HTTPRequestAsync(2, "", data, "application/json");//
 
                 string data2 = JsonConvert.SerializeObject(new Request() { userId = Config.CodeUser, action = "plans" });
-                HttpResult result2 = await Http.HTTPRequestAsync(2, "", data2, "application/json");//
+                HttpResult result2 = await GetDataHTTP.HTTPRequestAsync(2, "", data2, "application/json");//
 
                 if (result.HttpState != eStateHTTP.HTTP_OK || result2.HttpState != eStateHTTP.HTTP_OK)
                     return new Result(result.HttpState != eStateHTTP.HTTP_OK ? result : result2);
@@ -386,7 +386,7 @@ namespace BL.Connector
                 {
                     AppContext.SetSwitch("System.Reflection.NullabilityInfoContext.IsSupported", true);
                     GetDocs Data = new GetDocs() { CodeWarehouse=Config.CodeWarehouse,TypeDoc = pTypeDoc, NumberDoc = pNumberDoc};
-                    HttpResult result = await Http.HTTPRequestAsync(0, "DCT/LoadDocs", Data.ToJson(), "application/json", null);
+                    HttpResult result = await GetDataHTTP.HTTPRequestAsync(0, "DCT/LoadDocs", Data.ToJson(), "application/json", null);
                     if (result.HttpState == eStateHTTP.HTTP_OK)
                     {
                         var res = JsonConvert.DeserializeObject<Result<Docs>>(result.Result);
@@ -441,9 +441,9 @@ namespace BL.Connector
                 try
                 {
                     if ((pTypeDoc >= 5 && pTypeDoc <= 9) || (pTypeDoc <= 0 && Config.IsLoginCO))
-                        result = Http.HTTPRequest(CodeApi, NameApi + (pTypeDoc == 5 ? "\\" + pNumberDoc : "?StoreSetting=" + CodeWarehouse) + AddPar, null, "application/json;charset=utf-8", Config.Login, Config.Password);
+                        result = GetDataHTTP.HTTPRequest(CodeApi, NameApi + (pTypeDoc == 5 ? "\\" + pNumberDoc : "?StoreSetting=" + CodeWarehouse) + AddPar, null, "application/json;charset=utf-8", Config.Login, Config.Password);
                     else
-                        result = Http.HTTPRequest(CodeApi, "documents", null, "application/json;charset=utf-8", Config.Login, Config.Password);
+                        result = GetDataHTTP.HTTPRequest(CodeApi, "documents", null, "application/json;charset=utf-8", Config.Login, Config.Password);
 
                     if (result.HttpState == eStateHTTP.HTTP_OK)
                     {
@@ -493,7 +493,7 @@ namespace BL.Connector
         {
             try
             {
-                HttpResult result = await Http.HTTPRequestAsync(0, "DCT/GetNameWarehouseFromDoc", pD.ToJson(), "application/json", null);
+                HttpResult result = await GetDataHTTP.HTTPRequestAsync(0, "DCT/GetNameWarehouseFromDoc", pD.ToJson(), "application/json", null);
                 if (result.HttpState == eStateHTTP.HTTP_OK)
                 {
                     var res = JsonConvert.DeserializeObject<Result<string>>(result.Result);
@@ -521,7 +521,7 @@ namespace BL.Connector
             try
             {
                 SaveDoc Data = new SaveDoc() { Doc = pDoc, Wares = pWares };
-                HttpResult result = await Http.HTTPRequestAsync(0, "DCT/SaveDoc", Data.ToJson(), "application/json", null);
+                HttpResult result = await GetDataHTTP.HTTPRequestAsync(0, "DCT/SaveDoc", Data.ToJson(), "application/json", null);
                 if (result.HttpState == eStateHTTP.HTTP_OK)
                 {
                     var res = JsonConvert.DeserializeObject<Result>(result.Result);
@@ -577,7 +577,7 @@ namespace BL.Connector
 
                 var sw = Stopwatch.StartNew();
 
-                HttpResult result = await Http.HTTPRequestAsync(2, "", data, "application/json", null, null, 90);
+                HttpResult result = await GetDataHTTP.HTTPRequestAsync(2, "", data, "application/json", null, null, 90);
 
                 sw.Stop();
                 TimeSpan TimeLoad = sw.Elapsed;
@@ -699,7 +699,7 @@ namespace BL.Connector
                         TimeSpan TimeLoad = sw.Elapsed;
                         sw.Start();
                         string data = JsonConvert.SerializeObject(R);
-                        HttpResult result = await Http.HTTPRequestAsync(2, "", data, "application/json", null, null, 60, false);
+                        HttpResult result = await GetDataHTTP.HTTPRequestAsync(2, "", data, "application/json", null, null, 60, false);
                         R.file = null;
 
                         if (result.HttpState == eStateHTTP.HTTP_OK)
@@ -763,7 +763,7 @@ namespace BL.Connector
             HttpResult result;
             try
             {
-                result = await Http.HTTPRequestAsync(1, "StoreSettings", "{}", "application/json", "brb", "brb"); //charset=utf-8;
+                result = await GetDataHTTP.HTTPRequestAsync(1, "StoreSettings", "{}", "application/json", "brb", "brb"); //charset=utf-8;
 
                 if (result.HttpState == eStateHTTP.HTTP_OK)
                 {
@@ -786,14 +786,14 @@ namespace BL.Connector
             try
             {
                 //HttpResult result = Http.HTTPRequest(0, "GetExpirationDate", pCodeWarehouse.ToString(), null, null, null);
-                HttpResult result = await Http.HTTPRequestAsync(0, "DCT/GetExpirationDate", pCodeWarehouse.ToString(), "application/json", null);
+                HttpResult result = await GetDataHTTP.HTTPRequestAsync(0, "DCT/GetExpirationDate", pCodeWarehouse.ToString(), "application/json", null);
 
                 if (result.HttpState == eStateHTTP.HTTP_OK)
                 {
                     Config.OnProgress?.Invoke(0.5);
                     var res = JsonConvert.DeserializeObject<Result<IEnumerable<DocWaresExpirationSample>>>(result.Result);
 
-                    /* result = await Http.HTTPRequestAsync(3, "DCT/GetExpirationWares", null, null, null);
+                    /* result = await GetDataHTTP.HTTPRequestAsync(3, "DCT/GetExpirationWares", null, null, null);
                      if (result.HttpState == eStateHTTP.HTTP_OK)
                      {
                          Config.OnProgress?.Invoke(0.95);
@@ -817,7 +817,7 @@ namespace BL.Connector
         {
             try
             {
-                HttpResult result = await Http.HTTPRequestAsync(3, "DCT/GetExpirationWares", "", "application/json", null);
+                HttpResult result = await GetDataHTTP.HTTPRequestAsync(3, "DCT/GetExpirationWares", "", "application/json", null);
                 if (result.HttpState == eStateHTTP.HTTP_OK)
                 {
                     var res = JsonConvert.DeserializeObject<Result<IEnumerable<ExpirationWares>>>(result.Result);
@@ -839,7 +839,7 @@ namespace BL.Connector
             {
                 AppContext.SetSwitch("System.Reflection.NullabilityInfoContext.IsSupported", true);
                 string Data = pED.ToJSON("yyyy-MM-dd");
-                HttpResult result = await Http.HTTPRequestAsync(0, "DCT/SaveExpirationDate", Data, "application/json", null);
+                HttpResult result = await GetDataHTTP.HTTPRequestAsync(0, "DCT/SaveExpirationDate", Data, "application/json", null);
                 if (result.HttpState == eStateHTTP.HTTP_OK)
                 {
                     var res = JsonConvert.DeserializeObject<Result>(result.Result);

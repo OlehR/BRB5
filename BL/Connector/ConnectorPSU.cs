@@ -23,7 +23,7 @@ namespace BL.Connector
         public override async Task<Result> LoginAsync(string pLogin, string pPassWord, eLoginServer pLoginServer)
         {
             string data = JsonConvert.SerializeObject(new Api() { CodeData = 1, Login = pLogin, PassWord = pPassWord }); //"{\"CodeData\": \"1\"" + ", \"Login\": \"" + pLogin + "\"" + ", \"PassWord\": \"" + pPassWord + "\"}";
-            HttpResult result = await Http.HTTPRequestAsync(0, "znp/", data, "application/json");//
+            HttpResult result = await GetDataHTTP.HTTPRequestAsync(0, "znp/", data, "application/json");//
 
             if (result.HttpState != eStateHTTP.HTTP_OK)
             {
@@ -136,7 +136,7 @@ namespace BL.Connector
             Config.OnProgress?.Invoke(0.3d);
             WaresPrice res;
             string data = JsonConvert.SerializeObject(new ApiPrice(154, pBC) { TypePriceInfo= pTP });
-            HttpResult result = Http.HTTPRequest(0, "DCT/GetPrice/", data, "application/json",null,null,2);
+            HttpResult result = GetDataHTTP.HTTPRequest(0, "DCT/GetPrice/", data, "application/json",null,null,2);
             Config.OnProgress?.Invoke(0.8d);
             if (result.HttpState != eStateHTTP.HTTP_OK)
                 res = new WaresPrice(result);
@@ -259,7 +259,7 @@ namespace BL.Connector
             else
             {
                 string data = JsonConvert.SerializeObject(new ApiDoc() { CodeData = 150, TypeDoc = pTypeDoc, CodeWarehouse = Config.CodeWarehouse, Ver = 5136 });
-                HttpResult result = await Http.HTTPRequestAsync(0, "znp/", data, "application/json",null,null,30d);//
+                HttpResult result = await GetDataHTTP.HTTPRequestAsync(0, "znp/", data, "application/json",null,null,30d);//
 
                 if (result.HttpState == eStateHTTP.HTTP_OK)
                 {
@@ -298,7 +298,7 @@ namespace BL.Connector
             String data = res.ToJSON();
             try
             {
-                HttpResult result = await Http.HTTPRequestAsync(0, "znp/", data, "application/json", null, null);
+                HttpResult result = await GetDataHTTP.HTTPRequestAsync(0, "znp/", data, "application/json", null, null);
                 if (result.HttpState != eStateHTTP.HTTP_OK)
                 {
                     return new Result(result);
@@ -324,7 +324,7 @@ namespace BL.Connector
             try
             {
                 string data = JsonConvert.SerializeObject(new Api() { CodeData = 210 });
-                HttpResult result = Http.HTTPRequest(0, "znp/", data, "application/json", "brb", "brb");//
+                HttpResult result = GetDataHTTP.HTTPRequest(0, "znp/", data, "application/json", "brb", "brb");//
 
                 if (result.HttpState == eStateHTTP.HTTP_OK)
                 {
@@ -355,7 +355,7 @@ namespace BL.Connector
             try
             {
                 string json = new ApiPrintHTTP(Data).ToJSON(); //Config.GetApiJson(999, BuildConfig.VERSION_CODE, "\"CodeWares\":\"" + sb.toString() + "\"");
-                HttpResult res = Http.HTTPRequest(0, "print/", json, "application/json", null, null);//"http://znp.vopak.local:8088/Print"
+                HttpResult res = GetDataHTTP.HTTPRequest(0, "print/", json, "application/json", null, null);//"http://znp.vopak.local:8088/Print"
                 if (res.HttpState == eStateHTTP.HTTP_OK)
                 {
                     return res.Result;
@@ -371,7 +371,7 @@ namespace BL.Connector
         }
 
         public override async Task<Result<int>> GetIdRaitingTemplate() {
-            HttpResult result = await Http.HTTPRequestAsync(0, "DCT/Raitting/GetIdRaitingTemplate", null, "application/json", "brb", "brb");//
+            HttpResult result = await GetDataHTTP.HTTPRequestAsync(0, "DCT/Raitting/GetIdRaitingTemplate", null, "application/json", "brb", "brb");//
 
             if (result.HttpState == eStateHTTP.HTTP_OK)
             {
@@ -383,7 +383,7 @@ namespace BL.Connector
 
         public override async Task<Result> GetNumberDocRaiting()
         {
-            HttpResult result = await Http.HTTPRequestAsync(0, "DCT/Raitting/GetNumberDocRaiting", null, "application/json", "brb", "brb");//
+            HttpResult result = await GetDataHTTP.HTTPRequestAsync(0, "DCT/Raitting/GetNumberDocRaiting", null, "application/json", "brb", "brb");//
 
             if (result.HttpState == eStateHTTP.HTTP_OK)
             {
@@ -395,7 +395,7 @@ namespace BL.Connector
 
         public override async Task<Result> SaveTemplate(RaitingTemplate pRT)
         {
-            HttpResult result = await Http.HTTPRequestAsync(0, "DCT/Raitting/SaveTemplate", pRT.ToJSON("yyyy-MM-ddTHH:mm:ss"), "application/json", "brb", "brb");//
+            HttpResult result = await GetDataHTTP.HTTPRequestAsync(0, "DCT/Raitting/SaveTemplate", pRT.ToJSON("yyyy-MM-ddTHH:mm:ss"), "application/json", "brb", "brb");//
 
             if (result.HttpState == eStateHTTP.HTTP_OK)
             {
@@ -407,7 +407,7 @@ namespace BL.Connector
 
         public override async Task<Result> SaveDocRaiting(DocVM pDoc)
         {
-            HttpResult result = await Http.HTTPRequestAsync(0, "DCT/Raitting/SaveDocRaiting", pDoc.ToJSON("yyyy-MM-ddTHH:mm:ss"), "application/json", "brb", "brb");//
+            HttpResult result = await GetDataHTTP.HTTPRequestAsync(0, "DCT/Raitting/SaveDocRaiting", pDoc.ToJSON("yyyy-MM-ddTHH:mm:ss"), "application/json", "brb", "brb");//
 
             if (result.HttpState == eStateHTTP.HTTP_OK)
             {
@@ -418,7 +418,7 @@ namespace BL.Connector
         }
         public override async Task<Result<IEnumerable<RaitingTemplate>>> GetRaitingTemplateAsync()
         {
-            HttpResult result = await  Http.HTTPRequestAsync(0, "DCT/Raitting/GetRaitingTemplate", null, "application/json", "brb", "brb");//
+            HttpResult result = await  GetDataHTTP.HTTPRequestAsync(0, "DCT/Raitting/GetRaitingTemplate", null, "application/json", "brb", "brb");//
 
             if (result.HttpState == eStateHTTP.HTTP_OK)
             {
@@ -442,7 +442,7 @@ namespace BL.Connector
         }
         public override async Task<Result<IEnumerable<Doc>>> GetRaitingDocsAsync()
         {
-            HttpResult result = await Http.HTTPRequestAsync(0, "DCT/Raitting/GetRaitingDocs", null, "application/json", "brb", "brb");//
+            HttpResult result = await GetDataHTTP.HTTPRequestAsync(0, "DCT/Raitting/GetRaitingDocs", null, "application/json", "brb", "brb");//
 
             if (result.HttpState == eStateHTTP.HTTP_OK)
             {
@@ -455,7 +455,7 @@ namespace BL.Connector
 
 
         public override async Task<Result<IEnumerable<DocVM>>> GetPromotion(int pCodeWarehouse) {
-            HttpResult result = await Http.HTTPRequestAsync(0, "DCT/CheckPromotion/Doc", pCodeWarehouse.ToJSON(), "application/json", "brb", "brb");
+            HttpResult result = await GetDataHTTP.HTTPRequestAsync(0, "DCT/CheckPromotion/Doc", pCodeWarehouse.ToJSON(), "application/json", "brb", "brb");
 
             if (result.HttpState == eStateHTTP.HTTP_OK)
             {
@@ -465,7 +465,7 @@ namespace BL.Connector
             return null;
         }
         public override async Task<Result<IEnumerable<DocWares>>> GetPromotionData(string pNumberDoc) {
-            HttpResult result = await Http.HTTPRequestAsync(0, "DCT/CheckPromotion/GetPromotionData", "\"" + pNumberDoc + "\"", "application/json", "brb", "brb");
+            HttpResult result = await GetDataHTTP.HTTPRequestAsync(0, "DCT/CheckPromotion/GetPromotionData", "\"" + pNumberDoc + "\"", "application/json", "brb", "brb");
 
             if (result.HttpState == eStateHTTP.HTTP_OK)
             {
