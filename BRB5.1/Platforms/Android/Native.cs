@@ -59,6 +59,6 @@ namespace BRB6
             var ver = await UtilAndroid.DownloadStringAsync("https://raw.githubusercontent.com/OlehR/BRB5/master/Apk/Ver.txt");
             return ver.ToInt() > versionString.ToInt();
         }
-        public override async Task InstallAsync() { await UtilAndroid.InstallAPKAsync(Config.OnProgress); }
+        public override async Task InstallAsync(Action<double> pA) { await UtilAndroid.InstallAPKAsync(pA); }
     }
 }

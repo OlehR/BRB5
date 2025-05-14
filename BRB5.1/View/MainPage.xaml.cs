@@ -16,6 +16,8 @@ namespace BRB6
         Connector c;
         DB db;
         BL.BL Bl;
+        double _PB = 0.0;
+        public double PB { get { return _PB; } set { _PB = value; OnPropertyChanged(nameof(PB)); } }
         public string Login { get; set; }
         public string Password { get; set; }
         public IEnumerable<LoginServer> LS { get; set; }
@@ -172,9 +174,11 @@ namespace BRB6
             if (await Config.NativeBase.CheckNewVerAsync())
             {
                 var res = await DisplayAlert("Оновлення доступне", "Доступна нова версія. Бажаєте встановити?", "Yes", "No");
-                if (res)  Config.NativeBase.InstallAsync();
+                MyProgress.IsVisible = true;
+                if (res)  Config.NativeBase.InstallAsync(Progress);
             }
         }
+        void Progress(double pProgress) => MainThread.BeginInvokeOnMainThread(() => PB = pProgress);
         protected override void OnDisappearing()  {  base.OnDisappearing(); }
 
         private async void OnSettingsClicked(object sender, EventArgs e) { await Navigation.PushAsync(new Settings());  }

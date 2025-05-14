@@ -1,5 +1,4 @@
-﻿//using BRB5.Model;
-using BRB5;
+﻿using BRB5;
 using BRB5.Model;
 using BRB5.Model.DB;
 using SQLite;
@@ -11,8 +10,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Utils;
 public static class ProtoDB
-{
- 
+{ 
     public static int ReplaceAll(this SQLiteConnection SQL, IEnumerable objects)
     {
         int c = 0;

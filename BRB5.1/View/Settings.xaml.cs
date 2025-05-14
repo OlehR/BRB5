@@ -20,7 +20,7 @@ namespace BRB6.View
         public string SN { get { return "SN:"+ Config.SN; } }
         public bool IsVisScan { get { return Config.TypeScaner == eTypeScaner.Camera; } }
 
-        double _PB = 0.5;
+        double _PB = 0.0;
         public double PB { get { return _PB; } set { _PB = value; OnPropertyChanged(nameof(PB)); } }
         public List<string> ListTypeUsePrinter
         {
@@ -178,7 +178,6 @@ namespace BRB6.View
                         }
                     }
                 }
-
                 Config.CodeWarehouse = 0;
                 OnClickSave(null, null);
                 Connector.CleanConnector();
@@ -206,8 +205,6 @@ namespace BRB6.View
            
         }
         public void Dispose() { Config.BarCode -= BarCode; }
-
-
         void Progress(double pProgress) => MainThread.BeginInvokeOnMainThread(() => PB = pProgress);
         protected override void OnAppearing()
         {
