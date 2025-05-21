@@ -70,6 +70,8 @@ namespace BL.Connector
                         Config.CodeUser = res.Info?.CodeUser ?? 0;
                         Config.NameUser = res.Info?.NameUser;
                         Config.TypeDoc = res.Info?.TypeDoc;
+                        if(!string.IsNullOrEmpty(res.Info?.PathAPK))
+                            Config.PathAPK = res.Info?.PathAPK;
                         isGroup = Config.TypeDoc.Any(el => el.KindDoc == eKindDoc.NotDefined);
                         if (res.Info?.LocalConnect == eCompany.Sim23)
                             СonnectorLocal = new ConnectorSE();
@@ -502,6 +504,25 @@ namespace BL.Connector
                 return new Result(e);
             }
         }
+        public override async Task<Result<string>> GetNameWarehouseFromDoc(DocId pD)
+        {
+            try
+            {
+                HttpResult result = await GetDataHTTP.HTTPRequestAsync(0, "DCT/GetNameWarehouseFromDoc", pD.ToJson(), "application/json", null);
+                if (result.HttpState == eStateHTTP.HTTP_OK)
+                {
+                    var res = JsonConvert.DeserializeObject<Result<string>>(result.Result);
+                    if (res.State == 0) return res;
+                }
+                return new Result<string>(result);
+            }
+            catch (Exception e)
+            {
+                FileLogger.WriteLogMessage(this, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+                return new Result<string>(e);
+            }
+        }
+
     }
 
 }

@@ -14,6 +14,7 @@ using Microsoft.Maui;
 using Utils;
 using static Android.Gms.Common.Apis.Api;
 using UtilNetwork;
+using Android.Util;
 
 namespace BRB6.PlatformDependency
 {
@@ -21,6 +22,7 @@ namespace BRB6.PlatformDependency
     {
         public static async Task InstallAPKAsync(Action<double> pProgress=null)
         {
+            if (string.IsNullOrEmpty(BRB5.Model.Config.PathAPK)) return;
             try
             {                
                 string path = Path.Combine(Android.App.Application.Context.GetExternalFilesDir("").AbsolutePath, Android.OS.Environment.DirectoryDownloads);
@@ -28,8 +30,8 @@ namespace BRB6.PlatformDependency
                 if (File.Exists(DestinationPath))
                     File.Delete(DestinationPath);
                 
-                                        //"https://raw.githubusercontent.com/OlehR/BRB5/master/Apk/ua.UniCS.TM.BRB6.zip"
-                await Http.DownloadFileWithProgressAsync("https://media.githubusercontent.com/media/OlehR/BRB5/refs/heads/master/Apk/ua.UniCS.TM.BRB6.apk", DestinationPath, pProgress);
+                //"https://raw.githubusercontent.com/OlehR/BRB5/master/Apk/ua.UniCS.TM.BRB6.zip"
+                await Http.DownloadFileWithProgressAsync(BRB5.Model.Config.PathAPK, DestinationPath, pProgress);
 
                 string DestinationPathApk = DestinationPath; /*Path.Combine(path, "ua.UniCS.TM.BRB6.apk");
                 if (File.Exists(DestinationPathApk))

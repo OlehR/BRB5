@@ -64,28 +64,35 @@ public partial class LotsCheck : ContentPage
     {
         if (SelectedDoc != null)
             SelectedDoc.SelectedColor = false;
-        var r = StackLayoutDocs.Children
+         /*StackLayoutDocs.Children
                         .OfType<Microsoft.Maui.Controls.View>()
                         .Select(view => view.BindingContext as DocVM)
-                        .FirstOrDefault(item => item != null && item.BarCode == pBarCode);
+                        .FirstOrDefault(item => item != null && item.BarCode == pBarCode);*/
+
+        var r = MyDocs.FirstOrDefault(item => item != null && item.BarCode == pBarCode);
         if (r != null)
         {
             SelectedDoc = r;
             r.SelectedColor = true;
-
-            ScrollToSelected();
+            MainThread.BeginInvokeOnMainThread(() =>
+            {
+                ScrollToSelected();
+            });
         }
         else
         {
             var result = await c.GetNameWarehouseFromDoc(new DocId { TypeDoc = TypeDoc.CodeDoc, NumberDoc = pBarCode });
-            if (result.State == 0) // Assuming 0 means success
+            MainThread.BeginInvokeOnMainThread(async() =>
             {
-                await DisplayAlert("", "Даний товар належить " + result.Info, "OK");
-            }
-            else
-            {
-                await DisplayAlert("Помилка", "Не вдалося отримати назву " + result.TextError, "OK");
-            }
+                if (result.State == 0) // Assuming 0 means success
+                {
+                    await DisplayAlert("", "Даний товар належить " + result.Info, "OK");
+                }
+                else
+                {
+                    await DisplayAlert("Помилка", "Не вдалося отримати назву " + result.TextError, "OK");
+                }
+            });
         }
     }
     public void Dispose() { Config.BarCode -= BarCode; }

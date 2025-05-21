@@ -9,7 +9,7 @@ namespace BRB5.Model.DB
 
         public string NumberDoc { get; set; }
         public string DocId { get; set; }
-        public int CodeWares { get; set; }        
+        public long CodeWares { get; set; }        
         public decimal Quantity { get; set; }
         public decimal Expiration { get; set; }
         public DateTime ExpirationDate { get; set; }        

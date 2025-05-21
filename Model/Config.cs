@@ -16,6 +16,7 @@ namespace BRB5.Model
         public static string Model = "";     
         public static int CodeWarehouse;
         public static string NameCompany="?";
+        public static string PathAPK = "https://dct.spar.uz.ua/apk/ua.UniCS.TM.BRB6.apk"; //"https://media.githubusercontent.com/media/OlehR/BRB5/refs/heads/master/Apk/ua.UniCS.TM.BRB6.apk";
         public static List<int> CodesWarehouses { get; set; }
         //static eCompany _Company = eCompany.NotDefined;
         public static eTypeScaner TypeScaner;

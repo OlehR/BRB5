@@ -9,7 +9,7 @@ namespace BRB5.Model.DB
         public DateTime DateDoc { get; set; } = DateTime.Now.Date;
         public string NumberDoc { get; set; }
         public string DocId { get; set; }
-        public int CodeWares { get; set; }
+        public long CodeWares { get; set; }
         public decimal QuantityInput { get; set; }
         public DateTime ExpirationDateInput { get; set; }
     }

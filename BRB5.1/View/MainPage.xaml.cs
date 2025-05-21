@@ -170,13 +170,14 @@ namespace BRB6
         protected override async void OnAppearing()
         {
             base.OnAppearing();
-
+            #if ANDROID
             if (await Config.NativeBase.CheckNewVerAsync())
             {
                 var res = await DisplayAlert("Оновлення доступне", "Доступна нова версія. Бажаєте встановити?", "Yes", "No");
                 MyProgress.IsVisible = true;
                 if (res)  Config.NativeBase.InstallAsync(Progress);
             }
+            #endif
         }
         void Progress(double pProgress) => MainThread.BeginInvokeOnMainThread(() => PB = pProgress);
         protected override void OnDisappearing()  {  base.OnDisappearing(); }

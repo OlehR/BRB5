@@ -6,7 +6,7 @@ namespace BRB5.Model.DB
 {
     public class ExpirationWares
     {
-        public int CodeWares { get; set; }       
+        public long CodeWares { get; set; }       
         public string DaysLeft { get; set; }
     }
 }
