@@ -12,6 +12,7 @@ using Utils;
 using Microsoft.Maui.Controls;
 using CommunityToolkit.Maui.Alerts;
 using CommunityToolkit.Maui.Core;
+using Microsoft.Maui.Graphics.Text;
 
 
 
@@ -43,9 +44,7 @@ namespace BRB6.View
             NokeyBoard();
             //TypeDoc = pTypeDoc;
             BindingContext = this;
-            _MyDocsR = new ObservableCollection<DocExpiration>(db.GetDocExpiration());
 
-            PopulateDocs();
             _ = Task.Run(async () =>
             {
                 Config.OnProgress.Invoke(0.1);
@@ -66,13 +65,16 @@ namespace BRB6.View
         protected override void OnAppearing()
         {
             base.OnAppearing();
-           
+
             if (!IsSoftKeyboard)
             {
 #if ANDROID
             MainActivity.Key+= OnPageKeyDown;
 #endif
-            }    
+            }
+
+            _MyDocsR = new ObservableCollection<DocExpiration>(db.GetDocExpiration());
+            PopulateDocs();
             OnPropertyChanged(nameof(MyDocsR));
             Config.OnProgress += Progress;
         }
@@ -94,6 +96,7 @@ namespace BRB6.View
 
         private void PopulateDocs()
         {
+            DocsStackLayout.Children.Clear();
             if (MyDocsR != null)
             {
                 foreach (var doc in MyDocsR)
@@ -115,15 +118,59 @@ namespace BRB6.View
                     };
                     stackLayout.Children.Add(descriptionLabel);
 
+                    double percent = doc.Count == 0 ? 0 : (double)doc.CountInput / doc.Count;
+                    Color bgColor;
+
+                    if (percent <= 0.33)
+                        bgColor = Colors.Red;
+                    else if (percent <= 0.66)
+                        bgColor = Colors.Orange;
+                    else if (percent < 1.0)
+                        bgColor = Colors.Yellow;
+                    else
+                        bgColor = Colors.Green;
+
+
                     var countStack = new HorizontalStackLayout
                     {
                         Spacing = 1,
-                        VerticalOptions = LayoutOptions.CenterAndExpand,
-                        HorizontalOptions = LayoutOptions.End
+                        HorizontalOptions = LayoutOptions.End,
+                        // BackgroundColor = bgColor,
+                        Padding = 5
                     };
-                    countStack.Children.Add(new Label { Text = doc.CountInput.ToString() });
-                    countStack.Children.Add(new Label { Text = "/" });
-                    countStack.Children.Add(new Label { Text = doc.Count.ToString() });
+
+                    // Set the binding context for the stack to the current doc
+                    countStack.BindingContext = doc;
+
+                    // Create labels with bindings
+                    var countInputLabel = new Label
+                    {
+                        FontSize = 20,
+                        FontAttributes = FontAttributes.Bold,
+                        TextColor = bgColor
+                    };
+                    countInputLabel.SetBinding(Label.TextProperty, nameof(DocExpiration.CountInput));
+
+                    var slashLabel = new Label
+                    {
+                        Text = "/",
+                        FontSize = 20,
+                        FontAttributes = FontAttributes.Bold,
+                        TextColor = bgColor
+                    };
+
+                    var countLabel = new Label
+                    {
+                        FontSize = 20,
+                        FontAttributes = FontAttributes.Bold,
+                        TextColor = bgColor
+                    };
+                    countLabel.SetBinding(Label.TextProperty, nameof(DocExpiration.Count));
+
+                    countStack.Children.Add(countInputLabel);
+                    countStack.Children.Add(slashLabel);
+                    countStack.Children.Add(countLabel);
+
                     stackLayout.Children.Add(countStack);
 
                     var tapGestureRecognizer = new TapGestureRecognizer();
