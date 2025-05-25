@@ -93,19 +93,61 @@ namespace BRB6.View
         {
             await Navigation.PushAsync(new ExpiretionDateItem(doc.NumberDoc));
         }
-
         private void PopulateDocs()
         {
             DocsStackLayout.Children.Clear();
+
             if (MyDocsR != null)
             {
                 foreach (var doc in MyDocsR)
                 {
-                    var stackLayout = new Microsoft.Maui.Controls.StackLayout
+                    double percent = doc.Count == 0 ? 0 : (double)doc.CountInput / doc.Count;
+
+                    // Текстовий колір залежно від відсотка
+                    Color textColor;
+                    if (percent <= 0.33)
+                        textColor = Colors.Red;
+                    else if (percent <= 0.66)
+                        textColor = Colors.Orange;
+                    else if (percent < 1.0)
+                        textColor = Colors.Yellow;
+                    else
+                        textColor = Colors.Green;
+
+                    var grid = new Grid
+                    {
+                        HeightRequest = 40,
+                        Margin = 0, 
+                        Padding = 2,
+                        BackgroundColor = Colors.Transparent
+                    };
+
+                    var progressBar = new BoxView
+                    {
+                        Color = Color.FromArgb("#B9F6CA"), // салатовий
+                        HorizontalOptions = LayoutOptions.Start,
+                        VerticalOptions = LayoutOptions.Fill,
+                        WidthRequest = percent * 300, // або динамічно
+                    };
+
+                    // Рамка
+                    var borderFrame = new Frame
+                    {
+                        BorderColor = Colors.Gray,
+                        CornerRadius = 4,
+                        Padding = 0,
+                        Margin = 0,
+                        HasShadow = false,
+                        Content = grid
+                    };
+
+                    // Текстовий вміст
+                    var contentLayout = new Microsoft.Maui.Controls.StackLayout
                     {
                         Orientation = StackOrientation.Horizontal,
-                        Padding = new Thickness(5),
-                        BackgroundColor = Color.FromArgb("#E0E0E0")
+                        VerticalOptions = LayoutOptions.Center,
+                        HorizontalOptions = LayoutOptions.FillAndExpand,
+                        Spacing = 2
                     };
 
                     var descriptionLabel = new Label
@@ -113,75 +155,53 @@ namespace BRB6.View
                         Text = doc.Description,
                         TextColor = Application.Current.RequestedTheme == AppTheme.Light ? Colors.Black : Colors.White,
                         FontSize = 20,
-                        HorizontalOptions = LayoutOptions.FillAndExpand,
-                        VerticalOptions = LayoutOptions.CenterAndExpand
-                    };
-                    stackLayout.Children.Add(descriptionLabel);
-
-                    double percent = doc.Count == 0 ? 0 : (double)doc.CountInput / doc.Count;
-                    Color bgColor;
-
-                    if (percent <= 0.33)
-                        bgColor = Colors.Red;
-                    else if (percent <= 0.66)
-                        bgColor = Colors.Orange;
-                    else if (percent < 1.0)
-                        bgColor = Colors.Yellow;
-                    else
-                        bgColor = Colors.Green;
-
-
-                    var countStack = new HorizontalStackLayout
-                    {
-                        Spacing = 1,
-                        HorizontalOptions = LayoutOptions.End,
-                        // BackgroundColor = bgColor,
-                        Padding = 5
+                        HorizontalOptions = LayoutOptions.StartAndExpand,
+                        VerticalOptions = LayoutOptions.Center
                     };
 
-                    // Set the binding context for the stack to the current doc
-                    countStack.BindingContext = doc;
-
-                    // Create labels with bindings
                     var countInputLabel = new Label
                     {
+                        Text = doc.CountInput.ToString(),
                         FontSize = 20,
                         FontAttributes = FontAttributes.Bold,
-                        TextColor = bgColor
+                        TextColor = textColor
                     };
-                    countInputLabel.SetBinding(Label.TextProperty, nameof(DocExpiration.CountInput));
 
                     var slashLabel = new Label
                     {
                         Text = "/",
                         FontSize = 20,
                         FontAttributes = FontAttributes.Bold,
-                        TextColor = bgColor
+                        TextColor = textColor
                     };
 
                     var countLabel = new Label
                     {
+                        Text = doc.Count.ToString(),
                         FontSize = 20,
                         FontAttributes = FontAttributes.Bold,
-                        TextColor = bgColor
+                        TextColor = textColor
                     };
-                    countLabel.SetBinding(Label.TextProperty, nameof(DocExpiration.Count));
 
-                    countStack.Children.Add(countInputLabel);
-                    countStack.Children.Add(slashLabel);
-                    countStack.Children.Add(countLabel);
+                    contentLayout.Children.Add(descriptionLabel);
+                    contentLayout.Children.Add(countInputLabel);
+                    contentLayout.Children.Add(slashLabel);
+                    contentLayout.Children.Add(countLabel);
 
-                    stackLayout.Children.Add(countStack);
+                    // Додати фон та вміст у grid
+                    grid.Children.Add(progressBar);
+                    grid.Children.Add(contentLayout);
 
+                    // Tap Gesture
                     var tapGestureRecognizer = new TapGestureRecognizer();
                     tapGestureRecognizer.Tapped += (s, e) => OpenDoc(doc);
-                    stackLayout.GestureRecognizers.Add(tapGestureRecognizer);
+                    borderFrame.GestureRecognizers.Add(tapGestureRecognizer);
 
-
-                    DocsStackLayout.Children.Add(stackLayout);
+                    DocsStackLayout.Children.Add(borderFrame);
                 }
             }
         }
+
 
         private void F2Save(object sender, TappedEventArgs e)
         {
