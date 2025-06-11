@@ -225,7 +225,7 @@ namespace BL.Connector
                         var res = JsonConvert.DeserializeObject<Result<Docs>>(result.Result);
                         if (res.State == 0)
                         {
-                            db.ReplaceDoc(res.Info.Doc);
+                            db.ReplaceDoc(res.Info.Doc,TD.IsOnlyHttp?pTypeDoc : 0 );
                             db.ReplaceDocWaresSample(res.Info.Wares);
                         }
                         return new Result();

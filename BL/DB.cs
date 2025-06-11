@@ -136,8 +136,9 @@ CREATE TABLE DocWares (
     ExpirationDate TIMESTAMP,
     DTInsert    TIMESTAMP       DEFAULT (DATETIME('NOW', 'LOCALTIME') )
 );
-CREATE INDEX DocWaresTNO ON DocWares (TypeDoc, NumberDoc, OrderDoc, CodeReason);
+--CREATE INDEX DocWaresTNO ON DocWares (TypeDoc, NumberDoc, OrderDoc, CodeReason);
 CREATE INDEX DocWaresTNW ON DocWares (TypeDoc, NumberDoc, CodeWares );
+CREATE UNIQUE INDEX DocWaresTNT ON DocWares (TypeDoc, NumberDoc, OrderDoc );
 
 CREATE TABLE DocWaresSample (
     TypeDoc     INTEGER         NOT NULL DEFAULT (0),
@@ -249,7 +250,7 @@ CREATE TABLE DocWaresExpiration(
 CREATE UNIQUE INDEX DocWaresExpirationTNC ON DocWaresExpiration (DateDoc, NumberDoc, DocId, CodeWares);
 
 ";
-        readonly int Ver = 4;
+        readonly int Ver = 5;
         public string PathNameDB { get { return Path.Combine(BaseDir, NameDB); } }
 
         public DB(string pBaseDir) : this() { BaseDir = pBaseDir; }
@@ -271,6 +272,7 @@ CREATE UNIQUE INDEX DocWaresExpirationTNC ON DocWaresExpiration (DateDoc, Number
 
         bool CreateDB()
         {
+            string Sql = null ;
             try
             {
                 if (File.Exists(PathNameDB))
@@ -284,8 +286,11 @@ CREATE UNIQUE INDEX DocWaresExpirationTNC ON DocWaresExpiration (DateDoc, Number
                     db = new SQLiteConnection(PathNameDB, false);
                     //Створюємо базу       
                     foreach (var el in SqlCreateDB.Split(';'))
-                        if (el.Length > 4)
-                            db.Execute(el);
+                    {
+                        Sql = el.Replace("\r\n"," ").Trim();
+                        if (Sql.Length > 4 && !Sql.StartsWith("--"))
+                            db.Execute(Sql);
+                    }
                     SetVersion(Ver);
                     return true;
                 }
@@ -454,8 +459,11 @@ from  DocWares dw
             return null;
         }
 
-        public bool ReplaceDoc(IEnumerable<Doc> pDoc)
+        public bool ReplaceDoc(IEnumerable<Doc> pDoc,int pTypeDoc=0)
         {
+            if (pTypeDoc != 0)
+                db.Execute($"delete from Doc where TypeDoc={pTypeDoc}");
+
             string Sql = @"replace into Doc ( DateDoc, TypeDoc, NumberDoc, CodeWarehouse, IdTemplate, ExtInfo, NameUser, BarCode, Description, State,
                                               IsControl, NumberDoc1C, DateOutInvoice, NumberOutInvoice, Color,DTStart,DTEnd) values 
                                             (@DateDoc,@TypeDoc,@NumberDoc,@CodeWarehouse,@IdTemplate,@ExtInfo,@NameUser,@BarCode,@Description,max(@State, (select max(d.state) from Doc d where d.Typedoc=@TypeDoc and d.numberdoc=@NumberDoc )),
@@ -680,7 +688,7 @@ and bc.BarCode=?
             return db.ReplaceAll(pR) >= 0;
         }
 
-        public bool ReplaceRaitingTemplate(IEnumerable<RaitingTemplate> pR)
+        public bool ReplaceRaitingTemplate(IEnumerable<RaitingTemplate> pR )
         {
             //string Sql = @"replace into RaitingTemplate ( IdTemplate, Text, IsActive ) values (@IdTemplate,@Text,@IsActive)";
             return db.ReplaceAll(pR) >= 0;
@@ -711,6 +719,8 @@ and bc.BarCode=?
 
         public bool ReplaceDocWares(DocWares pDW)
         {
+            if(pDW.OrderDoc==0)
+                pDW.OrderDoc = db.ExecuteScalar<int>($"select coalesce(max(OrderDoc),0)+1 from DocWares where TypeDoc={pDW.TypeDoc} and NumberDoc='{pDW.NumberDoc}'");
             //if(!pDW.GetType().Name.Equals("DocWares"))
             string Sql = $@"replace into DocWares ( TypeDoc, NumberDoc, OrderDoc, CodeWares, Quantity, QuantityOld, CodeReason,ExpirationDate) values 
                                                  ({pDW.TypeDoc},'{pDW.NumberDoc}',{pDW.OrderDoc},{pDW.CodeWares},{pDW.Quantity},{pDW.QuantityOld},{pDW.CodeReason},'{pDW.ExpirationDate}')";

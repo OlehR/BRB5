@@ -207,8 +207,9 @@ namespace BRB6.View
         {
             Doc.NumberOutInvoice = NumberOutInvoice;
             Doc.DateOutInvoice = ListDataStr[SelectedDataStr].DateString;
-            var r = await c.SendDocsDataAsync(Doc, db.GetDocWares(Doc, 2, eTypeOrder.Scan));
-            if (r.State != 0) _ = DisplayAlert("Помилка", r.TextError, "OK");
+            var d = db.GetDocWares(Doc, 2, eTypeOrder.Scan);
+            var r = await c.SendDocsDataAsync(Doc,d );
+            if (r?.State != 0) _ = DisplayAlert("Помилка", r.TextError, "OK");
             else
             {
                 var toast = Toast.Make("Документ успішно збережений");

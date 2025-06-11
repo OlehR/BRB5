@@ -6,6 +6,8 @@ using Microsoft.Maui.Controls.Compatibility;
 using BRB5;
 using Grid = Microsoft.Maui.Controls.Grid;
 using BarcodeScanning;
+using Utils;
+
 #if ANDROID
 using Android.Views;
 #endif
@@ -64,10 +66,9 @@ namespace BRB6.View
             MainActivity.Key+= OnPageKeyDown;
 #endif
             }
-            c.LoadDocsDataAsync(TypeDoc.CodeDoc, null, false);
-
-            if (Config.IsFilterSave && ZKPOstr.Length > 2) MyDocsR = Bl.SetColorType(db.GetDoc(TypeDoc, null, ZKPOstr));
-            else MyDocsR = Bl.SetColorType(db.GetDoc(TypeDoc));
+            if(TypeDoc.IsOnlyHttp) AsyncHelper.RunSync(()=>c.LoadDocsDataAsync(TypeDoc.CodeDoc, null, false));
+            else _= c.LoadDocsDataAsync(TypeDoc.CodeDoc, null, false);
+            MyDocsR = Config.IsFilterSave && ZKPOstr.Length > 2? Bl.SetColorType(db.GetDoc(TypeDoc, null, ZKPOstr)) : Bl.SetColorType(db.GetDoc(TypeDoc));
 
             if (MyDocsR.Count > 0)
             {

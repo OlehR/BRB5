@@ -72,6 +72,10 @@ namespace BRB5
         //public bool IsViewOPKO = false;
         public eTypeReplenishment TypeReplenishment { get; set; } = eTypeReplenishment.None;
         public bool IsVisible { get; set; } = true;
+        /// <summary>
+        /// Чи використовувати лише HTTP  для отримання списку документів.
+        /// </summary>
+        public bool IsOnlyHttp { get; set; } = false;
 
     }
 }
