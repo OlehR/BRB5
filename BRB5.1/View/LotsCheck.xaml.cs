@@ -22,7 +22,7 @@ public partial class LotsCheck : ContentPage
 
     private DocVM SelectedDoc;
     private bool IsWares;
-    public double height { get { return DeviceDisplay.MainDisplayInfo.Height / DeviceDisplay.MainDisplayInfo.Density - 70; } }
+    public double height { get { return DeviceDisplay.MainDisplayInfo.Height / DeviceDisplay.MainDisplayInfo.Density - 150; } }
     public LotsCheck(TypeDoc vTypeDoc)
     {
         InitializeComponent();
@@ -103,7 +103,26 @@ public partial class LotsCheck : ContentPage
             StackLayoutDocs.Children.Clear();
         });
         MyDocs = new ObservableCollection<DocVM>(db.GetDoc(TypeDoc));
-
+        //// --- Add this block to multiply documents for testing ---
+        //int multiplyFactor = 10; // Change this to get more items (e.g., 10x20=200)
+        //var docsList = MyDocs.ToList();
+        //for (int i = 1; i < multiplyFactor; i++)
+        //{
+        //    foreach (var doc in docsList)
+        //    {
+        //        // Clone the doc to avoid reference issues (implement Clone if needed)
+        //        var newDoc = new DocVM
+        //        {
+        //            DateDoc = doc.DateDoc,
+        //            TypeDoc = doc.TypeDoc,
+        //            NumberDoc = doc.NumberDoc + $"_{i}", // Make NumberDoc unique
+        //            ExtInfo = doc.ExtInfo,
+        //            BarCode = doc.BarCode + $"_{i}"
+        //            // Copy other properties as needed
+        //        };
+        //        MyDocs.Add(newDoc);
+        //    }
+        //}
 
         var firstDoc = MyDocs.FirstOrDefault();
         if (firstDoc != null)
