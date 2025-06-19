@@ -24,11 +24,14 @@ namespace BL.Connector
         ConnectorBase СonnectorLocal = null;
         public ConnectorUniversal()
         {
-            PercentColor = new PercentColor[4] { 
-                new PercentColor(10, Color.FromArgb(0xC6F8BD), Color.LightGreen, "72301609"), 
-                new PercentColor(25, Color.FromArgb(0xF7FAB2), Color.Yellow, "72301616"), 
-                new PercentColor(50, Color.FromArgb(0xFFD7A6), Color.Orange ,  "72301623"), 
-                new PercentColor(75,Color.FromArgb(0xFDABAB) , Color.Pink, "72301630") };
+            PercentColor = new PercentColor[6]  {
+                new PercentColor(0, Color.White, Color.White, ""), //Товар з хорошим строком
+                new PercentColor(10, Color.FromArgb(0x84FF57), Color.FromArgb(0x84FF57), "72301609"),  //10%
+                new PercentColor(25, Color.FromArgb(0xFFF157), Color.FromArgb(0xFFF157), "72301616"),  //25%
+                new PercentColor(50, Color.FromArgb(0xFEB044), Color.FromArgb(0xFEB044), "72301623"), //50%
+                new PercentColor(75, Color.FromArgb(0xE874FF), Color.FromArgb(0xE874FF), "72301630") , //75%
+                new PercentColor(100, Color.Gray, Color.Gray, "") //Протермінований товар
+            };
         }
         bool IsLocalPrice;
        // IEnumerable<TypeDoc> TypeDoc=null;
