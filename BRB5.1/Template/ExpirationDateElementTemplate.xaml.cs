@@ -40,19 +40,22 @@ public partial class ExpirationDateElementTemplate : ContentView
 
         OnPropertyChanged(nameof(DM));
     }
-
+    bool IsExpirationDateSelected = false;
     private void ExpirationDateSelected(object sender, DateChangedEventArgs e)
     {
+        IsExpirationDateSelected = true;
         DM.ProductionDateInput = DM.ExpirationDateInput.AddDays(-(double)DM.Expiration);
-        OnPropertyChanged(nameof(DM.GetPercentColor));
-        OnPropertyChanged(nameof(DM.GetColor));
+        IsExpirationDateSelected = false;
+        //OnPropertyChanged(nameof(DM.GetPercentColor));
+        //OnPropertyChanged(nameof(DM.GetColor));
     }
 
     private void ProductionDateSelected(object sender, DateChangedEventArgs e)
     {
-        DM.ExpirationDateInput = DM.ProductionDateInput.AddDays((double)DM.Expiration);
-        OnPropertyChanged(nameof(DM.GetPercentColor));
-        OnPropertyChanged(nameof(DM.GetColor));
+        if(!IsExpirationDateSelected)
+            DM.ExpirationDateInput = DM.ProductionDateInput.AddDays((double)DM.Expiration);
+        //OnPropertyChanged(nameof(DM.GetPercentColor));
+        //OnPropertyChanged(nameof(DM.GetColor));
     }
 
     private void OnAdd(object sender, EventArgs e)

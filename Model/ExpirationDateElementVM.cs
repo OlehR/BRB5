@@ -21,7 +21,17 @@ namespace BRB5.Model
 
         private DateTime _ExpirationDateInput;
         private DateTime _ProductionDateInput;
-        public DateTime ExpirationDateInput { get => _ExpirationDateInput; set {_ExpirationDateInput = value; OnPropertyChanged(nameof(ExpirationDateInput)); OnPropertyChanged(nameof(GetPercentColor)); OnPropertyChanged(nameof(GetColor)); } }
+        public DateTime ExpirationDateInput { get => _ExpirationDateInput;
+            set
+            {
+                _ExpirationDateInput = value;
+                OnPropertyChanged(nameof(ExpirationDateInput)); 
+                OnPropertyChanged(nameof(GetPercentColor)); 
+                OnPropertyChanged(nameof(GetColor));
+                //OnPropertyChanged(nameof(GetPercentColor));
+                //OnPropertyChanged(nameof(GetColor));
+            }
+        }
         public DateTime ProductionDateInput { get => _ProductionDateInput; set { _ProductionDateInput = value; OnPropertyChanged(nameof(ProductionDateInput)); } }
         public string NameWares { get; set; }
         public string BarCode { get; set; }
@@ -37,11 +47,12 @@ namespace BRB5.Model
         int GetColourIndex()
         {
             int Days = ((ExpirationDateInput == default ? ExpirationDate : ExpirationDateInput) - DateTime.Today).Days+1;
-            if (Days < 0) return Connector.PercentColor.Length - 1; //Якщо протерміновано
+            if (Days <= 0) return Connector.PercentColor.Length - 1; //Якщо протерміновано
             int i = 0;
             while (i < DaysRight.Length && i< Connector.PercentColor.Length-2)
             {
-                if (DaysRight[i]==-1|| Days >= DaysRight[i]) break;
+                if (DaysRight[i] == -1) return Connector.PercentColor.Length - 1;
+                if( Days > DaysRight[i]) break;
                 i++;
             }
             return i;
