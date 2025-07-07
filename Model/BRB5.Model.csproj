@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>net9.0</TargetFramework>
   </PropertyGroup>
 
   <ItemGroup>
@@ -10,7 +10,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\UniCS.TM\UtilNetwork\UtilNetwork.csproj" />
+    <ProjectReference Include="..\..\UniCS.TM\UtilNetwork\UtilNetwork9.csproj" />
     <ProjectReference Include="..\..\UniCS.TM\Utils\Utils.csproj" />
   </ItemGroup>
 

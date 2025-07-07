@@ -58,6 +58,7 @@ namespace BL.Connector
         {
             try
             {
+                if (string.IsNullOrEmpty(pLogin) || string.IsNullOrEmpty(pPassWord)) return new Result(-1, "Порожній пароль або логін");
                 Result Res = new Result();
                 if (pLoginServer == eLoginServer.Central || pLoginServer == eLoginServer.Bitrix)
                 {

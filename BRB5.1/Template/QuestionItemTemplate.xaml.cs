@@ -32,7 +32,7 @@ public partial class QuestionItemTemplate : ContentView, IViewRDI
     {
         ImageButton button = (ImageButton)sender;
         var vQuestion = button.BindingContext as BRB5.Model.RaitingDocItem;
-        var FileName = $"{vQuestion.Id}_{DateTime.Now.ToString("yyyyMMdd_HHmmssfff")}";
+        var FileName = $"{vQuestion.NumberDoc}_{vQuestion.Id}_{DateTime.Now.ToString("yyyyMMdd_HHmmssfff")}";
 
         try
         {

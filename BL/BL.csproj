@@ -1,15 +1,15 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>net9.0</TargetFramework>
     <Nullable>disable</Nullable>
-    <Version>1.0.2</Version>
-    <AssemblyVersion>1.0.2.1</AssemblyVersion>
+    <Version>1.0.2.2</Version>
+    <AssemblyVersion>1.0.2.2</AssemblyVersion>
     
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\UniCS.TM\UtilNetwork\UtilNetwork.csproj" />
+    <ProjectReference Include="..\..\UniCS.TM\UtilNetwork\UtilNetwork9.csproj" />
     <ProjectReference Include="..\Model\BRB5.Model.csproj" />
   </ItemGroup>
 

@@ -183,7 +183,10 @@ namespace BRB6.View
                 Connector.CleanConnector();
                 c = ConnectorBase.GetInstance();
                 GetDataHTTP.Init();
-                await c.LoadGuidDataAsync(true);
+                MainThread.BeginInvokeOnMainThread(async () =>
+                {
+                    await c.LoadGuidDataAsync(true);
+                });
                 wh = null;
                 OnClickIP(null, null);
                 OnClickSave(null, null);
