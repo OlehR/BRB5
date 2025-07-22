@@ -11,21 +11,15 @@
             <ffimageloading:CachedImage x:Name="WareImage" ErrorPlaceholder="photo.png" HeightRequest="190"  Source="{Binding UriPicture}"/>
 
             <Label Text="{Binding WP.Name}"
-                       FontSize="28" />
-           
+                       FontSize="28" />       
 
-            <Grid IsVisible="{Binding IsVisBarcode}">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="1*" />
-                    <ColumnDefinition Width="2*" />
-                </Grid.ColumnDefinitions>
-
-                <Label Text="Штрих код:" />
-                <Entry Text="{Binding WP.BarCodes}" 
+            <Entry IsVisible="{Binding IsVisBarcode}" 
+                   Text="{Binding WP.BarCodes}"  
+                   Placeholder="Штрих код"
+                   HorizontalOptions="Start"
                        Completed="BarCodeHandInput"
                        x:Name="BarCodeInput"
                        IsReadOnly="False"/>
-            </Grid>
 
             <Grid RowSpacing="0"  ColumnSpacing="0">
                 <Grid.ColumnDefinitions>

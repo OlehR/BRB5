@@ -21,6 +21,7 @@ public partial class UPriceChecker : ContentPage
             OnPropertyChanged(nameof(WP));
             OnPropertyChanged(nameof(TextColorPrice));
             OnPropertyChanged(nameof(IsVisPriceOpt));
+            OnPropertyChanged(nameof(UriPicture));
         }
     }
 
