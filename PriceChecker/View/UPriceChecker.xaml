@@ -5,15 +5,29 @@
              x:Class="PriceChecker.View.UPriceChecker">
 
     <ContentPage.Content>
-        <StackLayout BackgroundColor="{Binding ColorPrintColorType}" Spacing="0">
+        <Grid>
+            <Image Source="background.png"
+                    Aspect="AspectFill"                   
+                    Grid.RowSpan="2"
+                    Grid.ColumnSpan="2" />
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="2*" />
+                <ColumnDefinition Width="1*" />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="2*" />
+                <RowDefinition Height="1*" />
+            </Grid.RowDefinitions>
+            
+            <ffimageloading:CachedImage x:Name="WareImage"  Grid.Column="1"  Source="{Binding UriPicture}"/>
 
+            <StackLayout >
+                <Label Text="{Binding WP.Name}" 
+                       VerticalOptions="CenterAndExpand"
+                       HorizontalOptions="Center"
+                       FontSize="50" FontAttributes="Bold" FontFamily="" />       
 
-            <ffimageloading:CachedImage x:Name="WareImage" ErrorPlaceholder="photo.png" HeightRequest="190"  Source="{Binding UriPicture}"/>
-
-            <Label Text="{Binding WP.Name}"
-                       FontSize="28" />       
-
-            <Entry IsVisible="{Binding IsVisBarcode}" 
+                <Entry IsVisible="{Binding IsVisBarcode}" 
                    Text="{Binding WP.BarCodes}"  
                    Placeholder="Штрих код"
                    HorizontalOptions="Start"
@@ -21,50 +35,54 @@
                        x:Name="BarCodeInput"
                        IsReadOnly="False"/>
 
-            <Grid RowSpacing="0"  ColumnSpacing="0">
+
+            </StackLayout>
+
+            <Grid Grid.ColumnSpan="2"  Grid.Row="1" >
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="2*" />
                     <ColumnDefinition Width="3*" />
                     <ColumnDefinition Width="2*" />
                     <ColumnDefinition Width="3*" />
+                    <ColumnDefinition Width="2*" />
+                    <ColumnDefinition Width="2*" />
                 </Grid.ColumnDefinitions>
-                <Grid.RowDefinitions>
-                    <RowDefinition />
-                    <RowDefinition Height="auto"/>
-                </Grid.RowDefinitions>
 
                 <Label Text="Ціна:"
-                       VerticalOptions="Center"
-                       FontSize="16"
+                       VerticalOptions="Center" FontFamily=""
+                       FontSize="30"
                        Grid.Column="0"
                        TextColor="{Binding TextColorPrice}" />
                 <Label Text="{Binding WP.Price}"
-                       FontSize="24"
+                       VerticalOptions="Center"
+                       FontSize="40" FontAttributes="Bold" FontFamily=""
                        Grid.Column="1"
                        TextColor="{Binding TextColorPrice}" />
 
-                <Label IsVisible="{Binding IsVisPriceOpt}" Text="Ціна опт."
+                <Label IsVisible="{Binding IsVisPriceOpt}" Text="Ціна опт." FontFamily=""
                        VerticalOptions="Center"
-                       FontSize="16"
+                       FontSize="30"
                        Grid.Column="2"
                        TextColor="{Binding TextColorPrice}" />
                 <Label IsVisible="{Binding IsVisPriceOpt}" Text="{Binding WP.PriceOpt}"
-                       FontSize="24"
-                       Grid.Column="3"
+                       VerticalOptions="Center"
+                      FontSize="40" FontAttributes="Bold" FontFamily=""
+                       Grid.Column="3" 
                        TextColor="{Binding TextColorPrice}" />
 
-                <Label IsVisible="{Binding IsVisPriceOpt}" Text="к-ть опт." Grid.Row="1"
+                <Label IsVisible="{Binding IsVisPriceOpt}" Text="к-ть опт." 
                        VerticalOptions="Center"
-                       FontSize="16" Grid.ColumnSpan="2"
+                       FontSize="30"
+                       Grid.Column="4"
                        TextColor="Blue" />
                 <Label IsVisible="{Binding IsVisPriceOpt}" Text="{Binding WP.QuantityOpt}"  
-                       Grid.Row="1"
-                       FontSize="24"
-                       Grid.Column="2"
+                       VerticalOptions="Center"
+                       FontSize="40" FontAttributes="Bold" FontFamily=""
+                       Grid.Column="5" 
                        TextColor="Blue" />
 
             </Grid>
+        </Grid>
 
-        </StackLayout>
     </ContentPage.Content>
 </ContentPage>
