@@ -1,6 +1,6 @@
-using BRB5.Model;
-using BL;
+﻿using BL;
 using BRB5;
+using BRB5.Model;
 using UtilNetwork;
 
 namespace PriceChecker.View;
@@ -11,6 +11,7 @@ public partial class UPriceChecker : ContentPage
     BL.BL bl = BL.BL.GetBL();
 
     WaresPrice _WP;
+    public Uri UriPicture { get { return new Uri(Config.ApiUrl1 + $"Wares/{WP.CodeWares:D9}.png"); } }
     public WaresPrice WP
     {
         get => _WP;
@@ -34,12 +35,17 @@ public partial class UPriceChecker : ContentPage
 
     public UPriceChecker()
     {
+        _WP = new();
         InitializeComponent();
         this.BindingContext = this;
         bl.ClearWPH();
         Config.BarCode = BarCode;
     }
-
+    private void BarCodeHandInput(object sender, EventArgs e)
+    {
+        var text = BarCodeInput.Text;
+        FoundWares(text, true);
+    }
     void BarCode(string pBarCode) => FoundWares(pBarCode, false);
 
     void FoundWares(string pBarCode, bool pIsHandInput = false)

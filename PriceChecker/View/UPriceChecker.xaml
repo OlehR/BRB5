@@ -1,15 +1,18 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:ffimageloading="clr-namespace:FFImageLoading.Maui;assembly=FFImageLoading.Maui"
              x:Class="PriceChecker.View.UPriceChecker">
 
     <ContentPage.Content>
         <StackLayout BackgroundColor="{Binding ColorPrintColorType}" Spacing="0">
 
-            <Grid>
-                <Label Text="{Binding WP.Name}"
+
+            <ffimageloading:CachedImage x:Name="WareImage" ErrorPlaceholder="photo.png" HeightRequest="190"  Source="{Binding UriPicture}"/>
+
+            <Label Text="{Binding WP.Name}"
                        FontSize="28" />
-            </Grid>
+           
 
             <Grid IsVisible="{Binding IsVisBarcode}">
                 <Grid.ColumnDefinitions>
@@ -19,6 +22,7 @@
 
                 <Label Text="Штрих код:" />
                 <Entry Text="{Binding WP.BarCodes}" 
+                       Completed="BarCodeHandInput"
                        x:Name="BarCodeInput"
                        IsReadOnly="False"/>
             </Grid>
