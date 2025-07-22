@@ -65,6 +65,11 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <ProjectReference Include="..\BL\BL.csproj" />
+	  <ProjectReference Include="..\Model\BRB5.Model.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
 	  <None Update="View\UPriceChecker.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </None>
