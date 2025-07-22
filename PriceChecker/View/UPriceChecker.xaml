@@ -3,28 +3,24 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="PriceChecker.View.UPriceChecker">
 
-
     <ContentPage.Content>
         <StackLayout BackgroundColor="{Binding ColorPrintColorType}" Spacing="0">
 
             <Grid>
+                <Label Text="{Binding WP.Name}"
+                       FontSize="28" />
+            </Grid>
+
+            <Grid IsVisible="{Binding IsVisBarcode}">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="2*" />
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="2*" />
+                    <ColumnDefinition Width="1*" />
                     <ColumnDefinition Width="2*" />
                 </Grid.ColumnDefinitions>
 
-                <Label Text="Арт:" />
-                <Label Text="{Binding WP.Article}"
-                       Grid.Column="1" />
-                <Label Text="Зал:"
-                       Grid.Column="2" />
-                <Label Text="{Binding WP.Rest}"
-                       Grid.Column="3" />
-                <Label Text="{Binding WP.Unit}"
-                       Grid.Column="4" />
+                <Label Text="Штрих код:" />
+                <Entry Text="{Binding WP.BarCodes}" 
+                       x:Name="BarCodeInput"
+                       IsReadOnly="False"/>
             </Grid>
 
             <Grid RowSpacing="0"  ColumnSpacing="0">
@@ -39,102 +35,38 @@
                     <RowDefinition Height="auto"/>
                 </Grid.RowDefinitions>
 
-                <Label Text="Ціна с:"
+                <Label Text="Ціна:"
                        VerticalOptions="Center"
                        FontSize="16"
-                       TextColor="{Binding TextColorPrice}" />
-                <Label Text="{Binding WP.PriceOld}"
-                       Grid.Column="1"
-                       FontSize="24"
-                       TextColor="{Binding TextColorPrice}" />
-                <Label Text="Ціна н:"
-                       VerticalOptions="Center"
-                       FontSize="16"
-                       Grid.Column="2"
+                       Grid.Column="0"
                        TextColor="{Binding TextColorPrice}" />
                 <Label Text="{Binding WP.Price}"
                        FontSize="24"
-                       Grid.Column="3"
-                       TextColor="{Binding TextColorPrice}" />
-                <Label Text="Роз.ціна:"
-                       IsVisible="{Binding IsVisPriceNormal}"
-                       VerticalOptions="Center"
-                       FontSize="16"                       
-                       Grid.Row="1"
-                       TextColor="{Binding TextColorPrice}" />
-                <Label Text="{Binding WP.PriceNormal}"
-                       IsVisible="{Binding IsVisPriceNormal}"
-                       Grid.Column="1"
-                       Grid.Row="1"
-                       FontSize="24"
-                       TextColor="{Binding TextColorPrice}" />
-            </Grid>
-
-            <Grid RowSpacing="0"  ColumnSpacing="0" IsVisible="{Binding IsVisPriceOpt}">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="2*" />
-                    <ColumnDefinition Width="3*" />
-                    <ColumnDefinition Width="2*" />
-                    <ColumnDefinition Width="3*" />
-                </Grid.ColumnDefinitions>
-                <Grid.RowDefinitions>
-                    <RowDefinition />
-                    <RowDefinition />
-                </Grid.RowDefinitions>
-
-                <Label Text="Ц.с.опт."
-                       VerticalOptions="Center"
-                       FontSize="16" 
-                       TextColor="{Binding TextColorPrice}" />
-                <Label Text="{Binding WP.PriceOptOld}"
-                       FontSize="24"
                        Grid.Column="1"
                        TextColor="{Binding TextColorPrice}" />
-                <Label Text="Ц.н.опт."
+
+                <Label IsVisible="{Binding IsVisPriceOpt}" Text="Ціна опт."
                        VerticalOptions="Center"
                        FontSize="16"
                        Grid.Column="2"
                        TextColor="{Binding TextColorPrice}" />
-                <Label Text="{Binding WP.PriceOpt}"
+                <Label IsVisible="{Binding IsVisPriceOpt}" Text="{Binding WP.PriceOpt}"
                        FontSize="24"
                        Grid.Column="3"
                        TextColor="{Binding TextColorPrice}" />
 
-
-                <Label Text="к-ть опт." Grid.Row="1"
+                <Label IsVisible="{Binding IsVisPriceOpt}" Text="к-ть опт." Grid.Row="1"
                        VerticalOptions="Center"
                        FontSize="16" Grid.ColumnSpan="2"
-                       IsVisible="{Binding IsVisPriceOptQ}"
                        TextColor="Blue" />
-                <Label Text="{Binding WP.QuantityOpt}"  
+                <Label IsVisible="{Binding IsVisPriceOpt}" Text="{Binding WP.QuantityOpt}"  
                        Grid.Row="1"
                        FontSize="24"
                        Grid.Column="2"
-                       IsVisible="{Binding IsVisPriceOptQ}"
                        TextColor="Blue" />
 
             </Grid>
 
-            <Grid>
-                <Label Text="{Binding WP.Name}"
-                       FontSize="28" />
-            </Grid>
-
-            <Grid IsVisible="{Binding IsVisBarcode}">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="1*" />
-                    <ColumnDefinition Width="2*" />
-                </Grid.ColumnDefinitions>
-
-                <Label Text="Штрих код:" />
-                    <Entry                Text="{Binding WP.BarCodes}" 
-                                          x:Name="BarCodeInput"
-                                          IsReadOnly="True"/>
-            </Grid>
-
-           
         </StackLayout>
-
     </ContentPage.Content>
-
 </ContentPage>
