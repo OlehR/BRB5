@@ -1,0 +1,10 @@
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="PriceChecker.View.SplashPage"
+             Title="Splash">
+    <VerticalStackLayout Padding="30" Spacing="20" VerticalOptions="Center">
+        <Label Text="Введіть штрихкод" FontSize="24" HorizontalOptions="Center"/>
+        <Entry x:Name="BarcodeEntry" Placeholder="Штрихкод" Keyboard="Numeric"/>
+        <Button Text="Перейти" Clicked="OnBarcodeEntered"/>
+    </VerticalStackLayout>
+</ContentPage>

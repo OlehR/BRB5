@@ -8,6 +8,6 @@
     Title="PriceChecker">
 
         <ShellContent
-        ContentTemplate="{DataTemplate views:UPriceChecker}" />
+        ContentTemplate="{DataTemplate views:SplashPage}" />
 
 </Shell>
