@@ -58,10 +58,10 @@ namespace BL.Connector
         {
             pBarCode = pBarCode.Trim();
             ParseBarCode Res = new ParseBarCode() { BarCode = pBarCode };
-            if (pBarCode.Length > 2 && pBarCode.Substring(0, 2).Equals("29") && pBarCode.Length == 13)
+            if (pBarCode.Length == 13 && pBarCode[..2].Equals("29"))
             {
-                Res.CodeWares = Convert.ToInt32(pBarCode.Substring(2, 8));
-                Res.Price = Convert.ToDecimal(pBarCode.Substring(8, 13));
+                Res.CodeWares = Convert.ToInt32(pBarCode.Substring(2, 6));
+                Res.Price = Convert.ToDecimal(pBarCode.Substring(8, 5));
             }
             return Res;
         }
