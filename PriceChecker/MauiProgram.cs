@@ -16,6 +16,7 @@ namespace PriceChecker
                 {
                     fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
                     fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
+                    fonts.AddFont("Montserrat-ExtraBold.ttf", "MontserratExtraBold");
                 });
             Config.ApiUrl1 = "https://api.spar.uz.ua/";
             Config.Company = eCompany.PSU;
