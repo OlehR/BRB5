@@ -538,7 +538,6 @@ and bc.BarCode=?
         public DocWaresEx GetScanData(DocId pDocId, ParseBarCode pParseBarCode)
         {
             DocWaresEx res = null;
-            //Cursor mCur = null;
             string sql;
 
             if (pParseBarCode == null)
@@ -556,12 +555,11 @@ and bc.BarCode=?
                          where  dws.Typedoc={pDocId.TypeDoc}  and dws.numberdoc=pDocId.NumberDoc and " +
                                 (pParseBarCode.CodeWares > 0 ? $"dws.CODEWARES={pParseBarCode.CodeWares}" : $"dws.BarCode= {pParseBarCode.BarCode}");
                     var r = db.Query<DocWaresEx>(sql);
-                    if (r != null && r.Count() == 1)
+                    if (r != null && r.Count == 1)
                         res = r.First();
                 }
                 else
                 {
-
                     if (pParseBarCode.BarCode != null)
                     {
                         sql = $@"select w.CODEWARES as CodeWares,w.NAMEWARES as NameWares,au.COEFFICIENT as Coefficient,bc.CODEUNIT as CodeUnit, ud.ABRUNIT as NameUnit,
@@ -580,15 +578,16 @@ and bc.BarCode=?
                             sql = $@"select bc.codewares as CodeWares,bc.BARCODE as BarCode from BARCODE bc 
                                      join wares w on bc.codewares=w.codewares and w.codeunit={Config.GetCodeUnitWeight}
                                      where substr(bc.BARCODE,1,6)=?";
-                            var rr = db.Query<DocWaresEx>(sql, pParseBarCode.BarCode.Substring(0, 6));
+                            var rr = db.Query<DocWaresEx>(sql, pParseBarCode.BarCode[..6]);
 
                             foreach (var el in rr)
                             {
                                 if (pParseBarCode.BarCode[..el.BarCode.Length].Equals(el.BarCode))
                                 {
                                     pParseBarCode.CodeWares = el.CodeWares;
-                                    pParseBarCode.Quantity = pParseBarCode.BarCode.Substring(8, 12).ToDecimal();
+                                    pParseBarCode.Quantity = pParseBarCode.BarCode[8..12].ToDecimal();
                                     res = GetScanData(pDocId, pParseBarCode);
+                                    break;
                                 }
                             }
                         }

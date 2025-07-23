@@ -125,6 +125,8 @@ namespace BL.Connector
         
         public override ParseBarCode ParsedBarCode(string pBarCode, bool pIsOnlyBarCode)
         {
+            if(СonnectorLocal!=null)
+               return СonnectorLocal.ParsedBarCode(pBarCode, pIsOnlyBarCode);
             pBarCode = pBarCode.Trim();
             ParseBarCode Res = new ParseBarCode() { BarCode = pBarCode };
             if (pBarCode.Length > 2 && pBarCode.Substring(0, 2).Equals("29") && pBarCode.Length == 13)
