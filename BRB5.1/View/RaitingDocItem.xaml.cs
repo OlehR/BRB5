@@ -30,11 +30,11 @@ namespace BRB6
         List<IViewRDI> AllViewRDI;
 
         int CountAll, CountChoice;
-        public bool IsSave { get { return CountAll == CountChoice; } }
+        public bool IsSave => CountAll == CountChoice;
         bool IsAll = true;
-        public string TextAllNoChoice { get { return IsAll ? "Без відповіді" : "Всі"; } }
-        public string QuantityAllChoice { get { return CountAll>0? $"{CountChoice}/{CountAll}":""; } }
-        
+        public string TextAllNoChoice => IsAll ? "Без відпові" : "Всі";
+        public string QuantityAllChoice => CountAll > 0 ? $"{CountChoice}/{CountAll}" : "";
+
         bool IsOkWh { get {return LocationBrb.LocationWarehouse?.CodeWarehouse == cDoc.CodeWarehouse; } }
         
         public string NameWarehouse
@@ -63,26 +63,25 @@ namespace BRB6
                 return IsOkWh ? System.Drawing.Color.FromArgb(100, 250, 100) :
                         System.Drawing.Color.FromArgb(250, 100, 100);
             } }
-
-        public string SizeWarehouse { get { return (IsOkWh ? "25" : "50"); } }
+        public string SizeWarehouse => IsOkWh ? "25" : "50";
 
         public string TextSave { get; set; } = "";
         bool _IsSaving = false;
         public bool IsSaving { get { return _IsSaving; } set { _IsSaving = value; OnPropertyChanged(nameof(IsSaving)); } }
 
         bool _IsSaved = false;
-        public bool IsSaved { get {return _IsSaved;} set { _IsSaved = value; OnPropertyChanged(nameof(IsSaved)); OnPropertyChanged(nameof(TextButtonSaved)); } } 
-        public string TextButtonSaved { get { return IsSaved ? "Закрити":"Зупинити"; } }
+        public bool IsSaved { get {return _IsSaved;} set { _IsSaved = value; OnPropertyChanged(nameof(IsSaved)); OnPropertyChanged(nameof(TextButtonSaved)); } }
+        public string TextButtonSaved => IsSaved ? "Закрити" : "Зупинити";
 
         bool IsAllOpen { get; set; } = true;
-        public string TextAllOpen { get { return IsAllOpen ? "Згорнути" : "Розгорнути"; }  }
+        public string TextAllOpen => IsAllOpen ? "Згорнути" : "Розгорнути";
         private bool IsRefreshList = true;
         private eTypeChoice _typeChoice = eTypeChoice.NotDefine;
         public eTypeChoice Choice { get { return _typeChoice; } set { _typeChoice = value; OnPropertyChanged(nameof(OpacityAll)); OnPropertyChanged(nameof(OpacityOnlyHead)); OnPropertyChanged(nameof(OpacityNoAnswer)); } }
-        public double OpacityAll { get { return Choice == eTypeChoice.All ? 1d : 0.4d; } }
-        public double OpacityOnlyHead { get { return Choice == eTypeChoice.OnlyHead ? 1d : 0.4d; } }
-        public double OpacityNoAnswer { get { return Choice == eTypeChoice.NoAnswer ? 1d : 0.4d; } }
-        public bool IsVisScan { get { return Config.TypeScaner == eTypeScaner.Camera; } }
+        public double OpacityAll => Choice == eTypeChoice.All ? 1d : 0.4d;
+        public double OpacityOnlyHead => Choice == eTypeChoice.OnlyHead ? 1d : 0.4d;
+        public double OpacityNoAnswer => Choice == eTypeChoice.NoAnswer ? 1d : 0.4d;
+        public bool IsVisScan => Config.TypeScaner == eTypeScaner.Camera;
         CameraView BarcodeScaner;
         public bool IsVisibleBarcodeScanning { get; set; } = false;
 
@@ -529,11 +528,7 @@ namespace BRB6
             QuestionsGrid.HeightRequest = availableHeight;
         }
 
-        private BRB5.Model.RaitingDocItem GetRaiting(object sender)
-        {
-            Microsoft.Maui.Controls.View V = (Microsoft.Maui.Controls.View)sender;
-            return (BRB5.Model.RaitingDocItem)V.BindingContext;
-        }
+        private BRB5.Model.RaitingDocItem GetRaiting(object sender) => (BRB5.Model.RaitingDocItem)((Microsoft.Maui.Controls.View)sender).BindingContext;
     }
 }
     

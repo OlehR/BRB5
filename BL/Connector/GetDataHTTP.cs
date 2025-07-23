@@ -17,17 +17,29 @@ namespace BL.Connector
     
         static GetDataHTTP()
         { 
+           
             Init();
         }
         
         static public void Init()
         {
-            var db = DB.GetDB();
-            var ApiUrl1 = db.GetConfig<string>("ApiUrl1");
-            var ApiUrl2 = db.GetConfig<string>("ApiUrl2");
-            var ApiUrl3 = db.GetConfig<string>("ApiUrl3");
-            var ApiUrl4 = db.GetConfig<string>("ApiUrl4");
-            string[] pUrl = { ApiUrl1, ApiUrl2, ApiUrl3, ApiUrl4 };
+            string ApiUrl1, ApiUrl2, ApiUrl3, ApiUrl4 ;
+            if (string.IsNullOrEmpty(Config.ApiUrl1))
+            {
+                var db = DB.GetDB();
+                 ApiUrl1 = db.GetConfig<string>("ApiUrl1");
+                 ApiUrl2 = db.GetConfig<string>("ApiUrl2");
+                 ApiUrl3 = db.GetConfig<string>("ApiUrl3");
+                 ApiUrl4 = db.GetConfig<string>("ApiUrl4");
+            }
+            else
+            {
+                ApiUrl1 = Config.ApiUrl1;
+                ApiUrl2 = Config.ApiUrl2;
+                ApiUrl3 = Config.ApiUrl3;
+                ApiUrl4 = Config.ApiUrl4;
+            }
+                string[] pUrl = { ApiUrl1, ApiUrl2, ApiUrl3, ApiUrl4 };
 
             DefaultApi = new int[pUrl.Length];
             Url = new string[4][];

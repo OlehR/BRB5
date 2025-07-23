@@ -39,7 +39,7 @@ namespace BL
                 //WP = CheckWP;
                 CheckWP.StateDoubleScan = eCheckWareScaned.BadPrice;
                 l = new LogPrice(CheckWP, IsOnline, PackageNumber, LineNumber);
-                db.InsLogPrice(l);
+                db?.InsLogPrice(l);
             }
 
             return CheckWP;

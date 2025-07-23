@@ -25,6 +25,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Utils", "..\UniCS.TM\Utils\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UtilNetwork9", "..\UniCS.TM\UtilNetwork\UtilNetwork9.csproj", "{5208EFF5-2200-E7D5-675E-515EA251BB26}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PriceChecker", "PriceChecker\PriceChecker.csproj", "{69CBC496-ED3B-4530-9987-657F7E20A475}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -173,6 +175,19 @@ Global
 		{5208EFF5-2200-E7D5-675E-515EA251BB26}.Release|iPhone.Build.0 = Release|Any CPU
 		{5208EFF5-2200-E7D5-675E-515EA251BB26}.Release|iPhoneSimulator.ActiveCfg = Release|Any CPU
 		{5208EFF5-2200-E7D5-675E-515EA251BB26}.Release|iPhoneSimulator.Build.0 = Release|Any CPU
+		{69CBC496-ED3B-4530-9987-657F7E20A475}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{69CBC496-ED3B-4530-9987-657F7E20A475}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{69CBC496-ED3B-4530-9987-657F7E20A475}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{69CBC496-ED3B-4530-9987-657F7E20A475}.Debug|iPhone.ActiveCfg = Debug|Any CPU
+		{69CBC496-ED3B-4530-9987-657F7E20A475}.Debug|iPhone.Build.0 = Debug|Any CPU
+		{69CBC496-ED3B-4530-9987-657F7E20A475}.Debug|iPhoneSimulator.ActiveCfg = Debug|Any CPU
+		{69CBC496-ED3B-4530-9987-657F7E20A475}.Debug|iPhoneSimulator.Build.0 = Debug|Any CPU
+		{69CBC496-ED3B-4530-9987-657F7E20A475}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{69CBC496-ED3B-4530-9987-657F7E20A475}.Release|Any CPU.Build.0 = Release|Any CPU
+		{69CBC496-ED3B-4530-9987-657F7E20A475}.Release|iPhone.ActiveCfg = Release|Any CPU
+		{69CBC496-ED3B-4530-9987-657F7E20A475}.Release|iPhone.Build.0 = Release|Any CPU
+		{69CBC496-ED3B-4530-9987-657F7E20A475}.Release|iPhoneSimulator.ActiveCfg = Release|Any CPU
+		{69CBC496-ED3B-4530-9987-657F7E20A475}.Release|iPhoneSimulator.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
