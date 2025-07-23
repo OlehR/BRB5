@@ -1,10 +1,16 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="PriceChecker.View.SplashPage"
-             Title="Splash">
-    <VerticalStackLayout Padding="30" Spacing="20" VerticalOptions="Center">
-        <Label Text="Введіть штрихкод" FontSize="24" HorizontalOptions="Center"/>
-        <Entry x:Name="BarcodeEntry" Placeholder="Штрихкод" Keyboard="Numeric"/>
-        <Button Text="Перейти" Clicked="OnBarcodeEntered"/>
-    </VerticalStackLayout>
+             x:Class="PriceChecker.View.SplashPage">
+
+    <Grid>
+        <Image Source="background.png"
+           Aspect="AspectFill"
+           Grid.RowSpan="2"
+           Grid.ColumnSpan="2" />
+        <VerticalStackLayout Padding="30" Spacing="20" VerticalOptions="Center">
+            <Image Source="logo1vopak.png" Aspect="AspectFit" HeightRequest="300"/>
+            <Image Source="check_the_price.png" Aspect="AspectFit" HeightRequest="130"/>
+            <Entry x:Name="BarcodeEntry" HorizontalOptions="Start" Placeholder="Штрихкод" Keyboard="Numeric" Completed="OnBarcodeEntered"/>
+        </VerticalStackLayout>
+    </Grid>
 </ContentPage>
