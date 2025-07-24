@@ -88,8 +88,7 @@
                         Grid.Row="1" Format="dd.MM.yyyy" 
                         FontSize="Large"/>
             <Frame Style="{StaticResource FrameStyle}" Grid.Column="1" Grid.Row="1">
-                <controls:CustomEntry Keyboard="{OnPlatform Numeric, iOS=Default}" 
-                                      x:Name="QuantityEntry"
+                <controls:CustomEntry x:Name="QuantityEntry"
                                       Focused="QuantityFocused"
                                       Text="{Binding DM.QuantityInput}"
                                       Style="{StaticResource EntryStyle}"/>

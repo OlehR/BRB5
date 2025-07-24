@@ -37,9 +37,36 @@ public partial class ExpirationDateElementTemplate : ContentView
 
         DM.ExpirationDateInput = DM.ExpirationDate;
         DM.ProductionDateInput = DM.ExpirationDate.AddDays(-(double)DM.Expiration);
-
+        KeyboardSelection();
         OnPropertyChanged(nameof(DM));
     }
+    private void KeyboardSelection()
+    {
+        try
+        {
+            var codeUnit = DM.CodeUnit;
+
+            // TMP!!!!!!!!!
+            var configCodeUnitWeight = 166; //Config.GetCodeUnitWeight;
+
+            if (codeUnit != null && configCodeUnitWeight != null)
+            {
+                if (codeUnit == configCodeUnitWeight)
+                {
+                    QuantityEntry.Keyboard = Keyboard.Telephone;
+                }
+                else
+                {
+                    QuantityEntry.Keyboard = Keyboard.Numeric;
+                }
+            }
+        }
+        catch
+        {
+            // Handle or log error if needed
+        }
+    }
+
     bool IsExpirationDateSelected = false;
     private void ExpirationDateSelected(object sender, DateChangedEventArgs e)
     {
