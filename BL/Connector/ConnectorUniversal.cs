@@ -77,7 +77,9 @@ namespace BL.Connector
                         if(!string.IsNullOrEmpty(res.Info?.PathAPK))
                             Config.PathAPK = res.Info?.PathAPK;
                         isGroup = Config.TypeDoc.Any(el => el.KindDoc == eKindDoc.NotDefined);
-                        if (res.Info?.LocalConnect == eCompany.Sim23)
+
+                        Config.LocalCompany= res.Info?.LocalConnect ?? eCompany.NotDefined;
+                        if (Config.LocalCompany == eCompany.Sim23)
                             СonnectorLocal = new ConnectorSE();
 
                         IsLocalPrice = Config.TypeDoc?.Where(el => el.KindDoc == eKindDoc.PriceCheck).FirstOrDefault()?.CodeApi==1;
@@ -128,12 +130,13 @@ namespace BL.Connector
             if(СonnectorLocal!=null)
                return СonnectorLocal.ParsedBarCode(pBarCode, pIsOnlyBarCode);
             pBarCode = pBarCode.Trim();
-            ParseBarCode Res = new ParseBarCode() { BarCode = pBarCode };
-            if (pBarCode.Length > 2 && pBarCode.Substring(0, 2).Equals("29") && pBarCode.Length == 13)
+            ParseBarCode Res = new() { BarCode = pBarCode };
+            /*            
+            if (pBarCode.Length > 2 && pBarCode[..2].Equals("29") && pBarCode.Length == 13)
             {
-                Res.CodeWares = Convert.ToInt32(pBarCode.Substring(2, 8));
-                Res.Price = Convert.ToDecimal(pBarCode.Substring(8, 13));
-            }
+                Res.CodeWares = Convert.ToInt32(pBarCode[2..8]);
+                Res.Price = Convert.ToDecimal(pBarCode[8..13]);
+            }*/
             return Res;
         }
 

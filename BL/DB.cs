@@ -560,7 +560,7 @@ and bc.BarCode=?
                 }
                 else
                 {
-                    if (pParseBarCode.BarCode != null)
+                    if (pParseBarCode.BarCode != null && pParseBarCode.CodeWares == 0)
                     {
                         sql = $@"select w.CODEWARES as CodeWares,w.NAMEWARES as NameWares,au.COEFFICIENT as Coefficient,bc.CODEUNIT as CodeUnit, ud.ABRUNIT as NameUnit,
                                  bc.BARCODE as BarCode ,w.CODEUNIT as BaseCodeUnit 
@@ -597,7 +597,7 @@ and bc.BarCode=?
                 // Пошук по коду
                 if (res == null && (pParseBarCode.CodeWares > 0 || pParseBarCode.Article > 0))
                 {
-                    String Find = pParseBarCode.CodeWares > 0 ? $"w.code_wares={pParseBarCode.CodeWares}" : $"w.ARTICLE='{pParseBarCode.Article:D8}'";
+                    String Find = pParseBarCode.CodeWares > 0 ? $"w.CodeWares={pParseBarCode.CodeWares}" : $"w.ARTICLE='{pParseBarCode.Article:D8}'";
                     sql = @"select w.CODEWARES,w.NAMEWARES as NameWares, au.COEFFICIENT as Coefficient,w.CODEUNIT as CodeUnit, ud.ABRUNIT as NameUnit,
                             '' as BARCODE  ,w.CODEUNIT as BaseCodeUnit 
                                 from WARES w 
