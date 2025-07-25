@@ -1,12 +1,20 @@
-﻿namespace PriceChecker
+﻿using Utils;
+using Equipments;
+
+
+namespace PriceChecker
 {
     public partial class App : Application
     {
         public App()
         {
             InitializeComponent();
+            FileLogger.WriteLogMessage("App", "App", "Start");
+            ScanerCom =new ScanerCom("COM10",9600);
+            //ScanerCom.Init();
+            FileLogger.WriteLogMessage("App", "App", "End");
         }
-
+        static public ScanerCom ScanerCom;
         protected override Window CreateWindow(IActivationState? activationState)
         {
             //return new Window(new AppShell());

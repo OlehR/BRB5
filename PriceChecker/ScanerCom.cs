@@ -15,7 +15,7 @@ namespace Equipments
         int BaudRate;
         protected string TextError = string.Empty;
         public bool IsReady { get { return SerialDevice != null; } }
-        public ScanerCom(string pSerialPort, int pBaudRate, Action<string, string> pOnBarCode)
+        public ScanerCom(string pSerialPort, int pBaudRate, Action<string, string> pOnBarCode=null)
         {
             SerialPort = pSerialPort;
             BaudRate = pBaudRate;
@@ -25,6 +25,7 @@ namespace Equipments
             // Timer.Elapsed += new ElapsedEventHandler(OnTimedEvent);
             //Timer.AutoReset = true;
         }
+        public void SetOnBarCode(Action<string, string> pOnBarCode) => OnBarCode = pOnBarCode;
 
         public  void Init()
         {
@@ -47,6 +48,7 @@ namespace Equipments
                     SerialDevice.OnReceivedData = new Func<byte[], bool>(OnDataReceived);
                 }
             }
+            FileLogger.WriteLogMessage($"ScanerCom/Init TextError={TextError}");
         }
 
         /*bool IsRead = false;

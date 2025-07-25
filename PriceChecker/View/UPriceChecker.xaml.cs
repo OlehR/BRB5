@@ -1,8 +1,9 @@
 ﻿using BL;
 using BRB5;
 using BRB5.Model;
-using UtilNetwork;
 using System.Timers;
+using UtilNetwork;
+using Utils;
 using Timer = System.Timers.Timer;
 
 namespace PriceChecker.View;
@@ -40,11 +41,13 @@ public partial class UPriceChecker : ContentPage
 
     public UPriceChecker(string? barcode = null)
     {
+        FileLogger.WriteLogMessage( $"UPriceChecker=>BarCode: {barcode}");
         _WP = new();
         InitializeComponent();
         this.BindingContext = this;
         bl.ClearWPH();
-        Config.BarCode = BarCode;
+        App.ScanerCom.SetOnBarCode(BarCode);
+        //Config.BarCode = BarCode;
         _returnToSplashTimer = new Timer(TimeoutSeconds * 1000);
         _returnToSplashTimer.Elapsed += OnTimeoutElapsed;
         _returnToSplashTimer.AutoReset = false;
@@ -58,7 +61,7 @@ public partial class UPriceChecker : ContentPage
         var text = BarCodeInput.Text;
         FoundWares(text, true);
     }
-    void BarCode(string pBarCode) => FoundWares(pBarCode, false);
+    void BarCode(string pBarCode,string pTypeBarCode=null) => FoundWares(pBarCode, false);
 
     void FoundWares(string pBarCode, bool pIsHandInput = false)
     {
