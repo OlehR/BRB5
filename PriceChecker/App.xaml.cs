@@ -10,7 +10,7 @@ namespace PriceChecker
         {
             InitializeComponent();
             FileLogger.WriteLogMessage("App", "App", "Start");
-            ScanerCom =new ScanerCom("COM10",9600);
+            ScanerCom =new ScanerCom("COM11",9600);
             //ScanerCom.Init();
             FileLogger.WriteLogMessage("App", "App", "End");
         }

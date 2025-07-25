@@ -29,8 +29,8 @@ public partial class AdminPriceChecker : ContentPage
     public bool IsSoftKeyboard { get { return Config.IsSoftKeyboard; } }
     double _PB = 0;
     public double PB { get { return _PB; } set { _PB = value; OnPropertyChanged(nameof(PB)); } }
-
-    WaresPrice _WP;
+    WaresPrice User { get; set; }
+    WaresPrice _WP;    
     public WaresPrice WP
     {
         get { return _WP; }
@@ -83,10 +83,10 @@ public partial class AdminPriceChecker : ContentPage
     private int InfoHeight;
 
 
-    public AdminPriceChecker(string barcode, WaresPrice? pWP = null)
+    public AdminPriceChecker(WaresPrice pUser, WaresPrice? pWP = null)
     {
         _WP = new();
-
+        User = pUser;
         InitializeComponent();
         this.BindingContext = this;
         bl.ClearWPH();
@@ -95,16 +95,12 @@ public partial class AdminPriceChecker : ContentPage
             WP = pWP;
             if (WP.RestWarehouse != null) RestWarehouseListShow(WP.RestWarehouse);
         }
-        else if (!string.IsNullOrWhiteSpace(barcode))
-        {
-            BarCode(barcode);
-        }
 
         if (Config.TypeUsePrinter == eTypeUsePrinter.StationaryWithCutAuto) PrintType = -1;
 
         NavigationPage.SetHasNavigationBar(this, DeviceInfo.Platform == DevicePlatform.iOS);
-        if (!IsVisScan)
-            Config.BarCode = BarCode;
+
+        App.ScanerCom.SetOnBarCode(BarCode);
 
     }
 
@@ -121,10 +117,10 @@ public partial class AdminPriceChecker : ContentPage
     protected override void OnDisappearing()
     {
         base.OnDisappearing();
-        bl.SendLogPrice();
+        //bl.SendLogPrice();
         Config.OnProgress -= Progress;
     }
-    void BarCode(string pBarCode) => FoundWares(pBarCode, false);
+    void BarCode(string pBarCode, string pTypeBarCode = null) => FoundWares(pBarCode, false);
 
     void FoundWares(string pBarCode, bool pIsHandInput = false)
     {
@@ -142,11 +138,6 @@ public partial class AdminPriceChecker : ContentPage
                     BadScan++;
                 IsWareScaned = WP.StateDoubleScan;
             }
-            if (Config.IsVibration)
-            {
-                var duration = TimeSpan.FromMilliseconds(WP?.IsPriceOk == true ? 50 : 250);
-                Vibration.Vibrate(duration);
-            }
 
             Config.OnProgress?.Invoke(0.9d);
 
@@ -156,10 +147,7 @@ public partial class AdminPriceChecker : ContentPage
         }
 
     }
-
-    public void Dispose() { Config.BarCode -= BarCode; }
-
-   
+       
     private void OnClickPrintBlock(object sender, EventArgs e)
     {
         var temp = PrintBlockItemsXaml.SelectedItem as PrintBlockItems;

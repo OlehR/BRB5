@@ -10,10 +10,9 @@ namespace PriceChecker.View;
 
 public partial class UPriceChecker : ContentPage
 {
-    DB db = DB.GetDB();
     BL.BL bl = BL.BL.GetBL();
     private Timer _returnToSplashTimer;
-    private const int TimeoutSeconds = 5;
+    private const int TimeoutSeconds = 30;
 
     WaresPrice _WP;
     public Uri UriPicture { get { return new Uri(Config.ApiUrl1 + $"Wares/{WP.CodeWares:D9}.png"); } }
@@ -39,10 +38,10 @@ public partial class UPriceChecker : ContentPage
             ? "#009800"
             : "#ff5c5c";
 
-    public UPriceChecker(string? barcode = null)
+    public UPriceChecker(WaresPrice pWP)
     {
-        FileLogger.WriteLogMessage( $"UPriceChecker=>BarCode: {barcode}");
-        _WP = new();
+        FileLogger.WriteLogMessage( $"UPriceChecker=>BarCode: {pWP.BarCodes}");
+        WP =pWP;
         InitializeComponent();
         this.BindingContext = this;
         bl.ClearWPH();
@@ -51,35 +50,27 @@ public partial class UPriceChecker : ContentPage
         _returnToSplashTimer = new Timer(TimeoutSeconds * 1000);
         _returnToSplashTimer.Elapsed += OnTimeoutElapsed;
         _returnToSplashTimer.AutoReset = false;
-        if (!string.IsNullOrWhiteSpace(barcode))
-        {
-            BarCode(barcode);
-        }
     }
-    private void BarCodeHandInput(object sender, EventArgs e)
-    {
-        var text = BarCodeInput.Text;
-        FoundWares(text, true);
-    }
-    void BarCode(string pBarCode,string pTypeBarCode=null) => FoundWares(pBarCode, false);
-
-    void FoundWares(string pBarCode, bool pIsHandInput = false)
+    void BarCode(string pBarCode,string pTypeBarCode=null) 
     {
         if (!string.IsNullOrWhiteSpace(pBarCode))
         {
-            WP = bl.FoundWares(pBarCode, 0, 0, pIsHandInput, false, true);
+            var tempWP = bl.FoundWares(pBarCode, 0, 0, false, false, true);
 
-            if (Config.IsVibration)
+
+            if (tempWP != null)
             {
-                var duration = TimeSpan.FromMilliseconds(WP?.IsPriceOk == true ? 50 : 250);
-                Vibration.Vibrate(duration);
+                if (tempWP.CodeUser != 0)  MainThread.BeginInvokeOnMainThread(async () =>await Navigation.PushAsync(new AdminPriceChecker(tempWP, WP)));
+                else WP = tempWP;
             }
 
             // Reset and start the timer on every scan
             _returnToSplashTimer.Stop();
             _returnToSplashTimer.Start();
         }
-    }
+
+    } 
+
     private async void OnTimeoutElapsed(object sender, ElapsedEventArgs e)
     {
         // Timer runs on a background thread, so use MainThread to navigate

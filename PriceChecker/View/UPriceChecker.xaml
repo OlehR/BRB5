@@ -26,21 +26,11 @@
                                     Grid.Column="1"
                                     Source="{Binding UriPicture}" />
 
-                <StackLayout>
-                    <Label Text="{Binding WP.Name}"
+                <Label Text="{Binding WP.Name}"
                    VerticalOptions="CenterAndExpand"
                    HorizontalOptions="Center"
                FontFamily="MontserratExtraBold" 
-                   FontSize="50"/>
-
-                    <Entry IsVisible="{Binding IsVisBarcode}"
-                   Text="{Binding WP.BarCodes}"
-                   Placeholder="Штрих код"
-                   HorizontalOptions="Start"
-                   Completed="BarCodeHandInput"
-                   x:Name="BarCodeInput"
-                   IsReadOnly="False" />
-                </StackLayout>
+                   FontSize="50"/>                    
 
                 <Grid Grid.ColumnSpan="2" Grid.Row="1" VerticalOptions="Center" Padding="0" ColumnSpacing="10">
                     <Grid.ColumnDefinitions>
