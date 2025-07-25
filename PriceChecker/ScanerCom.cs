@@ -3,13 +3,12 @@ using System.Text;
 using System.Timers;
 using Utils;
 
-
 namespace Equipments
 {
     public class ScanerCom :  IDisposable
     {
         protected Action<string, string> OnBarCode;
-        private readonly System.Timers.Timer Timer;
+        //private readonly System.Timers.Timer Timer;
         private readonly object Lock = new object();
         private SerialPortStreamWrapper SerialDevice;
         string SerialPort;
@@ -47,16 +46,15 @@ namespace Equipments
                 {
                     SerialDevice.OnReceivedData = new Func<byte[], bool>(OnDataReceived);
                 }
-
             }
         }
 
-        bool IsRead = false;
+        /*bool IsRead = false;
         private void OnTimedEvent(object sender, ElapsedEventArgs e)
         {
             IsRead = true;
             SerialDevice?.Write(new byte[4] { 0, 0, 0, 3 });
-        }
+        }*/
 
         private void CloseIfOpen()
         {
@@ -75,15 +73,11 @@ namespace Equipments
         {
             for (int i = 0; i < data.Length; i++)
                 if (data[i] == 160) data[i] = 13;
-
             string Str = Encoding.ASCII.GetString(data);
-
             FileLogger.WriteLogMessage("OnDataReceived=>" + Str);
-            Str = Str.Replace("\r", "");
-            Str = Str.Replace("\n", "");
+            Str = Str.Replace("\r", "").Replace("\n", "");
 
             OnBarCode?.Invoke(Str, null);
-
             return true;
         }
 
