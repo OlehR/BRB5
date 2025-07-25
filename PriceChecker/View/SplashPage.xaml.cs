@@ -12,8 +12,10 @@ public partial class SplashPage : ContentPage
         var barcode = BarcodeEntry.Text?.Trim();
         if (!string.IsNullOrEmpty(barcode))
         {
-            var priceCheckerPage = new UPriceChecker(barcode);
-            await Navigation.PushAsync(priceCheckerPage);
+
+            bool isStaff = true; // Replace with actual logic to determine if the user is staff
+
+            await Navigation.PushAsync(isStaff ? new AdminPriceChecker(barcode): new UPriceChecker(barcode));
         }
     }
 }

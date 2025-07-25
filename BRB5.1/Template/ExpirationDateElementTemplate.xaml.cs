@@ -42,29 +42,9 @@ public partial class ExpirationDateElementTemplate : ContentView
     }
     private void KeyboardSelection()
     {
-        try
-        {
-            var codeUnit = DM.CodeUnit;
-
-            // TMP!!!!!!!!!
-            var configCodeUnitWeight = 166; //Config.GetCodeUnitWeight;
-
-            if (codeUnit != null && configCodeUnitWeight != null)
-            {
-                if (codeUnit == configCodeUnitWeight)
-                {
-                    QuantityEntry.Keyboard = Keyboard.Telephone;
-                }
-                else
-                {
-                    QuantityEntry.Keyboard = Keyboard.Numeric;
-                }
-            }
-        }
-        catch
-        {
-            // Handle or log error if needed
-        }
+        QuantityEntry.Keyboard = DM.CodeUnit == Config.GetCodeUnitWeight
+            ? Keyboard.Telephone
+            : Keyboard.Numeric;
     }
 
     bool IsExpirationDateSelected = false;
