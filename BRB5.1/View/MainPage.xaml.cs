@@ -43,6 +43,7 @@ namespace BRB6
         }  
         private void OnButtonLogin(object sender, System.EventArgs e)
         {
+
             _ = Task.Run(async () =>
             {
                 var r = await c.LoginAsync(Login, Password, Config.LoginServer);
@@ -164,7 +165,8 @@ namespace BRB6
             if (Config.IsAutoLogin)
             {
                 Password = db.GetConfig<string>("Password");
-                OnButtonLogin(null, null);
+                if (! string.IsNullOrEmpty(Password)) 
+                    OnButtonLogin(null, null);
             }           
         }
         protected override async void OnAppearing()

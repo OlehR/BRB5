@@ -14,7 +14,10 @@ public partial class QuestionHeadTemplate : ContentView, IViewRDI
         OnButtonClick = pOnButtonClick;
         OnHeadTapp = pOnHeadTapp;
     }
-
+    public QuestionHeadTemplate()
+    {
+        InitializeComponent();
+    }
     private void OnHeadTapped(object sender, TappedEventArgs e)
     {
         OnHeadTapp?.Invoke(sender, e);

@@ -24,8 +24,8 @@ namespace BRB6
         
         bool _IsVisBarCode = false;
         public bool IsVisBarCode { get { return _IsVisBarCode; } set { _IsVisBarCode = value; OnPropertyChanged(nameof(IsVisBarCode)); } }
-        //ObservableCollection<BRB5.Model.RaitingDocItem> _Questions;
-        //public ObservableCollection<BRB5.Model.RaitingDocItem> Questions { get { return _Questions; } set { _Questions = value; OnPropertyChanged(nameof(Questions)); } }
+        ObservableCollection<BRB5.Model.RaitingDocItem> _Questions;
+        public ObservableCollection<BRB5.Model.RaitingDocItem> Questions { get { return _Questions; } set { _Questions = value; OnPropertyChanged(nameof(Questions)); } }
         IEnumerable<BRB5.Model.RaitingDocItem> All;
         List<IViewRDI> AllViewRDI;
 
@@ -213,8 +213,18 @@ namespace BRB6
             All = pDocItem;
             IsVisibleBarcodeScanning = All.Any(el => el.Id == -1);
             OnPropertyChanged(nameof(IsVisibleBarcodeScanning));
-            BildViewRDI();            
+
+            if (DeviceInfo.Platform == DevicePlatform.iOS)
+            {
+                Questions = new ObservableCollection<BRB5.Model.RaitingDocItem>(All);
+                OnPropertyChanged(nameof(Questions));
+            }
+            else
+            {
+                BildViewRDI();
+            }
         }
+
 
         private void OnButtonClicked(object sender, System.EventArgs e)
         {

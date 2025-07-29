@@ -17,6 +17,10 @@ public partial class QuestionItemTemplate : ContentView, IViewRDI
         BindingContext = Data;
         OnButtonClick = pOnButtonClick;
     }
+    public QuestionItemTemplate()
+    {
+        InitializeComponent();
+    }
 
     private void OnButtonClicked(object sender, EventArgs e)
     {
