@@ -12,6 +12,7 @@ namespace BRB6.View
         private DocVM Doc;
         private Connector c = ConnectorBase.GetInstance();
         protected DB db = DB.GetDB();
+        public int OrderDoc { get; set; }
         public bool IsSoftKeyboard { get { return Config.IsSoftKeyboard; } }
         public ObservableCollection<DocWaresEx> DocWares { get; set; } = new ObservableCollection<DocWaresEx>();
         public ManualInput (DocId pDocId, TypeDoc pTypeDoc)
@@ -21,9 +22,12 @@ namespace BRB6.View
             Doc = new DocVM(pDocId);
             var r = db.GetDocWares(Doc, 1, eTypeOrder.Scan);
             if (r != null)
+            {
                 foreach (var item in r)
-                    if(item.QuantityOrder!=0)
+                    if (item.QuantityOrder != 0)
                         DocWares.Add(item);
+                OrderDoc = r.Max(el=> el.OrderDoc);
+            }
             BindingContext = this;
             InitializeComponent();
         }       
@@ -35,6 +39,7 @@ namespace BRB6.View
             {
                 var w = entry.BindingContext as DocWaresEx;
                 w.Quantity = w.InputQuantity;
+                w.OrderDoc = ++OrderDoc;
                 db.ReplaceDocWares(w);
             }
         }
