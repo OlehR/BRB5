@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 using System.Timers;
 using UtilNetwork;
 using Utils;
-
+using System.Diagnostics;
 
 namespace BL
 {
@@ -79,8 +79,11 @@ namespace BL
 
         public void LoadDataRDI(DocVM pDoc, Action<IEnumerable<RaitingDocItem>> pA)
         {
+
+            Debug.WriteLine("LoadDataRDI Task Спроба ");
             Task.Run(() =>
             {
+                Debug.WriteLine("LoadDataRDI Task Ура зайшло ");
                 var Q = db.GetRaitingDocItem(pDoc);
                 var R = new List<RaitingDocItem>();
                 foreach (var e in Q.Where(d => d.IsHead).OrderBy(d => d.OrderRS))

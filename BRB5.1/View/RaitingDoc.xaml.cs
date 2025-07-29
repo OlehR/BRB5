@@ -6,6 +6,7 @@ using System.Collections.ObjectModel;
 using Microsoft.Maui.Controls.Compatibility;
 using Grid = Microsoft.Maui.Controls.Grid;
 using BRB5;
+using System.Diagnostics;
 
 namespace BRB6
 {
@@ -23,8 +24,7 @@ namespace BRB6
             c = ConnectorBase.GetInstance();
             InitializeComponent();
             Routing.RegisterRoute(nameof(RaitingDocItem), typeof(RaitingDocItem));
-            // TODO Xamarin.Forms.Device.RuntimePlatform is no longer supported. Use Microsoft.Maui.Devices.DeviceInfo.Platform instead. For more details see https://learn.microsoft.com/en-us/dotnet/maui/migration/forms-projects#device-changes
-            NavigationPage.SetHasNavigationBar(this, Device.RuntimePlatform == Device.iOS);
+            NavigationPage.SetHasNavigationBar(this, DeviceInfo.Platform == DevicePlatform.iOS);
 
             this.BindingContext = this;
         }
@@ -37,15 +37,18 @@ namespace BRB6
 
         void GetDocs()
         {
-            _ = Task.Run(async () =>
-            {
-                var r = db.GetDoc(TypeDoc).OrderByDescending(el => el.NumberDoc);
+            
+            Debug.WriteLine("RaitingDoc GetDocs Task Спроба ");
+            //_ = Task.Run(async () =>
+            //{
+                Debug.WriteLine("RaitingDoc GetDocs Task Ура зайшло ");
+                var r = db.GetDoc(TypeDoc)/*.OrderByDescending(el => el.NumberDoc)*/;
                 ViewDoc(r);
-                await c.LoadDocsDataAsync(TypeDoc.CodeDoc, null, false);
+                _= c.LoadDocsDataAsync(TypeDoc.CodeDoc, null, false);
                 _ = c.GetRaitingTemplateAsync();
-                r = db.GetDoc(TypeDoc).OrderByDescending(el => el.NumberDoc);
+                r = db.GetDoc(TypeDoc)/*.OrderByDescending(el => el.NumberDoc)*/;
                 ViewDoc(r);
-            });
+            //});
         }
 
         void ViewDoc(IEnumerable<DocVM> pDoc)
