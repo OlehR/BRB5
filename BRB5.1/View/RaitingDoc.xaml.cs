@@ -46,7 +46,6 @@ namespace BRB6
                 ViewDoc(r);
                await c.LoadDocsDataAsync(TypeDoc.CodeDoc, null, false);      
                 r = db.GetDoc(TypeDoc).OrderByDescending(el => el.NumberDoc);
-                r = db.GetDoc(TypeDoc)/*.OrderByDescending(el => el.NumberDoc)*/;
                 ViewDoc(r);
             });
         }
