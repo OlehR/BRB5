@@ -26,11 +26,31 @@
                                     Grid.Column="1"
                                     Source="{Binding UriPicture}" />
 
-                <Label Text="{Binding WP.Name}"
+
+                <StackLayout>
+                    <Label Text="{Binding WP.Name}"
                    VerticalOptions="CenterAndExpand"
                    HorizontalOptions="Center"
                FontFamily="MontserratExtraBold" 
-                   FontSize="50"/>                    
+                   FontSize="50"/>
+
+                    <HorizontalStackLayout>
+                        <Label Text="Країна походження:"/>
+                        <Label Text="{Binding WP.Country}"/>
+                    </HorizontalStackLayout>
+                    <Frame Padding="0"
+                            IsVisible="{Binding IsCashback}"
+                            CornerRadius="10"
+                            HeightRequest="70"
+                            HasShadow="False"
+                            HorizontalOptions="Start">
+                        <Image Source="cashback.png"
+                                Aspect="AspectFit"
+                                HeightRequest="70" />
+                    </Frame>
+
+
+                </StackLayout>                   
 
                 <Grid Grid.ColumnSpan="2" Grid.Row="1" VerticalOptions="Center" Padding="0" ColumnSpacing="10">
                     <Grid.ColumnDefinitions>

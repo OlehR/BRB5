@@ -26,6 +26,7 @@ public partial class UPriceChecker : ContentPage
             OnPropertyChanged(nameof(TextColorPrice));
             OnPropertyChanged(nameof(IsVisPriceOpt));
             OnPropertyChanged(nameof(UriPicture));
+            OnPropertyChanged(nameof(IsCashback));
         }
     }
 
@@ -37,6 +38,9 @@ public partial class UPriceChecker : ContentPage
         (WP != null && WP.Price != 0 )
             ? "#009800"
             : "#ff5c5c";
+    public bool IsCashback =>  WP != null &&
+                               (WP.Country.ToUpper() == "НАЦІОНАЛЬНИЙ КЕШБЕК" ||
+                               WP.Country.ToUpper() == "УКРАЇНА");
 
     public UPriceChecker(WaresPrice pWP)
     {
