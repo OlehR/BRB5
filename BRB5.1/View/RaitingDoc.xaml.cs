@@ -37,18 +37,17 @@ namespace BRB6
 
         void GetDocs()
         {
-            
             Debug.WriteLine("RaitingDoc GetDocs Task Спроба ");
-            //_ = Task.Run(async () =>
-            //{
-                Debug.WriteLine("RaitingDoc GetDocs Task Ура зайшло ");
-                var r = db.GetDoc(TypeDoc)/*.OrderByDescending(el => el.NumberDoc)*/;
-                ViewDoc(r);
-                _= c.LoadDocsDataAsync(TypeDoc.CodeDoc, null, false);
+            _ = Task.Run(async () =>
+            {
                 _ = c.GetRaitingTemplateAsync();
-                r = db.GetDoc(TypeDoc)/*.OrderByDescending(el => el.NumberDoc)*/;
+                Debug.WriteLine("RaitingDoc GetDocs Task Ура зайшло ");
+                var r = db.GetDoc(TypeDoc).OrderByDescending(el => el.NumberDoc);
                 ViewDoc(r);
-            //});
+               await c.LoadDocsDataAsync(TypeDoc.CodeDoc, null, false);      
+                r = db.GetDoc(TypeDoc).OrderByDescending(el => el.NumberDoc);
+                ViewDoc(r);
+            });
         }
 
         void ViewDoc(IEnumerable<DocVM> pDoc)

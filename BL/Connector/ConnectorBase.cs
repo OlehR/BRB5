@@ -15,7 +15,12 @@ namespace BL.Connector
     {
         protected static string TAG = "BRB5/ConnectorBase";
 
-        protected DB db = DB.GetDB(); 
+        protected DB db;
+
+        public ConnectorBase()
+        {
+            db = DB.GetDB(); 
+        }
 
         public static BRB5.Model.Connector GetInstance()
         {

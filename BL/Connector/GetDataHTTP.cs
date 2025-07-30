@@ -130,7 +130,8 @@ namespace BL.Connector
                     pLogin = (Config.Company == eCompany.Sim23 ? "brb" : "c");
                     pPassWord = (Config.Company == eCompany.Sim23 ? "brb" : "c");
                 }
-                HttpResult res = new HttpResult();
+                HttpResult res = new();// { HttpState=eStateHTTP.HTTP_CLIENT_TIMEOUT};
+                //return res;
                 if (Url != null && Url.Length >= pUrlApi && Url[pUrlApi] != null)
                 {
                     res = await Http.HTTPRequestAsync(Url[pUrlApi][DefaultApi[pUrlApi]] + pApi, pData, pContentType, pLogin, pPassWord,pTimeOut);
