@@ -9,22 +9,22 @@ namespace BRB6
 {
     public static class ProtoBRB
     {
+        public static string WorkPath { get { 
+                string Res = "";
+                if (DeviceInfo.Platform == DevicePlatform.Android)
+                    Res = FileSystem.AppDataDirectory;
+                if (DeviceInfo.Platform == DevicePlatform.iOS)
+                    Res = Environment.GetFolderPath(Environment.SpecialFolder.Personal);
+                return Res;
+            } }
+        
         public static string GetPathDB
         {
             get
             {
-                string Dir = Path.GetTempPath();
-                // TODO Xamarin.Forms.Device.RuntimePlatform is no longer supported. Use Microsoft.Maui.Devices.DeviceInfo.Platform instead. For more details see https://learn.microsoft.com/en-us/dotnet/maui/migration/forms-projects#device-changes
-                if (DeviceInfo.Platform == DevicePlatform.Android)
-                {
-                    Dir = Path.Combine(FileSystem.AppDataDirectory, "db");
-                    if (!Directory.Exists(Dir))
-                        Directory.CreateDirectory(Dir);
-                }
-                else
-                if (DeviceInfo.Platform == DevicePlatform.iOS)
-                    Dir = Environment.GetFolderPath(Environment.SpecialFolder.Personal);
-
+                string Dir = Path.Combine(WorkPath, "db");
+                if (!Directory.Exists(Dir))
+                    Directory.CreateDirectory(Dir);
                 return Dir;
             }
         }
@@ -41,7 +41,8 @@ namespace BRB6
         public static void SetPath(string pPathDownloads)
         {
             Config.PathDownloads = pPathDownloads;
-            FileLogger.PathLog = Path.Combine(Config.PathDownloads, "Log");
+            FileLogger.PathLog = Path.Combine(WorkPath, "Log");
+            //2Init();
         }
         public static eTypeScaner GetTypeScaner()
         {
@@ -61,10 +62,7 @@ namespace BRB6
 
             return eTypeScaner.Camera;
         }
-
-        public static Microsoft.Maui.Graphics.Color ToColor(this System.Drawing.Color color)
-        {
-            return Microsoft.Maui.Graphics.Color.FromRgb(color.R, color.G, color.B);
-        }
+        public static Color ToColor(this System.Drawing.Color color)=>Color.FromRgb(color.R, color.G, color.B);
+        
     }
 }

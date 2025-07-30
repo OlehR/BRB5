@@ -16,14 +16,21 @@ namespace BL.Connector
 {
     public class ConnectorPSU : ConnectorBase
     {
-        ConnectorUniversal CU =  new ConnectorUniversal();
+        ConnectorUniversal CU;//= new ConnectorUniversal();
+
+        public ConnectorPSU()
+        {
+            CU = new ConnectorUniversal();
+        }
         public override IEnumerable<LoginServer> LoginServer() { return new List<LoginServer>()
             {new  LoginServer (){Code=eLoginServer.Central,Name = "ЦБ"}}; }
 
         public override async Task<Result> LoginAsync(string pLogin, string pPassWord, eLoginServer pLoginServer)
         {
+            //FileLogger.WriteLogMessage($"ConnectorPSU.Login=>(pLogin=>{pLogin}, pPassWord=>{pPassWord},pLoginServer=>{pLoginServer}) ",eTypeLog.Error);
+            //return new Result(-1, "XXXX PSU!!");
             string data = JsonConvert.SerializeObject(new Api() { CodeData = 1, Login = pLogin, PassWord = pPassWord }); //"{\"CodeData\": \"1\"" + ", \"Login\": \"" + pLogin + "\"" + ", \"PassWord\": \"" + pPassWord + "\"}";
-            HttpResult result = await GetDataHTTP.HTTPRequestAsync(0, "znp/", data, "application/json");//
+            HttpResult result =  await GetDataHTTP.HTTPRequestAsync(0, "znp/", data, "application/json");//
 
             if (result.HttpState != eStateHTTP.HTTP_OK)
             {

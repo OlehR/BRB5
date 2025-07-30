@@ -24,17 +24,9 @@ namespace BRB6
         {
             AppCompatDelegate.DefaultNightMode = AppCompatDelegate.ModeNightNo;
             base.OnCreate(savedInstanceState);
-            
-            //Config.Company = db.GetConfig<eCompany>("Company");
-            DB db = DB.GetDB(ProtoBRB.GetPathDB);
-            // Path.Combine(Android.OS.Environment.ExternalStorageDirectory.AbsolutePath, Android.OS.Environment.DirectoryDownloads);
-            ProtoBRB.SetPath(Path.Combine(Android.App.Application.Context.GetExternalFilesDir("").AbsolutePath, Android.OS.Environment.DirectoryDownloads));
-            //UtilAndroid.InstallAPK();
-            //Config.PathDownloads = Path.Combine(Android.App.Application.Context.GetExternalFilesDir("").AbsolutePath, Android.OS.Environment.DirectoryDownloads);
+            //string path1 = Path.Combine(Android.OS.Environment.ExternalStorageDirectory.AbsolutePath, Android.OS.Environment.DirectoryDownloads);
+            ProtoBRB.SetPath(Path.Combine(Android.App.Application.Context.GetExternalFilesDir("").AbsolutePath, Android.OS.Environment.DirectoryDownloads));            
             Config.SN = GetDeviceId();
-            //Config.Ver = int.Parse(AppInfo.VersionString.Replace(".", ""));
-            //Config.Manufacturer = DeviceInfo.Manufacturer;
-            //Config.Model = DeviceInfo.Model;
          
             Config.NativeBase = new Native();
             //FileLogger.PathLog = Path.Combine(Config.PathDownloads, "Log");
@@ -42,28 +34,7 @@ namespace BRB6
             if (Config.TypeScaner == eTypeScaner.PM351 || Config.TypeScaner == eTypeScaner.BitaHC61 || Config.TypeScaner == eTypeScaner.Zebra  )
                 BR = new MyBroadcastReceiver();
             
-            try
-            {
-            ///!!!!=TMP копіювання бази
-                //string path1 =  //Config.PathDownloads;   Path.Combine(Android.OS.Environment.ExternalStorageDirectory.AbsolutePath, Android.OS.Environment.DirectoryDownloads);
-                               
-
-                var FileDestination = Path.Combine(Android.App.Application.Context.GetExternalFilesDir("").AbsolutePath, Android.OS.Environment.DirectoryDownloads, "brb6.db");
-                if (File.Exists(FileDestination)) File.Delete(FileDestination);
-
-                byte[] buffer = File.ReadAllBytes(db.PathNameDB);
-                File.WriteAllBytes(FileDestination, buffer);
-                //File.Copy(db.PathNameDB, FileDestination, true);
-            }
-            catch (Exception e)
-            {
-                FileLogger.WriteLogMessage(e.Message);
-            }
-            
-            //Config.TypeScaner = App.GetTypeScaner();
-            //if (Config.TypeScaner == eTypeScaner.PM351)
-            //    BR = new MyBroadcastReceiver();
-            //LoadApplication(new App());
+               
         }
         public string GetDeviceId()
         {
@@ -95,8 +66,7 @@ namespace BRB6
         protected override void OnPause()
         {
             if(BR != null)
-            UnregisterReceiver(BR);
-            // Code omitted for clarity
+            UnregisterReceiver(BR);            
             base.OnPause();
         }
     }

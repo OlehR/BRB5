@@ -203,9 +203,7 @@ namespace BRB6.View
                 MainThread.BeginInvokeOnMainThread(async () =>
                 {
                     await DisplayAlert("", "Даний QR без налаштувань.", "OK");
-                });
-
-           
+                });           
         }
         public void Dispose() { Config.BarCode -= BarCode; }
         void Progress(double pProgress) => MainThread.BeginInvokeOnMainThread(() => PB = pProgress);
@@ -245,7 +243,19 @@ namespace BRB6.View
 
         private void OnClickLoadDoc(object sender, EventArgs e) { c.LoadDocsDataAsync(0, null, false); }
 
-        private void OnCopyDB(object sender, EventArgs e) {  }
+        private void OnCopyDB(object sender, EventArgs e) {
+            try
+            {              
+                var FileDestination = Path.Combine(Config.PathDownloads, "brb6.db");
+                if (File.Exists(FileDestination)) File.Delete(FileDestination);
+                byte[] buffer = File.ReadAllBytes(DB.PathNameDB);
+                File.WriteAllBytes(FileDestination, buffer);
+            }
+            catch (Exception ex)
+            {
+                FileLogger.WriteLogMessage(this, "OnCopyDB", ex);
+            }
+        }
 
         private void OnRestoreDB(object sender, EventArgs e) {   }
 

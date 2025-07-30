@@ -37,7 +37,6 @@ namespace BRB6
 
         void GetDocs()
         {
-            
             Debug.WriteLine("RaitingDoc GetDocs Task Спроба ");
             _ = Task.Run(async () =>
             {
@@ -45,8 +44,9 @@ namespace BRB6
                 Debug.WriteLine("RaitingDoc GetDocs Task Ура зайшло ");
                 var r = db.GetDoc(TypeDoc).OrderByDescending(el => el.NumberDoc);
                 ViewDoc(r);
-                await c.LoadDocsDataAsync(TypeDoc.CodeDoc, null, false);
+               await c.LoadDocsDataAsync(TypeDoc.CodeDoc, null, false);      
                 r = db.GetDoc(TypeDoc).OrderByDescending(el => el.NumberDoc);
+                r = db.GetDoc(TypeDoc)/*.OrderByDescending(el => el.NumberDoc)*/;
                 ViewDoc(r);
             });
         }

@@ -10,6 +10,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\UniCS.TM\UtilNetwork\UtilNetwork9.csproj" />
+    <ProjectReference Include="..\..\UniCS.TM\Utils\Utils.csproj" />
     <ProjectReference Include="..\Model\BRB5.Model.csproj" />
   </ItemGroup>
 

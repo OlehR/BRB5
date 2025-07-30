@@ -52,7 +52,7 @@ namespace BRB6.View
             foreach (var t in tempListWares) { t.Ord = -1; }
             _originalListWares = tempListWares == null ? new ObservableCollection<DocWaresEx>() : new ObservableCollection<DocWaresEx>(tempListWares);
             ListWares = new ObservableCollection<DocWaresEx>(_originalListWares);
-            OrderDoc = ListWares.Count > 0 ? ListWares.First().OrderDoc : 0;
+            OrderDoc = ListWares.Count > 0 ? ListWares.Max(el=>el.OrderDoc) : 0;
             if (ListWares.Count > 0) ListViewWares.SelectedItem = ListWares[0];
             NavigationPage.SetHasNavigationBar(this, DeviceInfo.Platform == DevicePlatform.iOS || Config.TypeScaner == eTypeScaner.BitaHC61 || Config.TypeScaner == eTypeScaner.ChainwayC61 || Config.TypeScaner == eTypeScaner.Zebra || Config.TypeScaner == eTypeScaner.PM550 || Config.TypeScaner == eTypeScaner.PM351);
             Reason = db.GetReason();
