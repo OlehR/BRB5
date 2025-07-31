@@ -16,7 +16,7 @@ namespace BRB6
     //[QueryProperty(nameof(NumberDoc), nameof(NumberDoc))]
     //[QueryProperty(nameof(TypeDoc), nameof(TypeDoc))]
     //[XamlCompilation(XamlCompilationOptions.Compile)]
-    public partial class RaitingDocItem : ContentPage
+    public partial class RaitingDocItem : ContentPage, IHeadTapHandler
     {
         BL.BL Bl = BL.BL.GetBL();
         DocVM cDoc;
@@ -210,22 +210,26 @@ namespace BRB6
 
         void GetData(IEnumerable<BRB5.Model.RaitingDocItem> pDocItem)
         {
-            CountAll = pDocItem.Count(el => !el.IsHead);
-            All = pDocItem;
+            All = pDocItem.ToList();
+            CountAll = All.Count(el => !el.IsHead);
             IsVisibleBarcodeScanning = All.Any(el => el.Id == -1);
             OnPropertyChanged(nameof(IsVisibleBarcodeScanning));
 
             if (DeviceInfo.Platform == DevicePlatform.iOS)
             {
-                var headsOnly = pDocItem.Where(x => x.IsHead).ToList();
+                var headsOnly = All.Where(x => x.IsHead).ToList();
                 MainThread.BeginInvokeOnMainThread(() =>
                 {
                     CalculateAvailableHeight();
                     QuestionsCollectionView.ItemsSource = headsOnly;
                 });
             }
-            else BildViewRDI();
+            else
+            {
+                BildViewRDI(); 
+            }
         }
+
 
         private void OnButtonClicked(object sender, System.EventArgs e)
         {
@@ -340,7 +344,24 @@ namespace BRB6
             Choice = eTypeChoice.NotDefine;
             ChangeItemBlok(vRait);
         }
+        public void OnHeadTapped(BRB5.Model.RaitingDocItem head)
+        {
+            if (DeviceInfo.Platform != DevicePlatform.iOS)
+                return;
 
+            head.IsVisible = !head.IsVisible;
+            Choice = eTypeChoice.NotDefine;
+
+            // оновити список у CollectionView
+            var updatedList = All.Where(el =>
+                el.IsHead || (el.Parent == head.Id && head.IsVisible)
+            ).ToList();
+
+            MainThread.BeginInvokeOnMainThread(() =>
+            {
+                QuestionsCollectionView.ItemsSource = updatedList;
+            });
+        }
         private void ChangeItemBlok(BRB5.Model.RaitingDocItem vRait)
         {
             if (!IsLoad)

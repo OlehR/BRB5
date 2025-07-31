@@ -14,4 +14,9 @@ namespace BRB6
             return q?.IsHead == true ? HeadTemplate : ItemTemplate;
         }
     }
+    public interface IHeadTapHandler
+    {
+        void OnHeadTapped(BRB5.Model.RaitingDocItem head);
+    }
+
 }

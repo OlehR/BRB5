@@ -1,4 +1,4 @@
-namespace BRB6.Template;
+﻿namespace BRB6.Template;
 
 public partial class QuestionHeadTemplate : ContentView, IViewRDI
 {
@@ -20,7 +20,24 @@ public partial class QuestionHeadTemplate : ContentView, IViewRDI
     }
     private void OnHeadTapped(object sender, TappedEventArgs e)
     {
-        OnHeadTapp?.Invoke(sender, e);
+        if (BindingContext is BRB5.Model.RaitingDocItem head)
+        {
+            // Знайти батьківську сторінку, яка реалізує інтерфейс
+            var handler = GetParentPage() as IHeadTapHandler;
+            handler?.OnHeadTapped(head);
+        }
+    }
+
+    private Page GetParentPage()
+    {
+        Element parent = this;
+        while (parent != null)
+        {
+            if (parent is Page page)
+                return page;
+            parent = parent.Parent;
+        }
+        return null;
     }
 
     private void OnButtonClicked(object sender, EventArgs e)
