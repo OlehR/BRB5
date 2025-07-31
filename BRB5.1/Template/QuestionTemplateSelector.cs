@@ -1,8 +1,7 @@
-﻿using Microsoft.Maui.Controls;
-using BRB5.Model;
+﻿using BRB5.Model;
 using BRB6.Template;
 
-namespace BRB6.Template
+namespace BRB6
 {
     public class QuestionTemplateSelector : DataTemplateSelector
     {
@@ -11,13 +10,8 @@ namespace BRB6.Template
 
         protected override DataTemplate OnSelectTemplate(object item, BindableObject container)
         {
-            var question = item as BRB5.Model.RaitingDocItem;
-            if (question == null)
-                return null;
-
-            return question.IsHead
-                ? HeadTemplate
-                : ItemTemplate;
+            var q = item as BRB5.Model.RaitingDocItem;
+            return q?.IsHead == true ? HeadTemplate : ItemTemplate;
         }
     }
 }

@@ -17,15 +17,16 @@ namespace BRB6
     //[QueryProperty(nameof(TypeDoc), nameof(TypeDoc))]
     //[XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class RaitingDocItem : ContentPage
-    {       
+    {
         BL.BL Bl = BL.BL.GetBL();
         DocVM cDoc;
         bool IsLoad = false;
-        
+
         bool _IsVisBarCode = false;
         public bool IsVisBarCode { get { return _IsVisBarCode; } set { _IsVisBarCode = value; OnPropertyChanged(nameof(IsVisBarCode)); } }
-        ObservableCollection<BRB5.Model.RaitingDocItem> _Questions;
-        public ObservableCollection<BRB5.Model.RaitingDocItem> Questions { get { return _Questions; } set { _Questions = value; OnPropertyChanged(nameof(Questions)); } }
+        //ObservableCollection<BRB5.Model.RaitingDocItem> _Questions;
+        //public ObservableCollection<BRB5.Model.RaitingDocItem> Questions { get { return _Questions; } set { _Questions = value; OnPropertyChanged(nameof(Questions)); } }
+      
         IEnumerable<BRB5.Model.RaitingDocItem> All;
         List<IViewRDI> AllViewRDI;
 
@@ -36,7 +37,7 @@ namespace BRB6
         public string QuantityAllChoice => CountAll > 0 ? $"{CountChoice}/{CountAll}" : "";
 
         bool IsOkWh { get {return LocationBrb.LocationWarehouse?.CodeWarehouse == cDoc.CodeWarehouse; } }
-        
+
         public string NameWarehouse
         {
             get
@@ -57,8 +58,8 @@ namespace BRB6
                 }
                 return null;
             }
-        }       
-        
+        }
+
         public System.Drawing.Color GetGPSColor { get { if(LocationBrb.LocationWarehouse==null) return System.Drawing.Color.FromArgb(200, 200, 200);
                 return IsOkWh ? System.Drawing.Color.FromArgb(100, 250, 100) :
                         System.Drawing.Color.FromArgb(250, 100, 100);
@@ -150,9 +151,9 @@ namespace BRB6
             }
         }
 
-        protected override void OnDisappearing() 
-        {  
-            base.OnDisappearing(); 
+        protected override void OnDisappearing()
+        {
+            base.OnDisappearing();
             Bl.StopTimerRDI();
             if (IsVisScan) BarcodeScaner.CameraEnabled = false;
         }
@@ -163,7 +164,7 @@ namespace BRB6
             foreach (var el in All)
             {
                 IViewRDI e = el.IsHead ? new QuestionHeadTemplate(el, OnButtonClicked, OnHeadTapped) : new QuestionItemTemplate(el, OnButtonClicked);
-                if(el.IsHead || el.Parent == 9999999)
+                if (el.IsHead || el.Parent == 9999999)
                     MainThread.BeginInvokeOnMainThread(() => { QuestionsStackLayout.Children.Add(e); });
                 AllViewRDI.Add(e);
             }
@@ -216,15 +217,15 @@ namespace BRB6
 
             if (DeviceInfo.Platform == DevicePlatform.iOS)
             {
-                Questions = new ObservableCollection<BRB5.Model.RaitingDocItem>(All);
-                OnPropertyChanged(nameof(Questions));
+                var headsOnly = pDocItem.Where(x => x.IsHead).ToList();
+                MainThread.BeginInvokeOnMainThread(() =>
+                {
+                    CalculateAvailableHeight();
+                    QuestionsCollectionView.ItemsSource = headsOnly;
+                });
             }
-            else
-            {
-                BildViewRDI();
-            }
+            else BildViewRDI();
         }
-
 
         private void OnButtonClicked(object sender, System.EventArgs e)
         {
@@ -249,7 +250,7 @@ namespace BRB6
             catch(Exception ex)
             {
                 FileLogger.WriteLogMessage(this, System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
-            }            
+            }
         }
 
         private void OnButtonSaved(object sender, System.EventArgs e)
@@ -257,16 +258,15 @@ namespace BRB6
             if (IsSaving && !IsSaved)
             {
                 IsSaved = true;
-                Bl.c.IsStopSave = true;                            
-            } else IsSaving = false;
+                Bl.c.IsStopSave = true;
+            }
         }
-
         private void OnButtonSave(object sender, System.EventArgs e)
         {
             //TextSave = "";
             IsSaving = true;
             IsSaved = false;
-            Bl.SaveRDI(cDoc, () => IsSaved = true);            
+            Bl.SaveRDI(cDoc, () => IsSaved = true);
         }
 
         private void OnFindGPS(object sender, System.EventArgs e) =>  _ = LocationBrb.GetCurrentLocation(Bl.db.GetWarehouse());        
@@ -334,7 +334,6 @@ namespace BRB6
             var s = sender as Grid;
             var cc = s?.Parent as QuestionHeadTemplate;
             var vRait = cc?.Data;
-
             if (vRait == null) return;
 
             vRait.IsVisible = !vRait.IsVisible;
@@ -442,8 +441,8 @@ namespace BRB6
                         break;
                     case "OnlyHead":
                         Choice = eTypeChoice.OnlyHead;
-                        foreach (var el in All.Where(el => el.IsHead))                            
-                                el.IsVisible = false;
+                        foreach (var el in All.Where(el => el.IsHead))
+                            el.IsVisible = false;
                         break;
                     case "NoAnswer":
                         Choice = eTypeChoice.NoAnswer;
@@ -468,12 +467,7 @@ namespace BRB6
                 });
             }
         }
-
-        private void OnElementSizeChanged(object sender, EventArgs e)
-        {
-            CalculateAvailableHeight();
-        }
-
+       
         private void CalculateAvailableHeight()
         {
             var screenHeight = DeviceDisplay.MainDisplayInfo.Height / DeviceDisplay.MainDisplayInfo.Density;
@@ -481,9 +475,9 @@ namespace BRB6
             double otherElementsHeight = HeaderLabel.Height + GPSLabel.Height + BottomGrid.Height + navigationBarHeight + 60;
             var availableHeight = screenHeight - otherElementsHeight;
             QuestionsGrid.HeightRequest = availableHeight;
+            QuestionsCollectionView.HeightRequest = availableHeight;
         }
 
         private BRB5.Model.RaitingDocItem GetRaiting(object sender) => (BRB5.Model.RaitingDocItem)((Microsoft.Maui.Controls.View)sender).BindingContext;
     }
 }
-    
