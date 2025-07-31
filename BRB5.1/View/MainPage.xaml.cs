@@ -31,16 +31,24 @@ namespace BRB6
         public bool IsSoftKeyboard { get { return Config.IsSoftKeyboard; } }
         public MainPage()
         {
-            ProtoBRB.Init();
-            db = DB.GetDB(ProtoBRB.GetPathDB);
-            Bl = BL.BL.GetBL();
-            Config.Company = db.GetConfig<eCompany>("Company");
-            OCTypeDoc = new ObservableCollection<TypeDoc>();           
-            InitializeComponent();
-            Init();
-            if (Config.Company == eCompany.NotDefined) _= Navigation.PushAsync(new Settings());                
-            BindingContext = this;
-        }  
+            try
+            {
+                ProtoBRB.Init();
+                db = DB.GetDB(ProtoBRB.GetPathDB);
+                Bl = BL.BL.GetBL();
+                Config.Company = db.GetConfig<eCompany>("Company");
+                OCTypeDoc = new ObservableCollection<TypeDoc>();
+                InitializeComponent();
+                Init();
+                if (Config.Company == eCompany.NotDefined) _ = Navigation.PushAsync(new Settings());
+                BindingContext = this;
+            }
+            catch (Exception ex)
+            {
+                _ = DisplayAlert("Помилка", "Не вдалось ініціалізувати програму. " + ex.Message + '\n' +ex.StackTrace, "OK");
+                System.Diagnostics.Debug.WriteLine(ex);
+            }
+        }
         private void OnButtonLogin(object sender, System.EventArgs e)
         {
 
@@ -149,26 +157,33 @@ namespace BRB6
 
         void Init()
         {
-            _ = LocationBrb.GetCurrentLocation(db.GetWarehouse());
-            Login = db.GetConfig<string>("Login");
-            Bl.Init();
-            c = ConnectorBase.GetInstance();
-            if (c != null)
+            try
             {
-                LS = c.LoginServer();
-                if (LS == null || LS.Count() == 1)
+                _ = LocationBrb.GetCurrentLocation(db.GetWarehouse());
+                Login = db.GetConfig<string>("Login");
+                Bl.Init();
+                c = ConnectorBase.GetInstance();
+                if (c != null)
                 {
-                    IsVisLS = false;
-                    Config.LoginServer = LS.First().Code;
+                    LS = c.LoginServer();
+                    if (LS == null || LS.Count() == 1)
+                    {
+                        IsVisLS = false;
+                        Config.LoginServer = LS.First().Code;
+                    }
                 }
-            }
-            if (Config.IsAutoLogin)
+                if (Config.IsAutoLogin)
+                {
+                    Password = db.GetConfig<string>("Password");
+                    if (!string.IsNullOrEmpty(Password))
+                        OnButtonLogin(null, null);
+                }
+            }catch (Exception ex)
             {
-                Password = db.GetConfig<string>("Password");
-                if (! string.IsNullOrEmpty(Password)) 
-                    OnButtonLogin(null, null);
-            }           
-        }
+                _ = DisplayAlert("Помилка Init", "Не вдалось ініціалізувати програму. " + ex.Message, "OK");
+                System.Diagnostics.Debug.WriteLine(ex);
+            }
+            }
         protected override async void OnAppearing()
         {
             base.OnAppearing();
