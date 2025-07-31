@@ -942,8 +942,8 @@ order by gw.NameGroup";
                             if (pParseBarCode.BarCode[..el.BarCode.Length].Equals(el.BarCode))
                             {
                                 pParseBarCode.CodeWares = el.CodeWares;                                
-                                pParseBarCode.Quantity = pParseBarCode.BarCode.Substring(8, 12).ToDecimal();
-                                res = GetScanDataExpiration(pNumberDoc, pParseBarCode);                                                             
+                                pParseBarCode.Quantity = pParseBarCode.BarCode[8..12].ToDecimal()/1000m;
+                                break;                                                         
                             }
                         }
                     } 
@@ -986,6 +986,7 @@ order by gw.NameGroup";
                             // @TypeDoc as TypeDoc, @NumberDoc as NumberDoc,
                             res = r.First();
                             res.ExpirationDate= new DateTime(DateTime.Now.Date.Year, DateTime.Now.Date.Month, 1);
+                            if (pParseBarCode.Quantity>0) res.Quantity = pParseBarCode.Quantity;
                         }
                     }
                 }

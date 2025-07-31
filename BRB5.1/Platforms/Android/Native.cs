@@ -54,10 +54,19 @@ namespace BRB6
             return Res;
         }
 
-        public override async Task<bool> CheckNewVerAsync() {
-            var versionString = AppInfo.BuildString;
-            var ver = await UtilAndroid.DownloadStringAsync("https://raw.githubusercontent.com/OlehR/BRB5/master/Apk/Ver.txt");
-            return ver.ToInt() > versionString.ToInt();
+        public override async Task<bool> CheckNewVerAsync()
+        {
+            try
+            {
+                var versionString = AppInfo.BuildString;
+                var ver = await UtilAndroid.DownloadStringAsync("https://raw.githubusercontent.com/OlehR/BRB5/master/Apk/Ver.txt");
+                return ver.ToInt() > versionString.ToInt();
+            }
+            catch (Exception e)
+            {
+                FileLogger.WriteLogMessage("Native", "CheckNewVerAsync", e);
+                return false;
+            }
         }
         public override async Task InstallAsync(Action<double> pA) { await UtilAndroid.InstallAPKAsync(pA); }
     }

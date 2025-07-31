@@ -34,8 +34,7 @@ namespace BRB6
             Thread.CurrentThread.CurrentUICulture = CultureInfo.InvariantCulture;
             Config.Ver = int.Parse(AppInfo.VersionString.Replace(".", ""));
             Config.Manufacturer = DeviceInfo.Manufacturer;
-            Config.Model = DeviceInfo.Model;
-            Config.NativeBase = new Native();
+            Config.Model = DeviceInfo.Model;           
             Config.TypeScaner = GetTypeScaner();
         }
         public static void SetPath(string pPathDownloads)
