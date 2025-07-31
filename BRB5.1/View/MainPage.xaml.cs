@@ -172,8 +172,8 @@ namespace BRB6
         protected override async void OnAppearing()
         {
             base.OnAppearing();
-            #if ANDROID
-            if (await Config.NativeBase.CheckNewVerAsync())
+             #if ANDROID
+            if (Config.NativeBase !=null && await Config.NativeBase.CheckNewVerAsync())
             {
                 var res = await DisplayAlert("Оновлення доступне", "Доступна нова версія. Бажаєте встановити?", "Yes", "No");
                 MyProgress.IsVisible = true;

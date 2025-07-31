@@ -26,8 +26,7 @@ namespace BRB6
             base.OnCreate(savedInstanceState);
             //string path1 = Path.Combine(Android.OS.Environment.ExternalStorageDirectory.AbsolutePath, Android.OS.Environment.DirectoryDownloads);
             ProtoBRB.SetPath(Path.Combine(Android.App.Application.Context.GetExternalFilesDir("").AbsolutePath, Android.OS.Environment.DirectoryDownloads));            
-            Config.SN = GetDeviceId();
-         
+            Config.SN = GetDeviceId();         
             Config.NativeBase = new Native();
             //FileLogger.PathLog = Path.Combine(Config.PathDownloads, "Log");
             FileLogger.WriteLogMessage("Start", eTypeLog.Expanded);
@@ -55,7 +54,7 @@ namespace BRB6
         protected override void OnResume()
         {
             base.OnResume();
-            if (BR != null)
+           if (BR != null)
             {
                 var I = new IntentFilter(MyBroadcastReceiver.IntentEvent);
                 I.AddCategory(Intent.CategoryDefault);
@@ -65,8 +64,7 @@ namespace BRB6
         }
         protected override void OnPause()
         {
-            if(BR != null)
-            UnregisterReceiver(BR);            
+            if(BR != null) UnregisterReceiver(BR);         
             base.OnPause();
         }
     }
