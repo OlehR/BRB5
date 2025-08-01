@@ -1,15 +1,17 @@
-﻿using BRB5.Model;
+﻿using BarcodeScanning;
+using BRB5;
+using BRB5.Model;
+using BRB6.Template;
 using BRB6.View;
+using Microsoft.Maui.Controls.Compatibility;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
 using Utils;
-using Microsoft.Maui.Controls.Compatibility;
-using BRB5;
 using Grid = Microsoft.Maui.Controls.Grid;
 using StackLayout = Microsoft.Maui.Controls.StackLayout;
-using BarcodeScanning;
-using BRB6.Template;
-using System.Runtime.CompilerServices;
 
 namespace BRB6
 {
@@ -173,38 +175,61 @@ namespace BRB6
         }
         async void ViewDoc()
         {
-            if (IsLoad)
-            {
-                try
-                {
-                    IsLoad = false;
-                    bool IsAddItem = true;
-                    MainThread.BeginInvokeOnMainThread(() => { QuestionsStackLayout.Children.Clear(); });
+            if (!IsLoad)
+                return;
 
-                    foreach (var el in AllViewRDI.Where(el => (el.Data.IsHead || el.Data.Parent == 9999999 || // Заголовки Всього
-                    Choice == eTypeChoice.All ||                                             // Розгорнути      
-                    (Choice == eTypeChoice.NoAnswer && (el.Data.Rating == 0 ||                    //Без відповіді  
-                    (el.Data.Rating == 3 && String.IsNullOrEmpty(el.Data.Note) && el.Data.QuantityPhoto == 0)))  //Без опису           
-                    )))
+            try
+            {
+                IsLoad = false;
+
+                if (DeviceInfo.Platform == DevicePlatform.Android)
+                {
+                    MainThread.BeginInvokeOnMainThread(() => QuestionsStackLayout.Children.Clear());
+
+                    bool IsAddItem = true;
+                    foreach (var el in AllViewRDI.Where(el =>
+                        el.Data.IsHead ||
+                        el.Data.Parent == 9999999 ||
+                        Choice == eTypeChoice.All ||
+                        (Choice == eTypeChoice.NoAnswer &&
+                            (el.Data.Rating == 0 ||
+                            (el.Data.Rating == 3 && string.IsNullOrEmpty(el.Data.Note) && el.Data.QuantityPhoto == 0)))))
                     {
                         if (IsAddItem || el.Data.IsHead)
-                            MainThread.BeginInvokeOnMainThread(() => { QuestionsStackLayout.Children.Add(el); });
+                            MainThread.BeginInvokeOnMainThread(() => QuestionsStackLayout.Children.Add(el));
 
                         if (el.Data.IsHead)
                             el.Data.IsVisible = Choice == eTypeChoice.All && IsAddItem;
                     }
+                }
+                else if (DeviceInfo.Platform == DevicePlatform.iOS)
+                {
+                    IEnumerable<BRB5.Model.RaitingDocItem> filtered = All.Where(el =>
+                        el.IsHead ||
+                        (el.IsVisible && el.Parent != 9999999) || // підпитання, які мають бути видимі
+                        Choice == eTypeChoice.All ||
+                        (Choice == eTypeChoice.NoAnswer &&
+                            (el.Rating == 0 || (el.Rating == 3 && string.IsNullOrEmpty(el.Note) && el.QuantityPhoto == 0)))
+                    );
 
-                    RefreshHead();
-                    Bl.CalcValueRating(All);
+                    var limited = filtered.ToList();                                       
+
+                    MainThread.BeginInvokeOnMainThread(() =>
+                    {
+                        QuestionsCollectionView.ItemsSource = limited;
+                    });
                 }
-                catch (Exception e)
-                {
-                    FileLogger.WriteLogMessage(this, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                }
-                finally
-                {
-                    IsLoad = true;
-                }
+
+                RefreshHead();
+                Bl.CalcValueRating(All);
+            }
+            catch (Exception e)
+            {
+                FileLogger.WriteLogMessage(this, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+            }
+            finally
+            {
+                IsLoad = true;
             }
         }
 
@@ -223,6 +248,7 @@ namespace BRB6
                     CalculateAvailableHeight();
                     QuestionsCollectionView.ItemsSource = headsOnly;
                 });
+                IsLoad = true;
             }
             else
             {
@@ -352,16 +378,41 @@ namespace BRB6
             head.IsVisible = !head.IsVisible;
             Choice = eTypeChoice.NotDefine;
 
-            // оновити список у CollectionView
-            var updatedList = All.Where(el =>
-                el.IsHead || (el.Parent == head.Id && head.IsVisible)
-            ).ToList();
+            // поточний список (те, що видно зараз)
+            var current = (QuestionsCollectionView.ItemsSource as IEnumerable<BRB5.Model.RaitingDocItem>)?.ToList() ?? new();
+
+            // дочірні елементи цієї групи
+            var children = All.Where(el => el.Parent == head.Id).ToList();
+
+            // список для оновлення
+            List<BRB5.Model.RaitingDocItem> updated;
+
+            if (head.IsVisible)
+            {
+                // розгортаємо: вставити дочірні після head
+                int headIndex = current.FindIndex(el => el == head);
+                if (headIndex >= 0)
+                {
+                    updated = current.ToList();
+                    updated.InsertRange(headIndex + 1, children);
+                }
+                else
+                {
+                    updated = current.Concat(children).ToList();
+                }
+            }
+            else
+            {
+                // згортаємо: видалити дочірні елементи цієї групи
+                updated = current.Where(el => el.Parent != head.Id).ToList();
+            }
 
             MainThread.BeginInvokeOnMainThread(() =>
             {
-                QuestionsCollectionView.ItemsSource = updatedList;
+                QuestionsCollectionView.ItemsSource = updated;
             });
         }
+
         private void ChangeItemBlok(BRB5.Model.RaitingDocItem vRait)
         {
             if (!IsLoad)
@@ -451,29 +502,24 @@ namespace BRB6
 
         private void ShowButton(object sender, EventArgs e)
         {
-            if (IsLoad)
+            if (!IsLoad)
+                return;
+
+            var button = (ImageButton)sender;
+            var mode = button.AutomationId switch
             {
-                switch (((ImageButton)sender).AutomationId)
-                {
-                    case "All":
-                        Choice = eTypeChoice.All;
-                        foreach (var el in All.Where(el => el.IsHead))
-                            el.IsVisible = true;
-                        break;
-                    case "OnlyHead":
-                        Choice = eTypeChoice.OnlyHead;
-                        foreach (var el in All.Where(el => el.IsHead))
-                            el.IsVisible = false;
-                        break;
-                    case "NoAnswer":
-                        Choice = eTypeChoice.NoAnswer;
-                        foreach (var el in All.Where(el => el.IsHead))
-                            el.IsVisible = false;
-                        break;
-                }
-                ViewDoc();
-            }
-            //ListQuestions.ScrollTo( Questions.First(), ScrollToPosition.Start, false);
+                "All" => eTypeChoice.All,
+                "OnlyHead" => eTypeChoice.OnlyHead,
+                "NoAnswer" => eTypeChoice.NoAnswer,
+                _ => eTypeChoice.NotDefine
+            };
+
+            Choice = mode;
+
+            foreach (var el in All.Where(el => el.IsHead))
+                el.IsVisible = mode == eTypeChoice.All;
+
+            ViewDoc();
         }
 
         private void CameraView_OnDetectionFinished(object sender, BarcodeScanning.OnDetectionFinishedEventArg e)
