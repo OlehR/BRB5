@@ -20,12 +20,15 @@ public partial class QuestionHeadTemplate : ContentView, IViewRDI
     }
     private void OnHeadTapped(object sender, TappedEventArgs e)
     {
-        if (BindingContext is BRB5.Model.RaitingDocItem head)
+        if (DeviceInfo.Platform == DevicePlatform.iOS) 
         {
-            // Знайти батьківську сторінку, яка реалізує інтерфейс
-            var handler = GetParentPage() as IHeadTapHandler;
-            handler?.OnHeadTapped(head);
-        }
+            if (BindingContext is BRB5.Model.RaitingDocItem head)
+            {
+                // Знайти батьківську сторінку, яка реалізує інтерфейс
+                var handler = GetParentPage() as IHeadTapHandler;
+                handler?.OnHeadTapped(head);
+            }
+        } else  OnHeadTapp?.Invoke(sender, e);
     }
 
     private Page GetParentPage()
