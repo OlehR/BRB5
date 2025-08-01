@@ -4,20 +4,21 @@
                       xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
                       xmlns:brb5="clr-namespace:BRB6"
                       xmlns:Model="clr-namespace:BRB5.Model;assembly=BRB5.Model"
-                      x:DataType="brb5:RaitingDocItem"
                       x:Class="BRB6.RaitingDocItem"
                       xmlns:template="clr-namespace:BRB6.Template">
     <ContentPage.Resources>
         <ResourceDictionary>
-            <DataTemplate x:Key="HeadTemplate">
+            <DataTemplate x:Key="HeadTemplate" x:DataType="Model:RaitingDocItem">
                 <template:QuestionHeadTemplate />
             </DataTemplate>
-            <DataTemplate x:Key="ItemTemplate">
+
+            <DataTemplate x:Key="ItemTemplate" x:DataType="Model:RaitingDocItem">
                 <template:QuestionItemTemplate />
             </DataTemplate>
-            <template:QuestionTemplateSelector x:Key="QuestionTemplateSelector"
-                                               HeadTemplate="{StaticResource HeadTemplate}"
-                                               ItemTemplate="{StaticResource ItemTemplate}" />
+
+            <brb5:QuestionTemplateSelector x:Key="QuestionTemplateSelector"
+                                        HeadTemplate="{StaticResource HeadTemplate}"
+                                        ItemTemplate="{StaticResource ItemTemplate}" />
         </ResourceDictionary>
     </ContentPage.Resources>
 
@@ -50,13 +51,12 @@
                     <ScrollView IsVisible="{OnPlatform Android=true, iOS=false}" >
                         <StackLayout x:Name="QuestionsStackLayout"/>
                     </ScrollView>
-
-                    <ListView x:Name="ListQuestions"
-                              ItemsSource="{Binding Questions}"
-                              ItemTemplate="{StaticResource QuestionTemplateSelector}"
-                              HasUnevenRows="True"
-                              SeparatorVisibility="None"
-                              IsVisible="{OnPlatform Android=false, iOS=true}" />
+                    <CollectionView x:Name="QuestionsCollectionView"
+                              HeightRequest="500"
+                              IsVisible="{OnPlatform Android=false, iOS=true}"
+                              ItemsLayout="Vertical"
+                              SelectionMode="None"
+                              ItemTemplate="{StaticResource QuestionTemplateSelector}" />                   
 
                 </Grid>
             </StackLayout>
