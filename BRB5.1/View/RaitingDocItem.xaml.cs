@@ -18,7 +18,7 @@ namespace BRB6
     //[QueryProperty(nameof(NumberDoc), nameof(NumberDoc))]
     //[QueryProperty(nameof(TypeDoc), nameof(TypeDoc))]
     //[XamlCompilation(XamlCompilationOptions.Compile)]
-    public partial class RaitingDocItem : ContentPage, IHeadTapHandler
+    public partial class RaitingDocItem : ContentPage, IHeadTapHandler, IRatingButtonHandler
     {
         BL.BL Bl = BL.BL.GetBL();
         DocVM cDoc;
@@ -260,16 +260,26 @@ namespace BRB6
         private void OnButtonClicked(object sender, System.EventArgs e)
         {
             Microsoft.Maui.Controls.View button = (Microsoft.Maui.Controls.View)sender;
-            //Grid cc = button.Parent as Grid;
-            var vQuestion = GetRaiting(sender);//cc.BindingContext as Raiting;
+            var vQuestion = GetRaiting(sender);
             Bl.ChangeRaiting(vQuestion, button.ClassId, All);
-
-            //if (vQuestion.IsHead) ChangeItemBlok(vQuestion);
 
             Bl.CalcSumValueRating(vQuestion, All);
             RefreshHead();
         }
+        public void OnRatingButtonClicked(object sender, BRB5.Model.RaitingDocItem item)
+        {
+            if (DeviceInfo.Platform != DevicePlatform.iOS)
+                return;
 
+            // Обробка рейтингу
+            var button = (Microsoft.Maui.Controls.View)sender;
+            Bl.ChangeRaiting(item, button.ClassId, All);
+
+            Bl.CalcSumValueRating(item, All);
+            RefreshHead();
+
+            // Можеш додати оновлення CollectionView, якщо треба
+        }
         void RefreshHead()
         {
             try {

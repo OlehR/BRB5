@@ -18,5 +18,9 @@ namespace BRB6
     {
         void OnHeadTapped(BRB5.Model.RaitingDocItem head);
     }
+    public interface IRatingButtonHandler
+    {
+        void OnRatingButtonClicked(object sender, BRB5.Model.RaitingDocItem item);
+    }
 
 }
