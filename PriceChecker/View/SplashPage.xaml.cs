@@ -10,6 +10,18 @@ public partial class SplashPage : ContentPage
     {
         InitializeComponent();
         App.ScanerCom.SetOnBarCode(BarCode);
+        var projectName = "spar"; // наприклад: "vopak" або "spar"
+
+        if (projectName == "vopak")
+        {
+            BackgroundImage.Source = "background1vopak.png";
+            LogoImage.Source = "logo1vopak.png";
+        }
+        else if (projectName == "spar")
+        {
+            BackgroundImage.Source = "background2spar.png";
+            LogoImage.Source = "logo1spar.png";
+        }
     }
      void BarCode(string pBarCode, string pType)
     {

@@ -6,9 +6,9 @@
 
     <ContentPage.Content>
         <Grid>
-            <Image Source="background.png"
+            <Image x:Name="BackgroundImage"
                    Aspect="AspectFill"
-                   Opacity="0.7"
+                   Opacity="0.2"
                    Grid.RowSpan="2"
                    Grid.ColumnSpan="2" />
 

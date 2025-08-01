@@ -38,9 +38,10 @@ public partial class UPriceChecker : ContentPage
         (WP != null && WP.Price != 0 )
             ? "#009800"
             : "#ff5c5c";
-    public bool IsCashback =>  WP != null &&
-                               (WP.Country.ToUpper() == "НАЦІОНАЛЬНИЙ КЕШБЕК" ||
-                               WP.Country.ToUpper() == "УКРАЇНА");
+    public bool IsCashback => WP != null &&
+                           !string.IsNullOrEmpty(WP.Country) &&
+                           (WP.Country.ToUpper() == "НАЦІОНАЛЬНИЙ КЕШБЕК" ||
+                            WP.Country.ToUpper() == "УКРАЇНА");
 
     public UPriceChecker(WaresPrice pWP)
     {
@@ -54,6 +55,16 @@ public partial class UPriceChecker : ContentPage
         _returnToSplashTimer = new Timer(TimeoutSeconds * 1000);
         _returnToSplashTimer.Elapsed += OnTimeoutElapsed;
         _returnToSplashTimer.AutoReset = false;
+        var projectName = "spar"; // наприклад: "vopak" або "spar"
+
+        if (projectName == "vopak")
+        {
+            BackgroundImage.Source = "background1vopak.png";
+        }
+        else if (projectName == "spar")
+        {
+            BackgroundImage.Source = "background2spar.png";
+        }
     }
     void BarCode(string pBarCode,string pTypeBarCode=null) 
     {
