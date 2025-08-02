@@ -26,24 +26,29 @@ namespace BRB5.Model
         {
             try
             {
-                var request = new GeolocationRequest(GeolocationAccuracy.High, TimeSpan.FromSeconds(10));
-                cts = new CancellationTokenSource();
-                Location = await Geolocation.GetLocationAsync(request, cts.Token);
-
-                if (Location != null)
+                PermissionStatus status = await Permissions.CheckStatusAsync<Permissions.LocationWhenInUse>();
+                if (status == PermissionStatus.Granted)
                 {
-                    foreach (var el in Wh)
+
+                    var request = new GeolocationRequest(GeolocationAccuracy.High, TimeSpan.FromSeconds(10));
+                    cts = new CancellationTokenSource();
+                    Location = await Geolocation.GetLocationAsync(request, cts.Token);
+
+                    if (Location != null)
                     {
-                        el.Distance = Location.CalculateDistance(el.GPSX, el.GPSY, DistanceUnits.Kilometers) * 1000;
+                        foreach (var el in Wh)
+                        {
+                            el.Distance = Location.CalculateDistance(el.GPSX, el.GPSY, DistanceUnits.Kilometers) * 1000;
+                        }
+                        Console.WriteLine($"Latitude: {Location.Latitude}, Longitude: {Location.Longitude}, Altitude: {Location.Altitude}");
+                        var res = Wh.OrderBy(o => o.Distance);
+                        if (res.Any())
+                        {
+                            LocationWarehouse = res.First();
+                        }
+                        OnLocation?.Invoke(Location);
+                        return res;
                     }
-                    Console.WriteLine($"Latitude: {Location.Latitude}, Longitude: {Location.Longitude}, Altitude: {Location.Altitude}");
-                    var res = Wh.OrderBy(o => o.Distance);
-                    if (res.Any())
-                    {
-                        LocationWarehouse = res.First();
-                    }
-                    OnLocation?.Invoke(Location);
-                    return res;
                 }
             }
             catch (FeatureNotSupportedException fnsEx)
