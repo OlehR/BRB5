@@ -2,7 +2,7 @@
 
 	<PropertyGroup>
     <RuntimeIdentifiers Condition="$(TargetFramework.Contains('-android'))">android-arm;android-arm64</RuntimeIdentifiers>
-		<TargetFrameworks>net9.0-android;net9.0-ios</TargetFrameworks>
+		<TargetFrameworks>net8.0-android;net8.0-ios</TargetFrameworks>
     <EmbedAssembliesIntoApk>true</EmbedAssembliesIntoApk>
     <NullabilityInfoContextSupport>true</NullabilityInfoContextSupport>
     <!--
@@ -31,21 +31,21 @@
 		<ApplicationId>ua.UniCS.TM.BRB6</ApplicationId>
 
 		<!-- Versions -->
-		<ApplicationDisplayVersion>6.0.44</ApplicationDisplayVersion>
-		<ApplicationVersion>6044</ApplicationVersion>
+		<ApplicationDisplayVersion>6.0.45</ApplicationDisplayVersion>
+		<ApplicationVersion>6045</ApplicationVersion>
 
 		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">12.2</SupportedOSPlatformVersion>		
 		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">21.0</SupportedOSPlatformVersion>	
   </PropertyGroup>
 
-	<PropertyGroup Condition="'$(TargetFramework)'=='net9.0-ios' and '$(Configuration)' == 'Release'">
+	<PropertyGroup Condition="'$(TargetFramework)'=='net8.0-ios' and '$(Configuration)' == 'Release'">
 	  <CodesignKey>Apple Distribution: Alina Rutkovska (485ZWQ5A76)</CodesignKey>
 	  <ProvisioningType>automatic</ProvisioningType>    
     <UseInterpreter>True</UseInterpreter>
     <Registrar>static</Registrar>
 	</PropertyGroup>
 
-	<PropertyGroup Condition="'$(TargetFramework)'=='net9.0-ios' and '$(Configuration)' == 'Debug'">
+	<PropertyGroup Condition="'$(TargetFramework)'=='net8.0-ios' and '$(Configuration)' == 'Debug'">
 	  <CodesignKey>Apple Development: Created via API (S4J9BA3B6S)</CodesignKey>
 	  <CodesignProvision>VS: ua.UniCS.TM.BRB6 Development</CodesignProvision>
 	  <ProvisioningType>automatic</ProvisioningType>
@@ -55,13 +55,7 @@
 	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net8.0-android|AnyCPU'">
 	  <RunAOTCompilation>False</RunAOTCompilation>
 	</PropertyGroup>
-
-	<PropertyGroup Condition="'$(TargetFramework)'=='net9.0-ios' and '$(Configuration)' == 'Debug'">
-	  <CodesignKey>Apple Development: Created via API (S4J9BA3B6S)</CodesignKey>
-	  <CodesignProvision>VS: ua.UniCS.TM.BRB6 Development</CodesignProvision>
-	</PropertyGroup>
-
-	
+  
   
 	<ItemGroup>
 		<!-- App Icon -->
@@ -81,9 +75,9 @@
 		<MauiAsset Include="Resources\Raw\**" LogicalName="%(RecursiveDir)%(Filename)%(Extension)" />
 	</ItemGroup>
   
-	<ItemGroup>
+	<!-- <ItemGroup>
 	  <Compile Remove="ViewModel\ZxingBRB5.cs" />
-	</ItemGroup>
+	</ItemGroup>-->
   
 	<ItemGroup>
 	  <None Remove="Platforms\Android\Resources\xml\provider_paths.xml" />
@@ -107,17 +101,15 @@
 	</ItemGroup>
 
 	<ItemGroup>
-  
-		<PackageReference Include="BarcodeScanning.Native.Maui" Version="1.5.9" />
-  
-		<PackageReference Include="CommunityToolkit.Maui" Version="12.1.0" />
-		<PackageReference Include="FFImageLoading.Maui" Version="1.2.7" />
-		<PackageReference Include="Microsoft.Maui.Controls" Version="9.0.90" />
-		<PackageReference Include="Microsoft.Maui.Controls.Compatibility" Version="9.0.90" />
-		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="9.0.7" />
-		<PackageReference Include="System.Text.Json" Version="9.0.7" />
+    <PackageReference Include="BarcodeScanning.Native.Maui" Version="1.5.7" />  
+		<PackageReference Include="CommunityToolkit.Maui" Version="9.0.2" />
+		<PackageReference Include="FFImageLoading.Maui" Version="1.2.6" />
+		<PackageReference Include="Microsoft.Maui.Controls" Version="8.0.80" />
+		<PackageReference Include="Microsoft.Maui.Controls.Compatibility" Version="8.0.80" />
+		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="8.0.0" />
+		<PackageReference Include="System.Text.Json" Version="9.0.0" />
 	</ItemGroup>
-
+  
 	<ItemGroup>
 	  <ProjectReference Include="..\..\UniCS.TM\Utils\Utils.csproj" />
 	  <ProjectReference Include="..\BL\BL.csproj" />
@@ -304,6 +296,10 @@
 	    <SubType>Designer</SubType>
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Folder Include="ViewModel\" />
 	</ItemGroup>
 
 </Project>
