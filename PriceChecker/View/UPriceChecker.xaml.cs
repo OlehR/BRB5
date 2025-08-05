@@ -12,8 +12,7 @@ public partial class UPriceChecker : ContentPage
 {
     BL.BL bl = BL.BL.GetBL();
     private Timer _returnToSplashTimer;
-    private const int TimeoutSeconds = 30;
-
+    private const int TimeoutSeconds = 300;
     WaresPrice _WP;
     public Uri UriPicture { get { return new Uri(Config.ApiUrl1 + $"Wares/{WP.CodeWares:D9}.png"); } }
     public WaresPrice WP
@@ -23,26 +22,24 @@ public partial class UPriceChecker : ContentPage
         {
             _WP = value;
             OnPropertyChanged(nameof(WP));
-            OnPropertyChanged(nameof(TextColorPrice));
             OnPropertyChanged(nameof(IsVisPriceOpt));
             OnPropertyChanged(nameof(UriPicture));
             OnPropertyChanged(nameof(IsCashback));
+            OnPropertyChanged(nameof(IsVisPromotion));
         }
     }
 
-    public bool IsVisPriceOpt => WP != null && (WP.PriceOpt != 0);
+    public bool IsVisPriceOpt => WP != null && (WP.PriceOpt != 0)&&!IsVisPromotion;
 
     public bool IsVisBarcode => true;
 
-    public string TextColorPrice =>
-        (WP != null && WP.Price != 0 )
-            ? "#009800"
-            : "#ff5c5c";
+    public string ColorBG { get; set; }
     public bool IsCashback => WP != null &&
                            !string.IsNullOrEmpty(WP.Country) &&
                            (WP.Country.ToUpper() == "НАЦІОНАЛЬНИЙ КЕШБЕК" ||
                             WP.Country.ToUpper() == "УКРАЇНА");
 
+    public bool IsVisPromotion => WP != null && WP.ActionType > 0;
     public UPriceChecker(WaresPrice pWP)
     {
         FileLogger.WriteLogMessage( $"UPriceChecker=>BarCode: {pWP.BarCodes}");
@@ -60,10 +57,16 @@ public partial class UPriceChecker : ContentPage
         if (projectName == "vopak")
         {
             BackgroundImage.Source = "background1vopak.png";
+            LogoImage.Source = "logo1vopak.png";
+            ColorBG = "#ffde2f";
+            OnPropertyChanged(nameof(ColorBG));
         }
         else if (projectName == "spar")
         {
             BackgroundImage.Source = "background2spar.png";
+            LogoImage.Source = "logo2spar.png";
+            ColorBG = "#e31e24";
+            OnPropertyChanged(nameof(ColorBG));
         }
     }
     void BarCode(string pBarCode,string pTypeBarCode=null) 

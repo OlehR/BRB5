@@ -8,108 +8,147 @@
         <Grid>
             <Image x:Name="BackgroundImage"
                    Aspect="AspectFill"
-                   Opacity="0.2"
-                   Grid.RowSpan="2"
-                   Grid.ColumnSpan="2" />
+                   Opacity="0.4"/>
 
-            <Grid Padding="30">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="2*" />
-                    <ColumnDefinition Width="1*" />
-                </Grid.ColumnDefinitions>
+            <Grid>
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="2*" />
+                    <RowDefinition Height="90" />
+                    <RowDefinition Height="7*" />
                     <RowDefinition Height="1*" />
                 </Grid.RowDefinitions>
 
-                <ffimageloading:CachedImage x:Name="WareImage"
-                                    Grid.Column="1"
-                                    Source="{Binding UriPicture}" />
-
-
-                <StackLayout>
-                    <Label Text="{Binding WP.Name}"
-                   VerticalOptions="CenterAndExpand"
-                   HorizontalOptions="Center"
-               FontFamily="MontserratExtraBold" 
-                   FontSize="50"/>
-
-                    <HorizontalStackLayout>
-                        <Label Text="Країна походження:"/>
-                        <Label Text="{Binding WP.Country}"/>
-                    </HorizontalStackLayout>
-                    <Frame Padding="0"
-                            IsVisible="{Binding IsCashback}"
-                            CornerRadius="10"
-                            HeightRequest="70"
+                <StackLayout Orientation="Horizontal"  BackgroundColor="{Binding ColorBG}" >
+                    <Frame IsVisible="{Binding IsCashback}"
+                            CornerRadius="10"  
                             HasShadow="False"
                             HorizontalOptions="Start">
-                        <Image Source="cashback.png"
-                                Aspect="AspectFit"
-                                HeightRequest="70" />
+                        <Image Source="cashback.png"                          
+                               Aspect="AspectFit" />
                     </Frame>
 
+                    <Image x:Name="LogoImage" 
+                           HorizontalOptions="EndAndExpand"  
+                           Aspect="AspectFit"/>
+                </StackLayout>
 
-                </StackLayout>                   
 
-                <Grid Grid.ColumnSpan="2" Grid.Row="1" VerticalOptions="Center" Padding="0" ColumnSpacing="10">
+                <Grid Grid.Row="1" >
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="2*" />
+                        <ColumnDefinition Width="5*" />
                     </Grid.ColumnDefinitions>
 
-                    <!-- Block 1: Retail Price -->
-                    <StackLayout Grid.Column="0" VerticalOptions="Center" HorizontalOptions="FillAndExpand" Spacing="2">
-                        <Label Text="Ціна" 
-               FontFamily="MontserratExtraBold" 
-               VerticalOptions="Center"
-               FontSize="30"
-               TextColor="{Binding TextColorPrice}" />
-                        <Label Text="{Binding WP.Price}"
-               VerticalOptions="Center"
-               FontSize="60"
-               FontFamily="MontserratExtraBold" 
-               TextColor="{Binding TextColorPrice}" />
+                    <ffimageloading:CachedImage x:Name="WareImage" Source="{Binding UriPicture}" />
+
+
+                    <StackLayout Grid.Column="1" Spacing="10" >
+                        <Label Text="{Binding WP.Name}"
+                                FontFamily="MontserratExtraBold"
+                                FontSize="50" />
+
+                        <Label Text="{Binding WP.BarCodes}"
+                               TextColor="DarkGray"
+                                 FontFamily="MontserratExtraBold"
+                                 FontSize="30" />
+
+
+                        <Grid VerticalOptions="FillAndExpand" Grid.Column="1"  >
+                            <Grid >
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+
+                                <StackLayout >
+                                    <Label Text="{Binding WP.Country}"
+                                            TextColor="Gray"
+                                            FontFamily="MontserratExtraBold"
+                                            FontSize="30" />
+
+
+                                    <Grid BackgroundColor="#23b14d" 
+                                                 Margin="10" 
+                                           HeightRequest="190" 
+                                           VerticalOptions="EndAndExpand">
+                                        <Label Text="{Binding WP.PriceOpt}" 
+                                           HorizontalOptions="Center" 
+                                           VerticalOptions="Center"
+                                            FontSize="80"
+                                            FontFamily="MontserratExtraBold"
+                                            TextColor="White" />
+                                        
+                                    </Grid>
+                                </StackLayout>
+                                <Grid Margin="10" Grid.Column="1" BackgroundColor="#23b14d" 
+                                           HeightRequest="250"
+                                           VerticalOptions="EndAndExpand">
+
+                                    <Label Text="{Binding WP.Price}" 
+                                           FontSize="100"
+                                           HorizontalOptions="Center" 
+                                           VerticalOptions="Center"
+                                            FontFamily="MontserratExtraBold"
+                                            TextColor="White" />
+                                </Grid>
+
+
+
+                                <!-- Block 3: Quantity/Unit -->
+
+                            </Grid>
+                        </Grid>
                     </StackLayout>
 
-                    <!-- Block 2: Wholesale Price -->
-                    <StackLayout Grid.Column="1" VerticalOptions="Center" HorizontalOptions="FillAndExpand" Spacing="2" IsVisible="{Binding IsVisPriceOpt}">
-                        <Label Text="Ціна опт." 
-               FontFamily="MontserratExtraBold" 
-               VerticalOptions="Center"
-               FontSize="30"
-               TextColor="{Binding TextColorPrice}" />
-                        <Label Text="{Binding WP.PriceOpt}"
-               VerticalOptions="Center"
-               FontSize="60"
-               FontFamily="MontserratExtraBold"     
-               TextColor="{Binding TextColorPrice}" />
+                </Grid>
+                
+                <Grid Grid.Row="2"  >
+                    <StackLayout HorizontalOptions="Center" IsVisible="{Binding IsVisPromotion}" Orientation="Horizontal" Spacing="10">
+                        <Label Text="Акція діє: з "  
+                               FontFamily="MontserratExtraBold" 
+                               FontSize="30" 
+                               VerticalOptions="Center"
+                               TextColor="#e31e24"/>
+                        <Label Text="{Binding WP.PromotionBegin, StringFormat='{0:dd.MM}'}" 
+                               TextColor="#e31e24" 
+                               VerticalOptions="Center"
+                               FontSize="40" 
+                               FontFamily="MontserratExtraBold"
+                               FontAttributes="Bold"/>
+                        <Label Text=" по " FontSize="30"  
+                               VerticalOptions="Center"
+                               FontFamily="MontserratExtraBold" 
+                               TextColor="#e31e24"/>
+                        <Label Text="{Binding WP.PromotionEnd, StringFormat='{0:dd.MM}'}" 
+                               TextColor="#e31e24" 
+                               VerticalOptions="Center"
+                               FontSize="40"  
+                               FontFamily="MontserratExtraBold"
+                               FontAttributes="Bold"/>
                     </StackLayout>
-
-                    <!-- Block 3: Quantity/Unit -->
-                    <StackLayout Grid.Column="2" Spacing="30" Orientation="Horizontal" VerticalOptions="Center" HorizontalOptions="FillAndExpand"
-                                 IsVisible="{Binding IsVisPriceOpt}">
-                        <Label Text="від" 
-               FontFamily="MontserratExtraBold" 
-               VerticalOptions="Center"
-               FontSize="30"
-               TextColor="Blue" />
-                        <Label Text="{Binding WP.QuantityOpt}"                               
-               FontFamily="MontserratExtraBold"    
-               VerticalOptions="Center"
-               FontSize="60"
-               TextColor="Blue" />
-                        <Label Text="{Binding WP.Unit}" 
-               FontFamily="MontserratExtraBold" 
-               VerticalOptions="Center"
-               FontSize="30"
-               TextColor="Blue" />
+                    <StackLayout Grid.Column="2"
+                                 Spacing="30"
+                                 HorizontalOptions="Center"
+                                Orientation="Horizontal"
+                                VerticalOptions="Center"
+                                IsVisible="{Binding IsVisPriceOpt}">
+                        <Label Text="Оптова ціна від"
+                                FontFamily="MontserratExtraBold"
+                                VerticalOptions="Center"
+                                FontSize="30"
+                                TextColor="Blue" />
+                        <Label Text="{Binding WP.QuantityOpt}"
+                                FontFamily="MontserratExtraBold"
+                                VerticalOptions="Center"
+                                FontSize="40"
+                                TextColor="Blue" />
+                        <Label Text="{Binding WP.Unit}"
+                                FontFamily="MontserratExtraBold"
+                                VerticalOptions="Center"
+                                FontSize="30"
+                                TextColor="Blue" />
                     </StackLayout>
                 </Grid>
             </Grid>
-            
         </Grid>
-
     </ContentPage.Content>
 </ContentPage>

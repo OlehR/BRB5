@@ -81,7 +81,7 @@ public partial class AdminPriceChecker : ContentPage
     public UriImageSource Picture { get; set; }
     public Uri UriPicture { get { return new Uri(Config.ApiUrl1 + $"Wares/{WP.CodeWares:D9}.png"); } }
     private int InfoHeight;
-
+    public string ColorBG { get; set; }
 
     public AdminPriceChecker(WaresPrice pUser, WaresPrice? pWP = null)
     {
@@ -93,7 +93,24 @@ public partial class AdminPriceChecker : ContentPage
         if (pWP != null)
         {
             WP = pWP;
-            if (WP.RestWarehouse != null) RestWarehouseListShow(WP.RestWarehouse);
+            //if (WP.RestWarehouse != null) RestWarehouseListShow(WP.RestWarehouse);
+        }
+
+        var projectName = "spar"; // наприклад: "vopak" або "spar"
+
+        if (projectName == "vopak")
+        {
+            BackgroundImage.Source = "background1vopak.png";
+            LogoImage.Source = "logo1vopak.png";
+            ColorBG = "#ffde2f";
+            OnPropertyChanged(nameof(ColorBG));
+        }
+        else if (projectName == "spar")
+        {
+            BackgroundImage.Source = "background2spar.png";
+            LogoImage.Source = "logo2spar.png";
+            ColorBG = "#e31e24";
+            OnPropertyChanged(nameof(ColorBG));
         }
 
         if (Config.TypeUsePrinter == eTypeUsePrinter.StationaryWithCutAuto) PrintType = -1;
@@ -143,17 +160,17 @@ public partial class AdminPriceChecker : ContentPage
 
             if (DeviceInfo.Platform != DevicePlatform.iOS) BarCodeFocused(null, null);
 
-            if (WP.RestWarehouse != null) RestWarehouseListShow(WP.RestWarehouse);
+            //if (WP.RestWarehouse != null) RestWarehouseListShow(WP.RestWarehouse);
         }
 
     }
        
-    private void OnClickPrintBlock(object sender, EventArgs e)
-    {
-        var temp = PrintBlockItemsXaml.SelectedItem as PrintBlockItems;
-        if (IsEnabledPrint)
-            _ = DisplayAlert("Друк", bl.PrintPackage(PrintType, temp.PackageNumber, IsMultyLabel), "OK");
-    }
+    //private void OnClickPrintBlock(object sender, EventArgs e)
+    //{
+    //    var temp = PrintBlockItemsXaml.SelectedItem as PrintBlockItems;
+    //    if (IsEnabledPrint)
+    //        _ = DisplayAlert("Друк", bl.PrintPackage(PrintType, temp.PackageNumber, IsMultyLabel), "OK");
+    //}
 
 
 
@@ -180,13 +197,12 @@ public partial class AdminPriceChecker : ContentPage
             _ = DisplayAlert("Друк", bl.c.PrintHTTP(new[] { WP.CodeWares }), "OK");
     }
 
-    private void OnUpdateReplenishment(object sender, EventArgs e)
-    {
-        decimal d;
-        if (decimal.TryParse(NumberOfReplenishment.Text, out d)) ;
-            //db.UpdateReplenishment(LineNumber, d);
-    }
-
+    //private void OnUpdateReplenishment(object sender, EventArgs e)
+    //{
+    //    decimal d;
+    //    if (decimal.TryParse(NumberOfReplenishment.Text, out d)) ;
+    //        //db.UpdateReplenishment(LineNumber, d);
+    //}
     //public WareInfo(ParseBarCode parseBarCode)
     //{
     //    InitializeComponent();
@@ -207,64 +223,64 @@ public partial class AdminPriceChecker : ContentPage
     //    this.BindingContext = this;
     //    CalculateAndSetScrollViewHeight();
     //}
-    private void RestWarehouseListShow(IEnumerable<RestWarehouse> warehouses)
-    {
-        //var t = db.GetWarehouse();
-        //var w = t.FirstOrDefault(x => x.CodeWarehouse == Config.CodeWarehouse);
-        foreach (var warehouse in warehouses)
-        {
-            var grid = new Grid
-            {
-                ColumnDefinitions =
-                    {
-                        new ColumnDefinition { Width = new GridLength(7, GridUnitType.Star) },
-                        new ColumnDefinition { Width = new GridLength(2, GridUnitType.Star) },
-                        new ColumnDefinition { Width = new GridLength(3, GridUnitType.Star) }
-                    },
-                BackgroundColor = Color.FromArgb("#adaea7")
-            };
+    //private void RestWarehouseListShow(IEnumerable<RestWarehouse> warehouses)
+    //{
+    //    //var t = db.GetWarehouse();
+    //    //var w = t.FirstOrDefault(x => x.CodeWarehouse == Config.CodeWarehouse);
+    //    foreach (var warehouse in warehouses)
+    //    {
+    //        var grid = new Grid
+    //        {
+    //            ColumnDefinitions =
+    //                {
+    //                    new ColumnDefinition { Width = new GridLength(7, GridUnitType.Star) },
+    //                    new ColumnDefinition { Width = new GridLength(2, GridUnitType.Star) },
+    //                    new ColumnDefinition { Width = new GridLength(3, GridUnitType.Star) }
+    //                },
+    //            BackgroundColor = Color.FromArgb("#adaea7")
+    //        };
 
-            var NameWarehouseLabel = new Label
-            {
-                Text = warehouse.NameWarehouse,
-                TextColor = Colors.Black,
-                LineBreakMode = LineBreakMode.NoWrap,
-                BackgroundColor = Colors.White
+    //        var NameWarehouseLabel = new Label
+    //        {
+    //            Text = warehouse.NameWarehouse,
+    //            TextColor = Colors.Black,
+    //            LineBreakMode = LineBreakMode.NoWrap,
+    //            BackgroundColor = Colors.White
 
-            };
+    //        };
 
-            var QuantityLabel = new Label
-            {
-                Text = warehouse.Quantity.ToString(),
-                TextColor = Colors.Black,
-                FontAttributes = FontAttributes.Bold,
-                LineBreakMode = LineBreakMode.NoWrap,
-                BackgroundColor = Colors.White
-            };
-            Grid.SetColumn(QuantityLabel, 1);
+    //        var QuantityLabel = new Label
+    //        {
+    //            Text = warehouse.Quantity.ToString(),
+    //            TextColor = Colors.Black,
+    //            FontAttributes = FontAttributes.Bold,
+    //            LineBreakMode = LineBreakMode.NoWrap,
+    //            BackgroundColor = Colors.White
+    //        };
+    //        Grid.SetColumn(QuantityLabel, 1);
 
-            var DateLabel = new Label
-            {
-                Text = warehouse.Date.ToString("dd.MM.yyyy"),
-                TextColor = Colors.Black,
-                LineBreakMode = LineBreakMode.NoWrap,
-                BackgroundColor = Colors.White
-            };
-            Grid.SetColumn(DateLabel, 2);
+    //        var DateLabel = new Label
+    //        {
+    //            Text = warehouse.Date.ToString("dd.MM.yyyy"),
+    //            TextColor = Colors.Black,
+    //            LineBreakMode = LineBreakMode.NoWrap,
+    //            BackgroundColor = Colors.White
+    //        };
+    //        Grid.SetColumn(DateLabel, 2);
 
-            //if (w != null && w.Name == warehouse.NameWarehouse)
-            //{
-            //    NameWarehouseLabel.BackgroundColor = Colors.SandyBrown;
-            //    QuantityLabel.BackgroundColor = Colors.SandyBrown;
-            //    DateLabel.BackgroundColor = Colors.SandyBrown;
-            //}
+    //        //if (w != null && w.Name == warehouse.NameWarehouse)
+    //        //{
+    //        //    NameWarehouseLabel.BackgroundColor = Colors.SandyBrown;
+    //        //    QuantityLabel.BackgroundColor = Colors.SandyBrown;
+    //        //    DateLabel.BackgroundColor = Colors.SandyBrown;
+    //        //}
 
-            grid.Children.Add(NameWarehouseLabel);
-            grid.Children.Add(QuantityLabel);
-            grid.Children.Add(DateLabel);
-            RestWarehouseList.Children.Add(grid);
-        }
-    }
+    //        grid.Children.Add(NameWarehouseLabel);
+    //        grid.Children.Add(QuantityLabel);
+    //        grid.Children.Add(DateLabel);
+    //        RestWarehouseList.Children.Add(grid);
+    //    }
+    //}
     public void FillConditionList(IEnumerable<СonditionClass> conditions)
     {
         ConditionList.Children.Clear();
