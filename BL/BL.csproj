@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net9.0</TargetFramework>
+    <TargetFramework>net8.0</TargetFramework>
     <Nullable>disable</Nullable>
     <Version>1.0.2.2</Version>
     <AssemblyVersion>1.0.2.2</AssemblyVersion>
@@ -9,16 +9,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\UniCS.TM\UtilNetwork\UtilNetwork9.csproj" />
+    <ProjectReference Include="..\..\UniCS.TM\UtilNetwork\UtilNetwork.csproj" />
     <ProjectReference Include="..\..\UniCS.TM\Utils\Utils.csproj" />
     <ProjectReference Include="..\Model\BRB5.Model.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Reference Include="Utils">
-      <HintPath>..\DLL\Utils.dll</HintPath>
-    </Reference>
-  </ItemGroup>
 
   <ItemGroup>
     <Folder Include="Model\" />

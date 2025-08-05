@@ -23,7 +23,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BRB6", "BRB5.1\BRB6.csproj"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Utils", "..\UniCS.TM\Utils\Utils.csproj", "{49DE7B11-74FE-40A9-A9F4-CEC83A627199}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UtilNetwork9", "..\UniCS.TM\UtilNetwork\UtilNetwork9.csproj", "{5208EFF5-2200-E7D5-675E-515EA251BB26}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UtilNetwork9", "..\UniCS.TM\UtilNetwork\UtilNetwork.csproj", "{5208EFF5-2200-E7D5-675E-515EA251BB26}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PriceChecker", "PriceChecker\PriceChecker.csproj", "{69CBC496-ED3B-4530-9987-657F7E20A475}"
 EndProject
