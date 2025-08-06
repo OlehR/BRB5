@@ -90,6 +90,7 @@ public partial class AdminPriceChecker : ContentPage
             WP = pWP;
         }
 
+        if (WP.Сondition != null) FillConditionList(WP.Сondition);
         var projectName = "spar"; // наприклад: "vopak" або "spar"
 
         if (projectName == "vopak")
@@ -147,6 +148,7 @@ public partial class AdminPriceChecker : ContentPage
                 if (!WP.IsPriceOk)
                     BadScan++;
                 IsWareScaned = WP.StateDoubleScan;
+                if (WP.Сondition != null) FillConditionList(WP.Сondition);
             }
 
             Config.OnProgress?.Invoke(0.9d);
@@ -178,6 +180,43 @@ public partial class AdminPriceChecker : ContentPage
         if (IsEnabledPrint && WP != null)
             _ = DisplayAlert("Друк", bl.c.PrintHTTP(new[] { WP.CodeWares }), "OK");
     }
- 
+    public void FillConditionList(IEnumerable<СonditionClass> conditions)
+    {
+        MainThread.BeginInvokeOnMainThread(() =>
+        {
+            ConditionList.Children.Clear();
+        });
+
+        foreach (var condition in conditions)
+        {
+            var stackLayout = new StackLayout
+            {
+                Orientation = StackOrientation.Horizontal
+            };
+
+            var conditionLabel = new Label
+            {
+                Text = condition.Сondition,
+                FontSize = 25,
+                TextColor = Colors.DarkBlue
+            };
+
+            var contrLabel = new Label
+            {
+                Text = condition.Contr,
+                FontSize = 25,
+                TextColor = Colors.DarkBlue
+            };
+
+            stackLayout.Children.Add(conditionLabel);
+            stackLayout.Children.Add(contrLabel);
+
+            MainThread.BeginInvokeOnMainThread(() =>
+            {
+                ConditionList.Children.Add(stackLayout);
+            });
+        }
+    }
+
 
 }

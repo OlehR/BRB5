@@ -74,7 +74,7 @@
                             <RowDefinition Height="Auto"/>
                             <RowDefinition Height="Auto"/>
                             <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
                         </Grid.RowDefinitions>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*"/>
@@ -150,7 +150,9 @@
 
 
                         <Label Text="Умови роботи:" FontSize="25"  Grid.Row="13" BackgroundColor="White"/>
-                        <Label Text="{Binding WP.TermsForIlliquidWare}" TextColor="DarkBlue"  Grid.Column="1" Grid.Row="13" FontSize="25" BackgroundColor="White"/>
+                        <ScrollView Grid.Column="1" Grid.Row="13"  BackgroundColor="White">
+                            <VerticalStackLayout x:Name="ConditionList" />
+                        </ScrollView>
                     </Grid>
 
                 </Grid>
