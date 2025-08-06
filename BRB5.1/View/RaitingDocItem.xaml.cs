@@ -300,6 +300,11 @@ namespace BRB6
                 IsSaved = true;
                 Bl.c.IsStopSave = true;
             }
+            else
+            {
+                IsSaving = false;
+            }
+
         }
         private void OnButtonSave(object sender, System.EventArgs e)
         {

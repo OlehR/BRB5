@@ -96,7 +96,7 @@
                                Completed="BarCodeHandInput" />
 
                         <Label Text="Група товару" FontSize="25" Grid.Row="3" BackgroundColor="White" />
-                        <Label Text="" TextColor="DarkBlue" FontSize="25" Grid.Column="1" Grid.Row="3" BackgroundColor="White"/>
+                        <Label Text="{Binding WP.Parent}" TextColor="DarkBlue" FontSize="25" Grid.Column="1" Grid.Row="3" BackgroundColor="White"/>
 
                         <Label Text="АМ к-ть:" FontSize="25" Grid.Row="4" BackgroundColor="White" />
                         <Label Text="{Binding WP.MinQuantity}" TextColor="DarkBlue" FontSize="25" Grid.Column="1" Grid.Row="4" BackgroundColor="White"/>
