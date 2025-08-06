@@ -67,10 +67,26 @@
 
 
                                     <Grid BackgroundColor="#23b14d" 
-                                                 Margin="10" 
+                                          Margin="10" 
+                                          IsVisible="{Binding IsVisPriceMain}"
                                            HeightRequest="190" 
                                            VerticalOptions="EndAndExpand">
-                                        <Label Text="{Binding WP.PriceOpt}" 
+                                        <BoxView Color="White"
+                                                HeightRequest="10"
+                                                HorizontalOptions="Fill"
+                                                VerticalOptions="Fill"
+                                                Rotation="-30" 
+                                                 Opacity="0.9"/>
+
+                                        <Label Text="{Binding WP.Price}" 
+                                           IsVisible="{Binding IsVisPriceOpt}"
+                                           HorizontalOptions="Center" 
+                                           VerticalOptions="Center"
+                                            FontSize="80"
+                                            FontFamily="MontserratExtraBold"
+                                            TextColor="White" />
+                                        <Label Text="{Binding WP.PriceNormal }"
+                                           IsVisible="{Binding IsVisPromotion }"
                                            HorizontalOptions="Center" 
                                            VerticalOptions="Center"
                                             FontSize="80"
@@ -82,18 +98,21 @@
                                 <Grid Margin="10" Grid.Column="1" BackgroundColor="#23b14d" 
                                            HeightRequest="250"
                                            VerticalOptions="EndAndExpand">
-
                                     <Label Text="{Binding WP.Price}" 
+                                           HorizontalOptions="Center" 
+                                           VerticalOptions="Center"
+                                            FontSize="80"
+                                            FontFamily="MontserratExtraBold"
+                                            TextColor="White" />
+                                    <Label Text="{Binding WP.PriceOpt}" 
+                                           IsVisible="{Binding IsVisPriceOpt}"
                                            FontSize="100"
+                                           BackgroundColor="#23b14d"
                                            HorizontalOptions="Center" 
                                            VerticalOptions="Center"
                                             FontFamily="MontserratExtraBold"
                                             TextColor="White" />
                                 </Grid>
-
-
-
-                                <!-- Block 3: Quantity/Unit -->
 
                             </Grid>
                         </Grid>

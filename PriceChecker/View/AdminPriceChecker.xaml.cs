@@ -8,17 +8,10 @@ namespace PriceChecker.View;
 
 public partial class AdminPriceChecker : ContentPage
 {
-	//DB db = DB.GetDB();
     BL.BL bl = BL.BL.GetBL();
-    Connector c;
-
-    //public List<PrintBlockItems> ListPrintBlockItems { get { return db.GetPrintBlockItemsCount().ToList(); } }
-
-    //public int SelectedPrintBlockItems { get { return ListPrintBlockItems.Count > 0 ? ListPrintBlockItems.Last().PackageNumber : -1; } }
     public bool IsVisPriceNormal { get { return WP != null && (WP.PriceOld != WP.PriceNormal); } }
     public bool IsVisPriceOpt { get { return WP != null && (WP.PriceOpt != 0 || WP.PriceOptOld != 0); } }
-    public bool IsVisPriceOptQ { get { return WP != null && WP.QuantityOpt != 0; } }
-
+   
     public bool IsVisF4 { get { return Config.Company == eCompany.Sim23; } }
     public string F4Text { get { return IsOnline ? "OnLine" : "OffLine"; } }
     private bool _IsOnline = true;
@@ -29,6 +22,7 @@ public partial class AdminPriceChecker : ContentPage
     public bool IsSoftKeyboard { get { return Config.IsSoftKeyboard; } }
     double _PB = 0;
     public double PB { get { return _PB; } set { _PB = value; OnPropertyChanged(nameof(PB)); } }
+    public bool IsVisPromotion => WP != null && WP.ActionType > 0;
     WaresPrice User { get; set; }
     WaresPrice _WP;    
     public WaresPrice WP
@@ -39,7 +33,8 @@ public partial class AdminPriceChecker : ContentPage
             _WP = value; OnPropertyChanged("WP"); OnPropertyChanged("TextColorPrice");
             OnPropertyChanged(nameof(UriPicture));
             OnPropertyChanged("IsVisPriceOpt"); OnPropertyChanged(nameof(IsVisPriceNormal)); OnPropertyChanged("TextColorHttp");
-            OnPropertyChanged("ColorPrintColorType"); OnPropertyChanged("IsVisPriceOptQ");
+            OnPropertyChanged("ColorPrintColorType");
+            OnPropertyChanged(nameof(IsVisPromotion));
         }
     }
 
@@ -93,7 +88,6 @@ public partial class AdminPriceChecker : ContentPage
         if (pWP != null)
         {
             WP = pWP;
-            //if (WP.RestWarehouse != null) RestWarehouseListShow(WP.RestWarehouse);
         }
 
         var projectName = "spar"; // наприклад: "vopak" або "spar"
@@ -134,7 +128,6 @@ public partial class AdminPriceChecker : ContentPage
     protected override void OnDisappearing()
     {
         base.OnDisappearing();
-        //bl.SendLogPrice();
         Config.OnProgress -= Progress;
     }
     void BarCode(string pBarCode, string pTypeBarCode = null) => FoundWares(pBarCode, false);
@@ -146,7 +139,7 @@ public partial class AdminPriceChecker : ContentPage
             LineNumber++;
             Config.OnProgress?.Invoke(0.2d);
 
-            WP = bl.FoundWares(pBarCode, 0, LineNumber, pIsHandInput, false, IsOnline);
+            WP = bl.FoundWares(pBarCode, 0, LineNumber, pIsHandInput, false, IsOnline, eTypePriceInfo.Full);
 
             if (WP != null)
             {
@@ -160,20 +153,9 @@ public partial class AdminPriceChecker : ContentPage
 
             if (DeviceInfo.Platform != DevicePlatform.iOS) BarCodeFocused(null, null);
 
-            //if (WP.RestWarehouse != null) RestWarehouseListShow(WP.RestWarehouse);
         }
 
     }
-       
-    //private void OnClickPrintBlock(object sender, EventArgs e)
-    //{
-    //    var temp = PrintBlockItemsXaml.SelectedItem as PrintBlockItems;
-    //    if (IsEnabledPrint)
-    //        _ = DisplayAlert("Друк", bl.PrintPackage(PrintType, temp.PackageNumber, IsMultyLabel), "OK");
-    //}
-
-
-
     private void BarCodeHandInput(object sender, EventArgs e)
     {
         var text = BarCodeInput.Text;
@@ -196,125 +178,6 @@ public partial class AdminPriceChecker : ContentPage
         if (IsEnabledPrint && WP != null)
             _ = DisplayAlert("Друк", bl.c.PrintHTTP(new[] { WP.CodeWares }), "OK");
     }
-
-    //private void OnUpdateReplenishment(object sender, EventArgs e)
-    //{
-    //    decimal d;
-    //    if (decimal.TryParse(NumberOfReplenishment.Text, out d)) ;
-    //        //db.UpdateReplenishment(LineNumber, d);
-    //}
-    //public WareInfo(ParseBarCode parseBarCode)
-    //{
-    //    InitializeComponent();
-    //    c = ConnectorBase.GetInstance();
-    //    NavigationPage.SetHasNavigationBar(this, DeviceInfo.Platform == DevicePlatform.iOS);
-    //    WP = c.GetPrice(parseBarCode, eTypePriceInfo.Full);
-    //    if (WP.RestWarehouse != null) RestWarehouseListShow(WP.RestWarehouse);
-    //    if (WP.Сondition != null) FillConditionList(WP.Сondition);
-    //    if (WP.ActionType > 0) IsVisPromotion = true;
-    //    ImageUri = Config.ApiUrl1 + $"Wares/{WP.CodeWares:D9}.png";
-    //    Picture = new UriImageSource
-    //    {
-    //        Uri = new Uri(ImageUri),
-    //        CachingEnabled = false,
-    //        CacheValidity = new TimeSpan(7, 0, 0, 0)
-    //    };
-    //    
-    //    this.BindingContext = this;
-    //    CalculateAndSetScrollViewHeight();
-    //}
-    //private void RestWarehouseListShow(IEnumerable<RestWarehouse> warehouses)
-    //{
-    //    //var t = db.GetWarehouse();
-    //    //var w = t.FirstOrDefault(x => x.CodeWarehouse == Config.CodeWarehouse);
-    //    foreach (var warehouse in warehouses)
-    //    {
-    //        var grid = new Grid
-    //        {
-    //            ColumnDefinitions =
-    //                {
-    //                    new ColumnDefinition { Width = new GridLength(7, GridUnitType.Star) },
-    //                    new ColumnDefinition { Width = new GridLength(2, GridUnitType.Star) },
-    //                    new ColumnDefinition { Width = new GridLength(3, GridUnitType.Star) }
-    //                },
-    //            BackgroundColor = Color.FromArgb("#adaea7")
-    //        };
-
-    //        var NameWarehouseLabel = new Label
-    //        {
-    //            Text = warehouse.NameWarehouse,
-    //            TextColor = Colors.Black,
-    //            LineBreakMode = LineBreakMode.NoWrap,
-    //            BackgroundColor = Colors.White
-
-    //        };
-
-    //        var QuantityLabel = new Label
-    //        {
-    //            Text = warehouse.Quantity.ToString(),
-    //            TextColor = Colors.Black,
-    //            FontAttributes = FontAttributes.Bold,
-    //            LineBreakMode = LineBreakMode.NoWrap,
-    //            BackgroundColor = Colors.White
-    //        };
-    //        Grid.SetColumn(QuantityLabel, 1);
-
-    //        var DateLabel = new Label
-    //        {
-    //            Text = warehouse.Date.ToString("dd.MM.yyyy"),
-    //            TextColor = Colors.Black,
-    //            LineBreakMode = LineBreakMode.NoWrap,
-    //            BackgroundColor = Colors.White
-    //        };
-    //        Grid.SetColumn(DateLabel, 2);
-
-    //        //if (w != null && w.Name == warehouse.NameWarehouse)
-    //        //{
-    //        //    NameWarehouseLabel.BackgroundColor = Colors.SandyBrown;
-    //        //    QuantityLabel.BackgroundColor = Colors.SandyBrown;
-    //        //    DateLabel.BackgroundColor = Colors.SandyBrown;
-    //        //}
-
-    //        grid.Children.Add(NameWarehouseLabel);
-    //        grid.Children.Add(QuantityLabel);
-    //        grid.Children.Add(DateLabel);
-    //        RestWarehouseList.Children.Add(grid);
-    //    }
-    //}
-    public void FillConditionList(IEnumerable<СonditionClass> conditions)
-    {
-        ConditionList.Children.Clear();
-
-        foreach (var condition in conditions)
-        {
-            var stackLayout = new StackLayout
-            {
-                Orientation = StackOrientation.Horizontal
-            };
-
-            var conditionLabel = new Label
-            {
-                Text = condition.Сondition
-            };
-
-            var contrLabel = new Label
-            {
-                Text = condition.Contr
-            };
-
-            stackLayout.Children.Add(conditionLabel);
-            stackLayout.Children.Add(contrLabel);
-
-            ConditionList.Children.Add(stackLayout);
-        }
-    }
-    
-
-    private double GetNavigationBarHeight()
-    {
-        const double navigationBarHeightDp = 36;
-        var density = DeviceDisplay.Current.MainDisplayInfo.Density;
-        return navigationBarHeightDp * density;
-    }
+ 
 
 }

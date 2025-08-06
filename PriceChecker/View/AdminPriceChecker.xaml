@@ -82,10 +82,10 @@
                         </Grid.ColumnDefinitions>
 
                         <Label Text="Назва товару" FontSize="28" BackgroundColor="White" />
-                        <Label Grid.Column="1" Text="{Binding WP.Name}" FontSize="28" BackgroundColor="White"/>
+                        <Label Grid.Column="1" Text="{Binding WP.Name}" FontSize="28" TextColor="DarkBlue" BackgroundColor="White"/>
 
                         <Label Text="Арт:" FontSize="25" Grid.Row="1" BackgroundColor="White"/>
-                        <Label Text="{Binding WP.Article}" FontSize="25" Grid.Column="1" Grid.Row="1" BackgroundColor="White"/>
+                        <Label Text="{Binding WP.Article}" FontSize="25" TextColor="DarkBlue" Grid.Column="1" Grid.Row="1" BackgroundColor="White"/>
 
                         <Label Text="Штрих код:" FontSize="25" Grid.Row="2" BackgroundColor="White" />
                         <Entry x:Name="BarCodeInput"
@@ -108,7 +108,7 @@
                         <Label Text="{Binding WP.LastIncomeQuantity}" TextColor="DarkBlue" FontSize="25" Grid.Column="1" Grid.Row="6" BackgroundColor="White"/>
 
                         <Label Text="Залишок:" FontSize="25" Grid.Row="7" BackgroundColor="White"/>
-                        <Label Text="{Binding WP.Rest}" FontSize="25" Grid.Column="1" Grid.Row="7" BackgroundColor="White"/>
+                        <Label Text="{Binding WP.Rest}" FontSize="25" TextColor="DarkBlue" Grid.Column="1" Grid.Row="7" BackgroundColor="White"/>
 
                         <Grid Grid.ColumnSpan="2" Grid.Row="8" ColumnSpacing="2">
                             <Grid.ColumnDefinitions>
@@ -121,8 +121,8 @@
                             </Grid.ColumnDefinitions>
 
                             <Label Text="Роз.ціна" FontSize="25"  BackgroundColor="White"/>
-                            <Label Text="{Binding WP.PriceNormal}" Grid.Column="1" FontSize="25"  BackgroundColor="White"/>
                             <Label Text="{Binding WP.Price}"  Grid.Column="1" FontSize="25"  BackgroundColor="White"/>
+                            <Label Text="{Binding WP.PriceNormal}" IsVisible="{Binding IsVisPromotion}" Grid.Column="1" FontSize="25"  BackgroundColor="White"/>
 
                             <Label Text="Ціна опт." IsVisible="{Binding IsVisPriceOpt}" TextColor="{Binding TextColorPrice}" Grid.Column="2" FontSize="25"  BackgroundColor="White"/>
                             <Label Text="{Binding WP.PriceOpt}" IsVisible="{Binding IsVisPriceOpt}" TextColor="{Binding TextColorPrice}" Grid.Column="3" FontSize="25"  BackgroundColor="White"/>
@@ -131,27 +131,26 @@
                             <Label Text="{Binding WP.Price}" TextColor="{Binding TextColorPrice}" IsVisible="{Binding IsVisPromotion}"  Grid.Column="5" FontSize="25"  BackgroundColor="White"/>
                         </Grid>
 
-                        <Label Text="Кількість гурт" IsVisible="{Binding IsVisPriceOpt}" FontSize="25" TextColor="Blue" Grid.Row="9" BackgroundColor="White" />
-                        <Label Text="{Binding WP.QuantityOpt}" IsVisible="{Binding IsVisPriceOpt}" FontSize="25" TextColor="Blue"   Grid.Column="1" Grid.Row="9" BackgroundColor="White"/>
+                        <Label Text="Кількість гурт" IsVisible="{Binding IsVisPriceOpt}" FontSize="25"  Grid.Row="9" BackgroundColor="White" />
+                        <Label Text="{Binding WP.QuantityOpt}" IsVisible="{Binding IsVisPriceOpt}" FontSize="25" TextColor="DarkBlue"  Grid.Column="1" Grid.Row="9" BackgroundColor="White"/>
 
-                        <Label Text="Тип акції" IsVisible="{Binding IsVisPromotion}" FontSize="25" TextColor="Blue" Grid.Row="10" BackgroundColor="White" />
-                        <Label Text="{Binding WP.PromotionShortName}" IsVisible="{Binding IsVisPromotion}" TextColor="DarkBlue"  Grid.Column="1" Grid.Row="10" BackgroundColor="White"/>
+                        <Label Text="Тип акції" IsVisible="{Binding IsVisPromotion}" FontSize="25"  Grid.Row="10" BackgroundColor="White" />
+                        <Label Text="{Binding WP.PromotionShortName}" IsVisible="{Binding IsVisPromotion}" FontSize="25" TextColor="DarkBlue"  Grid.Column="1" Grid.Row="10" BackgroundColor="White"/>
 
-                        <Label Text="Акція діє" IsVisible="{Binding IsVisPromotion}" FontSize="25" TextColor="Blue" Grid.Row="11" BackgroundColor="White" />
+                        <Label Text="Акція діє" IsVisible="{Binding IsVisPromotion}" FontSize="25"  Grid.Row="11" BackgroundColor="White" />
                         <StackLayout Orientation="Horizontal" Spacing="10" IsVisible="{Binding IsVisPromotion}" Grid.Column="1" Grid.Row="11" BackgroundColor="White">
                             <Label Text="Акція діє: з "  FontSize="25"  TextColor="DarkBlue" />
                             <Label Text="{Binding WP.PromotionBegin, StringFormat='{0:dd.MM}'}" FontSize="25" TextColor="DarkBlue" FontAttributes="Bold" />
                             <Label Text=" по " TextColor="DarkBlue" FontSize="25"/>
                             <Label Text="{Binding WP.PromotionEnd, StringFormat='{0:dd.MM}'}" FontSize="25" TextColor="DarkBlue" FontAttributes="Bold" />
-                            <Label Text="{Binding WP.PromotionNumber}" TextColor="DarkBlue" FontSize="25"/>
                         </StackLayout>
 
-                        <Label Text="Країна виробник" IsVisible="{Binding IsVisPromotion}" FontSize="25" TextColor="Blue" Grid.Row="12" BackgroundColor="White" />
-                        <Label Text="{Binding WP.Country}" Grid.Column="1" Grid.Row="12" FontSize="25" BackgroundColor="White"/>
+                        <Label Text="Країна виробник" FontSize="25"  Grid.Row="12" BackgroundColor="White" />
+                        <Label Text="{Binding WP.Country}" Grid.Column="1" TextColor="DarkBlue" Grid.Row="12" FontSize="25" BackgroundColor="White"/>
 
 
-                        <Label Text="Умови роботи:" FontSize="25" TextColor="Blue" Grid.Row="12" BackgroundColor="White"/>
-                        <Label Text="{Binding WP.TermsForIlliquidWare}" TextColor="DarkBlue"  Grid.Column="1" Grid.Row="12" FontSize="25" BackgroundColor="White"/>
+                        <Label Text="Умови роботи:" FontSize="25"  Grid.Row="13" BackgroundColor="White"/>
+                        <Label Text="{Binding WP.TermsForIlliquidWare}" TextColor="DarkBlue"  Grid.Column="1" Grid.Row="13" FontSize="25" BackgroundColor="White"/>
                     </Grid>
 
                 </Grid>

@@ -26,11 +26,9 @@ public partial class UPriceChecker : ContentPage
             OnPropertyChanged(nameof(UriPicture));
             OnPropertyChanged(nameof(IsCashback));
             OnPropertyChanged(nameof(IsVisPromotion));
+            OnPropertyChanged(nameof(IsVisPriceMain));
         }
     }
-
-    public bool IsVisPriceOpt => WP != null && (WP.PriceOpt != 0)&&!IsVisPromotion;
-
     public bool IsVisBarcode => true;
 
     public string ColorBG { get; set; }
@@ -40,6 +38,8 @@ public partial class UPriceChecker : ContentPage
                             WP.Country.ToUpper() == "УКРАЇНА");
 
     public bool IsVisPromotion => WP != null && WP.ActionType > 0;
+    public bool IsVisPriceOpt => WP != null && (WP.PriceOpt != 0) && !IsVisPromotion;
+    public bool IsVisPriceMain =>  WP != null && (IsVisPromotion || IsVisPriceOpt);
     public UPriceChecker(WaresPrice pWP)
     {
         FileLogger.WriteLogMessage( $"UPriceChecker=>BarCode: {pWP.BarCodes}");
@@ -73,7 +73,7 @@ public partial class UPriceChecker : ContentPage
     {
         if (!string.IsNullOrWhiteSpace(pBarCode))
         {
-            var tempWP = bl.FoundWares(pBarCode, 0, 0, false, false, true);
+            var tempWP = bl.FoundWares(pBarCode, 0, 0, false, false, true, eTypePriceInfo.Short);
 
 
             if (tempWP != null)
