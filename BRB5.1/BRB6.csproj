@@ -31,8 +31,8 @@
     <ApplicationId>ua.UniCS.TM.BRB6</ApplicationId>
 
     <!-- Versions -->
-    <ApplicationDisplayVersion>6.0.58</ApplicationDisplayVersion>
-    <ApplicationVersion>6058</ApplicationVersion>
+    <ApplicationDisplayVersion>6.0.60</ApplicationDisplayVersion>
+    <ApplicationVersion>6060</ApplicationVersion>
 
     <SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">12.2</SupportedOSPlatformVersion>
     <SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">21.0</SupportedOSPlatformVersion>
@@ -53,6 +53,11 @@
 
   <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net8.0-android|AnyCPU'">
     <RunAOTCompilation>False</RunAOTCompilation>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(TargetFramework)'=='net8.0-ios'">
+    <CodesignKey>Apple Development: Created via API (S4J9BA3B6S)</CodesignKey>
+    <CodesignProvision>VS: ua.UniCS.TM.BRB6 Development</CodesignProvision>
   </PropertyGroup>
 
 

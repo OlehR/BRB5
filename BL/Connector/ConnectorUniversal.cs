@@ -2,9 +2,7 @@
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Linq;
-using Newtonsoft.Json.Converters;
 using System.IO;
 using Utils;
 using System.Diagnostics;
@@ -63,13 +61,13 @@ namespace BL.Connector
                 if (pLoginServer == eLoginServer.Central || pLoginServer == eLoginServer.Bitrix)
                 {
                     string Data;
-
                     Data = new User() { Login = pLogin, PassWord = pPassWord, LoginServer = pLoginServer }.ToJson();
 
                     HttpResult result = await GetDataHTTP.HTTPRequestAsync(0, "DCT/Login", Data, "application/json", null);
                     if (result.HttpState == eStateHTTP.HTTP_OK)
                     {
                         Result<User> res = JsonConvert.DeserializeObject<Result<User>>(result.Result);
+                        if (!res.Success) return res;
                         Config.Role = res.Info?.Role ?? 0;
                         Config.CodeUser = res.Info?.CodeUser ?? 0;
                         Config.NameUser = res.Info?.NameUser;
@@ -210,7 +208,7 @@ namespace BL.Connector
                     }
                     else
                         return new Result(result);
-                    result = await GetDataHTTP.HTTPRequestAsync(0, "DCT/Rating/GetRatingTemplate", Config.CodeUser.ToString(), "application/json", null);
+                    result = await GetDataHTTP.HTTPRequestAsync(0, "DCT/Rating/GetRatingTemplate", $"{Config.CodeUser}", "application/json", null,null,120);
                     if (result.HttpState == eStateHTTP.HTTP_OK)
                     {
                         var res = JsonConvert.DeserializeObject<Result<IEnumerable<RaitingTemplate>>>(result.Result);
@@ -285,6 +283,8 @@ namespace BL.Connector
         {
             try
             {
+                return await SendRatingFilesAsync(pDoc.NumberDoc);
+
                 string Data = new RaitingDocForSave() 
                 { NumberDoc=pDoc.NumberDoc, CodeUser = Config.CodeUser, DTEnd = pDoc.DTEnd, DTStart = pDoc.DTStart, Item = pR.Select(el=>new RaitingDocItemSave(el) ) 
                 }.ToJSON("yyyy-MM-ddTHH:mm:ss.ffff");
@@ -292,8 +292,8 @@ namespace BL.Connector
                 if (result.HttpState == eStateHTTP.HTTP_OK)
                 {
                     return JsonConvert.DeserializeObject<Result>(result.Result);
-                }
-                return new Result(result);
+                }               
+                //return new Result(result);
             }
             catch (Exception e)
             {
@@ -378,7 +378,7 @@ namespace BL.Connector
                     {
                         var sw = Stopwatch.StartNew();
                         
-                        string  RR = await UtilNetwork.Http.UploadFileAsync(GetDataHTTP.Url[0][0] + "DCT/Raitting/UploadFile", f);
+                        string  RR = await UtilNetwork.Http.UploadFileAsync(GetDataHTTP.Url[0][0] + "DCT/Rating/UploadFile", f);
 
                         if (!string.IsNullOrEmpty(RR))
                         {
