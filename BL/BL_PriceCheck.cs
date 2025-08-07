@@ -15,14 +15,14 @@ namespace BL
         WaresPrice[] WPH = new WaresPrice[2];
 
         public void ClearWPH() { WPH[0] = null; WPH[1]=null; }
-        public WaresPrice  FoundWares(string pBarCode, int PackageNumber, int LineNumber, bool pIsHandInput, bool pIsDoubleScan, bool IsOnline = true)
+        public WaresPrice  FoundWares(string pBarCode, int PackageNumber, int LineNumber, bool pIsHandInput, bool pIsDoubleScan, bool IsOnline = true, eTypePriceInfo pTPI = eTypePriceInfo.Normal)
         {
             WaresPrice CheckWP;            
             LogPrice l;
 
             if (IsOnline)
             {
-                CheckWP = c.GetPrice(c.ParsedBarCode(pBarCode, pIsHandInput), eTypePriceInfo.Normal);
+                CheckWP = c.GetPrice(c.ParsedBarCode(pBarCode, pIsHandInput), pTPI);
             }
             else
             {
