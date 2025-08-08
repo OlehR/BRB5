@@ -23,60 +23,60 @@ namespace BL
                 else if (Config.CodesWarehouses.Contains(code)) Config.CodesWarehouses.Remove(code);
             }
         }
-        public void SaveSettings(bool IsAutoLogin, bool IsVibration, bool IsViewAllWH, bool IsSound, bool IsTest, bool IsFilterSave,/* bool IsFullScreenScan,*/ string ApiUrl1,
-            string ApiUrl2, string ApiUrl3, string ApiUrl4, int Compress, eCompany SelectedCompany, eTypeLog SelectedTypeLog, ePhotoQuality SelectedPhotoQuality, 
-            eTypeUsePrinter SelectedTypePrinter, int SelectedWarehouse, int ListWarehouseCode, IEnumerable<Warehouse> Warehouses)
+        public void SaveSettings()
         {
-            db.SetConfig<bool>("IsAutoLogin", IsAutoLogin);
-            db.SetConfig<bool>("IsVibration", IsVibration);
-            db.SetConfig<bool>("IsViewAllWH", IsViewAllWH);
-            db.SetConfig<bool>("IsSound", IsSound);
-            db.SetConfig<bool>("IsTest", IsTest);
-            db.SetConfig<bool>("IsFilterSave", IsFilterSave);
+            db.SetConfig<bool>("IsAutoLogin", Config.IsAutoLogin);
+            db.SetConfig<bool>("IsVibration", Config.IsVibration);
+            db.SetConfig<bool>("IsViewAllWH", Config.IsViewAllWH);
+            db.SetConfig<bool>("IsSound", Config.IsSound);
+            db.SetConfig<bool>("IsTest", Config.IsTest);
+            db.SetConfig<bool>("IsFilterSave", Config.IsFilterSave);
             //db.SetConfig<bool>("IsFullScreenScan", IsFullScreenScan);
 
-            db.SetConfig<string>("ApiUrl1", ApiUrl1 ?? "");
-            db.SetConfig<string>("ApiUrl2", ApiUrl2 ?? "");
-            db.SetConfig<string>("ApiUrl3", ApiUrl3 ?? "");
-            db.SetConfig<string>("ApiUrl4", ApiUrl4 ?? "");
-            db.SetConfig<int>("Compress", Compress);
+            db.SetConfig<string>("ApiUrl1", Config.ApiUrl1 ?? "");
+            db.SetConfig<string>("ApiUrl2", Config.ApiUrl2 ?? "");
+            db.SetConfig<string>("ApiUrl3", Config.ApiUrl3 ?? "");
+            db.SetConfig<string>("ApiUrl4", Config.ApiUrl4 ?? "");
+            db.SetConfig<int>("Compress", Config.Compress);
 
-            db.SetConfig<eCompany>("Company", SelectedCompany);
-            db.SetConfig<eTypeLog>("TypeLog", SelectedTypeLog);
-            db.SetConfig<ePhotoQuality>("PhotoQuality", SelectedPhotoQuality);
-            db.SetConfig<eTypeUsePrinter>("TypeUsePrinter", SelectedTypePrinter);
-            if (SelectedWarehouse > -1) db.SetConfig<int>("CodeWarehouse", ListWarehouseCode);
-            db.SetConfig<string>("CodesWarehouses", Warehouses.Where(el => el.IsChecked == true).Select(el => el.CodeWarehouse).ToList().ToJSON());
+            db.SetConfig<eCompany>("Company", Config.Company);
+            db.SetConfig<eTypeLog>("TypeLog", FileLogger.TypeLog);
+            db.SetConfig<ePhotoQuality>("PhotoQuality", Config.PhotoQuality);
+            db.SetConfig<eTypeUsePrinter>("TypeUsePrinter", Config.TypeUsePrinter);
+            db.SetConfig<int>("CodeWarehouse", Config.CodeWarehouse);
+            db.SetConfig<string>("CodesWarehouses", Config.CodesWarehouses.ToJSON());
         }
 
-        public string[] GenApiUrl()
+        public void GenApiUrl()
         {
-            var result = new string[4];
-            result[0] = "";
-            result[1] = "";
-            result[2] = "";
-            result[3] = "";
+            Config.ApiUrl1 = "";
+            Config.ApiUrl2 = "";
+            Config.ApiUrl3 = "";
+            Config.ApiUrl4 = "";
+
             switch (Config.Company)
             {
                 //case eCompany.Sim23FTP:
                 case eCompany.NotDefined:
                     break;
+
                 case eCompany.Sim23:
-                    result[0] = "http://10.100.0.34/;http://vpn.sim23.ua:6380/"; 
-                    result[1] = "http://qlik.sim23.ua/TK/hs/TSD/;http://vpn.sim23.ua/TK/hs/TSD/";  //"http://37.53.84.148/TK/hs/TSD/";// "http://93.183.216.37/TK/hs/TSD/;http://37.53.84.148/TK/hs/TSD/";
-                    result[2] = "https://bitrix.sim23.ua/rest/233/ax02yr7l9hia35vj/";
-                    result[3] = "http://93.183.216.37:80/dev1/hs/TSD/";
-                    break; 
+                    Config.ApiUrl1 = "http://10.100.0.34/;http://vpn.sim23.ua:6380/";
+                    Config.ApiUrl2 = "http://qlik.sim23.ua/TK/hs/TSD/;http://vpn.sim23.ua/TK/hs/TSD/";  //"http://37.53.84.148/TK/hs/TSD/";// "http://93.183.216.37/TK/hs/TSD/;http://37.53.84.148/TK/hs/TSD/";
+                    Config.ApiUrl3 = "https://bitrix.sim23.ua/rest/233/ax02yr7l9hia35vj/";
+                    Config.ApiUrl4 = "http://93.183.216.37:80/dev1/hs/TSD/";
+                    break;
                 //case eCompany.VPSU:
                 case eCompany.PSU:
-                    result[0] = "https://apitest.spar.uz.ua/";                    
+                    Config.ApiUrl1 = "https://apitest.spar.uz.ua/";
                     break;
+
                 case eCompany.Universal:
-                    result[0] = "https://dct.sim23.ua:5443/";
+                    Config.ApiUrl1 = "https://dct.sim23.ua:5443/";
                     break;
             }
-            return result;
         }
+
         public Warehouse FindWhIP(IEnumerable<Warehouse> pWarehouses)
         {
             Warehouse res = null;

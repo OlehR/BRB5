@@ -16,9 +16,9 @@ namespace BRB6.View
         DB db = DB.GetDB();
         BL.BL Bl = BL.BL.GetBL();
         //public string Ver { get { return "Ver:"+ Assembly.GetExecutingAssembly().GetName().Version; } }
-        public string Ver { get { return "Ver:" + AppInfo.VersionString; } }
-        public string SN { get { return "SN:"+ Config.SN; } }
-        public bool IsVisScan { get { return Config.TypeScaner == eTypeScaner.Camera; } }
+        public string Ver => "Ver:" + AppInfo.VersionString;
+        public string SN => "SN:" + Config.SN;
+        public bool IsVisScan => Config.TypeScaner == eTypeScaner.Camera;
 
         double _PB = 0.0;
         public double PB { get { return _PB; } set { _PB = value; OnPropertyChanged(nameof(PB)); } }
@@ -46,10 +46,9 @@ namespace BRB6.View
                 return list;
             }
         }
-
-        public List<string> ListCompany { get { return Enum.GetNames(typeof(eCompany))/*.Where(el => !el.Equals(eCompany.Sim23FTP.ToString())&& !el.Equals(eCompany.VPSU.ToString()))*/.ToList(); } }
-        public List<string> ListTypeLog { get { return Enum.GetNames(typeof(eTypeLog)).ToList(); } }
-        public List<string> ListReplenishment { get { return Enum.GetNames(typeof(eTypeLog)).ToList(); } }
+        public List<string> ListCompany => Enum.GetNames(typeof(eCompany))/*.Where(el => !el.Equals(eCompany.Sim23FTP.ToString())&& !el.Equals(eCompany.VPSU.ToString()))*/.ToList(); 
+        public List<string> ListTypeLog => Enum.GetNames(typeof(eTypeLog)).ToList(); 
+        public List<string> ListReplenishment => Enum.GetNames(typeof(eTypeLog)).ToList(); 
 
         List<Warehouse> wh = null;
         public List<Warehouse> ListWarehouse
@@ -79,21 +78,21 @@ namespace BRB6.View
         public int SelectedTypeLog { get { return ListTypeLog.FindIndex(x => x == Enum.GetName(typeof(eTypeLog), FileLogger.TypeLog)); } set { FileLogger.TypeLog = (eTypeLog)value; } }
         public int SelectedPhotoQuality { get { return Enum.GetNames(typeof(ePhotoQuality)).ToList().FindIndex(x => x == Enum.GetName(typeof(ePhotoQuality), Config.PhotoQuality)); } set { Config.PhotoQuality = (ePhotoQuality)value; } }
 
-        public bool IsSoftKeyboard { get { return Config.IsSoftKeyboard; } }
-        public bool IsVisApi3 { get { return Config.Company == eCompany.Sim23; } }
-        public bool IsViewAllWH { get { return Config.IsViewAllWH; } set { Config.IsViewAllWH = value; } }
-        public bool IsAutoLogin { get { return Config.IsAutoLogin; } set { Config.IsAutoLogin = value; } }
-        public bool IsVibration { get { return Config.IsVibration; } set { Config.IsVibration = value; } }
-        public bool IsSound { get { return Config.IsSound; } set { Config.IsSound = value; } }
-        public bool IsTest { get { return Config.IsTest; } set { Config.IsTest = value; } }
-        public bool IsFilterSave { get { return Config.IsFilterSave; } set { Config.IsFilterSave = value; } }     
+        public bool IsSoftKeyboard => Config.IsSoftKeyboard; 
+        public bool IsVisApi3 => Config.Company == eCompany.Sim23;
+        public bool IsViewAllWH => Config.IsViewAllWH;
+        public bool IsAutoLogin => Config.IsAutoLogin;
+        public bool IsVibration => Config.IsVibration;
+        public bool IsSound => Config.IsSound;
+        public bool IsTest => Config.IsTest;
+        public bool IsFilterSave => Config.IsFilterSave;     
         //public bool IsFullScreenScan { get { return Config.IsFullScreenScan; } set { Config.IsFullScreenScan = value; } }
 
         public string ApiUrl1 { get { return Config.ApiUrl1; } set { Config.ApiUrl1 = value; OnPropertyChanged(nameof(ApiUrl1)); } }
-        public string ApiUrl2 { get { return Config.ApiUrl2; } set { Config.ApiUrl2 = value; OnPropertyChanged(nameof(ApiUrl2)); } }
-        public string ApiUrl3 { get { return Config.ApiUrl3; } set { Config.ApiUrl3 = value; OnPropertyChanged(nameof(ApiUrl3)); } }
-        public string ApiUrl4 { get { return Config.ApiUrl4; } set { Config.ApiUrl4 = value; OnPropertyChanged(nameof(ApiUrl4)); } }
-        public int Compress { get { return Config.Compress; } set { Config.Compress = value; OnPropertyChanged(nameof(Compress)); } }
+        public string ApiUrl2 => Config.ApiUrl2; 
+        public string ApiUrl3 => Config.ApiUrl3;
+        public string ApiUrl4 => Config.ApiUrl4; 
+        public int Compress => Config.Compress;
         public ObservableCollection<Warehouse> Warehouses { get; set; }
         public ObservableCollection<Warehouse> FilteredWarehouses { get; set; } = new ObservableCollection<Warehouse>();
 
@@ -142,6 +141,7 @@ namespace BRB6.View
 
         async void BarCode(string pBarCode)
         {
+            int CodeWarehouse = 0;
             QRCodeScan(null,null);
             if (pBarCode == null) return;
             if (pBarCode.StartsWith("BRB6=>"))
@@ -161,10 +161,10 @@ namespace BRB6.View
                             case "Compress": Config.Compress = t[1].ToInt(); break;
                             case "Company": Config.Company = (eCompany) Enum.Parse(typeof(eCompany), t[1]);break;
                             //SelectedCompany =ListCompany.FindIndex(x => x == t[1]); break;
-                            case "TypePrinter": SelectedTypePrinter = Enum.GetNames(typeof(eTypeUsePrinter)).ToList().FindIndex(x => x == t[1]); break;
-                            case "TypeLog": SelectedTypeLog = ListTypeLog.FindIndex(x => x == t[1]); break;
-                            case "PhotoQuality": SelectedPhotoQuality = Enum.GetNames(typeof(ePhotoQuality)).ToList().FindIndex(x => x == t[1]); break;
-                            case "Warehouse": SelectedWarehouse = ListWarehouse.FindIndex(x => x.Code == t[1].ToInt()); break;
+                            case "TypePrinter": Config.TypeUsePrinter = (eTypeUsePrinter)Enum.Parse(typeof(eTypeUsePrinter), t[1]); break;
+                            case "TypeLog": FileLogger.TypeLog = (eTypeLog)Enum.Parse(typeof(eTypeLog), t[1]); break;
+                            case "PhotoQuality": Config.PhotoQuality = (ePhotoQuality)Enum.Parse(typeof(ePhotoQuality), t[1]); break;
+                            case "Warehouse": CodeWarehouse=t[1].ToInt(); break;
                             case "IsViewAllWH": Config.IsViewAllWH = t[1].Equals("true"); break;
                             case "IsAutoLogin": Config.IsAutoLogin = t[1].Equals("true"); break;
                             case "IsVibration": Config.IsVibration = t[1].Equals("true"); break;
@@ -179,26 +179,29 @@ namespace BRB6.View
                         }
                     }
                 }
-                Config.CodeWarehouse = 0;
+                
+                Config.CodeWarehouse = CodeWarehouse;
                 OnClickSave(null, null);
                 Connector.CleanConnector();
                 c = ConnectorBase.GetInstance();
-                GetDataHTTP.Init();
-                MainThread.BeginInvokeOnMainThread(async () =>
+                GetDataHTTP.Init();                
+                var R= await c.LoadGuidDataAsync(true);
+
+                if (CodeWarehouse == 0)
                 {
-                    await c.LoadGuidDataAsync(true);
-                });
-                wh = null;
-                OnClickIP(null, null);
-                OnClickSave(null, null);
-                //var toast = Toast.Make("Не вдається отримати IP-адресу.");
-                // = toast.Show();
-                MainThread.BeginInvokeOnMainThread(async () =>
-                {
-                    await DisplayAlert("", "Параметри вступлять в силу після перезапуску", DeviceInfo.Platform == DevicePlatform.Android?"Перезапуск":"Ok");
-                    if(DeviceInfo.Platform == DevicePlatform.Android)
-                        Application.Current.Quit();
-                });
+                    wh = null;
+                    OnClickIP(null, null);
+                    OnClickSave(null, null);
+                }
+                else { }
+                    //var toast = Toast.Make("Не вдається отримати IP-адресу.");
+                    // = toast.Show();
+                    MainThread.BeginInvokeOnMainThread(async () =>
+                    {
+                        await DisplayAlert("", $"Параметри вступлять в силу після перезапуску R=>{R?.State}", DeviceInfo.Platform == DevicePlatform.Android ? "Перезапуск" : "Ok");
+                        if (DeviceInfo.Platform == DevicePlatform.Android)
+                            Application.Current.Quit();
+                    });
             }
             else
                 MainThread.BeginInvokeOnMainThread(async () =>
@@ -237,9 +240,19 @@ namespace BRB6.View
         }
         private async void OnClickLoad(object sender, EventArgs e)
         {
-            await c.LoadGuidDataAsync(true);
+            var r = await c.LoadGuidDataAsync(true);
             Config.DateLastLoadGuid = DateTime.Now;
             db.SetConfig<DateTime>("DateLastLoadGuid", Config.DateLastLoadGuid);
+            if (r.State == 0)
+            {
+                var toast = Toast.Make($"Завантаження даних завершено. {r.Info}");
+                _ = toast.Show();
+            }
+            else
+            {
+                var toast = Toast.Make($"Помилка завантаження даних. Код помилки: {r.State} {r.TextError}");
+                _ = toast.Show();
+            }
         }
 
         private void OnClickLoadDoc(object sender, EventArgs e) { c.LoadDocsDataAsync(0, null, false); }
@@ -262,11 +275,10 @@ namespace BRB6.View
 
         private void OnClickGen(object sender, EventArgs e)
         {
-            var temp = Bl.GenApiUrl();
-            ApiUrl1 = temp[0];
-            ApiUrl2 = temp[1];
-            ApiUrl3 = temp[2];
-            ApiUrl4 = temp[3];
+            Bl.GenApiUrl();
+            OnPropertyChanged(nameof(ApiUrl1));
+            OnPropertyChanged(nameof(ApiUrl2));
+            OnPropertyChanged(nameof(ApiUrl3));
         }
 
         private async void OnClickIP(object sender, EventArgs e)
@@ -291,7 +303,7 @@ namespace BRB6.View
                 if (matchingWarehouseIndex != -1)
                 {
                     SelectedWarehouse = matchingWarehouseIndex;
-                    ApiUrl2 = ListWarehouse[matchingWarehouseIndex].Url;
+                    Config.ApiUrl2 = ListWarehouse[matchingWarehouseIndex].Url;
                     var toast = Toast.Make($"{ListWarehouse[matchingWarehouseIndex].Name} IP=>{currentIP}");
                     _ = toast.Show();
                 }
@@ -311,9 +323,7 @@ namespace BRB6.View
         private void OnClickSave(object sender, EventArgs e)
         {
             Config.CodesWarehouses = Warehouses.Where(x => x.IsChecked).Select(x => x.CodeWarehouse).ToList();
-            Bl.SaveSettings(IsAutoLogin, IsVibration, IsViewAllWH, IsSound, IsTest, IsFilterSave, /*IsFullScreenScan,*/ ApiUrl1, ApiUrl2, ApiUrl3, ApiUrl4, Compress, 
-                (eCompany)SelectedCompany, (eTypeLog)SelectedTypeLog, (ePhotoQuality)SelectedPhotoQuality, (eTypeUsePrinter)SelectedTypePrinter, 
-                SelectedWarehouse, SelectedWarehouse !=-1? ListWarehouse[SelectedWarehouse].Code:-2, Warehouses);
+            Bl.SaveSettings();
         }
         private void RefreshWarehouses(object sender, CheckedChangedEventArgs e)
         {
@@ -383,7 +393,6 @@ namespace BRB6.View
                 FilterWarehouseList.Children.Add(stackLayout);
             }
         }
-
         private void CameraView_OnDetectionFinished(object sender, BarcodeScanning.OnDetectionFinishedEventArg e)
         {
             if (e.BarcodeResults.Length > 0)
@@ -405,7 +414,6 @@ namespace BRB6.View
                 Bl.RefreshWarehouses(warehouse.CodeWarehouse.ToString(), warehouse.IsChecked);
             }
         }
-
         private async void QRCodeScan(object sender, EventArgs e)
         {
             if (Config.TypeScaner == eTypeScaner.Camera)
@@ -423,6 +431,10 @@ namespace BRB6.View
 
             IsVisBarCode = !IsVisBarCode;
             BarcodeScaner.CameraEnabled = IsVisBarCode;
+        }
+        private void OnInfo(object sender, EventArgs e)
+        {
+
         }
     }
 }
