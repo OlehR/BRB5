@@ -1,19 +1,19 @@
-﻿using BRB5.Model;
+﻿using BRB5;
+using BRB5.Model;
+using BRB5.Model.DB;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.IO;
-using Utils;
 using System.Diagnostics;
-using BRB5;
-using System.Globalization;
-using System.Threading.Tasks;
-using System.Threading;
 using System.Drawing;
-using BRB5.Model.DB;
+using System.Globalization;
+using System.IO;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using UtilNetwork;
-//using static SQLite.SQLite3;
+using Utils;
+
 
 namespace BL.Connector
 {
@@ -98,6 +98,7 @@ namespace BL.Connector
 
         public override async Task<Result> LoadGuidDataAsync(bool pIsFull)
         {
+            string Info = null;
             try
             {
                 Config.OnProgress?.Invoke(0.03);
@@ -110,11 +111,14 @@ namespace BL.Connector
                     var res = JsonConvert.DeserializeObject<Result<BRB5.Model.Guid>>(result.Result);
                     Config.OnProgress?.Invoke(0.60);
                     
-                    SaveGuide(res.Info, pIsFull);                    
+                    SaveGuide(res.Info, pIsFull);
+                    Config.OnProgress?.Invoke(0.60);
+                    var r=await GetRaitingTemplateAsync();
+                    Info=$"Товарів=>{res.Info.Wares.Count()}\nСкладів=>{res.Info.Warehouse.Count()} \nШаблонів рейтингу =>{r.Info.Count()}";
                 }                
                 //await GetDaysLeft();
                 Config.OnProgress?.Invoke(1);               
-                return new Result(result);
+                return new Result(result) { Info=Info};
             }
             catch (Exception e)
             {
@@ -207,20 +211,8 @@ namespace BL.Connector
                             db.ReplaceDoc(res.Info);                        
                     }
                     else
-                        return new Result(result);
-                    result = await GetDataHTTP.HTTPRequestAsync(0, "DCT/Rating/GetRatingTemplate", $"{Config.CodeUser}", "application/json", null,null,120);
-                    if (result.HttpState == eStateHTTP.HTTP_OK)
-                    {
-                        var res = JsonConvert.DeserializeObject<Result<IEnumerable<RaitingTemplate>>>(result.Result);
-                        if (res.State == 0)
-                        {
-                            db.ReplaceRaitingTemplate(res.Info);
-                            foreach (var el in res.Info)                            
-                                db.ReplaceRaitingTemplateItem(el.Item);                            
-                        }
-                        return new Result();
-                    }
-                    return new Result(result);
+                        return new Result(result); 
+                    return new Result();
                 }
                 else
                 {
@@ -247,7 +239,31 @@ namespace BL.Connector
             }
         }
 
-        public override async Task<Result<IEnumerable<RaitingTemplate>>> GetRaitingTemplateAsync() { return null; }
+        public override async Task<Result<IEnumerable<RaitingTemplate>>> GetRaitingTemplateAsync() 
+        {
+            try
+            {
+                var result = await GetDataHTTP.HTTPRequestAsync(0, "DCT/Rating/GetRatingTemplate", $"{Config.CodeUser}", "application/json", null, null, 120);
+                if (result.HttpState == eStateHTTP.HTTP_OK)
+                {
+                    var res = JsonConvert.DeserializeObject<Result<IEnumerable<RaitingTemplate>>>(result.Result);
+                    if (res.State == 0)
+                    {
+                        db.ReplaceRaitingTemplate(res.Info);
+                        foreach (var el in res.Info)
+                            db.ReplaceRaitingTemplateItem(el.Item);
+                        return res;
+                    }
+                    return new();
+                }
+                return new(result);
+            }
+            catch (Exception e)
+            {
+                FileLogger.WriteLogMessage(this, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+                return new (e);
+            }
+        }
 
         /// <summary>
         /// Вивантаження документів з ТЗД (HTTP)

@@ -40,7 +40,7 @@ namespace BL
                 }
             }
 
-            if (Config.DateLastLoadGuid.Date != DateTime.Today.Date)
+            if (Config.DateLastLoadGuid.Date != DateTime.Today.Date && Config.CodeWarehouse!=0 )
             {
                 _ = Task.Run(async () =>
                 {
