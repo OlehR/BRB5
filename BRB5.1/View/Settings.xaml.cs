@@ -161,9 +161,9 @@ namespace BRB6.View
                             case "Compress": Config.Compress = t[1].ToInt(); break;
                             case "Company": Config.Company = (eCompany) Enum.Parse(typeof(eCompany), t[1]);break;
                             //SelectedCompany =ListCompany.FindIndex(x => x == t[1]); break;
-                            case "TypePrinter": SelectedTypePrinter = Enum.GetNames(typeof(eTypeUsePrinter)).ToList().FindIndex(x => x == t[1]); break;
-                            case "TypeLog": SelectedTypeLog = ListTypeLog.FindIndex(x => x == t[1]); break;
-                            case "PhotoQuality": SelectedPhotoQuality = Enum.GetNames(typeof(ePhotoQuality)).ToList().FindIndex(x => x == t[1]); break;
+                            case "TypePrinter": Config.TypeUsePrinter = (eTypeUsePrinter)Enum.Parse(typeof(eTypeUsePrinter), t[1]); break;
+                            case "TypeLog": FileLogger.TypeLog = (eTypeLog)Enum.Parse(typeof(eTypeLog), t[1]); break;
+                            case "PhotoQuality": Config.PhotoQuality = (ePhotoQuality)Enum.Parse(typeof(ePhotoQuality), t[1]); break;
                             case "Warehouse": SelectedWarehouse = ListWarehouse.FindIndex(x => x.Code == t[1].ToInt()); break;
                             case "IsViewAllWH": Config.IsViewAllWH = t[1].Equals("true"); break;
                             case "IsAutoLogin": Config.IsAutoLogin = t[1].Equals("true"); break;
