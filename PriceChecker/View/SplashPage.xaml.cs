@@ -5,9 +5,12 @@ namespace PriceChecker.View;
 
 public partial class SplashPage : ContentPage
 {
-    BL.BL bl = BL.BL.GetBL();
+    BL.BL bl;
     public SplashPage()
     {
+
+        var db = DB.GetDB(Directory.GetCurrentDirectory());
+        bl = BL.BL.GetBL();
         InitializeComponent();
         var projectName = "spar"; // наприклад: "vopak" або "spar"
 

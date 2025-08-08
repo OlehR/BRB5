@@ -154,22 +154,23 @@ namespace BRB6.View
                     {
                         switch (t[0])
                         {
-                            case "ApiUrl1": ApiUrl1 = t[1]; break;
-                            case "ApiUrl2": ApiUrl2 = t[1]; break;
-                            case "ApiUrl3": ApiUrl3 = t[1]; break;
-                            case "ApiUrl4": ApiUrl4 = t[1]; break;
-                            case "Compress": Compress = t[1].ToInt(); break;
-                            case "Company": SelectedCompany = ListCompany.FindIndex(x => x == t[1]); break;
+                            case "ApiUrl1": Config.ApiUrl1 = t[1]; break;
+                            case "ApiUrl2": Config.ApiUrl2 = t[1]; break;
+                            case "ApiUrl3": Config.ApiUrl3 = t[1]; break;
+                            case "ApiUrl4": Config.ApiUrl4 = t[1]; break;
+                            case "Compress": Config.Compress = t[1].ToInt(); break;
+                            case "Company": Config.Company = (eCompany) Enum.Parse(typeof(eCompany), t[1]);break;
+                            //SelectedCompany =ListCompany.FindIndex(x => x == t[1]); break;
                             case "TypePrinter": SelectedTypePrinter = Enum.GetNames(typeof(eTypeUsePrinter)).ToList().FindIndex(x => x == t[1]); break;
                             case "TypeLog": SelectedTypeLog = ListTypeLog.FindIndex(x => x == t[1]); break;
                             case "PhotoQuality": SelectedPhotoQuality = Enum.GetNames(typeof(ePhotoQuality)).ToList().FindIndex(x => x == t[1]); break;
                             case "Warehouse": SelectedWarehouse = ListWarehouse.FindIndex(x => x.Code == t[1].ToInt()); break;
-                            case "IsViewAllWH": IsViewAllWH = t[1].Equals("true"); break;
-                            case "IsAutoLogin": IsAutoLogin = t[1].Equals("true"); break;
-                            case "IsVibration": IsVibration = t[1].Equals("true"); break;
-                            case "IsSound": IsSound = t[1].Equals("true"); break;
-                            case "IsTest": IsTest = t[1].Equals("true"); break;
-                            case "IsFilterSave": IsFilterSave = t[1].Equals("true"); break;
+                            case "IsViewAllWH": Config.IsViewAllWH = t[1].Equals("true"); break;
+                            case "IsAutoLogin": Config.IsAutoLogin = t[1].Equals("true"); break;
+                            case "IsVibration": Config.IsVibration = t[1].Equals("true"); break;
+                            case "IsSound": Config.IsSound = t[1].Equals("true"); break;
+                            case "IsTest": Config.IsTest = t[1].Equals("true"); break;
+                            case "IsFilterSave": Config.IsFilterSave = t[1].Equals("true"); break;
                             //case "IsFullScreenScan": IsFullScreenScan = t[1].ToBool(); break;
                             case "NameCompany":
                                 Config.NameCompany = t[1];
@@ -309,6 +310,7 @@ namespace BRB6.View
 
         private void OnClickSave(object sender, EventArgs e)
         {
+            Config.CodesWarehouses = Warehouses.Where(x => x.IsChecked).Select(x => x.CodeWarehouse).ToList();
             Bl.SaveSettings(IsAutoLogin, IsVibration, IsViewAllWH, IsSound, IsTest, IsFilterSave, /*IsFullScreenScan,*/ ApiUrl1, ApiUrl2, ApiUrl3, ApiUrl4, Compress, 
                 (eCompany)SelectedCompany, (eTypeLog)SelectedTypeLog, (ePhotoQuality)SelectedPhotoQuality, (eTypeUsePrinter)SelectedTypePrinter, 
                 SelectedWarehouse, SelectedWarehouse !=-1? ListWarehouse[SelectedWarehouse].Code:-2, Warehouses);
