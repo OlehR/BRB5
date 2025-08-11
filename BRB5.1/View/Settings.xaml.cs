@@ -401,7 +401,11 @@ namespace BRB6.View
         }
         private void OnInfo(object sender, EventArgs e)
         {
-
+           
+        }
+        private void OnClean(object sender, EventArgs e)
+        {
+            db.CreateDB();
         }
     }
 }

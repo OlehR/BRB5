@@ -38,11 +38,11 @@ namespace BRB6
         {
             _ = Task.Run(async () =>
             {
-                _ = c.GetRaitingTemplateAsync();
-                var r = db.GetDoc(TypeDoc).OrderByDescending(el => el.NumberDoc);
-                ViewDoc(r);
+                //_ = c.GetRaitingTemplateAsync();
+                //var r = db.GetDoc(TypeDoc).OrderByDescending(el => el.NumberDoc);
+                //ViewDoc(r);
                await c.LoadDocsDataAsync(TypeDoc.CodeDoc, null, false);      
-                r = db.GetDoc(TypeDoc).OrderByDescending(el => el.NumberDoc);
+                var r = db.GetDoc(TypeDoc).OrderByDescending(el => el.NumberDoc);
                 ViewDoc(r);
             });
         }

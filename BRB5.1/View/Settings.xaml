@@ -205,7 +205,22 @@
                             HorizontalOptions="Fill"
                             Clicked="OnRestoreDB" />
                 </Grid>
-                <Button Text="Info" HorizontalOptions="Fill" Clicked="OnInfo" />
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+
+                    <Button Text="Очистка"
+            HorizontalOptions="Fill"
+            Clicked="OnClean" />
+
+                    <Button Text="Info"
+            Grid.Column="1"
+            HorizontalOptions="Fill"
+            Clicked="OnInfo" />
+                </Grid>
+               
                 
                 <Button Text="Зберегти"
                         HorizontalOptions="Fill"
