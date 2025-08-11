@@ -206,6 +206,7 @@ namespace BRB6
                 {
                     IEnumerable<BRB5.Model.RaitingDocItem> filtered = All.Where(el =>
                         el.IsHead ||
+                        el.Parent == 9999999 || // підсумкове питання
                         (el.IsVisible && el.Parent != 9999999) || // підпитання, які мають бути видимі
                         Choice == eTypeChoice.All ||
                         (Choice == eTypeChoice.NoAnswer &&
