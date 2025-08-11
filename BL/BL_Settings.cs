@@ -104,5 +104,44 @@ namespace BL
             }
             return res;
         }
+
+        public int QRSettingsParse(string pBarCode)
+        {
+            int CodeWarehouse = 0;
+            var temp = pBarCode[6..].Split(';');
+            foreach (var el in temp)
+            {
+                var t = el.Split('=');
+                if (t.Length == 2)
+                {
+                    switch (t[0])
+                    {
+                        case "ApiUrl1": Config.ApiUrl1 = t[1]; break;
+                        case "ApiUrl2": Config.ApiUrl2 = t[1]; break;
+                        case "ApiUrl3": Config.ApiUrl3 = t[1]; break;
+                        case "ApiUrl4": Config.ApiUrl4 = t[1]; break;
+                        case "Compress": Config.Compress = t[1].ToInt(); break;
+                        case "Company": Config.Company = (eCompany)Enum.Parse(typeof(eCompany), t[1]); break;
+                        //SelectedCompany =ListCompany.FindIndex(x => x == t[1]); break;
+                        case "TypePrinter": Config.TypeUsePrinter = (eTypeUsePrinter)Enum.Parse(typeof(eTypeUsePrinter), t[1]); break;
+                        case "TypeLog": FileLogger.TypeLog = (eTypeLog)Enum.Parse(typeof(eTypeLog), t[1]); break;
+                        case "PhotoQuality": Config.PhotoQuality = (ePhotoQuality)Enum.Parse(typeof(ePhotoQuality), t[1]); break;
+                        case "Warehouse": CodeWarehouse = t[1].ToInt(); break;
+                        case "IsViewAllWH": Config.IsViewAllWH = t[1].Equals("true"); break;
+                        case "IsAutoLogin": Config.IsAutoLogin = t[1].Equals("true"); break;
+                        case "IsVibration": Config.IsVibration = t[1].Equals("true"); break;
+                        case "IsSound": Config.IsSound = t[1].Equals("true"); break;
+                        case "IsTest": Config.IsTest = t[1].Equals("true"); break;
+                        case "IsFilterSave": Config.IsFilterSave = t[1].Equals("true"); break;
+                        //case "IsFullScreenScan": IsFullScreenScan = t[1].ToBool(); break;
+                        case "NameCompany":
+                            Config.NameCompany = t[1];
+                            db.SetConfig<string>("NameCompany", Config.NameCompany ?? "?");
+                            break;
+                    }
+                }
+            }
+            return CodeWarehouse;
+        }
     }
 }
