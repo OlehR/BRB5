@@ -31,8 +31,8 @@
     <ApplicationId>ua.UniCS.TM.BRB6</ApplicationId>
 
     <!-- Versions -->
-    <ApplicationDisplayVersion>6.0.63</ApplicationDisplayVersion>
-    <ApplicationVersion>6063</ApplicationVersion>
+    <ApplicationDisplayVersion>6.0.64</ApplicationDisplayVersion>
+    <ApplicationVersion>6064</ApplicationVersion>
 
     <SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">12.2</SupportedOSPlatformVersion>
     <SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">21.0</SupportedOSPlatformVersion>
@@ -54,12 +54,6 @@
   <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net8.0-android|AnyCPU'">
     <RunAOTCompilation>False</RunAOTCompilation>
   </PropertyGroup>
-
-  <PropertyGroup Condition="'$(TargetFramework)'=='net8.0-ios'">
-    <CodesignKey>Apple Development: Created via API (S4J9BA3B6S)</CodesignKey>
-    <CodesignProvision>VS: ua.UniCS.TM.BRB6 Development</CodesignProvision>
-  </PropertyGroup>
-
 
   <ItemGroup>
     <!-- App Icon -->
@@ -108,8 +102,8 @@
     <PackageReference Include="BarcodeScanning.Native.Maui" Version="1.5.7" />
     <PackageReference Include="CommunityToolkit.Maui" Version="9.0.2" />
     <PackageReference Include="FFImageLoading.Maui" Version="1.2.6" />
-    <PackageReference Include="Microsoft.Maui.Controls" Version="8.0.80" />
-    <PackageReference Include="Microsoft.Maui.Controls.Compatibility" Version="8.0.80" />
+    <PackageReference Include="Microsoft.Maui.Controls" Version="8.0.100" />
+    <PackageReference Include="Microsoft.Maui.Controls.Compatibility" Version="8.0.100" />
     <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="8.0.0" />
     <PackageReference Include="System.Text.Json" Version="9.0.7" />
   </ItemGroup>
