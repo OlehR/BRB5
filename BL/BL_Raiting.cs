@@ -79,13 +79,14 @@ namespace BL
 
         public void LoadDataRDI(DocVM pDoc, Action<IEnumerable<RaitingDocItem>> pA)
         {
-
             Debug.WriteLine("LoadDataRDI Task Спроба ");
             Task.Run(() =>
             {
-                Debug.WriteLine("LoadDataRDI Task Ура зайшло ");
+               
                 var Q = db.GetRaitingDocItem(pDoc);
                 var R = new List<RaitingDocItem>();
+                Debug.WriteLine($"LoadDataRDI Task Ура зайшло=> {Q.Count()}");
+
                 foreach (var e in Q.Where(d => d.IsHead).OrderBy(d => d.OrderRS))
                 {
                     R.Add(e);

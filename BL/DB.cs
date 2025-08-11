@@ -268,7 +268,7 @@ CREATE UNIQUE INDEX DocWaresExpirationTNC ON DocWaresExpiration (DateDoc, Number
                 CreateDB();
         }
 
-        bool CreateDB()
+        public bool CreateDB()
         {
             string Sql = null ;
             try
@@ -309,9 +309,9 @@ CREATE UNIQUE INDEX DocWaresExpirationTNC ON DocWaresExpiration (DateDoc, Number
             return db.Execute(SqlReplaceConfig, pName, pValue, pValue.GetType().ToString()) > 0;
         }
 
-        public T GetConfig<T>(string pStr)
+        public T GetConfig<T>(string pStr, T Res = default)
         {
-            T Res = default(T);
+            //T Res = default;
             string SqlConfig = "SELECT DataVar FROM CONFIG WHERE UPPER(NameVar) = UPPER(trim(?))";
             try
             {

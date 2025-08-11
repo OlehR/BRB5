@@ -2,6 +2,7 @@
 using BRB5.Model;
 using Foundation;
 using UIKit;
+using Utils;
 
 namespace BRB6
 {
@@ -12,8 +13,7 @@ namespace BRB6
         protected override MauiApp CreateMauiApp() => MauiProgram.CreateMauiApp();
         public override bool FinishedLaunching(UIApplication app, NSDictionary options)
         {
-            SQLitePCL.Batteries.Init();
-
+            SQLitePCL.Batteries.Init();            
             //FFImageLoading.Forms.Platform.CachedImageRenderer.Init();
             string documentsPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
             ProtoBRB.SetPath(Path.Combine(documentsPath, "..", "Library", "Downloads"));
