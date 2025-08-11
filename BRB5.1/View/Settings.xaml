@@ -211,17 +211,17 @@
                         <ColumnDefinition Width="*" />
                     </Grid.ColumnDefinitions>
 
-                    <Button Text="Очистка"
-            HorizontalOptions="Fill"
-            Clicked="OnClean" />
+                    <Button Text="Очистити базу"
+                            HorizontalOptions="Fill"
+                            Clicked="OnClean" />
 
-                    <Button Text="Info"
-            Grid.Column="1"
-            HorizontalOptions="Fill"
-            Clicked="OnInfo" />
+                    <Button Text="Очистити лог"
+                            Grid.Column="1"
+                            HorizontalOptions="Fill"
+                            Clicked="OnCleanLog" />
                 </Grid>
-               
-                
+                <Button Text="Info" HorizontalOptions="Fill" Clicked="OnInfo" />
+
                 <Button Text="Зберегти"
                         HorizontalOptions="Fill"
                         VerticalOptions="EndAndExpand"

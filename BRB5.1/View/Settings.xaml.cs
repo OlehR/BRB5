@@ -405,9 +405,16 @@ namespace BRB6.View
         {
            
         }
-        private void OnClean(object sender, EventArgs e)
+        private async void OnClean(object sender, EventArgs e)
         {
-            db.CreateDB();
+            bool temp = await DisplayAlert("Обережно", "База даних буде очищена. Всі данні будуть втрачені. Ви це розумієте?", "Так, я розумію", "Ні, скасувати дію");
+            if (temp) db.CreateDB();
+        }
+
+        private void OnCleanLog(object sender, EventArgs e)
+        {
+            FileLogger.Str.Clear();
+            OnPropertyChanged(nameof(ShowLogText));
         }
     }
 }
