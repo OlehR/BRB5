@@ -283,7 +283,7 @@
             <StackLayout>
                 <Grid VerticalOptions="StartAndExpand">
                     <ScrollView>
-                        <Label Text="yi;gh"/>
+                        <Label Text="{Binding ShowLogText}" />
                     </ScrollView>
                 </Grid>
             </StackLayout>

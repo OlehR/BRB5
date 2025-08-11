@@ -104,6 +104,8 @@ namespace BRB6.View
         CameraView BarcodeScaner;
         bool _IsVisBarCode = false;
         public bool IsVisBarCode { get { return _IsVisBarCode; } set { _IsVisBarCode = value; OnPropertyChanged(nameof(IsVisBarCode)); } }
+
+        public string ShowLogText => FileLogger.Str.ToString();
         public Settings()
         {
             InitializeComponent();

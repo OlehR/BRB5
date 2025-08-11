@@ -54,7 +54,6 @@
                     <CollectionView x:Name="QuestionsCollectionView"
                               HeightRequest="500"
                               IsVisible="{OnPlatform Android=false, iOS=true}"
-                              ItemsLayout="Vertical"
                               SelectionMode="None"
                               ItemTemplate="{StaticResource QuestionTemplateSelector}" />                   
 
