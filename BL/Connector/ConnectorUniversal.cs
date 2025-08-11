@@ -13,6 +13,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using UtilNetwork;
 using Utils;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 
 namespace BL.Connector
@@ -299,17 +300,31 @@ namespace BL.Connector
         {
             try
             {
-                return await SendRatingFilesAsync(pDoc.NumberDoc);
-
+                var sw = Stopwatch.StartNew();
+                // return await SendRatingFilesAsync(pDoc.NumberDoc);
+                OnSave?.Invoke($"Старт збереження відповідей");
                 string Data = new RaitingDocForSave() 
                 { NumberDoc=pDoc.NumberDoc, CodeUser = Config.CodeUser, DTEnd = pDoc.DTEnd, DTStart = pDoc.DTStart, Item = pR.Select(el=>new RaitingDocItemSave(el) ) 
                 }.ToJSON("yyyy-MM-ddTHH:mm:ss.ffff");
                 HttpResult result = GetDataHTTP.HTTPRequest(0, @"DCT\Rating\SaveRating", Data, "application/json", Config.Login, Config.Password,120);
+                sw.Stop();
+                TimeSpan TimeSend = sw.Elapsed;
+                string mes= $"Збереження відповідей=>{result.HttpState} за {TimeSend.TotalSeconds:n1}c";
+                FileLogger.WriteLogMessage(mes);
+                OnSave?.Invoke(mes);
+
+
                 if (result.HttpState == eStateHTTP.HTTP_OK)
                 {
-                    return JsonConvert.DeserializeObject<Result>(result.Result);
-                }               
-                //return new Result(result);
+                    var R = JsonConvert.DeserializeObject<Result>(result.Result);
+                    if (R.State == 0)
+                    {
+                        return await SendRatingFilesAsync(pDoc.NumberDoc);
+                    }
+                    return R;
+                }
+
+                return new Result(result);
             }
             catch (Exception e)
             {
@@ -363,6 +378,7 @@ namespace BL.Connector
                 FileLogger.WriteLogMessage($"SendRaitingFiles Files=>{Files?.Length}", eTypeLog.Full);
                 i = 0;
                 OnSave?.Invoke($"Файлів для передачі=>{Files.Count()}");
+                if(Files.Length>0)
                 foreach (var f in Files)
                 {
                     var FI = new FileInfo(f);
@@ -392,14 +408,17 @@ namespace BL.Connector
                     }
                     try
                     {
-                        var sw = Stopwatch.StartNew();
-                        
-                        string  RR = await UtilNetwork.Http.UploadFileAsync(GetDataHTTP.Url[0][0] + "DCT/Rating/UploadFile", f);
+                        var sw = Stopwatch.StartNew();                        
+                        string  RR = await Http.UploadFileAsync(GetDataHTTP.Url[0][0] + "DCT/Rating/UploadFile", f);
 
                         if (!string.IsNullOrEmpty(RR))
                         {
                             var res = JsonConvert.DeserializeObject<Result>(RR);
                             FileLogger.WriteLogMessage($"ConnectorPSU.SendRaitingFiles  File=>{f} success=>{res.State}");
+                            sw.Stop();
+                            TimeSpan TimeSend = sw.Elapsed;
+                            string text = res.Success ? $"[({i}:{Error})/{Files.Length}] {Path.GetFileName(f)}=> ({FI.Length / (1024 * 1024 * TimeSend.TotalSeconds):n2}Mb/c;{((double)FI.Length) / (1024d * 1024d):n2}Mb;{TimeSend.TotalSeconds:n1}c))" :
+                               $"[({i},{Error})/{Files.Length}] Файл не передано=>{Path.GetFileName(f)}";
 
                             if (res.State==0)
                             {
@@ -413,10 +432,7 @@ namespace BL.Connector
                                 Error++;
                                 Res = new Result(-1, "Не передався файл", f);
                             }
-                            sw.Stop();
-                            TimeSpan TimeSend = sw.Elapsed;
-                            string text = res.Success ? $"[({i}:{Error})/{Files.Length}] {Path.GetFileName(f)}=> ({FI.Length / (1024 * 1024 * TimeSend.TotalSeconds):n2}Mb/c;{((double)FI.Length) / (1024d * 1024d):n2}Mb;{TimeSend.TotalSeconds:n1}c))" :
-                               $"[({i},{Error})/{Files.Length}] Файл не передано=>{Path.GetFileName(f)}";
+                            
                             OnSave?.Invoke(text);
                             FileLogger.WriteLogMessage(this, System.Reflection.MethodBase.GetCurrentMethod().Name, text, eTypeLog.Full);
                         }

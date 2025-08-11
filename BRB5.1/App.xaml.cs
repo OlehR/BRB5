@@ -1,4 +1,6 @@
 ﻿//using BRB5.Model;
+
+using System.Diagnostics;
 using System.Runtime.ExceptionServices;
 using Utils;
 
@@ -30,7 +32,9 @@ namespace BRB6
         {      
                     FileLogger.WriteLogMessage(this, "GlobalException", e.Exception);
             var ex = e.Exception as System.Exception;
-            var s = e.Exception.Message;
+            var s = ex.Message;
+            var tr = ex.StackTrace;
+            FileLogger.WriteLogMessage(this, "GlobalException", s);
         }
 
 
