@@ -75,7 +75,7 @@ namespace BL
             Config.DateLastLoadGuid = db.GetConfig<DateTime>("DateLastLoadGuid");
             Config.CodeWarehouse = db.GetConfig<int>("CodeWarehouse");
             Config.TypeUsePrinter = db.GetConfig<eTypeUsePrinter>("TypeUsePrinter");
-            Config.PhotoQuality = db.GetConfig<ePhotoQuality>("PhotoQuality");
+            Config.PhotoQuality = db.GetConfig<ePhotoQuality>("PhotoQuality",ePhotoQuality.High);
             Config.Compress = db.GetConfig<int>("Compress");
             Config.Compress = Config.Compress == 0 ? 80 : Config.Compress;
             Config.NameCompany = db.GetConfig<string>("NameCompany");

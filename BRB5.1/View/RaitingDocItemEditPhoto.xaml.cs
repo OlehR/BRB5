@@ -45,7 +45,7 @@ namespace BRB6.View
             // TODO Xamarin.Forms.Device.RuntimePlatform is no longer supported. Use Microsoft.Maui.Devices.DeviceInfo.Platform instead. For more details see https://learn.microsoft.com/en-us/dotnet/maui/migration/forms-projects#device-changes
             NavigationPage.SetHasNavigationBar(this, Device.RuntimePlatform == Device.iOS);
             Raiting = pRaiting;
-            Mask = $"{pRaiting.Id}_*.*";
+            Mask = $"{pRaiting.NumberDoc}_{pRaiting.Id}_*.*";
             InitializeComponent();
             var d = Directory.GetFiles(dir, Mask);
             IEnumerable<Pictures> r = d.Select(e => new Pictures(e)).OrderByDescending(el => el.FileName);
@@ -106,6 +106,7 @@ namespace BRB6.View
         }
         private async void OnPhotosAdd(object sender, EventArgs e)
         {
+#if ANDROID
             var cts = new CancellationTokenSource();
             List<FileResult> files = null;
 
@@ -114,7 +115,6 @@ namespace BRB6.View
                 // Cancel the operation after 5 minutes
                 cts.CancelAfter(TimeSpan.FromMinutes(5));
 
-#if ANDROID
         // Android: Use FilePicker to pick multiple photos or videos
         var result = await FilePicker.Default.PickMultipleAsync(new PickOptions
         {
@@ -129,20 +129,6 @@ namespace BRB6.View
         {
             files = result.ToList();
         }
-
-#elif IOS
-                // iOS: Use MediaPicker to pick photos and videos separately
-                var pickPhotoTask = MediaPicker.PickPhotoAsync(new MediaPickerOptions
-                {
-                    Title = "Select an Image"
-                });
-
-                // Await both tasks
-                await Task.WhenAll(pickPhotoTask);
-
-                // Collect the results
-                files = new List<FileResult> { await pickPhotoTask};
-#endif
             }
             catch (OperationCanceledException) { /*Handle cancellation*/ }
             catch (Exception) { /*Handle other exceptions*/ }
@@ -154,7 +140,7 @@ namespace BRB6.View
             {
                 if (file == null) continue;
                 var ext = Path.GetExtension(file.FullPath);
-                var FileName = $"{Raiting.Id}_{DateTime.Now:yyyyMMdd_HHmmssfff}";
+                var FileName = $"{Raiting.NumberDoc}_{Raiting.Id}_{DateTime.Now:yyyyMMdd_HHmmssfff}";
                 var newFile = Path.Combine(dir, FileName + ext);
 
                 using (var stream = await file.OpenReadAsync())
@@ -165,6 +151,42 @@ namespace BRB6.View
                 db.ReplaceRaitingDocItem(Raiting);
                 MyFiles.Insert(0, new Pictures(newFile));
             }
+#elif IOS
+/*
+                // iOS: Use MediaPicker to pick photos and videos separately
+                var pickPhotoTask = MediaPicker.PickPhotoAsync(new MediaPickerOptions
+                {
+                    Title = "Select an Image"
+                });
+
+                // Await both tasks
+                await Task.WhenAll(pickPhotoTask);
+
+                // Collect the results
+                files = new List<FileResult> { await pickPhotoTask};
+                */
+                try{
+                var f= await Config.NativeBase.PickPhotos();
+                if(f.Count>0)
+                foreach (var el in f)
+                {
+                    var FileName = $"{Raiting.NumberDoc}_{Raiting.Id}_{DateTime.Now:yyyyMMdd_HHmmssfff}";
+                    var ext = Path.GetExtension(el.FileName);
+                    FileName = $"{Raiting.NumberDoc}_{Raiting.Id}_{DateTime.Now:yyyyMMdd_HHmmssfff}";
+                    var newFile = Path.Combine(dir, FileName + ext);
+                    File.WriteAllBytes(newFile, el.FileData);
+                        Raiting.QuantityPhoto++;
+                        db.ReplaceRaitingDocItem(Raiting);
+                        MyFiles.Insert(0, new Pictures(newFile));
+                    }
+                return;
+                }
+                catch (Exception ex)
+                {
+                    //await DisplayAlert("Error", $"Failed to pick photos: {ex.Message}", "OK");
+                }
+#endif
+
         }
     }
 }

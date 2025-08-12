@@ -1,4 +1,5 @@
 ﻿using BRB5.Model;
+using BRB6.Platforms.iOS;
 using CoreGraphics;
 using Foundation;
 using System;
@@ -72,6 +73,13 @@ namespace BRB6
                 return null;
             }
             return image;
+        }
+
+        public override async Task<List<FilePickerResult>> PickPhotos() 
+        {
+            PhotoService photoPickerService = new PhotoService();
+            var res = await photoPickerService.PickPhotos();
+            return res;
         }
     }
 }

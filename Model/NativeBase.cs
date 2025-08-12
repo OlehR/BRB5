@@ -25,5 +25,18 @@ namespace BRB5.Model
         public virtual string GetIP() { return null; }
         public virtual async Task<bool> CheckNewVerAsync() { return false; }
         public virtual async Task InstallAsync(Action<double> pA) { }
+
+        public virtual async Task<List<FilePickerResult>> PickPhotos() { return null; }
+    }
+    public class FilePickerResult
+    {
+        public FilePickerResult(string fileName, byte[] fileData)
+        {
+            FileName = fileName;
+            FileData = fileData;
+        }
+
+        public string FileName { get; }
+        public byte[] FileData { get; }
     }
 }
