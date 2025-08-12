@@ -78,14 +78,14 @@ namespace BRB6.View
         public int SelectedTypeLog { get { return ListTypeLog.FindIndex(x => x == Enum.GetName(typeof(eTypeLog), FileLogger.TypeLog)); } set { FileLogger.TypeLog = (eTypeLog)value; } }
         public int SelectedPhotoQuality { get { return Enum.GetNames(typeof(ePhotoQuality)).ToList().FindIndex(x => x == Enum.GetName(typeof(ePhotoQuality), Config.PhotoQuality)); } set { Config.PhotoQuality = (ePhotoQuality)value; } }
 
-        public bool IsSoftKeyboard => Config.IsSoftKeyboard; 
+        public bool IsSoftKeyboard => Config.IsSoftKeyboard;
         public bool IsVisApi3 => Config.Company == eCompany.Sim23;
-        public bool IsViewAllWH => Config.IsViewAllWH;
-        public bool IsAutoLogin => Config.IsAutoLogin;
-        public bool IsVibration => Config.IsVibration;
-        public bool IsSound => Config.IsSound;
-        public bool IsTest => Config.IsTest;
-        public bool IsFilterSave => Config.IsFilterSave;     
+        public bool IsViewAllWH { get { return Config.IsViewAllWH; } set { Config.IsViewAllWH = value; } }
+        public bool IsAutoLogin { get { return Config.IsAutoLogin; } set { Config.IsAutoLogin = value; } }
+        public bool IsVibration { get { return Config.IsVibration; } set { Config.IsVibration = value; } }
+        public bool IsSound { get { return Config.IsSound; } set { Config.IsSound = value; } }
+        public bool IsTest { get { return Config.IsTest; } set { Config.IsTest = value; } }
+        public bool IsFilterSave { get { return Config.IsFilterSave; } set { Config.IsFilterSave = value; } }
         //public bool IsFullScreenScan { get { return Config.IsFullScreenScan; } set { Config.IsFullScreenScan = value; } }
 
         public string ApiUrl1 { get { return Config.ApiUrl1; } set { Config.ApiUrl1 = value; OnPropertyChanged(nameof(ApiUrl1)); } }
