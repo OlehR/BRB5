@@ -20,15 +20,15 @@ public partial class QuestionHeadTemplate : ContentView, IViewRDI
     }
     private void OnHeadTapped(object sender, TappedEventArgs e)
     {
-        if (DeviceInfo.Platform == DevicePlatform.iOS) 
-        {
+        //if (DeviceInfo.Platform == DevicePlatform.iOS) 
+        //{
             if (BindingContext is BRB5.Model.RaitingDocItem head)
             {
                 // Знайти батьківську сторінку, яка реалізує інтерфейс
                 var handler = GetParentPage() as IHeadTapHandler;
                 handler?.OnHeadTapped(head);
             }
-        } else  OnHeadTapp?.Invoke(sender, e);
+        //} else  OnHeadTapp?.Invoke(sender, e);
     }
 
     private Page GetParentPage()
@@ -45,17 +45,17 @@ public partial class QuestionHeadTemplate : ContentView, IViewRDI
 
     private void OnButtonClicked(object sender, EventArgs e)
     {
-#if IOS
-    // iOS: виклик через інтерфейс батьківської сторінки
+//#if IOS
+//    // iOS: виклик через інтерфейс батьківської сторінки
     if (BindingContext is BRB5.Model.RaitingDocItem item)
     {
         var handler = GetParentPage() as IRatingButtonHandler;
         handler?.OnRatingButtonClicked(sender, item);
     }
-#else
-        // Android: працює через делегат
-        OnButtonClick?.Invoke(sender, e);
-#endif
+//#else
+//        // Android: працює через делегат
+//        OnButtonClick?.Invoke(sender, e);
+//#endif
     }
 
 }

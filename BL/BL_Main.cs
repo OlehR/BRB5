@@ -58,7 +58,10 @@ namespace BL
         {
             Config.IsAutoLogin = db.GetConfig<bool>("IsAutoLogin");
             Config.LoginServer = db.GetConfig<eLoginServer>("LoginServer");
-            Config.Company = db.GetConfig<eCompany>("Company");
+            var companyFromDb = db.GetConfig<eCompany>("Company");
+            Config.Company = companyFromDb != eCompany.NotDefined
+                ? companyFromDb
+                : Config.Company;
             Config.IsViewAllWH = db.GetConfig<bool>("IsViewAllWH");
             Config.IsVibration = db.GetConfig<bool>("IsVibration");
             Config.IsSound = db.GetConfig<bool>("IsSound");

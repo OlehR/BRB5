@@ -48,14 +48,13 @@
                     HorizontalOptions="FillAndExpand" />
 
                 <Grid x:Name="QuestionsGrid" VerticalOptions="StartAndExpand"  >
-                    <ScrollView IsVisible="{OnPlatform Android=true, iOS=false}" >
+                    <!--<ScrollView IsVisible="{OnPlatform Android=true, iOS=false}" >
                         <StackLayout x:Name="QuestionsStackLayout"/>
-                    </ScrollView>
+                    </ScrollView>-->
                     <CollectionView x:Name="QuestionsCollectionView"
-                              HeightRequest="500"
-                              IsVisible="{OnPlatform Android=false, iOS=true}"
+                              HeightRequest="500"                              
                               SelectionMode="None"
-                              ItemTemplate="{StaticResource QuestionTemplateSelector}" />                   
+                              ItemTemplate="{StaticResource QuestionTemplateSelector}" /> <!--IsVisible="{OnPlatform Android=false, iOS=true}"-->
 
                 </Grid>
             </StackLayout>
