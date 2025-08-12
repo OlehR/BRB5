@@ -3,12 +3,17 @@ using BL.Connector;
 using BRB5;
 using BRB5.Model;
 using UtilNetwork;
+using System.Timers;
+using Timer = System.Timers.Timer;
 
 namespace PriceChecker.View;
 
 public partial class AdminPriceChecker : ContentPage
 {
-    BL.BL bl = BL.BL.GetBL();
+    BL.BL bl = BL.BL.GetBL(); 
+    private Timer _returnTimer;
+    private const int TimeoutSeconds = 60;
+
     public bool IsVisPriceNormal { get { return WP != null && (WP.PriceOld != WP.PriceNormal); } }
     public bool IsVisPriceOpt { get { return WP != null && (WP.PriceOpt != 0 || WP.PriceOptOld != 0); } }
    
@@ -85,10 +90,7 @@ public partial class AdminPriceChecker : ContentPage
         InitializeComponent();
         this.BindingContext = this;
         bl.ClearWPH();
-        if (pWP != null)
-        {
-            WP = pWP;
-        }
+        if (pWP != null)  WP = pWP;        
 
         if (WP.Сondition != null) FillConditionList(WP.Сondition);
         var projectName = "spar"; // наприклад: "vopak" або "spar"
@@ -114,6 +116,21 @@ public partial class AdminPriceChecker : ContentPage
 
         App.ScanerCom.SetOnBarCode(BarCode);
 
+        // Ініціалізація таймера
+        _returnTimer = new Timer(TimeoutSeconds * 1000);
+        _returnTimer.Elapsed += OnTimeoutElapsed;
+        _returnTimer.AutoReset = false;
+
+        // Запуск при відкритті сторінки
+        ResetTimer();
+
+        // Ловимо будь-який тап на Content
+        if (Content is Microsoft.Maui.Controls.View view)
+        {
+            var tapGesture = new TapGestureRecognizer();
+            tapGesture.Tapped += (_, __) => ResetTimer();
+            view.GestureRecognizers.Add(tapGesture);
+        }
     }
 
     void Progress(double pProgress) => MainThread.BeginInvokeOnMainThread(() => PB = pProgress);
@@ -157,6 +174,7 @@ public partial class AdminPriceChecker : ContentPage
 
         }
 
+        ResetTimer();
     }
     private void BarCodeHandInput(object sender, EventArgs e)
     {
@@ -173,12 +191,15 @@ public partial class AdminPriceChecker : ContentPage
             if (!BarCodeInput.IsFocused || IsVisScan)
                 BarCodeInput.Focus();
         });
+        ResetTimer();
     }
 
     private void OnClickPrintOne(object sender, EventArgs e)
     {
         if (IsEnabledPrint && WP != null)
             _ = DisplayAlert("Друк", bl.c.PrintHTTP(new[] { WP.CodeWares }), "OK");
+
+        ResetTimer();
     }
     public void FillConditionList(IEnumerable<СonditionClass> conditions)
     {
@@ -218,5 +239,31 @@ public partial class AdminPriceChecker : ContentPage
         }
     }
 
+    private async void OnBackClick(object sender, EventArgs e)
+    {
+        await MainThread.InvokeOnMainThreadAsync(async () =>
+        {
+            await Navigation.PopToRootAsync(); 
+        });
+    }
 
+    private void ResetTimer()
+    {
+        _returnTimer.Stop();
+        _returnTimer.Start();
+    }
+
+    private async void OnTimeoutElapsed(object sender, ElapsedEventArgs e)
+    {
+        await MainThread.InvokeOnMainThreadAsync(async () =>
+        {
+            await Navigation.PopToRootAsync();
+        });
+    }
+
+    // Скидання таймера при взаємодії з елементами
+    private void AnyControlInteracted(object sender, EventArgs e)
+    {
+        ResetTimer();
+    }
 }
