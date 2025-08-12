@@ -12,7 +12,7 @@ public partial class UPriceChecker : ContentPage
 {
     BL.BL bl = BL.BL.GetBL();
     private Timer _returnToSplashTimer;
-    private const int TimeoutSeconds = 300;
+    private const int TimeoutSeconds = 30;
     WaresPrice _WP;
     public Uri UriPicture { get { return new Uri(Config.ApiUrl1 + $"Wares/{WP.CodeWares:D9}.png"); } }
     public WaresPrice WP

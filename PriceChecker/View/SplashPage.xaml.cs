@@ -1,17 +1,22 @@
 ﻿using BL;
+using BRB5.Model;
+using System.Timers;
 using Utils;
+using Timer = System.Timers.Timer;
 
 namespace PriceChecker.View;
 
 public partial class SplashPage : ContentPage
 {
     BL.BL bl;
+    private Timer _timer;
     public SplashPage()
     {
 
         var db = DB.GetDB(Directory.GetCurrentDirectory());
         bl = BL.BL.GetBL();
         InitializeComponent();
+        bl.Init();
         var projectName = "spar"; // наприклад: "vopak" або "spar"
 
         if (projectName == "vopak")
@@ -36,18 +41,62 @@ public partial class SplashPage : ContentPage
     {
         FileLogger.WriteLogMessage("SplashPage", "BarCode", $"BarCode: {pBarCode}, Type: {pType}");
 
-        var WP = bl.FoundWares(pBarCode, 0, 0, false, false, true);
-
-        if (WP != null)
+        if (pBarCode.StartsWith("BRB6=>"))
         {
-            var isStaff = WP.CodeUser!=0;
-            ContentPage page = isStaff ? new AdminPriceChecker(WP) : new UPriceChecker(WP);
-            MainThread.BeginInvokeOnMainThread(async () =>
+            var CodeWarehouse = bl.QRSettingsParse(pBarCode);
+            ShowTextWithTimeout(pBarCode);
+            bl.SaveSettings();
+        }
+        else
+        {
+            var WP = bl.FoundWares(pBarCode, 0, 0, false, false, true);
+
+            if (WP != null)
             {
-                await Navigation.PushAsync(page);
-            });
+                var isStaff = WP.CodeUser != 0;
+                ContentPage page = isStaff ? new AdminPriceChecker(WP) : new UPriceChecker(WP);
+                MainThread.BeginInvokeOnMainThread(async () =>
+                {
+                    await Navigation.PushAsync(page);
+                });
+            }
+        }
+    }
+    private void ShowTextWithTimeout(string message)
+    {
+        // Відображаємо текст
+        MainThread.BeginInvokeOnMainThread(() =>
+        {
+            SettingsShow.Text = message;
+            SettingsShow.IsVisible = true;
+        });
+        // Якщо таймер уже існує — зупиняємо його
+        if (_timer != null)
+        {
+            _timer.Stop();
+            _timer.Dispose();
         }
 
+        // Створюємо таймер на 1 хвилину (60000 мс)
+        _timer = new Timer(10000);
+        _timer.Elapsed += OnTimerElapsed;
+        _timer.AutoReset = false; // виконається тільки 1 раз
+        _timer.Start();
     }
-  
+
+    private void OnTimerElapsed(object sender, ElapsedEventArgs e)
+    {
+        // Таймер працює у фоні, тому оновлення UI виконуємо на головному потоці
+        MainThread.BeginInvokeOnMainThread(() =>
+        {
+            SettingsShow.Text = string.Empty;
+            SettingsShow.IsVisible = false;
+        });
+
+        // Зупиняємо та очищуємо таймер
+        _timer.Stop();
+        _timer.Dispose();
+        _timer = null;
+    }
+
 }

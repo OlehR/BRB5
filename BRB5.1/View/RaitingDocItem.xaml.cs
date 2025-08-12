@@ -15,9 +15,6 @@ using StackLayout = Microsoft.Maui.Controls.StackLayout;
 
 namespace BRB6
 {
-    //[QueryProperty(nameof(NumberDoc), nameof(NumberDoc))]
-    //[QueryProperty(nameof(TypeDoc), nameof(TypeDoc))]
-    //[XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class RaitingDocItem : ContentPage, IHeadTapHandler, IRatingButtonHandler
     {
         BL.BL Bl = BL.BL.GetBL();
@@ -26,8 +23,6 @@ namespace BRB6
 
         bool _IsVisBarCode = false;
         public bool IsVisBarCode { get { return _IsVisBarCode; } set { _IsVisBarCode = value; OnPropertyChanged(nameof(IsVisBarCode)); } }
-        //ObservableCollection<BRB5.Model.RaitingDocItem> _Questions;
-        //public ObservableCollection<BRB5.Model.RaitingDocItem> Questions { get { return _Questions; } set { _Questions = value; OnPropertyChanged(nameof(Questions)); } }
       
         IEnumerable<BRB5.Model.RaitingDocItem> All;
         List<IViewRDI> AllViewRDI;
@@ -102,7 +97,6 @@ namespace BRB6
                 this.BindingContext = this;
                 Bl.InitTimerRDI(cDoc);
 
-                //Questions = new ObservableCollection<BRB5.Model.RaitingDocItem>();
                 Bl.c.OnSave += (Res) => Dispatcher.Dispatch(() =>
                 {
                     TextSave += Res + Environment.NewLine;
@@ -159,20 +153,6 @@ namespace BRB6
             Bl.StopTimerRDI();
             if (IsVisScan) BarcodeScaner.CameraEnabled = false;
         }
-
-        //void BildViewRDI()
-        //{
-        //    AllViewRDI = [];
-        //    foreach (var el in All)
-        //    {
-        //        IViewRDI e = el.IsHead ? new QuestionHeadTemplate(el, OnButtonClicked, OnHeadTapped) : new QuestionItemTemplate(el, OnButtonClicked);
-        //        if (el.IsHead || el.Parent == 9999999)
-        //            MainThread.BeginInvokeOnMainThread(() => { QuestionsStackLayout.Children.Add(e); });
-        //        AllViewRDI.Add(e);
-        //    }
-        //    IsLoad = true;
-        //    Choice = eTypeChoice.OnlyHead;
-        //}
         async void ViewDoc()
         {
             if (!IsLoad)
@@ -241,22 +221,14 @@ namespace BRB6
             IsVisibleBarcodeScanning = All.Any(el => el.Id == -1);
             OnPropertyChanged(nameof(IsVisibleBarcodeScanning));
 
-            //if (DeviceInfo.Platform == DevicePlatform.iOS)
-            //{
-                var headsOnly = All.Where(x => x.IsHead).ToList();
-                MainThread.BeginInvokeOnMainThread(() =>
-                {
-                    CalculateAvailableHeight();
-                    QuestionsCollectionView.ItemsSource = headsOnly;
-                });
-                IsLoad = true;
-            //}
-            //else
-            //{
-            //    BildViewRDI(); 
-            //}
+            var headsOnly = All.Where(x => x.IsHead).ToList();
+            MainThread.BeginInvokeOnMainThread(() =>
+            {
+                CalculateAvailableHeight();
+                QuestionsCollectionView.ItemsSource = headsOnly;
+            });
+            IsLoad = true;
         }
-
 
         private void OnButtonClicked(object sender, System.EventArgs e)
         {
@@ -269,18 +241,33 @@ namespace BRB6
         }
         public void OnRatingButtonClicked(object sender, BRB5.Model.RaitingDocItem item)
         {
-            //if (DeviceInfo.Platform != DevicePlatform.iOS)
-            //    return;
-
-            // Обробка рейтингу
             var button = (Microsoft.Maui.Controls.View)sender;
-            Bl.ChangeRaiting(item, button.ClassId, All);
 
+            // запам'ятати стан до зміни
+            bool wasNotKnow = item.Rating == 4;
+
+            Bl.ChangeRaiting(item, button.ClassId, All);
             Bl.CalcSumValueRating(item, All);
             RefreshHead();
 
-            // Можеш додати оновлення CollectionView, якщо треба
+            // Якщо це заголовок і ми змінили стан "NotKnow"
+            if (item.IsHead)
+            {
+                if (!wasNotKnow && item.Rating == 4)
+                {
+                    // поставили "NotKnow" → згортаємо
+                    item.IsVisible = true;
+                    OnHeadTapped(item);
+                }
+                else if (wasNotKnow && item.Rating != 4)
+                {
+                    // зняли "NotKnow" → розгортаємо
+                    item.IsVisible = false;
+                    OnHeadTapped(item);
+                }
+            }
         }
+
         void RefreshHead()
         {
             try {
@@ -374,18 +361,6 @@ namespace BRB6
         }
 
         private void Editor_Completed(object sender, EventArgs e) => Bl.db.ReplaceRaitingDocItem(GetRaiting(sender));
-
-        //private async void OnHeadTapped(object sender, EventArgs e)
-        //{
-        //    var s = sender as Grid;
-        //    var cc = s?.Parent as QuestionHeadTemplate;
-        //    var vRait = cc?.Data;
-        //    if (vRait == null) return;
-
-        //    vRait.IsVisible = !vRait.IsVisible;
-        //    Choice = eTypeChoice.NotDefine;
-        //    ChangeItemBlok(vRait);
-        //}
         public void OnHeadTapped(BRB5.Model.RaitingDocItem head)
         {
             head.IsVisible = !head.IsVisible;
@@ -418,98 +393,15 @@ namespace BRB6
             {
                 QuestionsCollectionView.ItemsSource = updated;
 
-                // 🔹 Прокрутка так, щоб заголовок був зверху
-                QuestionsCollectionView.ScrollTo(head, position: ScrollToPosition.Start, animate: false);
+                if (DeviceInfo.Platform != DevicePlatform.iOS)
+                    QuestionsCollectionView.ScrollTo(head, position: ScrollToPosition.Start, animate: false);
             });
         }
-
-
-        //private void ChangeItemBlok(BRB5.Model.RaitingDocItem vRait)
-        //{
-        //    if (!IsLoad)
-        //        return;
-
-        //    try
-        //    {
-        //        IsLoad = false;
-        //        var aa = QuestionsStackLayout.Children.Select(el => (IViewRDI)el).ToList();
-        //        int index = 0;
-        //        foreach (var el in aa)
-        //        {
-        //            index++;
-        //            if (el.Data == vRait)
-        //                break;
-        //        }
-
-        //        if (vRait.IsVisible)
-        //        {
-        //            foreach (var el in AllViewRDI.Where(el => el.Data.Parent == vRait.Id))
-        //            {
-        //                MainThread.BeginInvokeOnMainThread(() => { QuestionsStackLayout.Children.Insert(index++, el); });
-        //            }
-        //        }
-        //        else
-        //        {
-        //            foreach (var el in AllViewRDI)
-        //            {
-        //                if (el.Data.Parent == vRait.Id)
-        //                    MainThread.BeginInvokeOnMainThread(() => { QuestionsStackLayout.Children.Remove(el); });
-        //            }
-        //        }
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        FileLogger.WriteLogMessage(this, System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
-        //    }
-        //    finally
-        //    {
-        //        IsLoad = true;
-        //    }
-        //}
-
-
-        /*private void ChangeItemBlok(BRB5.Model.RaitingDocItem vRait)
-        {
-            Dispatcher.Dispatch(() =>
-            {
-                var index = Questions.IndexOf(vRait) + 1;
-                foreach (var el in All.Where(el => el.Parent == vRait.Id))
-                {
-                    if (vRait.IsVisible)
-                    {
-                        if (!Questions.Any(e => el.Id == e.Id))
-                        {
-                            Questions.Insert(index, el);
-                            index++;
-                        }
-                    }
-                    else Questions.Remove(el);
-                }
-            });
-        }*/
-
         private void BarCode(object sender, EventArgs e)
         {
             IsVisBarCode = !IsVisBarCode;
             BarcodeScaner.CameraEnabled = IsVisBarCode;
         }
-        /*private void OnScanBarCode(string result)
-        {
-            Dispatcher.Dispatch(() =>
-            {
-                var resultText = "[" + result + "]";
-                var temp = Questions.Where(el => el.Id == -1).FirstOrDefault();
-                
-                if (string.IsNullOrEmpty(temp.Note)) temp.Note = resultText;
-                else if (Regex.IsMatch(temp.Note, @"\[\d+\]")) temp.Note = Regex.Replace(temp.Note, @"\[\d+\]", resultText);
-                     else temp.Note = resultText + temp.Note;
-
-                Bl.db.ReplaceRaitingDocItem(temp);
-                Questions[Questions.IndexOf(temp)] = temp;
-
-                //ListQuestions.ScrollTo(Questions.Last(), ScrollToPosition.Center, false);
-            });
-        }*/
 
         private void ShowButton(object sender, EventArgs e)
         {

@@ -24,17 +24,11 @@ public partial class QuestionItemTemplate : ContentView, IViewRDI
 
     private void OnButtonClicked(object sender, EventArgs e)
     {
-//#if IOS
-//    // iOS: виклик через інтерфейс батьківської сторінки
-    if (BindingContext is BRB5.Model.RaitingDocItem item)
-    {
-        var handler = GetParentPage() as IRatingButtonHandler;
-        handler?.OnRatingButtonClicked(sender, item);
-    }
-//#else
-//        // Android: працює через делегат
-//        OnButtonClick?.Invoke(sender, e);
-//#endif
+        if (BindingContext is BRB5.Model.RaitingDocItem item)
+        {
+            var handler = GetParentPage() as IRatingButtonHandler;
+            handler?.OnRatingButtonClicked(sender, item);
+        }
     }
     private void EditPhoto(object sender, System.EventArgs e)
     {

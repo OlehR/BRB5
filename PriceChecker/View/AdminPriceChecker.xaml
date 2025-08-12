@@ -26,6 +26,7 @@
                                Aspect="AspectFit" />
                     </Frame>
 
+                    <Button/>
                     <Image x:Name="LogoImage" 
                            HorizontalOptions="EndAndExpand"  
                            Aspect="AspectFit"/>
