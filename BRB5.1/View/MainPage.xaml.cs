@@ -192,7 +192,8 @@ namespace BRB6
             {
                 var res = await DisplayAlert("Оновлення доступне", "Доступна нова версія. Бажаєте встановити?", "Yes", "No");
                 MyProgress.IsVisible = true;
-                if (res)  Config.NativeBase.InstallAsync(Progress);
+                if (res)  
+                    _=Task.Run(async()=> Config.NativeBase.InstallAsync(Progress));
             }
             #endif
         }

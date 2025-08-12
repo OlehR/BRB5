@@ -26,6 +26,8 @@ namespace BRB6.PlatformDependency
             try
             {                
                 string path = Path.Combine(Android.App.Application.Context.GetExternalFilesDir("").AbsolutePath, Android.OS.Environment.DirectoryDownloads);
+                if(!Directory.Exists(path))
+                    Directory.CreateDirectory(path);
                 string DestinationPath = Path.Combine(path, "ua.UniCS.TM.BRB6.apk"); //.zip
                 if (File.Exists(DestinationPath))
                     File.Delete(DestinationPath);
