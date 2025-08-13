@@ -7,6 +7,7 @@ namespace BRB5.Model.DB
 {
     public class Reason
     {
+        public int Level { get; set; }
         public int CodeReason { get; set; }
         public string NameReason { get; set; }
     }

@@ -169,10 +169,11 @@ CREATE TABLE LogPrice (
     NumberOfReplenishment NUMERIC);
 
 CREATE TABLE Reason (
+    Level INTEGER  DEFAULT (0),
     CodeReason INTEGER  NOT NULL,
     NameReason TEXT     NOT NULL,
     DateInsert DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP);
-CREATE UNIQUE INDEX ReasonId ON Reason (CodeReason);
+CREATE UNIQUE INDEX ReasonId ON Reason (Level,CodeReason);
 
 CREATE TABLE Warehouse (
     Code       INT  PRIMARY KEY NOT NULL,
@@ -250,6 +251,9 @@ CREATE TABLE DocWaresExpiration(
 CREATE UNIQUE INDEX DocWaresExpirationTNC ON DocWaresExpiration (DateDoc, NumberDoc, DocId, CodeWares);
 ";
         readonly int Ver = 5;
+        string SqlTo6 = @"alter TABLE Reason add  Level INTEGER  DEFAULT (0);
+drop index ReasonId;
+CREATE UNIQUE INDEX ReasonId ON Reason (Level,CodeReason);";
         public static string PathNameDB { get { return Path.Combine(BaseDir, NameDB); } }
 
         public DB(string pBaseDir) : this() { BaseDir = pBaseDir; }
@@ -264,8 +268,10 @@ CREATE UNIQUE INDEX DocWaresExpirationTNC ON DocWaresExpiration (DateDoc, Number
             else
                 db = new SQLiteConnection(PathNameDB, false);
 
-            if (GetVersion < Ver)
+            if (GetVersion < 5)
                 CreateDB();
+            if(GetVersion == 5)            
+                SetSQL(SqlTo6, 6);            
         }
 
         public bool CreateDB()
@@ -282,14 +288,7 @@ CREATE UNIQUE INDEX DocWaresExpirationTNC ON DocWaresExpiration (DateDoc, Number
                 if (!File.Exists(PathNameDB))
                 {
                     db = new SQLiteConnection(PathNameDB, false);
-                    //Створюємо базу       
-                    foreach (var el in SqlCreateDB.Split(';'))
-                    {
-                        Sql = el.Replace("\r\n"," ").Trim();
-                        if (Sql.Length > 4 && !Sql.StartsWith("--"))
-                            db.Execute(Sql);
-                    }
-                    SetVersion(Ver);
+                    SetSQL(SqlCreateDB, Ver);                    
                     return true;
                 }
                 else
@@ -300,6 +299,18 @@ CREATE UNIQUE INDEX DocWaresExpirationTNC ON DocWaresExpiration (DateDoc, Number
                 FileLogger.WriteLogMessage(this, "DB.CreateDB", ex);
                 return false;
             }
+
+        }
+
+        void SetSQL(string pSQL,int pVer)
+        {
+            foreach (var el in pSQL.Split(';'))
+            {
+                string Sql = el.Replace("\r\n", " ").Trim();
+                if (Sql.Length > 4 && !Sql.StartsWith("--"))
+                    db.Execute(Sql);
+            }
+            SetVersion(pVer);
         }
 
         public bool SetConfig<T>(string pName, T pValue)
@@ -1089,9 +1100,9 @@ DE.ExpirationDateInput, DE.QuantityInput
             string sql = "select * from DocWaresExpiration where DATE(DateDoc) = DATE('now') --and NumberDoc=?";
             return db.Query<DocWaresExpiration>(sql);//, pNumberDoc);
         }
-        public IEnumerable<BRB5.Model.DB.Reason> GetReason()
+        public IEnumerable<BRB5.Model.DB.Reason> GetReason(eKindDoc pKindDoc)
         {
-            string Sql = "Select * FROM Reason";
+            string Sql = $"Select * FROM Reason where Level={(int)pKindDoc}";
             return db.Query<BRB5.Model.DB.Reason>(Sql);
         }
 

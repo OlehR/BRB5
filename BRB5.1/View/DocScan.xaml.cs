@@ -55,7 +55,7 @@ namespace BRB6.View
             OrderDoc = ListWares.Count > 0 ? ListWares.Max(el=>el.OrderDoc) : 0;
             if (ListWares.Count > 0) ListViewWares.SelectedItem = ListWares[0];
             NavigationPage.SetHasNavigationBar(this, DeviceInfo.Platform == DevicePlatform.iOS || Config.TypeScaner == eTypeScaner.BitaHC61 || Config.TypeScaner == eTypeScaner.ChainwayC61 || Config.TypeScaner == eTypeScaner.Zebra || Config.TypeScaner == eTypeScaner.PM550 || Config.TypeScaner == eTypeScaner.PM351);
-            Reason = db.GetReason();
+            Reason = db.GetReason(TypeDoc.KindDoc);
             PopulateReasonOptions();
             this.BindingContext = this;
         }
