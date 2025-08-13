@@ -44,6 +44,7 @@ public partial class SplashPage : ContentPage
         if (pBarCode.StartsWith("BRB6=>"))
         {
             var CodeWarehouse = bl.QRSettingsParse(pBarCode);
+            if (CodeWarehouse != 0) Config.CodeWarehouse = CodeWarehouse;
             ShowTextWithTimeout(pBarCode);
             bl.SaveSettings();
         }
