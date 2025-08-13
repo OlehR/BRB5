@@ -123,6 +123,7 @@ namespace BL.Connector
             }
             catch (Exception e)
             {
+                 
                 FileLogger.WriteLogMessage(this, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
                 return new Result(e);
             }

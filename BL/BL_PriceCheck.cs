@@ -22,7 +22,7 @@ namespace BL
 
             if (IsOnline)
             {
-                CheckWP = c.GetPrice(c.ParsedBarCode(pBarCode, pIsHandInput), pTPI);
+                CheckWP = c.GetPrice(c.ParsedBarCode(pBarCode, pIsHandInput), pTPI)?? new() { Name= $"Товар не знайдено =>{pBarCode}" };
             }
             else
             {
