@@ -74,6 +74,7 @@ namespace BRB5.Model
         /// Код складу
         /// </summary>
         public int CodeWarehouse { get; set; }
+        public int CodeReason { get; set; } // Код причини
 
         public string NameUser { get; set; } // 
         /// <summary>
