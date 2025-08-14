@@ -16,29 +16,27 @@ namespace PriceChecker
         {
             InitializeComponent();
 
-            //var CurDir = AppDomain.CurrentDomain.BaseDirectory;
             AppConfiguration = new ConfigurationBuilder()
                 .AddJsonFile( "appsettings.json")
                 .Build();
 
-            string ComPortScaner = AppConfiguration["ComPortScaner"]??"COM9";
+            Config.ComPortScaner = AppConfiguration["ComPortScaner"]??"COM9";
             FileLogger.WriteLogMessage("App", "App", "Start");
-            ScanerCom =new ScanerCom(ComPortScaner, 9600);
+            ScanerCom =new ScanerCom(Config.ComPortScaner, 9600);
             //ScanerCom.Init();
             FileLogger.WriteLogMessage("App", "App", "End");
         }
         static public ScanerCom ScanerCom;
         protected override Window CreateWindow(IActivationState? activationState)
         {
-            //return new Window(new AppShell());
+            return new Window(new AppShell());
 
-            const int newheight = 768;
-            const int newwidth = 1024;
-
-            var wins = new Window(new AppShell());
-            wins.Height = wins.MinimumHeight = wins.MaximumHeight = newheight;
-            wins.Width = wins.MinimumWidth = wins.MaximumWidth = newwidth;
-            return wins;
+            //const int newheight = 768;
+            //const int newwidth = 1024;
+            //var wins = new Window(new AppShell());
+            //wins.Height = wins.MinimumHeight = wins.MaximumHeight = newheight;
+            //wins.Width = wins.MinimumWidth = wins.MaximumWidth = newwidth;
+            //return wins;
         }
     }
 }

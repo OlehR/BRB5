@@ -69,6 +69,18 @@ public partial class UPriceChecker : ContentPage
             OnPropertyChanged(nameof(ColorBG));
         }
     }
+    protected override void OnAppearing()
+    {
+        base.OnAppearing();
+        _returnToSplashTimer.Start();
+    }
+
+    protected override void OnDisappearing()
+    {
+        _returnToSplashTimer.Stop();
+        base.OnDisappearing();
+    }
+
     void BarCode(string pBarCode,string pTypeBarCode=null) 
     {
         if (!string.IsNullOrWhiteSpace(pBarCode))
@@ -78,7 +90,10 @@ public partial class UPriceChecker : ContentPage
 
             if (tempWP != null)
             {
-                if (tempWP.CodeUser != 0)  MainThread.BeginInvokeOnMainThread(async () =>await Navigation.PushAsync(new AdminPriceChecker(tempWP, WP)));
+                if (tempWP.CodeUser != 0) 
+                {
+                    MainThread.BeginInvokeOnMainThread(async () => await Navigation.PushAsync(new AdminPriceChecker(tempWP, WP))); 
+                }
                 else WP = tempWP;
             }
 
