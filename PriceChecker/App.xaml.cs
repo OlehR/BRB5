@@ -1,16 +1,29 @@
-﻿using Utils;
+﻿using BRB5.Model;
 using Equipments;
-using BRB5.Model;
+using Microsoft.Extensions.Configuration;
+using Utils;
+
 
 namespace PriceChecker
 {
     public partial class App : Application
     {
+
+        public static IConfigurationRoot AppConfiguration;           
+
+            
         public App()
         {
             InitializeComponent();
+
+            //var CurDir = AppDomain.CurrentDomain.BaseDirectory;
+            AppConfiguration = new ConfigurationBuilder()
+                .AddJsonFile( "appsettings.json")
+                .Build();
+
+            string ComPortScaner = AppConfiguration["ComPortScaner"]??"COM9";
             FileLogger.WriteLogMessage("App", "App", "Start");
-            ScanerCom =new ScanerCom("COM12",9600);
+            ScanerCom =new ScanerCom(ComPortScaner, 9600);
             //ScanerCom.Init();
             FileLogger.WriteLogMessage("App", "App", "End");
         }
