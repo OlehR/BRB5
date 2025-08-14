@@ -256,7 +256,7 @@ CREATE UNIQUE INDEX DocWaresExpirationTNC ON DocWaresExpiration (DateDoc, Number
 drop index ReasonId;
 CREATE UNIQUE INDEX ReasonId ON Reason (Level,CodeReason);";
 
-        string SqlTo7 = "alter TABLE Reason add CodeReason INTEGER DEFAULT (0)";
+        string SqlTo7 = "alter TABLE Doc add CodeReason INTEGER DEFAULT (0)";
         public static string PathNameDB { get { return Path.Combine(BaseDir, NameDB); } }
 
         public DB(string pBaseDir) : this() { BaseDir = pBaseDir; }
