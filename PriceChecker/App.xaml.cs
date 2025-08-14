@@ -1,6 +1,6 @@
 ﻿using Utils;
 using Equipments;
-
+using BRB5.Model;
 
 namespace PriceChecker
 {

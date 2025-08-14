@@ -10,9 +10,18 @@ namespace PriceChecker.View;
 
 public partial class AdminPriceChecker : ContentPage
 {
+    DB db = DB.GetDB();
     BL.BL bl = BL.BL.GetBL(); 
+
     private Timer _returnTimer;
-    private const int TimeoutSeconds = 60;
+    private const int TimeoutSeconds = 6000;
+    public List<PrintBlockItems> ListPrintBlockItems { get { return db.GetPrintBlockItemsCount().ToList(); } }
+    public int SelectedPrintBlockItems { get { return ListPrintBlockItems.Count > 0 ? ListPrintBlockItems.Last().PackageNumber : -1; } }
+    /// <summary>
+    /// Номер пакета цінників за день !!!TMP Треба зберігати в базі.
+    /// </summary>
+    int _PackageNumber = 1;
+    public int PackageNumber { get { return _PackageNumber; } set { _PackageNumber = value; OnPropertyChanged(nameof(PackageNumber)); OnPropertyChanged(nameof(ListPrintBlockItems)); OnPropertyChanged(nameof(SelectedPrintBlockItems)); } }
 
     public bool IsVisPriceNormal { get { return WP != null && (WP.PriceOld != WP.PriceNormal); } }
     public bool IsVisPriceOpt { get { return WP != null && (WP.PriceOpt != 0 || WP.PriceOptOld != 0); } }
@@ -43,9 +52,9 @@ public partial class AdminPriceChecker : ContentPage
         }
     }
 
-    int _PrintType = 0;//Колір чека 0-звичайний 1-жовтий, -1 не розділяти.        
+    int _PrintType = -1;//Колір чека 0-звичайний 1-жовтий, -1 не розділяти.        
     public int PrintType { get { return _PrintType; } set { _PrintType = value; OnPropertyChanged("PrintType"); OnPropertyChanged("ColorPrintColorType"); } }
-    public bool IsEnabledPrint { get { return Config.TypeUsePrinter != eTypeUsePrinter.NotDefined; } }
+    public bool IsEnabledPrint { get { return Config.CodeWarehouse != 0; } }
     /// <summary>
     /// Номер сканування цінників за день !!!TMP Треба зберігати в базі.
     /// </summary>
@@ -131,6 +140,15 @@ public partial class AdminPriceChecker : ContentPage
             tapGesture.Tapped += (_, __) => ResetTimer();
             view.GestureRecognizers.Add(tapGesture);
         }
+
+        var r = db.GetCountScanCode();
+        if (r != null)
+        {
+            AllScan = r.AllScan;
+            BadScan = r.BadScan;
+            LineNumber = r.LineNumber;
+            PackageNumber = r.PackageNumber;
+        }
     }
 
     void Progress(double pProgress) => MainThread.BeginInvokeOnMainThread(() => PB = pProgress);
@@ -157,7 +175,7 @@ public partial class AdminPriceChecker : ContentPage
             LineNumber++;
             Config.OnProgress?.Invoke(0.2d);
 
-            WP = bl.FoundWares(pBarCode, 0, LineNumber, pIsHandInput, false, IsOnline, eTypePriceInfo.Full);
+            WP = bl.FoundWares(pBarCode, PackageNumber, LineNumber, pIsHandInput, false, IsOnline, eTypePriceInfo.Full);
 
             if (WP != null)
             {
@@ -201,6 +219,18 @@ public partial class AdminPriceChecker : ContentPage
 
         ResetTimer();
     }
+    private void OnClickPrintBlock(object sender, EventArgs e)
+    {
+        var temp = PrintBlockItemsXaml.SelectedItem as PrintBlockItems;
+        if (IsEnabledPrint)
+            _ = DisplayAlert("Друк", bl.PrintPackage(PrintType, temp.PackageNumber, IsMultyLabel), "OK");
+    }
+    private void OnClickAddPrintBlock(object sender, EventArgs e)
+    {
+        PackageNumber++;
+        ListPrintBlockItems.Add(new PrintBlockItems() { PackageNumber = PackageNumber });
+    }
+
     public void FillConditionList(IEnumerable<СonditionClass> conditions)
     {
         MainThread.BeginInvokeOnMainThread(() =>
@@ -218,14 +248,14 @@ public partial class AdminPriceChecker : ContentPage
             var conditionLabel = new Label
             {
                 Text = condition.Сondition,
-                FontSize = 25,
+                FontSize = 20,
                 TextColor = Colors.DarkBlue
             };
 
             var contrLabel = new Label
             {
                 Text = condition.Contr,
-                FontSize = 25,
+                FontSize = 20,
                 TextColor = Colors.DarkBlue
             };
 

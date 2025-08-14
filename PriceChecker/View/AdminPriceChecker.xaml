@@ -42,17 +42,48 @@
 
                     <StackLayout>
                         <ffimageloading:CachedImage x:Name="WareImage" Source="{Binding UriPicture}" />
-                        <Button Text="Друк" Padding="0" Margin="10"
-                                BorderWidth="2"
-                                FontSize="25"
-                                BorderColor="Black"
-                                BackgroundColor="White"
+
+                        <Grid RowDefinitions="Auto,Auto"
+                                ColumnDefinitions="*,*"                              
                                 VerticalOptions="EndAndExpand"
-                                x:Name="PrintButton"
-                                Grid.Column="1"
-                                HorizontalOptions="Fill"
-                                IsEnabled="{Binding IsEnabledPrint}"
-                                Clicked="OnClickPrintOne" />
+                                RowSpacing="10"
+                                ColumnSpacing="10"
+                                Padding="10">
+
+                            <Picker x:Name="PrintBlockItemsXaml"
+                                    ItemsSource="{Binding ListPrintBlockItems}"
+                                    ItemDisplayBinding="{Binding stringPrintBlockItem}"
+                                    SelectedIndex="{Binding SelectedPrintBlockItems}"
+                                    Grid.Row="0" Grid.Column="0" 
+                                    BackgroundColor="White"
+                                    HorizontalOptions="Fill"/>
+                            <Button Text="{Binding PackageNumber}"
+                                    Grid.Row="0" Grid.Column="1" 
+                                    TextColor="Black"
+                                    BorderWidth="2"
+                                    BorderColor="Black"
+                                    BackgroundColor="White"
+                                    HorizontalOptions="Fill"
+                                    Clicked="OnClickAddPrintBlock" />
+
+                            <Button Text="Друк пакета" 
+                                    Grid.Row="1" Grid.Column="0" 
+                                    BorderWidth="2"
+                                    TextColor="Black"
+                                    BorderColor="Black"
+                                    BackgroundColor="White"
+                                    HorizontalOptions="Fill"
+                                    Clicked="OnClickPrintBlock" />
+                            <Button Text="Друк одного" 
+                                    Grid.Row="1" Grid.Column="1" 
+                                    BorderWidth="2"
+                                    BorderColor="Black"
+                                    BackgroundColor="White"
+                                    x:Name="PrintButton"
+                                    HorizontalOptions="Fill"
+                                    TextColor="Black"
+                                    Clicked="OnClickPrintOne" />
+                        </Grid>
                         
                     </StackLayout>
 

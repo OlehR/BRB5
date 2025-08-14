@@ -72,7 +72,7 @@ namespace BL
         {
             var codeWares = db.GetPrintPackageCodeWares(Config.TypeUsePrinter == eTypeUsePrinter.StationaryWithCutAuto ? -1 : actionType, packageNumber, IsMultyLabel);
             //    SetProgress(5);//priceCheckerActivity.loader.setVisibility(View.VISIBLE);
-            if (Config.TypeUsePrinter == eTypeUsePrinter.StationaryWithCut || Config.TypeUsePrinter == eTypeUsePrinter.StationaryWithCutAuto)
+            if (Config.TypeUsePrinter == eTypeUsePrinter.StationaryWithCut || Config.TypeUsePrinter == eTypeUsePrinter.StationaryWithCutAuto || Config.TypeUsePrinter == eTypeUsePrinter.NotDefined)
                return c.PrintHTTP(codeWares);
             else
                 foreach (long CodeWares in codeWares) {
