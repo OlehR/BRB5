@@ -120,7 +120,6 @@ namespace BRB6.View
                     CameraEnabled = true,
                     VibrationOnDetected = false,
                     BarcodeSymbologies = BarcodeFormats.Ean13 | BarcodeFormats.Ean8 | BarcodeFormats.QRCode,
-
                 };
 
                 BarcodeScaner.OnDetectionFinished += CameraView_OnDetectionFinished;
@@ -243,8 +242,6 @@ namespace BRB6.View
                     await Task.Delay(1000);
                     BarcodeScaner.PauseScanning = false;
                 });
-
-
             }
         }
 

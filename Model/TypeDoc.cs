@@ -4,7 +4,7 @@ using System.Text;
 
 namespace BRB5
 {
-    public enum eKindDoc { NotDefined, Normal, Simple, PriceCheck, RaitingDoc, RaitingTempate, RaitingTemplateCreate, PlanCheck, ExpirationDate, LotsCheck, Lot}
+    public enum eKindDoc { NotDefined=0, Normal=1, Simple=2, PriceCheck=3, RaitingDoc=4, RaitingTempate=5, RaitingTemplateCreate=6, PlanCheck=7, ExpirationDate=8, LotsCheck=9, Lot=10}
     public enum eGroup { NotDefined, Price,Doc,Raiting, FixedAssets }
     public enum eTypeReplenishment {None/*Відсутне*/,Input /*Вручну*/,Auto /* Проставляємо 1*/ }
     public class TypeDoc
@@ -27,6 +27,10 @@ namespace BRB5
         /// Показувати причину( бій брак тощо)
         /// </summary>
         public bool IsViewReason { get; set; } = false;
+        /// <summary>
+        /// Показувати причину в шапці документа.
+        /// </summary>
+        public bool IsViewReasonHead { get; set; } = false;
         /// <summary>
         /// Показувати планові(фактичні) показники.
         /// </summary>

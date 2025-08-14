@@ -14,7 +14,7 @@ namespace BRB5.Model
         public string BarCodeUser { get; set; }
         public string NameDCT { get; set; }
         public int Ver { get; set; }
-        public int CodeWarehouse { get; set; }
+        public long CodeWarehouse { get; set; }
         public Api(int pCodeData) : this()
         {
             CodeData = pCodeData;

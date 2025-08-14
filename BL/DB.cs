@@ -108,6 +108,7 @@ CREATE TABLE Doc (
     TypeDoc           INTEGER   NOT NULL DEFAULT (0),
     NumberDoc         TEXT      NOT NULL,
     CodeWarehouse     INTEGER   NOT NULL DEFAULT (0),
+    CodeReason INTEGER         DEFAULT (0),
     IdTemplate INTEGER         NOT NULL DEFAULT (0),
     ExtInfo           TEXT,
     NameUser          TEXT,
@@ -250,10 +251,12 @@ CREATE TABLE DocWaresExpiration(
 );
 CREATE UNIQUE INDEX DocWaresExpirationTNC ON DocWaresExpiration (DateDoc, NumberDoc, DocId, CodeWares);
 ";
-        readonly int Ver = 5;
+        readonly int Ver = 7;
         string SqlTo6 = @"alter TABLE Reason add  Level INTEGER  DEFAULT (0);
 drop index ReasonId;
 CREATE UNIQUE INDEX ReasonId ON Reason (Level,CodeReason);";
+
+        string SqlTo7 = "alter TABLE Reason add CodeReason INTEGER DEFAULT (0)";
         public static string PathNameDB { get { return Path.Combine(BaseDir, NameDB); } }
 
         public DB(string pBaseDir) : this() { BaseDir = pBaseDir; }
@@ -270,8 +273,13 @@ CREATE UNIQUE INDEX ReasonId ON Reason (Level,CodeReason);";
 
             if (GetVersion < 5)
                 CreateDB();
-            if(GetVersion == 5)            
-                SetSQL(SqlTo6, 6);            
+            else
+            {
+                if (GetVersion < 6)
+                    SetSQL(SqlTo6, 6);
+                if (GetVersion < 7)
+                    SetSQL(SqlTo7, 7);
+            }            
         }
 
         public bool CreateDB()
@@ -299,7 +307,6 @@ CREATE UNIQUE INDEX ReasonId ON Reason (Level,CodeReason);";
                 FileLogger.WriteLogMessage(this, "DB.CreateDB", ex);
                 return false;
             }
-
         }
 
         void SetSQL(string pSQL,int pVer)
