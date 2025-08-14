@@ -52,7 +52,7 @@ public partial class AdminPriceChecker : ContentPage
         }
     }
 
-    int _PrintType = 0;//Колір чека 0-звичайний 1-жовтий, -1 не розділяти.        
+    int _PrintType = -1;//Колір чека 0-звичайний 1-жовтий, -1 не розділяти.        
     public int PrintType { get { return _PrintType; } set { _PrintType = value; OnPropertyChanged("PrintType"); OnPropertyChanged("ColorPrintColorType"); } }
     public bool IsEnabledPrint { get { return Config.CodeWarehouse != 0; } }
     /// <summary>
@@ -140,6 +140,15 @@ public partial class AdminPriceChecker : ContentPage
             tapGesture.Tapped += (_, __) => ResetTimer();
             view.GestureRecognizers.Add(tapGesture);
         }
+
+        var r = db.GetCountScanCode();
+        if (r != null)
+        {
+            AllScan = r.AllScan;
+            BadScan = r.BadScan;
+            LineNumber = r.LineNumber;
+            PackageNumber = r.PackageNumber;
+        }
     }
 
     void Progress(double pProgress) => MainThread.BeginInvokeOnMainThread(() => PB = pProgress);
@@ -166,7 +175,7 @@ public partial class AdminPriceChecker : ContentPage
             LineNumber++;
             Config.OnProgress?.Invoke(0.2d);
 
-            WP = bl.FoundWares(pBarCode, 0, LineNumber, pIsHandInput, false, IsOnline, eTypePriceInfo.Full);
+            WP = bl.FoundWares(pBarCode, PackageNumber, LineNumber, pIsHandInput, false, IsOnline, eTypePriceInfo.Full);
 
             if (WP != null)
             {

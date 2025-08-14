@@ -15,7 +15,7 @@ namespace BRB5.Model
         public static string Manufacturer = "";
         public static string Model = "";     
         public static int CodeWarehouse;
-        public static string NameCompany="?";
+        public static string NameCompany="?";   
         public static string PathAPK = "https://dct.spar.uz.ua/apk/ua.UniCS.TM.BRB6.apk"; //"https://media.githubusercontent.com/media/OlehR/BRB5/refs/heads/master/Apk/ua.UniCS.TM.BRB6.apk";
         public static List<int> CodesWarehouses { get; set; }
         //static eCompany _Company = eCompany.NotDefined;
@@ -33,6 +33,7 @@ namespace BRB5.Model
         public static string ApiUrl4 { get; set; }
 
         public static string SN;
+        public static string ComPortScaner { get; set; } 
         public static DateTime DateLastLoadGuid { get; set; }
         public static int Ver { get; set; }
         public static bool IsViewAllWH { get; set; } = false;

@@ -72,6 +72,7 @@ namespace BL
             Config.ApiUrl2 = "http://45.83.1.207/market/hs/TSD"; //TMP!!!! db.GetConfig<string>("ApiUrl2");
             Config.ApiUrl3 = db.GetConfig<string>("ApiUrl3");
             Config.ApiUrl4 = db.GetConfig<string>("ApiUrl4");
+            Config.ComPortScaner = db.GetConfig<string>("ComPortScaner");
             Config.DateLastLoadGuid = db.GetConfig<DateTime>("DateLastLoadGuid");
             Config.CodeWarehouse = db.GetConfig<int>("CodeWarehouse");
             Config.TypeUsePrinter = db.GetConfig<eTypeUsePrinter>("TypeUsePrinter");

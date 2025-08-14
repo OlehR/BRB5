@@ -38,6 +38,7 @@ namespace BL
             db.SetConfig<string>("ApiUrl3", Config.ApiUrl3 ?? "");
             db.SetConfig<string>("ApiUrl4", Config.ApiUrl4 ?? "");
             db.SetConfig<int>("Compress", Config.Compress);
+            db.SetConfig<string>("ComPortScaner", Config.ComPortScaner ?? "");
 
             db.SetConfig<eCompany>("Company", Config.Company);
             db.SetConfig<eTypeLog>("TypeLog", FileLogger.TypeLog);
@@ -120,6 +121,7 @@ namespace BL
                         case "ApiUrl2": Config.ApiUrl2 = t[1]; break;
                         case "ApiUrl3": Config.ApiUrl3 = t[1]; break;
                         case "ApiUrl4": Config.ApiUrl4 = t[1]; break;
+                        case "ComPortScaner": Config.ComPortScaner = t[1]; break;
                         case "Compress": Config.Compress = t[1].ToInt(); break;
                         case "Company": Config.Company = (eCompany)Enum.Parse(typeof(eCompany), t[1]); break;
                         //SelectedCompany =ListCompany.FindIndex(x => x == t[1]); break;
