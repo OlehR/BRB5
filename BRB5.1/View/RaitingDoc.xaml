@@ -5,6 +5,7 @@
                       xmlns:Model="clr-namespace:BRB5.Model;assembly=BRB5.Model"                   
                       x:Class="BRB6.RaitingDoc">
     <ContentPage.Content>
+        <Grid RowDefinitions="*,auto">
         <ListView x:Name="ListQuestions"
                   HasUnevenRows="True"
                   ItemsSource="{Binding MyDoc}">
@@ -28,12 +29,13 @@
                                         <TapGestureRecognizer Tapped="OnButtonClicked" />
                                     </Grid.GestureRecognizers>
                                     <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="1*" />
-                                        <ColumnDefinition Width="4*" />
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="3*" />
+                                        <ColumnDefinition Width="*" />
                                     </Grid.ColumnDefinitions>
                                     <Grid.RowDefinitions>
-                                        <RowDefinition Height="*" />
-                                        <RowDefinition Height="*" />
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="Auto" />
                                     </Grid.RowDefinitions>
 
                                     <Label Grid.Row="0"
@@ -61,6 +63,14 @@
                                            Text="{Binding Description}" />
                                     </StackLayout >
 
+                                    <ImageButton Clicked="SavePhoto"
+                                                 Grid.RowSpan="2"
+                                                 Grid.Row="0"                                                 
+                                                 Grid.Column="3"
+                                                 HeightRequest="60"
+                                                 Aspect="AspectFit"
+                                                 Source="archive_save.png"
+                                        />
                                 </Grid>
                             </Grid>
                         </ViewCell.View>
@@ -68,6 +78,14 @@
                 </DataTemplate>
             </ListView.ItemTemplate>
         </ListView>
+
+
+            <ProgressBar ScaleY="2"
+                         Grid.Row="1"
+                         Progress="{Binding PB}"
+                         VerticalOptions="End"
+                         ProgressColor="Black" />
+        </Grid>
     </ContentPage.Content>
 
 </ContentPage>
