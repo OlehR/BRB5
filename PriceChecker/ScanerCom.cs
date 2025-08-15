@@ -37,11 +37,13 @@ namespace Equipments
                     CloseIfOpen();
                     SerialDevice.Open();
                     SerialDevice.DiscardInBuffer();
-                    SerialDevice.DiscardOutBuffer();               
+                    SerialDevice.DiscardOutBuffer();
+                    FileLogger.WriteLogMessage(this, "ScanerCom", $"Init Port=>{SerialPort} BaudRate=>{BaudRate}");
                 }
                 catch (Exception ex)
                 {
-                    TextError = ex.Message;                   
+                    TextError = ex.Message;
+                    FileLogger.WriteLogMessage(this, "ScanerCom", ex);
                 }
                 finally
                 {
@@ -73,14 +75,22 @@ namespace Equipments
 
         private bool OnDataReceived(byte[] data)
         {
-            for (int i = 0; i < data.Length; i++)
-                if (data[i] == 160) data[i] = 13;
-            string Str = Encoding.ASCII.GetString(data);
-            FileLogger.WriteLogMessage("OnDataReceived=>" + Str);
-            Str = Str.Replace("\r", "").Replace("\n", "");
+            try
+            {
+                for (int i = 0; i < data.Length; i++)
+                    if (data[i] == 160) data[i] = 13;
+                string Str = Encoding.ASCII.GetString(data);
+                FileLogger.WriteLogMessage("OnDataReceived=>" + Str);
+                Str = Str.Replace("\r", "").Replace("\n", "");
 
-            OnBarCode?.Invoke(Str, null);
-            return true;
+                OnBarCode?.Invoke(Str, null);
+                return true;
+            }
+            catch(Exception ex) 
+            {
+                FileLogger.WriteLogMessage(this, "OnDataReceived", ex);
+                return false;
+            }
         }
 
         /*public void GetReadDataSync(byte[] command, Action<byte[]> onDatAction)

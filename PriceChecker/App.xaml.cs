@@ -19,7 +19,7 @@ namespace PriceChecker
             AppConfiguration = new ConfigurationBuilder()
                 .AddJsonFile( "appsettings.json")
                 .Build();
-
+            FileLogger.Init("Logs", 0, eTypeLog.Full);
             Config.ComPortScaner = AppConfiguration["ComPortScaner"]??"COM9";
             FileLogger.WriteLogMessage("App", "App", "Start");
             ScanerCom =new ScanerCom(Config.ComPortScaner, 9600);

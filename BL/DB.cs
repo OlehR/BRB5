@@ -177,14 +177,15 @@ CREATE TABLE Reason (
 CREATE UNIQUE INDEX ReasonId ON Reason (Level,CodeReason);
 
 CREATE TABLE Warehouse (
-    Code       INT  PRIMARY KEY NOT NULL,
+    Code       INTEGER  PRIMARY KEY NOT NULL,
     Number     TEXT,
     Name       TEXT,
     Url        TEXT,
     Address    TEXT,
     InternalIP TEXT,
     ExternalIP TEXT,
-    Location TEXT);
+    Location TEXT,
+    CodeTM INTEGER DEFAULT (0) );
 CREATE INDEX WarehouseId ON Warehouse (Code);
 
 CREATE TABLE GroupWares (
@@ -251,12 +252,13 @@ CREATE TABLE DocWaresExpiration(
 );
 CREATE UNIQUE INDEX DocWaresExpirationTNC ON DocWaresExpiration (DateDoc, NumberDoc, DocId, CodeWares);
 ";
-        readonly int Ver = 7;
+        readonly int Ver = 8;
         string SqlTo6 = @"alter TABLE Reason add  Level INTEGER  DEFAULT (0);
 drop index ReasonId;
 CREATE UNIQUE INDEX ReasonId ON Reason (Level,CodeReason);";
 
         string SqlTo7 = "alter TABLE Doc add CodeReason INTEGER DEFAULT (0)";
+        string SqlTo8 = "alter TABLE Warehouse add CodeTM INTEGER DEFAULT (0)";
         public static string PathNameDB { get { return Path.Combine(BaseDir, NameDB); } }
 
         public DB(string pBaseDir) : this() { BaseDir = pBaseDir; }
@@ -279,6 +281,8 @@ CREATE UNIQUE INDEX ReasonId ON Reason (Level,CodeReason);";
                     SetSQL(SqlTo6, 6);
                 if (GetVersion < 7)
                     SetSQL(SqlTo7, 7);
+                if (GetVersion < 8)
+                    SetSQL(SqlTo8, 8);
             }            
         }
 

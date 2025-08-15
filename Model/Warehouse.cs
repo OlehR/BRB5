@@ -7,6 +7,16 @@ using Utils;
 
 namespace BRB5.Model
 {
+    /// <summary>
+    /// !!!! Задубльовано з ModelMID
+    /// </summary>
+    public enum eShopTM
+    {
+        NoDefine = 0,
+        Vopak = 1,
+        Spar = 2,
+        Lubo = 3
+    }
     public class Warehouse : INotifyPropertyChanged
     {
         /// <summary>
@@ -42,6 +52,8 @@ namespace BRB5.Model
         /// gps координати магазину 23.3451,45.2344
         /// </summary>
         public string Location { get;set;}
+
+        public eShopTM CodeTM { get; set; }
 
         public double GPSX { get { return Location?.Split(',').Length == 2 ? Location.Split(',')[0].ToDouble():0d; } }
         public double GPSY { get { return Location?.Split(',').Length == 2 ? Location.Split(',')[1].ToDouble():0d; } }
