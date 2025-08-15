@@ -180,7 +180,7 @@ public partial class LotsCheck : ContentPage
             Grid.SetColumn(extInfoStackLayout, 1);
             Grid.SetRow(extInfoStackLayout, 1);
 
-            if (string.IsNullOrEmpty(doc.ExtInfo))
+            if (!string.IsNullOrEmpty(doc.ExtInfo))
             {
                 var extInfoLines = doc.ExtInfo.Split(new[] { "\r" }, StringSplitOptions.None);
                 foreach (var line in extInfoLines)
