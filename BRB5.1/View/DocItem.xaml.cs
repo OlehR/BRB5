@@ -33,13 +33,49 @@ namespace BRB6.View
         public bool IsVisibleDocF6 { get { return _IsVisibleDocF6; } set { _IsVisibleDocF6 = value; OnPropertyChanged("IsVisibleDocF6"); } } 
         public ObservableCollection<DocWaresEx> MyDocWares { get; set; } = new ObservableCollection<DocWaresEx>();
         public bool IsVisF5Act => TypeDoc.KindDoc == eKindDoc.LotsCheck;
+        // Колекція варіантів для Picker
+        public ObservableCollection<BRB5.Model.DB.Reason> Reasons { get; set; }
+
+        // Поточний вибраний елемент
+        private BRB5.Model.DB.Reason _selectedReason;
+        public BRB5.Model.DB.Reason SelectedReason
+        {
+            get => _selectedReason;
+            set
+            {
+                if (_selectedReason != value)
+                {
+                    _selectedReason = value;
+                    OnPropertyChanged();
+                    if (value != null)
+                        Doc.CodeReason = value.CodeReason;
+                }
+            }
+        }
         public DocItem(DocId pDocId,  TypeDoc pTypeDoc)
         {
+            InitializeComponent();
             NokeyBoard();
             TypeDoc = pTypeDoc;
-            Doc = new DocVM(pDocId);           
+            Doc = new DocVM(pDocId);
+
+            // Отримуємо список причин із бази
+            var reasonsFromDb = db.GetReason(pTypeDoc.KindDoc);
+
+            // Конвертуємо у ObservableCollection (щоб Picker оновлювався автоматично)
+            Reasons = new ObservableCollection<BRB5.Model.DB.Reason>(reasonsFromDb);
+
+            // Якщо у Doc вже є вибраний CodeReason, ставимо його як SelectedItem
+            if (Doc.CodeReason != 0)
+                SelectedReason = Reasons.FirstOrDefault(r => r.CodeReason == Doc.CodeReason);
+            if (Doc.CodeReason == 0)
+            {
+                Device.BeginInvokeOnMainThread(() =>
+                {
+                    ReasonPicker.Focus();
+                });
+            }
             BindingContext = this;
-            InitializeComponent();
         }
         protected override void OnAppearing()
         {

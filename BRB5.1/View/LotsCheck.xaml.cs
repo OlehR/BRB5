@@ -30,9 +30,9 @@ public partial class LotsCheck : ContentPage
         InitializeComponent();
         TypeDoc = vTypeDoc;
 
+        PopulateStackLayout();
         Task.Run(async () =>
         {
-            PopulateStackLayout();
             await c.LoadDocsDataAsync(TypeDoc.CodeDoc, null, false);
             PopulateStackLayout();
         });
