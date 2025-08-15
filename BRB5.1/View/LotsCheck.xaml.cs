@@ -17,20 +17,22 @@ public partial class LotsCheck : ContentPage
     private Connector c = ConnectorBase.GetInstance();
     private TypeDoc TypeDoc;
     DB db = DB.GetDB();
-    private ObservableCollection<DocVM> MyDocs = new ObservableCollection<DocVM>();
+    private ObservableCollection<DocVM> MyDocs = new ObservableCollection<DocVM>(); 
     public bool IsSoftKeyboard { get { return Config.IsSoftKeyboard; } }
 
     private DocVM SelectedDoc;
     private bool IsWares;
     public double height { get { return DeviceDisplay.MainDisplayInfo.Height / DeviceDisplay.MainDisplayInfo.Density - 150; } }
+    public bool IsMandatory { get; set; } = false;
+    public string FilterLabel => IsMandatory ? "F3-Обов'язкові" : "F3-Всі";
     public LotsCheck(TypeDoc vTypeDoc)
     {
         InitializeComponent();
         TypeDoc = vTypeDoc;
 
+        PopulateStackLayout();
         Task.Run(async () =>
         {
-            PopulateStackLayout();
             await c.LoadDocsDataAsync(TypeDoc.CodeDoc, null, false);
             PopulateStackLayout();
         });
@@ -102,7 +104,15 @@ public partial class LotsCheck : ContentPage
         {
             StackLayoutDocs.Children.Clear();
         });
-        MyDocs = new ObservableCollection<DocVM>(db.GetDoc(TypeDoc));
+        // Завантажуємо всі документи
+        var allDocs = db.GetDoc(TypeDoc);
+
+        // Якщо фільтр увімкнено — беремо лише потрібні
+        if (IsMandatory)
+            MyDocs = new ObservableCollection<DocVM>(allDocs.Where(el => el.CodeReason == 1));
+        else
+            MyDocs = new ObservableCollection<DocVM>(allDocs);
+        /*
         //// --- Add this block to multiply documents for testing ---
         //int multiplyFactor = 10; // Change this to get more items (e.g., 10x20=200)
         //var docsList = MyDocs.ToList();
@@ -123,6 +133,7 @@ public partial class LotsCheck : ContentPage
         //        MyDocs.Add(newDoc);
         //    }
         //}
+        */
 
         var firstDoc = MyDocs.FirstOrDefault();
         if (firstDoc != null)
@@ -130,6 +141,7 @@ public partial class LotsCheck : ContentPage
             var temp = db.GetDocWares(firstDoc, 1, eTypeOrder.Scan);
             IsWares = temp?.Any() == true;
             F2SaveLabel.IsVisible = !IsWares;
+            F3FilterLabel.IsVisible = IsWares;
         }
         else
         {
@@ -174,10 +186,13 @@ public partial class LotsCheck : ContentPage
             Grid.SetColumn(extInfoStackLayout, 1);
             Grid.SetRow(extInfoStackLayout, 1);
 
-            var extInfoLines = doc.ExtInfo.Split(new[] { "\r" }, StringSplitOptions.None);
-            foreach (var line in extInfoLines)
+            if (!string.IsNullOrEmpty(doc.ExtInfo))
             {
-                extInfoStackLayout.Children.Add(new Label { Text = line });
+                var extInfoLines = doc.ExtInfo.Split(new[] { "\r" }, StringSplitOptions.None);
+                foreach (var line in extInfoLines)
+                {
+                    extInfoStackLayout.Children.Add(new Label { Text = line });
+                }
             }
 
             grid.Children.Add(dateLabel);
@@ -237,7 +252,13 @@ public partial class LotsCheck : ContentPage
             MainThread.BeginInvokeOnMainThread(async () => await toast.Show());
         });
     }
-
+    private void F3Filter(object sender, EventArgs e)
+    {
+        IsMandatory = !IsMandatory;
+        OnPropertyChanged(nameof(FilterLabel));
+        OnPropertyChanged(nameof(IsMandatory));
+        PopulateStackLayout();
+    }
 #if ANDROID
     public void OnPageKeyDown(Keycode keyCode, KeyEvent e)
     {
@@ -245,6 +266,9 @@ public partial class LotsCheck : ContentPage
         {
             case Keycode.F2:
                 F2Save(null, EventArgs.Empty);
+                return;
+            case Keycode.F3:
+                F3Filter(null, EventArgs.Empty);
                 return;
             default:
                 return;

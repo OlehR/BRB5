@@ -3,14 +3,24 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="BRB6.View.LotsCheck">
     <NavigationPage.TitleView>
-        <StackLayout Spacing="10" Orientation="Horizontal">
+        <StackLayout Spacing="10" Orientation="Horizontal" Padding="0,0,10,0">
+
             <Label Text="F2- Зберегти" 
                    x:Name="F2SaveLabel"
-                   HorizontalOptions="End" 
+                   HorizontalOptions="Start" 
                    IsVisible="False"  
                    VerticalOptions="Center"  >
                 <Label.GestureRecognizers>
                     <TapGestureRecognizer Tapped="F2Save" />
+                </Label.GestureRecognizers>
+            </Label>
+            <Label Text="{Binding FilterLabel}" 
+                   x:Name="F3FilterLabel"
+                   IsVisible="False"  
+                   HorizontalOptions="EndAndExpand" 
+                   VerticalOptions="Center"  >
+                <Label.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="F3Filter" />
                 </Label.GestureRecognizers>
             </Label>
         </StackLayout>

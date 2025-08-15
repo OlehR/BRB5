@@ -15,6 +15,9 @@ namespace BRB6
         DB db = DB.GetDB();
         private readonly TypeDoc TypeDoc;
         public ObservableCollection<DocVM> MyDoc { get; set; } = new ObservableCollection<DocVM>();
+
+        double _PB = 0.95;
+        public double PB { get { return _PB; } set { _PB = value; OnPropertyChanged(nameof(PB)); } }
         //public string Help { get; set; } = "ERHHHHHHH54";
         public RaitingDoc(TypeDoc pTypeDoc)
         {
@@ -74,6 +77,15 @@ namespace BRB6
             var vDoc = cc.BindingContext as DocVM;
             await Navigation.PushAsync(new RaitingDocItem(vDoc));
            // await Shell.Current.GoToAsync($"{nameof(Item)}?{nameof(Item.NumberDoc)}={vDoc.NumberDoc}");//&TypeDoc={vDoc.TypeDoc}
+        }
+
+        private async void SavePhoto(object sender, EventArgs e)
+        {
+            bool isOk = await DisplayAlert("Збереження", "Ви хочете повторно вивантажити на сервер фотографії?", "Так", "Ні");
+            if (isOk == true) 
+            { 
+            
+            }
         }
     }
 }
