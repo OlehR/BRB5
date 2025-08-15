@@ -1,11 +1,15 @@
 ﻿//using BRB5.Model;
+
 using BL;
 using BL.Connector;
-using BRB5.Model;
-using System.Collections.ObjectModel;
-using Microsoft.Maui.Controls.Compatibility;
-using Grid = Microsoft.Maui.Controls.Grid;
 using BRB5;
+using BRB5.Model;
+using CommunityToolkit.Maui.Core;
+using Microsoft.Maui.Controls.Compatibility;
+using System.Collections.ObjectModel;
+using Grid = Microsoft.Maui.Controls.Grid;
+
+using CommunityToolkit.Maui.Alerts;
 
 namespace BRB6
 {
@@ -27,7 +31,7 @@ namespace BRB6
             InitializeComponent();
             Routing.RegisterRoute(nameof(RaitingDocItem), typeof(RaitingDocItem));
             NavigationPage.SetHasNavigationBar(this, DeviceInfo.Platform == DevicePlatform.iOS);
-
+            Config.OnProgress += (p) => PB = p;
             this.BindingContext = this;
         }
 
@@ -79,12 +83,20 @@ namespace BRB6
            // await Shell.Current.GoToAsync($"{nameof(Item)}?{nameof(Item.NumberDoc)}={vDoc.NumberDoc}");//&TypeDoc={vDoc.TypeDoc}
         }
 
+       
+
         private async void SavePhoto(object sender, EventArgs e)
         {
+            Microsoft.Maui.Controls.View imageButton = sender as Microsoft.Maui.Controls.View;
+            Grid cc = imageButton.Parent as Grid;
+            var vDoc = cc.BindingContext as DocVM;
+
             bool isOk = await DisplayAlert("Збереження", "Ви хочете повторно вивантажити на сервер фотографії?", "Так", "Ні");
             if (isOk == true) 
-            { 
-            
+            {
+                var Res= await c.SendRatingAsync(null, vDoc, true);
+                var toast = Toast.Make($"{Res.TextError} =>{Res.Info}", ToastDuration.Long, 14);
+                MainThread.BeginInvokeOnMainThread(async () => await toast.Show());                
             }
         }
     }

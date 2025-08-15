@@ -234,10 +234,11 @@ namespace BL.Connector
             return Res;
         }
 
-        public override async Task<Result> LoadGuidDataAsync(bool IsFull)
+        public override async Task<Result> LoadGuidDataAsync(bool pIsFull)
         {
-            await LoadWarehouse();
-            return await LoadDocsDataAsync(-1, null,  true);
+            return await CU.LoadGuidDataAsync(pIsFull);
+            //await LoadWarehouse();
+            //return await LoadDocsDataAsync(-1, null,  true);
         }
 
         /// <summary>
@@ -247,7 +248,7 @@ namespace BL.Connector
         /// <param name="pNumberDoc"></param>        
         /// <param name="pIsClear"></param>
         /// <returns></returns>
-        public override async Task<Result> LoadDocsDataAsync(int pTypeDoc, string pNumberDoc, bool pIsClear)
+       /* public override async Task<Result> LoadDocsDataAsync(int pTypeDoc, string pNumberDoc, bool pIsClear)
         {
 
             if (pTypeDoc == 11)
@@ -289,7 +290,7 @@ namespace BL.Connector
                 return null;
             }
         }
-
+*/
 
         /// <summary>
         /// Вивантаження документів з ТЗД (HTTP)
@@ -326,7 +327,7 @@ namespace BL.Connector
             public IEnumerable<object[]> Warehouse  { get; set; }
         }
 
-        public override async Task<Result<IEnumerable<Warehouse>>> LoadWarehouse()
+        /*public override async Task<Result<IEnumerable<Warehouse>>> LoadWarehouse()
         {
             try
             {
@@ -348,7 +349,7 @@ namespace BL.Connector
                 FileLogger.WriteLogMessage(this, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
                 return new Result<IEnumerable<Warehouse>>(e);
             }
-        }
+        }*/
 
         /// <summary>
         /// Друк на стаціонарному термопринтері

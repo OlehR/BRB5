@@ -3,6 +3,7 @@ using BRB5.Model.DB;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.IO.Compression;
 using System.Text;
 using System.Threading.Tasks;
 using UtilNetwork;
@@ -55,7 +56,7 @@ namespace BRB5.Model
         /// </summary>
         /// <param name="pR"></param>
         /// <returns></returns>
-        public virtual async Task<Result> SendRatingAsync(IEnumerable<RaitingDocItem> pR, DocVM pDoc)  { throw new NotImplementedException(); }
+        public virtual async Task<Result> SendRatingAsync(IEnumerable<RaitingDocItem> pR, DocVM pDoc,bool pIsArchive=false)  { throw new NotImplementedException(); }
 
         /// <summary>
         /// Вивантажеємо на сервер файли Рейтингів

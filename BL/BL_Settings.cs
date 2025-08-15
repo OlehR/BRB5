@@ -68,7 +68,7 @@ namespace BL
                     break;
                 //case eCompany.VPSU:
                 case eCompany.PSU:
-                    Config.ApiUrl1 = "https://apitest.spar.uz.ua/";
+                    Config.ApiUrl1 = "https://dct.spar.uz.ua/";
                     break;
 
                 case eCompany.Universal:

@@ -540,7 +540,7 @@ namespace BL.Connector
         /// </summary>
         /// <param name="pR"></param>
         /// <returns></returns>
-        public override async Task<Result> SendRatingAsync(IEnumerable<RaitingDocItem> pR, DocVM pDoc)
+        public override async Task<Result> SendRatingAsync(IEnumerable<RaitingDocItem> pR, DocVM pDoc, bool pIsArchive = false)
         {
             OnSave?.Invoke($"Зберігаємо документ=>{pDoc.NumberDoc}");
             var Res = new Result();

@@ -115,7 +115,7 @@ namespace BL.Connector
                     SaveGuide(res.Info, pIsFull);
                     Config.OnProgress?.Invoke(0.60);
                     var r=await GetRaitingTemplateAsync();
-                    Info=$"Товарів=>{res.Info.Wares.Count()}\nСкладів=>{res.Info.Warehouse.Count()} \nШаблонів рейтингу =>{r.Info.Count()}";
+                    Info=$"Товарів=>{res?.Info?.Wares?.Count()}\nСкладів=>{res?.Info?.Warehouse?.Count()} \nШаблонів рейтингу =>{r?.Info?.Count()}";
                 }                
                 //await GetDaysLeft();
                 Config.OnProgress?.Invoke(1);               
@@ -297,10 +297,13 @@ namespace BL.Connector
         /// </summary>
         /// <param name="pR"></param>
         /// <returns></returns>
-        public override async Task<Result> SendRatingAsync(IEnumerable<RaitingDocItem> pR, DocVM pDoc)
+        public override async Task<Result> SendRatingAsync(IEnumerable<RaitingDocItem> pR, DocVM pDoc, bool pIsArchive = false)
         {
             try
             {
+                if (pIsArchive)                
+                    return await SendRatingFilesArchiveAsync(pDoc.NumberDoc);
+                
                 var sw = Stopwatch.StartNew();
                 // return await SendRatingFilesAsync(pDoc.NumberDoc);
                 OnSave?.Invoke($"Старт збереження відповідей");
@@ -335,7 +338,33 @@ namespace BL.Connector
         }
 
         CultureInfo provider = CultureInfo.InvariantCulture;
-        
+
+        string DirArx => Path.Combine(Config.PathDownloads, "arx");
+        public  async Task<Result> SendRatingFilesArchiveAsync(string pNumberDoc)
+        {
+            var Files = Directory.GetFiles(Path.Combine(DirArx, pNumberDoc));
+            FileLogger.WriteLogMessage($"SendRaitingFiles Files=>{Files?.Length}", eTypeLog.Full);
+            int Ok = 0, Error = 0, i = 0;
+            //OnSave?.Invoke($"Файлів для передачі=>{Files.Count()}");
+            if (Files.Length > 0)
+                foreach (var f in Files)
+                {
+                    string RR = await Http.UploadFileAsync(GetDataHTTP.Url[0][0] + "DCT/Rating/UploadFile", f);
+
+                    if (!string.IsNullOrEmpty(RR))
+                        Ok++;
+                    else
+                        Error++;
+                    Config.OnProgress?.Invoke((double)++i / (double)Files.Length);
+                }  
+            return new Result()
+            {
+                State = Error,
+                Info = $"Передано файлів=>{Ok} з {Files.Count()}",
+                TextError = Error > 0 ? $"Не передано файлів=>{Error}" : "Ok"
+            };
+        }
+
         /// <summary>
         /// Вивантажеємо на сервер файли Рейтингів
         /// pMaxSecondSend - скільки часу відправляти, 0 - без обмежень.
@@ -368,7 +397,7 @@ namespace BL.Connector
                 int Sucsses = 0, Error = 0;
                 Result LastError = null;
                 var Res = new Result();
-                var DirArx = Path.Combine(Config.PathDownloads, "arx");
+                //var DirArx = Path.Combine(Config.PathDownloads, "arx");
                 if (!Directory.Exists(DirArx))
                     Directory.CreateDirectory(DirArx);                
 

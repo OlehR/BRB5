@@ -117,7 +117,7 @@ namespace BL.Connector
         /// </summary>
         /// <param name="pR"></param>
         /// <returns></returns>
-        public override async  Task<Result> SendRatingAsync(IEnumerable<BRB5.Model.RaitingDocItem> pR, DocVM pDoc)
+        public override async  Task<Result> SendRatingAsync(IEnumerable<BRB5.Model.RaitingDocItem> pR, DocVM pDoc, bool pIsArchive = false)
         {
             var Res = new Result();
             try
