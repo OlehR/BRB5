@@ -482,6 +482,11 @@ namespace BL.Connector
             }
             return null;
         }
+
+        public override async Task<Result> GetInfo()
+        {
+            return await CU.GetInfo();
+        }
     }
 
 }

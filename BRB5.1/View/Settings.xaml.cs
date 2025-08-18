@@ -403,7 +403,11 @@ namespace BRB6.View
         }
         async private void OnInfo(object sender, EventArgs e)
         {
-           var R= await c.GetInfo();
+            string appDir = FileSystem.AppDataDirectory;
+            var beforeStats = DirectoryHelper.GetDirectoryStats(appDir);
+            var temp = $"Before: {beforeStats.fileCount} files, {beforeStats.totalSize / 1024.0:F2} KB";
+            var t = Path.Combine(Config.PathDownloads, "arx");
+            var R = await c.GetInfo();
             if(R!=null)
             await Toast.Make(R.Info).Show();
         }
