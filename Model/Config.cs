@@ -76,6 +76,6 @@ namespace BRB5.Model
         public static ePhotoQuality PhotoQuality { get;set; }
 
         public static int Compress { get; set; } = 90;
-
+        public static eShopTM CodeTM { get; set; }
     }
 }

@@ -102,21 +102,23 @@ public partial class AdminPriceChecker : ContentPage
         if (pWP != null)  WP = pWP;        
 
         if (WP.Сondition != null) FillConditionList(WP.Сondition);
-        var projectName = "spar"; // наприклад: "vopak" або "spar"
+     
+        switch (Config.CodeTM)
+        {
+            case eShopTM.Vopak:
+                BackgroundImage.Source = "background1vopak.png";
+                LogoImage.Source = "logo1vopak.png";
+                ColorBG = "#ffde2f";
+                OnPropertyChanged(nameof(ColorBG));
+                break;
 
-        if (projectName == "vopak")
-        {
-            BackgroundImage.Source = "background1vopak.png";
-            LogoImage.Source = "logo1vopak.png";
-            ColorBG = "#ffde2f";
-            OnPropertyChanged(nameof(ColorBG));
-        }
-        else if (projectName == "spar")
-        {
-            BackgroundImage.Source = "background2spar.png";
-            LogoImage.Source = "logo2spar.png";
-            ColorBG = "#e31e24";
-            OnPropertyChanged(nameof(ColorBG));
+            case eShopTM.Spar:
+                BackgroundImage.Source = "background2spar.png";
+                LogoImage.Source = "logo2spar.png";
+                ColorBG = "#e31e24";
+                OnPropertyChanged(nameof(ColorBG));
+                break;
+
         }
 
         if (Config.TypeUsePrinter == eTypeUsePrinter.StationaryWithCutAuto) PrintType = -1;
