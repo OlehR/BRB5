@@ -221,7 +221,7 @@ namespace BRB6
             IsVisibleBarcodeScanning = All.Any(el => el.Id == -1);
             OnPropertyChanged(nameof(IsVisibleBarcodeScanning));
 
-            var headsOnly = All.Where(x => x.IsHead).ToList();
+            var headsOnly = All.Where(x => x.IsHead || x.Parent == 9999999).ToList();
             MainThread.BeginInvokeOnMainThread(() =>
             {
                 CalculateAvailableHeight();
