@@ -248,7 +248,7 @@ namespace BL.Connector
         /// <param name="pNumberDoc"></param>        
         /// <param name="pIsClear"></param>
         /// <returns></returns>
-       /* public override async Task<Result> LoadDocsDataAsync(int pTypeDoc, string pNumberDoc, bool pIsClear)
+        public override async Task<Result> LoadDocsDataAsync(int pTypeDoc, string pNumberDoc, bool pIsClear)
         {
 
             if (pTypeDoc == 11)
@@ -267,7 +267,7 @@ namespace BL.Connector
             else
             {
                 string data = JsonConvert.SerializeObject(new ApiDoc() { CodeData = 150, TypeDoc = pTypeDoc, CodeWarehouse = Config.CodeWarehouse, Ver = 5136 });
-                HttpResult result = await GetDataHTTP.HTTPRequestAsync(0, "znp/", data, "application/json",null,null,30d);//
+                HttpResult result = await GetDataHTTP.HTTPRequestAsync(0, "znp/", data, "application/json", null, null, 30d);//
 
                 if (result.HttpState == eStateHTTP.HTTP_OK)
                 {
@@ -290,7 +290,7 @@ namespace BL.Connector
                 return null;
             }
         }
-*/
+
 
         /// <summary>
         /// Вивантаження документів з ТЗД (HTTP)
@@ -299,7 +299,7 @@ namespace BL.Connector
         /// <param name="pWares"></param>
         /// <param name="pIsClose"></param>
         /// <returns></returns>
-        public  override async Task<Result> SendDocsDataAsync(DocVM pDoc, IEnumerable<DocWares> pWares)
+        public override async Task<Result> SendDocsDataAsync(DocVM pDoc, IEnumerable<DocWares> pWares)
         {
             var r = pWares.Select(el => new decimal[] { el.OrderDoc, el.CodeWares, el.InputQuantity });
             var res = new ApiSaveDoc(153, pDoc.TypeDoc, pDoc.NumberDoc, r);
