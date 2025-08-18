@@ -116,9 +116,9 @@ namespace BRB5.Model
 
         public virtual async Task<Result> SaveExpirationDate(DocWaresExpirationSave pED) { throw new NotImplementedException(); }
 
+        static public PercentColor[] PercentColor = [];
 
-        static public PercentColor[] PercentColor = new PercentColor[0];
-        
+        public virtual async Task<Result> GetInfo() { throw new NotImplementedException(); }
     }
 
     public class LoginServer
@@ -143,6 +143,7 @@ namespace BRB5.Model
         public int CodeWarehouse { get; set; }
         public int TypeDoc { get; set; }
         public string NumberDoc { get; set; }
+        public int CodeUser { get; set; }
     }
 
     public class Docs

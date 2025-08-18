@@ -219,7 +219,7 @@ namespace BL.Connector
                 else
                 {
                     AppContext.SetSwitch("System.Reflection.NullabilityInfoContext.IsSupported", true);
-                    GetDocs Data = new GetDocs() { CodeWarehouse = Config.CodeWarehouse, TypeDoc = pTypeDoc, NumberDoc = pNumberDoc };
+                    GetDocs Data = new() { CodeWarehouse = Config.CodeWarehouse, TypeDoc = pTypeDoc, NumberDoc = pNumberDoc,CodeUser=Config.CodeUser };
                     HttpResult result = await GetDataHTTP.HTTPRequestAsync(0, "DCT/LoadDoc", Data.ToJson(), "application/json", null);
                     if (result.HttpState == eStateHTTP.HTTP_OK)
                     {
@@ -584,6 +584,24 @@ namespace BL.Connector
                 {
                     var res = JsonConvert.DeserializeObject<Result<string>>(result.Result);
                     if (res.State == 0) return res;
+                }
+                return new Result<string>(result);
+            }
+            catch (Exception e)
+            {
+                FileLogger.WriteLogMessage(this, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+                return new Result<string>(e);
+            }
+        }
+
+        public override async Task<Result> GetInfo() {
+            try
+            {
+                HttpResult result = await GetDataHTTP.HTTPRequestAsync(0, "GetInfo", null, "application/json", null);
+                if (result.HttpState == eStateHTTP.HTTP_OK)
+                {
+                    var res = result.Result;
+                    return new Result(){Info= res};
                 }
                 return new Result<string>(result);
             }

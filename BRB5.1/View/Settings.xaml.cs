@@ -401,9 +401,11 @@ namespace BRB6.View
             IsVisBarCode = !IsVisBarCode;
             BarcodeScaner.CameraEnabled = IsVisBarCode;
         }
-        private void OnInfo(object sender, EventArgs e)
+        async private void OnInfo(object sender, EventArgs e)
         {
-           
+           var R= await c.GetInfo();
+            if(R!=null)
+            await Toast.Make(R.Info).Show();
         }
         private async void OnClean(object sender, EventArgs e)
         {
