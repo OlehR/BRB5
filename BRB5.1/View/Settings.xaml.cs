@@ -405,11 +405,18 @@ namespace BRB6.View
         {
             string appDir = FileSystem.AppDataDirectory;
             var beforeStats = DirectoryHelper.GetDirectoryStats(appDir);
-            var temp = $"Before: {beforeStats.fileCount} files, {beforeStats.totalSize / 1024.0:F2} KB";
+            var temp = $"\nBefore AppDataDirectory: {beforeStats.fileCount} files, {beforeStats.totalSize / 1024.0 / 1024.0:F2} MB";
+
             var t = Path.Combine(Config.PathDownloads, "arx");
+            beforeStats = DirectoryHelper.GetDirectoryStats(t);
+            temp += $"\nBefore Config.PathDownloads, \"arx\": {beforeStats.fileCount} files, {beforeStats.totalSize / 1024.0 / 1024.0:F2} MB";
+
+            beforeStats = DirectoryHelper.GetDirectoryStats(Config.PathFiles);
+            temp += $"\nBefore Config.PathFiles: {beforeStats.fileCount} files, {beforeStats.totalSize / 1024.0 / 1024.0:F2} MB";
+
             var R = await c.GetInfo();
-            if(R!=null)
-            await Toast.Make(R.Info).Show();
+            if(R!=null) //await Toast.Make(R.Info).Show();
+                await DisplayAlert("Info", R.Info+ temp, "ОК");
         }
         private async void OnClean(object sender, EventArgs e)
         {

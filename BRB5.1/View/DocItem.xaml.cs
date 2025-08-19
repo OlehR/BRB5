@@ -32,7 +32,7 @@ namespace BRB6.View
         bool _IsVisibleDocF6 = false;
         public bool IsVisibleDocF6 { get { return _IsVisibleDocF6; } set { _IsVisibleDocF6 = value; OnPropertyChanged("IsVisibleDocF6"); } } 
         public ObservableCollection<DocWaresEx> MyDocWares { get; set; } = new ObservableCollection<DocWaresEx>();
-        public bool IsVisF5Act => TypeDoc.KindDoc == eKindDoc.LotsCheck;
+        public bool IsVisF5Act => TypeDoc.KindDoc == eKindDoc.Lot;
         // Колекція варіантів для Picker
         public ObservableCollection<BRB5.Model.DB.Reason> Reasons { get; set; }
 
@@ -52,12 +52,12 @@ namespace BRB6.View
                 }
             }
         }
-        public DocItem(DocId pDocId,  TypeDoc pTypeDoc)
+        public DocItem(DocVM pDocId,  TypeDoc pTypeDoc)
         {
             InitializeComponent();
             NokeyBoard();
             TypeDoc = pTypeDoc;
-            Doc = new DocVM(pDocId);
+            Doc = pDocId;
 
             // Отримуємо список причин із бази
             var reasonsFromDb = db.GetReason(pTypeDoc.KindDoc);
@@ -67,8 +67,10 @@ namespace BRB6.View
 
             // Якщо у Doc вже є вибраний CodeReason, ставимо його як SelectedItem
             if (Doc.CodeReason != 0)
+            {
                 SelectedReason = Reasons.FirstOrDefault(r => r.CodeReason == Doc.CodeReason);
-            if (Doc.CodeReason == 0)
+            }
+            else
             {
                 Device.BeginInvokeOnMainThread(() =>
                 {
@@ -121,7 +123,14 @@ namespace BRB6.View
             DocWaresStackLayout.Children.Clear(); // Clear existing children
             DocWaresStackLayout.Spacing = 0; // Remove vertical spacing between elements
 
-            foreach (var docWare in MyDocWares)
+            List<DocWaresEx> docWares = new ();
+
+            if (Doc.CodeReason == 1)
+            {
+                docWares = MyDocWares.Where(x => x.CodeReason==1).ToList();
+            }
+
+            foreach (var docWare in docWares)
             {
                 // Create the main container StackLayout
                 var mainStackLayout = new StackLayout
@@ -262,7 +271,7 @@ namespace BRB6.View
         private void DocNameFocus(object sender, FocusEventArgs e) {  DocName.Focus(); }
         private async void F5Act(object sender, TappedEventArgs e)
         {
-            if(TypeDoc.KindDoc==eKindDoc.LotsCheck)  await Navigation.PushAsync(new Act(Doc, TypeDoc));
+            if(TypeDoc.KindDoc==eKindDoc.Lot)  await Navigation.PushAsync(new Act(Doc, TypeDoc));
         }
 
 #if ANDROID

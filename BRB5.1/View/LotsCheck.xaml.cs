@@ -135,11 +135,9 @@ public partial class LotsCheck : ContentPage
         //}
         */
 
-        var firstDoc = MyDocs.FirstOrDefault();
-        if (firstDoc != null)
+        if (MyDocs.Count>0)
         {
-            var temp = db.GetDocWares(firstDoc, 1, eTypeOrder.Scan);
-            IsWares = temp?.Any() == true;
+            IsWares = TypeDoc.KindDoc == eKindDoc.Lot;
             F2SaveLabel.IsVisible = !IsWares;
             F3FilterLabel.IsVisible = IsWares;
         }
@@ -254,6 +252,7 @@ public partial class LotsCheck : ContentPage
     }
     private void F3Filter(object sender, EventArgs e)
     {
+        if (IsWares) return;
         IsMandatory = !IsMandatory;
         OnPropertyChanged(nameof(FilterLabel));
         OnPropertyChanged(nameof(IsMandatory));

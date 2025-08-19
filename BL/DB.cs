@@ -133,7 +133,7 @@ CREATE TABLE DocWares (
     CodeWares   INTEGER         NOT NULL,
     Quantity    NUMBER  NOT NULL,   
     QuantityOld NUMBER ,   
-    CodeReason  INTEGER,
+    CodeReason  INTEGER NOT NULL DEFAULT (0),
     ExpirationDate TIMESTAMP,
     DTInsert    TIMESTAMP       DEFAULT (DATETIME('NOW', 'LOCALTIME') )
 );
@@ -146,6 +146,7 @@ CREATE TABLE DocWaresSample (
     NumberDoc   TEXT,
     OrderDoc    INTEGER         NOT NULL,
     CodeWares   INTEGER         NOT NULL,
+    CodeReason  INTEGER NOT NULL DEFAULT (0),
     Quantity     NUMBER,
     QuantityMin NUMBER,
     QuantityMax NUMBER,
@@ -484,18 +485,18 @@ from  DocWares dw
             if (pTypeDoc != 0)
                 db.Execute($"delete from Doc where TypeDoc={pTypeDoc}");
 
-            string Sql = @"replace into Doc ( DateDoc, TypeDoc, NumberDoc, CodeWarehouse, IdTemplate, ExtInfo, NameUser, BarCode, Description, State,
+            string Sql = @"replace into Doc ( DateDoc, TypeDoc, NumberDoc, CodeWarehouse, CodeReason, IdTemplate, ExtInfo, NameUser, BarCode, Description, State,
                                               IsControl, NumberDoc1C, DateOutInvoice, NumberOutInvoice, Color,DTStart,DTEnd) values 
-                                            (@DateDoc,@TypeDoc,@NumberDoc,@CodeWarehouse,@IdTemplate,@ExtInfo,@NameUser,@BarCode,@Description,max(@State, (select max(d.state) from Doc d where d.Typedoc=@TypeDoc and d.numberdoc=@NumberDoc )),
+                                            (@DateDoc,@TypeDoc,@NumberDoc,@CodeWarehouse,@CodeReason,@IdTemplate,@ExtInfo,@NameUser,@BarCode,@Description,max(@State, (select max(d.state) from Doc d where d.Typedoc=@TypeDoc and d.numberdoc=@NumberDoc )),
                                              @IsControl,@NumberDoc1C,@DateOutInvoice,@NumberOutInvoice,@Color,
 (select max(d.DTStart) from Doc d where d.Typedoc=@TypeDoc and d.numberdoc=@NumberDoc ),
 (select max(d.DTEnd) from Doc d where d.Typedoc=@TypeDoc and d.numberdoc=@NumberDoc )
 )";
             //return db.ReplaceAll( pDoc) >= 0;
             int c = 0;
-            Sql = @"replace into Doc ( DateDoc, TypeDoc, NumberDoc, CodeWarehouse, IdTemplate, ExtInfo, NameUser, BarCode, Description, State,
+            Sql = @"replace into Doc ( DateDoc, TypeDoc, NumberDoc, CodeWarehouse,CodeReason, IdTemplate, ExtInfo, NameUser, BarCode, Description, State,
                                               IsControl, NumberDoc1C, DateOutInvoice, NumberOutInvoice, Color,DTStart,DTEnd) values 
-                                            (?,?,?,?,?,?,?,?,?,max(?, (select max(d.state) from Doc d where d.Typedoc=? and d.numberdoc=? )),
+                                            (?,?,?,?,?,?,?,?,?,?,max(?, (select max(d.state) from Doc d where d.Typedoc=? and d.numberdoc=? )),
                                              ?,?,?,?,?,
 (select max(d.DTStart) from Doc d where d.Typedoc=? and d.numberdoc=? ),
 (select max(d.DTEnd) from Doc d where d.Typedoc=? and d.numberdoc=? )
@@ -506,7 +507,7 @@ from  DocWares dw
                 {
                     foreach (Doc d in pDoc)
                     {
-                        c += db.Execute(Sql, d.DateDoc, d.TypeDoc, d.NumberDoc, d.CodeWarehouse, d.IdTemplate, d.ExtInfo, d.NameUser, d.BarCode, d.Description, d.State, d.TypeDoc, d.NumberDoc,
+                        c += db.Execute(Sql, d.DateDoc, d.TypeDoc, d.NumberDoc, d.CodeWarehouse, d.CodeReason, d.IdTemplate, d.ExtInfo, d.NameUser, d.BarCode, d.Description, d.State, d.TypeDoc, d.NumberDoc,
                             d.IsControl, d.NumberDoc1C, d.DateOutInvoice, d.NumberOutInvoice, d.Color,
                             d.TypeDoc, d.NumberDoc, d.TypeDoc, d.NumberDoc);
                     }
