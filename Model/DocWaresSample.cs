@@ -29,6 +29,8 @@ namespace BRB5.Model
 
         public decimal Expiration { get; set; }
 
+        public int CodeReason { get; set; }
+
         /// <summary>
         /// Додаткова інформація      
         /// </summary>
