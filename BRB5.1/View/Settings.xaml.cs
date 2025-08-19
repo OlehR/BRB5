@@ -404,7 +404,7 @@ namespace BRB6.View
         async private void OnInfo(object sender, EventArgs e)
         {
             string appDir = FileSystem.AppDataDirectory;
-            var beforeStats = DirectoryHelper.GetDirectoryStats(appDir);
+            var beforeStats = FileAndDir.GetDirectoryStats(appDir);
             var temp = $"Before: {beforeStats.fileCount} files, {beforeStats.totalSize / 1024.0:F2} KB";
             var t = Path.Combine(Config.PathDownloads, "arx");
             var R = await c.GetInfo();
