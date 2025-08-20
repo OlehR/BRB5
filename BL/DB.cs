@@ -391,14 +391,14 @@ CREATE UNIQUE INDEX ReasonId ON Reason (Level,CodeReason);";
                         coalesce(dws.quantitymax,0) as QuantityMax ,coalesce(d.IsControl,0) as IsControl, coalesce(dw1.quantityold,0) as QuantityOld
                       ,dw1.quantityreason as QuantityReason
                         {Color}
-                        ,w.codeunit as CodeUnit
+                        ,w.codeunit as CodeUnit, dws.CodeReason as CodeReason
                             from Doc d  
                           join (select dw.typedoc ,dw.numberdoc, dw.codewares, sum(dw.quantity) as quantityinput,max(dw.orderdoc) as orderdoc,sum(quantityold) as quantityold,  sum(case when dw.CODEReason>0 then  dw.quantity else 0 end) as quantityreason  
                                         from docwares dw where 1=1 {Reason} group by dw.typedoc ,dw.numberdoc,codewares ) dw1 
                             on (dw1.numberdoc = d.numberdoc and d.typedoc=dw1.typedoc)
                           Left join Wares w on dw1.codewares = w.codewares 
                           left join (
-                            select  dws.typedoc ,dws.numberdoc, dws.codewares,dws.name, sum(dws.quantity) as quantity,  min(dws.quantitymin) as quantitymin, max(dws.quantitymax) as quantitymax  
+                            select  dws.typedoc ,dws.numberdoc, dws.codewares,dws.name, sum(dws.quantity) as quantity,  min(dws.quantitymin) as quantitymin, max(dws.quantitymax) as quantitymax, max(dws.CodeReason) as CodeReason
                                     from   DocWaresSample dws   group by dws.typedoc ,dws.numberdoc,dws.codewares,dws.name
                             ) as dws on d.numberdoc = dws.numberdoc and d.typedoc=dws.typedoc and dws.codewares = dw1.codewares
                           where d.typedoc={pDocId.TypeDoc} and  d.numberdoc = '{pDocId.NumberDoc}'
@@ -406,7 +406,7 @@ CREATE UNIQUE INDEX ReasonId ON Reason (Level,CodeReason);";
                        select d.TypeDoc as TypeDoc, d.numberdoc as NumberDoc, dws.orderdoc+100000, dws.CODEWARES,coalesce(dws.name,w.NAMEWARES) as NAMEWARES,coalesce(dws.quantity,0) as quantityorder,coalesce(dw1.quantityinput,0) as quantityinput, coalesce(dws.quantitymin,0) as quantitymin, coalesce(dws.quantitymax,0) as quantitymax ,coalesce(d.IsControl,0) as IsControl, coalesce(dw1.quantityold,0) as quantityold
                            ,0 as  quantityreason
                       , 3 as Ord
-                      ,w.codeunit
+                      ,w.codeunit, dws.CodeReason
                           from Doc d  
                           join DocWaresSample dws on d.numberdoc = dws.numberdoc and d.typedoc=dws.typedoc --and dws.codewares = w.codewares
                           left join Wares w on dws.codewares = w.codewares 
