@@ -13,7 +13,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using UtilNetwork;
 using Utils;
-using static System.Runtime.InteropServices.JavaScript.JSType;
+
 
 
 namespace BL.Connector
@@ -610,6 +610,13 @@ namespace BL.Connector
                 FileLogger.WriteLogMessage(this, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
                 return new Result<string>(e);
             }
+        }
+
+        public override async Task<Result> UploadFile(string pFile, string pFileName = null)
+        {
+            string RR = await Http.UploadFileAsync(GetDataHTTP.Url[0][0] + "UploadFile", pFile, pFileName);
+            var res = JsonConvert.DeserializeObject<Result>(RR);
+            return res;
         }
 
     }

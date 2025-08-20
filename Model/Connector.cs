@@ -119,6 +119,8 @@ namespace BRB5.Model
         static public PercentColor[] PercentColor = [];
 
         public virtual async Task<Result> GetInfo() { throw new NotImplementedException(); }
+
+        public virtual async Task<Result> UploadFile(string pFile, string pFileName = null) { throw new NotImplementedException(); }
     }
 
     public class LoginServer

@@ -226,13 +226,14 @@ namespace BRB6.View
 
         private void OnClickLoadDoc(object sender, EventArgs e) { c.LoadDocsDataAsync(0, null, false); }
 
-        private void OnCopyDB(object sender, EventArgs e) {
+        async private void OnCopyDB(object sender, EventArgs e) {
             try
             {              
-                var FileDestination = Path.Combine(Config.PathDownloads, "brb6.db");
+                /*var FileDestination = Path.Combine(Config.PathDownloads, "brb6.db");
                 if (File.Exists(FileDestination)) File.Delete(FileDestination);
                 byte[] buffer = File.ReadAllBytes(DB.PathNameDB);
-                File.WriteAllBytes(FileDestination, buffer);
+                File.WriteAllBytes(FileDestination, buffer);*/
+                await c.UploadFile(DB.PathNameDB, $"brb6_{DateTime.Now.ToString("yyyyMMdd_HHmmss")}.db");
             }
             catch (Exception ex)
             {
@@ -404,14 +405,14 @@ namespace BRB6.View
         async private void OnInfo(object sender, EventArgs e)
         {
             string appDir = FileSystem.AppDataDirectory;
-            var beforeStats = DirectoryHelper.GetDirectoryStats(appDir);
+            var beforeStats = FileAndDir.GetDirectoryStats(appDir);
             var temp = $"\nBefore AppDataDirectory: {beforeStats.fileCount} files, {beforeStats.totalSize / 1024.0 / 1024.0:F2} MB";
 
             var t = Path.Combine(Config.PathDownloads, "arx");
-            beforeStats = DirectoryHelper.GetDirectoryStats(t);
+            beforeStats = FileAndDir.GetDirectoryStats(t);
             temp += $"\nBefore Config.PathDownloads, \"arx\": {beforeStats.fileCount} files, {beforeStats.totalSize / 1024.0 / 1024.0:F2} MB";
 
-            beforeStats = DirectoryHelper.GetDirectoryStats(Config.PathFiles);
+            beforeStats = FileAndDir.GetDirectoryStats(Config.PathFiles);
             temp += $"\nBefore Config.PathFiles: {beforeStats.fileCount} files, {beforeStats.totalSize / 1024.0 / 1024.0:F2} MB";
 
             var R = await c.GetInfo();
