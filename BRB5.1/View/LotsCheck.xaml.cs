@@ -252,7 +252,7 @@ public partial class LotsCheck : ContentPage
     }
     private void F3Filter(object sender, EventArgs e)
     {
-        if (IsWares) return;
+        if (!IsWares) return;
         IsMandatory = !IsMandatory;
         OnPropertyChanged(nameof(FilterLabel));
         OnPropertyChanged(nameof(IsMandatory));

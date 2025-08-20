@@ -13,6 +13,7 @@
                     Title="Причина"
                     ItemsSource="{Binding Reasons}"
                     ItemDisplayBinding="{Binding NameReason}"
+                    SelectedIndexChanged="SelectReason"
                     SelectedItem="{Binding SelectedReason}" />
 
         </StackLayout>
