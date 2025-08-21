@@ -38,6 +38,7 @@ namespace BRB6
                         break;
                     case eTypeScaner.BitaHC61:
                     case eTypeScaner.ChainwayC61:
+                    case eTypeScaner.MetapaceM_K4:
                         Res = "com.scanner.broadcast" ;
                         break;
                 }
@@ -57,6 +58,7 @@ namespace BRB6
                         break;
                     case eTypeScaner.BitaHC61:
                     case eTypeScaner.ChainwayC61:
+                    case eTypeScaner.MetapaceM_K4:
                         Res = "data";
                         break;
                 }

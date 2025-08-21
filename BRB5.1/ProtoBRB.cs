@@ -58,6 +58,9 @@ namespace BRB6
                 return eTypeScaner.BitaHC61;
             if (Config.Model.Equals("C61") || Config.Manufacturer.Contains("CHAINWAY"))
                 return eTypeScaner.ChainwayC61;
+            if (Config.Model.Equals("M-K4") || Config.Manufacturer.Contains("METAPACE"))
+                return eTypeScaner.MetapaceM_K4;
+            
 
             return eTypeScaner.Camera;
         }

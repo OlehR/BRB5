@@ -30,7 +30,7 @@ namespace BRB6
             Config.NativeBase = new Native();
             //FileLogger.PathLog = Path.Combine(Config.PathDownloads, "Log");
             FileLogger.WriteLogMessage("Start", eTypeLog.Expanded);
-            if (Config.TypeScaner == eTypeScaner.PM351 || Config.TypeScaner == eTypeScaner.BitaHC61 || Config.TypeScaner == eTypeScaner.Zebra  )
+            if (Config.TypeScaner == eTypeScaner.PM351 || Config.TypeScaner == eTypeScaner.BitaHC61 || Config.TypeScaner == eTypeScaner.Zebra  || Config.TypeScaner == eTypeScaner.MetapaceM_K4 )
                 BR = new MyBroadcastReceiver();
             
                

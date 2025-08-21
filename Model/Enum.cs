@@ -119,6 +119,7 @@ namespace BRB5
         Camera,
         BitaHC61,
         ChainwayC61,
+        MetapaceM_K4,
         KeyBoard
     }
     public enum eTermsForIlliquidWare
