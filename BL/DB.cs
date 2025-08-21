@@ -739,6 +739,8 @@ and bc.BarCode=?
 
         public bool ReplaceDocWaresSample(IEnumerable<DocWaresSample> pDWS)
         {
+            int rr = pDWS.Where(r => r.CodeReason > 0).Count();
+            rr++;
            // string Sql = @"replace into DocWaresSample ( TypeDoc, NumberDoc, OrderDoc, CodeWares, Quantity, QuantityMin, QuantityMax, Name, BarCode, ExpirationDate, Expiration) values 
            //                                           (@TypeDoc,@NumberDoc,@OrderDoc,@CodeWares,@Quantity,@QuantityMin,@QuantityMax,@Name,@BarCode,@ExpirationDate,@Expiration)";
             return db.ReplaceAll(pDWS) >= 0;
