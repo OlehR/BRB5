@@ -417,7 +417,7 @@ namespace BRB6.View
 
             var R = await c.GetInfo();
             if(R!=null) //await Toast.Make(R.Info).Show();
-                await DisplayAlert("Info", R.Info+ temp, "ОК");
+                await DisplayAlert("Info", R.Info/*+ temp*/, "ОК");
         }
         private async void OnClean(object sender, EventArgs e)
         {

@@ -129,6 +129,11 @@ namespace BRB6.View
             {
                 docWares = MyDocWares.Where(x => x.CodeReason==1).ToList();
             }
+            else
+            {
+                docWares = MyDocWares.ToList();
+            }
+
 
             foreach (var docWare in docWares)
             {
@@ -273,6 +278,11 @@ namespace BRB6.View
         {
             if(TypeDoc.KindDoc==eKindDoc.Lot)  await Navigation.PushAsync(new Act(Doc, TypeDoc));
         }
+        private void SelectReason(object sender, EventArgs e)
+        {
+            Doc.CodeReason = SelectedReason?.CodeReason ?? 0;
+            PopulateDocWaresStackLayout();
+        }
 
 #if ANDROID
         public void OnPageKeyDown(Keycode keyCode, KeyEvent e)
@@ -299,7 +309,7 @@ namespace BRB6.View
                     return;
             }
          }
-#endif
+        #endif
     }
     public class AlternateColorDataTemplateSelector : DataTemplateSelector
     {
