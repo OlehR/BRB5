@@ -56,11 +56,8 @@ public partial class SplashPage : ContentPage
                 try
                 {
                     Config.CodeWarehouse = 0;
-                    await bl.c.LoadGuidDataAsync(false);
-
-                    var wh = db.GetWarehouse()
-                           .FirstOrDefault(el => el.CodeWarehouse == CodeWarehouse);
-
+                    await bl.c.LoadGuidDataAsync(false); 
+                    var wh = db.GetWarehouse().FirstOrDefault(el => el.CodeWarehouse == CodeWarehouse);
                     Config.CodeTM = wh?.CodeTM ?? default(eShopTM);
                 }
                 finally

@@ -80,14 +80,11 @@ namespace BL
             Config.Compress = Config.Compress == 0 ? 80 : Config.Compress;
             Config.NameCompany = db.GetConfig<string>("NameCompany");
             var tempstr = db.GetConfig<string>("CodesWarehouses");
+            var wh = db.GetWarehouse().FirstOrDefault(el => el.CodeWarehouse == Config.CodeWarehouse);
+            Config.CodeTM = wh?.CodeTM ?? default;
             if (!string.IsNullOrEmpty(tempstr)) Config.CodesWarehouses = JsonConvert.DeserializeObject<List<int>>(tempstr);
             FileLogger.TypeLog = db.GetConfig<eTypeLog>("TypeLog",eTypeLog.Memory);
             c=Connector.ConnectorBase.GetInstance();
-
-
         }
-
-
-
     }
 }

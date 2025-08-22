@@ -25,6 +25,7 @@ namespace PriceChecker
             ScanerCom =new ScanerCom(Config.ComPortScaner, 9600);
             //ScanerCom.Init();
             FileLogger.WriteLogMessage("App", "App", "End");
+            Application.Current.UserAppTheme = AppTheme.Light;
         }
         static public ScanerCom ScanerCom;
         protected override Window CreateWindow(IActivationState? activationState)

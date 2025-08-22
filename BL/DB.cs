@@ -345,7 +345,8 @@ CREATE UNIQUE INDEX ReasonId ON Reason (Level,CodeReason);";
                 if (typeof(T).BaseType == typeof(Enum))
                 {
                     var r = db.ExecuteScalar<string>(SqlConfig, pStr);
-                    Res = (T)Enum.Parse(typeof(T), r, true);
+                    if(!string.IsNullOrEmpty(r))
+                        Res = (T)Enum.Parse(typeof(T), r, true);
                 }
                 else
                 {
