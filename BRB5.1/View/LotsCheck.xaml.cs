@@ -30,6 +30,10 @@ public partial class LotsCheck : ContentPage
         InitializeComponent();
         TypeDoc = vTypeDoc;
 
+        IsWares = TypeDoc.KindDoc == eKindDoc.Lot;
+        F2SaveLabel.IsVisible = !IsWares;        
+        F3FilterLabel.IsVisible = IsWares;
+
         PopulateStackLayout();
         Task.Run(async () =>
         {
@@ -134,17 +138,7 @@ public partial class LotsCheck : ContentPage
         //    }
         //}
         */
-
-        if (MyDocs.Count>0)
-        {
-            IsWares = TypeDoc.KindDoc == eKindDoc.Lot;
-            F2SaveLabel.IsVisible = !IsWares;
-            F3FilterLabel.IsVisible = IsWares;
-        }
-        else
-        {
-            IsWares = false;
-        }
+             
 
         var tempStackLayout = new StackLayout();
         foreach (var doc in MyDocs)
