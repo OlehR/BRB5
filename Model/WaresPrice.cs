@@ -48,6 +48,8 @@ namespace BRB5.Model
 
         public string PromotionName { get; set; }
 
+        public int TypePriceTag { get; set; } = 0;
+
         public string PromotionShortName 
         { get
             {
