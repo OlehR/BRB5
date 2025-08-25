@@ -67,5 +67,11 @@ namespace BRB6
             if(BR != null) UnregisterReceiver(BR);         
             base.OnPause();
         }
+
+        public override void OnUserInteraction()
+        {
+            base.OnUserInteraction();
+            (App.Current as App)?.ResetInactivityTimer();
+        }
     }
 }

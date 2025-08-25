@@ -3,11 +3,17 @@
 using System.Diagnostics;
 using System.Runtime.ExceptionServices;
 using Utils;
+using Timer = System.Timers.Timer;
+#if ANDROID 
+using Android.Views;
+#endif
 
 namespace BRB6
 {
     public partial class App : Application
     {
+        private Timer InactivityTimer;
+
         public App()
         {
             InitializeComponent();
@@ -28,8 +34,11 @@ namespace BRB6
             //AppDomain.CurrentDomain.FirstChanceException += CurrentDomain_FirstChanceException;
             Application.Current.UserAppTheme = AppTheme.Light;
             MainPage = new NavigationPage(new MainPage());
-           
-            
+
+
+            InactivityTimer = new Timer(TimeSpan.FromMinutes(5).TotalMilliseconds); 
+            InactivityTimer.Elapsed += InactivityTimerElapsed;
+            InactivityTimer.Start();
         }
 
         protected override void OnStart()
@@ -52,6 +61,29 @@ namespace BRB6
             MainPage.DisplayAlert("Error", "An unexpected error occurred. Please restart the application." + ex.Message, "OK");
         }
 
+        private void InactivityTimerElapsed(object sender, System.Timers.ElapsedEventArgs e)
+        {
+            MainThread.BeginInvokeOnMainThread(() =>
+            {
+#if ANDROID
+                var activity = Platform.CurrentActivity;
+                activity?.Window?.ClearFlags(WindowManagerFlags.KeepScreenOn);
+#endif
+            });
+        }
 
+        public void ResetInactivityTimer()
+        {
+            InactivityTimer.Stop();
+            InactivityTimer.Start();
+
+#if ANDROID
+            MainThread.BeginInvokeOnMainThread(() =>
+            {
+                var activity = Platform.CurrentActivity;
+                activity?.Window?.AddFlags(WindowManagerFlags.KeepScreenOn);
+            });
+#endif
+        }
     }
 }
