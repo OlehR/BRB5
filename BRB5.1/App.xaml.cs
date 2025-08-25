@@ -25,7 +25,7 @@ namespace BRB6
                                          // Log the exception, display an alert, or perform other error handling
                 MainPage.DisplayAlert("Error", "An unobserved task error occurred. "+ex.Message, "OK");
             };
-            AppDomain.CurrentDomain.FirstChanceException += CurrentDomain_FirstChanceException;
+            //AppDomain.CurrentDomain.FirstChanceException += CurrentDomain_FirstChanceException;
             Application.Current.UserAppTheme = AppTheme.Light;
             MainPage = new NavigationPage(new MainPage());
            
@@ -48,7 +48,7 @@ namespace BRB6
         {      
             FileLogger.WriteLogMessage(this, "GlobalException", e.Exception);
             var ex = e.Exception as System.Exception;           
-            FileLogger.WriteLogMessage(this, "GlobalException", ex);
+            //FileLogger.WriteLogMessage(this, "GlobalException", ex);
             MainPage.DisplayAlert("Error", "An unexpected error occurred. Please restart the application." + ex.Message, "OK");
         }
 
