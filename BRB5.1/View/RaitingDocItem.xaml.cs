@@ -3,15 +3,7 @@ using BRB5;
 using BRB5.Model;
 using BRB6.Template;
 using BRB6.View;
-using Microsoft.Maui.Controls.Compatibility;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text.RegularExpressions;
 using Utils;
-using Grid = Microsoft.Maui.Controls.Grid;
-using StackLayout = Microsoft.Maui.Controls.StackLayout;
 
 namespace BRB6
 {
@@ -40,10 +32,10 @@ namespace BRB6
             get
             {
                 try {
-                    string res = cDoc.ShortAddress;
+                    string res = cDoc.Address;
                     if (!IsOkWh)
                     {
-                        var Wh = Bl.GetWarehouse(cDoc.CodeWarehouse);
+                        var Wh = Bl.GetWarehouseByNumber(cDoc.CodeWarehouse.ToString());
                         if (Wh != null)
                             res += $"( {Wh.Location}){Environment.NewLine}Найближчий:\" + {LocationBrb.LocationWarehouse?.Name} ({LocationBrb.LocationWarehouse?.Location})";
                     }
@@ -57,9 +49,9 @@ namespace BRB6
             }
         }
 
-        public System.Drawing.Color GetGPSColor { get { if(LocationBrb.LocationWarehouse==null) return System.Drawing.Color.FromArgb(200, 200, 200);
-                return IsOkWh ? System.Drawing.Color.FromArgb(100, 250, 100) :
-                        System.Drawing.Color.FromArgb(250, 100, 100);
+        public Color GetGPSColor { get { if(LocationBrb.LocationWarehouse==null) return Color.FromRgb(200, 200, 200);
+                return IsOkWh ? Color.FromRgb(100, 250, 100) :
+                        Color.FromRgb(250, 100, 100);
             } }
         public string SizeWarehouse => IsOkWh ? "25" : "50";
 

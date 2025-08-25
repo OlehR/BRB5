@@ -529,7 +529,7 @@ from  DocWares dw
 
         public IEnumerable<DocVM> GetDoc(TypeDoc pTypeDoc, string pBarCode = null, string pExFilrer = null)
         {
-            string Sql = $@"select d.*, Wh.Name as Address,d.State as Color from Doc d 
+            string Sql = $@"select d.*, Wh.Address as Address,d.State as Color from Doc d 
  left join Warehouse  Wh on d.CodeWarehouse = wh.number 
                                 where TypeDoc = {pTypeDoc.CodeDoc} and DateDoc >= date(datetime(CURRENT_TIMESTAMP,'-{pTypeDoc.DayBefore} day'))" +
                                 (string.IsNullOrEmpty(pBarCode) ? "" : $" and BarCode like'%{pBarCode}%'") +
@@ -539,7 +539,7 @@ from  DocWares dw
             var res = db.Query<DocVM>(Sql);
             if (!res.Any() && !string.IsNullOrEmpty(pBarCode))
             {
-                Sql = $@"select d.*, Wh.Name as Address,d.State as Color  
+                Sql = $@"select d.*, Wh.Address as Address,d.State as Color  
 from Doc d 
  left join Warehouse  Wh on d.CodeWarehouse = wh.number 
  Join DOCWARESSAMPLE dw on dw.numberdoc=d.numberdoc and dw.TypeDoc=d.TypeDoc

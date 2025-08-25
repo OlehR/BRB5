@@ -179,6 +179,15 @@ namespace BL
             return null;
         }
 
-       
+        public Warehouse GetWarehouseByNumber(string pNumberWarehouse)
+        {
+            var Warehouses = db.GetWarehouse();
+
+            if (Warehouses == null) return null;
+
+            var res = Warehouses.FirstOrDefault(w => w.Number?.Equals( pNumberWarehouse)==true);
+
+            return res;
+        }
     }
 }

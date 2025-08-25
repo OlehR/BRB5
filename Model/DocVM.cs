@@ -131,9 +131,9 @@ namespace BRB5.Model
         public string ShortAddress { 
             get {
                 if (Address == null) return null;
-                var temp = Address.Split('-')[1];
-                if (temp.Length < 2) temp= Address;
-                return temp;
+                var temp = Address.Split('-');
+                if (temp.Length >= 2) return temp[1];
+                return Address;
             }  } // 
 
         

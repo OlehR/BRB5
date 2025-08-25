@@ -46,7 +46,7 @@
                                     <Label Grid.Row="0"
                                            Grid.Column="1"
                                            FontSize="Small"
-                                           Text="{Binding ShortAddress}" />
+                                           Text="{Binding Address}" />
 
                                     <Label Grid.Row="1"
                                            Grid.Column="0"
