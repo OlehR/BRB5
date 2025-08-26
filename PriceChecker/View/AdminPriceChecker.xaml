@@ -26,7 +26,7 @@
                                Aspect="AspectFit" />
                     </Frame>
 
-                    <Button Text="Вийти з Адміну" Clicked="OnBackClick"  BackgroundColor="{Binding ColorBG}"/>
+                    <Button Text="Вийти з Адміну" Clicked="OnBackClick" FontSize="20" FontAttributes="Bold" BackgroundColor="{Binding ColorBG}"/>
                     
                     <Image x:Name="LogoImage" 
                            HorizontalOptions="EndAndExpand"  
