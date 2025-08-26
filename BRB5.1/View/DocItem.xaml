@@ -7,14 +7,14 @@
                        x:Class="BRB6.View.DocItem">
     <NavigationPage.TitleView>
         <StackLayout Spacing="10" Orientation="Horizontal" Padding="0,0,10,0">
-            <Picker x:Name="ReasonPicker"
+            <!--<Picker x:Name="ReasonPicker"
                     IsEnabled="{Binding IsVisF5Act}"
                     IsVisible="{Binding IsVisF5Act}"
                     Title="Причина"
                     ItemsSource="{Binding Reasons}"
                     ItemDisplayBinding="{Binding NameReason}"
                     SelectedIndexChanged="SelectReason"
-                    SelectedItem="{Binding SelectedReason}" />
+                    SelectedItem="{Binding SelectedReason}" />-->
 
         </StackLayout>
     </NavigationPage.TitleView>

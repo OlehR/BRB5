@@ -104,7 +104,7 @@ public partial class QuestionItemTemplate : ContentView, IViewRDI
             {
                 var parentPage = this.GetParentPage();
                 if (parentPage != null)
-                    await parentPage.DisplayAlert("Explanation", Data.Explanation, "OK");
+                    await parentPage.DisplayAlert("Критерій оцінки", Data.Explanation, "OK");
             }
         }
     }

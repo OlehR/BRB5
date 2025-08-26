@@ -14,7 +14,7 @@
                     <TapGestureRecognizer Tapped="F2Save" />
                 </Label.GestureRecognizers>
             </Label>
-            <Label Text="{Binding FilterLabel}" 
+            <!--<Label Text="{Binding FilterLabel}" 
                    x:Name="F3FilterLabel"
                    IsVisible="False"  
                    HorizontalOptions="EndAndExpand" 
@@ -22,7 +22,7 @@
                 <Label.GestureRecognizers>
                     <TapGestureRecognizer Tapped="F3Filter" />
                 </Label.GestureRecognizers>
-            </Label>
+            </Label>-->
         </StackLayout>
     </NavigationPage.TitleView>
     <StackLayout>

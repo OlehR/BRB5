@@ -23,17 +23,20 @@ public partial class LotsCheck : ContentPage
     private DocVM SelectedDoc;
     private bool IsWares;
     public double height { get { return DeviceDisplay.MainDisplayInfo.Height / DeviceDisplay.MainDisplayInfo.Density - 150; } }
-    public bool IsMandatory { get; set; } = false;
-    public string FilterLabel => IsMandatory ? "F3-Обов'язкові" : "F3-Всі";
+    //public bool IsMandatory { get; set; } = true;
+    //public string FilterLabel => IsMandatory ? "F3-Обов'язкові" : "F3-Всі";
+    public ObservableCollection<BRB5.Model.DB.Reason> AllReasons { get; set; }
     public LotsCheck(TypeDoc vTypeDoc)
     {
         InitializeComponent();
         TypeDoc = vTypeDoc;
 
         IsWares = TypeDoc.KindDoc == eKindDoc.Lot;
-        F2SaveLabel.IsVisible = !IsWares;        
-        F3FilterLabel.IsVisible = IsWares;
+        F2SaveLabel.IsVisible = !IsWares;
+        //F3FilterLabel.IsVisible = IsWares;
 
+        var reasonsFromDb = db.GetReason(TypeDoc.KindDoc);
+        AllReasons = new ObservableCollection<BRB5.Model.DB.Reason>(reasonsFromDb);
         PopulateStackLayout();
         Task.Run(async () =>
         {
@@ -112,9 +115,9 @@ public partial class LotsCheck : ContentPage
         var allDocs = db.GetDoc(TypeDoc);
 
         // Якщо фільтр увімкнено — беремо лише потрібні
-        if (IsMandatory)
-            MyDocs = new ObservableCollection<DocVM>(allDocs.Where(el => el.CodeReason == 1));
-        else
+        //if (IsMandatory)
+        //    MyDocs = new ObservableCollection<DocVM>(allDocs.Where(el => el.CodeReason == 1));
+        //else
             MyDocs = new ObservableCollection<DocVM>(allDocs);
         /*
         //// --- Add this block to multiply documents for testing ---
@@ -167,11 +170,7 @@ public partial class LotsCheck : ContentPage
 
             var numberLabel = new Label { Text = doc.NumberDoc };
             numberLabel.SetBinding(Label.BackgroundColorProperty, new Binding("GetColor", source: doc));
-            Grid.SetColumn(numberLabel, 1);
-
-            var emptyLabel = new Label { Text = "" };
-            emptyLabel.SetBinding(Label.BackgroundColorProperty, new Binding("GetColor", source: doc));
-            Grid.SetRow(emptyLabel, 1);
+            Grid.SetColumn(numberLabel, 1);           
 
             var extInfoStackLayout = new StackLayout();
             extInfoStackLayout.SetBinding(Label.BackgroundColorProperty, new Binding("GetColor", source: doc));
@@ -186,11 +185,35 @@ public partial class LotsCheck : ContentPage
                     extInfoStackLayout.Children.Add(new Label { Text = line });
                 }
             }
+            // === Picker для вибору причини ===
+            var reasonPicker = new Picker
+            {
+                Title = "Причина",
+                ItemsSource = AllReasons,
+                ItemDisplayBinding = new Binding("NameReason")
+            };
+            // встановлюємо вибір з документа
+            if (doc.CodeReason != 0)
+            {
+                var current = AllReasons.FirstOrDefault(r => r.CodeReason == doc.CodeReason);
+                if (current != null)
+                    reasonPicker.SelectedItem = current;
+            }
+
+            // при зміні вибору оновлюємо Doc.CodeReason
+            reasonPicker.SelectedIndexChanged += (s, e) =>
+            {
+                if (reasonPicker.SelectedItem is BRB5.Model.DB.Reason r)
+                    doc.CodeReason = r.CodeReason;
+            };
+            reasonPicker.SetBinding(Picker.BackgroundColorProperty, new Binding("GetColor", source: doc));
+            Grid.SetRow(reasonPicker, 1);
+
 
             grid.Children.Add(dateLabel);
             grid.Children.Add(numberLabel);
-            grid.Children.Add(emptyLabel);
             grid.Children.Add(extInfoStackLayout);
+            grid.Children.Add(reasonPicker);
 
             tempStackLayout.Children.Add(grid);
         }
@@ -239,18 +262,26 @@ public partial class LotsCheck : ContentPage
             return;
         Task.Run(async () =>
         {
-            var r = await c.SendDocsDataAsync(SelectedDoc, null);
-            var toast = Toast.Make("Збереження: " + r.TextError, ToastDuration.Long, 14);
-            MainThread.BeginInvokeOnMainThread(async () => await toast.Show());
+            var result = await c.SendDocsDataAsync(SelectedDoc, null);
+
+            if (result.State == 0) // Assuming 0 means success
+            {
+                var toast = Toast.Make("Збереження: " + result.TextError, ToastDuration.Long, 14);
+                MainThread.BeginInvokeOnMainThread(async () => await toast.Show());
+            }
+            else
+            {
+                MainThread.BeginInvokeOnMainThread(async () => await DisplayAlert("Помилка", "Не вдалося зберегти " + result.TextError, "OK"));
+            }
         });
     }
     private void F3Filter(object sender, EventArgs e)
     {
-        if (!IsWares) return;
-        IsMandatory = !IsMandatory;
-        OnPropertyChanged(nameof(FilterLabel));
-        OnPropertyChanged(nameof(IsMandatory));
-        PopulateStackLayout();
+        //if (!IsWares) return;
+        //IsMandatory = !IsMandatory;
+        //OnPropertyChanged(nameof(FilterLabel));
+        //OnPropertyChanged(nameof(IsMandatory));
+        //PopulateStackLayout();
     }
 #if ANDROID
     public void OnPageKeyDown(Keycode keyCode, KeyEvent e)
