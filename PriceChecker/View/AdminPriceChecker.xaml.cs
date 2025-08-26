@@ -14,7 +14,7 @@ public partial class AdminPriceChecker : ContentPage
     BL.BL bl = BL.BL.GetBL(); 
 
     private Timer _returnTimer;
-    private const int TimeoutSeconds = 6000;
+    private const int TimeoutSeconds = 60;
     public List<PrintBlockItems> ListPrintBlockItems { get { return db.GetPrintBlockItemsCount().ToList(); } }
     public int SelectedPrintBlockItems { get { return ListPrintBlockItems.Count > 0 ? ListPrintBlockItems.Last().PackageNumber : -1; } }
     /// <summary>
