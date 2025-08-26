@@ -38,19 +38,31 @@ namespace BRB6
 
             InactivityTimer = new Timer(TimeSpan.FromMinutes(5).TotalMilliseconds); 
             InactivityTimer.Elapsed += InactivityTimerElapsed;
-            InactivityTimer.Start();
         }
 
         protected override void OnStart()
         {
+            base.OnStart();
+            InactivityTimer?.Start();
         }
 
         protected override void OnSleep()
         {
+            base.OnSleep();
+            InactivityTimer?.Stop();
+#if ANDROID
+            MainThread.BeginInvokeOnMainThread(() =>
+            {
+                var activity = Platform.CurrentActivity;
+                activity?.Window?.ClearFlags(WindowManagerFlags.KeepScreenOn);
+            });
+#endif
         }
 
         protected override void OnResume()
         {
+            base.OnResume();
+            InactivityTimer?.Start();
         }
 
         private void CurrentDomain_FirstChanceException(object sender, FirstChanceExceptionEventArgs e)

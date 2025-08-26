@@ -97,11 +97,15 @@ public partial class QuestionItemTemplate : ContentView, IViewRDI
 
     private async void OnQuestionTapped(object sender, TappedEventArgs e)
     {
-        if (Data?.Explanation != null)
+        if (BindingContext is BRB5.Model.RaitingDocItem item)
         {
-            var parentPage = this.GetParentPage();
-            if (parentPage != null)
-                await parentPage.DisplayAlert("Explanation", Data.Explanation, "OK");            
+            Data = BindingContext as BRB5.Model.RaitingDocItem;
+            if (Data?.Explanation != null)
+            {
+                var parentPage = this.GetParentPage();
+                if (parentPage != null)
+                    await parentPage.DisplayAlert("Explanation", Data.Explanation, "OK");
+            }
         }
     }
     private Page GetParentPage()
