@@ -1149,5 +1149,11 @@ group by dw.CodeWares, w.NameWares
             }
             return null;
         }
+
+        public bool SetDocReason(Doc Doc)
+        {
+            string Sql = $@"Update Doc set CodeReason={Doc.CodeReason}  where TypeDoc = {Doc.TypeDoc} and NumberDoc = '{Doc.NumberDoc}'";
+            return db.Execute(Sql) >= 0;
+        }
     }
 }
