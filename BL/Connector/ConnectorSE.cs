@@ -161,7 +161,7 @@ namespace BL.Connector
                 HttpResult result = await GetDataHTTP.HTTPRequestAsync(0, "DCT/Login", Data.ToJson(), "application/json", null,null,5);
                 if (result.HttpState == eStateHTTP.HTTP_OK)
                 {
-                    Result<User> res = JsonConvert.DeserializeObject<Result<User>>(result.Result);
+                    Result<BRB5.Model.AnswerLogin> res = JsonConvert.DeserializeObject<Result<BRB5.Model.AnswerLogin>>(result.Result);
                     Config.Role = res.Info?.Role ?? 0;
                     Config.CodeUser = res.Info?.CodeUser ?? 0;
                     Config.NameUser = res.Info?.NameUser;

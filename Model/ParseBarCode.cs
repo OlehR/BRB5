@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using Model;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -21,5 +22,8 @@ namespace BRB5.Model
         [JsonIgnore]
         public decimal Quantity { get; set; } = 0m;
         public eTypePriceInfo TypePriceInfo { get; set; }
+        public decimal PercentDiscount { get; set; } = 0m;
+        public eTypeCode TypeCode { get; set; } = eTypeCode.NotDefine;
+        public int CodeOperator { get; set; } = 0;
     }
 }

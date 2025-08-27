@@ -46,8 +46,8 @@ namespace BL.Connector
                 if (Ftp.DownLoad("Template/User.json", Config.PathFiles))
                 {
                     var strU = File.ReadAllText(Path.Combine(Config.PathFiles, "User.json"));
-                    var U = JsonConvert.DeserializeObject<List<User>>(strU);
-                    db.ReplaceUser(U);             
+                    var U = JsonConvert.DeserializeObject<List<BRB5.Model.AnswerLogin>>(strU);
+                    //db.ReplaceUser(U);             
                 }
                 if (Ftp.DownLoad("Template/Warehouse.json", Config.PathFiles))
                 {

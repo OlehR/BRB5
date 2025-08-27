@@ -82,7 +82,7 @@ namespace BL.Connector
             if (pBarCode != null)
             {
                 //Utils.WriteLog("e", TAG, "ParsedBarCode=> " + pBarCode.charAt(0) + " " + pBarCode.Contains("|"));
-                if (pBarCode.Contains("|") && pBarCode[0] == 'Б')
+                if (pBarCode.Contains('|') && pBarCode[0] == 'Б')
                 {
                     res.CodeWares = 200000000 + Convert.ToInt32(pBarCode.Substring(1, 9));
                     res.Quantity = 1;

@@ -1,23 +1,27 @@
 ﻿using BRB5;
 using BRB5.Model.DB;
+using Model;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO.Compression;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using UtilNetwork;
+using Utils;
 
 namespace BRB5.Model
 {
     public class ObservableInt { }
     public class Connector
     {
-        protected static string TAG = "BRB5.Model/Connector";
+        protected static string TAG = "BRB6.Model/Connector";
         protected static Connector Instance = null;
         public Action<string> OnSave { get; set; }
         public volatile bool IsStopSave  = false;
         public volatile bool IsSaving = false;
+        IEnumerable<CustomerBarCode> CustomerBarCode;
 
         public static void CleanConnector()
         { Instance = null; }
@@ -78,7 +82,65 @@ namespace BRB5.Model
         /// <param name="pBarCode"></param>
         /// <param name="pIsOnlyBarCode"></param>
         /// <returns></returns>
-        public virtual ParseBarCode ParsedBarCode(string pBarCode, bool pIsHandInput) { throw new NotImplementedException(); }
+        
+        public virtual ParseBarCode ParsedBarCode(string pBarCode, bool pIsHandInput)
+        {
+            ParseBarCode Res = new() { BarCode = pBarCode };
+            int Code, Data, Data2;
+            foreach (var el in CustomerBarCode.Where(el => el.KindBarCode == eKindBarCode.EAN13 || el.KindBarCode == eKindBarCode.Code128 || el.KindBarCode == eKindBarCode.QR /*&& (el.TypeBarCode == eTypeBarCode.WaresWeight || el.TypeBarCode == eTypeBarCode.WaresUnit )*/))
+            {
+                Code = 0; Data = 0; Data2 = 0;
+                if (el.TotalLenght != pBarCode.Length)
+                    continue;
+
+                if (string.IsNullOrEmpty(el.Separator))
+                {
+                    var D = pBarCode.Split(el.Separator);
+                    if (D.Length > 1)
+                    {
+                        Code = D[0].ToInt();
+                        Data = D.Length > 1 ? D[1].ToInt() : 0;
+                        Data2 = D.Length > 2 ? D[2].ToInt() : 0;
+                    }
+                }
+                if (Code == 0 && el.Prefix.Equals(pBarCode[..el.Prefix.Length]))
+                {
+                    if (el.KindBarCode == eKindBarCode.EAN13 && pBarCode.Length != 13)
+                        continue;
+
+                    Code = Convert.ToInt32(pBarCode.Substring(el.Prefix.Length, el.LenghtCode));
+                    Data = el.LenghtOperator > 0 ? Convert.ToInt32(pBarCode.Substring(el.Prefix.Length + el.LenghtCode, el.LenghtOperator)) : 0;
+                    Data = el.LenghtQuantity > 0 ? Convert.ToInt32(pBarCode.Substring(el.Prefix.Length + el.LenghtCode + el.LenghtOperator, el.LenghtQuantity)) : 0;
+                }
+                if (Data > 0 && el.LenghtOperator > 0) Res.CodeOperator = Data;
+                if (Data > 0 && el.LenghtQuantity > 0) Res.Quantity = Data;
+                if (Data > 0 && el.TypeBarCode == eTypeBarCode.PriceTag) Res.Price = Data;
+                if (Data2 > 0 && el.TypeBarCode == eTypeBarCode.PriceTag) Res.PriceOpt = Data;
+
+                Res.TypeCode = el.TypeCode;
+                switch (el.TypeCode)
+                {
+                    case eTypeCode.Article:
+                        Res.Article = Code;
+                        break;
+                    case eTypeCode.Code:
+                        Res.CodeWares = Code;
+                        break;
+                    case eTypeCode.PercentDiscount:
+                        Res.PercentDiscount = Code;
+                        break;
+                    case eTypeCode.Coupon:
+                    case eTypeCode.OneTimeCoupon:
+                    case eTypeCode.OneTimeCouponGift:
+                        Code = -1;
+                        break;
+                    default:
+                        break;
+                }
+                if (Code != 0) break;
+            }
+            return Res;
+        }
 
         /// <summary>
         /// Ціна on-line

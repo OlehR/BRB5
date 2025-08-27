@@ -3,13 +3,13 @@
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
   </PropertyGroup>
-
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="sqlite-net-pcl" Version="1.9.172" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\UniCS.TM\Model\Model.csproj" />
     <ProjectReference Include="..\..\UniCS.TM\UtilNetwork\UtilNetwork.csproj" />
     <ProjectReference Include="..\..\UniCS.TM\Utils\Utils.csproj" />
   </ItemGroup>

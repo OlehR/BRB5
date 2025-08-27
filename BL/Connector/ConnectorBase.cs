@@ -8,6 +8,7 @@ using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
+using Utils;
 
 namespace BL.Connector
 {
@@ -15,11 +16,11 @@ namespace BL.Connector
     {
         protected static string TAG = "BRB5/ConnectorBase";
 
-        protected DB db;
+        protected DB db;      
 
         public ConnectorBase()
         {
-            db = DB.GetDB(); 
+            db = DB.GetDB();
         }
 
         public static BRB5.Model.Connector GetInstance()
@@ -87,5 +88,6 @@ namespace BL.Connector
                 db.ReplaceReason(pG.Reason, pIsFull);
             return true;
         }
+        
     }
 }
