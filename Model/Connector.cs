@@ -21,7 +21,7 @@ namespace BRB5.Model
         public Action<string> OnSave { get; set; }
         public volatile bool IsStopSave  = false;
         public volatile bool IsSaving = false;
-        IEnumerable<CustomerBarCode> CustomerBarCode;
+        protected IEnumerable<CustomerBarCode> CustomerBarCode;
 
         public static void CleanConnector()
         { Instance = null; }
@@ -86,6 +86,8 @@ namespace BRB5.Model
         public virtual ParseBarCode ParsedBarCode(string pBarCode, bool pIsHandInput)
         {
             ParseBarCode Res = new() { BarCode = pBarCode };
+            if(CustomerBarCode == null || CustomerBarCode.Count() == 0)
+                return Res;
             int Code, Data, Data2;
             foreach (var el in CustomerBarCode.Where(el => el.KindBarCode == eKindBarCode.EAN13 || el.KindBarCode == eKindBarCode.Code128 || el.KindBarCode == eKindBarCode.QR /*&& (el.TypeBarCode == eTypeBarCode.WaresWeight || el.TypeBarCode == eTypeBarCode.WaresUnit )*/))
             {

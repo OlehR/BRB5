@@ -1,6 +1,7 @@
 ﻿using BRB5;
 using BRB5.Model;
 using BRB5.Model.DB;
+using Model;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -23,14 +24,14 @@ namespace BL.Connector
         ConnectorBase СonnectorLocal = null;
         public ConnectorUniversal()
         {
-            PercentColor = new PercentColor[6]  {
+            PercentColor = [
                 new PercentColor(0, Color.White, Color.White, ""), //Товар з хорошим строком
                 new PercentColor(10, Color.FromArgb(0x84FF57), Color.FromArgb(0x84FF57), "72301609"),  //10%
                 new PercentColor(25, Color.FromArgb(0xFFF157), Color.FromArgb(0xFFF157), "72301616"),  //25%
                 new PercentColor(50, Color.FromArgb(0xFEB044), Color.FromArgb(0xFEB044), "72301623"), //50%
                 new PercentColor(75, Color.FromArgb(0xE874FF), Color.FromArgb(0xE874FF), "72301630") , //75%
                 new PercentColor(100, Color.Gray, Color.Gray, "") //Протермінований товар
-            };
+            ];
         }
         bool IsLocalPrice;
        // IEnumerable<TypeDoc> TypeDoc=null;
@@ -73,7 +74,8 @@ namespace BL.Connector
                         Config.CodeUser = res.Info?.CodeUser ?? 0;
                         Config.NameUser = res.Info?.NameUser;
                         Config.TypeDoc = res.Info?.TypeDoc;
-                        if(!string.IsNullOrEmpty(res.Info?.PathAPK))
+                        CustomerBarCode = res.Info?.CustomerBarCode;
+                        if (!string.IsNullOrEmpty(res.Info?.PathAPK))
                             Config.PathAPK = res.Info?.PathAPK;
                         isGroup = Config.TypeDoc.Any(el => el.KindDoc == eKindDoc.NotDefined);
 
@@ -122,27 +124,27 @@ namespace BL.Connector
                 return new Result(result) { Info=Info};
             }
             catch (Exception e)
-            {
-                 
+            {                 
                 FileLogger.WriteLogMessage(this, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
                 return new Result(e);
             }
         }
         
-        public override ParseBarCode ParsedBarCode(string pBarCode, bool pIsOnlyBarCode)
+        /*public override ParseBarCode ParsedBarCode(string pBarCode, bool pIsOnlyBarCode)
         {
-            if(СonnectorLocal!=null)
+            base.ParsedBarCode(pBarCode, pIsOnlyBarCode);
+            if (СonnectorLocal!=null)
                return СonnectorLocal.ParsedBarCode(pBarCode, pIsOnlyBarCode);
             pBarCode = pBarCode.Trim();
             ParseBarCode Res = new() { BarCode = pBarCode };
-            /*            
+                        
             if (pBarCode.Length > 2 && pBarCode[..2].Equals("29") && pBarCode.Length == 13)
             {
                 Res.CodeWares = Convert.ToInt32(pBarCode[2..8]);
                 Res.Price = Convert.ToDecimal(pBarCode[8..13]);
-            }*/
+            }
             return Res;
-        }
+        }*/
 
         public override WaresPrice GetPrice(ParseBarCode pBC, eTypePriceInfo pTP = eTypePriceInfo.Short)
         {
@@ -218,6 +220,13 @@ namespace BL.Connector
                 }
                 else
                 {
+                    if(TD?.CodeApi==1)
+                    {
+                        if (СonnectorLocal != null)
+                            return await СonnectorLocal.LoadDocsDataAsync(pTypeDoc, pNumberDoc, pIsClear);
+                        return new Result(-1, "Локальний конектор не визначено");
+                    }
+
                     AppContext.SetSwitch("System.Reflection.NullabilityInfoContext.IsSupported", true);
                     GetDocs Data = new() { CodeWarehouse = Config.CodeWarehouse, TypeDoc = pTypeDoc, NumberDoc = pNumberDoc,CodeUser=Config.CodeUser };
                     HttpResult result = await GetDataHTTP.HTTPRequestAsync(0, "DCT/LoadDoc", Data.ToJson(), "application/json", null);
@@ -278,6 +287,14 @@ namespace BL.Connector
         {
             try
             {
+                var TD = Config.GetDocSetting(pDoc.TypeDoc);
+                if (TD?.CodeApi == 1)
+                {
+                    if (СonnectorLocal != null)
+                        return await СonnectorLocal.SendDocsDataAsync(pDoc, pWares);
+                    return new Result(-1, "Локальний конектор не визначено");
+                }
+
                 string Data = new SaveDoc() { Doc = pDoc, Wares = pWares }.ToJson();
                 HttpResult result = await GetDataHTTP.HTTPRequestAsync(0, "DCT/SaveDoc", Data, "application/json", null);
                 if (result.HttpState == eStateHTTP.HTTP_OK)

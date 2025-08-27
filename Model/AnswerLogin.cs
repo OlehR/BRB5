@@ -15,6 +15,17 @@ namespace BRB5.Model
     }
     public class AnswerLogin:User
     {
+        public AnswerLogin(User pU=null)
+        {
+           if(pU!=null)
+            {
+                LoginServer= pU.LoginServer;
+                CodeUser = pU.CodeUser;
+                BarCode = pU.BarCode;
+                Login = pU.Login;
+                PassWord = pU.PassWord;
+            }
+        }
         public string NameUser { get; set; }
         public eRole Role { get; set; }
         public IEnumerable<TypeDoc> TypeDoc { get; set; }
