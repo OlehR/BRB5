@@ -148,7 +148,7 @@ namespace BL.Connector
 
         public override WaresPrice GetPrice(ParseBarCode pBC, eTypePriceInfo pTP = eTypePriceInfo.Short)
         {
-            Config.TypeDoc.Where(el => el.KindDoc == eKindDoc.PriceCheck).FirstOrDefault();
+            //Config.TypeDoc.Where(el => el.KindDoc == eKindDoc.PriceCheck).FirstOrDefault();
             WaresPrice Res=null;
             if (IsLocalPrice)
             {
@@ -162,6 +162,8 @@ namespace BL.Connector
                 if (result.HttpState == eStateHTTP.HTTP_OK)
                 {
                     var res = JsonConvert.DeserializeObject<Result<WaresPrice>>(result.Result);
+                    if(res.Info!=null)
+                        res.Info.ParseBarCode = pBC;
                     return res.Info;
                 }                
             }
