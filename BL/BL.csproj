@@ -9,6 +9,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\UniCS.TM\Model\Model.csproj" />
     <ProjectReference Include="..\..\UniCS.TM\UtilNetwork\UtilNetwork.csproj" />
     <ProjectReference Include="..\..\UniCS.TM\Utils\Utils.csproj" />
     <ProjectReference Include="..\Model\BRB5.Model.csproj" />
