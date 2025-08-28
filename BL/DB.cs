@@ -771,7 +771,7 @@ and bc.BarCode=?
 
         public bool SetStateDoc(DocVM pDoc)
         {
-            string Sql = $@"Update Doc set State={pDoc.State}  where TypeDoc = {pDoc.TypeDoc} and NumberDoc = {pDoc.NumberDoc}";
+            string Sql = $@"Update Doc set State={pDoc.State}  where TypeDoc = {pDoc.TypeDoc} and NumberDoc = '{pDoc.NumberDoc}'";
             return db.Execute(Sql) >= 0;
         }
 

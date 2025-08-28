@@ -50,7 +50,7 @@ namespace BRB5.Model
         public Doc() : base() { }
         public Doc(DocId pDocId) : base(pDocId) { }
         /// <summary>
-        /// Стан 0 - готується, 1 - збережено ...
+        /// Стан 0 - готується, 1 - збережено, -1 - помилка при збереженні ...
         /// </summary>
         public int State { get; set; }
 
@@ -148,7 +148,7 @@ namespace BRB5.Model
         [Ignore]
         public bool SelectedColor { get { return _SelectedColor; } set { _SelectedColor = value;   OnPropertyChanged(nameof(GetColor)); } }
 
-
+        public void RefreshColor() { OnPropertyChanged(nameof(GetColor)); }
         [JsonIgnore]
         [Ignore]
         public bool Even { get; set; } = false;
@@ -158,7 +158,7 @@ namespace BRB5.Model
         {
             get
             {
-                if (SelectedColor) return "#50c878";
+                if (SelectedColor) return "#a0c4ff";
                 if (Even)
                     switch (Color)
                     {

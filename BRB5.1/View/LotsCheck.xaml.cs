@@ -118,7 +118,7 @@ public partial class LotsCheck : ContentPage
         //if (IsMandatory)
         //    MyDocs = new ObservableCollection<DocVM>(allDocs.Where(el => el.CodeReason == 1));
         //else
-            MyDocs = new ObservableCollection<DocVM>(allDocs);
+        //    MyDocs = new ObservableCollection<DocVM>(allDocs);
         /*
         //// --- Add this block to multiply documents for testing ---
         //int multiplyFactor = 10; // Change this to get more items (e.g., 10x20=200)
@@ -141,11 +141,13 @@ public partial class LotsCheck : ContentPage
         //    }
         //}
         */
-             
+
+        MyDocs = new ObservableCollection<DocVM>(allDocs);
 
         var tempStackLayout = new StackLayout();
         foreach (var doc in MyDocs)
         {
+            UpdateDocColor(doc);
             var grid = new Grid
             {
                 RowSpacing = 1,
@@ -190,29 +192,42 @@ public partial class LotsCheck : ContentPage
             {
                 Title = "Причина",
                 ItemsSource = AllReasons,
-                ItemDisplayBinding = new Binding("NameReason")
+                ItemDisplayBinding = new Binding("NameReason"),
+                IsEnabled = false,
+                IsVisible = false,
             };
             // встановлюємо вибір з документа
-            if (doc.CodeReason != 0)
+            if (doc.CodeReason != 0 /*&& !IsWares*/)
             {
                 var current = AllReasons.FirstOrDefault(r => r.CodeReason == doc.CodeReason);
                 if (current != null)
+                {
                     reasonPicker.SelectedItem = current;
+                    reasonPicker.IsEnabled = true;
+                    reasonPicker.IsVisible = true;
+                }
             }
 
             // при зміні вибору оновлюємо Doc.CodeReason
             reasonPicker.SelectedIndexChanged += (s, e) =>
             {
                 if (reasonPicker.SelectedItem is BRB5.Model.DB.Reason r)
+                {
                     doc.CodeReason = r.CodeReason;
+                    var t = db.SetDocReason(doc);
+                }
+
             };
             reasonPicker.SetBinding(Picker.BackgroundColorProperty, new Binding("GetColor", source: doc));
             Grid.SetRow(reasonPicker, 1);
-
+            var emptyLabel = new Label { Text = "" };
+            emptyLabel.SetBinding(Label.BackgroundColorProperty, new Binding("GetColor", source: doc));
+            Grid.SetRow(emptyLabel, 1);
 
             grid.Children.Add(dateLabel);
             grid.Children.Add(numberLabel);
             grid.Children.Add(extInfoStackLayout);
+            grid.Children.Add(emptyLabel);
             grid.Children.Add(reasonPicker);
 
             tempStackLayout.Children.Add(grid);
@@ -230,10 +245,29 @@ public partial class LotsCheck : ContentPage
             SelectedDoc.SelectedColor = false;
         if (sender is Grid grid && grid.BindingContext is DocVM doc)
         {
-            SelectedDoc = doc;
-            doc.SelectedColor = true;
+            if (SelectedDoc != doc)
+            {
+                SelectedDoc = doc;
+                if (IsWares) await Navigation.PushAsync(new DocItem(doc, TypeDoc));
+            }
+            else
+            {
+                if (!IsWares)
+                {
+                    // знайти reasonPicker у Grid
+                    var picker = grid.Children
+                        .OfType<Picker>()
+                        .FirstOrDefault();
 
-            if (IsWares) await Navigation.PushAsync(new DocItem(doc, TypeDoc));
+                    if (picker != null)
+                    {
+                        picker.IsEnabled = true;
+                        picker.IsVisible = true;
+                        picker.Focus(); // одразу відкриє вибір
+                    }
+                }
+            }
+            doc.SelectedColor = true;
         }
     }
 
@@ -255,26 +289,104 @@ public partial class LotsCheck : ContentPage
             }
         }
     }
-    private void F2Save(object sender, EventArgs e)
+    private async void F2Save(object sender, EventArgs e)
     {
         if (IsWares) return;
         if (SelectedDoc == null)
             return;
-        Task.Run(async () =>
-        {
-            var result = await c.SendDocsDataAsync(SelectedDoc, null);
 
-            if (result.State == 0) // Assuming 0 means success
-            {
-                var toast = Toast.Make("Збереження: " + result.TextError, ToastDuration.Long, 14);
-                MainThread.BeginInvokeOnMainThread(async () => await toast.Show());
-            }
-            else
-            {
-                MainThread.BeginInvokeOnMainThread(async () => await DisplayAlert("Помилка", "Не вдалося зберегти " + result.TextError, "OK"));
-            }
-        });
+        await SaveAndResendAsync(SelectedDoc);
     }
+    private async Task SaveAndResendAsync(DocVM doc)
+    {
+
+        var result = await c.SendDocsDataAsync(SelectedDoc, null);
+
+        ////TMP!!!!
+        //var result = new UtilNetwork.Result(0, "успішно");
+
+        if (result.State == 0) // 0 = success
+        {
+            var toast = Toast.Make("Збереження: " + result.TextError, ToastDuration.Long, 14); 
+            SelectedDoc.State = 1;
+            MainThread.BeginInvokeOnMainThread(async () =>
+            {
+                await toast.Show();                
+                UpdateDocColor(SelectedDoc);
+            });
+        }
+        else
+        {
+            SelectedDoc.State = -1;
+            MainThread.BeginInvokeOnMainThread(async () =>
+            {
+                await DisplayAlert("Помилка", "Не вдалося зберегти " + result.TextError, "OK");
+                UpdateDocColor(SelectedDoc);
+            });
+        }
+        var t = db.SetStateDoc(SelectedDoc);
+
+        // Якщо успіх, пробуємо надіслати решту
+        if (result.State == 0)
+        {
+            int successCount = 0;
+            int failCount = 0;
+
+            foreach (var d in MyDocs.Where(x => x.State == -1).ToList())
+            {
+                if (d == SelectedDoc) continue;
+
+                var subResult = await c.SendDocsDataAsync(d, null);
+               
+                ////TMP!!!!
+                //var subResult = new UtilNetwork.Result(-1, "успішно");
+
+                MainThread.BeginInvokeOnMainThread(() =>
+                {
+                    if (subResult.State == 0)
+                    {
+                        d.State = 1; // успішно
+                        successCount++;
+                    }
+                    else
+                    {
+                        d.State = -1; // помилка
+                        failCount++;
+                    }
+                    UpdateDocColor(d);
+                });
+
+                t = db.SetStateDoc(SelectedDoc);
+            }
+            // після циклу — показати результат
+            MainThread.BeginInvokeOnMainThread(async () =>
+            {
+                var toast = Toast.Make(
+                    $"Додатково надіслано: {successCount}, Помилок: {failCount}",
+                    ToastDuration.Long, 14);
+                await toast.Show();
+            });
+        }
+    }
+    private void UpdateDocColor(DocVM doc)
+    {        
+        switch (doc.State)
+        {
+            case 1: // успіх
+                doc.Color = 1; // зелений
+                break;
+            case -1: // помилка
+                doc.Color = 9; // червоний
+                break;
+            default: // за замовчуванням
+                doc.Color = 0; // жовтий
+                break;
+        }
+
+        // оповіщаємо що змінились властивості для UI
+        doc.RefreshColor();
+    }
+
     private void F3Filter(object sender, EventArgs e)
     {
         //if (!IsWares) return;
