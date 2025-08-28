@@ -46,20 +46,26 @@
                                 </Grid.RowDefinitions>
 
                                 <Label Text="{Binding DateDoc}"
-                   BackgroundColor="{Binding GetColor}" />
+                                        BackgroundColor="{Binding GetColor}" />
 
                                 <Label Text="{Binding NumberDoc}"
-                   Grid.Column="1"
-                   BackgroundColor="{Binding GetColor}" />
+                                        Grid.Column="1"
+                                        BackgroundColor="{Binding GetColor}" />
                                 <Label Text="{Binding Description}"
-                   Grid.ColumnSpan="2"
-                   Grid.Row="1"
-                   BackgroundColor="{Binding GetColor}" />
+                                        Grid.ColumnSpan="2"
+                                        Grid.Row="1"
+                                        BackgroundColor="{Binding GetColor}" />
 
+                                <Label Text="{Binding ExtInfo}"
+                                       IsVisible="{Binding IsVisExtInfo}"
+                                        BackgroundColor="{Binding GetColor}"
+                                        Grid.ColumnSpan="2"
+                                        Grid.Row="2" />
                                 <Label Text="{Binding NameUser}"
-                   BackgroundColor="{Binding GetColor}"
-                   Grid.ColumnSpan="2"
-                   Grid.Row="2" />
+                                       IsVisible="{Binding IsVisNameUser}"
+                                        BackgroundColor="{Binding GetColor}"
+                                        Grid.ColumnSpan="2"
+                                        Grid.Row="3" />
                             </Grid>
                         </ViewCell>
                     </DataTemplate>

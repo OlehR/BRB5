@@ -136,7 +136,12 @@ namespace BRB5.Model
                 return Address;
             }  } // 
 
-        
+        [JsonIgnore]
+        [Ignore]
+        public bool IsVisNameUser => !string.IsNullOrEmpty(NameUser);
+        [JsonIgnore]
+        [Ignore]
+        public bool IsVisExtInfo => !string.IsNullOrEmpty(ExtInfo);
 
         private bool _SelectedColor = false;
         [JsonIgnore]
