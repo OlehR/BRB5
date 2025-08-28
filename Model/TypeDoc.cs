@@ -80,6 +80,7 @@ namespace BRB5
         /// Чи використовувати лише HTTP  для отримання списку документів.
         /// </summary>
         public bool IsOnlyHttp { get; set; } = false;
+        public int LinkedCodeDoc { get; set; } = 0;
 
     }
 }

@@ -129,7 +129,7 @@ namespace BL.Connector
                 return new Result(e);
             }
         }
-        
+
         /*public override ParseBarCode ParsedBarCode(string pBarCode, bool pIsOnlyBarCode)
         {
             base.ParsedBarCode(pBarCode, pIsOnlyBarCode);
@@ -149,7 +149,7 @@ namespace BL.Connector
         public override WaresPrice GetPrice(ParseBarCode pBC, eTypePriceInfo pTP = eTypePriceInfo.Short)
         {
             //Config.TypeDoc.Where(el => el.KindDoc == eKindDoc.PriceCheck).FirstOrDefault();
-            WaresPrice Res=null;
+            WaresPrice Res = null;
             if (IsLocalPrice)
             {
                 if (СonnectorLocal != null)
@@ -157,17 +157,17 @@ namespace BL.Connector
             }
             else
             {
-                ApiPrice Data = new ApiPrice() { CodeWares = pBC.CodeWares, Article= pBC.Article, BarCode = pBC.BarCode, CodeWarehouse = Config.CodeWarehouse };
+                ApiPrice Data = new ApiPrice() { CodeWares = pBC.CodeWares, Article = pBC.Article, BarCode = pBC.BarCode, CodeWarehouse = Config.CodeWarehouse };
                 HttpResult result = GetDataHTTP.HTTPRequest(0, "DCT/GetPrice", Data.ToJson(), "application/json", null);
                 if (result.HttpState == eStateHTTP.HTTP_OK)
                 {
                     var res = JsonConvert.DeserializeObject<Result<WaresPrice>>(result.Result);
-                    if(res.Info!=null)
+                    if (res.Info != null)
                         res.Info.ParseBarCode = pBC;
                     return res.Info;
-                }                
+                }
             }
-                return Res;
+            return Res;
         }
 
         public override Result SendLogPrice(IEnumerable<LogPrice> pLogPrice)

@@ -258,6 +258,14 @@ namespace BRB6.View
         {
             Doc.NumberOutInvoice = NumberOutInvoice;
             Doc.DateOutInvoice = ListDataStr[SelectedDataStr].DateString;
+            if(TypeDoc.LinkedCodeDoc!=0)
+            {
+               Doc dl =(Doc) Doc.Clone();
+                dl.TypeDoc = TypeDoc.LinkedCodeDoc;
+                db.ReplaceDoc([dl]);
+            }
+
+
             var d = db.GetDocWares(Doc, 2, eTypeOrder.Scan);
             var r = await c.SendDocsDataAsync(Doc,d );
             if (r?.State != 0) _ = DisplayAlert("Помилка", r.TextError, "OK");
