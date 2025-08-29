@@ -12,6 +12,7 @@ namespace BRB5.Model
         public string NameWares { get; set; }
         public decimal Plan { get; set; }
         public decimal Fact { get; set; }
+        public int CodeReason { get; set; } // Код причини
         public decimal QuantityDifference { get { return Fact - Plan; } }
         public string GetColor
         {

@@ -21,11 +21,11 @@ public partial class Act
     private Connector c = ConnectorBase.GetInstance();
     public bool IsSoftKeyboard { get { return Config.IsSoftKeyboard; } }
     public ObservableCollection<WaresAct> MyDocWares { get; set; } = new ObservableCollection<WaresAct>();
-    public Act(DocId pDocId, TypeDoc pTypeDoc)
+    public Act(DocVM pDocId, TypeDoc pTypeDoc)
     {
         NokeyBoard();
         TypeDoc = pTypeDoc;
-        Doc = new DocVM(pDocId);
+        Doc = pDocId;
         BindingContext = this;
         InitializeComponent();
     }
@@ -39,7 +39,15 @@ public partial class Act
             MainActivity.Key += OnPageKeyDown;
 #endif
         }
-        MyDocWares = new ObservableCollection<WaresAct>(db.GetWaresAct(Doc)); 
+
+        var allDocs = db.GetWaresAct(Doc);
+
+        if (Doc.CodeReason==1)
+            MyDocWares = new ObservableCollection<WaresAct>(allDocs.Where(el => el.CodeReason == 1));
+        else
+            MyDocWares = new ObservableCollection<WaresAct>(allDocs);
+
+        //MyDocWares = new ObservableCollection<WaresAct>(db.GetWaresAct(Doc)); 
         if (MyDocWares != null)
         {
             PopulateStackLayoutDocs();

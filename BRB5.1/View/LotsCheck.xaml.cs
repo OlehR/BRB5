@@ -99,7 +99,7 @@ public partial class LotsCheck : ContentPage
                 }
                 else
                 {
-                    await DisplayAlert("Помилка", "Не вдалося отримати назву " + result.TextError, "OK");
+                    await DisplayAlert("Помилка не цей магазин", "Не вдалося отримати назву " + result.TextError, "OK");
                 }
             });
         }
@@ -197,7 +197,7 @@ public partial class LotsCheck : ContentPage
                 IsVisible = false,
             };
             // встановлюємо вибір з документа
-            if (doc.CodeReason != 0 /*&& !IsWares*/)
+            if (doc.CodeReason != 0 && !IsWares)
             {
                 var current = AllReasons.FirstOrDefault(r => r.CodeReason == doc.CodeReason);
                 if (current != null)
@@ -339,7 +339,7 @@ public partial class LotsCheck : ContentPage
                 var subResult = await c.SendDocsDataAsync(d, null);
                
                 ////TMP!!!!
-                //var subResult = new UtilNetwork.Result(-1, "успішно");
+                //var subResult = new UtilNetwork.Result(-1, "не успішно");
 
                 MainThread.BeginInvokeOnMainThread(() =>
                 {
