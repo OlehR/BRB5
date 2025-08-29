@@ -114,11 +114,11 @@ public partial class LotsCheck : ContentPage
         // Завантажуємо всі документи
         var allDocs = db.GetDoc(TypeDoc);
 
-        // Якщо фільтр увімкнено — беремо лише потрібні
-        //if (IsMandatory)
-        //    MyDocs = new ObservableCollection<DocVM>(allDocs.Where(el => el.CodeReason == 1));
-        //else
-        //    MyDocs = new ObservableCollection<DocVM>(allDocs);
+        
+        if (IsWares)
+            MyDocs = new ObservableCollection<DocVM>(allDocs.Where(el => el.CodeReason != 0));
+        else
+            MyDocs = new ObservableCollection<DocVM>(allDocs);
         /*
         //// --- Add this block to multiply documents for testing ---
         //int multiplyFactor = 10; // Change this to get more items (e.g., 10x20=200)
@@ -142,7 +142,7 @@ public partial class LotsCheck : ContentPage
         //}
         */
 
-        MyDocs = new ObservableCollection<DocVM>(allDocs);
+        //MyDocs = new ObservableCollection<DocVM>(allDocs);
 
         var tempStackLayout = new StackLayout();
         foreach (var doc in MyDocs)
