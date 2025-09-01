@@ -62,8 +62,8 @@
                                                       Unfocused="UnfocusedInputQ"
                                                       TextChanged="CalcQuantity"
                                                        Completed="CompletedInputQ"
-                                                      Placeholder="к-сть"
-                                            Keyboard="{Binding CodeUnit, Converter={StaticResource CodeUnitToKeyboardConverter}}"
+                                                      Placeholder="к-сть"                                                      
+                                                      Keyboard="Numeric"
                                              />
                             </Frame>
 
@@ -82,7 +82,7 @@
                                Grid.Column="1"
                                Grid.Row="1">
                             <controls:CustomEntry Style="{StaticResource EntryStyle}"
-                                                  Text="{Binding ScanData.QuantityBarCode}"
+                                                  Text="{Binding ScanData.Quantity}"
                                                   IsReadOnly="True" />
                         </Frame>
                     </Grid>
@@ -147,7 +147,7 @@
                                         <Label Text="{Binding NameWares}"
                                                Grid.Column="1" LineBreakMode="NoWrap"
                                                BackgroundColor="{Binding GetBackgroundColor}" />
-                                        <Label Text="{Binding InputQuantity}"
+                                        <Label Text="{Binding Quantity}"
                                                Grid.Column="2" LineBreakMode="NoWrap"
                                                BackgroundColor="{Binding GetBackgroundColor}" />
                                     <Label Text="{Binding CodeReason}"

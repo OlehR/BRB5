@@ -22,7 +22,9 @@ namespace BRB5.Model
         public int OrderDoc { get; set; }
         public long CodeWares { get; set; }
         public string QuantityStr { set { Quantity = Convert.ToDecimal(value); } }
-        public decimal Quantity { get; set; }
+
+        private decimal _Quantity;
+        public decimal Quantity { get { return _Quantity; } set { _Quantity = value; OnPropertyChanged(nameof(Quantity)); } }
     }
     public class DocWares: DocWaresId
     {

@@ -4,6 +4,7 @@ using BRB5.Model;
 using System.Collections.ObjectModel;
 using BRB5;
 using BarcodeScanning;
+
 #if ANDROID
 using Android.Views;
 #endif
@@ -68,7 +69,7 @@ namespace BRB6.View
                 ScanData.BarCode = pBarCode;
                 if (ScanData.QuantityBarCode > 0) ScanData.InputQuantity = ScanData.QuantityBarCode;
                 else inputQ.Text = "";
-
+                inputQ.Keyboard = ScanData.CodeUnit == Config.GetCodeUnitWeight ? Keyboard.Telephone : Keyboard.Numeric;
                 inputQ.Focus();
                 AddWare();
             }
@@ -80,7 +81,7 @@ namespace BRB6.View
             {
                 if (ScanData.InputQuantity > 0)
                 {
-                    ScanData.Quantity = ScanData.InputQuantity;
+                    ScanData.Quantity = ScanData.InputQuantity*ScanData.Coefficient;
                     ScanData.OrderDoc = ++OrderDoc;
                     ScanData.Ord = -1;
                     if (db.ReplaceDocWares(ScanData))
@@ -197,8 +198,8 @@ namespace BRB6.View
 
         private void CalcQuantity(object sender, TextChangedEventArgs e)
         {
-            if (ScanData != null && ScanData.QuantityBarCode == 0)
-                ScanData.QuantityBarCode = ScanData.InputQuantity * ScanData.Coefficient;
+            if (ScanData != null)
+                ScanData.Quantity = ScanData.InputQuantity * ScanData.Coefficient;
         }       
 
         private void Up(object sender, EventArgs e)

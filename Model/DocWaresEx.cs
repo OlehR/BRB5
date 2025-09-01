@@ -16,11 +16,11 @@ namespace BRB5.Model
         public string NameUnit{ get; set; }
         public string IsControl { get; set;  }
         private string _BarCode;
-        public string BarCode { get { return _BarCode; } set { _BarCode = value; OnPropertyChanged("BarCode"); } }
+        public string BarCode { get { return _BarCode; } set { _BarCode = value; OnPropertyChanged(nameof(BarCode)); } }
         public int BaseCodeUnit{ get; set; }
 
         private decimal _BeforeQuantity;
-        public decimal BeforeQuantity { get { return _BeforeQuantity; } set { _BeforeQuantity = value; OnPropertyChanged("BeforeQuantity"); } }
+        public decimal BeforeQuantity { get { return _BeforeQuantity; } set { _BeforeQuantity = value; OnPropertyChanged(nameof(BeforeQuantity)); } }
         public decimal QuantityMin { get; set; }
         public decimal QuantityMax { get; set; }
         //public double QuantityOld{ get; set; }
@@ -28,7 +28,7 @@ namespace BRB5.Model
         public string QuantityOrderStr { set { QuantityOrder = Convert.ToDecimal(value); } }
         public decimal QuantityReason { get; set; }
         private decimal _QuantityBarCode;
-        public decimal QuantityBarCode { get { return ParseBarCode?.Quantity ?? 0m; } set { _QuantityBarCode = value; OnPropertyChanged("QuantityBarCode"); } }
+        public decimal QuantityBarCode { get { return ParseBarCode?.Quantity ?? 0m; } set { _QuantityBarCode = value; OnPropertyChanged(nameof(QuantityBarCode)); } }
         /// <summary>
         /// Чи є даний товар в документі
         /// </summary>

@@ -327,6 +327,12 @@ public partial class LotsCheck : ContentPage
             });
         }
         var t = db.SetStateDoc(SelectedDoc);
+        if (TypeDoc.LinkedCodeDoc != 0)
+        {
+            Doc dl = (Doc)SelectedDoc.Clone();
+            dl.TypeDoc = TypeDoc.LinkedCodeDoc;
+            db.ReplaceDoc([dl]);
+        }
 
         // Якщо успіх, пробуємо надіслати решту
         if (result.State == 0)
