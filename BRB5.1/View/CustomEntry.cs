@@ -11,6 +11,9 @@ namespace BRB6.View
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
+            if(DeviceInfo.Platform == DevicePlatform.iOS) 
+                return Keyboard.Default;
+
             if (value is int codeUnit &&
                 codeUnit == Config.GetCodeUnitWeight) 
             {

@@ -64,6 +64,7 @@
                                                        Completed="CompletedInputQ"
                                                       Placeholder="к-сть"                                                      
                                                       Keyboard="Numeric"
+                                                      
                                              />
                             </Frame>
 

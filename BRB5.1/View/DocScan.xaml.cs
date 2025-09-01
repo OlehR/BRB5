@@ -69,7 +69,7 @@ namespace BRB6.View
                 ScanData.BarCode = pBarCode;
                 if (ScanData.QuantityBarCode > 0) ScanData.InputQuantity = ScanData.QuantityBarCode;
                 else inputQ.Text = "";
-                inputQ.Keyboard = ScanData.CodeUnit == Config.GetCodeUnitWeight ? Keyboard.Telephone : Keyboard.Numeric;
+                inputQ.Keyboard = DeviceInfo.Platform == DevicePlatform.iOS? Keyboard.Default :  ScanData.CodeUnit == Config.GetCodeUnitWeight ? Keyboard.Telephone : Keyboard.Numeric;
                 inputQ.Focus();
                 AddWare();
             }
