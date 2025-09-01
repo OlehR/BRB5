@@ -197,7 +197,7 @@ public partial class LotsCheck : ContentPage
                 IsVisible = false,
             };
             // встановлюємо вибір з документа
-            if (doc.CodeReason != 0 && !IsWares)
+            if (doc.CodeReason != 0 )
             {
                 var current = AllReasons.FirstOrDefault(r => r.CodeReason == doc.CodeReason);
                 if (current != null)

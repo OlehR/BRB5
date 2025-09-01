@@ -4,6 +4,9 @@
                           xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
                           xmlns:controls="clr-namespace:BRB6.View"
                           x:Class="BRB6.View.DocScan">
+    <ContentPage.Resources>
+        <controls:CodeUnitToKeyboardConverter x:Key="CodeUnitToKeyboardConverter" />
+    </ContentPage.Resources>
     <ContentPage.Content>
 
             <StackLayout IsEnabled="True" >
@@ -60,7 +63,8 @@
                                                       TextChanged="CalcQuantity"
                                                        Completed="CompletedInputQ"
                                                       Placeholder="к-сть"
-                                                      Keyboard="{OnPlatform Telephone, iOS=Default}" />
+                                            Keyboard="{Binding CodeUnit, Converter={StaticResource CodeUnitToKeyboardConverter}}"
+                                             />
                             </Frame>
 
                             <Label Text="{Binding ScanData.NameUnit}" Grid.Column="1" />
