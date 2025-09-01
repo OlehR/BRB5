@@ -501,9 +501,10 @@ from  DocWares dw
 )";
             //return db.ReplaceAll( pDoc) >= 0;
             int c = 0;
-            Sql = @"replace into Doc ( DateDoc, TypeDoc, NumberDoc, CodeWarehouse,CodeReason, IdTemplate, ExtInfo, NameUser, BarCode, Description, State,
+            Sql = $@"replace into Doc ( DateDoc, TypeDoc, NumberDoc, CodeWarehouse,CodeReason, IdTemplate, ExtInfo, NameUser, BarCode, Description, State,
                                               IsControl, NumberDoc1C, DateOutInvoice, NumberOutInvoice, Color,DTStart,DTEnd) values 
-                                            (?,?,?,?,?,?,?,?,?,?,max(?, (select max(d.state) from Doc d where d.Typedoc=? and d.numberdoc=? )),
+                                            (?,?,?,?,case when ?>0 then ? else (select max(d.CodeReason) from Doc d where d.Typedoc=? and d.numberdoc=? ) end,
+                                             ?,?,?,?,?,max(?, (select max(d.state) from Doc d where d.Typedoc=? and d.numberdoc=? )),
                                              ?,?,?,?,?,
 (select max(d.DTStart) from Doc d where d.Typedoc=? and d.numberdoc=? ),
 (select max(d.DTEnd) from Doc d where d.Typedoc=? and d.numberdoc=? )
@@ -514,9 +515,10 @@ from  DocWares dw
                 {
                     foreach (Doc d in pDoc)
                     {
-                        c += db.Execute(Sql, d.DateDoc, d.TypeDoc, d.NumberDoc, d.CodeWarehouse, d.CodeReason, d.IdTemplate, d.ExtInfo, d.NameUser, d.BarCode, d.Description, d.State, d.TypeDoc, d.NumberDoc,
-                            d.IsControl, d.NumberDoc1C, d.DateOutInvoice, d.NumberOutInvoice, d.Color,
-                            d.TypeDoc, d.NumberDoc, d.TypeDoc, d.NumberDoc);
+                        c += db.Execute(Sql, d.DateDoc, d.TypeDoc, d.NumberDoc, d.CodeWarehouse, d.CodeReason, d.CodeReason, d.TypeDoc, d.NumberDoc,
+                                             d.IdTemplate, d.ExtInfo, d.NameUser, d.BarCode, d.Description, d.State, d.TypeDoc, d.NumberDoc,
+                                             d.IsControl, d.NumberDoc1C, d.DateOutInvoice, d.NumberOutInvoice, d.Color,
+                                             d.TypeDoc, d.NumberDoc, d.TypeDoc, d.NumberDoc);
                     }
                 });
             }
