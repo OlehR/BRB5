@@ -51,15 +51,20 @@
                     <!--<ScrollView IsVisible="{OnPlatform Android=true, iOS=false}" >
                         <StackLayout x:Name="QuestionsStackLayout"/>
                     </ScrollView>-->
-                    <CollectionView x:Name="QuestionsCollectionView"
-                              HeightRequest="500"                              
+                    <CollectionView x:Name="QuestionsCollectionView"                         
                               SelectionMode="None"
-                              ItemTemplate="{StaticResource QuestionTemplateSelector}" /> <!--IsVisible="{OnPlatform Android=false, iOS=true}"-->
+                              ItemTemplate="{StaticResource QuestionTemplateSelector}" >
 
+                        <CollectionView.Footer >
+                            <Grid HeightRequest="200" IsVisible="{OnPlatform Android=false, iOS=true}"/>
+                            <!-- цей прямокутник дає відступ -->
+                        </CollectionView.Footer>
+
+                    </CollectionView>
                 </Grid>
             </StackLayout>
 
-            <Grid x:Name="BottomGrid"  AbsoluteLayout.LayoutBounds="0, 1, 1, .1" AbsoluteLayout.LayoutFlags="All">
+            <Grid x:Name="BottomGrid" BackgroundColor="White"  AbsoluteLayout.LayoutBounds="0, 1, 1, .1" AbsoluteLayout.LayoutFlags="All">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="*" />

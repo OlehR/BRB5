@@ -216,7 +216,6 @@ namespace BRB6
             var headsOnly = All.Where(x => x.IsHead || x.Parent == 9999999).ToList();
             MainThread.BeginInvokeOnMainThread(() =>
             {
-                CalculateAvailableHeight();
                 QuestionsCollectionView.ItemsSource = headsOnly;
             });
             IsLoad = true;
@@ -430,16 +429,6 @@ namespace BRB6
             }
         }
        
-        private void CalculateAvailableHeight()
-        {
-            var screenHeight = DeviceDisplay.MainDisplayInfo.Height / DeviceDisplay.MainDisplayInfo.Density;
-            var navigationBarHeight = 50;
-            double otherElementsHeight = HeaderLabel.Height + GPSLabel.Height + BottomGrid.Height + navigationBarHeight + 60;
-            var availableHeight = screenHeight - otherElementsHeight;
-            QuestionsGrid.HeightRequest = availableHeight;
-            QuestionsCollectionView.HeightRequest = availableHeight;
-        }
-
         private BRB5.Model.RaitingDocItem GetRaiting(object sender) => (BRB5.Model.RaitingDocItem)((Microsoft.Maui.Controls.View)sender).BindingContext;
     }
 }
