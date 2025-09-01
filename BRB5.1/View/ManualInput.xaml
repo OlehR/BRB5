@@ -4,7 +4,9 @@
                           xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
                           xmlns:controls="clr-namespace:BRB6.View"
                           x:Class="BRB6.View.ManualInput">
-
+    <ContentPage.Resources>
+        <controls:CodeUnitToKeyboardConverter x:Key="CodeUnitToKeyboardConverter" />
+    </ContentPage.Resources>
     <ContentPage.Content>
         <StackLayout>
 
@@ -81,7 +83,7 @@
                                             Completed ="Save"
                                             Unfocused="Save"
                                             Style="{StaticResource EntryStyle}"
-                                            Keyboard="{OnPlatform Numeric, iOS=Default}"
+                                            Keyboard="{Binding CodeUnit, Converter={StaticResource CodeUnitToKeyboardConverter}}"
                                             Text="{Binding InputQuantity}" />
                                     </Frame>
 
