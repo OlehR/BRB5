@@ -203,8 +203,10 @@ public partial class LotsCheck : ContentPage
                 if (current != null)
                 {
                     reasonPicker.SelectedItem = current;
-                    reasonPicker.IsEnabled = true;
                     reasonPicker.IsVisible = true;
+
+                    if (!IsWares)
+                        reasonPicker.IsEnabled = true;
                 }
             }
 
