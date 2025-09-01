@@ -40,7 +40,7 @@ namespace BRB6.View
                 var w = entry.BindingContext as DocWaresEx;
                 w.Quantity = w.InputQuantity;
                 w.OrderDoc = ++OrderDoc;
-                db.ReplaceDocWares(w);
+                db.ReplaceDocWares(w,true);
             }
         }
     }

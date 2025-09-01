@@ -748,16 +748,19 @@ and bc.BarCode=?
             return db.ReplaceAll(pDWS) >= 0;
         }
 
-        public bool ReplaceDocWares(DocWares pDW)
+        public bool ReplaceDocWares(DocWares pDW, bool pIsDelete = false)
         {
-            if(pDW.OrderDoc==0)
-                pDW.OrderDoc = db.ExecuteScalar<int>($"select coalesce(max(OrderDoc),0)+1 from DocWares where TypeDoc={pDW.TypeDoc} and NumberDoc='{pDW.NumberDoc}'");
-            //if(!pDW.GetType().Name.Equals("DocWares"))
-            string Sql = $@"replace into DocWares ( TypeDoc, NumberDoc, OrderDoc, CodeWares, Quantity, QuantityOld, CodeReason,ExpirationDate) values 
-                                                 ({pDW.TypeDoc},'{pDW.NumberDoc}',{pDW.OrderDoc},{pDW.CodeWares},{pDW.Quantity},{pDW.QuantityOld},{pDW.CodeReason},'{pDW.ExpirationDate}')";
             try
             {
-                //return db.InsertOrReplace(pDW)>0;
+                if (pIsDelete)
+                    db.Execute($"delete from DocWares where TypeDoc={pDW.TypeDoc} and NumberDoc='{pDW.NumberDoc}' and CodeWares={pDW.CodeWares}");
+
+                if (pDW.OrderDoc == 0)
+                    pDW.OrderDoc = db.ExecuteScalar<int>($"select coalesce(max(OrderDoc),0)+1 from DocWares where TypeDoc={pDW.TypeDoc} and NumberDoc='{pDW.NumberDoc}'");
+
+                string Sql = $@"replace into DocWares ( TypeDoc, NumberDoc, OrderDoc, CodeWares, Quantity, QuantityOld, CodeReason,ExpirationDate) values 
+                                                 ({pDW.TypeDoc},'{pDW.NumberDoc}',{pDW.OrderDoc},{pDW.CodeWares},{pDW.Quantity},{pDW.QuantityOld},{pDW.CodeReason},'{pDW.ExpirationDate}')";
+
                 return db.Execute(Sql) >= 0;
             }
             catch (Exception e)
