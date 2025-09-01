@@ -565,6 +565,47 @@ and bc.BarCode=?
             return null;
         }
 
+        public ParseBarCode GetCodeWares(ParseBarCode pParseBarCode)
+        {
+            long Res=0;
+            string sql = $@"select w.CODEWARES as CodeWares,w.NAMEWARES as NameWares,au.COEFFICIENT as Coefficient,bc.CODEUNIT as CodeUnit, ud.ABRUNIT as NameUnit,
+                                 bc.BARCODE as BarCode ,w.CODEUNIT as BaseCodeUnit 
+                                from BARCODE bc 
+                                join ADDITIONUNIT au on bc.CODEWARES=au.CODEWARES and au.CODEUNIT=bc.CODEUNIT 
+                                join wares w on w.CODEWARES=bc.CODEWARES 
+                                join UNITDIMENSION ud on bc.CODEUNIT=ud.CODEUNIT 
+                                where bc.BARCODE=?";
+      
+            var rr1 = db.Query<AdditionUnit>(sql, pParseBarCode.BarCode);
+            if (rr1 != null && rr1.Count == 1)
+            {
+                var r = rr1.FirstOrDefault();
+                if (r?.CodeWares > 0)
+                {
+                    pParseBarCode.CodeWares = r.CodeWares;
+                    pParseBarCode.Coefficient = r.Coefficient;
+                    pParseBarCode.CodeUnit = r.CodeUnit;
+                }                
+            }            
+            else            
+            if (pParseBarCode.BarCode.Length == 13 && pParseBarCode.CodeWares>0)
+            {
+                sql = $@"select bc.codewares as CodeWares,bc.BARCODE as BarCode from BARCODE bc 
+                                     join wares w on bc.codewares=w.codewares and w.codeunit={Config.GetCodeUnitWeight}
+                                     where substr(bc.BARCODE,1,6)=?";
+                var rr = db.Query<DocWaresEx>(sql, pParseBarCode.BarCode[..6]);
+                foreach (var el in rr)
+                {
+                    if (pParseBarCode.BarCode[..el.BarCode.Length].Equals(el.BarCode))
+                    {
+                        pParseBarCode.CodeWares = el.CodeWares;
+                        pParseBarCode.Quantity = pParseBarCode.BarCode[8..12].ToDecimal();                      
+                        break;
+                    }
+                }
+            }          
+            return pParseBarCode;
+        }
         public DocWaresEx GetScanData(DocId pDocId, ParseBarCode pParseBarCode)
         {
             DocWaresEx res = null;
@@ -590,54 +631,23 @@ and bc.BarCode=?
                 }
                 else
                 {
-                    if (pParseBarCode.BarCode != null && pParseBarCode.CodeWares == 0)
-                    {
-                        sql = $@"select w.CODEWARES as CodeWares,w.NAMEWARES as NameWares,au.COEFFICIENT as Coefficient,bc.CODEUNIT as CodeUnit, ud.ABRUNIT as NameUnit,
-                                 bc.BARCODE as BarCode ,w.CODEUNIT as BaseCodeUnit 
-                                from BARCODE bc 
-                                join ADDITIONUNIT au on bc.CODEWARES=au.CODEWARES and au.CODEUNIT=bc.CODEUNIT 
-                                join wares w on w.CODEWARES=bc.CODEWARES 
-                                join UNITDIMENSION ud on bc.CODEUNIT=ud.CODEUNIT 
-                                where bc.BARCODE=?";
-                        var r = db.Query<DocWaresEx>(sql, pParseBarCode.BarCode);
-                        if (r != null && r.Count() == 1)
-                            res = r.First();
-                        // Пошук по штрихкоду виробника
-                        if (pParseBarCode.BarCode.Length == 13 && res == null)
-                        {
-                            sql = $@"select bc.codewares as CodeWares,bc.BARCODE as BarCode from BARCODE bc 
-                                     join wares w on bc.codewares=w.codewares and w.codeunit={Config.GetCodeUnitWeight}
-                                     where substr(bc.BARCODE,1,6)=?";
-                            var rr = db.Query<DocWaresEx>(sql, pParseBarCode.BarCode[..6]);
+                    if(!string.IsNullOrEmpty(pParseBarCode.BarCode) && pParseBarCode.CodeWares == 0 && pParseBarCode.Article == 0)
+                        GetCodeWares(pParseBarCode);
 
-                            foreach (var el in rr)
-                            {
-                                if (pParseBarCode.BarCode[..el.BarCode.Length].Equals(el.BarCode))
-                                {
-                                    pParseBarCode.CodeWares = el.CodeWares;
-                                    pParseBarCode.Quantity = pParseBarCode.BarCode[8..12].ToDecimal();
-                                    res = GetScanData(pDocId, pParseBarCode);
-                                    break;
-                                }
-                            }
-                        }
-                        if (res != null) res.ParseBarCode = pParseBarCode;
-                    }
-                }
-                // Пошук по коду
-                if (res == null && (pParseBarCode.CodeWares > 0 || pParseBarCode.Article > 0))
-                {
-                    String Find = pParseBarCode.CodeWares > 0 ? $"w.CodeWares={pParseBarCode.CodeWares}" : $"w.ARTICLE='{pParseBarCode.Article:D8}'";
-                    sql = @"select w.CODEWARES,w.NAMEWARES as NameWares, au.COEFFICIENT as Coefficient,w.CODEUNIT as CodeUnit, ud.ABRUNIT as NameUnit,
+                    if(pParseBarCode.CodeWares > 0 || pParseBarCode.Article > 0)
+                    {
+                        String Find = pParseBarCode.CodeWares > 0 ? $"w.CodeWares={pParseBarCode.CodeWares}" : $"w.ARTICLE='{pParseBarCode.Article:D8}'";
+                        sql = @"select w.CODEWARES,w.NAMEWARES as NameWares, au.COEFFICIENT as Coefficient,w.CODEUNIT as CodeUnit, ud.ABRUNIT as NameUnit,
                             '' as BARCODE  ,w.CODEUNIT as BaseCodeUnit 
                                 from WARES w 
                                 join ADDITIONUNIT au on w.CODEWARES=au.CODEWARES and au.CODEUNIT=w.CODEUNIT 
                                 join UNITDIMENSION ud on w.CODEUNIT=ud.CODEUNIT 
                                 where " + Find;
-                    var r = db.Query<DocWaresEx>(sql);
-                    if (r != null && r.Count() == 1)                    
-                        res = r.First();
-                }
+                        var r = db.Query<DocWaresEx>(sql);
+                        if (r != null && r.Count == 1)
+                            res = r.First();
+                    }
+                } 
             }
             catch (Exception e)
             {
@@ -652,7 +662,7 @@ and bc.BarCode=?
                          left join DOCWARESsample dws on d.Typedoc=dws.Typedoc and d.NumberDoc=dws.NumberDoc and dws.codewares={res.CodeWares}
                          where  d.Typedoc={pDocId.TypeDoc} and d.NumberDoc='{pDocId.NumberDoc}'";
                 var r = db.Query<DocWaresEx>(sql);
-                if (r != null && r.Count() == 1)
+                if (r != null && r.Count == 1)
                 {
                     var el = r.First();
                     res.QuantityMax = el.QuantityMax;
@@ -661,11 +671,12 @@ and bc.BarCode=?
                     res.IsRecord = el.IsRecord;
                 }
             }
-            //Log.d(TAG, "Found in DB  >>" + (model == null ? "Not Found" : model.NameWares));
+            
             if (res != null)
             {
                 res.NumberDoc = pDocId.NumberDoc;
                 res.TypeDoc = pDocId.TypeDoc;
+                res.ParseBarCode = pParseBarCode;
             }
             return res;
         }
@@ -949,45 +960,11 @@ order by gw.NameGroup";
                 return null;
             try
             {
-                if (pParseBarCode.BarCode != null && pParseBarCode.CodeWares == 0 && pParseBarCode.Article == 0)
-                {
-                    sql = $@"select w.CODEWARES as CodeWares,w.NAMEWARES as NameWares,au.COEFFICIENT as Coefficient,bc.CODEUNIT as CodeUnit, ud.ABRUNIT as NameUnit,
-                                 bc.BARCODE as BarCode ,w.CODEUNIT as BaseCodeUnit 
-                                from BARCODE bc 
-                                join ADDITIONUNIT au on bc.CODEWARES=au.CODEWARES and au.CODEUNIT=bc.CODEUNIT 
-                                join wares w on w.CODEWARES=bc.CODEWARES 
-                                join UNITDIMENSION ud on bc.CODEUNIT=ud.CODEUNIT 
-                                where bc.BARCODE=?";
-                    var r = db.Query<ExpirationDateElementVM>(sql, pParseBarCode.BarCode);
-                    if (r != null && r.Count() == 1)
-                    {
-                        res = r.First();
-                        pParseBarCode.CodeWares=res.CodeWares;
-                        res = GetScanDataExpiration(pNumberDoc, pParseBarCode);
-                        return res;
-                    }
-                    // Пошук по штрихкоду виробника
-                    if (pParseBarCode.BarCode.Length == 13 && res == null)
-                    {
-                        sql = $@"select bc.codewares as CodeWares,bc.BARCODE as BarCode from BARCODE bc 
-                                     join wares w on bc.codewares=w.codewares and w.codeunit={Config.GetCodeUnitWeight}
-                                     where substr(bc.BARCODE,1,6)=?";
-                        var rr = db.Query<ExpirationDateElementVM>(sql, pParseBarCode.BarCode[..6]);
-
-                        foreach (var el in rr)
-                        {
-                            if (pParseBarCode.BarCode[..el.BarCode.Length].Equals(el.BarCode))
-                            {
-                                pParseBarCode.CodeWares = el.CodeWares;                                
-                                pParseBarCode.Quantity = pParseBarCode.BarCode[8..12].ToDecimal()/1000m;
-                                break;                                                         
-                            }
-                        }
-                    } 
-                }
+                if (string.IsNullOrEmpty(pParseBarCode.BarCode) && pParseBarCode.CodeWares == 0 && pParseBarCode.Article == 0)
+                    GetCodeWares(pParseBarCode);
 
                 // Пошук по коду
-                if (res == null && (pParseBarCode.CodeWares > 0 || pParseBarCode.Article > 0))
+                if (pParseBarCode.CodeWares > 0 || pParseBarCode.Article > 0)
                 {
                     String Find = pParseBarCode.CodeWares > 0 ? $"w.CodeWares={pParseBarCode.CodeWares}" : $"w.ARTICLE='{pParseBarCode.Article:D8}'";
                     sql = $@"select  DES.NumberDoc,DES.DocId, w.CodeWares,w.NAMEWARES as NameWares, au.COEFFICIENT as Coefficient,w.CODEUNIT as CodeUnit, ud.ABRUNIT as NameUnit,

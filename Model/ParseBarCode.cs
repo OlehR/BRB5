@@ -25,5 +25,9 @@ namespace BRB5.Model
         public decimal PercentDiscount { get; set; } = 0m;
         public eTypeCode TypeCode { get; set; } = eTypeCode.NotDefine;
         public int CodeOperator { get; set; } = 0;
+        [JsonIgnore]
+        public int CodeUnit { get; set; }
+        [JsonIgnore]
+        public decimal Coefficient { get; set; }
     }
 }
