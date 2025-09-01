@@ -245,33 +245,38 @@ public partial class LotsCheck : ContentPage
     {
         if (SelectedDoc != null)
             SelectedDoc.SelectedColor = false;
+
         if (sender is Grid grid && grid.BindingContext is DocVM doc)
         {
-            if (SelectedDoc != doc)
+            if (IsWares)
             {
+                // у будь-якому випадку (навіть якщо це той самий doc)
                 SelectedDoc = doc;
-                if (IsWares) await Navigation.PushAsync(new DocItem(doc, TypeDoc));
+                await Navigation.PushAsync(new DocItem(doc, TypeDoc));
             }
             else
             {
-                if (!IsWares)
+                if (SelectedDoc != doc)
                 {
-                    // знайти reasonPicker у Grid
-                    var picker = grid.Children
-                        .OfType<Picker>()
-                        .FirstOrDefault();
-
+                    SelectedDoc = doc;
+                }
+                else
+                {
+                    // другий тап по тому ж doc → показати picker
+                    var picker = grid.Children.OfType<Picker>().FirstOrDefault();
                     if (picker != null)
                     {
                         picker.IsEnabled = true;
                         picker.IsVisible = true;
-                        picker.Focus(); // одразу відкриє вибір
+                        picker.Focus();
                     }
                 }
             }
+
             doc.SelectedColor = true;
         }
     }
+
 
     public async void ScrollToSelected()
     {
