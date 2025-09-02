@@ -71,7 +71,8 @@
                                           IsVisible="{Binding IsVisPriceMain}"
                                            HeightRequest="190" 
                                            VerticalOptions="EndAndExpand">
-                                        <BoxView Color="White"
+                                        <BoxView Color="White"    
+                                                 IsVisible="{Binding IsVisPromotion}"
                                                 HeightRequest="10"
                                                 HorizontalOptions="Fill"
                                                 VerticalOptions="Fill"
