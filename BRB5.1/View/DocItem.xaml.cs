@@ -128,7 +128,7 @@ namespace BRB6.View
 
             if (Doc.CodeReason == 1)
             {
-                docWares = MyDocWares.Where(x => x.CodeReason==1).ToList();
+                docWares = MyDocWares.Where(x => x.CodeReason==-1).ToList();
             }
             else
             {
@@ -264,7 +264,6 @@ namespace BRB6.View
                 dl.TypeDoc = TypeDoc.LinkedCodeDoc;
                 db.ReplaceDoc([dl]);
             }
-
 
             var d = db.GetDocWares(Doc, 2, eTypeOrder.Scan);
             var r = await c.SendDocsDataAsync(Doc,d );

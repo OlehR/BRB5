@@ -43,7 +43,7 @@ public partial class Act
         var allDocs = db.GetWaresAct(Doc);
 
         if (Doc.CodeReason==1)
-            MyDocWares = new ObservableCollection<WaresAct>(allDocs.Where(el => el.CodeReason == 1));
+            MyDocWares = new ObservableCollection<WaresAct>(allDocs.Where(el => el.CodeReason == -1));
         else
             MyDocWares = new ObservableCollection<WaresAct>(allDocs);
 
