@@ -60,9 +60,14 @@ namespace BRB6.View
             PopulateReasonOptions();
             this.BindingContext = this;
         }
+
+        private void HandBarCode(object sender, EventArgs e)
+        {
+            BarCode(inputBarCode.Text);
+        }
         void BarCode(string pBarCode)
         {
-            ScanData = db.GetScanData(DocId, c.ParsedBarCode(pBarCode, true/*?*/));
+            ScanData = db.GetScanData(DocId, c.ParsedBarCode(pBarCode, true));
             FindWareByBarCodeAsync(pBarCode);
             if (ScanData != null)
             {
@@ -372,7 +377,8 @@ namespace BRB6.View
             default:
                return;
            }
-         }  
+         }
+
 #endif
     }
 }

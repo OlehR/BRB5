@@ -372,13 +372,15 @@ public partial class LotsCheck : ContentPage
                 t = db.SetStateDoc(SelectedDoc);
             }
             // після циклу — показати результат
-            MainThread.BeginInvokeOnMainThread(async () =>
-            {
-                var toast = Toast.Make(
-                    $"Додатково надіслано: {successCount}, Помилок: {failCount}",
-                    ToastDuration.Long, 14);
-                await toast.Show();
-            });
+            if (successCount + failCount > 0) {
+                MainThread.BeginInvokeOnMainThread(async () =>
+                {
+                    var toast = Toast.Make(
+                        $"Збереження: OK. Додатково надіслано: {successCount}, Помилок: {failCount}",
+                        ToastDuration.Long, 14);
+                    await toast.Show();
+                }); 
+            }
         }
     }
     private void UpdateDocColor(DocVM doc)
