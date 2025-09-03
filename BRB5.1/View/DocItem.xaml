@@ -70,11 +70,17 @@
             <StackLayout VerticalOptions="End" Orientation="Horizontal">
 
                 <Label Text="F2-"
+                       IsVisible="{Binding IsVisF2}"
                        FontSize="16"
                        Grid.Column="6"
                        TextColor="#ff5c5c"
-                       VerticalOptions="Center" />
+                       VerticalOptions="Center" >
+                    <Label.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="F2Save" />
+                    </Label.GestureRecognizers>
+                </Label>
                 <Label Text="Збер"
+                       IsVisible="{Binding IsVisF2}"
                        FontSize="18"
                        Grid.Column="7"
                        TextColor="#816f20">
@@ -87,7 +93,11 @@
                        FontSize="16"
                        Grid.Column="6"
                        TextColor="#ff5c5c"
-                       VerticalOptions="Center" />
+                       VerticalOptions="Center" >
+                    <Label.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="F3Scan" />
+                    </Label.GestureRecognizers>
+                </Label>
                 <Label Text="Скан"
                        FontSize="18"
                        Grid.Column="7"
@@ -101,7 +111,11 @@
                        FontSize="16"
                        Grid.Column="6"
                        TextColor="#ff5c5c"
-                       VerticalOptions="Center" />
+                       VerticalOptions="Center" >
+                    <Label.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="F4WrOff" />
+                    </Label.GestureRecognizers>
+                </Label>
                 <Label Text="Спис"
                        FontSize="18"
                        Grid.Column="7"
@@ -115,7 +129,11 @@
                         FontSize="16"
                         Grid.Column="6"
                         TextColor="#ff5c5c"
-                        VerticalOptions="Center" />
+                        VerticalOptions="Center" >
+                    <Label.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="F5Act" />
+                    </Label.GestureRecognizers>
+                </Label>
                 <Label Text="Акт" IsVisible="{Binding IsVisF5Act}"
                         FontSize="18"
                         Grid.Column="7"
@@ -129,7 +147,11 @@
                        FontSize="16"
                        Grid.Column="6"
                        TextColor="#ff5c5c"
-                       VerticalOptions="Center" />
+                       VerticalOptions="Center" >
+                    <Label.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="F6Doc" />
+                    </Label.GestureRecognizers>
+                </Label>
                 <Label Text="Док"
                        FontSize="18"
                        Grid.Column="7"
