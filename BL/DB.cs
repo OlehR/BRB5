@@ -588,7 +588,7 @@ and bc.BarCode=?
                 }                
             }            
             else            
-            if (pParseBarCode.BarCode.Length == 13 && pParseBarCode.CodeWares>0)
+            if (pParseBarCode.BarCode.Length == 13 && pParseBarCode.CodeWares==0)
             {
                 sql = $@"select bc.codewares as CodeWares,bc.BARCODE as BarCode from BARCODE bc 
                                      join wares w on bc.codewares=w.codewares and w.codeunit={Config.GetCodeUnitWeight}
