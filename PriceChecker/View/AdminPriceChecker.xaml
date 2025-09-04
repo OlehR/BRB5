@@ -2,62 +2,63 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui" 
              xmlns:ffimageloading="clr-namespace:FFImageLoading.Maui;assembly=FFImageLoading.Maui" 
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" 
+             xmlns:controls="clr-namespace:PriceChecker.View"
              x:Class="PriceChecker.View.AdminPriceChecker">
 
     <ContentPage.Content>
-
-        <Grid>
-            <Image x:Name="BackgroundImage"
+        <AbsoluteLayout>
+            <Grid>
+                <Image x:Name="BackgroundImage"
                    Aspect="AspectFill"
                    Opacity="0.2"/>
 
-            <Grid>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="90" />
-                    <RowDefinition Height="7*" />
-                </Grid.RowDefinitions>
+                <Grid AbsoluteLayout.LayoutBounds="0,0,1,1" AbsoluteLayout.LayoutFlags="All">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="90" />
+                        <RowDefinition Height="7*" />
+                    </Grid.RowDefinitions>
 
-                <StackLayout Orientation="Horizontal"  BackgroundColor="{Binding ColorBG}" >
-                    <Frame IsVisible="{Binding IsCashback}"
+                    <StackLayout Orientation="Horizontal"  BackgroundColor="{Binding ColorBG}" >
+                        <Frame IsVisible="{Binding IsCashback}"
                             CornerRadius="10"  
                             HasShadow="False"
                             HorizontalOptions="Start">
-                        <Image Source="cashback.png"                          
+                            <Image Source="cashback.png"                          
                                Aspect="AspectFit" />
-                    </Frame>
+                        </Frame>
 
-                    <Button Text="Вийти з Адміну" Clicked="OnBackClick" FontSize="20" FontAttributes="Bold" BackgroundColor="{Binding ColorBG}"/>
-                    
-                    <Image x:Name="LogoImage" 
+                        <Button Text="Вийти з Адміну" Clicked="OnBackClick" FontSize="20" FontAttributes="Bold" BackgroundColor="{Binding ColorBG}"/>
+
+                        <Image x:Name="LogoImage" 
                            HorizontalOptions="EndAndExpand"  
                            Aspect="AspectFit"/>
-                </StackLayout>
+                    </StackLayout>
 
 
-                <Grid Grid.Row="1" >
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="2*" />
-                        <ColumnDefinition Width="5*" />
-                    </Grid.ColumnDefinitions>
+                    <Grid Grid.Row="1" >
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="2*" />
+                            <ColumnDefinition Width="5*" />
+                        </Grid.ColumnDefinitions>
 
-                    <StackLayout>
-                        <ffimageloading:CachedImage x:Name="WareImage" Source="{Binding UriPicture}" />
+                        <StackLayout>
+                            <ffimageloading:CachedImage x:Name="WareImage" Source="{Binding UriPicture}" />
 
-                        <Grid RowDefinitions="Auto,Auto"
+                            <Grid RowDefinitions="Auto,Auto"
                                 ColumnDefinitions="*,*"                              
                                 VerticalOptions="EndAndExpand"
                                 RowSpacing="10"
                                 ColumnSpacing="10"
                                 Padding="10">
 
-                            <Picker x:Name="PrintBlockItemsXaml"
+                                <Picker x:Name="PrintBlockItemsXaml"
                                     ItemsSource="{Binding ListPrintBlockItems}"
                                     ItemDisplayBinding="{Binding stringPrintBlockItem}"
                                     SelectedIndex="{Binding SelectedPrintBlockItems}"
                                     Grid.Row="0" Grid.Column="0" 
                                     BackgroundColor="White"
                                     HorizontalOptions="Fill"/>
-                            <Button Text="{Binding PackageNumber}"
+                                <Button Text="{Binding PackageNumber}"
                                     Grid.Row="0" Grid.Column="1" 
                                     TextColor="Black"
                                     BorderWidth="2"
@@ -66,7 +67,7 @@
                                     HorizontalOptions="Fill"
                                     Clicked="OnClickAddPrintBlock" />
 
-                            <Button Text="Друк пакета" 
+                                <Button Text="Друк пакета" 
                                     Grid.Row="1" Grid.Column="0" 
                                     BorderWidth="2"
                                     TextColor="Black"
@@ -74,7 +75,7 @@
                                     BackgroundColor="White"
                                     HorizontalOptions="Fill"
                                     Clicked="OnClickPrintBlock" />
-                            <Button Text="Друк одного" 
+                                <Button Text="Друк одного" 
                                     Grid.Row="1" Grid.Column="1" 
                                     BorderWidth="2"
                                     BorderColor="Black"
@@ -83,114 +84,122 @@
                                     HorizontalOptions="Fill"
                                     TextColor="Black"
                                     Clicked="OnClickPrintOne" />
-                        </Grid>
-                        
-                    </StackLayout>
+                            </Grid>
+
+                        </StackLayout>
 
 
-                    <Grid  Grid.Column="1"  
+                        <Grid  Grid.Column="1"  
                            RowSpacing="2"
                            ColumnSpacing="2"
                            Padding="2"
                            BackgroundColor="DarkGray">
-                        <Grid.RowDefinitions >
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="*"/>
-                        </Grid.RowDefinitions>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="2*"/>
-                        </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions >
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="2*"/>
+                            </Grid.ColumnDefinitions>
 
-                        <Label Text="Назва товару" FontSize="28" BackgroundColor="White" />
-                        <Label Grid.Column="1" Text="{Binding WP.Name}" FontSize="28" TextColor="DarkBlue" BackgroundColor="White"/>
+                            <Label Text="Назва товару" FontSize="28" BackgroundColor="White" />
+                            <Label Grid.Column="1" Text="{Binding WP.Name}" FontSize="28" TextColor="DarkBlue" BackgroundColor="White"/>
 
-                        <Label Text="Арт:" FontSize="25" Grid.Row="1" BackgroundColor="White"/>
-                        <Label Text="{Binding WP.Article}" FontSize="25" TextColor="DarkBlue" Grid.Column="1" Grid.Row="1" BackgroundColor="White"/>
+                            <Label Text="Арт:" FontSize="25" Grid.Row="1" BackgroundColor="White"/>
+                            <Label Text="{Binding WP.Article}" FontSize="25" TextColor="DarkBlue" Grid.Column="1" Grid.Row="1" BackgroundColor="White"/>
 
-                        <Label Text="Штрих код:" FontSize="25" Grid.Row="2" BackgroundColor="White" />
-                        <Entry x:Name="BarCodeInput"
+                            <Label Text="Штрих код:" FontSize="25" Grid.Row="2" BackgroundColor="White" />
+                            <Entry x:Name="BarCodeInput"
                                FontSize="20"
                                BackgroundColor="White"
                                Grid.Column="1" Grid.Row="2"
-                               Text="{Binding WP.BarCodes}"
+                                   IsReadOnly="True"
+                                   Focused="BarCodeInput_Focused"
+                               Text="{Binding WP.BarCodes, Mode=TwoWay}"
                                Completed="BarCodeHandInput" />
 
-                        <Label Text="Група товару" FontSize="25" Grid.Row="3" BackgroundColor="White" />
-                        <Label Text="{Binding WP.Parent}" TextColor="DarkBlue" FontSize="25" Grid.Column="1" Grid.Row="3" BackgroundColor="White"/>
+                            <Label Text="Група товару" FontSize="25" Grid.Row="3" BackgroundColor="White" />
+                            <Label Text="{Binding WP.Parent}" TextColor="DarkBlue" FontSize="25" Grid.Column="1" Grid.Row="3" BackgroundColor="White"/>
 
-                        <Label Text="АМ к-ть:" FontSize="25" Grid.Row="4" BackgroundColor="White" />
-                        <Label Text="{Binding WP.MinQuantity}" TextColor="DarkBlue" FontSize="25" Grid.Column="1" Grid.Row="4" BackgroundColor="White"/>
+                            <Label Text="АМ к-ть:" FontSize="25" Grid.Row="4" BackgroundColor="White" />
+                            <Label Text="{Binding WP.MinQuantity}" TextColor="DarkBlue" FontSize="25" Grid.Column="1" Grid.Row="4" BackgroundColor="White"/>
 
-                        <Label Text="Дата ост. приходу:"  FontSize="25" Grid.Row="5" BackgroundColor="White" />
-                        <Label Text="{Binding WP.LastIncomeDate,StringFormat='{0:dd.MM.yyyy}'}" TextColor="DarkBlue" FontSize="25" Grid.Column="1" Grid.Row="5" BackgroundColor="White"/>
+                            <Label Text="Дата ост. приходу:"  FontSize="25" Grid.Row="5" BackgroundColor="White" />
+                            <Label Text="{Binding WP.LastIncomeDate,StringFormat='{0:dd.MM.yyyy}'}" TextColor="DarkBlue" FontSize="25" Grid.Column="1" Grid.Row="5" BackgroundColor="White"/>
 
-                        <Label Text="Останій прихід:"  FontSize="25" Grid.Row="6" BackgroundColor="White" />
-                        <Label Text="{Binding WP.LastIncomeQuantity}" TextColor="DarkBlue" FontSize="25" Grid.Column="1" Grid.Row="6" BackgroundColor="White"/>
+                            <Label Text="Останій прихід:"  FontSize="25" Grid.Row="6" BackgroundColor="White" />
+                            <Label Text="{Binding WP.LastIncomeQuantity}" TextColor="DarkBlue" FontSize="25" Grid.Column="1" Grid.Row="6" BackgroundColor="White"/>
 
-                        <Label Text="Залишок:" FontSize="25" Grid.Row="7" BackgroundColor="White"/>
-                        <Label Text="{Binding WP.Rest}" FontSize="25" TextColor="DarkBlue" Grid.Column="1" Grid.Row="7" BackgroundColor="White"/>
+                            <Label Text="Залишок:" FontSize="25" Grid.Row="7" BackgroundColor="White"/>
+                            <Label Text="{Binding WP.Rest}" FontSize="25" TextColor="DarkBlue" Grid.Column="1" Grid.Row="7" BackgroundColor="White"/>
 
-                        <Grid Grid.ColumnSpan="2" Grid.Row="8" ColumnSpacing="2">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition /> 
-                                <ColumnDefinition />
-                                <ColumnDefinition />
-                                <ColumnDefinition />
-                                <ColumnDefinition />
-                                <ColumnDefinition />
-                            </Grid.ColumnDefinitions>
+                            <Grid Grid.ColumnSpan="2" Grid.Row="8" ColumnSpacing="2">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition />
+                                    <ColumnDefinition />
+                                    <ColumnDefinition />
+                                    <ColumnDefinition />
+                                    <ColumnDefinition />
+                                    <ColumnDefinition />
+                                </Grid.ColumnDefinitions>
 
-                            <Label Text="Роз.ціна" FontSize="25"  BackgroundColor="White"/>
-                            <Label Text="{Binding WP.Price}"  Grid.Column="1" FontSize="25"  BackgroundColor="White"/>
-                            <Label Text="{Binding WP.PriceNormal}" IsVisible="{Binding IsVisPromotion}" Grid.Column="1" FontSize="25"  BackgroundColor="White"/>
+                                <Label Text="Роз.ціна" FontSize="25"  BackgroundColor="White"/>
+                                <Label Text="{Binding WP.Price}"  Grid.Column="1" FontSize="25"  BackgroundColor="White"/>
+                                <Label Text="{Binding WP.PriceNormal}" IsVisible="{Binding IsVisPromotion}" Grid.Column="1" FontSize="25"  BackgroundColor="White"/>
 
-                            <Label Text="Ціна опт." IsVisible="{Binding IsVisPriceOpt}" TextColor="{Binding TextColorPrice}" Grid.Column="2" FontSize="25"  BackgroundColor="White"/>
-                            <Label Text="{Binding WP.PriceOpt}" IsVisible="{Binding IsVisPriceOpt}" TextColor="{Binding TextColorPrice}" Grid.Column="3" FontSize="25"  BackgroundColor="White"/>
+                                <Label Text="Ціна опт." IsVisible="{Binding IsVisPriceOpt}" TextColor="{Binding TextColorPrice}" Grid.Column="2" FontSize="25"  BackgroundColor="White"/>
+                                <Label Text="{Binding WP.PriceOpt}" IsVisible="{Binding IsVisPriceOpt}" TextColor="{Binding TextColorPrice}" Grid.Column="3" FontSize="25"  BackgroundColor="White"/>
 
-                            <Label Text="Акційна" TextColor="{Binding TextColorPrice}" IsVisible="{Binding IsVisPromotion}" Grid.Column="4" FontSize="25"  BackgroundColor="White"/>
-                            <Label Text="{Binding WP.Price}" TextColor="{Binding TextColorPrice}" IsVisible="{Binding IsVisPromotion}"  Grid.Column="5" FontSize="25"  BackgroundColor="White"/>
+                                <Label Text="Акційна" TextColor="{Binding TextColorPrice}" IsVisible="{Binding IsVisPromotion}" Grid.Column="4" FontSize="25"  BackgroundColor="White"/>
+                                <Label Text="{Binding WP.Price}" TextColor="{Binding TextColorPrice}" IsVisible="{Binding IsVisPromotion}"  Grid.Column="5" FontSize="25"  BackgroundColor="White"/>
+                            </Grid>
+
+                            <Label Text="Кількість гурт" IsVisible="{Binding IsVisPriceOpt}" FontSize="25"  Grid.Row="9" BackgroundColor="White" />
+                            <Label Text="{Binding WP.QuantityOpt}" IsVisible="{Binding IsVisPriceOpt}" FontSize="25" TextColor="DarkBlue"  Grid.Column="1" Grid.Row="9" BackgroundColor="White"/>
+
+                            <Label Text="Тип акції" IsVisible="{Binding IsVisPromotion}" FontSize="25"  Grid.Row="10" BackgroundColor="White" />
+                            <Label Text="{Binding WP.PromotionShortName}" IsVisible="{Binding IsVisPromotion}" FontSize="25" TextColor="DarkBlue"  Grid.Column="1" Grid.Row="10" BackgroundColor="White"/>
+
+                            <Label Text="Акція діє" IsVisible="{Binding IsVisPromotion}" FontSize="25"  Grid.Row="11" BackgroundColor="White" />
+                            <StackLayout Orientation="Horizontal" Spacing="10" IsVisible="{Binding IsVisPromotion}" Grid.Column="1" Grid.Row="11" BackgroundColor="White">
+                                <Label Text="Акція діє: з "  FontSize="25"  TextColor="DarkBlue" />
+                                <Label Text="{Binding WP.PromotionBegin, StringFormat='{0:dd.MM}'}" FontSize="25" TextColor="DarkBlue" FontAttributes="Bold" />
+                                <Label Text=" по " TextColor="DarkBlue" FontSize="25"/>
+                                <Label Text="{Binding WP.PromotionEnd, StringFormat='{0:dd.MM}'}" FontSize="25" TextColor="DarkBlue" FontAttributes="Bold" />
+                            </StackLayout>
+
+                            <Label Text="Країна виробник" FontSize="25"  Grid.Row="12" BackgroundColor="White" />
+                            <Label Text="{Binding WP.Country}" Grid.Column="1" TextColor="DarkBlue" Grid.Row="12" FontSize="25" BackgroundColor="White"/>
+
+
+                            <Label Text="Умови роботи:" FontSize="25"  Grid.Row="13" BackgroundColor="White"/>
+                            <ScrollView Grid.Column="1" Grid.Row="13"  BackgroundColor="White">
+                                <VerticalStackLayout x:Name="ConditionList" />
+                            </ScrollView>
                         </Grid>
 
-                        <Label Text="Кількість гурт" IsVisible="{Binding IsVisPriceOpt}" FontSize="25"  Grid.Row="9" BackgroundColor="White" />
-                        <Label Text="{Binding WP.QuantityOpt}" IsVisible="{Binding IsVisPriceOpt}" FontSize="25" TextColor="DarkBlue"  Grid.Column="1" Grid.Row="9" BackgroundColor="White"/>
-
-                        <Label Text="Тип акції" IsVisible="{Binding IsVisPromotion}" FontSize="25"  Grid.Row="10" BackgroundColor="White" />
-                        <Label Text="{Binding WP.PromotionShortName}" IsVisible="{Binding IsVisPromotion}" FontSize="25" TextColor="DarkBlue"  Grid.Column="1" Grid.Row="10" BackgroundColor="White"/>
-
-                        <Label Text="Акція діє" IsVisible="{Binding IsVisPromotion}" FontSize="25"  Grid.Row="11" BackgroundColor="White" />
-                        <StackLayout Orientation="Horizontal" Spacing="10" IsVisible="{Binding IsVisPromotion}" Grid.Column="1" Grid.Row="11" BackgroundColor="White">
-                            <Label Text="Акція діє: з "  FontSize="25"  TextColor="DarkBlue" />
-                            <Label Text="{Binding WP.PromotionBegin, StringFormat='{0:dd.MM}'}" FontSize="25" TextColor="DarkBlue" FontAttributes="Bold" />
-                            <Label Text=" по " TextColor="DarkBlue" FontSize="25"/>
-                            <Label Text="{Binding WP.PromotionEnd, StringFormat='{0:dd.MM}'}" FontSize="25" TextColor="DarkBlue" FontAttributes="Bold" />
-                        </StackLayout>
-
-                        <Label Text="Країна виробник" FontSize="25"  Grid.Row="12" BackgroundColor="White" />
-                        <Label Text="{Binding WP.Country}" Grid.Column="1" TextColor="DarkBlue" Grid.Row="12" FontSize="25" BackgroundColor="White"/>
-
-
-                        <Label Text="Умови роботи:" FontSize="25"  Grid.Row="13" BackgroundColor="White"/>
-                        <ScrollView Grid.Column="1" Grid.Row="13"  BackgroundColor="White">
-                            <VerticalStackLayout x:Name="ConditionList" />
-                        </ScrollView>
                     </Grid>
 
                 </Grid>
-
             </Grid>
-        </Grid>
+            <controls:NumericKeyboard x:Name="OnScreenKeyboard"
+                                  AbsoluteLayout.LayoutBounds="1,1"
+                                  AbsoluteLayout.LayoutFlags="PositionProportional"
+                                  TargetText="{Binding WP.BarCodes, Mode=TwoWay}"
+                                  IsVisible="False"/>
+        </AbsoluteLayout>
     </ContentPage.Content>
 </ContentPage>

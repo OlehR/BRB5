@@ -44,10 +44,10 @@ public partial class AdminPriceChecker : ContentPage
         get { return _WP; }
         set
         {
-            _WP = value; OnPropertyChanged("WP"); OnPropertyChanged("TextColorPrice");
+            _WP = value; OnPropertyChanged("WP"); OnPropertyChanged(nameof(TextColorPrice));
             OnPropertyChanged(nameof(UriPicture));
-            OnPropertyChanged("IsVisPriceOpt"); OnPropertyChanged(nameof(IsVisPriceNormal)); OnPropertyChanged("TextColorHttp");
-            OnPropertyChanged("ColorPrintColorType");
+            OnPropertyChanged(nameof(IsVisPriceOpt)); OnPropertyChanged(nameof(IsVisPriceNormal)); OnPropertyChanged("TextColorHttp");
+            OnPropertyChanged(nameof(ColorPrintColorType));
             OnPropertyChanged(nameof(IsVisPromotion));
         }
     }
@@ -98,6 +98,7 @@ public partial class AdminPriceChecker : ContentPage
         User = pUser;
         InitializeComponent();
         this.BindingContext = this;
+        OnScreenKeyboard.OkPressed += OnScreenKeyboard_OkPressed;
         bl.ClearWPH();
         if (pWP != null)  WP = pWP;        
 
@@ -151,6 +152,22 @@ public partial class AdminPriceChecker : ContentPage
             LineNumber = r.LineNumber;
             PackageNumber = r.PackageNumber;
         }
+    }
+    private void OnScreenKeyboard_OkPressed(object sender, EventArgs e)
+    {
+        var text = BarCodeInput.Text;
+        if (!string.IsNullOrEmpty(text))
+        {
+            FoundWares(text, true);
+        }
+
+        // сховати клаву і зняти фокус з Entry
+        OnScreenKeyboard.IsVisible = false;
+        BarCodeInput.Unfocus();
+    }
+    private void BarCodeInput_Focused(object sender, FocusEventArgs e)
+    {
+        OnScreenKeyboard.IsVisible = true;
     }
 
     void Progress(double pProgress) => MainThread.BeginInvokeOnMainThread(() => PB = pProgress);
