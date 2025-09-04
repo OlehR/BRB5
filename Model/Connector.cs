@@ -85,6 +85,11 @@ namespace BRB5.Model
         
         public virtual ParseBarCode ParsedBarCode(string pBarCode, bool pIsHandInput)
         {
+            if(pIsHandInput && pBarCode.Trim().Length<=8)
+            {
+               return new ParseBarCode() { BarCode = pBarCode, IsHandInput = true, Article = pBarCode.ToInt(), TypeCode = eTypeCode.Article };
+            }
+
             ParseBarCode Res = new() { BarCode = pBarCode };
             if(CustomerBarCode == null || CustomerBarCode.Count() == 0)
                 return Res;

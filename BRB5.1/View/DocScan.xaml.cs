@@ -53,56 +53,60 @@ namespace BRB6.View
             foreach (var t in tempListWares) { t.Ord = -1; }
             _originalListWares = tempListWares == null ? new ObservableCollection<DocWaresEx>() : new ObservableCollection<DocWaresEx>(tempListWares);
             ListWares = new ObservableCollection<DocWaresEx>(_originalListWares);
-            OrderDoc = ListWares.Count > 0 ? ListWares.Max(el=>el.OrderDoc) : 0;
+            OrderDoc = ListWares.Count > 0 ? ListWares.Max(el => el.OrderDoc) : 0;
             if (ListWares.Count > 0) ListViewWares.SelectedItem = ListWares[0];
             NavigationPage.SetHasNavigationBar(this, DeviceInfo.Platform == DevicePlatform.iOS || Config.TypeScaner == eTypeScaner.BitaHC61 || Config.TypeScaner == eTypeScaner.ChainwayC61 || Config.TypeScaner == eTypeScaner.Zebra || Config.TypeScaner == eTypeScaner.PM550 || Config.TypeScaner == eTypeScaner.PM351 || Config.TypeScaner == eTypeScaner.MetapaceM_K4);
-            Reason = db.GetReason(TypeDoc.KindDoc,true);
+            Reason = db.GetReason(TypeDoc.KindDoc, true);
             PopulateReasonOptions();
             this.BindingContext = this;
         }
 
         private void HandBarCode(object sender, EventArgs e)
         {
-            BarCode(inputBarCode.Text);
+            BarCode(inputBarCode.Text, true);
         }
-        void BarCode(string pBarCode)
+        void BarCode(string pBarCode) => BarCode(pBarCode, false);
+        void BarCode(string pBarCode, bool IsHandInput)
         {
-            ScanData = db.GetScanData(DocId, c.ParsedBarCode(pBarCode, true));
+            ScanData = db.GetScanData(DocId, c.ParsedBarCode(pBarCode, IsHandInput));
             FindWareByBarCodeAsync(pBarCode);
             if (ScanData != null)
             {
                 ScanData.BarCode = pBarCode;
                 if (ScanData.QuantityBarCode > 0) ScanData.InputQuantity = ScanData.QuantityBarCode;
                 else inputQ.Text = "";
-                inputQ.Keyboard = DeviceInfo.Platform == DevicePlatform.iOS? Keyboard.Default :  ScanData.CodeUnit == Config.GetCodeUnitWeight ? Keyboard.Telephone : Keyboard.Numeric;
+                inputQ.Keyboard = DeviceInfo.Platform == DevicePlatform.iOS ? Keyboard.Default : ScanData.CodeUnit == Config.GetCodeUnitWeight ? Keyboard.Telephone : Keyboard.Numeric;
                 inputQ.Focus();
                 AddWare();
             }
         }
         public void Dispose() { Config.BarCode -= BarCode; }
-        private void AddWare()
+        private async void AddWare()
         {
-            if (ScanData != null)
+            if (ScanData?.InputQuantity > 0)
             {
-                if (ScanData.InputQuantity > 0)
+                if (TypeDoc.TypeControlQuantity == eTypeControlDoc.Control && ScanData.BeforeQuantity + ScanData.InputQuantity * ScanData.Coefficient > ScanData.QuantityMax && ScanData.QuantityMax > 0)
                 {
-                    ScanData.Quantity = ScanData.InputQuantity*ScanData.Coefficient;
-                    ScanData.OrderDoc = ++OrderDoc;
-                    ScanData.Ord = -1;
-                    if (db.ReplaceDocWares(ScanData))
-                    {
-                        ListWares.Insert(0, ScanData);
-                        foreach (var ware in ListWares)
-                        {
-                            if (ware.CodeWares == ScanData.CodeWares) ware.Ord = -1;
-                        }
-                        ListViewWares.SelectedItem = ListWares[0];
-                        ScanData = null;
-                    }
-                    inputQ.Unfocus();
+                    await DisplayAlert("Перевищено ліміт по позиції", $"{ScanData.NameWares}\nМаксимальна кількість: {ScanData.QuantityMax}\nВже додано: {ScanData.BeforeQuantity}\nСпроба додати: {ScanData.InputQuantity * ScanData.Coefficient}", "Ok");
+                    return;
                 }
+                ScanData.Quantity = ScanData.InputQuantity * ScanData.Coefficient;
+                ScanData.OrderDoc = ++OrderDoc;
+                ScanData.Ord = -1;
+                if (db.ReplaceDocWares(ScanData))
+                {
+                    ListWares.Insert(0, ScanData);
+                    foreach (var ware in ListWares)
+                    {
+                        if (ware.CodeWares == ScanData.CodeWares) ware.Ord = -1;
+                    }
+                    ListViewWares.SelectedItem = ListWares[0];
+                    ScanData = null;
+                }
+                inputQ.Unfocus();
             }
-        }
+        }    
+
         private void UnfocusedInputQ(object sender, FocusEventArgs e)
         {
             if (ScanData != null)

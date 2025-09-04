@@ -49,7 +49,7 @@ CREATE TABLE Wares (
     CodeWares          INTEGER  NOT NULL,
     CodeGroup          INTEGER  NOT NULL,
     NameWares          TEXT     NOT NULL,
-    Article              TEXT,
+    Article            INTEGER,
     CodeBrand          INTEGER,
     ArticlWaresBrand  TEXT,
     CodeUnit           INTEGER  NOT NULL,
@@ -253,15 +253,15 @@ CREATE TABLE DocWaresExpiration(
 );
 CREATE UNIQUE INDEX DocWaresExpirationTNC ON DocWaresExpiration (DateDoc, NumberDoc, DocId, CodeWares);
 ";
-        readonly int Ver = 9;
+        readonly int Ver = 10;
         string SqlTo6 = @"alter TABLE Reason add  Level INTEGER  DEFAULT (0);
 drop index ReasonId;
 CREATE UNIQUE INDEX ReasonId ON Reason (Level,CodeReason);";
-
         string SqlTo7 = "alter TABLE Doc add CodeReason INTEGER DEFAULT (0)";
         string SqlTo8 = "alter TABLE Warehouse add CodeTM INTEGER DEFAULT (0)";
         string SqlTo9 = "alter TABLE DocWaresSample add CodeReason  INTEGER NOT NULL DEFAULT (0)";
-
+        string SqlTo10 = @"alter table wares  DROP COLUMN Article;
+alter table wares  ADD COLUMN Article INTEGER;";
         public static string PathNameDB { get { return Path.Combine(BaseDir, NameDB); } }
 
         public DB(string pBaseDir) : this() { BaseDir = pBaseDir; }
@@ -288,6 +288,8 @@ CREATE UNIQUE INDEX ReasonId ON Reason (Level,CodeReason);";
                     SetSQL(SqlTo8, 8);
                 if (GetVersion < 9)
                     SetSQL(SqlTo9, 9);
+                if (GetVersion < 10)
+                    SetSQL(SqlTo10, 10);
             }            
         }
 
@@ -636,7 +638,7 @@ and bc.BarCode=?
 
                     if(pParseBarCode.CodeWares > 0 || pParseBarCode.Article > 0)
                     {
-                        String Find = pParseBarCode.CodeWares > 0 ? $"w.CodeWares={pParseBarCode.CodeWares}" : $"w.ARTICLE='{pParseBarCode.Article:D8}'";
+                        String Find = pParseBarCode.CodeWares > 0 ? $"w.CodeWares={pParseBarCode.CodeWares}" : $"w.ARTICLE={pParseBarCode.Article}";
                         sql = @"select w.CODEWARES,w.NAMEWARES as NameWares, au.COEFFICIENT as Coefficient,w.CODEUNIT as CodeUnit, ud.ABRUNIT as NameUnit,
                             '' as BARCODE  ,w.CODEUNIT as BaseCodeUnit 
                                 from WARES w 
@@ -966,7 +968,7 @@ order by gw.NameGroup";
                 // Пошук по коду
                 if (pParseBarCode.CodeWares > 0 || pParseBarCode.Article > 0)
                 {
-                    String Find = pParseBarCode.CodeWares > 0 ? $"w.CodeWares={pParseBarCode.CodeWares}" : $"w.ARTICLE='{pParseBarCode.Article:D8}'";
+                    String Find = pParseBarCode.CodeWares > 0 ? $"w.CodeWares={pParseBarCode.CodeWares}" : $"w.ARTICLE={pParseBarCode.Article}";
                     sql = $@"select  DES.NumberDoc,DES.DocId, w.CodeWares,w.NAMEWARES as NameWares, au.COEFFICIENT as Coefficient,w.CODEUNIT as CodeUnit, ud.ABRUNIT as NameUnit,
                             ( select group_concat(bc.BarCode,',') from BarCode bc where bc.CodeWares=w.CodeWares ) as BARCODE  ,w.CODEUNIT as BaseCodeUnit,
                             des.Quantity,des.Expiration,des.ExpirationDate,des.DaysLeft
