@@ -18,6 +18,9 @@ namespace BRB6.View
         //public string Ver { get { return "Ver:"+ Assembly.GetExecutingAssembly().GetName().Version; } }
         public string Ver => "Ver:" + AppInfo.VersionString;
         public string SN => "SN:" + Config.SN;
+        public string TypeScaner =>  Config.TypeScaner.ToString();
+        public string Model => "Model:" + Config.Model;
+        public string Manufacturer => "Виробник:" + Config.Manufacturer;
         public bool IsVisScan => Config.TypeScaner == eTypeScaner.Camera;
 
         double _PB = 0.0;
