@@ -76,6 +76,7 @@ namespace BRB6.View
                 if (ScanData.QuantityBarCode > 0) ScanData.InputQuantity = ScanData.QuantityBarCode;
                 else inputQ.Text = "";
                 inputQ.Keyboard = DeviceInfo.Platform == DevicePlatform.iOS ? Keyboard.Default : ScanData.CodeUnit == Config.GetCodeUnitWeight ? Keyboard.Telephone : Keyboard.Numeric;
+                inputBarCode.IsReadOnly = true;
                 inputQ.Focus();
                 AddWare();
             }
@@ -104,6 +105,7 @@ namespace BRB6.View
                     ScanData = null;
                 }
                 inputQ.Unfocus();
+                inputBarCode.IsReadOnly = false;
             }
         }    
 
@@ -112,7 +114,10 @@ namespace BRB6.View
             if (ScanData != null)
             {
                 if (!inputQ.IsFocused && ScanData.InputQuantity == 0)
+                {
+                    inputBarCode.IsReadOnly = true;
                     inputQ.Focus();
+                }
                 else
                     AddWare();
             }
