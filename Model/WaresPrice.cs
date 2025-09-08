@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Text;
 using UtilNetwork;
 
 namespace BRB5.Model
 {
-    public class WaresPrice:Result
+    public class WaresPrice:Result, INotifyPropertyChanged
     {
         public WaresPrice() { }
         public WaresPrice(DocWaresEx pW) 
@@ -32,7 +33,8 @@ namespace BRB5.Model
 
         //public string StartString { get; set; }
 
-        public string BarCodes { get; set; }
+        private string _BarCodes;
+        public string BarCodes { get { return _BarCodes; } set { _BarCodes = value; OnPropertyChanged(nameof(BarCodes)); } }
         //public int ColorPriceOpt() { return Color.parseColor(OldPriceOpt != PriceOpt ? "#ee4343" : "#3bb46e"){get;set;} }
 
         public string Unit { get; set; }
@@ -106,6 +108,11 @@ namespace BRB5.Model
 
         public bool IsPriceOptYellow { get; set; } = false;
 
+        public event PropertyChangedEventHandler PropertyChanged;
+        protected virtual void OnPropertyChanged(string propertyName)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
     }
     public class RestWarehouse
     {

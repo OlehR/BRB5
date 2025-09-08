@@ -4,12 +4,25 @@
              x:Class="PriceChecker.View.NumericKeyboard"
               x:Name="Root">
     <Frame HasShadow="True"
-         CornerRadius="12"
-         Padding="4"
-         BackgroundColor="White"
-         WidthRequest="360" HeightRequest="420"
-         HorizontalOptions="End" VerticalOptions="End"
-         Margin="12">
+       CornerRadius="12"
+       Padding="4"
+       BackgroundColor="White"
+       WidthRequest="330" HeightRequest="360"
+       HorizontalOptions="End"
+       VerticalOptions="End"
+       Margin="12">
+
+        <Frame.Resources>
+            <Style TargetType="Button">
+                <Setter Property="FontSize" Value="38"/>
+                <Setter Property="FontAttributes" Value="Bold"/>
+                <Setter Property="BackgroundColor" Value="#5d88ba"/>
+                <!-- тьмяний синій -->
+                <Setter Property="TextColor" Value="White"/>
+                <Setter Property="CornerRadius" Value="12"/>
+            </Style>
+        </Frame.Resources>
+
         <Grid RowSpacing="6" ColumnSpacing="6">
             <Grid.RowDefinitions>
                 <RowDefinition Height="*"/>
@@ -42,4 +55,5 @@
             <Button Text="⌫" Grid.Row="3" Grid.Column="2" Clicked="Backspace_Clicked"/>
         </Grid>
     </Frame>
+
 </ContentView>

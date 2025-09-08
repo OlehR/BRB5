@@ -7,12 +7,12 @@
 
     <ContentPage.Content>
         <AbsoluteLayout>
-            <Grid>
+            <Grid AbsoluteLayout.LayoutBounds="0,0,1,1" AbsoluteLayout.LayoutFlags="All">
                 <Image x:Name="BackgroundImage"
                    Aspect="AspectFill"
                    Opacity="0.2"/>
 
-                <Grid AbsoluteLayout.LayoutBounds="0,0,1,1" AbsoluteLayout.LayoutFlags="All">
+                <Grid >
                     <Grid.RowDefinitions>
                         <RowDefinition Height="90" />
                         <RowDefinition Height="7*" />
@@ -42,7 +42,7 @@
                         </Grid.ColumnDefinitions>
 
                         <StackLayout>
-                            <ffimageloading:CachedImage x:Name="WareImage" Source="{Binding UriPicture}" />
+                            <ffimageloading:CachedImage x:Name="WareImage" Source="{Binding UriPicture}" ErrorPlaceholder="photo.png"/>
 
                             <Grid RowDefinitions="Auto,Auto"
                                 ColumnDefinitions="*,*"                              
@@ -128,8 +128,7 @@
                                Grid.Column="1" Grid.Row="2"
                                    IsReadOnly="True"
                                    Focused="BarCodeInput_Focused"
-                               Text="{Binding WP.BarCodes, Mode=TwoWay}"
-                               Completed="BarCodeHandInput" />
+                               Text="{Binding WP.BarCodes, Mode=TwoWay}"/>
 
                             <Label Text="Група товару" FontSize="25" Grid.Row="3" BackgroundColor="White" />
                             <Label Text="{Binding WP.Parent}" TextColor="DarkBlue" FontSize="25" Grid.Column="1" Grid.Row="3" BackgroundColor="White"/>

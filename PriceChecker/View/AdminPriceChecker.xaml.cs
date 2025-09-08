@@ -165,21 +165,14 @@ public partial class AdminPriceChecker : ContentPage
         OnScreenKeyboard.IsVisible = false;
         BarCodeInput.Unfocus();
     }
-    private void BarCodeInput_Focused(object sender, FocusEventArgs e)
-    {
-        OnScreenKeyboard.IsVisible = true;
-    }
+    private void BarCodeInput_Focused(object sender, FocusEventArgs e) =>  OnScreenKeyboard.IsVisible = true;    
 
     void Progress(double pProgress) => MainThread.BeginInvokeOnMainThread(() => PB = pProgress);
     protected override void OnAppearing()
     {
         base.OnAppearing();
-
-        if (!IsVisScan)
-            BarCodeInput.Focus();
         Config.OnProgress += Progress;
     }
-
     protected override void OnDisappearing()
     {
         base.OnDisappearing();
@@ -194,6 +187,12 @@ public partial class AdminPriceChecker : ContentPage
             LineNumber++;
             Config.OnProgress?.Invoke(0.2d);
 
+            MainThread.BeginInvokeOnMainThread(() => {
+                OnScreenKeyboard.IsVisible = false;
+                BarCodeInput.Unfocus(); 
+                ConditionList.Children.Clear(); 
+            });
+
             WP = bl.FoundWares(pBarCode, PackageNumber, LineNumber, pIsHandInput, false, IsOnline, eTypePriceInfo.Full);
 
             if (WP != null)
@@ -206,17 +205,9 @@ public partial class AdminPriceChecker : ContentPage
             }
 
             Config.OnProgress?.Invoke(0.9d);
-
-            if (DeviceInfo.Platform != DevicePlatform.iOS) BarCodeFocused(null, null);
-
         }
 
         ResetTimer();
-    }
-    private void BarCodeHandInput(object sender, EventArgs e)
-    {
-        var text = BarCodeInput.Text;
-        FoundWares(text, true);
     }
 
     private void BarCodeFocused(object sender, FocusEventArgs e)

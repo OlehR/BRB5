@@ -11,6 +11,9 @@
         <VerticalStackLayout Padding="30" Spacing="20" VerticalOptions="Center">
             <Image x:Name="LogoImage" Aspect="AspectFit" HeightRequest="300"/>
             <Image Source="check_the_price.png" Aspect="AspectFit" HeightRequest="130"/>
+
+            <!--<Entry x:Name="InputBC" Completed="TEMPHandIput"/>-->
+
         </VerticalStackLayout>
     </Grid>
 
