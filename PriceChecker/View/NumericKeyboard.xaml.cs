@@ -44,10 +44,15 @@ public partial class NumericKeyboard : ContentView
             TargetText = TargetText.Substring(0, Math.Max(0, TargetText.Length - 1));
         }
     }
+    private void Clear_Clicked(object sender, EventArgs e)
+    {
+        TargetText = string.Empty;
+    }
 
     void Ok_Clicked(object sender, EventArgs e)
     {
         OkPressed?.Invoke(this, EventArgs.Empty);
         // Optionally hide keyboard by controlling IsVisible externally
     }
+
 }

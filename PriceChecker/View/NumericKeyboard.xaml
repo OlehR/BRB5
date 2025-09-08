@@ -2,6 +2,7 @@
 <ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="PriceChecker.View.NumericKeyboard"
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
               x:Name="Root">
     <Frame HasShadow="True"
        CornerRadius="12"
@@ -52,7 +53,11 @@
             <!-- bottom row: OK, 0, Backspace -->
             <Button Text="OK" Grid.Row="3" Grid.Column="0" Clicked="Ok_Clicked" />
             <Button Text="0" Grid.Row="3" Grid.Column="1" Clicked="Digit_Clicked"/>
-            <Button Text="⌫" Grid.Row="3" Grid.Column="2" Clicked="Backspace_Clicked"/>
+
+            <Grid Grid.Row="3" Grid.Column="2" RowDefinitions="3*,2*">
+                <Button Text="⌫" Clicked="Backspace_Clicked"/>
+                <Button Text="Clean" Grid.Row="1" FontSize="20" Clicked="Clear_Clicked"/>
+            </Grid>
         </Grid>
     </Frame>
 
