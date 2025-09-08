@@ -77,6 +77,9 @@
 	  <MauiXaml Update="View\AdminPriceChecker.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
+	  <MauiXaml Update="View\CustomerInfo.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
 	  <MauiXaml Update="View\NumericKeyboard.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>

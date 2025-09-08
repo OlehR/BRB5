@@ -53,11 +53,7 @@
             <!-- bottom row: OK, 0, Backspace -->
             <Button Text="OK" Grid.Row="3" Grid.Column="0" Clicked="Ok_Clicked" />
             <Button Text="0" Grid.Row="3" Grid.Column="1" Clicked="Digit_Clicked"/>
-
-            <Grid Grid.Row="3" Grid.Column="2" RowDefinitions="3*,2*">
-                <Button Text="⌫" Clicked="Backspace_Clicked"/>
-                <Button Text="Clean" Grid.Row="1" FontSize="20" Clicked="Clear_Clicked"/>
-            </Grid>
+            <Button Text="⌫" Grid.Row="3" Grid.Column="2" Pressed="Backspace_Pressed" Released="Backspace_Released" />
         </Grid>
     </Frame>
 
