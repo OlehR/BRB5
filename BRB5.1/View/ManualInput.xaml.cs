@@ -15,17 +15,30 @@ namespace BRB6.View
         public int OrderDoc { get; set; }
         public bool IsSoftKeyboard { get { return Config.IsSoftKeyboard; } }
         public ObservableCollection<DocWaresEx> DocWares { get; set; } = new ObservableCollection<DocWaresEx>();
-        public ManualInput (DocId pDocId, TypeDoc pTypeDoc)
+        public ManualInput (DocVM pDoc, TypeDoc pTypeDoc)
         {
             NokeyBoard();
             TypeDoc = pTypeDoc;
-            Doc = new DocVM(pDocId);
+            Doc = pDoc;
             var r = db.GetDocWares(Doc, 1, eTypeOrder.Scan);
             if (r != null)
             {
-                foreach (var item in r)
-                    if (item.QuantityOrder != 0)
-                        DocWares.Add(item);
+                IEnumerable<DocWaresEx> filtered;
+
+                if (Doc.CodeReason == 1)
+                {
+                    filtered = r.Where(x => x.QuantityOrder != 0 && x.CodeReason == -1);
+                }
+                else
+                {
+                    filtered = r.Where(x => x.QuantityOrder != 0);
+                }
+
+                foreach (var item in filtered)
+                {
+                    DocWares.Add(item);
+                }
+
                 OrderDoc = r.Max(el=> el.OrderDoc);
             }
             BindingContext = this;
