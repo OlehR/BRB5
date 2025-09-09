@@ -37,33 +37,18 @@ public partial class NumericKeyboard : ContentView
         }
     }
 
-
     DateTime _backspacePressStart;
-    private void Backspace_Pressed(object sender, EventArgs e)
-    {
-        _backspacePressStart = DateTime.UtcNow;
-    }
+    private void Backspace_Pressed(object sender, EventArgs e) { _backspacePressStart = DateTime.UtcNow; }
     private void Backspace_Released(object sender, EventArgs e)
     {
         var duration = DateTime.UtcNow - _backspacePressStart;
 
-        if (duration.TotalMilliseconds >= 1500)
-        {
-            // ????? ?????????? ? ???????? ???
-            TargetText = string.Empty;
-        }
-        else
-        {
-            // ??????? ?????????? ? ???????? 1 ??????
-            if (!string.IsNullOrEmpty(TargetText))
+        if (duration.TotalMilliseconds >= 1500) TargetText = string.Empty;
+        else if (!string.IsNullOrEmpty(TargetText))
                 TargetText = TargetText.Substring(0, TargetText.Length - 1);
-        }
+        
     }
 
-    void Ok_Clicked(object sender, EventArgs e)
-    {
-        OkPressed?.Invoke(this, EventArgs.Empty);
-        // Optionally hide keyboard by controlling IsVisible externally
-    }
+    void Ok_Clicked(object sender, EventArgs e)  { OkPressed?.Invoke(this, EventArgs.Empty); }
 
 }
