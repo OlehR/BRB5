@@ -213,7 +213,7 @@
                     <Label Text="F8-"
                            FontSize="16"
                            TextColor="#ff5c5c" />
-                    <Label Text="{Binding F8Text}"
+                    <Label Text="Замінити"
                            FontSize="18"
                            TextColor="#816f20">
                     </Label>

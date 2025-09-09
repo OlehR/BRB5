@@ -48,7 +48,8 @@ namespace BRB6
                 //_ = c.GetRaitingTemplateAsync();
                 //var r = db.GetDoc(TypeDoc).OrderByDescending(el => el.NumberDoc);
                 //ViewDoc(r);
-               await c.LoadDocsDataAsync(TypeDoc.CodeDoc, null, false);      
+               await c.LoadDocsDataAsync(TypeDoc.CodeDoc, null, false);
+                _= c.GetRaitingTemplateAsync();
                 var r = db.GetDoc(TypeDoc).OrderByDescending(el => el.NumberDoc);
                 ViewDoc(r);
             });

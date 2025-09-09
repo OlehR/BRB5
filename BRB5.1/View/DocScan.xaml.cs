@@ -15,7 +15,7 @@ namespace BRB6.View
     {
         private ObservableCollection<DocWaresEx> _ListWares;
         public ObservableCollection<DocWaresEx> ListWares { get { return _ListWares; } set { _ListWares = value; OnPropertyChanged("ListWares"); } }
-
+        
         DocWaresEx _ScanData;
         public DocWaresEx ScanData { get { return _ScanData; } set { _ScanData = value; OnPropertyChanged("ScanData"); } }
         protected DB db = DB.GetDB();
@@ -78,7 +78,7 @@ namespace BRB6.View
                 inputQ.Keyboard = DeviceInfo.Platform == DevicePlatform.iOS ? Keyboard.Default : ScanData.CodeUnit == Config.GetCodeUnitWeight ? Keyboard.Telephone : Keyboard.Numeric;
                 inputBarCode.IsReadOnly = true;
                 inputQ.Focus();
-                AddWare();
+                //AddWare();
             }
         }
         public void Dispose() { Config.BarCode -= BarCode; }
@@ -381,8 +381,9 @@ namespace BRB6.View
                Down(null, EventArgs.Empty);
                return;
             case Keycode.F8:
-
-               return;
+                    Reset(null, EventArgs.Empty);
+                    AddWare();
+                    return;
             default:
                return;
            }

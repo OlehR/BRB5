@@ -75,15 +75,19 @@ namespace BL.Connector
                         Config.NameUser = res.Info?.NameUser;
                         Config.TypeDoc = res.Info?.TypeDoc;
                         CustomerBarCode = res.Info?.CustomerBarCode;
+
                         if (!string.IsNullOrEmpty(res.Info?.PathAPK))
                             Config.PathAPK = res.Info?.PathAPK;
                         isGroup = Config.TypeDoc.Any(el => el.KindDoc == eKindDoc.NotDefined);
 
-                        Config.LocalCompany= res.Info?.LocalConnect ?? eCompany.NotDefined;
+                        Config.LocalCompany = res.Info?.LocalConnect ?? eCompany.NotDefined;
                         if (Config.LocalCompany == eCompany.Sim23)
+                        {
                             СonnectorLocal = new ConnectorSE();
+                            CustomerBarCode = CustomerBarCode.Append(new CustomerBarCode() { TypeBarCode = eTypeBarCode.ManualInput, LenghtCode = 7, TypeCode=eTypeCode.Code });///!!!!TMP!!!
+                        }
 
-                        IsLocalPrice = Config.TypeDoc?.Where(el => el.KindDoc == eKindDoc.PriceCheck).FirstOrDefault()?.CodeApi==1;
+                        IsLocalPrice = Config.TypeDoc?.Where(el => el.KindDoc == eKindDoc.PriceCheck).FirstOrDefault()?.CodeApi == 1;
                         FileLogger.WriteLogMessage($"ConnectorPSU.Login=>(pLogin=>{pLogin}, pPassWord=>{pPassWord},pLoginServer=>{pLoginServer}) Res=>({Res.State},{Res.Info},{Res.TextError})", eTypeLog.Full);
                         return res.GetResult;
                     }

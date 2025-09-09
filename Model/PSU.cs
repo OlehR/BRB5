@@ -41,6 +41,7 @@ namespace BRB5.Model
         public eTypePriceInfo TypePriceInfo { get; set; } = eTypePriceInfo.Short;
         public string BarCode { get; set; }
         public long CodeWares { get; set; }
+        public long CodeShop { get; set; }
         public string StrCodeWares { get { return CodeWares > 0 ? CodeWares.ToString()  : null; } }
 
         public string StrCodeWarehouse { get { return CodeWarehouse.ToString(); } }

@@ -601,7 +601,7 @@ and bc.BarCode=?
                     if (pParseBarCode.BarCode[..el.BarCode.Length].Equals(el.BarCode))
                     {
                         pParseBarCode.CodeWares = el.CodeWares;
-                        pParseBarCode.Quantity = pParseBarCode.BarCode[8..12].ToDecimal();                      
+                        pParseBarCode.Quantity = pParseBarCode.BarCode[8..12].ToDecimal()/1000M;                      
                         break;
                     }
                 }

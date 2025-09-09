@@ -85,23 +85,23 @@ namespace BRB5.Model
         
         public virtual ParseBarCode ParsedBarCode(string pBarCode, bool pIsHandInput)
         {
-            if(pIsHandInput && pBarCode.Trim().Length<=8)
+            /*if(pIsHandInput && pBarCode.Trim().Length<8)
             {
                return new ParseBarCode() { BarCode = pBarCode, IsHandInput = true, Article = pBarCode.ToInt(), TypeCode = eTypeCode.Article };
-            }
+            }*/
 
             ParseBarCode Res = new() { BarCode = pBarCode };
             if(CustomerBarCode == null || CustomerBarCode.Count() == 0)
                 return Res;
             int Code, Data, Data2;
-            foreach (var el in CustomerBarCode.Where(el => el.KindBarCode == eKindBarCode.EAN13 || el.KindBarCode == eKindBarCode.Code128 || el.KindBarCode == eKindBarCode.QR /*&& (el.TypeBarCode == eTypeBarCode.WaresWeight || el.TypeBarCode == eTypeBarCode.WaresUnit )*/))
+            foreach (var el in CustomerBarCode.Where( el => el.TypeBarCode==eTypeBarCode.ManualInput || el.KindBarCode == eKindBarCode.EAN13 || el.KindBarCode == eKindBarCode.Code128 || el.KindBarCode == eKindBarCode.QR /*&& (el.TypeBarCode == eTypeBarCode.WaresWeight || el.TypeBarCode == eTypeBarCode.WaresUnit )*/))
             {
                 try
                 {
                     Code = 0; Data = 0; Data2 = 0;
-                    if (string.IsNullOrEmpty(el.Separator) && el.TotalLenght != pBarCode.Length)
+                    if (el.TypeBarCode != eTypeBarCode.ManualInput && (string.IsNullOrEmpty(el.Separator) && el.TotalLenght != pBarCode.Length))
                         continue;
-
+                   
                     if (!string.IsNullOrEmpty(el.Separator))
                     {
                         var D = pBarCode.Split(el.Separator);
@@ -112,7 +112,10 @@ namespace BRB5.Model
                             Data2 = D.Length > 2 ? D[2].ToInt() : 0;
                         }
                     }
-                    if (Code == 0 && el.Prefix.Equals(pBarCode[..el.Prefix.Length]))
+                    if (pIsHandInput && el.TypeBarCode == eTypeBarCode.ManualInput && pBarCode.Trim().Length <= el.LenghtCode)
+                        Code = pBarCode.ToInt();
+
+                    if (Code == 0 && !string.IsNullOrEmpty(el.Prefix) && el.Prefix.Equals(pBarCode[..el.Prefix.Length]))
                     {
                         if (el.KindBarCode == eKindBarCode.EAN13 && pBarCode.Length != 13)
                             continue;
@@ -122,7 +125,7 @@ namespace BRB5.Model
                         Data = el.LenghtQuantity > 0 ? Convert.ToInt32(pBarCode.Substring(el.Prefix.Length + el.LenghtCode + el.LenghtOperator, el.LenghtQuantity)) : 0;
                     }
                     if (Data > 0 && el.LenghtOperator > 0) Res.CodeOperator = Data;
-                    if (Data > 0 && el.LenghtQuantity > 0) Res.Quantity = Data;
+                    if (Data > 0 && el.LenghtQuantity > 0) Res.Quantity = el.TypeBarCode== eTypeBarCode.WaresWeight? Data/1000m : Data;
                     if (Data > 0 && el.TypeBarCode == eTypeBarCode.PriceTag) Res.Price = Data;
                     if (Data2 > 0 && el.TypeBarCode == eTypeBarCode.PriceTag) Res.PriceOpt = Data;
 
