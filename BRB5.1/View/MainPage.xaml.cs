@@ -71,7 +71,10 @@ namespace BRB6
                         SLLogin.IsVisible = false;
                         ListDocs.IsVisible = true;
                     });
-                   Bl.OnButtonLogin(Login, Password, DeviceInfo.Platform == DevicePlatform.Android);
+                    Bl.OnButtonLogin(Login, Password, DeviceInfo.Platform == DevicePlatform.Android);
+
+                    Login = db.GetConfig<string>("Login");
+                    OnPropertyChanged(nameof(Login));
                 }
                 else
                     Dispatcher.Dispatch(() =>
