@@ -21,9 +21,9 @@ namespace BRB5.Model
                 if (QuantityDifference > 0)
                     return "#c4ffc4"; // Green
                 else if (QuantityDifference < 0)
-                    return "#ff0000"; // Red  
+                    return "#ffc4c4"; // Red  
                 else
-                    return "#adaea7"; // Gray
+                    return "#ffffff"; // Gray
             }
         }
 

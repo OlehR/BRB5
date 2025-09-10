@@ -139,8 +139,7 @@ public partial class Act
             var quantityReasonLabel = new Label
             {
                 Text = docWare.QuantityDifference.ToString(),
-                BackgroundColor = Color.FromArgb("#ffffff"),
-                TextColor = Color.FromArgb(docWare.GetColor)
+                BackgroundColor = Color.FromArgb(docWare.GetColor),
             };
             Grid.SetRow(quantityReasonLabel, 1);
             Grid.SetColumn(quantityReasonLabel, 3);
