@@ -77,6 +77,10 @@ public partial class SplashPage : ContentPage
             {
                 var isStaff = WP.CodeUser != 0;
                 ContentPage page = isStaff ? new AdminPriceChecker(WP) : new UPriceChecker(WP);
+
+                //TMP!!!!!!
+                //page = new CustomerInfo();
+
                 MainThread.BeginInvokeOnMainThread(async () =>
                 {
                     await Navigation.PushAsync(page);
