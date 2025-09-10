@@ -99,14 +99,16 @@
                         </Frame>
                     </Grid>
 
-                <Grid x:Name="ReasonOptions" Grid.Row="2" IsVisible="{Binding IsViewReason}">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="*" />
-                        </Grid.ColumnDefinitions>
-                    </Grid>
-                    
-                    <ListView Grid.Row="3" ItemsSource="{Binding ListWares}" x:Name="ListViewWares" SeparatorVisibility="None" HasUnevenRows="True" >
+                <!--<Grid x:Name="ReasonOptions" Grid.Row="2" IsVisible="{Binding IsViewReason}" ColumnDefinitions="*,*"/>-->
+                <Picker x:Name="ReasonPicker" Grid.Row="2"
+                        Title="Оберіть причину"
+                        IsVisible="{Binding IsViewReason}"
+                        IsEnabled="{Binding IsViewReason}"
+                        ItemDisplayBinding="{Binding NameReason}" 
+                        SelectedIndexChanged="ReasonPicker_SelectedIndexChanged"/>
+
+
+                <ListView Grid.Row="3" ItemsSource="{Binding ListWares}" x:Name="ListViewWares" SeparatorVisibility="None" HasUnevenRows="True" >
                         <ListView.Header>
                             <Grid RowSpacing="1"
                                   ColumnSpacing="1"

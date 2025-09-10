@@ -36,7 +36,10 @@ namespace BRB6.View
         private string TempBarcode;
         public IEnumerable<BRB5.Model.DB.Reason> Reason { get; set; }
 
-        private Grid _selectedGrid;
+        //private Grid _selectedGrid; 
+        private List<BRB5.Model.DB.Reason> Reasons = new();
+        private BRB5.Model.DB.Reason _defaultReason = new BRB5.Model.DB.Reason { CodeReason = 0, NameReason = "— без причини —" };
+
 
         CameraView BarcodeScaner;
         //ZXingScannerView zxing;
@@ -56,8 +59,12 @@ namespace BRB6.View
             OrderDoc = ListWares.Count > 0 ? ListWares.Max(el => el.OrderDoc) : 0;
             if (ListWares.Count > 0) ListViewWares.SelectedItem = ListWares[0];
             NavigationPage.SetHasNavigationBar(this, DeviceInfo.Platform == DevicePlatform.iOS || Config.TypeScaner == eTypeScaner.BitaHC61 || Config.TypeScaner == eTypeScaner.ChainwayC61 || Config.TypeScaner == eTypeScaner.Zebra || Config.TypeScaner == eTypeScaner.PM550 || Config.TypeScaner == eTypeScaner.PM351 || Config.TypeScaner == eTypeScaner.MetapaceM_K4);
+            
             Reason = db.GetReason(TypeDoc.KindDoc, true);
+            _defaultReason = Reason.FirstOrDefault(r => r.CodeReason == 0);
+            if (_defaultReason == null)  _defaultReason = new BRB5.Model.DB.Reason {CodeReason = 0,NameReason = "— без причини —"};  
             PopulateReasonOptions();
+
             this.BindingContext = this;
         }
 
@@ -73,6 +80,10 @@ namespace BRB6.View
             if (ScanData != null)
             {
                 ScanData.BarCode = pBarCode;
+
+                ScanData.CodeReason = _defaultReason.CodeReason; // завжди дефолт
+                ReasonPicker.SelectedItem = _defaultReason;
+
                 if (ScanData.QuantityBarCode > 0) ScanData.InputQuantity = ScanData.QuantityBarCode;
                 else inputQ.Text = "";
                 inputQ.Keyboard = DeviceInfo.Platform == DevicePlatform.iOS ? Keyboard.Default : ScanData.CodeUnit == Config.GetCodeUnitWeight ? Keyboard.Telephone : Keyboard.Numeric;
@@ -103,6 +114,8 @@ namespace BRB6.View
                     }
                     ListViewWares.SelectedItem = ListWares[0];
                     ScanData = null;
+
+                    ReasonPicker.SelectedItem = _defaultReason;
                 }
                 inputQ.Unfocus();
                 inputBarCode.IsReadOnly = false;
@@ -262,7 +275,7 @@ namespace BRB6.View
 
         private void CompletedInputQ(object sender, EventArgs e) {  AddWare(); }
 
-        private void PopulateReasonOptions()
+        /*private void PopulateReasonOptions()
         {
             ReasonOptions.Children.Clear();
             ReasonOptions.RowDefinitions.Clear();
@@ -318,8 +331,8 @@ namespace BRB6.View
                 }
             }
         }
-
-        private void OnReasonTapped(Grid selectedGrid)
+        */
+        /*private void OnReasonTapped(Grid selectedGrid)
         {
             var reason = (BRB5.Model.DB.Reason)selectedGrid.BindingContext;
 
@@ -348,6 +361,30 @@ namespace BRB6.View
                 {
                     ScanData.CodeReason = reason.CodeReason; // Set to the selected reason's CodeReason
                 }
+            }
+        }
+        */
+
+        private void PopulateReasonOptions()
+        {
+            Reasons.Clear();
+            Reasons.Add(_defaultReason);
+            foreach (var r in Reason.Where(r => r.CodeReason != 0))
+                Reasons.Add(r);
+
+            ReasonPicker.ItemsSource = Reasons;
+            ReasonPicker.SelectedItem = _defaultReason;
+
+            if (ScanData != null)
+                ScanData.CodeReason = _defaultReason.CodeReason;
+        }
+
+
+        private void ReasonPicker_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (ReasonPicker.SelectedItem is BRB5.Model.DB.Reason selectedReason && ScanData != null)
+            {
+                ScanData.CodeReason = selectedReason.CodeReason;
             }
         }
 
