@@ -88,7 +88,10 @@ namespace BRB6.View
                 else inputQ.Text = "";
                 inputQ.Keyboard = DeviceInfo.Platform == DevicePlatform.iOS ? Keyboard.Default : ScanData.CodeUnit == Config.GetCodeUnitWeight ? Keyboard.Telephone : Keyboard.Numeric;
                 inputBarCode.IsReadOnly = true;
+
+                inputQ.IsReadOnly = true;
                 inputQ.Focus();
+                inputQ.IsReadOnly = false;
                 //AddWare();
             }
         }
