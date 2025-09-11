@@ -27,6 +27,7 @@ namespace BL.Connector
 
         public override async Task<Result> LoginAsync(string pLogin, string pPassWord, eLoginServer pLoginServer)
         {
+            return await CU.LoginAsync(pLogin,pPassWord, pLoginServer);
             //FileLogger.WriteLogMessage($"ConnectorPSU.Login=>(pLogin=>{pLogin}, pPassWord=>{pPassWord},pLoginServer=>{pLoginServer}) ",eTypeLog.Error);
             //return new Result(-1, "XXXX PSU!!");
             string data = JsonConvert.SerializeObject(new Api() { CodeData = 1, Login = pLogin, PassWord = pPassWord }); //"{\"CodeData\": \"1\"" + ", \"Login\": \"" + pLogin + "\"" + ", \"PassWord\": \"" + pPassWord + "\"}";
@@ -52,7 +53,6 @@ namespace BL.Connector
                     FileLogger.WriteLogMessage(this, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
                     return new Result(e);
                 }
-
         }
 
         public override ParseBarCode ParsedBarCode(string pBarCode, bool pIsHandInput) 
@@ -189,7 +189,7 @@ namespace BL.Connector
         /// <returns></returns>
         public override IEnumerable<TypeDoc> GetTypeDoc(eRole pRole, eLoginServer pLS, eGroup pGroup = eGroup.NotDefined)
         {
-            
+            return CU.GetTypeDoc(pRole, pLS, pGroup);
 
             var Res = pGroup switch
             {
