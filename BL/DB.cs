@@ -569,8 +569,18 @@ and bc.BarCode=?
 
         public ParseBarCode GetCodeWares(ParseBarCode pParseBarCode)
         {
+            string sql;
+            if (pParseBarCode?.CodeWares>0 && pParseBarCode?.BarCode?.Length==13 && pParseBarCode?.Price>0)
+            {
+                sql = $"select count(*) from wares w where w.CodeWares={pParseBarCode.CodeWares}";
+                int n = db.ExecuteScalar<int>(sql);
+                if (n == 0)
+                {
+                    pParseBarCode.CodeWares = 0;
+                }
+            }
             long Res=0;
-            string sql = $@"select w.CODEWARES as CodeWares,w.NAMEWARES as NameWares,au.COEFFICIENT as Coefficient,bc.CODEUNIT as CodeUnit, ud.ABRUNIT as NameUnit,
+            sql = $@"select w.CODEWARES as CodeWares,w.NAMEWARES as NameWares,au.COEFFICIENT as Coefficient,bc.CODEUNIT as CodeUnit, ud.ABRUNIT as NameUnit,
                                  bc.BARCODE as BarCode ,w.CODEUNIT as BaseCodeUnit 
                                 from BARCODE bc 
                                 join ADDITIONUNIT au on bc.CODEWARES=au.CODEWARES and au.CODEUNIT=bc.CODEUNIT 
@@ -633,7 +643,7 @@ and bc.BarCode=?
                 }
                 else
                 {
-                    if(!string.IsNullOrEmpty(pParseBarCode.BarCode) && pParseBarCode.CodeWares == 0 && pParseBarCode.Article == 0)
+                    if((!string.IsNullOrEmpty(pParseBarCode.BarCode) && pParseBarCode.CodeWares == 0 && pParseBarCode.Article == 0) || pParseBarCode.Price>0 )
                         GetCodeWares(pParseBarCode);
 
                     if(pParseBarCode.CodeWares > 0 || pParseBarCode.Article > 0)

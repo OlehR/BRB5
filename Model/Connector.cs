@@ -93,12 +93,12 @@ namespace BRB5.Model
             ParseBarCode Res = new() { BarCode = pBarCode };
             if(CustomerBarCode == null || CustomerBarCode.Count() == 0)
                 return Res;
-            int Code, Data, Data2;
+            int Code, Data, Data2, Operator;
             foreach (var el in CustomerBarCode.Where( el => el.TypeBarCode==eTypeBarCode.ManualInput || el.KindBarCode == eKindBarCode.EAN13 || el.KindBarCode == eKindBarCode.Code128 || el.KindBarCode == eKindBarCode.QR /*&& (el.TypeBarCode == eTypeBarCode.WaresWeight || el.TypeBarCode == eTypeBarCode.WaresUnit )*/))
             {
                 try
                 {
-                    Code = 0; Data = 0; Data2 = 0;
+                    Code = 0; Data = 0; Data2 = 0; Operator = 0; 
                     if (el.TypeBarCode != eTypeBarCode.ManualInput && (string.IsNullOrEmpty(el.Separator) && el.TotalLenght != pBarCode.Length))
                         continue;
                    
@@ -121,13 +121,17 @@ namespace BRB5.Model
                             continue;
 
                         Code = Convert.ToInt32(pBarCode.Substring(el.Prefix.Length, el.LenghtCode));
-                        Data = el.LenghtOperator > 0 ? Convert.ToInt32(pBarCode.Substring(el.Prefix.Length + el.LenghtCode, el.LenghtOperator)) : 0;
-                        Data = el.LenghtQuantity > 0 ? Convert.ToInt32(pBarCode.Substring(el.Prefix.Length + el.LenghtCode + el.LenghtOperator, el.LenghtQuantity)) : 0;
+                        if( el.LenghtOperator > 0 && el.TypeBarCode != eTypeBarCode.PriceTag )
+                            Operator = Convert.ToInt32(pBarCode.Substring(el.Prefix.Length + el.LenghtCode, el.LenghtOperator));
+                        if (el.TypeBarCode == eTypeBarCode.PriceTag)
+                            Data = Convert.ToInt32(pBarCode.Substring(el.Prefix.Length + el.LenghtCode, el.LenghtOperator+el.LenghtPrice)); ///TMP!!! el.LenghtOperator
+                        if (el.LenghtQuantity > 0)
+                            Data = Convert.ToInt32(pBarCode.Substring(el.Prefix.Length + el.LenghtCode + el.LenghtOperator, el.LenghtQuantity));
                     }
-                    if (Data > 0 && el.LenghtOperator > 0) Res.CodeOperator = Data;
+                    if (Operator > 0 && el.LenghtOperator > 0) Res.CodeOperator = Operator;
                     if (Data > 0 && el.LenghtQuantity > 0) Res.Quantity = el.TypeBarCode== eTypeBarCode.WaresWeight? Data/1000m : Data;
                     if (Data > 0 && el.TypeBarCode == eTypeBarCode.PriceTag) Res.Price = Data;
-                    if (Data2 > 0 && el.TypeBarCode == eTypeBarCode.PriceTag) Res.PriceOpt = Data;
+                    if (Data2 > 0 && el.TypeBarCode == eTypeBarCode.PriceTag) Res.PriceOpt = Data2;
 
                     Res.TypeCode = el.TypeCode;
                     switch (el.TypeCode)

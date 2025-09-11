@@ -13,8 +13,13 @@ namespace BRB5.Model
         public string Login { get; set; }
         public string PassWord { get; set; }        
     }
+    /// <summary>
+    /// Через Swagger
+    /// </summary>
+    public class UserBRB : User { public UserBRB() { } }
     public class AnswerLogin:User
     {
+        public AnswerLogin() { }
         public AnswerLogin(User pU=null)
         {
            if(pU!=null)
