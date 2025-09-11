@@ -18,7 +18,7 @@ namespace BRB6.View
         //public string Ver { get { return "Ver:"+ Assembly.GetExecutingAssembly().GetName().Version; } }
         public string Ver => "Ver:" + AppInfo.VersionString;
         public string SN => "SN:" + Config.SN;
-        public string TypeScaner =>  Config.TypeScaner.ToString();
+        public string TypeScaner => Config.TypeScaner.ToString();
         public string Model => "Model:" + Config.Model;
         public string Manufacturer => "Виробник:" + Config.Manufacturer;
         public bool IsVisScan => Config.TypeScaner == eTypeScaner.Camera;
@@ -49,9 +49,9 @@ namespace BRB6.View
                 return list;
             }
         }
-        public List<string> ListCompany => Enum.GetNames(typeof(eCompany))/*.Where(el => !el.Equals(eCompany.Sim23FTP.ToString())&& !el.Equals(eCompany.VPSU.ToString()))*/.ToList(); 
-        public List<string> ListTypeLog => Enum.GetNames(typeof(eTypeLog)).ToList(); 
-        public List<string> ListReplenishment => Enum.GetNames(typeof(eTypeLog)).ToList(); 
+        public List<string> ListCompany => Enum.GetNames(typeof(eCompany))/*.Where(el => !el.Equals(eCompany.Sim23FTP.ToString())&& !el.Equals(eCompany.VPSU.ToString()))*/.ToList();
+        public List<string> ListTypeLog => Enum.GetNames(typeof(eTypeLog)).ToList();
+        public List<string> ListReplenishment => Enum.GetNames(typeof(eTypeLog)).ToList();
 
         List<Warehouse> wh = null;
         public List<Warehouse> ListWarehouse
@@ -71,12 +71,12 @@ namespace BRB6.View
                     wh = new List<Warehouse>() { new Warehouse() { Code = 0, Name = "ddd" } };
                 return wh;
             }
-        }        
+        }
 
-        public int SelectedWarehouse { get { return ListWarehouse?.FindIndex(x => x.Code == Config.CodeWarehouse)??0 ; } 
+        public int SelectedWarehouse { get { return ListWarehouse?.FindIndex(x => x.Code == Config.CodeWarehouse) ?? 0; }
             set { Config.CodeWarehouse = ListWarehouse[value].Code; OnPropertyChanged(nameof(SelectedWarehouse)); } }
 
-        public int SelectedCompany { get { return ListCompany.FindIndex(x => x == Enum.GetName(typeof(eCompany),Config.Company)); } set { Config.Company = (eCompany)value; OnPropertyChanged(nameof(IsVisApi3)); } }
+        public int SelectedCompany { get { return ListCompany.FindIndex(x => x == Enum.GetName(typeof(eCompany), Config.Company)); } set { Config.Company = (eCompany)value; OnPropertyChanged(nameof(IsVisApi3)); } }
         public int SelectedTypePrinter { get { return Enum.GetNames(typeof(eTypeUsePrinter)).ToList().FindIndex(x => x == Enum.GetName(typeof(eTypeUsePrinter), Config.TypeUsePrinter)); } set { Config.TypeUsePrinter = (eTypeUsePrinter)value; } }
         public int SelectedTypeLog { get { return ListTypeLog.FindIndex(x => x == Enum.GetName(typeof(eTypeLog), FileLogger.TypeLog)); } set { FileLogger.TypeLog = (eTypeLog)value; } }
         public int SelectedPhotoQuality { get { return Enum.GetNames(typeof(ePhotoQuality)).ToList().FindIndex(x => x == Enum.GetName(typeof(ePhotoQuality), Config.PhotoQuality)); } set { Config.PhotoQuality = (ePhotoQuality)value; } }
@@ -92,23 +92,37 @@ namespace BRB6.View
         //public bool IsFullScreenScan { get { return Config.IsFullScreenScan; } set { Config.IsFullScreenScan = value; } }
 
         public string ApiUrl1 { get { return Config.ApiUrl1; } set { Config.ApiUrl1 = value; OnPropertyChanged(nameof(ApiUrl1)); } }
-        public string ApiUrl2 => Config.ApiUrl2; 
+        public string ApiUrl2 => Config.ApiUrl2;
         public string ApiUrl3 => Config.ApiUrl3;
-        public string ApiUrl4 => Config.ApiUrl4; 
+        public string ApiUrl4 => Config.ApiUrl4;
         public int Compress => Config.Compress;
         public ObservableCollection<Warehouse> Warehouses { get; set; }
         public ObservableCollection<Warehouse> FilteredWarehouses { get; set; } = new ObservableCollection<Warehouse>();
 
         bool _IsFilterWHChecked = false;
         private bool IsFilterWHChecked { get { return _IsFilterWHChecked; } set { _IsFilterWHChecked = value;
-                OnPropertyChanged(nameof(IsFilterWHChecked)); OnPropertyChanged(nameof(Warehouses));  } }
+                OnPropertyChanged(nameof(IsFilterWHChecked)); OnPropertyChanged(nameof(Warehouses)); } }
         private string TextFilterWH { get; set; }
 
         CameraView BarcodeScaner;
         bool _IsVisBarCode = false;
         public bool IsVisBarCode { get { return _IsVisBarCode; } set { _IsVisBarCode = value; OnPropertyChanged(nameof(IsVisBarCode)); } }
 
-        public string ShowLogText => FileLogger.Str.ToString();
+        public string ShowLogText
+        {
+            get
+            {
+                try
+                {
+                   string res= FileLogger.TypeLog == eTypeLog.Memory ? FileLogger.Str.ToString() : File.ReadAllText(FileLogger.GetFileName);
+                   return res;
+                }
+                catch (Exception ex)
+                {
+                    return ex.Message;
+                }
+            }
+}
         public Settings()
         {
             InitializeComponent();
@@ -237,6 +251,7 @@ namespace BRB6.View
                 byte[] buffer = File.ReadAllBytes(DB.PathNameDB);
                 File.WriteAllBytes(FileDestination, buffer);*/
                 await c.UploadFile(DB.PathNameDB, $"brb6_{DateTime.Now.ToString("yyyyMMdd_HHmmss")}.db");
+                await c.UploadFile(FileLogger.GetFileName, $"Log_{DateTime.Now.ToString("yyyyMMdd_HHmmss")}.log");
             }
             catch (Exception ex)
             {

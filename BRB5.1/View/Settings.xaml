@@ -199,7 +199,7 @@
                         <ColumnDefinition Width="*" />
                     </Grid.ColumnDefinitions>
 
-                    <Button Text="Коп.Бази"
+                    <Button Text="Send db-log"
                             HorizontalOptions="Fill"
                             Clicked="OnCopyDB" />
 

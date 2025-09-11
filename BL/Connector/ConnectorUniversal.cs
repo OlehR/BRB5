@@ -396,127 +396,134 @@ namespace BL.Connector
         /// <returns></returns>
         public override async Task<Result> SendRatingFilesAsync(string pNumberDoc, int pTry = 2, int pMaxSecondSend = 0, int pSecondSkip = 0)
         {
-            FileLogger.WriteLogMessage($"SendRaitingFiles Start pNumberDoc=>{pNumberDoc} pTry=>{pTry} pMaxSecondSend=>{pMaxSecondSend} pSecondSkip=>pSecondSkip", eTypeLog.Full);
-            
-            int i = 30;
-            while (IsSaving && i-- > 0)
-            {
-                if (!IsStopSave) IsStopSave = true;
-                Thread.Sleep(500);
-            }
-            if (IsSaving)
-            {
-                string mes = $"Збереження файлів зупинено, Оскільки попередне збереження не завершилось.";
-                FileLogger.WriteLogMessage(this, System.Reflection.MethodBase.GetCurrentMethod().Name, mes);
-                OnSave?.Invoke(mes);
-                return new Result(-1, "StopSave", mes);
-            }
             try
             {
-                IsSaving = true;
-                IsStopSave = false;
-                var StartTime = DateTime.Now;
+                FileLogger.WriteLogMessage($"SendRaitingFiles Start pNumberDoc=>{pNumberDoc} pTry=>{pTry} pMaxSecondSend=>{pMaxSecondSend} pSecondSkip=>{pSecondSkip}", eTypeLog.Full);
 
-                int Sucsses = 0, Error = 0;
-                Result LastError = null;
-                var Res = new Result();
-                //var DirArx = Path.Combine(Config.PathDownloads, "arx");
-                if (!Directory.Exists(DirArx))
-                    Directory.CreateDirectory(DirArx);                
-
-                if (!Directory.Exists(Path.Combine(DirArx, pNumberDoc)))
-                    Directory.CreateDirectory(Path.Combine(DirArx, pNumberDoc));                
-
-                var Files = Directory.GetFiles(Path.Combine(Config.PathFiles, pNumberDoc));
-                FileLogger.WriteLogMessage($"SendRaitingFiles Files=>{Files?.Length}", eTypeLog.Full);
-                i = 0;
-                OnSave?.Invoke($"Файлів для передачі=>{Files.Count()}");
-                if(Files.Length>0)
-                foreach (var f in Files)
+                int i = 30;
+                while (IsSaving && i-- > 0)
                 {
-                    var FI = new FileInfo(f);
-                    if (pMaxSecondSend > 0 && (DateTime.Now - StartTime).TotalSeconds > pMaxSecondSend) continue;
-                    try
-                    {
-                        string s = Path.GetFileNameWithoutExtension(f).Split('_')[2] + "_" + Path.GetFileNameWithoutExtension(f).Split('_')[3];
-                        if (s.Length > 18) { s = s.Substring(0, 18); }
-                        var DT = DateTime.ParseExact(s, "yyyyMMdd_HHmmssfff", provider);
-                        if (pSecondSkip > 0 && (DateTime.Now - DT).TotalSeconds < pSecondSkip)
-                        {
-                            FileLogger.WriteLogMessage($"SendRaitingFiles Skip DateCreateFile File=>{f} {DateTime.Now} / {DT}", eTypeLog.Full);
-                            OnSave?.Invoke($"Файл пропущено=>{Path.GetFileName(f)}");
-                            continue;
-                        }
-                    }
-                    catch (Exception e)
-                    {
-                        FileLogger.WriteLogMessage($"SendRaitingFiles Error=> {e.Message}", eTypeLog.Error);
-                        OnSave?.Invoke($"помилка при передачі {Path.GetFileName(f)} Error=>{e.Message}");
-                    }
-                    i++;
-                    if (IsStopSave)
-                    {
-                        IsSaving = false;
-                        return new Result(-1, "StopSave", "Збереження зупинено користувачем");
-                    }
-                    try
-                    {
-                        var sw = Stopwatch.StartNew();                        
-                        string  RR = await Http.UploadFileAsync(GetDataHTTP.Url[0][0] + "DCT/Rating/UploadFile", f);
-
-                        if (!string.IsNullOrEmpty(RR))
-                        {
-                            var res = JsonConvert.DeserializeObject<Result>(RR);
-                            FileLogger.WriteLogMessage($"ConnectorPSU.SendRaitingFiles  File=>{f} success=>{res.State}");
-                            sw.Stop();
-                            TimeSpan TimeSend = sw.Elapsed;
-                            string text = res.Success ? $"[({i}:{Error})/{Files.Length}] {Path.GetFileName(f)}=> ({FI.Length / (1024 * 1024 * TimeSend.TotalSeconds):n2}Mb/c;{((double)FI.Length) / (1024d * 1024d):n2}Mb;{TimeSend.TotalSeconds:n1}c))" :
-                               $"[({i},{Error})/{Files.Length}] Файл не передано=>{Path.GetFileName(f)}";
-
-                            if (res.State==0)
-                            {
-                                var FileTo = Path.Combine(DirArx, pNumberDoc, Path.GetFileName(f));
-                                File.Copy(f, FileTo, true);
-                                File.Delete(f);
-                                Sucsses++;
-                            }
-                            else
-                            {
-                                Error++;
-                                Res = new Result(-1, "Не передався файл", f);
-                            }
-                            
-                            OnSave?.Invoke(text);
-                            FileLogger.WriteLogMessage(this, System.Reflection.MethodBase.GetCurrentMethod().Name, text, eTypeLog.Full);
-                        }
-                        else
-                        {
-                            Error++;
-                            FileLogger.WriteLogMessage($"ConnectorPSU.SendRaitingFiles=>(File={f}) Res=>({Res.State},{Res.Info},{Res.TextError})", eTypeLog.Expanded);
-                            LastError = Res;
-                            OnSave?.Invoke($"[({i},{Error})/{Files.Length}] Файл не передано=>{Path.GetFileName(f)}");
-                        }
-                    }
-                    catch (Exception e)
-                    {
-                        Res = new Result(e);
-                        OnSave?.Invoke($"помилка при передачі {Path.GetFileName(f)} Error=>{e.Message}");
-                        FileLogger.WriteLogMessage($"ConnectorPSU.SendRaitingFiles=>(File={f}) Res=>({Res.State},{Res.Info},{Res.TextError})", eTypeLog.Error);
-                    }
+                    if (!IsStopSave) IsStopSave = true;
+                    Thread.Sleep(500);
                 }
-                Res = LastError ?? Res;
-                Res.TextError = (Error > 0 ? $"Не вдалось відправити {Error} файлів{Environment.NewLine}" : "") + $"Успішно відправлено {Sucsses} файлів {Res.TextError}";
+                if (IsSaving)
+                {
+                    string mes = $"Збереження файлів зупинено, Оскільки попередне збереження не завершилось.";
+                    FileLogger.WriteLogMessage(this, System.Reflection.MethodBase.GetCurrentMethod().Name, mes);
+                    OnSave?.Invoke(mes);
+                    return new Result(-1, "StopSave", mes);
+                }
+                try
+                {
+                    IsSaving = true;
+                    IsStopSave = false;
+                    var StartTime = DateTime.Now;
 
-                OnSave?.Invoke(Error > 0 ? $"Не передано=>{Error} з {Files.Count()}" : $"Файли успішно передані =>{Files.Count()}");
+                    int Sucsses = 0, Error = 0;
+                    Result LastError = null;
+                    var Res = new Result();
+                    //var DirArx = Path.Combine(Config.PathDownloads, "arx");
+                    if (!Directory.Exists(DirArx))
+                        Directory.CreateDirectory(DirArx);
 
-                IsSaving = false;
-                if (!IsStopSave && pTry > 1 && Error > 0 && (double)Error / (double)Files.Length < 0.25d)
-                    return await SendRatingFilesAsync(pNumberDoc, --pTry);
-                return Res;
+                    if (!Directory.Exists(Path.Combine(DirArx, pNumberDoc)))
+                        Directory.CreateDirectory(Path.Combine(DirArx, pNumberDoc));
+
+                    var Files = Directory.GetFiles(Path.Combine(Config.PathFiles, pNumberDoc));
+                    FileLogger.WriteLogMessage($"SendRaitingFiles Files=>{Files?.Length}", eTypeLog.Full);
+                    i = 0;
+                    OnSave?.Invoke($"Файлів для передачі=>{Files.Count()}");
+                    if (Files.Length > 0)
+                        foreach (var f in Files)
+                        {
+                            var FI = new FileInfo(f);
+                            if (pMaxSecondSend > 0 && (DateTime.Now - StartTime).TotalSeconds > pMaxSecondSend) continue;
+                            try
+                            {
+                                string s = Path.GetFileNameWithoutExtension(f).Split('_')[2] + "_" + Path.GetFileNameWithoutExtension(f).Split('_')[3];
+                                if (s.Length > 18) { s = s.Substring(0, 18); }
+                                var DT = DateTime.ParseExact(s, "yyyyMMdd_HHmmssfff", provider);
+                                if (pSecondSkip > 0 && (DateTime.Now - DT).TotalSeconds < pSecondSkip)
+                                {
+                                    FileLogger.WriteLogMessage($"SendRaitingFiles Skip DateCreateFile File=>{f} {DateTime.Now} / {DT}", eTypeLog.Full);
+                                    OnSave?.Invoke($"Файл пропущено=>{Path.GetFileName(f)}");
+                                    continue;
+                                }
+                            }
+                            catch (Exception e)
+                            {
+                                FileLogger.WriteLogMessage($"SendRaitingFiles Error=> {e.Message}", eTypeLog.Error);
+                                OnSave?.Invoke($"помилка при передачі {Path.GetFileName(f)} Error=>{e.Message}");
+                            }
+                            i++;
+                            if (IsStopSave)
+                            {
+                                IsSaving = false;
+                                return new Result(-1, "StopSave", "Збереження зупинено користувачем");
+                            }
+                            try
+                            {
+                                var sw = Stopwatch.StartNew();
+                                string RR = await Http.UploadFileAsync(GetDataHTTP.Url[0][0] + "DCT/Rating/UploadFile", f);
+
+                                if (!string.IsNullOrEmpty(RR))
+                                {
+                                    var res = JsonConvert.DeserializeObject<Result>(RR);
+                                    FileLogger.WriteLogMessage($"ConnectorPSU.SendRaitingFiles  File=>{f} success=>{res.State}");
+                                    sw.Stop();
+                                    TimeSpan TimeSend = sw.Elapsed;
+                                    string text = res.Success ? $"[({i}:{Error})/{Files.Length}] {Path.GetFileName(f)}=> ({FI.Length / (1024 * 1024 * TimeSend.TotalSeconds):n2}Mb/c;{((double)FI.Length) / (1024d * 1024d):n2}Mb;{TimeSend.TotalSeconds:n1}c))" :
+                                       $"[({i},{Error})/{Files.Length}] Файл не передано=>{Path.GetFileName(f)}";
+
+                                    if (res.State == 0)
+                                    {
+                                        var FileTo = Path.Combine(DirArx, pNumberDoc, Path.GetFileName(f));
+                                        File.Copy(f, FileTo, true);
+                                        File.Delete(f);
+                                        Sucsses++;
+                                    }
+                                    else
+                                    {
+                                        Error++;
+                                        Res = new Result(-1, "Не передався файл", f);
+                                    }
+
+                                    OnSave?.Invoke(text);
+                                    FileLogger.WriteLogMessage(this, System.Reflection.MethodBase.GetCurrentMethod().Name, text, eTypeLog.Full);
+                                }
+                                else
+                                {
+                                    Error++;
+                                    FileLogger.WriteLogMessage($"ConnectorPSU.SendRaitingFiles=>(File={f}) Res=>({Res.State},{Res.Info},{Res.TextError})", eTypeLog.Expanded);
+                                    LastError = Res;
+                                    OnSave?.Invoke($"[({i},{Error})/{Files.Length}] Файл не передано=>{Path.GetFileName(f)}");
+                                }
+                            }
+                            catch (Exception e)
+                            {
+                                Res = new Result(e);
+                                OnSave?.Invoke($"помилка при передачі {Path.GetFileName(f)} Error=>{e.Message}");
+                                FileLogger.WriteLogMessage($"ConnectorPSU.SendRaitingFiles=>(File={f}) Res=>({Res.State},{Res.Info},{Res.TextError})", eTypeLog.Error);
+                            }
+                        }
+                    Res = LastError ?? Res;
+                    Res.TextError = (Error > 0 ? $"Не вдалось відправити {Error} файлів{Environment.NewLine}" : "") + $"Успішно відправлено {Sucsses} файлів {Res.TextError}";
+
+                    OnSave?.Invoke(Error > 0 ? $"Не передано=>{Error} з {Files.Count()}" : $"Файли успішно передані =>{Files.Count()}");
+
+                    IsSaving = false;
+                    if (!IsStopSave && pTry > 1 && Error > 0 && (double)Error / (double)Files.Length < 0.25d)
+                        return await SendRatingFilesAsync(pNumberDoc, --pTry);
+                    return Res;
+                }
+                finally { IsSaving = false; }
+            }catch (Exception e)
+            {
+                FileLogger.WriteLogMessage(this, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+                return new Result(e);
             }
-            finally { IsSaving = false; }
+                return null;
             
-            return null;
         }
 
         /// <summary>

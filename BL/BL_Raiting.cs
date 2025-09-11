@@ -104,19 +104,26 @@ namespace BL
 
         }
 
-        public void InitTimerRDI(DocVM pDoc)
-        {
-            cDoc = pDoc;
+        public void InitTimerRDI()
+        { 
             t = new Timer(3 * 60 * 1000) { AutoReset = true }; //3 хв
             t.Elapsed += new ElapsedEventHandler(OnTimedEvent);
         }
-        public void StartTimerRDI() => t?.Start();
+        public void StartTimerRDI() 
+        {
+            if(t != null) StopTimerRDI();
+            InitTimerRDI();
+        }
 
-        public void StopTimerRDI() => t?.Stop();
+        public void StopTimerRDI() {
+            t?.Stop();
+            t?.Dispose();
+            t=null;
+        }
 
         private void OnTimedEvent(Object source, ElapsedEventArgs e)
         {
-            var task = Task.Run(() => Bl.c.SendRatingFilesAsync(cDoc?.NumberDoc, 1, 2 * 60, 5 * 60));
+            Task.Run(() => Bl.c.SendRatingFilesAsync(cDoc?.NumberDoc, 1, 2 * 60, 5 * 60));
         }
 
         public void SaveRDI(DocVM pDoc, Action pAction)
