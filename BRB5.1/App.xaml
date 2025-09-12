@@ -36,6 +36,17 @@
                 <Setter Property="TextColor" Value="{AppThemeBinding Light='#000000', Dark='#FFFFFF'}" />
                 <Setter Property="Margin" Value="5"></Setter>
             </Style>
+
+            <Style TargetType="Label">
+                <Setter Property="TextColor" Value="Black" />
+            </Style>
+            <Style TargetType="Entry">
+                <Setter Property="TextColor" Value="Black" />
+            </Style>
+            <Style TargetType="Editor">
+                <Setter Property="TextColor" Value="Black" />
+            </Style>
+
         </ResourceDictionary>
     </Application.Resources>
 </Application>
