@@ -1123,7 +1123,7 @@ DE.ExpirationDateInput, DE.QuantityInput
 
         public IEnumerable<WaresAct> GetWaresAct(DocId Doc)
         {
-            string sql = $@"select dw.CodeWares,sum(fact) as fact,sum(plan) as plan,w.NameWares, dw.CodeReason
+            string sql = $@"select dw.CodeWares,sum(fact) as fact,sum(plan) as plan,w.NameWares, dw.CodeReason, sum( case when dw.CodeReason>1 then fact else 0 end) as QuantityReason
 from 
     (SELECT dw.CodeWares, sum(dw.Quantity) as Fact,0 as plan , dw.CodeReason from DocWares  dw 
         where dw.TypeDoc={Doc.TypeDoc} and dw.NumberDoc= '{Doc.NumberDoc}'
