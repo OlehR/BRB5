@@ -39,7 +39,8 @@ namespace BRB6.View
         //private Grid _selectedGrid; 
         private List<BRB5.Model.DB.Reason> Reasons = new();
         private BRB5.Model.DB.Reason _defaultReason = new BRB5.Model.DB.Reason { CodeReason = 0, NameReason = "— без причини —" };
-
+        private BRB5.Model.DB.Reason _selectedReason;
+        public BRB5.Model.DB.Reason SelectedReason { get => _selectedReason; set { if (_selectedReason != value) { _selectedReason = value;  OnPropertyChanged(nameof(SelectedReason)); } } }
 
         CameraView BarcodeScaner;
         //ZXingScannerView zxing;
@@ -57,7 +58,7 @@ namespace BRB6.View
             _originalListWares = tempListWares == null ? new ObservableCollection<DocWaresEx>() : new ObservableCollection<DocWaresEx>(tempListWares);
             ListWares = new ObservableCollection<DocWaresEx>(_originalListWares);
             OrderDoc = ListWares.Count > 0 ? ListWares.Max(el => el.OrderDoc) : 0;
-            if (ListWares.Count > 0) ListViewWares.SelectedItem = ListWares[0];
+            if (ListWares.Count > 0) CollectionViewWares.SelectedItem = ListWares[0];
             NavigationPage.SetHasNavigationBar(this, DeviceInfo.Platform == DevicePlatform.iOS || Config.TypeScaner == eTypeScaner.BitaHC61 || Config.TypeScaner == eTypeScaner.ChainwayC61 || Config.TypeScaner == eTypeScaner.Zebra || Config.TypeScaner == eTypeScaner.PM550 || Config.TypeScaner == eTypeScaner.PM351 || Config.TypeScaner == eTypeScaner.MetapaceM_K4);
             
             Reason = db.GetReason(TypeDoc.KindDoc, true);
@@ -115,7 +116,7 @@ namespace BRB6.View
                     {
                         if (ware.CodeWares == ScanData.CodeWares) ware.Ord = -1;
                     }
-                    ListViewWares.SelectedItem = ListWares[0];
+                    CollectionViewWares.SelectedItem = ListWares[0];
                     ScanData = null;
 
                     ReasonPicker.SelectedItem = _defaultReason;
@@ -134,8 +135,8 @@ namespace BRB6.View
                     inputBarCode.IsReadOnly = true;
                     inputQ.Focus();
                 }
-                else
-                    AddWare();
+                //else
+                //    AddWare();
             }
         }
         
@@ -234,14 +235,14 @@ namespace BRB6.View
 
         private void Up(object sender, EventArgs e)
         {
-            var selectedItem = (DocWaresEx)ListViewWares.SelectedItem;
+            var selectedItem = (DocWaresEx)CollectionViewWares.SelectedItem;
             if (selectedItem != null)
             {
                 var selectedIndex = ListWares.IndexOf(selectedItem);
                 if (selectedIndex > 0)
                 {
-                    ListViewWares.SelectedItem = ListWares[selectedIndex - 1];
-                    ListViewWares.ScrollTo(ListViewWares.SelectedItem, ScrollToPosition.Center, false);
+                    CollectionViewWares.SelectedItem = ListWares[selectedIndex - 1];
+                    CollectionViewWares.ScrollTo(CollectionViewWares.SelectedItem, position: ScrollToPosition.Center, animate: false);
                 }
                 OnPropertyChanged(nameof(ListWares));
             }
@@ -249,15 +250,15 @@ namespace BRB6.View
 
         private void Down(object sender, EventArgs e)
         {
-            var selectedItem = (DocWaresEx)ListViewWares.SelectedItem;
+            var selectedItem = (DocWaresEx)CollectionViewWares.SelectedItem;
             if (selectedItem != null)
             {
                 var selectedIndex = ListWares.IndexOf(selectedItem);
 
                 if (selectedIndex < ListWares.Count - 1)
                 {
-                    ListViewWares.SelectedItem = ListWares[selectedIndex + 1];
-                    ListViewWares.ScrollTo(ListViewWares.SelectedItem, ScrollToPosition.Center, false);
+                    CollectionViewWares.SelectedItem = ListWares[selectedIndex + 1]; 
+                    CollectionViewWares.ScrollTo(CollectionViewWares.SelectedItem, position: ScrollToPosition.Center, animate: false);
                 }
                 OnPropertyChanged(nameof(ListWares));
             }
@@ -385,10 +386,28 @@ namespace BRB6.View
 
         private void ReasonPicker_SelectedIndexChanged(object sender, EventArgs e)
         {
+            ReasonPicker.IsEnabled = false;
+            if( IsVisScan)
+            inputQ.IsReadOnly = true;
+            inputQ.Focus();
+            inputQ.IsReadOnly = false;
+
             if (ReasonPicker.SelectedItem is BRB5.Model.DB.Reason selectedReason && ScanData != null)
             {
                 ScanData.CodeReason = selectedReason.CodeReason;
             }
+        }
+        private void ReasonUnfocus(object sender, FocusEventArgs e)
+        {
+            ReasonPicker.IsEnabled = false;
+            inputQ.IsReadOnly = true;
+            inputQ.Focus();
+            inputQ.IsReadOnly = false;
+        }
+        private void ReasonFocus(object sender, TappedEventArgs e)
+        {
+            ReasonPicker.IsEnabled = true;
+            ReasonPicker.Focus();
         }
 
         private void OnListViewWaresItemTapped(object sender, TappedEventArgs e)

@@ -4,223 +4,163 @@
                           xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
                           xmlns:controls="clr-namespace:BRB6.View"
                           x:Class="BRB6.View.DocScan">
+
     <ContentPage.Resources>
         <controls:CodeUnitToKeyboardConverter x:Key="CodeUnitToKeyboardConverter" />
     </ContentPage.Resources>
+
     <ContentPage.Content>
+        <StackLayout>
 
-            <StackLayout IsEnabled="True" >
+            <Grid x:Name="GridZxing" IsVisible="{Binding IsVisScan}" HeightRequest="200" />
 
-                <Grid x:Name="GridZxing" IsVisible="{Binding IsVisScan}"  HeightRequest="200"/>             
+            <Grid VerticalOptions="StartAndExpand" RowDefinitions="Auto,2*,2*,5*">
 
-                <Grid VerticalOptions="CenterAndExpand">
+                <Label Text="{Binding ScanData.NameWares}" FontSize="28" />
 
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="auto" />
-                        <RowDefinition Height="2*" />
-                        <RowDefinition Height="2*" />
-                        <RowDefinition Height="5*" />
-                    </Grid.RowDefinitions>
+                <Grid Grid.Row="1" ColumnDefinitions="*,*" RowDefinitions="Auto,Auto">
 
-                    <Label Text="{Binding ScanData.NameWares}"
-                           FontSize="28" />
-                    <Grid Grid.Row="1">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="*" />
-                        </Grid.ColumnDefinitions>
-                        <Grid.RowDefinitions>
-                            <RowDefinition />
-                            <RowDefinition />
-                        </Grid.RowDefinitions>
+                    <Frame Style="{StaticResource FrameStyle}">
+                        <controls:CustomEntry Style="{StaticResource EntryStyle}"
+                                              Text="{Binding ScanData.BarCode}"
+                                              x:Name="inputBarCode"
+                                              Completed="HandBarCode"
+                                              Keyboard="Numeric"
+                                              Placeholder="баркод" />
+                    </Frame>
+
+                    <Grid Grid.Column="1" ColumnDefinitions="*,*">
 
                         <Frame Style="{StaticResource FrameStyle}">
                             <controls:CustomEntry Style="{StaticResource EntryStyle}"
-                                                  Text="{Binding ScanData.BarCode}"
-                                                  x:Name="inputBarCode"
-                                                  Completed="HandBarCode"
-                                                  Placeholder="баркод" />
-                        </Frame>
-
-                        <Grid Grid.Column="1" ColumnDefinitions="*,*">
-                            
-                            <Frame Style="{StaticResource FrameStyle}">
-                                <controls:CustomEntry Style="{StaticResource EntryStyle}"
-                                                      Placeholder="план"
+                                                  Placeholder="план"
                                                   Text="{Binding ScanData.QuantityOrder}"
                                                   IsReadOnly="True" />
-                            </Frame>
-                            <Frame  Grid.Column="1" Style="{StaticResource FrameStyle}">
-                                <controls:CustomEntry Style="{StaticResource EntryStyle}"
-                                                  Text="{Binding ScanData.BeforeQuantity}"
-                                                  IsReadOnly="True" />
-                            </Frame>
-                            
-                        </Grid>
+                        </Frame>
 
-                        <Grid Grid.Row="1">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="3*" />
-                                <ColumnDefinition Width="*" />
-                                <ColumnDefinition Width="*" />
-                                <ColumnDefinition Width="2*" />
-                            </Grid.ColumnDefinitions>
-
-                            <Frame Grid.Column="0" Style="{StaticResource FrameStyle}">
-                                <controls:CustomEntry Style="{StaticResource EntryStyle}"
-                                                      Text="{Binding ScanData.InputQuantity}"
-                                                      x:Name="inputQ"
-                                                      Unfocused="UnfocusedInputQ"
-                                                      TextChanged="CalcQuantity"
-                                                       Completed="CompletedInputQ"
-                                                      Placeholder="к-сть"                                                      
-                                                      Keyboard="Numeric"
-                                                      
-                                             />
-                            </Frame>
-
-                            <Label Text="{Binding ScanData.NameUnit}" Grid.Column="1" />
-                            <Label Text="X" Grid.Column="2" />
-
-                            <Frame Style="{StaticResource FrameStyle}"
-                                   Grid.Column="3">
-                                <controls:CustomEntry Style="{StaticResource EntryStyle}"
-                                                      Text="{Binding ScanData.Coefficient}"
-                                                      IsReadOnly="True" />
-                            </Frame>
-                        </Grid>
-
-                        <Frame Style="{StaticResource FrameStyle}"
-                               Grid.Column="1"
-                               Grid.Row="1">
+                        <Frame Grid.Column="1" Style="{StaticResource FrameStyle}">
                             <controls:CustomEntry Style="{StaticResource EntryStyle}"
-                                                  Text="{Binding ScanData.Quantity}"
+                                                  Text="{Binding ScanData.BeforeQuantity}"
                                                   IsReadOnly="True" />
                         </Frame>
                     </Grid>
 
-                <!--<Grid x:Name="ReasonOptions" Grid.Row="2" IsVisible="{Binding IsViewReason}" ColumnDefinitions="*,*"/>-->
-                <Picker x:Name="ReasonPicker" Grid.Row="2"
-                        Title="Оберіть причину"
-                        IsVisible="{Binding IsViewReason}"
-                        IsEnabled="{Binding IsViewReason}"
-                        ItemDisplayBinding="{Binding NameReason}" 
-                        SelectedIndexChanged="ReasonPicker_SelectedIndexChanged"/>
+                    <Grid Grid.Row="1" ColumnDefinitions="3*,*,*,2*">
 
+                        <Frame Grid.Column="0" Style="{StaticResource FrameStyle}">
+                            <controls:CustomEntry Style="{StaticResource EntryStyle}"
+                                                  Text="{Binding ScanData.InputQuantity}"
+                                                  x:Name="inputQ"
+                                                  Unfocused="UnfocusedInputQ"
+                                                  TextChanged="CalcQuantity"
+                                                  Completed="CompletedInputQ"
+                                                  Placeholder="к-сть"
+                                                  Keyboard="{OnPlatform Numeric, iOS=Default}" />
+                        </Frame>
 
-                <ListView Grid.Row="3" ItemsSource="{Binding ListWares}" x:Name="ListViewWares" SeparatorVisibility="None" HasUnevenRows="True" >
-                        <ListView.Header>
-                            <Grid RowSpacing="1"
-                                  ColumnSpacing="1"
-                                  Padding="1"
-                                  BackgroundColor="#adaea7">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="12*" />
-                                    <ColumnDefinition Width="3*" />
-                                    <ColumnDefinition Width="3*" />
-                                </Grid.ColumnDefinitions>
-                            <Grid.GestureRecognizers>
-                                <TapGestureRecognizer Tapped="OnListViewWaresItemTapped" />
-                            </Grid.GestureRecognizers>
+                        <Label Text="{Binding ScanData.NameUnit}" Grid.Column="1" />
+                        <Label Text="X" Grid.Column="2" />
 
-                                <!--<Label Text="№"
-                                       BackgroundColor="White" />-->
-                                <Label Text="Назва"
-                                       Grid.Column="0"
-                                       BackgroundColor="White" />
-                                <Label Text="к-сть"
-                                       Grid.Column="1"
-                                       BackgroundColor="White" />
-                                <Label Text="прич"
-                                       Grid.Column="2"
-                                       BackgroundColor="White" />
-                            </Grid>
-                        </ListView.Header>
+                        <Frame Style="{StaticResource FrameStyle}" Grid.Column="3">
+                            <controls:CustomEntry Style="{StaticResource EntryStyle}"
+                                                  Text="{Binding ScanData.Coefficient}"
+                                                  IsReadOnly="True" />
+                        </Frame>
+                    </Grid>
 
-                        <ListView.ItemTemplate>
-                            <DataTemplate>
-                                <ViewCell>
-                                    <Grid RowSpacing="1"
-                                          ColumnSpacing="1"
-                                          Padding="1"
-                                          BackgroundColor="#adaea7">
-                                        <Grid.ColumnDefinitions>
-                                            
-                                            <ColumnDefinition Width="12*" />
-                                            <ColumnDefinition Width="3*" />
-                                            <ColumnDefinition Width="3*" />
-                                        </Grid.ColumnDefinitions>
-
-                                    <Grid.GestureRecognizers>
-                                        <TapGestureRecognizer Tapped="OnListViewWaresItemTapped" />
-                                    </Grid.GestureRecognizers>
-                                        
-                                    <!-- <Label Text="{Binding OrderDoc}" 
-                                               BackgroundColor="{Binding GetBackgroundColor}" /> -->
-                                        <Label Text="{Binding NameWares}"
-                                               Grid.Column="0" LineBreakMode="NoWrap"
-                                               BackgroundColor="{Binding GetBackgroundColor}" />
-                                        <Label Text="{Binding InputQuantity}"
-                                               Grid.Column="1" LineBreakMode="NoWrap"
-                                               BackgroundColor="{Binding GetBackgroundColor}" />
-                                    <Label Text="{Binding CodeReason}"
-                                               Grid.Column="2" LineBreakMode="NoWrap"
-                                               BackgroundColor="{Binding GetBackgroundColor}" />
-
-                                    </Grid>
-                                </ViewCell>
-                            </DataTemplate>
-                        </ListView.ItemTemplate>
-                    </ListView>                    
-
+                    <Frame Style="{StaticResource FrameStyle}" Grid.Column="1" Grid.Row="2">
+                        <controls:CustomEntry Style="{StaticResource EntryStyle}"
+                                              Text="{Binding ScanData.Quantity}"
+                                              IsReadOnly="True" />
+                    </Frame>
                 </Grid>
-                <StackLayout VerticalOptions="End" Orientation="Horizontal">
-                    <Label Text="f1-"
-                           FontSize="16"
-                           TextColor="#ff5c5c" />
-                    <Label Text="обнулити"
-                           FontSize="18"
-                           TextColor="#816f20">
+
+                <!--<Grid x:Name="ReasonOptions" Grid.Row="2" IsVisible="{Binding IsViewReason}" ColumnDefinitions="*,*"/>-->
+                <Grid  Grid.Row="2">
+                    <Picker x:Name="ReasonPicker" Title="Оберіть причину"
+                            FontSize="18"
+                            IsVisible="{Binding IsViewReason}"
+                            IsEnabled="False"
+                            ItemDisplayBinding="{Binding NameReason}"
+                            SelectedItem="{Binding SelectedReason, Mode=TwoWay}"     
+                            Unfocused="ReasonUnfocus"                       
+                            SelectedIndexChanged="ReasonPicker_SelectedIndexChanged" />
+                    
+                    <Label Text="{Binding SelectedReason.NameReason, FallbackValue='Оберіть причину'}"
+                           VerticalOptions="Center" Margin="4"  FontSize="18" BackgroundColor="White">
                         <Label.GestureRecognizers>
-                            <TapGestureRecognizer Tapped="Reset" />
+                            <TapGestureRecognizer  Tapped="ReasonFocus" />
                         </Label.GestureRecognizers>
                     </Label>
-                    <Label Text="F2-" FontSize="16"
-                           TextColor="#ff5c5c">
-                        <Label.GestureRecognizers>
-                            <TapGestureRecognizer Tapped="Up" />
-                        </Label.GestureRecognizers>
-                    </Label>
-                    <Label Text="↑"
-                           FontSize="18"
-                           TextColor="#816f20">
-                        <Label.GestureRecognizers>
-                            <TapGestureRecognizer Tapped="Up" />
-                        </Label.GestureRecognizers>
-                    </Label>
-                    <Label Text="F3-"
-                           FontSize="16"
-                           TextColor="#ff5c5c" >
-                        <Label.GestureRecognizers>
-                            <TapGestureRecognizer Tapped="Down" />
-                        </Label.GestureRecognizers>
-                    </Label>
-                    <Label Text="↓"
-                           FontSize="18"
-                           TextColor="#816f20">
-                        <Label.GestureRecognizers>
-                            <TapGestureRecognizer Tapped="Down" />
-                        </Label.GestureRecognizers>
-                    </Label>
-                    <Label Text="F8-"
-                           FontSize="16"
-                           TextColor="#ff5c5c" />
-                    <Label Text="Замінити"
-                           FontSize="18"
-                           TextColor="#816f20">
-                    </Label>
-                </StackLayout>
+                </Grid>
+
+                <CollectionView Grid.Row="3" ItemsSource="{Binding ListWares}" x:Name="CollectionViewWares" SelectionMode="Single">
+
+                    <CollectionView.Header>
+                        <Grid RowSpacing="1" ColumnSpacing="1" Padding="1" BackgroundColor="#adaea7" ColumnDefinitions="12*,3*,3*">
+                            <Label Text="Назва" Grid.Column="0" BackgroundColor="White" />
+                            <Label Text="к-сть" Grid.Column="1" BackgroundColor="White" />
+                            <Label Text="прич" Grid.Column="2" BackgroundColor="White" />
+                        </Grid>
+                    </CollectionView.Header>
+
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <Grid RowSpacing="1" ColumnSpacing="1" Padding="1" BackgroundColor="#adaea7" ColumnDefinitions="12*,3*,3*">
+                                <Grid.GestureRecognizers>
+                                    <TapGestureRecognizer Tapped="OnListViewWaresItemTapped" />
+                                </Grid.GestureRecognizers>
+
+                                <Label Text="{Binding NameWares}" Grid.Column="0" LineBreakMode="NoWrap" BackgroundColor="{Binding GetBackgroundColor}" />
+                                <Label Text="{Binding InputQuantity}" Grid.Column="1" LineBreakMode="NoWrap" BackgroundColor="{Binding GetBackgroundColor}" />
+                                <Label Text="{Binding CodeReason}" Grid.Column="2" LineBreakMode="NoWrap" BackgroundColor="{Binding GetBackgroundColor}" />
+                            </Grid>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+
+            </Grid>
+
+            <StackLayout VerticalOptions="End" Orientation="Horizontal">
+                <Label Text="f1-" FontSize="16" TextColor="#ff5c5c" />
+                <Label Text="обнулити" FontSize="18" TextColor="#816f20">
+                    <Label.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="Reset" />
+                    </Label.GestureRecognizers>
+                </Label>
+                <Label Text="F2-" FontSize="16" TextColor="#ff5c5c">
+                    <Label.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="Up" />
+                    </Label.GestureRecognizers>
+                </Label>
+                <Label Text="↑" FontSize="18" TextColor="#816f20">
+                    <Label.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="Up" />
+                    </Label.GestureRecognizers>
+                </Label>
+                <Label Text="F3-" FontSize="16" TextColor="#ff5c5c">
+                    <Label.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="Down" />
+                    </Label.GestureRecognizers>
+                </Label>
+                <Label Text="↓" FontSize="18" TextColor="#816f20">
+                    <Label.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="Down" />
+                    </Label.GestureRecognizers>
+                </Label>
+                <Label Text="F8-" FontSize="16" TextColor="#ff5c5c" />
+                <Label Text="Замінити" FontSize="18" TextColor="#816f20" />
+                <Label Text="⏎-" FontSize="16" FontAttributes="Bold" TextColor="#ff5c5c">
+                    <Label.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="CompletedInputQ" />
+                    </Label.GestureRecognizers>
+                </Label>
+                <Label Text="Ent" FontSize="18" TextColor="#816f20">
+                    <Label.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="CompletedInputQ" />
+                    </Label.GestureRecognizers>
+                </Label>
             </StackLayout>
-            
+        </StackLayout>
     </ContentPage.Content>
 </controls:BaseContentPage>
