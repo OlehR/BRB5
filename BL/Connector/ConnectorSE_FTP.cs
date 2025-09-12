@@ -38,7 +38,7 @@ namespace BL.Connector
             return Res;
         }
 
-        public override async Task<Result> LoginAsync(string pLogin, string pPassWord, eLoginServer pLoginServer)
+        public override async Task<Result> LoginAsync(string pLogin, string pPassWord, eLoginServer pLoginServer, string pBarCode = null)
         {
             Result Res;
             try

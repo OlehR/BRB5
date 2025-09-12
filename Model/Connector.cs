@@ -27,7 +27,7 @@ namespace BRB5.Model
         { Instance = null; }
 
         //Логін
-        public virtual Task<Result> LoginAsync(string pLogin, string pPassWord, eLoginServer pLoginServer) { throw new NotImplementedException(); }
+        public virtual Task<Result> LoginAsync(string pLogin, string pPassWord, eLoginServer pLoginServer, string pBarCode = null) { throw new NotImplementedException(); }
         //Завантаження довідників.
         public virtual async Task<Result> LoadGuidDataAsync(bool IsFull) => throw new NotImplementedException();
 

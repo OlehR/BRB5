@@ -50,20 +50,7 @@ namespace BRB5.Model
                         return res;
                     }
                 }
-            }
-            catch (FeatureNotSupportedException fnsEx)
-            {
-                // Handle not supported on device exception
-            }
-
-            catch (FeatureNotEnabledException fneEx)
-            {
-                // Handle not enabled on device exception
-            }
-            catch (PermissionException pEx)
-            {
-                // Handle permission exception
-            }
+            }            
             catch (Exception ex)
             {
                 FileLogger.WriteLogMessage("LocationBrb", "GetCurrentLocation", ex);

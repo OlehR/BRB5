@@ -25,9 +25,9 @@ namespace BL.Connector
         public override IEnumerable<LoginServer> LoginServer() { return new List<LoginServer>()
             {new  LoginServer (){Code=eLoginServer.Central,Name = "ЦБ"}}; }
 
-        public override async Task<Result> LoginAsync(string pLogin, string pPassWord, eLoginServer pLoginServer)
+        public override async Task<Result> LoginAsync(string pLogin, string pPassWord, eLoginServer pLoginServer, string pBarCode = null)
         {
-            return await CU.LoginAsync(pLogin,pPassWord, pLoginServer);
+            return await CU.LoginAsync(pLogin,pPassWord, pLoginServer, pBarCode);
             //FileLogger.WriteLogMessage($"ConnectorPSU.Login=>(pLogin=>{pLogin}, pPassWord=>{pPassWord},pLoginServer=>{pLoginServer}) ",eTypeLog.Error);
             //return new Result(-1, "XXXX PSU!!");
             string data = JsonConvert.SerializeObject(new Api() { CodeData = 1, Login = pLogin, PassWord = pPassWord }); //"{\"CodeData\": \"1\"" + ", \"Login\": \"" + pLogin + "\"" + ", \"PassWord\": \"" + pPassWord + "\"}";

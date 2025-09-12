@@ -1,9 +1,9 @@
-﻿using System.Collections.ObjectModel;
+﻿using BL;
 using BL.Connector;
+using BRB5;
 using BRB5.Model;
 using BRB6.View;
-using BL;
-using BRB5;
+using System.Collections.ObjectModel;
 using Docs = BRB6.View.Docs;
 
 //[assembly: Xamarin.Forms.Dependency(typeof(AndroidStorageManager))]
@@ -19,6 +19,7 @@ namespace BRB6
         double _PB = 0.0;
         public double PB { get { return _PB; } set { _PB = value; OnPropertyChanged(nameof(PB)); } }
         public string Login { get; set; }
+        public string Barcode { get; set; }
         public string Password { get; set; }
         public IEnumerable<LoginServer> LS { get; set; }
 
@@ -42,6 +43,7 @@ namespace BRB6
                 Init();
                 if (Config.Company == eCompany.NotDefined) _ = Navigation.PushAsync(new Settings());
                 BindingContext = this;
+                Config.BarCode = BarCode;
             }
             catch (Exception ex)
             {
@@ -49,12 +51,21 @@ namespace BRB6
                 System.Diagnostics.Debug.WriteLine(ex);
             }
         }
+
+       
+        public void Dispose() { Config.BarCode -= BarCode; }
+        void BarCode(string pBC)
+        {
+            Barcode = pBC;
+            OnButtonLogin(null, null);
+        }
+
         private void OnButtonLogin(object sender, System.EventArgs e)
         {
-
             _ = Task.Run(async () =>
             {
-                var r = await c.LoginAsync(Login, Password, Config.LoginServer);
+                var r = await c.LoginAsync(Login, Password, Config.LoginServer,Barcode);
+                Barcode = null;
                 if (r.State == 0)
                 {                    
                     Dispatcher.Dispatch(() =>
@@ -191,7 +202,7 @@ namespace BRB6
         protected override async void OnAppearing()
         {
             base.OnAppearing();
-             #if ANDROID
+            #if ANDROID
             if (Config.NativeBase !=null && await Config.NativeBase.CheckNewVerAsync())
             {
                 var res = await DisplayAlert("Оновлення доступне", "Доступна нова версія. Бажаєте встановити?", "Yes", "No");

@@ -87,7 +87,7 @@ namespace BRB6
 
                 NavigationPage.SetHasNavigationBar(this, DeviceInfo.Platform == DevicePlatform.iOS);
                 this.BindingContext = this;
-                Bl.InitTimerRDI(cDoc);
+                Bl.InitTimerRDI();
 
                 Bl.c.OnSave += (Res) => Dispatcher.Dispatch(() =>
                 {
@@ -114,7 +114,6 @@ namespace BRB6
             try
             {
                 base.OnAppearing();
-
                 if (IsVisScan)
                 {
                     BarcodeScaner = new CameraView
@@ -131,7 +130,8 @@ namespace BRB6
 
                 Bl.StartTimerRDI();
                 IsRefreshList = true;
-                _ = LocationBrb.GetCurrentLocation(Bl.db.GetWarehouse());
+                Task.Run(()=> LocationBrb.GetCurrentLocation(Bl.db.GetWarehouse()));
+                FileLogger.WriteLogMessage(this, System.Reflection.MethodBase.GetCurrentMethod().Name, "End");
             }
             catch (Exception ex)
             {
