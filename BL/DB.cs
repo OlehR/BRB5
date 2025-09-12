@@ -30,7 +30,7 @@ namespace BL
 {
     public class DB
     {
-        static DB Db = null;
+        static DB Db = null; 
         public static DB GetDB(string pPathDB = null)
         {
             if (!string.IsNullOrEmpty(pPathDB))
@@ -398,7 +398,7 @@ alter table wares  ADD COLUMN Article INTEGER;";
                         coalesce(dws.quantitymax,0) as QuantityMax ,coalesce(d.IsControl,0) as IsControl, coalesce(dw1.quantityold,0) as QuantityOld
                       ,dw1.quantityreason as QuantityReason, Max(dw1.CodeReason,dws.CodeReason ) as CodeReason
                         {Color}
-                        ,w.codeunit as CodeUnit--, dws.CodeReason as CodeReason
+                        ,w.codeunit as CodeUnit, dws.CodeReason as CodeReason
                             from Doc d  
                           join (select dw.typedoc ,dw.numberdoc, dw.codewares, sum(dw.quantity) as quantityinput,max(dw.orderdoc) as orderdoc,sum(quantityold) as quantityold,  sum(case when dw.CODEReason>0 then  dw.quantity else 0 end) as quantityreason,
                                        Max(CodeReason) as CodeReason  
@@ -414,7 +414,7 @@ alter table wares  ADD COLUMN Article INTEGER;";
                        select d.TypeDoc as TypeDoc, d.numberdoc as NumberDoc, dws.orderdoc+100000, dws.CODEWARES,coalesce(dws.name,w.NAMEWARES) as NAMEWARES,coalesce(dws.quantity,0) as quantityorder,coalesce(dw1.quantityinput,0) as quantityinput, coalesce(dws.quantitymin,0) as quantitymin, coalesce(dws.quantitymax,0) as quantitymax ,coalesce(d.IsControl,0) as IsControl, coalesce(dw1.quantityold,0) as quantityold
                            ,0 as  quantityreason, Max(dw1.CodeReason,dws.CodeReason ) as CodeReason
                       , 3 as Ord
-                      ,w.codeunit--, dws.CodeReason
+                      ,w.codeunit, dws.CodeReason
                           from Doc d  
                           join DocWaresSample dws on d.numberdoc = dws.numberdoc and d.typedoc=dws.typedoc --and dws.codewares = w.codewares
                           left join Wares w on dws.codewares = w.codewares 
@@ -1123,7 +1123,7 @@ DE.ExpirationDateInput, DE.QuantityInput
 
         public IEnumerable<WaresAct> GetWaresAct(DocId Doc)
         {
-            string sql = $@"select dw.CodeWares,sum(fact) as fact,sum(plan) as plan,w.NameWares, dw.CodeReason
+            string sql = $@"select dw.CodeWares,sum(fact) as fact,sum(plan) as plan,w.NameWares, dw.CodeReason, sum( case when dw.CodeReason>1 then fact else 0 end) as QuantityReason
 from 
     (SELECT dw.CodeWares, sum(dw.Quantity) as Fact,0 as plan , dw.CodeReason from DocWares  dw 
         where dw.TypeDoc={Doc.TypeDoc} and dw.NumberDoc= '{Doc.NumberDoc}'
