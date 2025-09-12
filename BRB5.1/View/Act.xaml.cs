@@ -41,11 +41,11 @@ public partial class Act
         }
 
         var allDocs = db.GetWaresAct(Doc);
-
-        if (Doc.CodeReason==1)
-            MyDocWares = new ObservableCollection<WaresAct>(allDocs.Where(el => el.CodeReason == -1));
+        if (Doc.CodeReason == 1)
+            MyDocWares = new ObservableCollection<WaresAct>(allDocs.Where(x => x.CodeReason == -1 && (x.QuantityReason != 0 || x.QuantityDifference != 0)));
         else
-            MyDocWares = new ObservableCollection<WaresAct>(allDocs);
+            MyDocWares = new ObservableCollection<WaresAct>(allDocs.Where(x => x.QuantityReason != 0 || x.QuantityDifference != 0));
+
 
         //MyDocWares = new ObservableCollection<WaresAct>(db.GetWaresAct(Doc)); 
         if (MyDocWares != null)
@@ -53,7 +53,7 @@ public partial class Act
             PopulateStackLayoutDocs();
         }
     }
-
+    
     protected override void OnDisappearing()
     {
         base.OnDisappearing();
@@ -71,7 +71,7 @@ public partial class Act
             return;
 
         StackLayoutDocs.Children.Clear(); 
-        StackLayoutDocs.Spacing = 0; 
+        StackLayoutDocs.Spacing = 0;
 
         foreach (var docWare in MyDocWares)
         {
@@ -151,8 +151,6 @@ public partial class Act
         }
     }
 
-
-
     private async void F1Create(object sender, TappedEventArgs e)
     {
         var r = await c.SendDocsDataAsync(Doc, db.GetDocWares(Doc, 2, eTypeOrder.Scan));
@@ -163,7 +161,6 @@ public partial class Act
             _ = toast.Show();
         }
     }
-
 
 #if ANDROID
     public void OnPageKeyDown(Keycode keyCode, KeyEvent e)

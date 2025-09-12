@@ -14,6 +14,7 @@ namespace BRB5.Model
         public decimal Fact { get; set; }
         public int CodeReason { get; set; } // Код причини
         public decimal QuantityDifference { get { return Fact - Plan; } }
+        public decimal QuantityReason { get; set; } // Кількість по причині
         public string GetColor
         {
             get

@@ -387,10 +387,13 @@ namespace BRB6.View
         private void ReasonPicker_SelectedIndexChanged(object sender, EventArgs e)
         {
             ReasonPicker.IsEnabled = false;
-            if( IsVisScan)
-            inputQ.IsReadOnly = true;
-            inputQ.Focus();
-            inputQ.IsReadOnly = false;
+            if (!IsVisScan)
+            {
+                inputQ.IsReadOnly = true;
+                inputQ.Focus();
+                inputQ.IsReadOnly = false;
+            }
+            else inputQ.Focus();
 
             if (ReasonPicker.SelectedItem is BRB5.Model.DB.Reason selectedReason && ScanData != null)
             {
@@ -400,9 +403,13 @@ namespace BRB6.View
         private void ReasonUnfocus(object sender, FocusEventArgs e)
         {
             ReasonPicker.IsEnabled = false;
-            inputQ.IsReadOnly = true;
-            inputQ.Focus();
-            inputQ.IsReadOnly = false;
+            if (!IsVisScan)
+            {
+                inputQ.IsReadOnly = true;
+                inputQ.Focus();
+                inputQ.IsReadOnly = false;
+            }
+            else inputQ.Focus();
         }
         private void ReasonFocus(object sender, TappedEventArgs e)
         {
