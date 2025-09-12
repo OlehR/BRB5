@@ -74,7 +74,7 @@ namespace BL.Connector
              new  LoginServer (){Code=eLoginServer.Bitrix,Name = "Бітрікс"}};//
         }
 
-        public override async Task<Result> LoginAsync(string pLogin, string pPassWord, eLoginServer pLoginServer)
+        public override async Task<Result> LoginAsync(string pLogin, string pPassWord, eLoginServer pLoginServer, string pBarCode = null)
         {
             Result Res = new Result();
             if (pLoginServer == eLoginServer.Bitrix)

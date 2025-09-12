@@ -54,16 +54,17 @@ namespace BL.Connector
                 //new() { Code = eLoginServer.Bitrix, Name = "Бітрікс" } 
             };
 
-        public override async Task<Result> LoginAsync(string pLogin, string pPassWord, eLoginServer pLoginServer)
+        public override async Task<Result> LoginAsync(string pLogin, string pPassWord, eLoginServer pLoginServer, string pBarCode=null)
         {
             try
             {
-                if (string.IsNullOrEmpty(pLogin) || string.IsNullOrEmpty(pPassWord)) return new Result(-1, "Порожній пароль або логін");
+                if ((string.IsNullOrEmpty(pLogin) || string.IsNullOrEmpty(pPassWord)) && string.IsNullOrEmpty(pBarCode)) 
+                    return new Result(-1, "Порожній пароль або логін");
                 Result Res = new Result();
                 if (pLoginServer == eLoginServer.Central || pLoginServer == eLoginServer.Bitrix)
                 {
                     string Data;
-                    Data = new User() { Login = pLogin, PassWord = pPassWord, LoginServer = pLoginServer }.ToJson();
+                    Data = new User() { Login = pLogin, PassWord = pPassWord, LoginServer = pLoginServer, BarCode = pBarCode }.ToJson();
 
                     HttpResult result = await GetDataHTTP.HTTPRequestAsync(0, "DCT/Login", Data, "application/json", null);
                     if (result.HttpState == eStateHTTP.HTTP_OK)
