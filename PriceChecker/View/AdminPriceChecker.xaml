@@ -8,6 +8,9 @@
     <ContentPage.Content>
         <AbsoluteLayout>
             <Grid AbsoluteLayout.LayoutBounds="0,0,1,1" AbsoluteLayout.LayoutFlags="All">
+                <Grid.GestureRecognizers>
+                    <SwipeGestureRecognizer Direction="Right"  Swiped="OnSwipedRight"/>
+                </Grid.GestureRecognizers>
                 <Image x:Name="BackgroundImage"
                    Aspect="AspectFill"
                    Opacity="0.2"/>

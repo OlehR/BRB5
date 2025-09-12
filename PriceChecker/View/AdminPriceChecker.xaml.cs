@@ -2,19 +2,21 @@
 using BL.Connector;
 using BRB5;
 using BRB5.Model;
-using UtilNetwork;
+using BRB5.Model.DB;
 using System.Timers;
+using UtilNetwork;
 using Timer = System.Timers.Timer;
 
 namespace PriceChecker.View;
 
+[QueryProperty(nameof(dBarCode), "data")]
 public partial class AdminPriceChecker : ContentPage
 {
     DB db = DB.GetDB();
     BL.BL bl = BL.BL.GetBL(); 
 
     private Timer _returnTimer;
-    private const int TimeoutSeconds = 60;
+    private const int TimeoutSeconds = 600;
     public List<PrintBlockItems> ListPrintBlockItems { get { return db.GetPrintBlockItemsCount().ToList(); } }
     public int SelectedPrintBlockItems { get { return ListPrintBlockItems.Count > 0 ? ListPrintBlockItems.Last().PackageNumber : -1; } }
     /// <summary>
@@ -91,19 +93,16 @@ public partial class AdminPriceChecker : ContentPage
     public Uri UriPicture { get { return new Uri(Config.ApiUrl1 + $"Wares/{WP.CodeWares:D9}.png"); } }
     private int InfoHeight;
     public string ColorBG { get; set; }
+    public string dBarCode { get; set; }
 
-    public AdminPriceChecker(WaresPrice pUser, WaresPrice? pWP = null)
+    public AdminPriceChecker()
     {
         _WP = new();
-        User = pUser;
         InitializeComponent();
         this.BindingContext = this;
         OnScreenKeyboard.OkPressed += OnScreenKeyboard_OkPressed;
-        bl.ClearWPH();
-        if (pWP != null)  WP = pWP;        
-
-        if (WP.Сondition != null) FillConditionList(WP.Сondition);
-     
+        bl.ClearWPH();      
+             
         switch (Config.CodeTM)
         {
             case eShopTM.Vopak:
@@ -165,13 +164,26 @@ public partial class AdminPriceChecker : ContentPage
         OnScreenKeyboard.IsVisible = false;
         BarCodeInput.Unfocus();
     }
-    private void BarCodeInput_Focused(object sender, FocusEventArgs e) =>  OnScreenKeyboard.IsVisible = true;    
+    private void BarCodeInput_Focused(object sender, FocusEventArgs e) =>  OnScreenKeyboard.IsVisible = true;
+    private void OnSwipedRight(object sender, SwipedEventArgs e)
+    {
+        if (e.Direction == SwipeDirection.Right)
+        {
+            Shell.Current.FlyoutIsPresented = true;
+        }
+    }
 
     void Progress(double pProgress) => MainThread.BeginInvokeOnMainThread(() => PB = pProgress);
     protected override void OnAppearing()
     {
         base.OnAppearing();
         Config.OnProgress += Progress;
+
+        if (!string.IsNullOrEmpty(dBarCode))
+        {
+            FoundWares(dBarCode);
+        }
+
     }
     protected override void OnDisappearing()
     {
@@ -283,7 +295,15 @@ public partial class AdminPriceChecker : ContentPage
     {
         await MainThread.InvokeOnMainThreadAsync(async () =>
         {
-            await Navigation.PopToRootAsync(); 
+            if (Shell.Current.Navigation.NavigationStack.Count > 1)
+            {
+                await Shell.Current.Navigation.PopToRootAsync();
+            }
+            else
+            {
+                // Наприклад, повернути на Splash
+                await Shell.Current.GoToAsync("//SplashPage");
+            }
         });
     }
 
@@ -297,7 +317,15 @@ public partial class AdminPriceChecker : ContentPage
     {
         await MainThread.InvokeOnMainThreadAsync(async () =>
         {
-            await Navigation.PopToRootAsync();
+            if (Shell.Current.Navigation.NavigationStack.Count > 1)
+            {
+                await Shell.Current.Navigation.PopToRootAsync();
+            }
+            else
+            {
+                // Наприклад, повернути на Splash
+                await Shell.Current.GoToAsync($"//{nameof(SplashPage)}");
+            }
         });
     }
 

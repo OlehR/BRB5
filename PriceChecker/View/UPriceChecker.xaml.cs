@@ -94,7 +94,9 @@ public partial class UPriceChecker : ContentPage
             {
                 if (tempWP.CodeUser != 0) 
                 {
-                    MainThread.BeginInvokeOnMainThread(async () => await Navigation.PushAsync(new AdminPriceChecker(tempWP, WP))); 
+                    string firstCode = (WP.BarCodes?.Split(',') ?? Array.Empty<string>()).FirstOrDefault() ?? "";
+
+                    MainThread.BeginInvokeOnMainThread(async () => Shell.Current.GoToAsync($"{nameof(AdminPriceChecker)}?data={firstCode}"));
                 }
                 else WP = tempWP;
             }

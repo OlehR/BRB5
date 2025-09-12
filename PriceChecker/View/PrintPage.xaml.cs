@@ -6,4 +6,12 @@ public partial class PrintPage : ContentPage
 	{
 		InitializeComponent();
 	}
+    private void OnSwipedRight(object sender, SwipedEventArgs e)
+    {
+        if (e.Direction == SwipeDirection.Right)
+        {
+            Shell.Current.FlyoutIsPresented = true;
+        }
+    }
+
 }

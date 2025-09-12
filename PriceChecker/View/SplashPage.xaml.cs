@@ -76,15 +76,18 @@ public partial class SplashPage : ContentPage
             if (WP != null)
             {
                 var isStaff = WP.CodeUser != 0;
-                ContentPage page = isStaff ? new AdminPriceChecker(WP) : new UPriceChecker(WP);
+                if (isStaff) 
+                { 
+                    Config.CodeUser = (int)WP.CodeUser;
+                    Config.NameUser = WP.Name;
 
+                    MainThread.BeginInvokeOnMainThread(async () =>{ await Shell.Current.GoToAsync($"{nameof(AdminPriceChecker)}?data={string.Empty}"); });
+                }
+                else  MainThread.BeginInvokeOnMainThread(async () => { await Navigation.PushAsync(new UPriceChecker(WP)); });
                 //TMP!!!!!!
                 //page = new CustomerInfo();
 
-                MainThread.BeginInvokeOnMainThread(async () =>
-                {
-                    await Navigation.PushAsync(page);
-                });
+
             }
         }
     }
