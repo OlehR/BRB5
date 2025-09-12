@@ -81,7 +81,7 @@ public partial class SplashPage : ContentPage
                     Config.CodeUser = (int)WP.CodeUser;
                     Config.NameUser = WP.Name;
 
-                    MainThread.BeginInvokeOnMainThread(async () =>{ await Shell.Current.GoToAsync($"{nameof(AdminPriceChecker)}?data={string.Empty}"); });
+                    MainThread.BeginInvokeOnMainThread(async () =>{ await Shell.Current.GoToAsync("//Admin"); });
                 }
                 else  MainThread.BeginInvokeOnMainThread(async () => { await Navigation.PushAsync(new UPriceChecker(WP)); });
                 //TMP!!!!!!

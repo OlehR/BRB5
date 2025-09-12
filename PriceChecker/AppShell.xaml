@@ -6,20 +6,18 @@
     xmlns:views="clr-namespace:PriceChecker.View"
     Shell.NavBarIsVisible="False"
     Title="PriceChecker">
-
-    <FlyoutItem Title="Splash">
-        <ShellContent
-            Title="Splash"
-            ContentTemplate="{DataTemplate views:SplashPage}" />
-    </FlyoutItem>
-
-    <FlyoutItem Title="Admin Price Checker">
+    
+    <ShellContent
+        Route="Splash"
+        ContentTemplate="{DataTemplate views:SplashPage}" />
+    <!-- Тут меню тільки для авторизованих -->
+    <FlyoutItem Title="Admin Price Checker" Route="Admin">
         <ShellContent
             Title="Admin"
             ContentTemplate="{DataTemplate views:AdminPriceChecker}" />
     </FlyoutItem>
 
-    <FlyoutItem Title="Print Page">
+    <FlyoutItem Title="Print Page" Route="Print">
         <ShellContent
             Title="Print"
             ContentTemplate="{DataTemplate views:PrintPage}" />

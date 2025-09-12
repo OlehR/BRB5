@@ -26,7 +26,7 @@
                             CornerRadius="10"  
                             HasShadow="False"
                             HorizontalOptions="Start">
-                            <Image Source="cashback.png"                          
+                            <Image Source="cashback.png"                
                                Aspect="AspectFit" />
                         </Frame>
 
@@ -45,7 +45,7 @@
                         </Grid.ColumnDefinitions>
 
                         <StackLayout>
-                            <ffimageloading:CachedImage x:Name="WareImage" Source="{Binding UriPicture}" ErrorPlaceholder="photo.png"/>
+                            <ffimageloading:CachedImage x:Name="WareImage" MaximumHeightRequest="550"  Source="{Binding UriPicture}" ErrorPlaceholder="photo.png"/>
 
                             <Grid RowDefinitions="Auto,Auto"
                                 ColumnDefinitions="*,*"                              

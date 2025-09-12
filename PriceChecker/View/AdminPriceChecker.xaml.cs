@@ -293,18 +293,7 @@ public partial class AdminPriceChecker : ContentPage
 
     private async void OnBackClick(object sender, EventArgs e)
     {
-        await MainThread.InvokeOnMainThreadAsync(async () =>
-        {
-            if (Shell.Current.Navigation.NavigationStack.Count > 1)
-            {
-                await Shell.Current.Navigation.PopToRootAsync();
-            }
-            else
-            {
-                // Наприклад, повернути на Splash
-                await Shell.Current.GoToAsync("//SplashPage");
-            }
-        });
+        await MainThread.InvokeOnMainThreadAsync(async () => { await Shell.Current.GoToAsync("//Splash"); });
     }
 
     private void ResetTimer()
@@ -315,18 +304,7 @@ public partial class AdminPriceChecker : ContentPage
 
     private async void OnTimeoutElapsed(object sender, ElapsedEventArgs e)
     {
-        await MainThread.InvokeOnMainThreadAsync(async () =>
-        {
-            if (Shell.Current.Navigation.NavigationStack.Count > 1)
-            {
-                await Shell.Current.Navigation.PopToRootAsync();
-            }
-            else
-            {
-                // Наприклад, повернути на Splash
-                await Shell.Current.GoToAsync($"//{nameof(SplashPage)}");
-            }
-        });
+        await MainThread.InvokeOnMainThreadAsync(async () => {  await Shell.Current.GoToAsync("//Splash"); });
     }
 
     // Скидання таймера при взаємодії з елементами

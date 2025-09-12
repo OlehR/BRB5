@@ -7,19 +7,20 @@ namespace PriceChecker
         {
             InitializeComponent();
 
-            Routing.RegisterRoute(nameof(AdminPriceChecker), typeof(AdminPriceChecker));
+            // Сторінки, які поза меню
             Routing.RegisterRoute(nameof(UPriceChecker), typeof(UPriceChecker));
-            Routing.RegisterRoute(nameof(PrintPage), typeof(PrintPage));
-            //Routing.RegisterRoute(nameof(SplashPage), typeof(SplashPage));
+            Routing.RegisterRoute(nameof(CustomerInfo), typeof(CustomerInfo));
+
         }
 
         protected override void OnNavigated(ShellNavigatedEventArgs args)
         {
             base.OnNavigated(args);
 
-            // Вимикаємо меню на SplashPage та UPriceChecker для неавторизованих
+            // Splash і UPriceChecker – меню приховано
             if (args.Current.Location.OriginalString.Contains(nameof(SplashPage)) ||
-                args.Current.Location.OriginalString.Contains(nameof(UPriceChecker)))
+                args.Current.Location.OriginalString.Contains(nameof(UPriceChecker)) ||
+                args.Current.Location.OriginalString.Contains(nameof(CustomerInfo)))
             {
                 FlyoutBehavior = FlyoutBehavior.Disabled;
             }
