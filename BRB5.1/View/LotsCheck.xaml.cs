@@ -314,7 +314,7 @@ public partial class LotsCheck : ContentPage
 
         if (result.State == 0) // 0 = success
         {
-            var toast = Toast.Make("Збереження: " + result.TextError, ToastDuration.Long, 14); 
+            var toast = Toast.Make("Збереження: " + result.TextError + " " + result.Info, ToastDuration.Long, 14); 
             SelectedDoc.State = 1;
             MainThread.BeginInvokeOnMainThread(async () =>
             {
@@ -327,7 +327,7 @@ public partial class LotsCheck : ContentPage
             SelectedDoc.State = -1;
             MainThread.BeginInvokeOnMainThread(async () =>
             {
-                await DisplayAlert("Помилка", "Не вдалося зберегти " + result.TextError, "OK");
+                await DisplayAlert("Помилка", "Не вдалося зберегти (Збережено локально)" + result.TextError + " " + result.Info, "OK");
                 UpdateDocColor(SelectedDoc);
             });
         }
