@@ -1,4 +1,5 @@
-﻿using BL;
+﻿using BarcodeScanning;
+using BL;
 using BL.Connector;
 using BRB5;
 using BRB5.Model;
@@ -30,6 +31,11 @@ namespace BRB6
         public string Ver { get { return"BRB6 (" + AppInfo.VersionString + ")"; } }
         public string Company { get { return  Config.NameCompany; } }
         public bool IsSoftKeyboard { get { return Config.IsSoftKeyboard; } }
+
+        public bool IsVisScan { get { return Config.TypeScaner == eTypeScaner.Camera; } }
+        bool _IsVisBarCode = false;
+        public bool IsVisBarCode { get { return _IsVisBarCode; } set { _IsVisBarCode = value; OnPropertyChanged(nameof(IsVisBarCode)); } }
+        CameraView BarcodeScaner;
         public MainPage()
         {
             try
@@ -86,6 +92,7 @@ namespace BRB6
 
                     Login = db.GetConfig<string>("Login");
                     OnPropertyChanged(nameof(Login));
+                    BarcodeClick(null, null);
                 }
                 else
                     Dispatcher.Dispatch(() =>
@@ -93,7 +100,7 @@ namespace BRB6
                         _ = DisplayAlert("Проблеми з авторизацією", r.TextError +" "+ r.Info, "OK");
                     });
             });
-            }
+        }
 
         private async void OnItemTapped(object sender, ItemTappedEventArgs e)
         {
@@ -202,7 +209,23 @@ namespace BRB6
         protected override async void OnAppearing()
         {
             base.OnAppearing();
-            #if ANDROID
+
+            if (IsVisScan)
+            {
+                BarcodeScaner = new CameraView
+                {
+                    VerticalOptions = LayoutOptions.FillAndExpand,
+                    HorizontalOptions = LayoutOptions.FillAndExpand,
+                    CameraEnabled = false,
+                    VibrationOnDetected = false,
+                    BarcodeSymbologies = BarcodeFormats.Ean13 | BarcodeFormats.Ean8 | BarcodeFormats.QRCode| BarcodeFormats.Code128,
+
+                };
+                BarcodeScaner.OnDetectionFinished += CameraView_OnDetectionFinished;
+                GridZxing.Children.Add(BarcodeScaner);
+            }
+
+#if ANDROID
             if (Config.NativeBase !=null && await Config.NativeBase.CheckNewVerAsync())
             {
                 var res = await DisplayAlert("Оновлення доступне", "Доступна нова версія. Бажаєте встановити?", "Yes", "No");
@@ -213,7 +236,11 @@ namespace BRB6
             #endif
         }
         void Progress(double pProgress) => MainThread.BeginInvokeOnMainThread(() => PB = pProgress);
-        protected override void OnDisappearing()  {  base.OnDisappearing(); }
+        protected override void OnDisappearing()  
+        {  
+            base.OnDisappearing();
+            if (IsVisScan) BarcodeScaner.CameraEnabled = false;
+        }
 
         private async void OnSettingsClicked(object sender, EventArgs e) { await Navigation.PushAsync(new Settings());  }
 
@@ -231,6 +258,29 @@ namespace BRB6
                 var r = c.GetTypeDoc(Config.Role, Config.LoginServer);
                 foreach (var i in r) OCTypeDoc.Add(i);
             });
+        }
+
+        private void BarcodeClick(object sender, EventArgs e)
+        {
+            MainThread.BeginInvokeOnMainThread(() =>
+            {
+                IsVisBarCode = !IsVisBarCode;
+                BarcodeScaner.CameraEnabled = IsVisBarCode;
+            });
+        }
+        private void CameraView_OnDetectionFinished(object sender, BarcodeScanning.OnDetectionFinishedEventArg e)
+        {
+            if (e.BarcodeResults.Length > 0)
+            {
+                BarcodeScaner.PauseScanning = true;
+
+                BarCode(e.BarcodeResults[0].DisplayValue);
+
+                Task.Run(async () => {
+                    await Task.Delay(1000);
+                    BarcodeScaner.PauseScanning = false;
+                });
+            }
         }
     }
 }
