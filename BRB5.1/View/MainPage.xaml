@@ -28,6 +28,8 @@
     <StackLayout>        
         <StackLayout x:Name="SLLogin">
 
+            <Grid IsVisible="{Binding IsVisBarCode}" HeightRequest="150" x:Name="GridZxing"/>
+            
             <Picker Title="сервер"
                     ItemsSource="{Binding LS}"
                     IsVisible="{Binding IsVisLS}"
@@ -49,6 +51,8 @@
             <Button Text="Залогінитись" FontSize="Large" BorderWidth="1"
                     HorizontalOptions="Center" VerticalOptions="CenterAndExpand"
                     Clicked="OnButtonLogin" />
+
+            <ImageButton Source="barcode_scanning.png" HeightRequest="150" IsVisible="{Binding IsVisScan}" Clicked="BarcodeClick" />
         </StackLayout>
 
         <StackLayout x:Name="ListDocs" IsVisible="false">
