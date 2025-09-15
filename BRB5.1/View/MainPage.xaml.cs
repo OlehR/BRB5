@@ -262,11 +262,14 @@ namespace BRB6
 
         private void BarcodeClick(object sender, EventArgs e)
         {
-            MainThread.BeginInvokeOnMainThread(() =>
+            if (IsVisScan)
             {
-                IsVisBarCode = !IsVisBarCode;
-                BarcodeScaner.CameraEnabled = IsVisBarCode;
-            });
+                MainThread.BeginInvokeOnMainThread(() =>
+                {
+                    IsVisBarCode = !IsVisBarCode;
+                    BarcodeScaner.CameraEnabled = IsVisBarCode;
+                });
+            }
         }
         private void CameraView_OnDetectionFinished(object sender, BarcodeScanning.OnDetectionFinishedEventArg e)
         {
