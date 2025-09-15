@@ -367,7 +367,7 @@ namespace BRB6
                 int headIndex = current.FindIndex(el => el == head);
                 if (headIndex >= 0)
                 {
-                    updated = current.ToList();
+                    updated = current.Where(el => el.Parent != head.Id).ToList();
                     updated.InsertRange(headIndex + 1, children);
                 }
                 else

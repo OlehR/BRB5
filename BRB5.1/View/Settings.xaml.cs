@@ -158,28 +158,30 @@ namespace BRB6.View
             Config.BarCode = BarCode;
         }
 
-        async void BarCode(string pBarCode)
+         void BarCode(string pBarCode)
         {
-            int CodeWarehouse = 0;
-            QRCodeScan(null,null);
-            if (pBarCode == null) return;
-            if (pBarCode.StartsWith("BRB6=>"))
-            {             
-                CodeWarehouse = Bl.QRSettingsParse(pBarCode);
-                Config.CodeWarehouse = CodeWarehouse;
-                OnClickSave(null, null);
-                Connector.CleanConnector();
-                c = ConnectorBase.GetInstance();
-                GetDataHTTP.Init();                
-                var R= await c.LoadGuidDataAsync(true);
-
-                if (CodeWarehouse == 0)
+            _ = Task.Run(async () =>
+            {
+                int CodeWarehouse = 0;
+                QRCodeScan(null, null);
+                if (pBarCode == null) return;
+                if (pBarCode.StartsWith("BRB6=>"))
                 {
-                    wh = null;
-                    OnClickIP(null, null);
+                    CodeWarehouse = Bl.QRSettingsParse(pBarCode);
+                    Config.CodeWarehouse = CodeWarehouse;
                     OnClickSave(null, null);
-                }
-                else { }
+                    Connector.CleanConnector();
+                    c = ConnectorBase.GetInstance();
+                    GetDataHTTP.Init();
+                    var R = await c.LoadGuidDataAsync(true);
+
+                    if (CodeWarehouse == 0)
+                    {
+                        wh = null;
+                        OnClickIP(null, null);
+                        OnClickSave(null, null);
+                    }
+                    else { }
                     //var toast = Toast.Make("Не вдається отримати IP-адресу.");
                     // = toast.Show();
                     MainThread.BeginInvokeOnMainThread(async () =>
@@ -188,12 +190,13 @@ namespace BRB6.View
                         if (DeviceInfo.Platform == DevicePlatform.Android)
                             Application.Current.Quit();
                     });
-            }
-            else
-                MainThread.BeginInvokeOnMainThread(async () =>
-                {
-                    await DisplayAlert("", "Даний QR без налаштувань.", "OK");
-                });           
+                }
+                else
+                    Dispatcher.Dispatch(() =>
+                    {
+                        _ = DisplayAlert("", "Даний QR без налаштувань.", "OK");
+                    });
+            });
         }
         public void Dispose() { Config.BarCode -= BarCode; }
         void Progress(double pProgress) => MainThread.BeginInvokeOnMainThread(() => PB = pProgress);
