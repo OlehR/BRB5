@@ -225,7 +225,18 @@ namespace BRB6.View
             }
         }
 
-        private void Reset(object sender, EventArgs e) { Bl.Reset(ScanData, ListWares); }
+        private void Reset(object sender, EventArgs e) 
+        { 
+            Bl.Reset(ScanData, ListWares);
+            ScanData = null;
+            inputQ.Unfocus();
+            inputBarCode.IsReadOnly = false;
+        }
+        private void ResetAndAdd(object sender, EventArgs e)
+        {
+            Bl.Reset(ScanData, ListWares);
+            AddWare();
+        }
 
         private void CalcQuantity(object sender, TextChangedEventArgs e)
         {
@@ -434,25 +445,24 @@ namespace BRB6.View
         }
 #if ANDROID
         public void OnPageKeyDown(Keycode keyCode, KeyEvent e)
-        { 
-           switch (keyCode)
-           {
-            case Keycode.F1:
-               Reset(null, EventArgs.Empty);
-               return;
-            case Keycode.F2:
-               Up(null, EventArgs.Empty);
-               return;
-            case Keycode.F3:
-               Down(null, EventArgs.Empty);
-               return;
-            case Keycode.F8:
+        {
+            switch (keyCode)
+            {
+                case Keycode.F1:
                     Reset(null, EventArgs.Empty);
-                    AddWare();
                     return;
-            default:
-               return;
-           }
+                case Keycode.F2:
+                    Up(null, EventArgs.Empty);
+                    return;
+                case Keycode.F3:
+                    Down(null, EventArgs.Empty);
+                    return;
+                case Keycode.F8:
+                    ResetAndAdd(null, EventArgs.Empty);
+                    return;
+                default:
+                    return;
+            }
          }
 
 #endif

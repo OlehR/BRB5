@@ -148,8 +148,16 @@
                         <TapGestureRecognizer Tapped="Down" />
                     </Label.GestureRecognizers>
                 </Label>
-                <Label Text="F8-" FontSize="16" TextColor="#ff5c5c" />
-                <Label Text="Замінити" FontSize="18" TextColor="#816f20" />
+                <Label Text="F8-" FontSize="16" TextColor="#ff5c5c">
+                    <Label.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="ResetAndAdd" />
+                    </Label.GestureRecognizers>
+                </Label> 
+                <Label Text="Замінити" FontSize="18" TextColor="#816f20">
+                    <Label.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="ResetAndAdd" />
+                    </Label.GestureRecognizers>
+                </Label>
                 <Label Text="⏎-" FontSize="16" FontAttributes="Bold" TextColor="#ff5c5c">
                     <Label.GestureRecognizers>
                         <TapGestureRecognizer Tapped="CompletedInputQ" />
