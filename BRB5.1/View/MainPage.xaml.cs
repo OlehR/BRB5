@@ -63,6 +63,14 @@ namespace BRB6
         void BarCode(string pBC)
         {
             Barcode = pBC;
+            if (IsVisScan)
+            {
+                MainThread.BeginInvokeOnMainThread(() =>
+                {
+                    IsVisBarCode = false;
+                    BarcodeScaner.CameraEnabled = false;
+                });
+            }
             OnButtonLogin(null, null);
         }
 
@@ -92,7 +100,6 @@ namespace BRB6
 
                     Login = db.GetConfig<string>("Login");
                     OnPropertyChanged(nameof(Login));
-                    BarcodeClick(null, null);
                 }
                 else
                     Dispatcher.Dispatch(() =>
@@ -260,10 +267,22 @@ namespace BRB6
             });
         }
 
-        private void BarcodeClick(object sender, EventArgs e)
+        private async void BarcodeClick(object sender, EventArgs e)
         {
             if (IsVisScan)
             {
+                if (Config.TypeScaner == eTypeScaner.Camera)
+                {
+                    var cameraStatus = await Permissions.CheckStatusAsync<Permissions.Camera>();
+                    if (cameraStatus != PermissionStatus.Granted)
+                        cameraStatus = await Permissions.RequestAsync<Permissions.Camera>();
+
+                    if (cameraStatus != PermissionStatus.Granted)
+                    {
+                        await DisplayAlert("Помилка", "Потрібен дозвіл камери", "OK", FlowDirection.MatchParent);
+                        return;
+                    }
+                }
                 MainThread.BeginInvokeOnMainThread(() =>
                 {
                     IsVisBarCode = !IsVisBarCode;

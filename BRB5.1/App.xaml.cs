@@ -29,7 +29,7 @@ namespace BRB6
                 FileLogger.WriteLogMessage(this, "UnobservedTaskException", ex);
                 eventArgs.SetObserved(); // Prevents the application from crashing
                                          // Log the exception, display an alert, or perform other error handling
-                MainPage.DisplayAlert("Error", "An unobserved task error occurred. "+ex.Message, "OK");
+                //MainPage.DisplayAlert("Error", "An unobserved task error occurred. "+ex.Message, "OK");
             };
             //AppDomain.CurrentDomain.FirstChanceException += CurrentDomain_FirstChanceException;
             Application.Current.UserAppTheme = AppTheme.Light;
