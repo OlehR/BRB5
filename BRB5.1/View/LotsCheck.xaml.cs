@@ -83,10 +83,7 @@ public partial class LotsCheck : ContentPage
         {
             SelectedDoc = r;
             r.SelectedColor = true;
-            MainThread.BeginInvokeOnMainThread(() =>
-            {
-                ScrollToSelected();
-            });
+            ScrollToSelected();
         }
         else
         {
@@ -278,21 +275,24 @@ public partial class LotsCheck : ContentPage
     }
 
 
-    public async void ScrollToSelected()
+    public void ScrollToSelected()
     {
         if (SelectedDoc == null)
             return;
 
-        foreach (var child in StackLayoutDocs.Children)
+        foreach (var container in StackLayoutDocs.Children.OfType<Layout>())
         {
-            if (child is Microsoft.Maui.Controls.View view && view.BindingContext is DocVM doc &&
-                doc == SelectedDoc)
+            foreach (var child in container.Children)
             {
-                var childBounds = view.Bounds;
-
-                // Ensure you're calling ScrollToAsync on the correct ScrollView instance
-                await DocsScrollView.ScrollToAsync(0, childBounds.Y, false);
-                break;
+                if (child is Microsoft.Maui.Controls.View view && view.BindingContext is DocVM doc && doc == SelectedDoc)
+                {
+                    var childBounds = view.Bounds;
+                    MainThread.BeginInvokeOnMainThread(async () =>
+                    {
+                        await DocsScrollView.ScrollToAsync(0, childBounds.Y, false);
+                    });
+                    return;
+                }
             }
         }
     }

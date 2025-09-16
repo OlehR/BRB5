@@ -254,7 +254,6 @@ namespace BRB6.View
             }
         }
 
-
         private async void F2Save(object sender, EventArgs e)
         {
             if (IsVisF5Act) return;

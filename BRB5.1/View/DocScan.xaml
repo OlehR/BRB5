@@ -14,7 +14,7 @@
 
             <Grid x:Name="GridZxing" IsVisible="{Binding IsVisScan}" HeightRequest="200" />
 
-            <Grid VerticalOptions="StartAndExpand" RowDefinitions="Auto,2*,2*,5*">
+            <Grid VerticalOptions="StartAndExpand" RowDefinitions="Auto,Auto,Auto,5*">
 
                 <Label Text="{Binding ScanData.NameWares}" FontSize="28" />
 
