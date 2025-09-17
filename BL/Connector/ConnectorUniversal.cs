@@ -376,11 +376,11 @@ namespace BL.Connector
         string DirArx => Path.Combine(Config.PathDownloads, "arx");
         public  async Task<Result> SendRatingFilesArchiveAsync(string pNumberDoc)
         {
-            string path = Path.Combine(DirArx, pNumberDoc);
-            var Files = Directory.GetFiles(path);
+            string path = Path.Combine(DirArx, pNumberDoc);            
             if(!Directory.Exists(path))
-            return new Result(0, "Ok", "Фото в архіві ще немає!");
-            FileLogger.WriteLogMessage($"SendRatingFilesArchiveAsync Files=>{Files?.Length}", eTypeLog.Full);
+                return new Result(0, "Ok", "Фото в архіві ще немає!");
+            var Files = Directory.GetFiles(path);
+            FileLogger.WriteLogMessage($"SendRatingFilesArchiveAsync NumberDoc=>{pNumberDoc} Files=>{Files?.Length}", eTypeLog.Full);
             int Ok = 0, Error = 0, i = 0;
             //OnSave?.Invoke($"Файлів для передачі=>{Files.Count()}");
             if (Files.Length > 0)
