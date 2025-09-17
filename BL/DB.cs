@@ -384,7 +384,7 @@ alter table wares  ADD COLUMN Article INTEGER;";
                 Color = @", case when coalesce(dws.quantity,0) - coalesce(dw1.quantityinput,0) <0 then 3 
                                 when coalesce(dws.quantity,0) - coalesce(dw1.quantityinput,0) >0 then 2
                                 when coalesce(dws.quantity,0) - coalesce(dw1.quantityinput,0)=0 and quantityreason>0 then 1
-                           else 0 end as Ord";
+                           else 0 end as Ord ";
             }
             try
             {
