@@ -14,7 +14,7 @@ namespace PriceChecker
     {
         public static MauiApp CreateMauiApp()
         {
-            Config.Company = eCompany.PSU;
+            Config.Company = eCompany.Universal;
 
             var builder = MauiApp.CreateBuilder();
             builder

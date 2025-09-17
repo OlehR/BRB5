@@ -28,8 +28,6 @@ public partial class AdminPriceChecker : ContentPage
     public bool IsVisPriceNormal { get { return WP != null && (WP.PriceOld != WP.PriceNormal); } }
     public bool IsVisPriceOpt { get { return WP != null && (WP.PriceOpt != 0 || WP.PriceOptOld != 0); } }
    
-    public bool IsVisF4 { get { return Config.Company == eCompany.Sim23; } }
-    public string F4Text { get { return IsOnline ? "OnLine" : "OffLine"; } }
     private bool _IsOnline = true;
     public bool IsOnline { get { return _IsOnline; } set { _IsOnline = value; OnPropertyChanged("F4Text"); } }
 
