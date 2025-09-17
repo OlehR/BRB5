@@ -142,6 +142,9 @@ namespace BRB5.Model
         [JsonIgnore]
         [Ignore]
         public bool IsVisExtInfo => !string.IsNullOrEmpty(ExtInfo);
+        [JsonIgnore]
+        [Ignore]
+        public bool IsPrinted => State!=0;
 
         private bool _SelectedColor = false;
         [JsonIgnore]

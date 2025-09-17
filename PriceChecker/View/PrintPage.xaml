@@ -3,14 +3,39 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="PriceChecker.View.PrintPage"
              Title="PrintPage">
-    <Grid>
+    <Grid Padding="20,20,20,0">
 
         <Grid.GestureRecognizers>
             <SwipeGestureRecognizer Direction="Right"  Swiped="OnSwipedRight"/>
         </Grid.GestureRecognizers>
-        <Label 
-            Text="Welcome to .NET MAUI!"
-            VerticalOptions="Center" 
-            HorizontalOptions="Center" />
+
+        <CollectionView  VerticalOptions="Start"  HorizontalOptions="Center"  
+                         ItemsSource="{Binding DocsToPrint}">
+            <CollectionView.ItemsLayout>
+                <LinearItemsLayout Orientation="Vertical" ItemSpacing="10" />
+            </CollectionView.ItemsLayout>
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <Frame WidthRequest="800" Padding="5" CornerRadius="10" BackgroundColor="LightGray">
+                        <Grid Padding="0" ColumnDefinitions="7*,*,*">
+                            <StackLayout Spacing="0" >
+                                <StackLayout Orientation="Horizontal" Spacing="20">
+                                    <Label Text="{Binding NumberDoc}" FontSize="20" TextColor="Black"/>
+                                    <Label Text="{Binding Description}" FontSize="20" TextColor="Black"/>
+                                </StackLayout>
+                                <Label Text="{Binding ExtInfo}" FontSize="20" TextColor="Black"/>
+                            </StackLayout>
+                            <Label Text="✔" IsVisible="{Binding IsPrinted}" Grid.Column="1" VerticalOptions ="Center" FontSize="50" TextColor="Green" FontAttributes="Bold"/>
+                            <Label Text="🖨️" Grid.Column="2" VerticalOptions ="Center" FontSize="50" FontAttributes="Bold">
+                                <Label.GestureRecognizers>
+                                    <TapGestureRecognizer Tapped="OnPrintTapped"/>
+                                </Label.GestureRecognizers>
+                            </Label>
+                        </Grid>
+                    </Frame>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+
     </Grid>
 </ContentPage>
