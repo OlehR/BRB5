@@ -209,7 +209,12 @@ namespace BL.Connector
 
         public override async Task<Result> LoadDocsDataAsync(int pTypeDoc, string pNumberDoc, bool pIsClear)
         {
-            var TD = Config.GetDocSetting(pTypeDoc);
+            TypeDoc TD = null;
+            try
+            {
+                TD = Config.GetDocSetting(pTypeDoc);
+            }
+            catch { }
             try
             {
                 if (TD?.KindDoc == eKindDoc.RaitingDoc)
@@ -242,7 +247,7 @@ namespace BL.Connector
                         var res = JsonConvert.DeserializeObject<Result<Docs>>(result.Result);
                         if (res.State == 0)
                         {
-                            db.ReplaceDoc(res.Info.Doc,TD.IsOnlyHttp?pTypeDoc : 0 );
+                            db.ReplaceDoc(res.Info.Doc,TD?.IsOnlyHttp==true ?pTypeDoc : 0 );
                             db.ReplaceDocWaresSample(res.Info.Wares);
                         }
                         return new Result();

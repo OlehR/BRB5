@@ -36,6 +36,7 @@ namespace BRB6.View
 
                 foreach (var item in filtered)
                 {
+                    item.QuantityOld = item.InputQuantity;
                     DocWares.Add(item);
                 }
 
@@ -47,13 +48,16 @@ namespace BRB6.View
 
         private void Save(object sender, EventArgs e)
         {
-
             if (sender is Entry entry)
             {
                 var w = entry.BindingContext as DocWaresEx;
-                w.Quantity = w.InputQuantity;
-                w.OrderDoc = ++OrderDoc;
-                db.ReplaceDocWares(w,true);
+                if (w.QuantityOld != w.InputQuantity)
+                {
+                    w.Quantity = w.InputQuantity;
+                    w.QuantityOld = w.InputQuantity;
+                    w.OrderDoc = ++OrderDoc;
+                    db.ReplaceDocWares(w, true);
+                }
             }
         }
     }
