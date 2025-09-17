@@ -330,8 +330,13 @@ namespace BL.Connector
         {
             try
             {
-                if (pIsArchive)                
-                    return await SendRatingFilesArchiveAsync(pDoc.NumberDoc);
+                if (pIsArchive)
+                {
+                    var Res = await SendRatingFilesArchiveAsync(pDoc.NumberDoc);                    
+                    if (Res.State == 0)
+                        await SendRatingFilesAsync(pDoc.NumberDoc);
+                    return Res;
+                }
                 
                 var sw = Stopwatch.StartNew();
                 // return await SendRatingFilesAsync(pDoc.NumberDoc);
@@ -371,20 +376,32 @@ namespace BL.Connector
         string DirArx => Path.Combine(Config.PathDownloads, "arx");
         public  async Task<Result> SendRatingFilesArchiveAsync(string pNumberDoc)
         {
-            var Files = Directory.GetFiles(Path.Combine(DirArx, pNumberDoc));
-            FileLogger.WriteLogMessage($"SendRaitingFiles Files=>{Files?.Length}", eTypeLog.Full);
+            string path = Path.Combine(DirArx, pNumberDoc);
+            var Files = Directory.GetFiles(path);
+            if(!Directory.Exists(path))
+            return new Result(0, "Ok", "Фото в архіві ще немає!");
+            FileLogger.WriteLogMessage($"SendRatingFilesArchiveAsync Files=>{Files?.Length}", eTypeLog.Full);
             int Ok = 0, Error = 0, i = 0;
             //OnSave?.Invoke($"Файлів для передачі=>{Files.Count()}");
             if (Files.Length > 0)
                 foreach (var f in Files)
                 {
-                    string RR = await Http.UploadFileAsync(GetDataHTTP.Url[0][0] + "DCT/Rating/UploadFile", f);
-
-                    if (!string.IsNullOrEmpty(RR))
-                        Ok++;
-                    else
+                    try
+                    {
+                        FileLogger.WriteLogMessage($"SendRatingFilesArchiveAsync start Files=>{f}", eTypeLog.Full);
+                        string RR = await Http.UploadFileAsync(GetDataHTTP.Url[0][0] + "DCT/Rating/UploadFile", f);
+                        FileLogger.WriteLogMessage($"SendRatingFilesArchiveAsync end Files=>{f} RR", eTypeLog.Full);
+                        if (!string.IsNullOrEmpty(RR))
+                            Ok++;
+                        else
+                            Error++;
+                        Config.OnProgress?.Invoke((double)++i / (double)Files.Length);
+                    }
+                    catch(Exception e)
+                    {
+                        FileLogger.WriteLogMessage($"SendRatingFilesArchiveAsync Error=>",e);
                         Error++;
-                    Config.OnProgress?.Invoke((double)++i / (double)Files.Length);
+                    }
                 }  
             return new Result()
             {
