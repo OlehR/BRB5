@@ -3,8 +3,10 @@ using BL.Connector;
 using BRB5;
 using BRB5.Model;
 using BRB5.Model.DB;
+using CommunityToolkit.Maui.Core;
 using System;
 using System.Collections.ObjectModel;
+using CommunityToolkit.Maui.Alerts;
 
 namespace PriceChecker.View;
 
@@ -12,8 +14,9 @@ public partial class PrintPage : ContentPage
 {
 
     DB db = DB.GetDB();
-    Connector c;
+    BL.BL bl = BL.BL.GetBL();
     private TypeDoc TypeDoc;
+    public bool IsEnabledPrint { get { return Config.CodeWarehouse != 0; } }
 
     private ObservableCollection<DocVM> _docsToPrint = new ObservableCollection<DocVM>();
     public ObservableCollection<DocVM> DocsToPrint
@@ -32,14 +35,30 @@ public partial class PrintPage : ContentPage
     public PrintPage()
     {
         InitializeComponent();
-        c = ConnectorBase.GetInstance();
-        TypeDoc = new TypeDoc() { Group = eGroup.Doc, CodeDoc = 51, NameDoc = "Друк", KindDoc = eKindDoc.Normal };
+        BindingContext = this;
+    }
+    protected override void OnAppearing()
+    {
+        base.OnAppearing();
 
-        DocsToPrint = new ObservableCollection<DocVM>(db.GetDoc(TypeDoc));
+        var route = Shell.Current?.CurrentItem?.Route;
+        if (Config.TypeDoc == null)
+            return;
+
+        switch (route)
+        {
+            case "Print1":
+                TypeDoc = Config.TypeDoc.FirstOrDefault(t => t.CodeDoc == 51);
+                break;
+
+            case "Print2":
+                TypeDoc = Config.TypeDoc.FirstOrDefault(t => t.CodeDoc == 52);
+                break;
+        }
 
         Task.Run(async () =>
         {
-            var r = await c.LoadDocsDataAsync(51, null, false);
+            var r = await bl.c.LoadDocsDataAsync(51, null, false);
 
             // Оновлення на головному потоці
             MainThread.BeginInvokeOnMainThread(() =>
@@ -47,8 +66,6 @@ public partial class PrintPage : ContentPage
                 DocsToPrint = new ObservableCollection<DocVM>(db.GetDoc(TypeDoc));
             });
         });
-
-        BindingContext = this;
     }
 
     private void OnSwipedRight(object sender, SwipedEventArgs e)
@@ -59,8 +76,38 @@ public partial class PrintPage : ContentPage
         }
     }
 
-    private void OnPrintTapped(object sender, TappedEventArgs e)
+    private async void OnPrintTapped(object sender, TappedEventArgs e)
     {
+        if (sender is Label label && label.BindingContext is DocVM doc)
+        {
+            var r = db.GetDocWares(doc, 1, eTypeOrder.Scan);
+            var codes = r.Select(x => x.CodeWares);
 
+            if (IsEnabledPrint)
+            {
+                var result = bl.c.PrintHTTP(codes);
+
+                if (result.StartsWith("Print=>"))
+                {
+                    doc.State = 1; // позначаємо, що документ надрукований
+
+                    // 🔹 шукаємо Grid (батько Label 🖨️)
+                    if (label.Parent is Grid grid)
+                    {
+                        // шукаємо "✔" у колонці 1
+                        foreach (var child in grid.Children)
+                        {
+                            if (child is Label checkLabel && checkLabel.Text == "✔")
+                            {
+                                checkLabel.IsVisible = true;
+                            }
+                        }
+                    }
+                }
+
+                await DisplayAlert("Друк", result, "OK");
+            }
+        }
     }
+
 }

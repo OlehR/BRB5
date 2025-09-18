@@ -17,7 +17,12 @@
             ContentTemplate="{DataTemplate views:AdminPriceChecker}" />
     </FlyoutItem>
 
-    <FlyoutItem Title="Print Page" Route="Print">
+    <FlyoutItem Title="Установка цін" Route="Print1">
+        <ShellContent
+            Title="Print"
+            ContentTemplate="{DataTemplate views:PrintPage}" />
+    </FlyoutItem>
+    <FlyoutItem Title="Друк пакетів" Route="Print2">
         <ShellContent
             Title="Print"
             ContentTemplate="{DataTemplate views:PrintPage}" />
