@@ -20,7 +20,76 @@ namespace BL.Connector
         }
         public override IEnumerable<LoginServer> LoginServer() => [new(){Code=eLoginServer.Central,Name = "ЦБ"}];
 
-        public override ParseBarCode ParsedBarCode(string pBarCode, bool pIsHandInput)
+        
+        /// <summary>
+        /// Список Документів доступних по ролі
+        /// </summary>
+        /// <param name="pRole"></param>
+        /// <returns></returns>
+        public override IEnumerable<TypeDoc> GetTypeDoc(eRole pRole, eLoginServer pLS, eGroup pGroup = eGroup.NotDefined)=> CU.GetTypeDoc(pRole, pLS, pGroup);
+
+        public override async Task<Result> LoginAsync(string pLogin, string pPassWord, eLoginServer pLoginServer, string pBarCode = null)=> await CU.LoginAsync(pLogin,pPassWord, pLoginServer, pBarCode);
+        
+        public override WaresPrice GetPrice(ParseBarCode pBC, eTypePriceInfo pTP=eTypePriceInfo.Short)=>CU.GetPrice(pBC, pTP);
+
+        /// <summary>
+        /// Збереження Просканованих товарів в 1С
+        /// </summary>
+        /// <param name="pLogPrice"></param>
+        /// <returns></returns>
+        public override Result SendLogPrice(IEnumerable<LogPrice> pLogPrice) => CU.SendLogPrice(pLogPrice);
+
+        public override async Task<Result> LoadGuidDataAsync(bool pIsFull) => await CU.LoadGuidDataAsync(pIsFull);
+
+        /// <summary>
+        /// Завантаження документів в ТЗД (HTTP)
+        /// </summary>
+        /// <param name="pTypeDoc">0-всі документи</param>
+        /// <param name="pNumberDoc"></param>        
+        /// <param name="pIsClear"></param>
+        /// <returns></returns>
+        public override async Task<Result> LoadDocsDataAsync(int pTypeDoc, string pNumberDoc, bool pIsClear)=> await CU.LoadDocsDataAsync(pTypeDoc, pNumberDoc, pIsClear);
+
+
+        /// <summary>
+        /// Вивантаження документів з ТЗД (HTTP)
+        /// </summary>
+        /// <param name="pDoc"></param>
+        /// <param name="pWares"></param>
+        /// <param name="pIsClose"></param>
+        /// <returns></returns>
+        public override async Task<Result> SendDocsDataAsync(DocVM pDoc, IEnumerable<DocWares> pWares) => await CU.SendDocsDataAsync(pDoc, pWares);
+
+        /// <summary>
+        /// Друк на стаціонарному термопринтері
+        /// </summary>
+        /// <param name="codeWares">Список товарів</param>
+        /// <returns></returns>        
+        public override string PrintHTTP(IEnumerable<long> pCodeWares) => CU.PrintHTTP(pCodeWares);        
+
+        public override async Task<Result<int>> GetIdRaitingTemplate() => await CU.GetIdRaitingTemplate();
+
+        public override async Task<Result> GetNumberDocRaiting() => await CU.GetNumberDocRaiting();
+
+        public override async Task<Result> SaveTemplate(RaitingTemplate pRT)=> await CU.SaveTemplate(pRT);
+
+        public override async Task<Result> SaveDocRaiting(DocVM pDoc)=> await CU.SaveDocRaiting(pDoc);
+
+        public override async Task<Result<IEnumerable<RaitingTemplate>>> GetRaitingTemplateAsync()=> await CU.GetRaitingTemplateAsync();
+
+        public override async Task<Result<IEnumerable<Doc>>> GetRaitingDocsAsync()=> await CU.GetRaitingDocsAsync();
+
+        public override async Task<Result<IEnumerable<DocVM>>> GetPromotion(int pCodeWarehouse) => await CU.GetPromotion(pCodeWarehouse);
+
+        public override async Task<Result<IEnumerable<DocWares>>> GetPromotionData(string pNumberDoc) => await CU.GetPromotionData(pNumberDoc);
+
+        public override async Task<Result> GetInfo()=> await CU.GetInfo();        
+    }
+}
+
+/*
+  
+ public override ParseBarCode ParsedBarCode(string pBarCode, bool pIsHandInput)
         {
             ParseBarCode res = new ParseBarCode();
             if (string.IsNullOrEmpty(pBarCode))
@@ -104,44 +173,7 @@ namespace BL.Connector
             return res;
         }
 
-        /// <summary>
-        /// Список Документів доступних по ролі
-        /// </summary>
-        /// <param name="pRole"></param>
-        /// <returns></returns>
-        public override IEnumerable<TypeDoc> GetTypeDoc(eRole pRole, eLoginServer pLS, eGroup pGroup = eGroup.NotDefined)=> CU.GetTypeDoc(pRole, pLS, pGroup);
-
-        public override async Task<Result> LoginAsync(string pLogin, string pPassWord, eLoginServer pLoginServer, string pBarCode = null)=> await CU.LoginAsync(pLogin,pPassWord, pLoginServer, pBarCode);
-        
-        public override WaresPrice GetPrice(ParseBarCode pBC, eTypePriceInfo pTP=eTypePriceInfo.Short)=>CU.GetPrice(pBC, pTP);
-
-        /// <summary>
-        /// Збереження Просканованих товарів в 1С
-        /// </summary>
-        /// <param name="pLogPrice"></param>
-        /// <returns></returns>
-        public override Result SendLogPrice(IEnumerable<LogPrice> pLogPrice) => CU.SendLogPrice(pLogPrice);
-
-        public override async Task<Result> LoadGuidDataAsync(bool pIsFull) => await CU.LoadGuidDataAsync(pIsFull);
-
-        /// <summary>
-        /// Завантаження документів в ТЗД (HTTP)
-        /// </summary>
-        /// <param name="pTypeDoc">0-всі документи</param>
-        /// <param name="pNumberDoc"></param>        
-        /// <param name="pIsClear"></param>
-        /// <returns></returns>
-        public override async Task<Result> LoadDocsDataAsync(int pTypeDoc, string pNumberDoc, bool pIsClear)=> await CU.LoadDocsDataAsync(pTypeDoc, pNumberDoc, pIsClear);
-
-
-        /// <summary>
-        /// Вивантаження документів з ТЗД (HTTP)
-        /// </summary>
-        /// <param name="pDoc"></param>
-        /// <param name="pWares"></param>
-        /// <param name="pIsClose"></param>
-        /// <returns></returns>
-        public override async Task<Result> SendDocsDataAsync(DocVM pDoc, IEnumerable<DocWares> pWares)
+ public override async Task<Result> SendDocsDataAsync(DocVM pDoc, IEnumerable<DocWares> pWares)
         {
             var r = pWares.Select(el => new decimal[] { el.OrderDoc, el.CodeWares, el.InputQuantity });
             var res = new ApiSaveDoc(153, pDoc.TypeDoc, pDoc.NumberDoc, r);
@@ -162,36 +194,8 @@ namespace BL.Connector
                 return new Result(e);
             }
         }
-        
-        /// <summary>
-        /// Друк на стаціонарному термопринтері
-        /// </summary>
-        /// <param name="codeWares">Список товарів</param>
-        /// <returns></returns>        
-        public override string PrintHTTP(IEnumerable<long> pCodeWares) => CU.PrintHTTP(pCodeWares);        
+          
 
-        public override async Task<Result<int>> GetIdRaitingTemplate() => await CU.GetIdRaitingTemplate();
-
-        public override async Task<Result> GetNumberDocRaiting() => await CU.GetNumberDocRaiting();
-
-        public override async Task<Result> SaveTemplate(RaitingTemplate pRT)=> await CU.SaveTemplate(pRT);
-
-        public override async Task<Result> SaveDocRaiting(DocVM pDoc)=> await CU.SaveDocRaiting(pDoc);
-
-        public override async Task<Result<IEnumerable<RaitingTemplate>>> GetRaitingTemplateAsync()=> await CU.GetRaitingTemplateAsync();
-
-        public override async Task<Result<IEnumerable<Doc>>> GetRaitingDocsAsync()=> await CU.GetRaitingDocsAsync();
-
-        public override async Task<Result<IEnumerable<DocVM>>> GetPromotion(int pCodeWarehouse) => await CU.GetPromotion(pCodeWarehouse);
-
-        public override async Task<Result<IEnumerable<DocWares>>> GetPromotionData(string pNumberDoc) => await CU.GetPromotionData(pNumberDoc);
-
-        public override async Task<Result> GetInfo()=> await CU.GetInfo();        
-    }
-}
-
-/*
-  
     public override IEnumerable<TypeDoc> GetTypeDoc(eRole pRole, eLoginServer pLS, eGroup pGroup = eGroup.NotDefined)
         {
             return CU.GetTypeDoc(pRole, pLS, pGroup);
