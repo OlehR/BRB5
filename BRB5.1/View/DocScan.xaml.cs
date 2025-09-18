@@ -26,7 +26,7 @@ namespace BRB6.View
         public bool IsSoftKeyboard { get { return Config.IsSoftKeyboard; } }
         public bool IsVisScan { get { return Config.TypeScaner == eTypeScaner.Camera; } }
         public bool IsViewReason { get { return TypeDoc.IsViewReason; } }
-        private DocId DocId;
+        private DocVM DocId;
         private bool _IsVisQ = false;
         public bool IsVisQ { get { return _IsVisQ; } set { _IsVisQ = value; OnPropertyChanged(nameof(IsVisQ)); } }
         private bool _IsVisQOk = false;
@@ -46,7 +46,7 @@ namespace BRB6.View
         //ZXingScannerView zxing;
         private ObservableCollection<DocWaresEx> _originalListWares;
 
-        public DocScan(DocId pDocId, TypeDoc pTypeDoc = null)
+        public DocScan(DocVM pDocId, TypeDoc pTypeDoc = null)
         {
             InitializeComponent();
             NokeyBoard();
@@ -69,10 +69,7 @@ namespace BRB6.View
             this.BindingContext = this;
         }
 
-        private void HandBarCode(object sender, EventArgs e)
-        {
-            BarCode(inputBarCode.Text, true);
-        }
+        private void HandBarCode(object sender, EventArgs e)=> BarCode(inputBarCode.Text, true);
         void BarCode(string pBarCode) => BarCode(pBarCode, false);
         void BarCode(string pBarCode, bool IsHandInput)
         {
@@ -81,8 +78,6 @@ namespace BRB6.View
             if (ScanData != null)
             {
                 ScanData.BarCode = pBarCode;
-
-                ScanData.CodeReason = _defaultReason.CodeReason; // завжди дефолт
                 ReasonPicker.SelectedItem = _defaultReason;
 
                 if (ScanData.QuantityBarCode > 0) ScanData.InputQuantity = ScanData.QuantityBarCode;
@@ -389,11 +384,7 @@ namespace BRB6.View
 
             ReasonPicker.ItemsSource = Reasons;
             ReasonPicker.SelectedItem = _defaultReason;
-
-            if (ScanData != null)
-                ScanData.CodeReason = _defaultReason.CodeReason;
         }
-
 
         private void ReasonPicker_SelectedIndexChanged(object sender, EventArgs e)
         {
@@ -408,7 +399,8 @@ namespace BRB6.View
 
             if (ReasonPicker.SelectedItem is BRB5.Model.DB.Reason selectedReason && ScanData != null)
             {
-                ScanData.CodeReason = selectedReason.CodeReason;
+                if (selectedReason.CodeReason == 0 && DocId.CodeReason == 1) ScanData.CodeReason = -1;
+                else ScanData.CodeReason = selectedReason.CodeReason;
             }
         }
         private void ReasonUnfocus(object sender, FocusEventArgs e)

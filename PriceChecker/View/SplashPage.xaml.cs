@@ -1,4 +1,5 @@
 ﻿using BL;
+using BRB5;
 using BRB5.Model;
 using System.Threading.Tasks;
 using System.Timers;
@@ -18,6 +19,10 @@ public partial class SplashPage : ContentPage
         InitializeComponent();
         bl.Init();
         SetShopBranding();
+        Config.TypeDoc = new[]{
+            new TypeDoc { Group = eGroup.Doc, CodeDoc = 51, NameDoc = "Установка цін", KindDoc = eKindDoc.Normal },
+            new TypeDoc { Group = eGroup.Doc, CodeDoc = 52, NameDoc = "Друк пакетів", KindDoc = eKindDoc.Normal } 
+        };
     }
     private void SetShopBranding()
     {
