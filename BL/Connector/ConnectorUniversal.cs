@@ -170,8 +170,12 @@ namespace BL.Connector
                     if (result.HttpState == eStateHTTP.HTTP_OK)
                     {
                         var res = JsonConvert.DeserializeObject<Result<WaresPrice>>(result.Result);
+
                         if (res.Info != null)
-                            res.Info.ParseBarCode = pBC;
+                        {
+                            Res = res.Info;
+                            Res.ParseBarCode = pBC;
+                        }
                         //return res.Info;
                     }
                 }
