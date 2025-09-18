@@ -153,6 +153,7 @@ namespace BL.Connector
 
         public override WaresPrice GetPrice(ParseBarCode pBC, eTypePriceInfo pTP = eTypePriceInfo.Short)
         {
+            Config.OnProgress?.Invoke(0.3d);
             //Config.TypeDoc.Where(el => el.KindDoc == eKindDoc.PriceCheck).FirstOrDefault();
             WaresPrice Res = null;
             if (IsLocalPrice)
@@ -162,21 +163,36 @@ namespace BL.Connector
             }
             else
             {
-                ApiPrice Data = new ApiPrice() { CodeWares = pBC.CodeWares, Article = pBC.Article, BarCode = pBC.BarCode, CodeWarehouse = Config.CodeWarehouse };
-                HttpResult result = GetDataHTTP.HTTPRequest(0, "DCT/GetPrice", Data.ToJson(), "application/json", null);
-                if (result.HttpState == eStateHTTP.HTTP_OK)
+                try
                 {
-                    var res = JsonConvert.DeserializeObject<Result<WaresPrice>>(result.Result);
-                    if (res.Info != null)
-                        res.Info.ParseBarCode = pBC;
-                    return res.Info;
+                    ApiPrice Data = new ApiPrice() { CodeWares = pBC.CodeWares, Article = pBC.Article, BarCode = pBC.BarCode, CodeWarehouse = Config.CodeWarehouse };
+                    HttpResult result = GetDataHTTP.HTTPRequest(0, "DCT/GetPrice", Data.ToJson(), "application/json", null);
+                    if (result.HttpState == eStateHTTP.HTTP_OK)
+                    {
+                        var res = JsonConvert.DeserializeObject<Result<WaresPrice>>(result.Result);
+                        if (res.Info != null)
+                            res.Info.ParseBarCode = pBC;
+                        //return res.Info;
+                    }
+                }
+                catch (Exception e)
+                {
+                    FileLogger.WriteLogMessage(this, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+                    Res = new WaresPrice(-1, e.Message);
                 }
             }
+            Config.OnProgress?.Invoke(0.9d);
             return Res;
         }
-
+        /// <summary>
+        /// Збереження Просканованих товарів в 1С
+        /// </summary>
+        /// <param name="pLogPrice"></param>
+        /// <returns></returns>
         public override Result SendLogPrice(IEnumerable<LogPrice> pLogPrice)
         {
+            if (pLogPrice != null && pLogPrice.Count() < 1)
+                return new Result(-1, "Відсутні дані на відправку");
             try
             {
                 string Data = new LogPriceSave()
@@ -262,32 +278,7 @@ namespace BL.Connector
             }
         }
 
-        public override async Task<Result<IEnumerable<RaitingTemplate>>> GetRaitingTemplateAsync() 
-        {
-            try
-            {
-                var result = await GetDataHTTP.HTTPRequestAsync(0, "DCT/Rating/GetRatingTemplate", $"{Config.CodeUser}", "application/json", null, null, 120);
-                if (result.HttpState == eStateHTTP.HTTP_OK)
-                {
-                    var res = JsonConvert.DeserializeObject<Result<IEnumerable<RaitingTemplate>>>(result.Result);
-                    if (res.State == 0)
-                    {
-                        db.ReplaceRaitingTemplate(res.Info);
-                        foreach (var el in res.Info)
-                            db.ReplaceRaitingTemplateItem(el.Item);
-                        return res;
-                    }
-                    return new();
-                }
-                return new(result);
-            }
-            catch (Exception e)
-            {
-                FileLogger.WriteLogMessage(this, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return new (e);
-            }
-        }
-
+        
         /// <summary>
         /// Вивантаження документів з ТЗД (HTTP)
         /// </summary>
@@ -672,6 +663,145 @@ namespace BL.Connector
             return res;
         }
 
+        /// <summary>
+        /// Друк на стаціонарному термопринтері
+        /// </summary>
+        /// <param name="codeWares">Список товарів</param>
+        /// <returns></returns>        
+        public override string PrintHTTP(IEnumerable<long> pCodeWares)
+        {
+            string Data = string.Join(",", pCodeWares);
+
+            try
+            {
+                string json = new ApiPrintHTTP(Data).ToJSON(); //Config.GetApiJson(999, BuildConfig.VERSION_CODE, "\"CodeWares\":\"" + sb.toString() + "\"");
+                HttpResult res = GetDataHTTP.HTTPRequest(0, "print/", json, "application/json", null, null);//"http://znp.vopak.local:8088/Print"
+                if (res.HttpState == eStateHTTP.HTTP_OK)
+                {
+                    return res.Result;
+                    //JSONObject jObject = new JSONObject(result.Result);
+                }
+                return res.HttpState.ToString();
+            }
+            catch (Exception e)
+            {
+                FileLogger.WriteLogMessage(this, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+                return e.Message;
+            }
+        }
+        #region Raiting
+        public override async Task<Result<int>> GetIdRaitingTemplate()
+        {
+            HttpResult result = await GetDataHTTP.HTTPRequestAsync(0, "DCT/Raitting/GetIdRaitingTemplate", null, "application/json", "brb", "brb");//
+
+            if (result.HttpState == eStateHTTP.HTTP_OK)
+            {
+                var r = JsonConvert.DeserializeObject<Result<int>>(result.Result);
+                return r;
+            }
+            return null;
+        }
+
+        public override async Task<Result> GetNumberDocRaiting()
+        {
+            HttpResult result = await GetDataHTTP.HTTPRequestAsync(0, "DCT/Raitting/GetNumberDocRaiting", null, "application/json", "brb", "brb");//
+
+            if (result.HttpState == eStateHTTP.HTTP_OK)
+            {
+                var r = JsonConvert.DeserializeObject<Result>(result.Result);
+                return r;
+            }
+            return null;
+        }
+
+        public override async Task<Result> SaveTemplate(RaitingTemplate pRT)
+        {
+            HttpResult result = await GetDataHTTP.HTTPRequestAsync(0, "DCT/Raitting/SaveTemplate", pRT.ToJSON("yyyy-MM-ddTHH:mm:ss"), "application/json", "brb", "brb");//
+
+            if (result.HttpState == eStateHTTP.HTTP_OK)
+            {
+                var r = JsonConvert.DeserializeObject<Result>(result.Result);
+                return r;
+            }
+            return null;
+        }
+
+        public override async Task<Result> SaveDocRaiting(DocVM pDoc)
+        {
+            HttpResult result = await GetDataHTTP.HTTPRequestAsync(0, "DCT/Raitting/SaveDocRaiting", pDoc.ToJSON("yyyy-MM-ddTHH:mm:ss"), "application/json", "brb", "brb");//
+
+            if (result.HttpState == eStateHTTP.HTTP_OK)
+            {
+                var r = JsonConvert.DeserializeObject<Result>(result.Result);
+                return r;
+            }
+            return null;
+        }
+
+        public override async Task<Result<IEnumerable<RaitingTemplate>>> GetRaitingTemplateAsync()
+        {
+            try
+            {
+                var result = await GetDataHTTP.HTTPRequestAsync(0, "DCT/Rating/GetRatingTemplate", $"{Config.CodeUser}", "application/json", null, null, 120);
+                if (result.HttpState == eStateHTTP.HTTP_OK)
+                {
+                    var res = JsonConvert.DeserializeObject<Result<IEnumerable<RaitingTemplate>>>(result.Result);
+                    if (res.State == 0)
+                    {
+                        db.ReplaceRaitingTemplate(res.Info);
+                        foreach (var el in res.Info)
+                            if (el.Item.Any())
+                                db.ReplaceRaitingTemplateItem(el.Item);
+                        return res;
+                    }
+                    return new();
+                }
+                return new(result);
+            }
+            catch (Exception e)
+            {
+                FileLogger.WriteLogMessage(this, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+                return new(e);
+            }
+        }
+ 
+        public override async Task<Result<IEnumerable<Doc>>> GetRaitingDocsAsync()
+        {
+            HttpResult result = await GetDataHTTP.HTTPRequestAsync(0, "DCT/Raitting/GetRaitingDocs", null, "application/json", "brb", "brb");//
+
+            if (result.HttpState == eStateHTTP.HTTP_OK)
+            {
+                var r = JsonConvert.DeserializeObject<IEnumerable<DocVM>>(result.Result);
+                return new Result<IEnumerable<Doc>>() { Info = r };
+            }
+            else
+                return new Result<IEnumerable<Doc>>(result, null);
+        }
+
+        public override async Task<Result<IEnumerable<DocVM>>> GetPromotion(int pCodeWarehouse)
+        {
+            HttpResult result = await GetDataHTTP.HTTPRequestAsync(0, "DCT/CheckPromotion/Doc", pCodeWarehouse.ToJSON(), "application/json", "brb", "brb");
+
+            if (result.HttpState == eStateHTTP.HTTP_OK)
+            {
+                var r = JsonConvert.DeserializeObject<Result<IEnumerable<DocVM>>>(result.Result);
+                return r;
+            }
+            return null;
+        }
+
+        public override async Task<Result<IEnumerable<DocWares>>> GetPromotionData(string pNumberDoc)
+        {
+            HttpResult result = await GetDataHTTP.HTTPRequestAsync(0, "DCT/CheckPromotion/GetPromotionData", "\"" + pNumberDoc + "\"", "application/json", "brb", "brb");
+
+            if (result.HttpState == eStateHTTP.HTTP_OK)
+            {
+                var r = JsonConvert.DeserializeObject<Result<IEnumerable<DocWares>>>(result.Result);
+                return r;
+            }
+            return null;
+        }
+        #endregion
     }
 
 }
