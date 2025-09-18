@@ -339,7 +339,7 @@ namespace BL.Connector
                 string Data = new RaitingDocForSave() 
                 { NumberDoc=pDoc.NumberDoc, CodeUser = Config.CodeUser, DTEnd = pDoc.DTEnd, DTStart = pDoc.DTStart, Item = pR.Select(el=>new RaitingDocItemSave(el) ) 
                 }.ToJSON("yyyy-MM-ddTHH:mm:ss.ffff");
-                HttpResult result = GetDataHTTP.HTTPRequest(0, @"DCT\Rating\SaveRating", Data, "application/json", Config.Login, Config.Password,120);
+                HttpResult result = GetDataHTTP.HTTPRequest(0, @"DCT\Rating\SaveRating", Data, "application/json", Config.Login, Config.Password,180);
                 sw.Stop();
                 TimeSpan TimeSend = sw.Elapsed;
                 string mes= $"Збереження відповідей=>{result.HttpState} за {TimeSend.TotalSeconds:n1}c";
