@@ -1126,7 +1126,7 @@ DE.ExpirationDateInput, DE.QuantityInput
 from 
     (SELECT dw.CodeWares, sum(dw.Quantity) as Fact,0 as plan ,case when dw.Quantity=0 then 0 else  dw.CodeReason end as CodeReason  from DocWares  dw 
         where dw.TypeDoc={Doc.TypeDoc} and dw.NumberDoc= '{Doc.NumberDoc}'
-        group by dw.CodeWares,,case when dw.Quantity=0 then 0 else  dw.CodeReason end
+        group by dw.CodeWares,case when dw.Quantity=0 then 0 else  dw.CodeReason end
      union all
      SELECT dw.CodeWares, 0 as Fact,sum(dw.Quantity) as plan, dw.CodeReason as CodeReason from DocWaresSample  dw 
         where dw.TypeDoc={Doc.TypeDoc}  and dw.NumberDoc= '{Doc.NumberDoc}'

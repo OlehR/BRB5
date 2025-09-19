@@ -4,6 +4,7 @@ using BL.Connector;
 using BRB5;
 using BRB5.Model;
 using BRB6.View;
+using Microsoft.Extensions.Logging.Abstractions;
 using System.Collections.ObjectModel;
 using Docs = BRB6.View.Docs;
 
@@ -57,8 +58,7 @@ namespace BRB6
                 System.Diagnostics.Debug.WriteLine(ex);
             }
         }
-
-       
+               
         public void Dispose() { Config.BarCode -= BarCode; }
         void BarCode(string pBC)
         {
@@ -95,6 +95,7 @@ namespace BRB6
 
                         SLLogin.IsVisible = false;
                         ListDocs.IsVisible = true;
+                        ExitLabel.IsVisible = true;
                     });
                     Bl.OnButtonLogin(Login, Password, DeviceInfo.Platform == DevicePlatform.Android);
 
@@ -171,9 +172,10 @@ namespace BRB6
                     Dispatcher.Dispatch(() =>
                     {
                         OCTypeDoc?.Clear();
-                        var r = c.GetTypeDoc(Config.Role, Config.LoginServer, vTypeDoc.Group);
+                        var r = c.GetTypeDoc(Config.Role, Config.LoginServer, vTypeDoc.Group).Where(x => x.KindDoc != eKindDoc.NotDefined);                        
                         foreach (var i in r) OCTypeDoc.Add(i);
                         IsVisibleBack = true;
+                        ExitLabel.IsVisible = false;
                     });
                     break;
                 default:
@@ -254,6 +256,7 @@ namespace BRB6
         private void OnAuthorizationClicked(object sender, EventArgs e)
         {
             ListDocs.IsVisible = false;
+            ExitLabel.IsVisible = false;
             SLLogin.IsVisible = true;
         }
         private void BackToMainList(object sender, EventArgs e)
@@ -261,6 +264,7 @@ namespace BRB6
             Dispatcher.Dispatch(() =>
             {
                 IsVisibleBack = false;
+                ExitLabel.IsVisible = true;
                 OCTypeDoc?.Clear();
                 var r = c.GetTypeDoc(Config.Role, Config.LoginServer);
                 foreach (var i in r) OCTypeDoc.Add(i);
@@ -303,6 +307,17 @@ namespace BRB6
                     BarcodeScaner.PauseScanning = false;
                 });
             }
+        }
+
+        private void Exit(object sender, TappedEventArgs e)
+        {
+            Password = string.Empty;
+            Config.IsAutoLogin = false;
+            db.SetConfig<bool>("IsAutoLogin", Config.IsAutoLogin);
+            db.SetConfig<string>("Password", Password);
+            passwordEntry.Text = Password;
+            loginEntry.Text = string.Empty;
+            OnAuthorizationClicked(null, null);
         }
     }
 }

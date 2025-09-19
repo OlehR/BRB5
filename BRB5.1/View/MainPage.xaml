@@ -58,15 +58,10 @@
         <StackLayout x:Name="ListDocs" IsVisible="false">
             <Button Text="Назад" ImageSource="back_small.png" IsVisible="{Binding IsVisibleBack}"
                     FontSize="Large" BackgroundColor="White" BorderColor="White"
-                    Clicked="BackToMainList"
-                    Style="{StaticResource ButtonStyle}" />
+                    Clicked="BackToMainList" Style="{StaticResource ButtonStyle}" />
             <ListView  ItemTapped="OnItemTapped" x:Name="ListDocsButton"
                   HasUnevenRows="True"
-                  ItemsSource="{Binding OCTypeDoc}">
-                <ListView.Header>
-                    <StackLayout Orientation="Horizontal">
-                    </StackLayout>
-                </ListView.Header>
+                  ItemsSource="{Binding OCTypeDoc}">                
                 <!-- ItemTapped="OnItemTapped"-->
                 <ListView.ItemTemplate>
                     <DataTemplate xmlns:brb5="clr-namespace:BRB6">
@@ -85,10 +80,14 @@
             </ListView>
         </StackLayout>
 
-        <ProgressBar x:Name="MyProgress" ScaleY="2"
-    Progress="{Binding PB}"
-     VerticalOptions="EndAndExpand"
-     ProgressColor="Black"
+        <Grid Margin="5" Padding="5" x:Name="ExitLabel" BackgroundColor="#E2B2A7" VerticalOptions="EndAndExpand">
+            <Grid.GestureRecognizers>
+                <TapGestureRecognizer Tapped="Exit" />
+            </Grid.GestureRecognizers>
+            <Label Text="Вихід"  TextColor="{AppThemeBinding Light='#000000', Dark='#FFFFFF'}" FontSize="Large" HorizontalOptions="Center"/>
+        </Grid>
+        
+        <ProgressBar x:Name="MyProgress" ScaleY="2" Progress="{Binding PB}" ProgressColor="Black"
                      IsVisible="False"/>
 
     </StackLayout>
