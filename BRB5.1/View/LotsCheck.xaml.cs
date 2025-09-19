@@ -33,6 +33,7 @@ public partial class LotsCheck : ContentPage
 
         IsWares = TypeDoc.KindDoc == eKindDoc.Lot;
         F2SaveLabel.IsVisible = !IsWares;
+        F4ResaveLabel.IsVisible = !IsWares;
         //F3FilterLabel.IsVisible = IsWares;
 
         var reasonsFromDb = db.GetReason(TypeDoc.KindDoc);
@@ -274,7 +275,6 @@ public partial class LotsCheck : ContentPage
         }
     }
 
-
     public void ScrollToSelected()
     {
         if (SelectedDoc == null)
@@ -298,90 +298,94 @@ public partial class LotsCheck : ContentPage
     }
     private async void F2Save(object sender, EventArgs e)
     {
-        if (IsWares) return;
-        if (SelectedDoc == null)
+        if (IsWares || SelectedDoc == null)
             return;
 
-        await SaveAndResendAsync(SelectedDoc);
+        await SaveCurrentDocAsync(SelectedDoc, true);
     }
-    private async Task SaveAndResendAsync(DocVM doc)
+    private async Task SaveCurrentDocAsync(DocVM doc, bool tryResendOthers)
     {
+        var result = await c.SendDocsDataAsync(doc, null);
 
-        var result = await c.SendDocsDataAsync(SelectedDoc, null);
-
-        ////TMP!!!!
-        //var result = new UtilNetwork.Result(0, "успішно");
-
-        if (result.State == 0) // 0 = success
+        if (result.State == 0) // success
         {
-            var toast = Toast.Make("Збереження: " + result.TextError + " " + result.Info, ToastDuration.Long, 14); 
-            SelectedDoc.State = 1;
+            var toast = Toast.Make("Збереження: " + result.TextError + " " + result.Info, ToastDuration.Long, 14);
+            doc.State = 1;
             MainThread.BeginInvokeOnMainThread(async () =>
             {
-                await toast.Show();                
-                UpdateDocColor(SelectedDoc);
+                await toast.Show();
+                UpdateDocColor(doc);
             });
         }
         else
         {
-            SelectedDoc.State = -1;
+            doc.State = -1;
             MainThread.BeginInvokeOnMainThread(async () =>
             {
-                await DisplayAlert("Помилка", "Не вдалося зберегти (Збережено локально)" + result.TextError + " " + result.Info, "OK");
-                UpdateDocColor(SelectedDoc);
+                await DisplayAlert("Помилка", "Не вдалося зберегти (Збережено локально)"
+                    + result.TextError + " " + result.Info, "OK");
+                UpdateDocColor(doc);
             });
         }
-        var t = db.SetStateDoc(SelectedDoc);
+
+        db.SetStateDoc(doc);
+
         if (TypeDoc.LinkedCodeDoc != 0)
         {
-            Doc dl = (Doc)SelectedDoc.Clone();
+            Doc dl = (Doc)doc.Clone();
             dl.TypeDoc = TypeDoc.LinkedCodeDoc;
             db.ReplaceDoc([dl]);
         }
 
-        // Якщо успіх, пробуємо надіслати решту
-        if (result.State == 0)
+        if (result.State == 0 && tryResendOthers)
         {
-            int successCount = 0;
-            int failCount = 0;
-
-            foreach (var d in MyDocs.Where(x => x.State == -1).ToList())
-            {
-                if (d == SelectedDoc) continue;
-
-                var subResult = await c.SendDocsDataAsync(d, null);
-               
-                ////TMP!!!!
-                //var subResult = new UtilNetwork.Result(-1, "не успішно");
-
-                MainThread.BeginInvokeOnMainThread(() =>
-                {
-                    if (subResult.State == 0)
-                    {
-                        d.State = 1; // успішно
-                        successCount++;
-                    }
-                    else
-                    {
-                        d.State = -1; // помилка
-                        failCount++;
-                    }
-                    UpdateDocColor(d);
-                });
-
-                t = db.SetStateDoc(SelectedDoc);
-            }
-            // після циклу — показати результат
-            if (successCount + failCount > 0) {
-                MainThread.BeginInvokeOnMainThread(async () =>
-                {
-                    var toast = Toast.Make(
-                        $"Збереження: OK. Додатково надіслано: {successCount}, Помилок: {failCount}",
-                        ToastDuration.Long, 14);
-                    await toast.Show();
-                }); 
-            }
+            await ResendFailedDocsAsync();
         }
+    }
+
+    private async Task ResendFailedDocsAsync()
+    {
+        int successCount = 0;
+        int failCount = 0;
+
+        foreach (var d in MyDocs.Where(x => x.State == -1).ToList())
+        {
+            if (d == SelectedDoc) continue;
+
+            var subResult = await c.SendDocsDataAsync(d, null);
+
+            MainThread.BeginInvokeOnMainThread(() =>
+            {
+                if (subResult.State == 0)
+                {
+                    d.State = 1; // успішно
+                    successCount++;
+                }
+                else
+                {
+                    d.State = -1; // помилка
+                    failCount++;
+                }
+                UpdateDocColor(d);
+            });
+
+            db.SetStateDoc(d);
+        }
+
+        if (successCount + failCount > 0)
+        {
+            MainThread.BeginInvokeOnMainThread(async () =>
+            {
+                var toast = Toast.Make(
+                    $"Дозбереження завершено. Успішно: {successCount}, Помилок: {failCount}",
+                    ToastDuration.Long, 14);
+                await toast.Show();
+            });
+        }
+    }
+    private async void F4Resave(object sender, TappedEventArgs e)
+    {
+        await ResendFailedDocsAsync();
     }
     private void UpdateDocColor(DocVM doc)
     {        
@@ -421,9 +425,13 @@ public partial class LotsCheck : ContentPage
             case Keycode.F3:
                 F3Filter(null, EventArgs.Empty);
                 return;
+            case Keycode.F4:
+                F3Filter(null, EventArgs.Empty);
+                return;
             default:
                 return;
         }
     }
+
 #endif
 }

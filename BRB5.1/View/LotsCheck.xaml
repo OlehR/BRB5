@@ -14,6 +14,11 @@
                     <TapGestureRecognizer Tapped="F2Save" />
                 </Label.GestureRecognizers>
             </Label>
+            <Label Text="F4- Дозберегти" x:Name="F4ResaveLabel" HorizontalOptions="Start" VerticalOptions="Center" IsVisible="False"  >
+                <Label.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="F4Resave" />
+                </Label.GestureRecognizers>
+            </Label>
             <!--<Label Text="{Binding FilterLabel}" 
                    x:Name="F3FilterLabel"
                    IsVisible="False"  
