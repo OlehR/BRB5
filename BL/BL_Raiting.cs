@@ -105,9 +105,9 @@ namespace BL
         }
 
         public void InitTimerRDI()
-        { 
-            t = new Timer(3 * 60 * 1000) { AutoReset = true }; //3 хв
-            t.Elapsed += new ElapsedEventHandler(OnTimedEvent);
+        {
+            t = new Timer(3 * 60 * 1000) { AutoReset = true, Enabled = true }; //3 хв
+            t.Elapsed += OnTimedEvent;
         }
         public void StartTimerRDI() 
         {
@@ -116,6 +116,7 @@ namespace BL
         }
 
         public void StopTimerRDI() {
+            t.Elapsed -= OnTimedEvent;
             t?.Stop();
             t?.Dispose();
             t=null;

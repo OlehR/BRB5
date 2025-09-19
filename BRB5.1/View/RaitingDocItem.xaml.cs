@@ -87,7 +87,7 @@ namespace BRB6
 
                 NavigationPage.SetHasNavigationBar(this, DeviceInfo.Platform == DevicePlatform.iOS);
                 this.BindingContext = this;
-                Bl.InitTimerRDI();
+                //Bl.InitTimerRDI();
 
                 Bl.c.OnSave += (Res) => Dispatcher.Dispatch(() =>
                 {
