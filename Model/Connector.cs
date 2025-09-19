@@ -94,11 +94,13 @@ namespace BRB5.Model
             if(CustomerBarCode == null || CustomerBarCode.Count() == 0)
                 return Res;
             int Code, Data, Data2, Operator;
+            bool IsFound;
             foreach (var el in CustomerBarCode.Where( el => el.TypeBarCode==eTypeBarCode.ManualInput || el.KindBarCode == eKindBarCode.EAN13 || el.KindBarCode == eKindBarCode.Code128 || el.KindBarCode == eKindBarCode.QR /*&& (el.TypeBarCode == eTypeBarCode.WaresWeight || el.TypeBarCode == eTypeBarCode.WaresUnit )*/))
             {
                 try
                 {
                     Code = 0; Data = 0; Data2 = 0; Operator = 0; 
+                    IsFound = false;
                     if (el.TypeBarCode != eTypeBarCode.ManualInput && (string.IsNullOrEmpty(el.Separator) && el.TotalLenght != pBarCode.Length))
                         continue;
                    
@@ -110,10 +112,14 @@ namespace BRB5.Model
                             Code = D[0].ToInt();
                             Data = D.Length > 1 ? D[1].ToInt() : 0;
                             Data2 = D.Length > 2 ? D[2].ToInt() : 0;
-                        }
+                            IsFound = true;
+                        }                        
                     }
                     if (pIsHandInput && el.TypeBarCode == eTypeBarCode.ManualInput && pBarCode.Trim().Length <= el.LenghtCode)
+                    {
+                        IsFound = true;
                         Code = pBarCode.ToInt();
+                    }
 
                     if (Code == 0 && !string.IsNullOrEmpty(el.Prefix) && el.Prefix.Equals(pBarCode[..el.Prefix.Length]))
                     {
@@ -127,11 +133,13 @@ namespace BRB5.Model
                             Data = Convert.ToInt32(pBarCode.Substring(el.Prefix.Length + el.LenghtCode, el.LenghtOperator+el.LenghtPrice)); ///TMP!!! el.LenghtOperator
                         if (el.LenghtQuantity > 0)
                             Data = Convert.ToInt32(pBarCode.Substring(el.Prefix.Length + el.LenghtCode + el.LenghtOperator, el.LenghtQuantity));
+                        IsFound = true;
                     }
+                    if(!IsFound) continue;
                     if (Operator > 0 && el.LenghtOperator > 0) Res.CodeOperator = Operator;
                     if (Data > 0 && el.LenghtQuantity > 0) Res.Quantity = el.TypeBarCode== eTypeBarCode.WaresWeight? Data/1000m : Data;
-                    if (Data > 0 && el.TypeBarCode == eTypeBarCode.PriceTag) Res.Price = Data;
-                    if (Data2 > 0 && el.TypeBarCode == eTypeBarCode.PriceTag) Res.PriceOpt = Data2;
+                    if (Data > 0 && el.TypeBarCode == eTypeBarCode.PriceTag) Res.Price = (decimal)Data /100m;
+                    if (Data2 > 0 && el.TypeBarCode == eTypeBarCode.PriceTag) Res.PriceOpt = (decimal)Data2/100m;
 
                     Res.TypeCode = el.TypeCode;
                     switch (el.TypeCode)
