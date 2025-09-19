@@ -33,7 +33,7 @@ public partial class LotsCheck : ContentPage
 
         IsWares = TypeDoc.KindDoc == eKindDoc.Lot;
         F2SaveLabel.IsVisible = !IsWares;
-        F4ResaveLabel.IsVisible = !IsWares;
+        //F4ResaveLabel.IsVisible = !IsWares;
         //F3FilterLabel.IsVisible = IsWares;
 
         var reasonsFromDb = db.GetReason(TypeDoc.KindDoc);
@@ -51,7 +51,7 @@ public partial class LotsCheck : ContentPage
     {
         base.OnAppearing();
         Config.BarCode = BarCode;
-
+        F4ResaveLabel.IsVisible = MyDocs.Any(x => x.State == -1);
         if (!IsSoftKeyboard)
         {
 #if ANDROID
@@ -337,6 +337,12 @@ public partial class LotsCheck : ContentPage
             db.ReplaceDoc([dl]);
         }
 
+        // оновлення видимості F4
+        MainThread.BeginInvokeOnMainThread(() =>
+        {
+            F4ResaveLabel.IsVisible = MyDocs.Any(x => x.State == -1);
+        });
+
         if (result.State == 0 && tryResendOthers)
         {
             await ResendFailedDocsAsync();
@@ -372,6 +378,12 @@ public partial class LotsCheck : ContentPage
             db.SetStateDoc(d);
         }
 
+        // керування видимістю кнопки
+        MainThread.BeginInvokeOnMainThread(() =>
+        {
+            F4ResaveLabel.IsVisible = MyDocs.Any(x => x.State == -1);
+        });
+
         if (successCount + failCount > 0)
         {
             MainThread.BeginInvokeOnMainThread(async () =>
@@ -383,8 +395,10 @@ public partial class LotsCheck : ContentPage
             });
         }
     }
-    private async void F4Resave(object sender, TappedEventArgs e)
+    private async void F4Resave(object sender, EventArgs e)
     {
+        if (!F4ResaveLabel.IsVisible|| IsWares)
+            return;
         await ResendFailedDocsAsync();
     }
     private void UpdateDocColor(DocVM doc)
@@ -426,7 +440,7 @@ public partial class LotsCheck : ContentPage
                 F3Filter(null, EventArgs.Empty);
                 return;
             case Keycode.F4:
-                F3Filter(null, EventArgs.Empty);
+                F4Resave(null, EventArgs.Empty);
                 return;
             default:
                 return;
