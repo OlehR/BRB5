@@ -99,6 +99,7 @@ public partial class AdminPriceChecker : ContentPage
         InitializeComponent();
         this.BindingContext = this;
         OnScreenKeyboard.OkPressed += OnScreenKeyboard_OkPressed;
+        OnScreenKeyboard.UserInteracted += (s, e) => ResetTimer();
         bl.ClearWPH();      
              
         switch (Config.CodeTM)
@@ -161,6 +162,7 @@ public partial class AdminPriceChecker : ContentPage
         // сховати клаву і зняти фокус з Entry
         OnScreenKeyboard.IsVisible = false;
         BarCodeInput.Unfocus();
+        ResetTimer();
     }
     private void BarCodeInput_Focused(object sender, FocusEventArgs e) =>  OnScreenKeyboard.IsVisible = true;
     private void OnSwipedRight(object sender, SwipedEventArgs e)

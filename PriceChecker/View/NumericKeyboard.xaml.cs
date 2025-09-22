@@ -28,12 +28,16 @@ public partial class NumericKeyboard : ContentView
     // Optional event when OK pressed
     public event EventHandler OkPressed;
 
+    public event EventHandler? UserInteracted;
     void Digit_Clicked(object sender, EventArgs e)
     {
         if (sender is Button b && !string.IsNullOrEmpty(b.Text))
         {
             // append digit
             TargetText = (TargetText ?? string.Empty) + b.Text;
+
+            // raise event so the parent page knows interaction happened
+            UserInteracted?.Invoke(this, EventArgs.Empty);
         }
     }
 

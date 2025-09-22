@@ -51,9 +51,9 @@
             <Button Text="9" Grid.Row="2" Grid.Column="2" Clicked="Digit_Clicked"/>
 
             <!-- bottom row: OK, 0, Backspace -->
-            <Button Text="OK" Grid.Row="3" Grid.Column="0" Clicked="Ok_Clicked" />
+            <Button Text="⌫" Grid.Row="3" Grid.Column="0" Pressed="Backspace_Pressed" Released="Backspace_Released" />
             <Button Text="0" Grid.Row="3" Grid.Column="1" Clicked="Digit_Clicked"/>
-            <Button Text="⌫" Grid.Row="3" Grid.Column="2" Pressed="Backspace_Pressed" Released="Backspace_Released" />
+            <Button Text="OK" Grid.Row="3" Grid.Column="2" Clicked="Ok_Clicked" />
         </Grid>
     </Frame>
 
