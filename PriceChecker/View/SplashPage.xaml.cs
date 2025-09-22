@@ -43,10 +43,12 @@ public partial class SplashPage : ContentPage
         });
 
     }
-    protected override void OnAppearing()
+    protected override async void OnAppearing()
     {
         base.OnAppearing();
         App.ScanerCom.SetOnBarCode(BarCode);
+
+        var r = await bl.c.LoginAsync(Config.Login, Config.Password, Config.LoginServer);
     }
       
     async void BarCode(string pBarCode, string pType)

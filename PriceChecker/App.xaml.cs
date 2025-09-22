@@ -21,6 +21,8 @@ namespace PriceChecker
                 .Build();
             FileLogger.Init("Logs", 0, eTypeLog.Full);
             Config.ComPortScaner = AppConfiguration["ComPortScaner"]??"COM9";
+            Config.Login = AppConfiguration["Login"];
+            Config.Password = AppConfiguration["Password"];
             FileLogger.WriteLogMessage("App", "App", "Start");
             ScanerCom =new ScanerCom(Config.ComPortScaner, 9600);
             //ScanerCom.Init();
