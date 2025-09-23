@@ -124,7 +124,6 @@ public partial class AdminPriceChecker : ContentPage
 
         NavigationPage.SetHasNavigationBar(this, DeviceInfo.Platform == DevicePlatform.iOS);
 
-        App.ScanerCom.SetOnBarCode(BarCode);
 
         // Ініціалізація таймера
         _returnTimer = new Timer(TimeoutSeconds * 1000);
@@ -179,6 +178,7 @@ public partial class AdminPriceChecker : ContentPage
         base.OnAppearing();
         Config.OnProgress += Progress;
 
+        App.ScanerCom.SetOnBarCode(BarCode);
         if (!string.IsNullOrEmpty(dBarCode))
         {
             FoundWares(dBarCode);

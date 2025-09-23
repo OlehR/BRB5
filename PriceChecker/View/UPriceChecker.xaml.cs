@@ -47,7 +47,6 @@ public partial class UPriceChecker : ContentPage
         InitializeComponent();
         this.BindingContext = this;
         bl.ClearWPH();
-        App.ScanerCom.SetOnBarCode(BarCode);
         //Config.BarCode = BarCode;
         _returnToSplashTimer = new Timer(TimeoutSeconds * 1000);
         _returnToSplashTimer.Elapsed += OnTimeoutElapsed;
@@ -74,6 +73,7 @@ public partial class UPriceChecker : ContentPage
     protected override void OnAppearing()
     {
         base.OnAppearing();
+        App.ScanerCom.SetOnBarCode(BarCode);
         _returnToSplashTimer.Start();
     }
 
