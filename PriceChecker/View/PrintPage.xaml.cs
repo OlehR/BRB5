@@ -59,12 +59,14 @@ public partial class PrintPage : ContentPage
         Task.Run(async () =>
         {
             var r = await bl.c.LoadDocsDataAsync(51, null, false);
-
-            // Оновлення на головному потоці
-            MainThread.BeginInvokeOnMainThread(() =>
+            if (TypeDoc != null)
             {
-                DocsToPrint = new ObservableCollection<DocVM>(db.GetDoc(TypeDoc));
-            });
+                // Оновлення на головному потоці
+                MainThread.BeginInvokeOnMainThread(() =>
+                {
+                    DocsToPrint = new ObservableCollection<DocVM>(db.GetDoc(TypeDoc));
+                });
+            }
         });
     }
 

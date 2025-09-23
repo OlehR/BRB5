@@ -40,8 +40,7 @@
                         <ColumnDefinition Width="5*" />
                     </Grid.ColumnDefinitions>
 
-                    <ffimageloading:CachedImage x:Name="WareImage" Source="{Binding UriPicture}" />
-
+                    <ffimageloading:CachedImage x:Name="WareImage" Source="{Binding UriPicture}"  ErrorPlaceholder="photo.png" />
 
                     <StackLayout Grid.Column="1" Spacing="10" >
                         <Label Text="{Binding WP.Name}"
