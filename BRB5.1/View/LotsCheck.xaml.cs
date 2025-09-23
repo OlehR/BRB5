@@ -186,10 +186,12 @@ public partial class LotsCheck : ContentPage
                 }
             }
             // === Picker для вибору причини ===
+
+            var reasonSource = doc.CodeReason != 1?AllReasons.Where(x=>x.CodeReason!=1): AllReasons;
             var reasonPicker = new Picker
             {
                 Title = "Причина",
-                ItemsSource = AllReasons,
+                ItemsSource = reasonSource.ToList(),
                 ItemDisplayBinding = new Binding("NameReason"),
                 IsEnabled = false,
                 IsVisible = false,
@@ -322,7 +324,7 @@ public partial class LotsCheck : ContentPage
             doc.State = -1;
             MainThread.BeginInvokeOnMainThread(async () =>
             {
-                await DisplayAlert("Помилка", "Не вдалося зберегти (Збережено локально)"
+                await DisplayAlert("Помилка", "Не вдалося зберегти \n(Збережено локально)\n"
                     + result.TextError + " " + result.Info, "OK");
                 UpdateDocColor(doc);
             });
