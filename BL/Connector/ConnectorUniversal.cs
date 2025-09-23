@@ -805,6 +805,19 @@ namespace BL.Connector
             }
             return null;
         }
+
+        public override async Task<Result<IEnumerable<Client>>> GetClient(string pBarCode)
+        {
+            var dd = new { BarCode = pBarCode };
+            HttpResult result = await GetDataHTTP.HTTPRequestAsync(0, "DCT/GetClient", dd.ToJson(), "application/json", "brb", "brb");
+
+            if (result.HttpState == eStateHTTP.HTTP_OK)
+            {
+                var r = JsonConvert.DeserializeObject<Result<IEnumerable<Client>>>(result.Result);
+                return r;
+            }
+            return null;
+        }
         #endregion
     }
 

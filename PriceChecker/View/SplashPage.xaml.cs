@@ -1,6 +1,8 @@
 ﻿using BL;
 using BRB5;
 using BRB5.Model;
+using Model;
+using System.Net.Sockets;
 using System.Threading.Tasks;
 using System.Timers;
 using Utils;
@@ -77,24 +79,28 @@ public partial class SplashPage : ContentPage
             bl.SaveSettings();
         }
         else
-        {
+        {  
             var WP = bl.FoundWares(pBarCode, 0, 0, false, false, true);
-
+            bool tryClient = true;
             if (WP != null)
             {
                 var isStaff = WP.CodeUser != 0;
-                if (isStaff) 
-                { 
+                if (isStaff)
+                {
                     Config.CodeUser = (int)WP.CodeUser;
                     Config.NameUser = WP.Name;
-
-                    MainThread.BeginInvokeOnMainThread(async () =>{ await Shell.Current.GoToAsync("//Admin"); });
+                    MainThread.BeginInvokeOnMainThread(async () => { await Shell.Current.GoToAsync("//Admin"); });
                 }
-                else  MainThread.BeginInvokeOnMainThread(async () => { await Navigation.PushAsync(new UPriceChecker(WP)); });
-                //TMP!!!!!!
-                //page = new CustomerInfo();
-
-
+                else
+                    if (WP?.CodeWares != 0) MainThread.BeginInvokeOnMainThread(async () => { await Navigation.PushAsync(new UPriceChecker(WP)); });
+            }
+            if(WP == null || (WP?.CodeUser == 0 && WP?.CodeWares==0))
+            {
+                var clients = await bl.c.GetClient(pBarCode);
+                if (clients != null && clients.Info.Any())
+                {
+                    MainThread.BeginInvokeOnMainThread(async () => { await Navigation.PushAsync(new CustomerInfo(clients.Info.FirstOrDefault())); });
+                }
             }
         }
     }

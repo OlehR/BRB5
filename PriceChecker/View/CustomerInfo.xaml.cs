@@ -16,7 +16,7 @@ public partial class CustomerInfo : ContentPage, INotifyPropertyChanged
     BL.BL bl = BL.BL.GetBL();
     public Client Client { get { return _Client; } set { _Client = value; OnPropertyChanged(nameof(Client)); } }
 
-    public CustomerInfo()
+    public CustomerInfo(Client pClient)
     {
         InitializeComponent();
 
@@ -24,21 +24,23 @@ public partial class CustomerInfo : ContentPage, INotifyPropertyChanged
         _returnToSplashTimer.Elapsed += OnTimeoutElapsed;
         _returnToSplashTimer.AutoReset = false;
 
-        Client = new Client
-        {
-            NameClient = "Хтось там Наталія",
-            Wallet = 0.36m,
-            SumBonus = 4542.48m,
-            SumMoneyBonus = 0.00m,
-            MainPhone = "0951234567",
-            PhoneAdd = "",
-            PersentDiscount = 0,
-            PercentBonus = 0,
-            BarCode = "8800000833835",
-            StatusCard = eStatusCard.Block, // Заблокована
-            BirthDay = new DateTime(1976, 8, 30),
-            IsСertificate = false
-        };
+        Client = pClient;
+
+        //Client = new Client
+        //{
+        //    NameClient = "Хтось там Наталія",
+        //    Wallet = 0.36m,
+        //    SumBonus = 4542.48m,
+        //    SumMoneyBonus = 0.00m,
+        //    MainPhone = "0951234567",
+        //    PhoneAdd = "",
+        //    PersentDiscount = 0,
+        //    PercentBonus = 0,
+        //    BarCode = "8800000833835",
+        //    StatusCard = eStatusCard.Block, // Заблокована
+        //    BirthDay = new DateTime(1976, 8, 30),
+        //    IsСertificate = false
+        //};
 
         BindingContext = this;
 
