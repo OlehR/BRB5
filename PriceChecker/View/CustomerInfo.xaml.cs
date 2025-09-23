@@ -58,6 +58,7 @@ public partial class CustomerInfo : ContentPage, INotifyPropertyChanged
     protected override void OnAppearing()
     {
         base.OnAppearing();
+        App.ScanerCom.SetOnBarCode(BarCode);
         _returnToSplashTimer.Start();
     }
 
@@ -85,19 +86,25 @@ public partial class CustomerInfo : ContentPage, INotifyPropertyChanged
     {
         if (!string.IsNullOrWhiteSpace(pBarCode))
         {
-            //var tempWP = bl.FoundWares(pBarCode, 0, 0, false, false, true, eTypePriceInfo.Short);
+            var WP = bl.FoundWares(pBarCode, 0, 0, false, false, true);
 
+            if (WP != null)
+            {
+                var isStaff = WP.CodeUser != 0;
+                if (isStaff)
+                {
+                    Config.CodeUser = (int)WP.CodeUser;
+                    Config.NameUser = WP.Name;
 
-            //if (tempWP != null)
-            //{
-            //    if (tempWP.CodeUser != 0)
-            //    {
-            //        string firstCode = (WP.BarCodes?.Split(',') ?? Array.Empty<string>()).FirstOrDefault() ?? "";
+                    MainThread.BeginInvokeOnMainThread(async () => { await Shell.Current.GoToAsync("//Admin"); });
+                }
+                else MainThread.BeginInvokeOnMainThread(async () => { await Navigation.PushAsync(new UPriceChecker(WP)); });
+                //TMP!!!!!!
+                //page = new CustomerInfo();
 
-            //        MainThread.BeginInvokeOnMainThread(async () => Shell.Current.GoToAsync("//Admin?data=" + firstCode));
-            //    }
-            //    else WP = tempWP;
-            //}
+                //TODO оновити картку клієнта якщо картка
+
+            }
 
             // Reset and start the timer on every scan
             _returnToSplashTimer.Stop();
