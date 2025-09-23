@@ -147,10 +147,10 @@ namespace BL.Connector
                             }
                         }
                     }
+                    FileLogger.WriteLogMessage($"GetDataHTTP.HTTPRequest=>(pUrlApi=>({pUrlApi},{Url[pUrlApi][DefaultApi[pUrlApi]]}), pApi=>{pApi},  pData=>{pData},  pContentType=>{pContentType},  pLogin=>{pLogin},  pPassWord=>{pPassWord}) Res=>({res.HttpState},{res.Result})");
                 }
                 if (!IsSaveData)
                     pData = null;
-                FileLogger.WriteLogMessage($"GetDataHTTP.HTTPRequest=>(pUrlApi=>({pUrlApi},{Url[pUrlApi][DefaultApi[pUrlApi]]}), pApi=>{pApi},  pData=>{pData},  pContentType=>{pContentType},  pLogin=>{pLogin},  pPassWord=>{pPassWord}) Res=>({res.HttpState},{res.Result})" );
                 return res;
             }
             catch(Exception e)
