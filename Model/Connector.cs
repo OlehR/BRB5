@@ -212,6 +212,8 @@ namespace BRB5.Model
         public virtual async Task<Result> GetInfo() { throw new NotImplementedException(); }
 
         public virtual async Task<Result> UploadFile(string pFile, string pFileName = null) { throw new NotImplementedException(); }
+
+        public virtual async Task<Result<IEnumerable<Client>>> GetClient(string  pBarCode) { throw new NotImplementedException(); }
     }
 
     public class LoginServer
