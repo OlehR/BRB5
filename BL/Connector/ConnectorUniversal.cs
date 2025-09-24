@@ -165,7 +165,7 @@ namespace BL.Connector
             {
                 try
                 {
-                    ApiPrice Data = new ApiPrice() { CodeWares = pBC.CodeWares, Article = pBC.Article, BarCode = pBC.BarCode, CodeWarehouse = Config.CodeWarehouse };
+                    ApiPrice Data = new ApiPrice() { CodeWares = pBC.CodeWares, Article = pBC.Article, BarCode = pBC.BarCode, CodeWarehouse = Config.CodeWarehouse,TypePriceInfo= pTP };
                     HttpResult result = GetDataHTTP.HTTPRequest(0, "DCT/GetPrice", Data.ToJson(), "application/json", null);
                     if (result.HttpState == eStateHTTP.HTTP_OK)
                     {
