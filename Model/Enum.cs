@@ -116,10 +116,12 @@ namespace BRB5
         Zebra,
         PM550,
         PM351,
+        PM84,
         Camera,
         BitaHC61,
         ChainwayC61,
         MetapaceM_K4,
+        NLS_MT67,
         KeyBoard
     }
     public enum eTermsForIlliquidWare

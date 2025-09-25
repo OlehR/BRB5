@@ -41,7 +41,6 @@ namespace BL
                 l = new LogPrice(CheckWP, IsOnline, PackageNumber, LineNumber);
                 db?.InsLogPrice(l);
             }
-
             return CheckWP;
         }
 

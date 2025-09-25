@@ -54,13 +54,18 @@ namespace BRB6
                 return eTypeScaner.PM550;
             if (Config.Model.Equals("PM351") && (Config.Manufacturer.Contains("POINTMOBILE") || Config.Manufacturer.Contains("Point Mobile Co., Ltd.")))
                 return eTypeScaner.PM351;
+            if (Config.Model.Equals("PM84") && (Config.Manufacturer.Contains("POINTMOBILE") || Config.Manufacturer.Contains("Point Mobile Co., Ltd.")))
+                return eTypeScaner.PM84;
             if (Config.Model.Equals("HC61") || Config.Manufacturer.Contains("Bita"))
                 return eTypeScaner.BitaHC61;
             if (Config.Model.Equals("C61") || Config.Manufacturer.Contains("CHAINWAY"))
                 return eTypeScaner.ChainwayC61;
             if (Config.Model.Equals("M-K4") || Config.Manufacturer.Contains("METAPACE"))
                 return eTypeScaner.MetapaceM_K4;
-            
+            if (Config.Model.Equals("NLS-MT67") || Config.Manufacturer.Contains("Newland"))
+                return eTypeScaner.NLS_MT67;
+
+
 
             return eTypeScaner.Camera;
         }

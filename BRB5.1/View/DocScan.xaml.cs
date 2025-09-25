@@ -59,7 +59,7 @@ namespace BRB6.View
             ListWares = new ObservableCollection<DocWaresEx>(_originalListWares);
             OrderDoc = ListWares.Count > 0 ? ListWares.Max(el => el.OrderDoc) : 0;
             if (ListWares.Count > 0) CollectionViewWares.SelectedItem = ListWares[0];
-            NavigationPage.SetHasNavigationBar(this, DeviceInfo.Platform == DevicePlatform.iOS || Config.TypeScaner == eTypeScaner.BitaHC61 || Config.TypeScaner == eTypeScaner.ChainwayC61 || Config.TypeScaner == eTypeScaner.Zebra || Config.TypeScaner == eTypeScaner.PM550 || Config.TypeScaner == eTypeScaner.PM351 || Config.TypeScaner == eTypeScaner.MetapaceM_K4);
+            NavigationPage.SetHasNavigationBar(this, DeviceInfo.Platform == DevicePlatform.iOS || Config.TypeScaner == eTypeScaner.BitaHC61 || Config.TypeScaner == eTypeScaner.ChainwayC61 || Config.TypeScaner == eTypeScaner.Zebra || Config.TypeScaner == eTypeScaner.PM550 || Config.TypeScaner == eTypeScaner.PM351 || Config.TypeScaner == eTypeScaner.PM84  || Config.TypeScaner == eTypeScaner.MetapaceM_K4);
             
             Reason = db.GetReason(TypeDoc.KindDoc, true);
             _defaultReason = Reason.FirstOrDefault(r => r.CodeReason == 0);

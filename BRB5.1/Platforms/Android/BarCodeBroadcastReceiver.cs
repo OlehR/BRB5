@@ -31,7 +31,8 @@ namespace BRB6
                 {
                     case eTypeScaner.PM351:
                     case eTypeScaner.PM550:
-                        Res= "device.scanner.EVENT";
+                    case eTypeScaner.PM84:
+                        Res = "device.scanner.EVENT";
                         break;
                     case eTypeScaner.Zebra:
                         Res = "ua.UniCS.TM.BRB"; //"ua.uz.vopak.brb4";
@@ -39,6 +40,7 @@ namespace BRB6
                     case eTypeScaner.BitaHC61:
                     case eTypeScaner.ChainwayC61:
                     case eTypeScaner.MetapaceM_K4:
+                    case eTypeScaner.NLS_MT67:
                         Res = "com.scanner.broadcast" ;
                         break;
                 }
@@ -51,7 +53,8 @@ namespace BRB6
                 {
                     case eTypeScaner.PM351:
                     case eTypeScaner.PM550:
-                        Res= "EXTRA_EVENT_DECODE_VALUE";
+                    case eTypeScaner.PM84:
+                        Res = "EXTRA_EVENT_DECODE_VALUE";
                         break;
                     case eTypeScaner.Zebra:
                         Res = "com.symbol.datawedge.data_string";
@@ -59,12 +62,13 @@ namespace BRB6
                     case eTypeScaner.BitaHC61:
                     case eTypeScaner.ChainwayC61:
                     case eTypeScaner.MetapaceM_K4:
+                    case eTypeScaner.NLS_MT67:
                         Res = "data";
                         break;
                 }
                 return Res;
                     } }
-        static bool IsByte { get { return Config.TypeScaner == eTypeScaner.PM351 || Config.TypeScaner == eTypeScaner.PM550; } }
+        static bool IsByte { get { return Config.TypeScaner == eTypeScaner.PM351 || Config.TypeScaner == eTypeScaner.PM550 || Config.TypeScaner == eTypeScaner.PM84; } }
 
         public override void OnReceive(Context context, Intent intent)
         {
