@@ -84,7 +84,7 @@ namespace BRB5.Model
         public decimal PriceNormal { get; set; }
 
         public ParseBarCode ParseBarCode { get; set; }
-        public bool IsBarCode {get{ return ParseBarCode?.BarCode!=null; }}
+        public bool IsBarCode {get{ return ParseBarCode==null || ( ParseBarCode.Price==0 && ParseBarCode.BarCode!=null); }}
 
         public string StrHttpResult { get { return StateHTTP.ToString(); } }
         public bool IsPriceOk { get { return PriceOld == Price && PriceOptOld == PriceOpt; } }
