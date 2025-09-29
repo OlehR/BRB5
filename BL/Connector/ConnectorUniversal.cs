@@ -540,8 +540,7 @@ namespace BL.Connector
                 FileLogger.WriteLogMessage(this, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
                 return new Result(e);
             }
-                return null;
-            
+                return null;            
         }
 
         /// <summary>
