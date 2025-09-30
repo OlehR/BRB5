@@ -144,6 +144,9 @@ namespace BRB5.Model
         public bool IsVisExtInfo => !string.IsNullOrEmpty(ExtInfo);
         [JsonIgnore]
         [Ignore]
+        public bool IsVisDoc => State!=1;
+        [JsonIgnore]
+        [Ignore]
         public bool IsPrinted => State!=0;
 
         private bool _SelectedColor = false;
@@ -151,7 +154,7 @@ namespace BRB5.Model
         [Ignore]
         public bool SelectedColor { get { return _SelectedColor; } set { _SelectedColor = value;   OnPropertyChanged(nameof(GetColor)); } }
 
-        public void RefreshColor() { OnPropertyChanged(nameof(GetColor)); }
+        public void RefreshColor() { OnPropertyChanged(nameof(GetColor)); OnPropertyChanged(nameof(IsVisDoc)); }
         [JsonIgnore]
         [Ignore]
         public bool Even { get; set; } = false;

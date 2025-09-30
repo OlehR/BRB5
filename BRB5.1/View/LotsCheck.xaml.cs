@@ -154,6 +154,7 @@ public partial class LotsCheck : ContentPage
                 BackgroundColor = Color.FromArgb("#adaea7"),
                 BindingContext = doc
             };
+            grid.SetBinding(Grid.IsVisibleProperty, nameof(doc.IsVisDoc));
 
             var tapGestureRecognizer = new TapGestureRecognizer();
             tapGestureRecognizer.Tapped += OpenDoc;
