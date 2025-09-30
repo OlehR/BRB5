@@ -971,7 +971,7 @@ order by gw.NameGroup";
                 return null;
             try
             {
-                if (string.IsNullOrEmpty(pParseBarCode.BarCode) && pParseBarCode.CodeWares == 0 && pParseBarCode.Article == 0)
+                if (!string.IsNullOrEmpty(pParseBarCode.BarCode) && pParseBarCode.CodeWares == 0 && pParseBarCode.Article == 0)
                     GetCodeWares(pParseBarCode);
 
                 // Пошук по коду

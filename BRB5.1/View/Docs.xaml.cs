@@ -48,15 +48,7 @@ namespace BRB6.View
             base.OnAppearing();
             if (IsVisScan)
             {
-                BarcodeScaner = new CameraView
-                {
-                    VerticalOptions = LayoutOptions.FillAndExpand,
-                    HorizontalOptions = LayoutOptions.FillAndExpand,
-                    CameraEnabled = false,
-                    VibrationOnDetected = false,
-                    BarcodeSymbologies = BarcodeFormats.Ean13 | BarcodeFormats.Ean8 | BarcodeFormats.QRCode,
-
-                };
+                BarcodeScaner = Helper.GetCameraView();
                 BarcodeScaner.OnDetectionFinished += CameraView_OnDetectionFinished;
                 GridZxing.Children.Add(BarcodeScaner);
             }

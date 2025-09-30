@@ -207,15 +207,7 @@ namespace BRB6.View
 
             if (IsVisScan)
             {
-                BarcodeScaner = new CameraView
-                {
-                    VerticalOptions = LayoutOptions.FillAndExpand,
-                    HorizontalOptions = LayoutOptions.FillAndExpand,
-                    CameraEnabled = false,
-                    VibrationOnDetected = false,
-                    BarcodeSymbologies = BarcodeFormats.Ean13 | BarcodeFormats.Ean8 | BarcodeFormats.QRCode,
-
-                };
+                BarcodeScaner = Helper.GetCameraView();
                 BarcodeScaner.OnDetectionFinished += CameraView_OnDetectionFinished;
                 GridZxing.Children.Add(BarcodeScaner);
             }
@@ -407,21 +399,26 @@ namespace BRB6.View
         }
         private async void QRCodeScan(object sender, EventArgs e)
         {
-            if (Config.TypeScaner == eTypeScaner.Camera)
+            MainThread.BeginInvokeOnMainThread(async () =>
             {
-                var cameraStatus = await Permissions.CheckStatusAsync<Permissions.Camera>();
-                if (cameraStatus != PermissionStatus.Granted)
-                    cameraStatus = await Permissions.RequestAsync<Permissions.Camera>();
-
-                if (cameraStatus != PermissionStatus.Granted)
+                if (Config.TypeScaner == eTypeScaner.Camera)
                 {
-                    await DisplayAlert("Помилка", "Потрібен дозвіл камери", "OK", FlowDirection.MatchParent);
-                    return;
-                }
-            }
 
-            IsVisBarCode = !IsVisBarCode;
-            BarcodeScaner.CameraEnabled = IsVisBarCode;
+                    var cameraStatus = await Permissions.CheckStatusAsync<Permissions.Camera>();
+                    if (cameraStatus != PermissionStatus.Granted)
+                        cameraStatus = await Permissions.RequestAsync<Permissions.Camera>();
+
+                    if (cameraStatus != PermissionStatus.Granted)
+                    {
+                        await DisplayAlert("Помилка", "Потрібен дозвіл камери", "OK", FlowDirection.MatchParent);
+                        return;
+                    }
+                    IsVisBarCode = !IsVisBarCode;
+                    BarcodeScaner.CameraEnabled = IsVisBarCode;
+                }
+
+                
+            });
         }
         async private void OnInfo(object sender, EventArgs e)
         {

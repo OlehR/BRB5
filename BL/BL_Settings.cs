@@ -146,9 +146,4 @@ namespace BL
         }
     }
 
-    public static class DirectoryHelper
-    {
-        
-    }
-
 }
