@@ -689,6 +689,11 @@ and bc.BarCode=?
                 res.TypeDoc = pDocId.TypeDoc;
                 res.ParseBarCode = pParseBarCode;
             }
+            if(res!=null && pParseBarCode.Coefficient>1 && pParseBarCode.CodeUnit>0)
+            {
+                res.Coefficient = (int)pParseBarCode.Coefficient;
+                res.CodeUnit = pParseBarCode.CodeUnit;
+            }
             return res;
         }
 

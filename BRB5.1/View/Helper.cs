@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using BarcodeScanning;
+﻿using BarcodeScanning;
 namespace BRB6.View
 {
     public class Helper

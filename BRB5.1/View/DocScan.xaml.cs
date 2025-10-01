@@ -5,6 +5,7 @@ using System.Collections.ObjectModel;
 using BRB5;
 using BarcodeScanning;
 
+
 #if ANDROID
 using Android.Views;
 #endif
@@ -106,6 +107,8 @@ namespace BRB6.View
                 ScanData.Ord = -1;
                 if (db.ReplaceDocWares(ScanData))
                 {
+                    ScanData.InputQuantity=ScanData.Quantity;
+                    ScanData.Coefficient = 1;
                     ListWares.Insert(0, ScanData);
                     foreach (var ware in ListWares)
                     {
