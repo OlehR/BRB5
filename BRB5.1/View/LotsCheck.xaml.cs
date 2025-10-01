@@ -325,7 +325,7 @@ public partial class LotsCheck : ContentPage
             doc.State = -1;
             MainThread.BeginInvokeOnMainThread(async () =>
             {
-                await DisplayAlert("Помилка", "Не вдалося зберегти \n(Збережено локально)\n"
+                await DisplayAlert("Помилка", "Не вдалося зберегти в 1C \n(Збережено локально)\n"
                     + result.TextError + " " + result.Info, "OK");
                 UpdateDocColor(doc);
             });
