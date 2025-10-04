@@ -98,7 +98,8 @@ namespace BRB5.Model
            
             if(CustomerBarCode == null || CustomerBarCode.Count() == 0)
                 return Res;
-            int Code, Data, Data2, Operator;
+            long Code, Data, Data2;
+            int Operator;
             bool IsFound;
             foreach (var el in CustomerBarCode.Where( el => el.TypeBarCode==eTypeBarCode.ManualInput || el.KindBarCode == eKindBarCode.EAN13 || el.KindBarCode == eKindBarCode.Code128 || el.KindBarCode == eKindBarCode.QR /*&& (el.TypeBarCode == eTypeBarCode.WaresWeight || el.TypeBarCode == eTypeBarCode.WaresUnit )*/))
             {
@@ -114,16 +115,16 @@ namespace BRB5.Model
                         var D = pBarCode.Split(el.Separator);
                         if (D.Length > 1)
                         {
-                            Code = D[0].ToInt();
-                            Data = D.Length > 1 ? D[1].ToInt() : 0;
-                            Data2 = D.Length > 2 ? D[2].ToInt() : 0;
+                            Code = D[0].ToLong();
+                            Data = D.Length > 1 ? D[1].ToLong() : 0;
+                            Data2 = D.Length > 2 ? D[2].ToLong() : 0;
                             IsFound = true;
                         }                        
                     }
                     if (pIsHandInput && el.TypeBarCode == eTypeBarCode.ManualInput && pBarCode.Trim().Length <= el.LenghtCode)
                     {
                         IsFound = true;
-                        Code = pBarCode.ToInt();
+                        Code = pBarCode.ToLong();
                     }
 
                     if (Code == 0 && !string.IsNullOrEmpty(el.Prefix) && el.Prefix.Equals(pBarCode[..el.Prefix.Length]))
@@ -150,7 +151,7 @@ namespace BRB5.Model
                     switch (el.TypeCode)
                     {
                         case eTypeCode.Article:
-                            Res.Article = Code;
+                            Res.Article = (int)Code;
                             break;
                         case eTypeCode.Code:
                             Res.CodeWares = Code;
