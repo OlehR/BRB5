@@ -117,7 +117,8 @@ namespace BRB5.Model
                         {
                             Code = D[0].ToLong();
                             Data = D.Length > 1 ? D[1].ToLong() : 0;
-                            Data2 = D.Length > 2 ? D[2].ToLong() : 0;
+                            if( D.Length > 2) 
+                                Data2 = D[2].ToLong();
                             IsFound = true;
                         }                        
                     }

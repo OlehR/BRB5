@@ -6,6 +6,7 @@ using Utils;
 using BRB5;
 using BarcodeScanning;
 using CommunityToolkit.Maui.Alerts;
+using UtilNetwork;
 
 
 namespace BRB6.View
@@ -254,7 +255,17 @@ namespace BRB6.View
             }
         }
 
-        private void OnRestoreDB(object sender, EventArgs e) {   }
+        private void OnRestoreDB(object sender, EventArgs e)
+        {  
+         if(db.DeleteDB())
+            {
+                var r=Http.LoadFile(Config.ApiUrl1+ "FileAudit/DB/brb6.db", DB.PathNameDB);
+                if(File.Exists(DB.PathNameDB))
+                    db.OpenDB();
+                else
+                    db.CreateDB();
+            }
+        }
 
         private void OnClickGen(object sender, EventArgs e)
         {

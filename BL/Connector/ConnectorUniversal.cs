@@ -16,7 +16,6 @@ using UtilNetwork;
 using Utils;
 
 
-
 namespace BL.Connector
 {
     public class ConnectorUniversal : ConnectorBase

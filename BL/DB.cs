@@ -298,12 +298,7 @@ alter table wares  ADD COLUMN Article INTEGER;";
             string Sql = null ;
             try
             {
-                if (File.Exists(PathNameDB))
-                {
-                    db?.Close();
-                    Task.Delay(100);
-                    File.Delete(PathNameDB);
-                }
+                DeleteDB();
                 if (!File.Exists(PathNameDB))
                 {
                     db = new SQLiteConnection(PathNameDB, false);
@@ -316,6 +311,41 @@ alter table wares  ADD COLUMN Article INTEGER;";
             catch (Exception ex)
             {
                 FileLogger.WriteLogMessage(this, "DB.CreateDB", ex);
+                return false;
+            }
+        }
+
+        public bool DeleteDB()
+        {
+            try
+            {
+                if (File.Exists(PathNameDB))
+                {
+                    db?.Close();
+                    Task.Delay(100);
+                    File.Delete(PathNameDB);
+                    db = null;
+                    return true;
+                }
+            }
+            catch (Exception ex)
+            {
+                FileLogger.WriteLogMessage(this, "DB.DeleteDB", ex);
+            }
+            return false;
+        }
+
+        public bool OpenDB()
+        {
+            try
+            {
+                if (db == null)
+                    db = new SQLiteConnection(PathNameDB, false);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                FileLogger.WriteLogMessage(this, "DB.OpenDB", ex);
                 return false;
             }
         }
