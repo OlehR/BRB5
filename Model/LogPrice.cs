@@ -1,5 +1,4 @@
-﻿using SQLite;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -8,22 +7,22 @@ namespace BRB5.Model
 {
     public class LogPrice
     {
-        //BarCode, Status,  ActionType, PackageNumber, CodeWares, LineNumber, Article
         public string BarCode { get; set; }
         /// <summary>
         /// 100 - Ок Подвійне скануванн,101-Відсутній цінник,102 -відсутній товар
         /// -999 -Ofline,-9 - Проблема,
         /// </summary>
         public int Status { get; set; }
-        public DateTime DTInsert { get; set; }
-        [Ignore]
+        public DateTime DTInsert { get; set; }       
         public int IsSend { get; set; }
         public int ActionType { get; set; }
         public int PackageNumber { get; set; }
         public long CodeWares { get; set; }
         public string Article { get; set; }
         public int LineNumber { get; set; }
-        [Ignore]
+
+        public decimal Price { get; set; }
+        
         public double NumberOfReplenishment { get; set; }
         //DateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         //public string GetJsonPSU() { return "[\"" + BarCode + "\"," + Status + ",\"" + format.format(DTInsert) + "\"," + PackageNumber + "," + CodeWares + "]"; }
@@ -41,7 +40,6 @@ namespace BRB5.Model
             Article = pWP.Article;
             ActionType = pWP.ActionType;
         }
-
         public LogPrice(int pStatus, WaresPrice pWP, int pPackageNumber = 0, int pLineNumber = 0)
         {
             BarCode = pWP?.ParseBarCode?.StartString;

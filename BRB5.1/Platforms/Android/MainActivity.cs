@@ -1,17 +1,18 @@
 ﻿using Android.App;
+using Android.Content;
 using Android.Content.PM;
 using Android.OS;
+using Android.Runtime;
+using Android.Views;
 using AndroidX.AppCompat.App;
 using BL;
 using BRB5;
+using BRB5.Model;
+using BRB6.PlatformDependency;
+using BRB6.View;
 using System.Globalization;
 using Utils;
-using BRB5.Model;
-using Android.Runtime;
-using Android.Views;
-using BRB6.View;
-using BRB6.PlatformDependency;
-using Android.Content;
+using static Android.Graphics.ColorSpace;
 
 namespace BRB6
 {
@@ -36,11 +37,11 @@ namespace BRB6
         public string GetDeviceId()
         {
             string deviceID = Android.OS.Build.Serial?.ToString();
-            if (string.IsNullOrEmpty(deviceID) || deviceID.ToUpper() == "UNKNOWN") // Android 9 returns "Unknown"
-            {
-                //ContentResolver myContentResolver = MainActivity.myContentResolver;
-                deviceID = Android.Provider.Settings.Secure.GetString(ContentResolver, Android.Provider.Settings.Secure.AndroidId);
-            }
+            if (string.IsNullOrEmpty(deviceID) || deviceID.ToUpper() == "UNKNOWN") // Android 9 returns "Unknown"         
+                deviceID =$"{ Android.Provider.Settings.Secure.GetString(ContentResolver, Android.Provider.Settings.Secure.AndroidId)}({DeviceInfo.Current.Name})"; 
+           
+            if (deviceID.Length > 32)
+                deviceID = deviceID[..32];
             return deviceID;
         }
         public override bool OnKeyDown([GeneratedEnum] Keycode keyCode, KeyEvent e)

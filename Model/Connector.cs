@@ -255,6 +255,7 @@ namespace BRB5.Model
     }
     public class SaveDoc
     {
+        public string NameDCT { get; set; }
         public Doc Doc { get; set; }
         public IEnumerable<DocWares> Wares { get; set; }
     }

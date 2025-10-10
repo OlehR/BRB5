@@ -301,7 +301,7 @@ namespace BL.Connector
                     return new Result(-1, "Локальний конектор не визначено");
                 }
 
-                string Data = new SaveDoc() { Doc = pDoc, Wares = pWares }.ToJson();
+                string Data = new SaveDoc() { NameDCT=Config.SN, Doc = pDoc, Wares = pWares }.ToJson();
                 HttpResult result = await GetDataHTTP.HTTPRequestAsync(0, "DCT/SaveDoc", Data, "application/json", null);
                 if (result.HttpState == eStateHTTP.HTTP_OK)
                 {

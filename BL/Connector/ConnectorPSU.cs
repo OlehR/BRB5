@@ -58,7 +58,7 @@ namespace BL.Connector
         /// <param name="pWares"></param>
         /// <param name="pIsClose"></param>
         /// <returns></returns>
-        public override async Task<Result> SendDocsDataAsync(DocVM pDoc, IEnumerable<DocWares> pWares) => await CU.SendDocsDataAsync(pDoc, pWares);
+        public override async Task<Result> SendDocsDataAsync(DocVM pDoc, IEnumerable<DocWares> pWares) => await CU.SendDocsDataAsync(pDoc, pWares); 
 
         /// <summary>
         /// Друк на стаціонарному термопринтері
