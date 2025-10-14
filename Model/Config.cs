@@ -50,6 +50,7 @@ namespace BRB5.Model
         public static string Password { get; set; } = "321";
         public static eRole Role = eRole.NotDefined;
         public static int CodeUser { get; set; } = 233;
+        public static System.Guid UserGuid { get; set; } = System.Guid.Empty;
         public static string NameUser { get; set; }
         public static eTypeUsePrinter TypeUsePrinter { get; set; } = eTypeUsePrinter.NotDefined;
         

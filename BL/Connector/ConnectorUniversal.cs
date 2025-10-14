@@ -74,6 +74,7 @@ namespace BL.Connector
                         Config.CodeUser = res.Info?.CodeUser ?? 0;
                         Config.NameUser = res.Info?.NameUser;
                         Config.TypeDoc = res.Info?.TypeDoc;
+                        Config.UserGuid = res.Info?.UserGuid ?? System.Guid.Empty;
                         CustomerBarCode = res.Info?.CustomerBarCode;
 
                         if (!string.IsNullOrEmpty(res.Info?.PathAPK))

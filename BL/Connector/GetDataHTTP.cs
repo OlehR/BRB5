@@ -120,6 +120,11 @@ namespace BL.Connector
         { //!!!!TMP
             try
             {
+                if (pUrlApi == 0 && Config.UserGuid != System.Guid.Empty && pLogin == null)
+                {
+                    pLogin = Config.UserGuid.ToString();
+                    pPassWord = null;
+                }
                 if (pUrlApi == 2)
                 {
                     pLogin = "TSD";
