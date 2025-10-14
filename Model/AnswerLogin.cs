@@ -11,8 +11,7 @@ namespace BRB5.Model
         public int CodeUser { get; set; }
         public string BarCode { get; set; }
         public string Login { get; set; }
-        public string PassWord { get; set; }  
-        public System.Guid UserGuid { get; set; }
+        public string PassWord { get; set; }         
     }
     /// <summary>
     /// Через Swagger
@@ -38,5 +37,6 @@ namespace BRB5.Model
         public IEnumerable<CustomerBarCode> CustomerBarCode { get; set; }
         public eCompany LocalConnect { get; set; }
         public string PathAPK { get; set; }
+        public System.Guid UserGuid { get; set; }
     }
 }
