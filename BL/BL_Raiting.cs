@@ -18,7 +18,7 @@ namespace BL
     public partial class BL
     {
         Timer t;
-        DocVM cDoc;
+        public DocVM cDoc;
 
         public void ChangeRaiting(RaitingDocItem vQuestion, string pButtonName, IEnumerable<RaitingDocItem> Questions)
         {
@@ -106,7 +106,7 @@ namespace BL
 
         public void InitTimerRDI()
         {
-            t = new Timer(3 * 60 * 1000) { AutoReset = true, Enabled = true }; //3 хв
+            t = new Timer(1 * 60 * 1000) { AutoReset = true, Enabled = true }; //3 хв
             t.Elapsed += OnTimedEvent;
         }
         public void StartTimerRDI() 

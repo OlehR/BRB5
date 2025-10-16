@@ -81,6 +81,7 @@ namespace BRB6
             {
                 FileLogger.WriteLogMessage($"Item Start=>{pDoc.NumberDoc}");
                 cDoc = pDoc;
+                Bl.cDoc = cDoc;
                 InitializeComponent();
 
                 Microsoft.Maui.Controls.PlatformConfiguration.iOSSpecific.Page.SetUseSafeArea(this, true);
