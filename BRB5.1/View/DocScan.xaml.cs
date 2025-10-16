@@ -55,11 +55,17 @@ namespace BRB6.View
             TypeDoc = pTypeDoc != null ? pTypeDoc : Config.GetDocSetting(pDocId.TypeDoc);
             c = ConnectorBase.GetInstance();
             var tempListWares = db.GetDocWares(pDocId, 2, eTypeOrder.Scan);
-            foreach (var t in tempListWares) { t.Ord = -1; }
+            if(tempListWares.Any())
+                foreach (var t in tempListWares) { t.Ord = -1; }
             _originalListWares = tempListWares == null ? new ObservableCollection<DocWaresEx>() : new ObservableCollection<DocWaresEx>(tempListWares);
-            ListWares = new ObservableCollection<DocWaresEx>(_originalListWares);
-            OrderDoc = ListWares.Count > 0 ? ListWares.Max(el => el.OrderDoc) : 0;
-            if (ListWares.Count > 0) CollectionViewWares.SelectedItem = ListWares[0];
+            ListWares = new ObservableCollection<DocWaresEx>(_originalListWares);            
+
+            if (ListWares.Any())
+            {
+                CollectionViewWares.SelectedItem = ListWares[0];
+                OrderDoc = ListWares.Max(el => el.OrderDoc);
+            }
+            else OrderDoc = 0;
             NavigationPage.SetHasNavigationBar(this, DeviceInfo.Platform == DevicePlatform.iOS || Config.TypeScaner == eTypeScaner.BitaHC61 || Config.TypeScaner == eTypeScaner.ChainwayC61 || Config.TypeScaner == eTypeScaner.Zebra || Config.TypeScaner == eTypeScaner.PM550 || Config.TypeScaner == eTypeScaner.PM351 || Config.TypeScaner == eTypeScaner.PM84 || Config.TypeScaner == eTypeScaner.PM68 || Config.TypeScaner == eTypeScaner.MetapaceM_K4);
             
             Reason = db.GetReason(TypeDoc.KindDoc, true);
@@ -143,10 +149,8 @@ namespace BRB6.View
             base.OnAppearing();
             if (IsVisScan)
             {
-                Helper.GetCameraView(true);
-
+                BarcodeScaner=Helper.GetCameraView(true);
                 BarcodeScaner.OnDetectionFinished += CameraView_OnDetectionFinished;
-
                 GridZxing.Children.Add(BarcodeScaner);
             }
             else Config.BarCode = BarCode;
