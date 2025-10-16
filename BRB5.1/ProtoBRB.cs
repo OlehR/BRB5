@@ -56,6 +56,8 @@ namespace BRB6
                 return eTypeScaner.PM351;
             if (Config.Model.Equals("PM84") && (Config.Manufacturer.Contains("POINTMOBILE") || Config.Manufacturer.Contains("Point Mobile Co., Ltd.")))
                 return eTypeScaner.PM84;
+            if (Config.Model.Equals("PM68") && (Config.Manufacturer.Contains("POINTMOBILE") || Config.Manufacturer.Contains("Point Mobile Co., Ltd.")))
+                return eTypeScaner.PM68;
             if (Config.Model.Equals("HC61") || Config.Manufacturer.Contains("Bita"))
                 return eTypeScaner.BitaHC61;
             if (Config.Model.Equals("C61") || Config.Manufacturer.Contains("CHAINWAY"))

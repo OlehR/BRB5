@@ -117,6 +117,7 @@ namespace BRB5
         PM550,
         PM351,
         PM84,
+        PM68,
         Camera,
         BitaHC61,
         ChainwayC61,

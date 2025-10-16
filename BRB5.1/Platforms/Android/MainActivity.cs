@@ -31,7 +31,7 @@ namespace BRB6
             Config.NativeBase = new Native();
             //FileLogger.PathLog = Path.Combine(Config.PathDownloads, "Log");
             FileLogger.WriteLogMessage("Start", eTypeLog.Expanded);
-            if (Config.TypeScaner == eTypeScaner.NLS_MT67 || Config.TypeScaner == eTypeScaner.PM351 || Config.TypeScaner == eTypeScaner.PM84  || Config.TypeScaner == eTypeScaner.Zebra  || Config.TypeScaner == eTypeScaner.MetapaceM_K4) //|| Config.TypeScaner == eTypeScaner.BitaHC61
+            if (Config.TypeScaner == eTypeScaner.NLS_MT67 || Config.TypeScaner == eTypeScaner.PM351 || Config.TypeScaner == eTypeScaner.PM68 || Config.TypeScaner == eTypeScaner.PM84  || Config.TypeScaner == eTypeScaner.Zebra  || Config.TypeScaner == eTypeScaner.MetapaceM_K4) //|| Config.TypeScaner == eTypeScaner.BitaHC61
                 BR = new MyBroadcastReceiver();
         }
         public string GetDeviceId()

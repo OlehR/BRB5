@@ -32,6 +32,7 @@ namespace BRB6
                     case eTypeScaner.PM351:
                     case eTypeScaner.PM550:
                     case eTypeScaner.PM84:
+                    case eTypeScaner.PM68:
                         Res = "device.scanner.EVENT";
                         break;
                     case eTypeScaner.Zebra:
@@ -54,6 +55,7 @@ namespace BRB6
                     case eTypeScaner.PM351:
                     case eTypeScaner.PM550:
                     case eTypeScaner.PM84:
+                    case eTypeScaner.PM68:
                         Res = "EXTRA_EVENT_DECODE_VALUE";
                         break;
                     case eTypeScaner.Zebra:
@@ -68,7 +70,7 @@ namespace BRB6
                 }
                 return Res;
                     } }
-        static bool IsByte { get { return Config.TypeScaner == eTypeScaner.PM351 || Config.TypeScaner == eTypeScaner.PM550 || Config.TypeScaner == eTypeScaner.PM84; } }
+        static bool IsByte { get { return Config.TypeScaner == eTypeScaner.PM351 || Config.TypeScaner == eTypeScaner.PM550 || Config.TypeScaner == eTypeScaner.PM84 || Config.TypeScaner == eTypeScaner.PM68 ; } }
 
         public override void OnReceive(Context context, Intent intent)
         {
