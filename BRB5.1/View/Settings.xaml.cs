@@ -255,15 +255,25 @@ namespace BRB6.View
             }
         }
 
-        private void OnRestoreDB(object sender, EventArgs e)
-        {  
-         if(db.DeleteDB())
+        private async void OnRestoreDB(object sender, EventArgs e)
+        {
+            bool temp = await DisplayAlert("Обережно", "База даних буде замінена. Ви це розумієте?", "Так, я розумію", "Ні, скасувати дію");
+            if(!temp) return;
+            if (db.DeleteDB())
             {
                 var r=Http.LoadFile(Config.ApiUrl1+ "FileAudit/DB/brb6.db", DB.PathNameDB);
-                if(File.Exists(DB.PathNameDB))
+                if (File.Exists(DB.PathNameDB))
+                {
                     db.OpenDB();
+                    var toast = Toast.Make($"Базу успішно відновлено з сервера");
+                    _ = toast.Show();
+                }
                 else
+                {
                     db.CreateDB();
+                    var toast = Toast.Make($"Не вдалось отримати BD з сервера");
+                    _ = toast.Show();
+                }
             }
         }
 
@@ -433,6 +443,7 @@ namespace BRB6.View
         }
         async private void OnInfo(object sender, EventArgs e)
         {
+            db.Repair();
             string appDir = FileSystem.AppDataDirectory;
             var beforeStats = FileAndDir.GetDirectoryStats(appDir);
             var temp = $"\nBefore AppDataDirectory: {beforeStats.fileCount} files, {beforeStats.totalSize / 1024.0 / 1024.0:F2} MB";

@@ -275,6 +275,7 @@ alter table wares  ADD COLUMN Article INTEGER;";
             }
             else
                 db = new SQLiteConnection(PathNameDB, false);
+           
 
             if (GetVersion < 5)
                 CreateDB();
@@ -1184,6 +1185,10 @@ group by dw.CodeWares, w.NameWares
         {
             string Sql = $@"Update Doc set CodeReason={Doc.CodeReason}  where TypeDoc = {Doc.TypeDoc} and NumberDoc = '{Doc.NumberDoc}'";
             return db.Execute(Sql) >= 0;
+        }
+        public void Repair()
+        {
+            db.Execute("REINDEX;");
         }
     }
 }
