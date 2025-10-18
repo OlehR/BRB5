@@ -13,10 +13,17 @@ namespace PriceChecker.View;
 public partial class SplashPage : ContentPage
 {
     BL.BL bl;
-    DB db = DB.GetDB(Directory.GetCurrentDirectory());
+    DB db;
     private Timer _timer;
     public SplashPage()
     {
+        string Path="";
+        if (DeviceInfo.Platform == DevicePlatform.Android)
+            Path = FileSystem.AppDataDirectory;
+        if (DeviceInfo.Platform == DevicePlatform.WinUI)
+            Path = Directory.GetCurrentDirectory();
+
+        db = DB.GetDB(Path);
         bl = BL.BL.GetBL();
         InitializeComponent();
         bl.Init();
@@ -48,7 +55,7 @@ public partial class SplashPage : ContentPage
     protected override async void OnAppearing()
     {
         base.OnAppearing();
-        App.ScanerCom.SetOnBarCode(BarCode);
+        App.ScanerCom?.SetOnBarCode(BarCode);
 
         var r = await bl.c.LoginAsync(Config.Login, Config.Password, Config.LoginServer);
     }

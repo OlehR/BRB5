@@ -15,17 +15,24 @@ namespace PriceChecker
         public App()
         {
             InitializeComponent();
-
+#if WINDOWS
             AppConfiguration = new ConfigurationBuilder()
                 .AddJsonFile( "appsettings.json")
                 .Build();
+
             FileLogger.Init("Logs", 0, eTypeLog.Full);
+
             Config.ComPortScaner = AppConfiguration["ComPortScaner"]??"COM9";
             Config.Login = AppConfiguration["Login"];
             Config.Password = AppConfiguration["Password"];
-            FileLogger.WriteLogMessage("App", "App", "Start");
             ScanerCom =new ScanerCom(Config.ComPortScaner, 9600);
-            //ScanerCom.Init();
+#endif
+#if ANDROID
+            Config.Login = "Price";
+            Config.Password= "Price";
+#endif
+            FileLogger.WriteLogMessage("App", "App", "Start");          
+   
             FileLogger.WriteLogMessage("App", "App", "End");
             Application.Current.UserAppTheme = AppTheme.Light;
             SetupExceptionHandling();

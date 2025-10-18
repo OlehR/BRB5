@@ -178,7 +178,7 @@ public partial class AdminPriceChecker : ContentPage
         base.OnAppearing();
         Config.OnProgress += Progress;
 
-        App.ScanerCom.SetOnBarCode(BarCode);
+        App.ScanerCom?.SetOnBarCode(BarCode);
         if (!string.IsNullOrEmpty(dBarCode))
         {
             FoundWares(dBarCode);

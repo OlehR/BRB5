@@ -73,7 +73,7 @@ public partial class UPriceChecker : ContentPage
     protected override void OnAppearing()
     {
         base.OnAppearing();
-        App.ScanerCom.SetOnBarCode(BarCode);
+        App.ScanerCom?.SetOnBarCode(BarCode);
         _returnToSplashTimer.Start();
     }
 

@@ -393,7 +393,7 @@ alter table wares  ADD COLUMN Article INTEGER;";
             return Res;
         }
 
-        public int GetVersion => db.ExecuteScalar<int>("PRAGMA user_version");
+        public int GetVersion => db?.ExecuteScalar<int>("PRAGMA user_version")??0;
 
         public bool SetVersion(int pVer) => db.Execute($"PRAGMA user_version={pVer}") > 0;
         public bool ExecSQL(string pSQL) => db.Execute(pSQL) > 0;
