@@ -178,9 +178,9 @@
                                           Text="{Binding ApiUrl1}"/>
                 </Frame>
 
-                <Frame Style="{StaticResource FrameStyle}" IsVisible="{Binding IsVisApi3}">
+                <Frame Style="{StaticResource FrameStyle}" IsVisible="{Binding IsVisApi2}">
                     <controls:CustomEntry Style="{StaticResource EntryStyle}"
-                                          Text="{Binding ApiUrl2}" IsVisible="{Binding IsVisApi3}"/>
+                                          Text="{Binding ApiUrl2}" IsVisible="{Binding IsVisApi2}"/>
                 </Frame>
 
                 <Frame Style="{StaticResource FrameStyle}" IsVisible="False">

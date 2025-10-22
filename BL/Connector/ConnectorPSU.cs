@@ -30,7 +30,7 @@ namespace BL.Connector
 
         public override async Task<Result> LoginAsync(string pLogin, string pPassWord, eLoginServer pLoginServer, string pBarCode = null)=> await CU.LoginAsync(pLogin,pPassWord, pLoginServer, pBarCode);
         
-        public override WaresPrice GetPrice(ParseBarCode pBC, eTypePriceInfo pTP=eTypePriceInfo.Short)=>CU.GetPrice(pBC, pTP);
+        public override Result<WaresPrice> GetPrice(ParseBarCode pBC, eTypePriceInfo pTP=eTypePriceInfo.Short)=>CU.GetPrice(pBC, pTP);
 
         /// <summary>
         /// Збереження Просканованих товарів в 1С

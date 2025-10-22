@@ -25,7 +25,7 @@ namespace BRB6
         public bool IsVisPriceOpt { get { return WP != null && (WP.PriceOpt != 0 || WP.PriceOptOld != 0); } }
         public bool IsVisPriceOptQ { get { return WP != null && WP.QuantityOpt != 0 ; } }
 
-        public bool IsVisF4 { get { return Config.Company == eCompany.Sim23; } }
+        public bool IsVisF4 { get { return Config.LocalCompany == eCompany.Sim23; } }
         public string F4Text { get { return IsOnline ? "OnLine" : "OffLine"; } }
         private bool _IsOnline = true;
         public bool IsOnline { get { return _IsOnline; } set { _IsOnline = value; OnPropertyChanged("F4Text"); } }
@@ -64,7 +64,7 @@ namespace BRB6
 
         public string ColorPrintColorType { get { return WP != null && WP.MinQuantity == 0? "#ffd8d8" : PrintType == 0 ? "#ffffff" : PrintType == 1 ? "#ffffa8" : "#ffffff"; } }
         public string TextColorPrice { get {return (WP != null && WP.Price != 0 && WP.Price == WP.PriceOld && WP.PriceOpt == WP.PriceOptOld) ? "#009800" : "#ff5c5c"; } set { OnPropertyChanged(nameof(TextColorPrice)); } }
-        public string TextColorHttp { get { return (WP != null && WP.StateHTTP == eStateHTTP.HTTP_OK) ? "#009800" : "#ff5c5c"; } }
+        public string TextColorHttp { get { return (bl.LastResult != null && bl.LastResult.StateHTTP == eStateHTTP.HTTP_OK) ? "#009800" : "#ff5c5c"; } }
 
         public bool _IsMultyLabel = false;
         public bool IsMultyLabel { get { return _IsMultyLabel; } set { _IsMultyLabel = value; OnPropertyChanged(nameof(IsMultyLabel)); OnPropertyChanged(nameof(F5Text)); } }

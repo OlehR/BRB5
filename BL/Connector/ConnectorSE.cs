@@ -256,20 +256,27 @@ namespace BL.Connector
             }
         }*/
 
-        public override WaresPrice GetPrice(ParseBarCode pBC, eTypePriceInfo pTP = eTypePriceInfo.Short)
+        public override Result<WaresPrice> GetPrice(ParseBarCode pBC, eTypePriceInfo pTP = eTypePriceInfo.Short)
         {
-            string vCode = pBC.CodeWares > 0 ? $"code={pBC.CodeWares}" : $"BarCode = {pBC.BarCode}";
-            HttpResult result = GetDataHTTP.HTTPRequest(1, $"PriceTagInfo?{vCode}", null, null, null, null);
-            if (result.HttpState == eStateHTTP.HTTP_OK)
+            try
             {
-                var res = JsonConvert.DeserializeObject<WaresPriceSE>(result.Result);
-                return res.GetWaresPrice;
+                string vCode;
+                if (pBC?.CodeWares > 0) 
+                    vCode = $"code={pBC.CodeWares}";
+                else 
+                    vCode = $"BarCode={pBC?.BarCode}";
+                HttpResult result = GetDataHTTP.HTTPRequest(1, $"PriceTagInfo?{vCode}","", "application/json", Config.Login, Config.Password );
+                if (result.HttpState == eStateHTTP.HTTP_OK)
+                {
+                    var res = JsonConvert.DeserializeObject<WaresPriceSE>(result.Result);
+                    return new() { Info = res.GetWaresPrice };
+                }
+                return new(result);
+            }catch(Exception e)
+            {
+                FileLogger.WriteLogMessage("SE.GetPrice", e);
+                return null;
             }
-            //LI.resHttp = res.Result;
-            //LI.HttpState = res.HttpState;
-            //return LI;
-
-            return null;
         }
 
         public override Result SendLogPrice(IEnumerable<LogPrice> pLogPrice)
@@ -277,8 +284,8 @@ namespace BL.Connector
             if (pLogPrice == null)
                 return new Result();
             StringBuilder sb = new StringBuilder();
-            var Data = pLogPrice.Where(el => el.IsGoodBarCode).Select(el => new LogPriceSE(el));
-            HttpResult res = GetDataHTTP.HTTPRequest(0, "pricetag", Data.ToJSON(), "application/json;charset=utf-8", Config.Login, Config.Password);
+            var Data = pLogPrice.Select(el => new LogPriceSE(el)); //Where(el => el.IsGoodBarCode).
+            HttpResult res = GetDataHTTP.HTTPRequest(1, "pricetag", Data.ToJSON(), "application/json", Config.Login, Config.Password);
             return new Result(res);
         }
 
@@ -443,7 +450,7 @@ namespace BL.Connector
                     if ((pTypeDoc >= 5 && pTypeDoc <= 9) || (pTypeDoc <= 0 && Config.IsLoginCO))
                         result = GetDataHTTP.HTTPRequest(CodeApi, NameApi + (pTypeDoc == 5 ? "\\" + pNumberDoc : "?StoreSetting=" + CodeWarehouse) + AddPar, null, "application/json;charset=utf-8", Config.Login, Config.Password);
                     else
-                        result = GetDataHTTP.HTTPRequest(CodeApi, "documents", null, "application/json;charset=utf-8", Config.Login, Config.Password);
+                        result = GetDataHTTP.HTTPRequest(CodeApi, "documents", null, "application/json", Config.Login, Config.Password);
 
                     if (result.HttpState == eStateHTTP.HTTP_OK)
                     {
@@ -458,8 +465,8 @@ namespace BL.Connector
                             db.db.Execute("DELETE FROM DocWaresSample");
                             db.db.Execute("DELETE FROM DocWares");
                         }
-                        else
-                            db.db.Execute("update doc set state=-1 where type_doc not in (5,6)" + (pTypeDoc > 0 ? $" and type_doc={pTypeDoc}" : ""));
+                        //else
+                        //    db.db.Execute("update doc set state=-1 where type_doc not in (5,6)" + (pTypeDoc > 0 ? $" and type_doc={pTypeDoc}" : ""));
 
                         foreach (Doc v in data.Doc)
                         {
@@ -521,7 +528,7 @@ namespace BL.Connector
             try
             {
                 SaveDoc Data = new SaveDoc() { Doc = pDoc, Wares = pWares };
-                HttpResult result = await GetDataHTTP.HTTPRequestAsync(0, "DCT/SaveDoc", Data.ToJson(), "application/json", null);
+                HttpResult result = await GetDataHTTP.HTTPRequestAsync(1, "DCT/SaveDoc", Data.ToJson(), "application/json", null);
                 if (result.HttpState == eStateHTTP.HTTP_OK)
                 {
                     var res = JsonConvert.DeserializeObject<Result>(result.Result);
@@ -1002,14 +1009,14 @@ namespace BL.Connector
         public int Code { get; set; }
         public string Name { get; set; }
         public decimal Price { get; set; }
-        public string BarCodes { get; set; }
+        public string[] BarCodes { get; set; }
         public string Unit { get; set; }
         public string Article { get; set; }
         public int ActionType { get; set; }
         public decimal PromotionPrice { get; set; }
         public WaresPrice GetWaresPrice
         {
-            get { return new WaresPrice() { CodeWares = Code, Name = Name, Price = Price, BarCodes = BarCodes, Unit = Unit, Article = Article, ActionType = ActionType, PriceOpt = PromotionPrice }; }
+            get { return new WaresPrice() { CodeWares = Code, Name = Name, Price = Price, BarCodes = BarCodes?.Any() != true ? "" : string.Join(',', BarCodes), Unit = Unit, Article = Article, ActionType = ActionType, PriceOpt = PromotionPrice }; }
         }
     }
     class InputWarehouse

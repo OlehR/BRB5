@@ -83,7 +83,8 @@ namespace BRB6.View
         public int SelectedPhotoQuality { get { return Enum.GetNames(typeof(ePhotoQuality)).ToList().FindIndex(x => x == Enum.GetName(typeof(ePhotoQuality), Config.PhotoQuality)); } set { Config.PhotoQuality = (ePhotoQuality)value; } }
 
         public bool IsSoftKeyboard => Config.IsSoftKeyboard;
-        public bool IsVisApi3 => Config.Company == eCompany.Sim23;
+        public bool IsVisApi2 => Config.LocalCompany == eCompany.Sim23;
+        public bool IsVisApi3 => false;
         public bool IsViewAllWH { get { return Config.IsViewAllWH; } set { Config.IsViewAllWH = value; } }
         public bool IsAutoLogin { get { return Config.IsAutoLogin; } set { Config.IsAutoLogin = value; } }
         public bool IsVibration { get { return Config.IsVibration; } set { Config.IsVibration = value; } }
@@ -93,7 +94,7 @@ namespace BRB6.View
         //public bool IsFullScreenScan { get { return Config.IsFullScreenScan; } set { Config.IsFullScreenScan = value; } }
 
         public string ApiUrl1 { get { return Config.ApiUrl1; } set { Config.ApiUrl1 = value; OnPropertyChanged(nameof(ApiUrl1)); } }
-        public string ApiUrl2 => Config.ApiUrl2;
+        public string ApiUrl2 { get { return Config.ApiUrl2; } set { Config.ApiUrl2 = value; OnPropertyChanged(nameof(ApiUrl2)); } }
         public string ApiUrl3 => Config.ApiUrl3;
         public string ApiUrl4 => Config.ApiUrl4;
         public int Compress => Config.Compress;

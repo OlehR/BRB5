@@ -25,8 +25,10 @@ namespace BL.Connector
 
         public static BRB5.Model.Connector GetInstance()
         {
-            if (Instance == null || Instance is BRB5.Model.Connector)
+            if (Instance == null )
             {
+                Instance = new ConnectorUniversal();
+                /*
                 switch (Config.Company)
                 {
                     case eCompany.Sim23:
@@ -46,7 +48,7 @@ namespace BL.Connector
                     default:
                         Instance = new ConnectorUniversal();
                         break;
-                }
+                }*/
             }
             return Instance;
         }

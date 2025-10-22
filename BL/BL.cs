@@ -148,7 +148,7 @@ namespace BL
             if (res != null) ;
             //  outLog = res.CodeWares + "," + res.QuantityBarCode + "," + res.NameWares;
             else
-              if (Config.Company == eCompany.Sim23 && pTypeDoc == 7 && PBarcode.CodeWares != 0)
+              if (Config.LocalCompany == eCompany.Sim23 && pTypeDoc == 7 && PBarcode.CodeWares != 0)
             { //Якщо ревізія а товар не знайдено
 
                 DocWaresSample DWS = new DocWaresSample() { TypeDoc = pTypeDoc, NumberDoc = pNumberDoc, OrderDoc = 100000 + (int)PBarcode.CodeWares,

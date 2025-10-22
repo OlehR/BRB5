@@ -16,6 +16,7 @@ using UtilNetwork;
 using Utils;
 
 
+
 namespace BL.Connector
 {
     public class ConnectorUniversal : ConnectorBase
@@ -32,8 +33,8 @@ namespace BL.Connector
                 new PercentColor(100, Color.Gray, Color.Gray, "") //Протермінований товар
             ];
         }
-        bool IsLocalPrice;
-       // IEnumerable<TypeDoc> TypeDoc=null;
+        bool IsLocalPrice => Config.TypeDoc?.Where(el => el.KindDoc == eKindDoc.PriceCheck).FirstOrDefault()?.CodeApi == 1;
+        // IEnumerable<TypeDoc> TypeDoc=null;
         bool isGroup = false;
         /// <summary>
         /// Список Документів доступних по ролі
@@ -88,7 +89,7 @@ namespace BL.Connector
                             CustomerBarCode = CustomerBarCode.Append(new CustomerBarCode() { TypeBarCode = eTypeBarCode.ManualInput, LenghtCode = 7, TypeCode=eTypeCode.Code });///!!!!TMP!!!
                         }
 
-                        IsLocalPrice = Config.TypeDoc?.Where(el => el.KindDoc == eKindDoc.PriceCheck).FirstOrDefault()?.CodeApi == 1;
+                        //IsLocalPrice = Config.TypeDoc?.Where(el => el.KindDoc == eKindDoc.PriceCheck).FirstOrDefault()?.CodeApi == 1;
                         FileLogger.WriteLogMessage($"ConnectorPSU.Login=>(pLogin=>{pLogin}, pPassWord=>{pPassWord},pLoginServer=>{pLoginServer}) Res=>({Res.State},{Res.Info},{Res.TextError})", eTypeLog.Full);
                         return res.GetResult;
                     }
@@ -151,15 +152,14 @@ namespace BL.Connector
             return Res;
         }*/
 
-        public override WaresPrice GetPrice(ParseBarCode pBC, eTypePriceInfo pTP = eTypePriceInfo.Short)
+        public override Result<WaresPrice> GetPrice(ParseBarCode pBC, eTypePriceInfo pTP = eTypePriceInfo.Short)
         {
-            Config.OnProgress?.Invoke(0.3d);
-            //Config.TypeDoc.Where(el => el.KindDoc == eKindDoc.PriceCheck).FirstOrDefault();
-            WaresPrice Res = null;
+            Config.OnProgress?.Invoke(0.2d);           
+            Result<WaresPrice> Res = null;
             if (IsLocalPrice)
             {
                 if (СonnectorLocal != null)
-                    Res = СonnectorLocal.GetPrice(pBC, pTP);
+                   Res= СonnectorLocal.GetPrice(pBC, pTP);
             }
             else
             {
@@ -169,20 +169,16 @@ namespace BL.Connector
                     HttpResult result = GetDataHTTP.HTTPRequest(0, "DCT/GetPrice", Data.ToJson(), "application/json", null);
                     if (result.HttpState == eStateHTTP.HTTP_OK)
                     {
-                        var res = JsonConvert.DeserializeObject<Result<WaresPrice>>(result.Result);
-
-                        if (res.Info != null)
-                        {
-                            Res = res.Info;
-                            Res.ParseBarCode = pBC;
-                        }
-                        //return res.Info;
+                        Res = JsonConvert.DeserializeObject<Result<WaresPrice>>(result.Result);
+                        if (Res.Info != null)                        
+                            Res.Info.ParseBarCode = pBC;
                     }
+                    else Res= new(result);
                 }
                 catch (Exception e)
                 {
                     FileLogger.WriteLogMessage(this, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                    Res = new WaresPrice(-1, e.Message);
+                    Res= new(e); // Res = new WaresPrice(-1, e.Message);
                 }
             }
             Config.OnProgress?.Invoke(0.9d);
@@ -197,6 +193,11 @@ namespace BL.Connector
         {
             if (pLogPrice != null && pLogPrice.Count() < 1)
                 return new Result(-1, "Відсутні дані на відправку");
+            if (IsLocalPrice)
+            {
+                if (СonnectorLocal != null)
+                    return СonnectorLocal.SendLogPrice(pLogPrice);
+            }
             try
             {
                 string Data = new LogPriceSave()

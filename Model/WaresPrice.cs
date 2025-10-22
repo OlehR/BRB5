@@ -6,7 +6,7 @@ using UtilNetwork;
 
 namespace BRB5.Model
 {
-    public class WaresPrice:Result, INotifyPropertyChanged
+    public class WaresPrice: INotifyPropertyChanged
     {
         public WaresPrice() { }
         public WaresPrice(DocWaresEx pW) 
@@ -16,9 +16,7 @@ namespace BRB5.Model
             BarCodes = pW.BarCode;
             Unit = pW.NameUnit;
             ParseBarCode=pW.ParseBarCode;
-        }
-        public WaresPrice(HttpResult pHttp, string pInfo=null) : base(pHttp, pInfo) { }
-        public WaresPrice(int pState = 0, string pTextError = "Ok", string pInfo = "") : base(pState, pTextError, pInfo) { }
+        }        
         public long CodeWares { get; set; }
         public long CodeUser { get; set; }
         public string Name { get; set; }
@@ -86,7 +84,7 @@ namespace BRB5.Model
         public ParseBarCode ParseBarCode { get; set; }
         public bool IsBarCode {get{ return ParseBarCode==null || ( ParseBarCode.Price==0 && ParseBarCode.BarCode!=null); }}
 
-        public string StrHttpResult { get { return StateHTTP.ToString(); } }
+        //public string StrHttpResult { get { return StateHTTP.ToString(); } }
         public bool IsPriceOk { get { return PriceOld == Price && PriceOptOld == PriceOpt; } }
 
         //Датa останнього приходу товару на склад торговий зал

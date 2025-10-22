@@ -5,16 +5,17 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
+using UtilNetwork;
 using Utils;
 
 namespace BL
 {
     public partial class BL
     {
-        //WaresPrice WP;
-        WaresPrice[] WPH = new WaresPrice[2];
-
-        public void ClearWPH() { WPH[0] = null; WPH[1]=null; }
+        WaresPrice WPH;
+        //WaresPrice[] WPH = new WaresPrice[2];
+        public Result LastResult;
+        public void ClearWPH() { WPH = null; /* WPH[0] = null; WPH[1]=null; */}
         public WaresPrice  FoundWares(string pBarCode, int PackageNumber, int LineNumber, bool pIsHandInput, bool pIsDoubleScan, bool IsOnline = true, eTypePriceInfo pTPI = eTypePriceInfo.Normal)
         {
             WaresPrice CheckWP;            
@@ -22,12 +23,18 @@ namespace BL
 
             if (IsOnline)
             {
-                CheckWP = c.GetPrice(c.ParsedBarCode(pBarCode, pIsHandInput), pTPI)?? new() { Name= $"Товар не знайдено =>{pBarCode}" };
+                var R = c.GetPrice(c.ParsedBarCode(pBarCode, pIsHandInput), pTPI);
+                if(R.Success)
+                  CheckWP =R.Info ?? new() { Name = $"Товар не знайдено =>{pBarCode}" };
+                else
+                  CheckWP = new() { Name = $"{pBarCode}=>{R.TextError}" };
+                LastResult = R;
             }
             else
             {
                 var data = GetWaresFromBarcode(0, null, pBarCode, pIsHandInput);
                 CheckWP = new WaresPrice(data);
+                LastResult = new();
             }
 
             if (pIsDoubleScan)
@@ -45,6 +52,36 @@ namespace BL
         }
 
         private void SearchDoubleScan(WaresPrice CheckWP, int PackageNumber, int LineNumber)
+        {
+            if (CheckWP?.CodeWares != 0)
+            {
+                if (WPH == null)
+                {
+                    WPH = CheckWP;
+                    CheckWP.StateDoubleScan = (CheckWP.IsBarCode ? eCheckWareScaned.WareScaned : eCheckWareScaned.PriceTagScaned);
+                }
+                else
+                {
+                    eCheck R = CompareDoubleScan(CheckWP, WPH);
+                    if (R == eCheck.Same) return;
+                    if (R == eCheck.Ok)
+                    {
+                        SaveDoubleScan(100, CheckWP, PackageNumber, LineNumber);
+                        ClearWPH();
+                        CheckWP.StateDoubleScan = eCheckWareScaned.Success;
+                    }
+                    if (R == eCheck.Bad)
+                    {
+                        SaveDoubleScan(WPH.IsBarCode ? 101 : 102, CheckWP, PackageNumber, LineNumber);
+                        WPH = CheckWP;
+                        CheckWP.StateDoubleScan = (CheckWP.IsBarCode ? eCheckWareScaned.WareScaned : eCheckWareScaned.PriceTagScaned);
+                    }
+                    //Res = "Скануйте цінник чи товар";
+                }
+            }
+        }        
+
+        /*private void SearchDoubleScan(WaresPrice CheckWP, int PackageNumber, int LineNumber)
         {
             if (CheckWP?.CodeWares != 0){
                 for (int i = WPH.Count() - 1; i >= 0; i--)
@@ -78,7 +115,7 @@ namespace BL
                 if(CheckWP.StateDoubleScan != eCheckWareScaned.Bad&& CheckWP.StateDoubleScan != eCheckWareScaned.Success) 
                     CheckWP.StateDoubleScan=(CheckWP.IsBarCode ? eCheckWareScaned.WareScaned : eCheckWareScaned.PriceTagScaned); //"Скануйте цінник" : "Скануйте товар");
             }            
-        }
+        }*/
         enum eCheck { Ok,Same,Bad }
         private eCheck CompareDoubleScan(WaresPrice pWP, WaresPrice pS)
         {
@@ -86,98 +123,7 @@ namespace BL
                 if (pWP.IsBarCode == !pS.IsBarCode) return eCheck.Ok; else return eCheck.Same;
             return eCheck.Bad;
         }
-
-        /*private string SearchDoubleScan(WaresPrice CheckWP)
-        {
-            string MessageDoubleScan;
-            if (WP == null)
-            {
-                WP = CheckWP;
-                if (WP.ParseBarCode.BarCode == null)
-                {
-                    MessageDoubleScan = "Скануйте товар";
-                    WP.StateDoubleScan = eCheckWareScaned.PriceTagScaned;
-                }
-                else
-                {
-                    MessageDoubleScan = "Скануйте цінник";
-                    WP.StateDoubleScan = eCheckWareScaned.WareScaned;
-                }
-            }
-            else
-            {
-                if (WP.StateDoubleScan != eCheckWareScaned.Nothing && WP.StateDoubleScan != eCheckWareScaned.Success)
-                {   
-                    //поточний цінник
-                    if (WP.ParseBarCode.BarCode == null)
-                    {
-                        if (CheckWP.ParseBarCode.BarCode == null)
-                        {
-                            MessageDoubleScan = "Скануйте товар";
-                            WP.StateDoubleScan = eCheckWareScaned.WareNotFit;
-                        }
-                        else
-                        {
-                            if (WP.CodeWares == CheckWP.CodeWares)
-                            {
-                                WP = CheckWP;
-                                MessageDoubleScan = "Скануйте цінник чи товар";
-                                WP.StateDoubleScan = eCheckWareScaned.Success;
-
-                            }
-                            else
-                            {
-                                MessageDoubleScan = " Товар не підходить. \n Скануйте товар";
-                                WP.StateDoubleScan = eCheckWareScaned.WareNotFit;
-                            }
-                        }
-                    }
-                    // поточний товар
-                    else
-                    {
-                        if (CheckWP.ParseBarCode.BarCode == null)
-                        {
-                            if (WP.CodeWares == CheckWP.CodeWares)
-                            {
-                                WP = CheckWP;
-                                MessageDoubleScan = "Скануйте цінник чи товар";
-                                WP.StateDoubleScan = eCheckWareScaned.Success;
-
-                            }
-                            else
-                            {
-                                MessageDoubleScan = " Цінник не підходить. \n Скануйте цінник";
-                                WP.StateDoubleScan = eCheckWareScaned.PriceTagNotFit;
-                            }
-                        }
-                        else
-                        {
-                            MessageDoubleScan = "Скануйте цінник";
-                            WP.StateDoubleScan = eCheckWareScaned.PriceTagNotFit;
-                        }
-                    }
-                }
-                else
-                {
-                    WP = CheckWP;
-                    if (WP.ParseBarCode.BarCode == null)
-                    {
-                        MessageDoubleScan = "Скануйте товар";
-                        WP.StateDoubleScan = eCheckWareScaned.PriceTagScaned;
-                    }
-                    else
-                    {
-                        MessageDoubleScan = "Скануйте цінник";
-                        WP.StateDoubleScan = eCheckWareScaned.WareScaned;
-                    }
-                }
-
-            }
             
-            return MessageDoubleScan;
-        }
-    */
-    
         public void SaveDoubleScan(int Status, WaresPrice pWP, int PackageNumber, int LineNumber)
         {
             var l = new LogPrice(Status, pWP, PackageNumber, LineNumber);
@@ -193,11 +139,8 @@ namespace BL
                 item.TypeDoc = 13;
                 item.OrderDoc = i++;
             }
-
             db.ReplaceDocWaresSample(tempInfo.Select(el => new DocWaresSample(el)));
-
             return new ObservableCollection<DocWaresEx>(db.GetDocWares(Doc, 1, eTypeOrder.Name, ShelfType));
-
         }
     }
 }

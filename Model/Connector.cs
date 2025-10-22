@@ -183,7 +183,7 @@ namespace BRB5.Model
         /// </summary>
         /// <param name="pBC"></param>
         /// <returns></returns>
-        public virtual WaresPrice GetPrice(ParseBarCode pBC, eTypePriceInfo pTP = eTypePriceInfo.Short) { throw new NotImplementedException(); }
+        public virtual Result<WaresPrice> GetPrice(ParseBarCode pBC, eTypePriceInfo pTP = eTypePriceInfo.Short) { throw new NotImplementedException(); }
 
         /// <summary>
         /// Список Документів доступних по ролі
