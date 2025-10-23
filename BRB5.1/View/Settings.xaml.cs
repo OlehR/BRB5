@@ -291,15 +291,18 @@ namespace BRB6.View
             string currentIP = Config.NativeBase.GetIP();
             if (currentIP == null)
             {
-                if (sender == null)
+                MainThread.BeginInvokeOnMainThread(async () =>
                 {
-                    var toast = Toast.Make("Не вдається отримати IP-адресу.");
-                    _ = toast.Show();
-                }
-                else
+                    if (sender == null)
+                    {
+                        var toast = Toast.Make("Не вдається отримати IP-адресу.");
+                        _ = toast.Show();
+                    }
+                    else
 
-                    await DisplayAlert("Помилка", "Не вдається отримати IP-адресу.", "OK");
-                return;
+                        await DisplayAlert("Помилка", "Не вдається отримати IP-адресу.", "OK");
+                    return;
+                });
             }
             if (ListWarehouse.Any() && ListWarehouse.First().Name != "ddd") {
                 var matchingWarehouseIndex = ListWarehouse.FindIndex(warehouse =>
@@ -314,6 +317,8 @@ namespace BRB6.View
                 }
                 else
                 {
+                    MainThread.BeginInvokeOnMainThread(async () =>
+                    {
                     if (sender == null)
                     {
                         var toast = Toast.Make($"Відповідний магазин не знайдено. IP=>{currentIP}");
@@ -321,13 +326,17 @@ namespace BRB6.View
                     }
                     else
                         await DisplayAlert("Info", $"Відповідний магазин не знайдено. IP=>{currentIP}", "OK");
+                     });
                 } 
             }
         }
 
         private void OnClickSave(object sender, EventArgs e)
         {
-            Config.CodesWarehouses = Warehouses.Where(x => x.IsChecked).Select(x => x.CodeWarehouse).ToList();
+            if (Warehouses?.Any() == true)
+                Config.CodesWarehouses = Warehouses.Where(x => x.IsChecked).Select(x => x.CodeWarehouse).ToList();
+            else
+                Config.CodesWarehouses = [];
             Bl.SaveSettings();
         }
         private void RefreshWarehouses(object sender, CheckedChangedEventArgs e)
