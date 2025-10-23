@@ -48,9 +48,9 @@ namespace BRB6
                 OCTypeDoc = new ObservableCollection<TypeDoc>();
                 InitializeComponent();
                 Init();
-                if (Config.Company == eCompany.NotDefined) _ = Navigation.PushAsync(new Settings());
-                BindingContext = this;
                 Config.BarCode = BarCode;
+                if (Config.Company == eCompany.NotDefined) _ = Navigation.PushAsync(new Settings());
+                BindingContext = this;                
             }
             catch (Exception ex)
             {

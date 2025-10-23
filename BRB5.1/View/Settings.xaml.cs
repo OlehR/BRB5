@@ -164,6 +164,7 @@ namespace BRB6.View
         {
             _ = Task.Run(async () =>
             {
+                FileLogger.WriteLogMessage(this,"Settings" ,$"BarCode=>{pBarCode}");
                 int CodeWarehouse = 0;
                 QRCodeScan(null, null);
                 if (pBarCode == null) return;
