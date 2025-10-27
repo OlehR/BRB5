@@ -1,20 +1,21 @@
-﻿using BRB5.Model;
+﻿using BRB5;
+using BRB5.Model;
+using BRB5.Model.DB;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 using System;
 using System.Collections.Generic;
-using System.Text;
-using System.Linq;
-using Newtonsoft.Json.Converters;
-using System.IO;
-using Utils;
 using System.Diagnostics;
-using BRB5;
-using System.Globalization;
-using System.Threading.Tasks;
-using System.Threading;
 using System.Drawing;
-using BRB5.Model.DB;
+using System.Globalization;
+using System.IO;
+using System.Linq;
+using System.Text;
+using System.Text.Json.Serialization;
+using System.Threading;
+using System.Threading.Tasks;
 using UtilNetwork;
+using Utils;
 namespace BL.Connector
 {
     public class ConnectorSE : ConnectorBase
@@ -527,6 +528,38 @@ namespace BL.Connector
         {
             try
             {
+                if (pDoc.TypeDoc == 1 || pDoc.TypeDoc == 2 || pDoc.TypeDoc == 5)
+                {
+                    var d = (new[] { new OutputDoc(pDoc,pWares) }).ToJson();
+                    FileLogger.WriteLogMessage(this, "SaveDocAsync documentin=>", d);                    
+                    var res = GetDataHTTP.HTTPRequest(1, "documentin", null, "application/json", Config.Login, Config.Password);
+
+                    if (res.HttpState != eStateHTTP.HTTP_OK)
+                    {
+                        FileLogger.WriteLogMessage(this, "SaveDocAsync Res=>", res.ToJSON(), eTypeLog.Error);
+                        return new Result(res);
+                    }
+                    else
+                    {
+                        FileLogger.WriteLogMessage(this, "SaveDocAsync Res=>", res.ToJSON());
+                        return new Result();
+                    }
+                }
+                if (pDoc.TypeDoc == 14)
+                {
+                    //msSQL.SetDocReason(pD.Doc);
+                    var res = GetDataHTTP.HTTPRequest(1, $"confirmdocuments/{pDoc.NumberDoc}", null, "application/json", Config.Login, Config.Password);             
+                    FileLogger.WriteLogMessage(this, "SaveDocAsync Res=>", res.ToJSON());
+                    if (res.HttpState != eStateHTTP.HTTP_OK)
+                        return new Result(res);
+                    else
+                    {
+                        var r = JsonConvert.DeserializeObject<Result>(res.Result);
+                        return r;
+                    }
+                }
+
+                /*
                 SaveDoc Data = new SaveDoc() { Doc = pDoc, Wares = pWares };
                 HttpResult result = await GetDataHTTP.HTTPRequestAsync(1, "DCT/SaveDoc", Data.ToJson(), "application/json", null);
                 if (result.HttpState == eStateHTTP.HTTP_OK)
@@ -534,13 +567,14 @@ namespace BL.Connector
                     var res = JsonConvert.DeserializeObject<Result>(result.Result);
                     if (res.State == 0) return res;
                 }
-                return new Result(result);
+                return new Result(result);*/
             }
             catch (Exception e)
             {
                 FileLogger.WriteLogMessage(this, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return new Result(e);
+                return new (e);
             }
+            return new();
         }
         /// <summary>
         /// Вивантаження Рейтингів
@@ -1126,6 +1160,60 @@ namespace BL.Connector
         public int code { get; set; }
         public string reason { get; set; }
         public BRB5.Model.DB.Reason GetReason { get { return new BRB5.Model.DB.Reason() { CodeReason = code, NameReason = reason }; } }
+    }
+
+    class OutputDocWares
+    {
+        public string CodeWares { get; set; }
+        public decimal Quantity { get; set; }
+        [System.Text.Json.Serialization.JsonIgnore(Condition = JsonIgnoreCondition.Never)]
+        public int Reason { get; set; }
+        public OutputDocWares() { }
+        public OutputDocWares(long pCodeWares, decimal pQuantity, int pReason)
+        {
+            CodeWares = pCodeWares.ToString();
+            Quantity = pQuantity;
+            Reason = pReason;
+        }
+
+        public OutputDocWares(DocWares pDW) : this(pDW.CodeWares, pDW.InputQuantity, pDW.CodeReason) { }
+
+    }
+    class OutputDoc
+    {
+        public int TypeDoc { get; set; }
+        public string NumberDoc { get; set; }
+        public string DateDoc { get; set; }
+        public string DateOutInvoice { get; set; }
+        public string NumberOutInvoice { get; set; }
+        public int TypeMove { get; set; }
+        public int IsClose { get; set; }
+        public IEnumerable<OutputDocWares> DocWares { get; set; }
+
+        public OutputDoc() { }
+
+        public OutputDoc(Doc pDoc, IEnumerable<DocWares> pWares) : this(pDoc.TypeDoc, pDoc.NumberDoc, pDoc.DateDoc)
+        {
+            DocWares = pWares.Select(x => new OutputDocWares(x));
+        }
+
+        public OutputDoc(int pTypeDoc, string pNumberDoc, DateTime pDateDoc, DateTime? pDateOutInvoice = null, string pNumberOutInvoice = null, int pIsClose = 0)
+        {
+            TypeDoc = pTypeDoc;
+            NumberDoc = pNumberDoc;
+            DateDoc = pDateDoc.ToString("yyyy-MM-dd'T'HH:mm:ss");
+
+            if (TypeDoc == 9)
+            {
+                TypeMove = 1;
+                TypeDoc = 8;
+            }
+            DocWares = [];
+
+            NumberOutInvoice = pNumberOutInvoice;
+            DateOutInvoice = pDateOutInvoice?.ToString("yyyy-MM-dd");
+            IsClose = pIsClose;
+        }
     }
     #endregion
 }

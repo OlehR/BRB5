@@ -119,8 +119,8 @@ namespace BL.Connector
                 {
                     var res = JsonConvert.DeserializeObject<Result<BRB5.Model.Guid>>(result.Result);
                     Config.OnProgress?.Invoke(0.60);
-                    
-                    SaveGuide(res.Info, pIsFull);
+                    if(res.Info!=null)
+                        SaveGuide(res.Info, pIsFull);
                     Config.OnProgress?.Invoke(0.60);
                     var r=await GetRaitingTemplateAsync();
                     Info=$"Товарів=>{res?.Info?.Wares?.Count()}\nСкладів=>{res?.Info?.Warehouse?.Count()} \nШаблонів рейтингу =>{r?.Info?.Count()}";
@@ -296,10 +296,16 @@ namespace BL.Connector
             try
             {
                 var TD = Config.GetDocSetting(pDoc.TypeDoc);
-                if (TD?.CodeApi == 1)
+                if (TD?.CodeApi == 1)// || (Config.LocalCompany==eCompany.Sim23 &&(pDoc.TypeDoc==5|| pDoc.TypeDoc == 14) )) //Тимчасовий хак.
                 {
                     if (СonnectorLocal != null)
-                        return await СonnectorLocal.SendDocsDataAsync(pDoc, pWares);
+                    {
+                        var Res= await СonnectorLocal.SendDocsDataAsync(pDoc, pWares);
+                        if(!(Config.LocalCompany == eCompany.Sim23 && (pDoc.TypeDoc == 5 || pDoc.TypeDoc == 14)))
+                        {
+                            return Res;
+                        }
+                    }
                     return new Result(-1, "Локальний конектор не визначено");
                 }
 

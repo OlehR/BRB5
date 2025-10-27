@@ -5,6 +5,8 @@ using BRB5.Model;
 using System.Collections.ObjectModel;
 using CommunityToolkit.Maui.Core;
 using CommunityToolkit.Maui.Alerts;
+using Utils;
+
 
 #if ANDROID
 using Android.Views;
@@ -337,7 +339,9 @@ public partial class LotsCheck : ContentPage
         {
             Doc dl = (Doc)doc.Clone();
             dl.TypeDoc = TypeDoc.LinkedCodeDoc;
+            dl.State = 0;
             db.ReplaceDoc([dl]);
+            FileLogger.WriteLogMessage(this, "SaveCurrentDocAsync",dl.ToJSON());
         }
 
         // оновлення видимості F4
