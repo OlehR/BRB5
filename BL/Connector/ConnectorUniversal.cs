@@ -306,7 +306,8 @@ namespace BL.Connector
                             return Res;
                         }
                     }
-                    return new Result(-1, "Локальний конектор не визначено");
+                    else
+                        return new Result(-1, "Локальний конектор не визначено");
                 }
 
                 string Data = new SaveDoc() { NameDCT=Config.SN, Doc = pDoc, Wares = pWares }.ToJson();
