@@ -36,7 +36,7 @@ namespace BL
             if (!string.IsNullOrEmpty(pPathDB))
             { BaseDir = pPathDB;}
             if (!string.IsNullOrEmpty(BaseDir) && Db == null)
-                Db = new DB();
+                Db = new DB();            
             return Db;
         }
 
@@ -268,14 +268,10 @@ alter table wares  ADD COLUMN Article INTEGER;";
         public DB()
         {
             FileLogger.WriteLogMessage($"PathNameDB=>{PathNameDB}");
-
-            if (!File.Exists(PathNameDB))
-            {
-                CreateDB();
-            }
+            if (!File.Exists(PathNameDB))            
+                CreateDB();            
             else
-                db = new SQLiteConnection(PathNameDB, false);
-           
+                OpenDB();
 
             if (GetVersion < 5)
                 CreateDB();
@@ -302,7 +298,8 @@ alter table wares  ADD COLUMN Article INTEGER;";
                 DeleteDB();
                 if (!File.Exists(PathNameDB))
                 {
-                    db = new SQLiteConnection(PathNameDB, false);
+                    db = null;
+                    OpenDB();
                     SetSQL(SqlCreateDB, Ver);                    
                     return true;
                 }
@@ -341,7 +338,12 @@ alter table wares  ADD COLUMN Article INTEGER;";
             try
             {
                 if (db == null)
+                {
                     db = new SQLiteConnection(PathNameDB, false);
+                    db.Execute("PRAGMA synchronous = EXTRA;");
+                    db.Execute("PRAGMA journal_mode = DELETE;");
+                    db.Execute("PRAGMA wal_autocheckpoint = 5;");
+                }
                 return true;
             }
             catch (Exception ex)
