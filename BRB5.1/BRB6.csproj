@@ -58,10 +58,7 @@
     <AndroidCreatePackagePerAbi>False</AndroidCreatePackagePerAbi>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(TargetFramework)'=='net8.0-ios'">
-    <CodesignKey>Apple Development: Created via API (S4J9BA3B6S)</CodesignKey>
-    <CodesignProvision>VS: ua.UniCS.TM.BRB6 Development</CodesignProvision>
-  </PropertyGroup>
+
 
   <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net8.0-android|AnyCPU'">
     <AndroidUseAapt2>True</AndroidUseAapt2>
