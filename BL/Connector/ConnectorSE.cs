@@ -532,7 +532,7 @@ namespace BL.Connector
                 {
                     var d = (new[] { new OutputDoc(pDoc,pWares) }).ToJson();
                     FileLogger.WriteLogMessage(this, "SaveDocAsync documentin=>", d);                    
-                    var res = GetDataHTTP.HTTPRequest(1, "documentin", null, "application/json", Config.Login, Config.Password);
+                    var res = GetDataHTTP.HTTPRequest(1, "documentin", d, "application/json", Config.Login, Config.Password);
 
                     if (res.HttpState != eStateHTTP.HTTP_OK)
                     {
