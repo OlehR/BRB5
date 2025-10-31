@@ -148,8 +148,8 @@ public partial class SplashPage : ContentPage
         _timer = null;
     }
 
-    //private void TEMPHandIput(object sender, EventArgs e)
-    //{
-    //    BarCode(InputBC.Text,"");
-    //}
+    private void TEMPHandIput(object sender, EventArgs e)
+    {
+        BarCode(InputBC.Text, "");
+    }
 }
