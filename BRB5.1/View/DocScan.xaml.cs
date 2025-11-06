@@ -111,6 +111,7 @@ namespace BRB6.View
                 ScanData.Quantity = ScanData.InputQuantity * ScanData.Coefficient;
                 ScanData.OrderDoc = ++OrderDoc;
                 ScanData.Ord = -1;
+                ScanData.NameReason= Reason.FirstOrDefault(r => r.CodeReason == ScanData.CodeReason)?.NameReason ?? "";
                 if (db.ReplaceDocWares(ScanData))
                 {
                     ScanData.InputQuantity=ScanData.Quantity;

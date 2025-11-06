@@ -229,16 +229,22 @@ namespace BRB6.View
             db.SetConfig<DateTime>("DateLastLoadGuid", Config.DateLastLoadGuid);
             if (r.State == 0)
             {
-                var toast = Toast.Make($"Завантаження даних завершено. {r.Info}");
-                _ = toast.Show();
+                ToastInfo($"Завантаження даних завершено. {r.Info}");
             }
             else
             {
-                var toast = Toast.Make($"Помилка завантаження даних. Код помилки: {r.State} {r.TextError}");
-                _ = toast.Show();
+                ToastInfo($"Помилка завантаження даних. Код помилки: {r.State} {r.TextError}");                
             }
         }
 
+        void ToastInfo(string msg)
+        {
+            MainThread.BeginInvokeOnMainThread(async () =>
+            {
+                var toast = Toast.Make(msg);
+                _ = toast.Show();
+            });
+        }
         private void OnClickLoadDoc(object sender, EventArgs e) { c.LoadDocsDataAsync(0, null, false); }
 
         async private void OnCopyDB(object sender, EventArgs e) {
@@ -249,11 +255,14 @@ namespace BRB6.View
                 byte[] buffer = File.ReadAllBytes(DB.PathNameDB);
                 File.WriteAllBytes(FileDestination, buffer);*/
                 await c.UploadFile(DB.PathNameDB, $"brb6_{DateTime.Now.ToString("yyyyMMdd_HHmmss")}.db");
-                await c.UploadFile(FileLogger.GetFileName, $"Log_{DateTime.Now.ToString("yyyyMMdd_HHmmss")}.log");
+                if(File.Exists(FileLogger.GetFileName))
+                    await c.UploadFile(FileLogger.GetFileName, $"Log_{DateTime.Now.ToString("yyyyMMdd_HHmmss")}.log");
+                ToastInfo("Дані успішно відправлено на сервер");
             }
             catch (Exception ex)
             {
                 FileLogger.WriteLogMessage(this, "OnCopyDB", ex);
+                ToastInfo($"Проблеми збереження=>{ex.Message}");
             }
         }
 
@@ -267,14 +276,12 @@ namespace BRB6.View
                 if (File.Exists(DB.PathNameDB))
                 {
                     db.OpenDB();
-                    var toast = Toast.Make($"Базу успішно відновлено з сервера");
-                    _ = toast.Show();
+                    ToastInfo($"Базу успішно відновлено з сервера");
                 }
                 else
                 {
                     db.CreateDB();
-                    var toast = Toast.Make($"Не вдалось отримати BD з сервера");
-                    _ = toast.Show();
+                    ToastInfo($"Не вдалось отримати BD з сервера");
                 }
             }
         }
@@ -313,8 +320,7 @@ namespace BRB6.View
                 {
                     SelectedWarehouse = matchingWarehouseIndex;
                     Config.ApiUrl2 = ListWarehouse[matchingWarehouseIndex].Url;
-                    var toast = Toast.Make($"{ListWarehouse[matchingWarehouseIndex].Name} IP=>{currentIP}");
-                    _ = toast.Show();
+                    ToastInfo($"{ListWarehouse[matchingWarehouseIndex].Name} IP=>{currentIP}");              
                 }
                 else
                 {
@@ -322,8 +328,7 @@ namespace BRB6.View
                     {
                     if (sender == null)
                     {
-                        var toast = Toast.Make($"Відповідний магазин не знайдено. IP=>{currentIP}");
-                        _ = toast.Show();
+                            ToastInfo($"Відповідний магазин не знайдено. IP=>{currentIP}");
                     }
                     else
                         await DisplayAlert("Info", $"Відповідний магазин не знайдено. IP=>{currentIP}", "OK");
@@ -339,6 +344,7 @@ namespace BRB6.View
             else
                 Config.CodesWarehouses = [];
             Bl.SaveSettings();
+            ToastInfo("Успішно збережено");
         }
         private void RefreshWarehouses(object sender, CheckedChangedEventArgs e)
         {

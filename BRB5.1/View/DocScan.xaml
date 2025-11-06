@@ -113,7 +113,7 @@
 
                                 <Label Text="{Binding NameWares}" Grid.Column="0" LineBreakMode="NoWrap" BackgroundColor="{Binding GetBackgroundColor}" />
                                 <Label Text="{Binding InputQuantity}" Grid.Column="1" LineBreakMode="NoWrap" BackgroundColor="{Binding GetBackgroundColor}" />
-                                <Label Text="{Binding CodeReason}" Grid.Column="2" LineBreakMode="NoWrap" BackgroundColor="{Binding GetBackgroundColor}" />
+                                <Label Text="{Binding NameReason}" Grid.Column="2" LineBreakMode="NoWrap" BackgroundColor="{Binding GetBackgroundColor}" />
                             </Grid>
                         </DataTemplate>
                     </CollectionView.ItemTemplate>

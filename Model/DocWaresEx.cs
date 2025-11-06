@@ -45,6 +45,8 @@ namespace BRB5.Model
         public string StrReason { set { if (!string.IsNullOrEmpty(value)) { var d = value.Split(';'); ProblematicItems = d.Select(el => new ReasonItem(el));
                 } } }
         public IEnumerable<ReasonItem> ProblematicItems { get; set; }
+
+        public string NameReason { get; set; }
         public bool IsVisProblematic { get { return QuantityReason > 0; } } 
         public bool Even { get; set; } = false;
 
@@ -58,35 +60,24 @@ namespace BRB5.Model
                       return "fff3cd";*/
 
                 if (Even)
-                    switch (Ord)
+                    return Ord switch
                     {
-                        case 3:
-                            return "#FFB0B0";
-                        case 2:
-                            return "#FFC050";
-                        case 1:
-                            return "#FFFF80";
-                        case 0:
-                            return "#80FF80";
-                        default:
-                            return "#fff3cd";
-                    }
+                        3 => "#FFB0B0",
+                        2 => "#FFC050",
+                        1 => "#FFFF80",
+                        0 => "#80FF80",
+                        _ => "#fff3cd",
+                    };
                 else
-                    switch (Ord)
+                    return Ord switch
                     {
-                        case 3:
-                            return "#FFD1D1";
-                        case 2:
-                            return "#ffdd8a";
-                        case 1:
-                            return "#ffffb7";
-                        case 0:
-                            return "#c4ffc4";
-                        case -1:
-                            return "#ffffff";
-                        default:
-                            return "#fff3cd";
-                    }
+                        3 => "#FFD1D1",
+                        2 => "#ffdd8a",
+                        1 => "#ffffb7",
+                        0 => "#c4ffc4",
+                        -1 => "#ffffff",
+                        _ => "#fff3cd",
+                    };
             }
         }
 

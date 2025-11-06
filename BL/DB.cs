@@ -469,8 +469,10 @@ alter table wares  ADD COLUMN Article INTEGER;";
                         coalesce(dws.quantitymin,0) as QuantityMin, coalesce(dws.quantitymax,0) as QuantityMax ,
                         coalesce(d.IsControl,0) as IsControl, coalesce(dw1.quantityold,0) as QuantityOld,dw1.CODEReason as  CodeReason
                         ,0 as Ord,w.codeunit
+                        ,r.NameReason
                             from Doc d 
                             join DocWares dw1 on (dw1.numberdoc = d.numberdoc and d.typedoc=dw1.typedoc)
+                             left join  Reason r on dw1.CodeReason=r.CodeReason 
                             left join Wares w on dw1.codewares = w.codewares 
                             left join (
                             select  dws.typedoc ,dws.numberdoc, dws.codewares,dws.name, sum(dws.quantity) as quantity,  min(dws.quantitymin) as quantitymin, max(dws.quantitymax) as quantitymax  
@@ -574,7 +576,7 @@ from  DocWares dw
  order by DateDoc DESC";
 
             var res = db.Query<DocVM>(Sql);
-            if (!res.Any() && !string.IsNullOrEmpty(pBarCode))
+            if (res.Count == 0 && !string.IsNullOrEmpty(pBarCode))
             {
                 Sql = $@"select d.*, Wh.Address as Address,d.State as Color  
 from Doc d 
@@ -595,7 +597,7 @@ and bc.BarCode=?
    left join Warehouse Wh on d.CodeWarehouse = wh.number 
    where d.TypeDoc = {pDocId.TypeDoc} and d.numberdoc = '{pDocId.NumberDoc}'";
             var r = db.Query<DocVM>(Sql);
-            if (r != null && r.Any())
+            if (r != null && r.Count != 0)
                 return r.First();
             return null;
         }
@@ -612,7 +614,7 @@ and bc.BarCode=?
                     pParseBarCode.CodeWares = 0;
                 }
             }
-            long Res=0;
+            //long Res = 0;
             sql = $@"select w.CODEWARES as CodeWares,w.NAMEWARES as NameWares,au.COEFFICIENT as Coefficient,bc.CODEUNIT as CodeUnit, ud.ABRUNIT as NameUnit,
                                  bc.BARCODE as BarCode ,w.CODEUNIT as BaseCodeUnit 
                                 from BARCODE bc 
@@ -774,8 +776,8 @@ and bc.BarCode=?
         {
             //string Sql = @"replace into RaitingTemplateItem (  IdTemplate, Id, Parent, Text, RatingTemplate, OrderRS,DTDelete ) values 
             //                                         (@IdTemplate,@Id,@Parent,@Text,@RatingTemplate,@OrderRS,@DTDelete)";                                                   
-            foreach (var el in pR) el.Explanation=el.Explanation??el.Text; //!!!TMP Поки не буде приходитиз сервера
-            
+            foreach (var el in pR) el.Explanation ??= el.Text; //!!!TMP Поки не буде приходитиз сервера
+
             return db.ReplaceAll(pR) >= 0;
         }
 
@@ -948,7 +950,7 @@ and bc.BarCode=?
                                 from LogPrice";
                 var res = db.Query<InitDataPriceCheck>(sql);
                 //return res;
-                if (res != null && res.Count() > 0)
+                if (res != null && res.Count > 0)
                     return res.First();
             }
             catch (Exception e)
@@ -1030,7 +1032,7 @@ order by gw.NameGroup";
                                 where {Find}
                             order by case when DE.CodeWares is null then 1 else 0 end,  des.ExpirationDate";
                     var r = db.Query<ExpirationDateElementVM>(sql);
-                    if (r?.Count() >= 1)
+                    if (r?.Count >= 1)
                     {
                         // @TypeDoc as TypeDoc, @NumberDoc as NumberDoc,
                         res = r.First();
@@ -1047,7 +1049,7 @@ order by gw.NameGroup";
                                 where " + Find;
                         r = db.Query<ExpirationDateElementVM>(sql);
                         
-                        if (r?.Count() >= 1)
+                        if (r?.Count >= 1)
                         {
                             // @TypeDoc as TypeDoc, @NumberDoc as NumberDoc,
                             res = r.First();
