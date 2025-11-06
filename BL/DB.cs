@@ -524,6 +524,7 @@ from  DocWares dw
 
         public bool ReplaceDoc(IEnumerable<Doc> pDoc,int pTypeDoc=0)
         {
+           
             if (pTypeDoc != 0)
                 db.Execute($"delete from Doc where TypeDoc={pTypeDoc} and State=0");
 
@@ -751,6 +752,7 @@ and bc.BarCode=?
 
         public bool ReplaceRaitingDocItem(RaitingDocItem pR)
         {
+            FileLogger.WriteLogMessage(this, "ReplaceRaitingDocItem", $"RaitingDocItem=>{pR.ToJSON()}");
             string Sql = @"replace into RaitingDocItem ( TypeDoc, NumberDoc, Id, Rating, QuantityPhoto, Note) values (?, ?, ?, ?, ?, ?)";
 
             var res = db.Execute(Sql, pR.TypeDoc, pR.NumberDoc, pR.Id, pR.Rating, pR.QuantityPhoto, pR.Note) >= 0;
@@ -810,6 +812,7 @@ and bc.BarCode=?
 
         public bool ReplaceDocWares(DocWares pDW, bool pIsDelete = false)
         {
+            FileLogger.WriteLogMessage(this, "ReplaceDocWares", $"DocWares=>{pDW.ToJSON()}");
             try
             {
                 if (pIsDelete)
@@ -1190,6 +1193,7 @@ group by dw.CodeWares, w.NameWares
         }
         public void Repair()
         {
+            db.Execute("vacuum;");
             db.Execute("REINDEX;");
         }
     }

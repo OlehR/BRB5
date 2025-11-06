@@ -20,4 +20,9 @@
     <Folder Include="Model\" />
   </ItemGroup>
 
+
+  <ItemGroup>
+    <PackageReference Include="SQLitePCLRaw.provider.e_sqlite3" Version="3.0.2" />
+  </ItemGroup>
+
 </Project>

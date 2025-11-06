@@ -53,11 +53,18 @@ public partial class SplashPage : ContentPage
 
     }
     protected override async void OnAppearing()
-    {
+    {      
         base.OnAppearing();
         App.ScanerCom?.SetOnBarCode(BarCode);
 
         var r = await bl.c.LoginAsync(Config.Login, Config.Password, Config.LoginServer);
+        _ = Task.Delay(200).ContinueWith(t => {
+            InputBC.Focus();
+            InputBC.IsEnabled = false;
+            Task.Delay(200);
+            InputBC.IsEnabled = true;
+        });
+        
     }
       
     async void BarCode(string pBarCode, string pType)
@@ -67,14 +74,13 @@ public partial class SplashPage : ContentPage
         if (pBarCode.StartsWith("BRB6=>"))
         {
             var CodeWarehouse = bl.QRSettingsParse(pBarCode);
-            if (CodeWarehouse != 0) {
-                Config.CodeWarehouse = 0;
+            if (CodeWarehouse != 0) {                
                 try
                 {
                     Config.CodeWarehouse = 0;
                     await bl.c.LoadGuidDataAsync(false); 
                     var wh = db.GetWarehouse().FirstOrDefault(el => el.CodeWarehouse == CodeWarehouse);
-                    Config.CodeTM = wh?.CodeTM ?? default(eShopTM);
+                    Config.CodeTM = wh?.CodeTM ?? default;
                 }
                 finally
                 {
@@ -150,6 +156,13 @@ public partial class SplashPage : ContentPage
 
     private void TEMPHandIput(object sender, EventArgs e)
     {
-        BarCode(InputBC.Text, "");
+        MainThread.BeginInvokeOnMainThread(() =>
+        {
+            InputBC.IsEnabled = false;
+            string text = InputBC.Text;
+            Task.Run(async () => BarCode(text, ""));
+            InputBC.Text = "";
+            InputBC.IsEnabled = true;
+        });
     }
 }

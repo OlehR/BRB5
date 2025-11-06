@@ -276,8 +276,6 @@ namespace BRB6
                     await Task.Delay(1000);
                     BarcodeScaner.PauseScanning = false;
                 });
-                
-                
             }
         }
 

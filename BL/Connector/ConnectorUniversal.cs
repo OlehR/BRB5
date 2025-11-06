@@ -296,7 +296,7 @@ namespace BL.Connector
             try
             {
                 var TD = Config.GetDocSetting(pDoc.TypeDoc);
-                if (TD?.CodeApi == 1 || (Config.IsTest && Config.LocalCompany==eCompany.Sim23 && (pDoc.TypeDoc==5 || pDoc.TypeDoc == 14) )) //Тимчасовий хак.
+                if (TD?.CodeApi == 1 || (Config.IsTest && Config.LocalCompany==eCompany.Sim23 && (pDoc.TypeDoc==5 || pDoc.TypeDoc == 14 || pDoc.TypeDoc == 15) )) //Тимчасовий хак.
                 {
                     if (СonnectorLocal != null)
                     {
