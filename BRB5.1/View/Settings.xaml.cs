@@ -303,11 +303,9 @@ namespace BRB6.View
                 {
                     if (sender == null)
                     {
-                        var toast = Toast.Make("Не вдається отримати IP-адресу.");
-                        _ = toast.Show();
+                        ToastInfo("Не вдається отримати IP-адресу.");
                     }
                     else
-
                         await DisplayAlert("Помилка", "Не вдається отримати IP-адресу.", "OK");
                     return;
                 });
@@ -454,7 +452,6 @@ namespace BRB6.View
                     IsVisBarCode = !IsVisBarCode;
                     BarcodeScaner.CameraEnabled = IsVisBarCode;
                 }
-
                 
             });
         }
