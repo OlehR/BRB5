@@ -54,6 +54,7 @@ namespace BRB6.View
                     Config.OnProgress.Invoke(0.8);
                     db.ReplaceDocWaresExpirationSample(res.Info);
                     Config.OnProgress.Invoke(1);
+                    PopulateDocs();
                 }
                 catch(Exception e)
                 {
@@ -65,14 +66,12 @@ namespace BRB6.View
         protected override void OnAppearing()
         {
             base.OnAppearing();
-
             if (!IsSoftKeyboard)
             {
 #if ANDROID
             MainActivity.Key+= OnPageKeyDown;
 #endif
             }
-
             _MyDocsR = new ObservableCollection<DocExpiration>(db.GetDocExpiration());
             PopulateDocs();
             OnPropertyChanged(nameof(MyDocsR));
@@ -95,122 +94,124 @@ namespace BRB6.View
         }
         private void PopulateDocs()
         {
-            DocsStackLayout.Children.Clear();
-
-            if (MyDocsR == null) return;
-
-            foreach (var doc in MyDocsR)
+            MainThread.BeginInvokeOnMainThread(() =>
             {
-                double percent = doc.Count == 0 ? 0 : (double)doc.CountInput / doc.Count;
+                DocsStackLayout.Children.Clear();
+                if (MyDocsR == null) return;
 
-                Color textColor;
-                if (percent <= 0.33)
-                    textColor = Colors.Red;
-                else if (percent <= 0.66)
-                    textColor = Colors.Orange;
-                else if (percent < 1.0)
-                    textColor = Colors.Yellow;
-                else
-                    textColor = Colors.Green;
-
-                var grid = new Grid
+                foreach (var doc in MyDocsR)
                 {
-                    HeightRequest = 40,
-                    Margin = new Thickness(0, 2),
-                    Padding = 2,
-                    BackgroundColor = Colors.Transparent
-                };
+                    double percent = doc.Count == 0 ? 0 : (double)doc.CountInput / doc.Count;
 
-                // Контейнер для динамічної ширини прогресбару
-                var progressContainer = new Grid
-                {
-                    HorizontalOptions = LayoutOptions.FillAndExpand,
-                    VerticalOptions = LayoutOptions.Fill,
-                };
+                    Color textColor;
+                    if (percent <= 0.33)
+                        textColor = Colors.Red;
+                    else if (percent <= 0.66)
+                        textColor = Colors.Orange;
+                    else if (percent < 1.0)
+                        textColor = Colors.Yellow;
+                    else
+                        textColor = Colors.Green;
 
-                var progressBar = new BoxView
-                {
-                    Color = Color.FromArgb("#B9F6CA"),
-                    HorizontalOptions = LayoutOptions.Start,
-                    VerticalOptions = LayoutOptions.Fill
-                };
+                    var grid = new Grid
+                    {
+                        HeightRequest = 40,
+                        Margin = new Thickness(0, 2),
+                        Padding = 2,
+                        BackgroundColor = Colors.Transparent
+                    };
 
-                // Додати прогресбар у контейнер
-                progressContainer.Children.Add(progressBar);
-                grid.Children.Add(progressContainer);
+                    // Контейнер для динамічної ширини прогресбару
+                    var progressContainer = new Grid
+                    {
+                        HorizontalOptions = LayoutOptions.FillAndExpand,
+                        VerticalOptions = LayoutOptions.Fill,
+                    };
 
-                var contentLayout = new Microsoft.Maui.Controls.StackLayout
-                {
-                    Orientation = StackOrientation.Horizontal,
-                    VerticalOptions = LayoutOptions.Center,
-                    HorizontalOptions = LayoutOptions.FillAndExpand,
-                    Spacing = 5
-                };
+                    var progressBar = new BoxView
+                    {
+                        Color = Color.FromArgb("#B9F6CA"),
+                        HorizontalOptions = LayoutOptions.Start,
+                        VerticalOptions = LayoutOptions.Fill
+                    };
 
-                var descriptionLabel = new Label
-                {
-                    Text = doc.Description,
-                    TextColor = Application.Current.RequestedTheme == AppTheme.Light ? Colors.Black : Colors.White,
-                    FontSize = 20,
-                    HorizontalOptions = LayoutOptions.StartAndExpand,
-                    VerticalOptions = LayoutOptions.Center
-                };
+                    // Додати прогресбар у контейнер
+                    progressContainer.Children.Add(progressBar);
+                    grid.Children.Add(progressContainer);
 
-                var countInputLabel = new Label
-                {
-                    Text = doc.CountInput.ToString(),
-                    FontSize = 20,
-                    FontAttributes = FontAttributes.Bold,
-                    TextColor = textColor
-                };
+                    var contentLayout = new Microsoft.Maui.Controls.StackLayout
+                    {
+                        Orientation = StackOrientation.Horizontal,
+                        VerticalOptions = LayoutOptions.Center,
+                        HorizontalOptions = LayoutOptions.FillAndExpand,
+                        Spacing = 5
+                    };
 
-                var slashLabel = new Label
-                {
-                    Text = "/",
-                    FontSize = 20,
-                    FontAttributes = FontAttributes.Bold,
-                    TextColor = textColor
-                };
+                    var descriptionLabel = new Label
+                    {
+                        Text = doc.Description,
+                        TextColor = Application.Current.RequestedTheme == AppTheme.Light ? Colors.Black : Colors.White,
+                        FontSize = 20,
+                        HorizontalOptions = LayoutOptions.StartAndExpand,
+                        VerticalOptions = LayoutOptions.Center
+                    };
 
-                var countLabel = new Label
-                {
-                    Text = doc.Count.ToString(),
-                    FontSize = 20,
-                    FontAttributes = FontAttributes.Bold,
-                    TextColor = textColor
-                };
+                    var countInputLabel = new Label
+                    {
+                        Text = doc.CountInput.ToString(),
+                        FontSize = 20,
+                        FontAttributes = FontAttributes.Bold,
+                        TextColor = textColor
+                    };
 
-                contentLayout.Children.Add(descriptionLabel);
-                contentLayout.Children.Add(countInputLabel);
-                contentLayout.Children.Add(slashLabel);
-                contentLayout.Children.Add(countLabel);
+                    var slashLabel = new Label
+                    {
+                        Text = "/",
+                        FontSize = 20,
+                        FontAttributes = FontAttributes.Bold,
+                        TextColor = textColor
+                    };
 
-                grid.Children.Add(contentLayout);
+                    var countLabel = new Label
+                    {
+                        Text = doc.Count.ToString(),
+                        FontSize = 20,
+                        FontAttributes = FontAttributes.Bold,
+                        TextColor = textColor
+                    };
 
-                var borderFrame = new Frame
-                {
-                    BorderColor = Colors.Gray,
-                    CornerRadius = 4,
-                    Padding = 0,
-                    Margin = 0,
-                    HasShadow = false,
-                    Content = grid
-                };
+                    contentLayout.Children.Add(descriptionLabel);
+                    contentLayout.Children.Add(countInputLabel);
+                    contentLayout.Children.Add(slashLabel);
+                    contentLayout.Children.Add(countLabel);
 
-                // Gesture
-                var tapGestureRecognizer = new TapGestureRecognizer();
-                tapGestureRecognizer.Tapped += (s, e) => OpenDoc(doc);
-                borderFrame.GestureRecognizers.Add(tapGestureRecognizer);
+                    grid.Children.Add(contentLayout);
 
-                // Додати елемент
-                DocsStackLayout.Children.Add(borderFrame);
+                    var borderFrame = new Frame
+                    {
+                        BorderColor = Colors.Gray,
+                        CornerRadius = 4,
+                        Padding = 0,
+                        Margin = 0,
+                        HasShadow = false,
+                        Content = grid
+                    };
 
-                // Динамічно встановити ширину прогресбару після рендеру
-                progressContainer.SizeChanged += (s, e) =>
-                {
-                    progressBar.WidthRequest = percent * progressContainer.Width;
-                };
-            }
+                    // Gesture
+                    var tapGestureRecognizer = new TapGestureRecognizer();
+                    tapGestureRecognizer.Tapped += (s, e) => OpenDoc(doc);
+                    borderFrame.GestureRecognizers.Add(tapGestureRecognizer);
+
+                    // Додати елемент
+                    DocsStackLayout.Children.Add(borderFrame);
+
+                    // Динамічно встановити ширину прогресбару після рендеру
+                    progressContainer.SizeChanged += (s, e) =>
+                    {
+                        progressBar.WidthRequest = percent * progressContainer.Width;
+                    };
+                }
+            });
         }
 
 

@@ -5,14 +5,9 @@ using Android.OS;
 using Android.Runtime;
 using Android.Views;
 using AndroidX.AppCompat.App;
-using BL;
 using BRB5;
 using BRB5.Model;
-using BRB6.PlatformDependency;
-using BRB6.View;
-using System.Globalization;
 using Utils;
-using static Android.Graphics.ColorSpace;
 
 namespace BRB6
 {
@@ -31,12 +26,12 @@ namespace BRB6
             Config.NativeBase = new Native();
             //FileLogger.PathLog = Path.Combine(Config.PathDownloads, "Log");
             FileLogger.WriteLogMessage("Start", eTypeLog.Expanded);
-            if (Config.TypeScaner == eTypeScaner.NLS_MT67 || Config.TypeScaner == eTypeScaner.PM351 || Config.TypeScaner == eTypeScaner.PM68 || Config.TypeScaner == eTypeScaner.PM84  || Config.TypeScaner == eTypeScaner.Zebra  || Config.TypeScaner == eTypeScaner.MetapaceM_K4) //|| Config.TypeScaner == eTypeScaner.BitaHC61
+            if (Config.TypeScaner == eTypeScaner.NLS_MT67 || Config.TypeScaner == eTypeScaner.PM351 || Config.TypeScaner == eTypeScaner.PM68 || Config.TypeScaner == eTypeScaner.PM84  || Config.TypeScaner == eTypeScaner.Zebra  || Config.TypeScaner == eTypeScaner.MetapaceM_K4 || Config.TypeScaner == eTypeScaner.ChainwayC61 ) //|| Config.TypeScaner == eTypeScaner.BitaHC61
                 BR = new MyBroadcastReceiver();
         }
         public string GetDeviceId()
         {
-            string deviceID = Android.OS.Build.Serial?.ToString();
+            string deviceID = Build.Serial?.ToString();
             if (string.IsNullOrEmpty(deviceID) || deviceID.ToUpper() == "UNKNOWN") // Android 9 returns "Unknown"         
                 deviceID =$"{ Android.Provider.Settings.Secure.GetString(ContentResolver, Android.Provider.Settings.Secure.AndroidId)}({DeviceInfo.Current.Name})"; 
            
@@ -53,13 +48,15 @@ namespace BRB6
         protected override void OnResume()
         {
             base.OnResume();
-           if (BR != null)
+            if (BR != null)
             {
                 var I = new IntentFilter(MyBroadcastReceiver.IntentEvent);
                 I.AddCategory(Intent.CategoryDefault);
-                RegisterReceiver(BR, I);// "android.intent.category.DEFAULT"
+                if (Build.VERSION.SdkInt >= BuildVersionCodes.Tiramisu)
+                    RegisterReceiver(BR, I, ReceiverFlags.Exported);// "android.intent.category.DEFAULT"
+                else
+                    RegisterReceiver(BR, I);
             }
-
         }
         protected override void OnPause()
         {

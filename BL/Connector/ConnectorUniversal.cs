@@ -296,26 +296,18 @@ namespace BL.Connector
             try
             {
                 var TD = Config.GetDocSetting(pDoc.TypeDoc);
-                if (TD?.CodeApi == 1 || (Config.IsTest && Config.LocalCompany==eCompany.Sim23 && (pDoc.TypeDoc==5 || pDoc.TypeDoc == 14 || pDoc.TypeDoc == 15) )) //Тимчасовий хак.
+                if (TD?.CodeApi == 1 || (Config.LocalCompany==eCompany.Sim23 && (pDoc.TypeDoc==5 || pDoc.TypeDoc == 14 || pDoc.TypeDoc == 15) )) //Тимчасовий хак.
                 {
-                    if (СonnectorLocal != null)
-                    {
-                        var Res= await СonnectorLocal.SendDocsDataAsync(pDoc, pWares);
-                        //if(!(Config.IsTest &&  Config.LocalCompany == eCompany.Sim23 && (pDoc.TypeDoc == 5 || pDoc.TypeDoc == 14)))
-                        //{
-                            return Res;
-                        //}
-                    }
+                    if (СonnectorLocal != null)                    
+                        return await СonnectorLocal.SendDocsDataAsync(pDoc, pWares);  
                     else
                         return new Result(-1, "Локальний конектор не визначено");
                 }
-
                 string Data = new SaveDoc() { NameDCT=Config.SN, Doc = pDoc, Wares = pWares }.ToJson();
                 HttpResult result = await GetDataHTTP.HTTPRequestAsync(0, "DCT/SaveDoc", Data, "application/json", null);
                 if (result.HttpState == eStateHTTP.HTTP_OK)
-                {
                     return JsonConvert.DeserializeObject<Result>(result.Result);
-                }
+                
                 return new Result(result);
             }
             catch (Exception e)

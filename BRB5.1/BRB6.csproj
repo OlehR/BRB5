@@ -31,8 +31,8 @@
     <ApplicationId>ua.UniCS.TM.BRB6</ApplicationId>
 
     <!-- Versions -->
-    <ApplicationDisplayVersion>6.1.12</ApplicationDisplayVersion>
-    <ApplicationVersion>6112</ApplicationVersion>
+    <ApplicationDisplayVersion>6.1.13</ApplicationDisplayVersion>
+    <ApplicationVersion>6113</ApplicationVersion>
 
     <SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">12.2</SupportedOSPlatformVersion>
     <SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">21.0</SupportedOSPlatformVersion>
@@ -47,12 +47,14 @@
 
   <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net9.0-android|AnyCPU'">
     <RunAOTCompilation>False</RunAOTCompilation>
-    <AndroidPackageFormat>aab</AndroidPackageFormat>
+    <AndroidPackageFormat>apk</AndroidPackageFormat>
     <AndroidUseAapt2>True</AndroidUseAapt2>
     <AndroidCreatePackagePerAbi>False</AndroidCreatePackagePerAbi>
   </PropertyGroup>
 
-
+  <PropertyGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)'))=='android' and $(Configuration) == 'Debug'">
+    <EmbedAssembliesIntoApk>false</EmbedAssembliesIntoApk>
+  </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net9.0-android|AnyCPU'">
     <AndroidUseAapt2>True</AndroidUseAapt2>
