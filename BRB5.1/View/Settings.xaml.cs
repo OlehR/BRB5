@@ -1,12 +1,13 @@
-﻿using BL;
+﻿using BarcodeScanning;
+using BL;
 using BL.Connector;
-using BRB5.Model;
-using System.Collections.ObjectModel;
-using Utils;
 using BRB5;
-using BarcodeScanning;
+using BRB5.Model;
 using CommunityToolkit.Maui.Alerts;
+using Newtonsoft.Json;
+using System.Collections.ObjectModel;
 using UtilNetwork;
+using Utils;
 
 
 namespace BRB6.View
@@ -74,8 +75,11 @@ namespace BRB6.View
             }
         }
 
-        public int SelectedWarehouse { get { return ListWarehouse?.FindIndex(x => x.Code == Config.CodeWarehouse) ?? 0; }
-            set { Config.CodeWarehouse = ListWarehouse[value].Code; OnPropertyChanged(nameof(SelectedWarehouse)); } }
+        public int SelectedWarehouse
+        {
+            get { return ListWarehouse?.FindIndex(x => x.Code == Config.CodeWarehouse) ?? 0; }
+            set { Config.CodeWarehouse = ListWarehouse[value].Code; OnPropertyChanged(nameof(SelectedWarehouse)); }
+        }
 
         public int SelectedCompany { get { return ListCompany.FindIndex(x => x == Enum.GetName(typeof(eCompany), Config.Company)); } set { Config.Company = (eCompany)value; OnPropertyChanged(nameof(IsVisApi3)); } }
         public int SelectedTypePrinter { get { return Enum.GetNames(typeof(eTypeUsePrinter)).ToList().FindIndex(x => x == Enum.GetName(typeof(eTypeUsePrinter), Config.TypeUsePrinter)); } set { Config.TypeUsePrinter = (eTypeUsePrinter)value; } }
@@ -102,8 +106,15 @@ namespace BRB6.View
         public ObservableCollection<Warehouse> FilteredWarehouses { get; set; } = new ObservableCollection<Warehouse>();
 
         bool _IsFilterWHChecked = false;
-        private bool IsFilterWHChecked { get { return _IsFilterWHChecked; } set { _IsFilterWHChecked = value;
-                OnPropertyChanged(nameof(IsFilterWHChecked)); OnPropertyChanged(nameof(Warehouses)); } }
+        private bool IsFilterWHChecked
+        {
+            get { return _IsFilterWHChecked; }
+            set
+            {
+                _IsFilterWHChecked = value;
+                OnPropertyChanged(nameof(IsFilterWHChecked)); OnPropertyChanged(nameof(Warehouses));
+            }
+        }
         private string TextFilterWH { get; set; }
 
         CameraView BarcodeScaner;
@@ -116,21 +127,21 @@ namespace BRB6.View
             {
                 try
                 {
-                   string res= FileLogger.TypeLog == eTypeLog.Memory ? FileLogger.Str.ToString() : File.ReadAllText(FileLogger.GetFileName);
-                   return res;
+                    string res = FileLogger.TypeLog == eTypeLog.Memory ? FileLogger.Str.ToString() : File.ReadAllText(FileLogger.GetFileName);
+                    return res;
                 }
                 catch (Exception ex)
                 {
                     return ex.Message;
                 }
             }
-}
+        }
         public Settings()
         {
             InitializeComponent();
             // TODO Xamarin.Forms.Device.RuntimePlatform is no longer supported. Use Microsoft.Maui.Devices.DeviceInfo.Platform instead. For more details see https://learn.microsoft.com/en-us/dotnet/maui/migration/forms-projects#device-changes
             NavigationPage.SetHasNavigationBar(this, DeviceInfo.Platform == DevicePlatform.iOS);
-            
+
             c = ConnectorBase.GetInstance();
 
             Warehouses = new ObservableCollection<Warehouse>(ListWarehouse);
@@ -155,16 +166,16 @@ namespace BRB6.View
             //};
             FillFilterWarehouseList();
 
-            if (Config.Company==eCompany.NotDefined) CurrentPage = Children[1];
+            if (Config.Company == eCompany.NotDefined) CurrentPage = Children[1];
             this.BindingContext = this;
             Config.BarCode = BarCode;
         }
 
-         void BarCode(string pBarCode)
+        void BarCode(string pBarCode)
         {
             _ = Task.Run(async () =>
             {
-                FileLogger.WriteLogMessage(this,"Settings" ,$"BarCode=>{pBarCode}");
+                FileLogger.WriteLogMessage(this, "Settings", $"BarCode=>{pBarCode}");
                 int CodeWarehouse = 0;
                 QRCodeScan(null, null);
                 if (pBarCode == null) return;
@@ -233,7 +244,7 @@ namespace BRB6.View
             }
             else
             {
-                ToastInfo($"Помилка завантаження даних. Код помилки: {r.State} {r.TextError}");                
+                ToastInfo($"Помилка завантаження даних. Код помилки: {r.State} {r.TextError}");
             }
         }
 
@@ -247,15 +258,16 @@ namespace BRB6.View
         }
         private void OnClickLoadDoc(object sender, EventArgs e) { c.LoadDocsDataAsync(0, null, false); }
 
-        async private void OnCopyDB(object sender, EventArgs e) {
+        async private void OnCopyDB(object sender, EventArgs e)
+        {
             try
-            {              
+            {
                 /*var FileDestination = Path.Combine(Config.PathDownloads, "brb6.db");
                 if (File.Exists(FileDestination)) File.Delete(FileDestination);
                 byte[] buffer = File.ReadAllBytes(DB.PathNameDB);
                 File.WriteAllBytes(FileDestination, buffer);*/
                 await c.UploadFile(DB.PathNameDB, $"brb6_{DateTime.Now.ToString("yyyyMMdd_HHmmss")}.db");
-                if(File.Exists(FileLogger.GetFileName))
+                if (File.Exists(FileLogger.GetFileName))
                     await c.UploadFile(FileLogger.GetFileName, $"Log_{DateTime.Now.ToString("yyyyMMdd_HHmmss")}.log");
                 ToastInfo("Дані успішно відправлено на сервер");
             }
@@ -269,10 +281,10 @@ namespace BRB6.View
         private async void OnRestoreDB(object sender, EventArgs e)
         {
             bool temp = await DisplayAlert("Обережно", "База даних буде замінена. Ви це розумієте?", "Так, я розумію", "Ні, скасувати дію");
-            if(!temp) return;
+            if (!temp) return;
             if (db.DeleteDB())
             {
-                var r=Http.LoadFile(Config.ApiUrl1+ "FileAudit/DB/brb6.db", DB.PathNameDB);
+                var r = Http.LoadFile(Config.ApiUrl1 + "FileAudit/DB/brb6.db", DB.PathNameDB);
                 if (File.Exists(DB.PathNameDB))
                 {
                     db.OpenDB();
@@ -310,7 +322,8 @@ namespace BRB6.View
                     return;
                 });
             }
-            if (ListWarehouse.Any() && ListWarehouse.First().Name != "ddd") {
+            if (ListWarehouse.Any() && ListWarehouse.First().Name != "ddd")
+            {
                 var matchingWarehouseIndex = ListWarehouse.FindIndex(warehouse =>
                     warehouse.InternalIP.Split('.').Take(3).SequenceEqual(currentIP.Split('.').Take(3)));
 
@@ -318,20 +331,20 @@ namespace BRB6.View
                 {
                     SelectedWarehouse = matchingWarehouseIndex;
                     Config.ApiUrl2 = ListWarehouse[matchingWarehouseIndex].Url;
-                    ToastInfo($"{ListWarehouse[matchingWarehouseIndex].Name} IP=>{currentIP}");              
+                    ToastInfo($"{ListWarehouse[matchingWarehouseIndex].Name} IP=>{currentIP}");
                 }
                 else
                 {
                     MainThread.BeginInvokeOnMainThread(async () =>
                     {
-                    if (sender == null)
-                    {
+                        if (sender == null)
+                        {
                             ToastInfo($"Відповідний магазин не знайдено. IP=>{currentIP}");
-                    }
-                    else
-                        await DisplayAlert("Info", $"Відповідний магазин не знайдено. IP=>{currentIP}", "OK");
-                     });
-                } 
+                        }
+                        else
+                            await DisplayAlert("Info", $"Відповідний магазин не знайдено. IP=>{currentIP}", "OK");
+                    });
+                }
             }
         }
 
@@ -418,7 +431,8 @@ namespace BRB6.View
             {
                 BarcodeScaner.PauseScanning = true;
                 BarCode(e.BarcodeResults[0].DisplayValue);
-                Task.Run(async () => {
+                Task.Run(async () =>
+                {
                     await Task.Delay(1000);
                     BarcodeScaner.PauseScanning = false;
                 });
@@ -452,7 +466,7 @@ namespace BRB6.View
                     IsVisBarCode = !IsVisBarCode;
                     BarcodeScaner.CameraEnabled = IsVisBarCode;
                 }
-                
+
             });
         }
         async private void OnInfo(object sender, EventArgs e)
@@ -470,7 +484,7 @@ namespace BRB6.View
             temp += $"\nBefore Config.PathFiles: {beforeStats.fileCount} files, {beforeStats.totalSize / 1024.0 / 1024.0:F2} MB";
 
             var R = await c.GetInfo();
-            if(R!=null) //await Toast.Make(R.Info).Show();
+            if (R != null) //await Toast.Make(R.Info).Show();
                 await DisplayAlert("Info", R.Info/*+ temp*/, "ОК");
         }
         private async void OnClean(object sender, EventArgs e)
@@ -483,6 +497,24 @@ namespace BRB6.View
         {
             FileLogger.Str.Clear();
             OnPropertyChanged(nameof(ShowLogText));
+        }
+        private void LoadLog(object sender, EventArgs e)
+        {
+            string[] lines = File.ReadAllLines(FileLogger.GetFileName);
+            string Str = "BL.DB.ReplaceRaitingDocItem RaitingDocItem=>";
+            int i = 0;
+            foreach (string line in lines)
+            {
+                int Ind = line.IndexOf(Str);
+                if (Ind >= 0)
+                {
+                    string res = line.Substring(Ind + Str.Length);
+                    var Res = JsonConvert.DeserializeObject<BRB5.Model.RaitingDocItem>(res);
+                    db.ReplaceRaitingDocItem(Res);
+                    i++;
+                }
+            }
+            ToastInfo($"Успішно відновлено {i}");
         }
     }
 }

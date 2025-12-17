@@ -224,7 +224,7 @@
                             Clicked="OnCleanLog" />
                 </Grid>
                 <Button Text="Info" HorizontalOptions="Fill" Clicked="OnInfo" />
-
+                <Button Text="Завантаження з log" HorizontalOptions="Fill" Clicked="LoadLog" />
                 <Button Text="Зберегти"
                         HorizontalOptions="Fill"
                         VerticalOptions="EndAndExpand"
