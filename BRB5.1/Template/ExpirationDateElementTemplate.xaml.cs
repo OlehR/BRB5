@@ -8,6 +8,7 @@ namespace BRB6.Template;
 
 public partial class ExpirationDateElementTemplate : ContentView
 {
+    string NumberDoc;
     DB db = DB.GetDB();
     public event Action<ExpirationDateElementVM> RequestReturnToMainContent;
     public ExpirationDateElementVM DM { get; set; } = new();
@@ -27,13 +28,16 @@ public partial class ExpirationDateElementTemplate : ContentView
         this.BindingContext = this;
     }
 
-    public void Set(ExpirationDateElementVM pED)
+    public void Set(ExpirationDateElementVM pED, string pNumberDoc)
     {
+     NumberDoc=pNumberDoc;
         _DM = pED;
         DM = (ExpirationDateElementVM)pED.Clone();
         DM.QuantityInput = DM.QuantityInput ?? DM.Quantity;
 
-        if (DM.ExpirationDate == DateTime.MinValue) DM.ExpirationDate = DateTime.Today;
+        if (DM.ExpirationDate == DateTime.MinValue && DM.ExpirationDateInput > DateTime.Today) DM.ExpirationDate = DM.ExpirationDateInput;
+        if (DM.ExpirationDate == DateTime.MinValue)
+            DM.ExpirationDate = DateTime.Today;
 
         DM.ExpirationDateInput = DM.ExpirationDate;
         DM.ProductionDateInput = DM.ExpirationDate.AddDays(-(double)DM.Expiration);
@@ -67,6 +71,7 @@ public partial class ExpirationDateElementTemplate : ContentView
 
     private void OnAdd(object sender, EventArgs e)
     {
+        if (String.IsNullOrEmpty(DM.NumberDoc)) DM.NumberDoc = NumberDoc;
         if (!String.IsNullOrEmpty(DM.DocId) && !String.IsNullOrEmpty(DM.NumberDoc))
         {
             db.ReplaceDocWaresExpiration(DM.GetDocWaresExpiration());

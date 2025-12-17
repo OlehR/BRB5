@@ -339,7 +339,7 @@ alter table wares  ADD COLUMN Article INTEGER;";
             {
                 if (db == null)
                 {
-                    db = new SQLiteConnection(PathNameDB, false);
+                    db = new SQLiteConnection( (PathNameDB,SQLiteOpenFlags ,false);
                     db.Execute("PRAGMA synchronous = EXTRA;");
                     db.Execute("PRAGMA journal_mode = DELETE;");
                     db.Execute("PRAGMA wal_autocheckpoint = 5;");
@@ -1039,7 +1039,7 @@ order by gw.NameGroup";
                     }
                     if (res == null)
                     {
-                        sql = $@"select  {pNumberDoc} NumberDoc,'zz'||hex(randomblob(15)) as DocId, w.CodeWares,w.NAMEWARES as NameWares, au.COEFFICIENT as Coefficient,w.CODEUNIT as CodeUnit, ud.ABRUNIT as NameUnit,
+                        sql = $@"select  w.CodeGroup as NumberDoc,'zz'||hex(randomblob(15)) as DocId, w.CodeWares,w.NAMEWARES as NameWares, au.COEFFICIENT as Coefficient,w.CODEUNIT as CodeUnit, ud.ABRUNIT as NameUnit,
                             ( select group_concat(bc.BarCode,',') from BarCode bc where bc.CodeWares=w.CodeWares ) as BARCODE  ,w.CODEUNIT as BaseCodeUnit,
                             0 as Quantity, w.Expiration,--des.ExpirationDate,
                             w.DaysLeft

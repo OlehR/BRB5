@@ -38,5 +38,8 @@ namespace BRB5.Model
         public eCompany LocalConnect { get; set; }
         public string PathAPK { get; set; }
         public System.Guid UserGuid { get; set; }
+        public int CodeUnitWeight { get; set; }
+        public int CodeUnitPiece { get; set; }
+
     }
 }

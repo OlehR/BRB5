@@ -1189,19 +1189,21 @@ namespace BL.Connector
         public int TypeMove { get; set; }
         public int IsClose { get; set; }
         public IEnumerable<OutputDocWares> DocWares { get; set; }
+        public int CodeReason { get; set; } 
 
         public OutputDoc() { }
 
         public OutputDoc(Doc pDoc, IEnumerable<DocWares> pWares) : this(pDoc.TypeDoc, pDoc.NumberDoc, pDoc.DateDoc)
         {
             DocWares = pWares.Select(x => new OutputDocWares(x));
+            CodeReason = pDoc.CodeReason;
         }
 
         public OutputDoc(int pTypeDoc, string pNumberDoc, DateTime pDateDoc, DateTime? pDateOutInvoice = null, string pNumberOutInvoice = null, int pIsClose = 0)
         {
             TypeDoc = pTypeDoc;
             NumberDoc = pNumberDoc;
-            DateDoc = pDateDoc.ToString("yyyy-MM-dd'T'HH:mm:ss");
+            DateDoc = pDateDoc.ToString("yyyy-MM-dd'T'HH:mm:ss");            
 
             if (TypeDoc == 9)
             {

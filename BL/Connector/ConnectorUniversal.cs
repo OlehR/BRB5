@@ -71,12 +71,17 @@ namespace BL.Connector
                     {
                         Result<BRB5.Model.AnswerLogin> res = JsonConvert.DeserializeObject<Result<BRB5.Model.AnswerLogin>>(result.Result);
                         if (!res.Success) return res;
-                        Config.Role = res.Info?.Role ?? 0;
-                        Config.CodeUser = res.Info?.CodeUser ?? 0;
-                        Config.NameUser = res.Info?.NameUser;
-                        Config.TypeDoc = res.Info?.TypeDoc;
-                        Config.UserGuid = res.Info?.UserGuid ?? System.Guid.Empty;
-                        CustomerBarCode = res.Info?.CustomerBarCode;
+                        if (res.Info != null)
+                        {
+                            Config.Role = res.Info.Role;
+                            Config.CodeUser = res.Info.CodeUser;
+                            Config.NameUser = res.Info.NameUser;
+                            Config.TypeDoc = res.Info.TypeDoc;
+                            Config.UserGuid = res.Info.UserGuid;
+                            Config.GetCodeUnitWeight = res.Info.CodeUnitWeight;
+                            Config.GetCodeUnitPiece = res.Info.CodeUnitPiece;
+                            CustomerBarCode = res.Info.CustomerBarCode;
+                        }
 
                         if (!string.IsNullOrEmpty(res.Info?.PathAPK))
                             Config.PathAPK = res.Info?.PathAPK;

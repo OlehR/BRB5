@@ -258,7 +258,7 @@ namespace BRB6.View
             MainContent.IsVisible = false;
             //TopSave.IsVisible = false;
             AlternateContent.IsVisible = true;
-            (AlternateContent.Content as ExpirationDateElementTemplate).Set(selectedWare);
+            (AlternateContent.Content as ExpirationDateElementTemplate).Set(selectedWare,NumberDoc);
         }
 #if ANDROID
         public void OnPageKeyDown(Keycode keyCode, KeyEvent e)

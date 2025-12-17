@@ -58,6 +58,7 @@ namespace BRB6.View
                 }
                 catch(Exception e)
                 {
+                    Config.OnProgress.Invoke(0);
                     FileLogger.WriteLogMessage(this, "ExpirationDate", e);
                 }
             });           

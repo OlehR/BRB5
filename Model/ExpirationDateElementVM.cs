@@ -51,8 +51,8 @@ namespace BRB5.Model
             int i = 0;
             while (i < DaysRight.Length && i< Connector.PercentColor.Length-2)
             {
-                if (DaysRight[i] == -1) return Connector.PercentColor.Length - 1;
-                if( Days > DaysRight[i]) break;
+                if (DaysRight[i] == -1) return i>0? i-1:0; //Connector.PercentColor.Length - 1
+                if ( Days > DaysRight[i]) break;
                 i++;
             }
             return i;
