@@ -339,7 +339,7 @@ alter table wares  ADD COLUMN Article INTEGER;";
             {
                 if (db == null)
                 {
-                    db = new SQLiteConnection(PathNameDB ,false);
+                    db = new SQLiteConnection( PathNameDB ,false);
                     db.Execute("PRAGMA synchronous = EXTRA;");
                     db.Execute("PRAGMA journal_mode = DELETE;");
                     db.Execute("PRAGMA wal_autocheckpoint = 5;");

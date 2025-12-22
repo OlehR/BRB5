@@ -11,11 +11,10 @@
                 <Frame Style="{StaticResource FrameStyle}">
                     <local:CustomEntry Style="{StaticResource EntryStyle}"
                                           Placeholder="ЗКПО"
-                                          Text="{Binding ZKPOstr}"
-                                          Keyboard="{OnPlatform Numeric, iOS=Default}"
+                                          Text="{Binding ZKPOstr}"                                          
                                           x:Name="ZKPOEntry"
                                           Completed="FilterDocs" />
-
+                    <!--Keyboard="{OnPlatform Numeric, iOS=Default}"-->
                 </Frame>
             </Grid>
 
