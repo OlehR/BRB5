@@ -178,6 +178,14 @@ namespace BRB6.View
                     Text = docWare.CodeWares.ToString(),
                     BackgroundColor = Color.FromArgb(docWare.GetBackgroundColor)
                 };
+                var tapGesture = new TapGestureRecognizer();
+                tapGesture.Tapped += async (s, e) =>
+                {
+                    await Navigation.PushAsync(new WareInfo(new ParseBarCode() { CodeWares = docWare.CodeWares }));
+                };
+
+                codeLabel.GestureRecognizers.Add(tapGesture);
+
                 Grid.SetRow(codeLabel, 1);
                 Grid.SetColumn(codeLabel, 0);
                 grid.Children.Add(codeLabel);
