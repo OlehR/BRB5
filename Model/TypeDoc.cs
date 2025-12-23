@@ -72,6 +72,10 @@ namespace BRB5
         /// Код API для документа (723 -(0-2)
         /// </summary>
         public int CodeApi { get; set; } = 0;
+        /// <summary>
+        /// Якщо -1 використовуємо CodeApi , інакше цей код для збереження документа
+        /// </summary>
+        public int CodeApiSave { get; set; } = -1;
         public bool IsCreateNewDoc { get; set; } = false;
         //public bool IsViewOPKO = false;
         public eTypeReplenishment TypeReplenishment { get; set; } = eTypeReplenishment.None;

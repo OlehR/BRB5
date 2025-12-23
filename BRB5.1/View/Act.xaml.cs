@@ -41,11 +41,11 @@ public partial class Act
         }
 
         var allDocs = db.GetWaresAct(Doc) ?? [];
-        if (Doc.CodeReason == 1)
+        /*if (Doc.CodeReason == 1)
             MyDocWares = new ObservableCollection<WaresAct>(allDocs.Where(x => (x.CodeReason == -1 && (x.QuantityDifference != 0 || x.QuantityReason > 0)) 
                                                                             || x.CodeReason >0 
                                                                             || (x.CodeReason == 0 &&  x.Fact > 0)));
-        else
+        else*/
             MyDocWares = new ObservableCollection<WaresAct>(allDocs.Where(x => x.QuantityReason != 0 || x.QuantityDifference != 0));
 
 
