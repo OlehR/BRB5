@@ -41,11 +41,7 @@
                         HorizontalOptions="Fill" />
                 <!--ItemDisplayBinding="{Binding TypeUsePrinter}"-->
 
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="*" />
-                    </Grid.ColumnDefinitions>
+                <Grid ColumnDefinitions="*,*">
 
                     <Button Text="З.Довідники"
                             HorizontalOptions="Fill"
@@ -62,32 +58,18 @@
                         SelectedIndex="{Binding SelectedTypeLog}"
                         HorizontalOptions="Fill" />
 
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="3*" />
-                        <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="3*" />
-                    </Grid.ColumnDefinitions>
-                    <Grid.RowDefinitions>
-                        <RowDefinition/>
-                        <RowDefinition/>
-                    </Grid.RowDefinitions>
+                <Grid  ColumnDefinitions="*,3*,*,3*,*,3*">
 
                     <CheckBox IsChecked="{Binding IsVibration}" />
-                    <Label Text="Вібрація" Grid.Column="1" />
+                    <Label Text="Вібрація" VerticalOptions="Center" Grid.Column="1" />
 
-                    <CheckBox IsChecked="{Binding IsSound}"
-                              Grid.Column="2" />
-                    <Label Text="Звук"
-                           Grid.Column="3" />
+                    <CheckBox IsChecked="{Binding IsSound}" Grid.Column="2" />
+                    <Label Text="Звук" VerticalOptions="Center" Grid.Column="3" />
 
-                    <CheckBox IsChecked="{Binding IsFilterSave}"  Grid.Row="1" />
-                    <Label Text="Фільтр"  Grid.Column="1" Grid.Row="1" />
+                    <CheckBox IsChecked="{Binding IsFilterSave}"  Grid.Column="4" />
+                    <Label Text="Фільтр" VerticalOptions="Center" Grid.Column="5" />
 
                 </Grid>
-
-
 
                 <Picker Title="Якість фото" IsVisible="{Binding IsVisScan}"
                         ItemsSource="{Binding ListPhotoQuality}"
@@ -119,25 +101,8 @@
         <ContentPage.Content>
             <StackLayout>
                 <Grid IsVisible="{Binding IsVisBarCode}" HeightRequest="150" x:Name="GridZxing"/>
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="3*" />
-                    </Grid.ColumnDefinitions>
-
-                    <Label Text="{Binding Ver}" />
-                    <Label Text="{Binding SN}"
-                           Grid.Column="1" />
-                </Grid>
-
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="3*" />
-                        <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="3*" />
-                    </Grid.ColumnDefinitions>
-
+                
+                <Grid ColumnDefinitions="*,3*,*,3*">
                     <CheckBox IsChecked="{Binding IsTest}" />
                     <Label Text="Тестова" Grid.Column="1" />
 
@@ -148,13 +113,8 @@
                 </Grid>
 
                 <Button Text="Сканувати QR" IsVisible="{Binding IsVisScan}" Clicked="QRCodeScan"  />
-                
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="2*" />
-                        <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="*" />
-                    </Grid.ColumnDefinitions>
+
+                <Grid  ColumnDefinitions="2,*,*">
 
                     <Picker Title="Компанія"
                             ItemsSource="{Binding ListCompany}"
@@ -192,44 +152,24 @@
                     <controls:CustomEntry Style="{StaticResource EntryStyle}"
                           Text="{Binding ApiUrl4}" IsVisible="{Binding IsVisApi3}" />
                 </Frame>
-                
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="*" />
-                    </Grid.ColumnDefinitions>
 
-                    <Button Text="Send db-log"
-                            HorizontalOptions="Fill"
-                            Clicked="OnCopyDB" />
+                <Grid RowDefinitions="Auto,Auto,Auto" ColumnDefinitions="*,*" >
 
-                    <Button Text="Від.Бази"
-                            Grid.Column="1"
-                            HorizontalOptions="Fill"
-                            Clicked="OnRestoreDB" />
+                    <!-- Row 0 -->
+                    <Button Text="Send db-log" HorizontalOptions="Fill" Clicked="OnCopyDB" />
+                    <Button Text="Від.Бази" Grid.Column="1" HorizontalOptions="Fill" Clicked="OnRestoreDB" />
+
+                    <!-- Row 1 -->
+                    <Button Text="Очистити базу" Grid.Row="1" HorizontalOptions="Fill" Clicked="OnClean" />
+                    <Button Text="Очистити лог"  Grid.Row="1" Grid.Column="1" HorizontalOptions="Fill" Clicked="OnCleanLog" />
+
+                    <!-- Row 2 -->
+                    <Button Text="Info" Grid.Row="2" HorizontalOptions="Fill" Clicked="OnInfo" />
+                    <Button Text="Завантаж. з log" Grid.Row="2" Grid.Column="1" HorizontalOptions="Fill"  Clicked="LoadLog" />
                 </Grid>
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="*" />
-                    </Grid.ColumnDefinitions>
 
-                    <Button Text="Очистити базу"
-                            HorizontalOptions="Fill"
-                            Clicked="OnClean" />
-
-                    <Button Text="Очистити лог"
-                            Grid.Column="1"
-                            HorizontalOptions="Fill"
-                            Clicked="OnCleanLog" />
-                </Grid>
-                <Button Text="Info" HorizontalOptions="Fill" Clicked="OnInfo" />
-                <Button Text="Завантаження з log" HorizontalOptions="Fill" Clicked="LoadLog" />
-                <Button Text="Зберегти"
-                        HorizontalOptions="Fill"
-                        VerticalOptions="EndAndExpand"
-                        Clicked="OnClickSave" />
-
+                <!--</Grid>-->
+                <Button Text="Зберегти" HorizontalOptions="Fill" VerticalOptions="EndAndExpand" Clicked="OnClickSave" />
             </StackLayout>
         </ContentPage.Content>
     </controls:BaseContentPage>
