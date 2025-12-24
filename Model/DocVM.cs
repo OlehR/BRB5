@@ -112,6 +112,8 @@ namespace BRB5.Model
         /// Для Анкет код складу магазина.
         /// </summary>
         public string ExtInfo { get; set; }
+
+        public int CountWares { get; set; } // Кількість товарних позицій
     }
 
     public class DocVM:Doc
