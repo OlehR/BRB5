@@ -24,7 +24,8 @@ namespace BRB5.Model
         public decimal QuantityMin { get; set; }
         public decimal QuantityMax { get; set; }
         //public double QuantityOld{ get; set; }
-        public decimal QuantityOrder { get; set; }
+        private decimal _QuantityOrder;
+        public decimal QuantityOrder { get { return _QuantityOrder; } set { _QuantityOrder = value; OnPropertyChanged(nameof(QuantityOrder)); } }
         public string QuantityOrderStr { set { QuantityOrder = Convert.ToDecimal(value); } }
         public decimal QuantityReason { get; set; }
         private decimal _QuantityBarCode;
@@ -47,8 +48,9 @@ namespace BRB5.Model
         public IEnumerable<ReasonItem> ProblematicItems { get; set; }
 
         public string NameReason { get; set; }
-        public bool IsVisProblematic { get { return QuantityReason > 0; } } 
-        public bool Even { get; set; } = false;
+        public bool IsVisProblematic { get { return QuantityReason > 0; } }
+        private bool _Even = false;
+        public bool Even { get { return _Even; } set { _Even = value; OnPropertyChanged(nameof(Even)); } }
 
         //public boolean IsRecord = false;
         // 3 - червоний, 2- оранжевий, 1 - жовтий, 0 - зелений, -1 - білий, інше грязно жовтий-ранжевий.

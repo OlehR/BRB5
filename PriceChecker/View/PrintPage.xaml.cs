@@ -112,4 +112,11 @@ public partial class PrintPage : ContentPage
         }
     }
 
+    private void OnDocTapped(object sender, TappedEventArgs e)
+    {
+        if (sender is Grid grid && grid.BindingContext is DocVM doc)
+        {
+            Navigation.PushAsync(new PrintWares(doc, TypeDoc));
+        }
+    }
 }

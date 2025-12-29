@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    x:Class="PriceChecker.View.PrintWares"
+    NavigationPage.HasNavigationBar="False">
+
+    <Grid RowDefinitions="90,*">
+
+        <Grid
+            Grid.Row="0"
+            BackgroundColor="#EEEEEE"
+            Padding="10"
+            ColumnDefinitions="Auto,*,Auto">
+
+            <Button  FontSize="20" FontAttributes="Bold" 
+                Text="НАЗАД"
+                Clicked="OnBackClicked" />
+
+
+            <Button  FontSize="20" FontAttributes="Bold" 
+                Grid.Column="2"
+                Text="ДРУК"
+                Clicked="OnPrintClicked" />
+        </Grid>
+
+        <CollectionView
+            Grid.Row="1"
+            ItemsSource="{Binding Wares}"
+            SelectionMode="None">
+
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <Grid  Padding="20,10,0,0" ColumnDefinitions="Auto,Auto,Auto,Auto,*" ColumnSpacing="20" >
+                
+                        <!-- MINUS -->
+                        <Button FontAttributes="Bold" FontSize="36" Text="−" Padding="0" 
+                                WidthRequest="60" HeightRequest="60" Clicked="OnMinusClicked"/>
+                        <!-- QUANTITY -->
+                        <Label FontAttributes="Bold" Grid.Column="1" Text="{Binding QuantityOrder}"
+                                FontSize="24" VerticalOptions="Center" HorizontalOptions="Center"/>
+                        <!-- PLUS -->
+                        <Button  FontAttributes="Bold" Grid.Column="2" FontSize="36" Padding="0" 
+                                Text="+" WidthRequest="60" HeightRequest="60" Clicked="OnPlusClicked"/>
+                        
+                        <!-- CHECKBOX -->
+                        <CheckBox Grid.Column="3" IsChecked="{Binding Even}"  Scale="1.5" VerticalOptions="Center"/>
+                        
+                        <!-- NAME -->
+                        <Label  Grid.Column="4" Text="{Binding NameWares}" FontSize="24"
+                                LineBreakMode="TailTruncation" MaxLines="1" VerticalOptions="Center"/>
+                    
+                    </Grid>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+
+        </CollectionView>
+
+    </Grid>
+</ContentPage>

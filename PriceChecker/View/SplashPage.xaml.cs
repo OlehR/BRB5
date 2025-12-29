@@ -102,7 +102,8 @@ public partial class SplashPage : ContentPage
                 {
                     Config.CodeUser = (int)WP.CodeUser;
                     Config.NameUser = WP.Name;
-                    MainThread.BeginInvokeOnMainThread(async () => { await Shell.Current.GoToAsync("//Admin"); });
+                    _ = Task.Run(async () => { bl.OnButtonLogin(Config.Login, Config.Password, false);    });
+                        MainThread.BeginInvokeOnMainThread(async () => { await Shell.Current.GoToAsync("//Admin"); });
                 }
                 else
                     if (WP?.CodeWares != 0) MainThread.BeginInvokeOnMainThread(async () => { await Navigation.PushAsync(new UPriceChecker(WP)); });

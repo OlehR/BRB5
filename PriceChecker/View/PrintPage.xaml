@@ -17,14 +17,17 @@
             <CollectionView.ItemTemplate>
                 <DataTemplate>
                     <Frame WidthRequest="800" Padding="5" CornerRadius="10" BackgroundColor="LightGray">
-                        <Grid Padding="0" ColumnDefinitions="7*,*,*">
-                            <StackLayout Spacing="0" >
-                                <StackLayout Orientation="Horizontal" Spacing="20">
-                                    <Label Text="{Binding NumberDoc}" FontSize="20" TextColor="Black"/>
-                                    <Label Text="{Binding Description}" FontSize="20" TextColor="Black"/>
-                                </StackLayout>
-                                <Label Text="{Binding ExtInfo}" FontSize="20" TextColor="Black"/>
-                            </StackLayout>
+                        <Grid Padding="0"  BindingContext="{Binding .}" ColumnDefinitions="8*,*,*">
+                            <Grid.GestureRecognizers>
+                                <TapGestureRecognizer Tapped="OnDocTapped"/>
+                            </Grid.GestureRecognizers>
+                            <Grid ColumnDefinitions="3*,3*,6*,*" RowDefinitions="Auto,Auto" >
+                                <Label Text="{Binding NumberDoc}" FontSize="20" TextColor="Black"/>
+                                <Label Text="{Binding DateDoc, StringFormat='{0:dd.MM.yy HH:mm}'}" Grid.Column="1" FontSize="20" TextColor="Black"/>
+                                <Label Text="{Binding Description}" LineBreakMode="TailTruncation" Grid.Column="2" FontSize="20" TextColor="Black"/>
+                                <Label Text="{Binding CountWares}" Grid.Column="3" FontSize="20" TextColor="Black"/>
+                                <Label Text="{Binding ExtInfo}" Grid.Row="1" Grid.ColumnSpan="4" FontSize="20" TextColor="Black"/>
+                            </Grid>
                             <Label Text="✔" IsVisible="{Binding IsPrinted}" Grid.Column="1" VerticalOptions ="Center" FontSize="50" TextColor="Green" FontAttributes="Bold"/>
                             <Label BindingContext="{Binding .}" Text="🖨️" Grid.Column="2" VerticalOptions ="Center" FontSize="50" FontAttributes="Bold">
                                 <Label.GestureRecognizers>
