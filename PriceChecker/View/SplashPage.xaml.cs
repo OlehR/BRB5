@@ -6,7 +6,6 @@ using System.Net.Sockets;
 using System.Threading.Tasks;
 using System.Timers;
 using Utils;
-using static Android.Renderscripts.ScriptGroup;
 using Timer = System.Timers.Timer;
 
 namespace PriceChecker.View;
