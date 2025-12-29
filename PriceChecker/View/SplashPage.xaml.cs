@@ -6,6 +6,7 @@ using System.Net.Sockets;
 using System.Threading.Tasks;
 using System.Timers;
 using Utils;
+using static Android.Renderscripts.ScriptGroup;
 using Timer = System.Timers.Timer;
 
 namespace PriceChecker.View;
@@ -17,6 +18,9 @@ public partial class SplashPage : ContentPage
     private Timer _timer;
     public SplashPage()
     {
+        InitializeComponent();
+        this.BindingContext = this;
+
         string Path="";
         if (DeviceInfo.Platform == DevicePlatform.Android)
             Path = FileSystem.AppDataDirectory;
@@ -25,7 +29,8 @@ public partial class SplashPage : ContentPage
 
         db = DB.GetDB(Path);
         bl = BL.BL.GetBL();
-        InitializeComponent();
+
+        OnScreenKeyboard.OkPressed += OnScreenKeyboard_OkPressed;
         bl.Init();
         SetShopBranding();
         Config.TypeDoc = new[]{
@@ -58,12 +63,12 @@ public partial class SplashPage : ContentPage
         App.ScanerCom?.SetOnBarCode(BarCode);
 
         var r = await bl.c.LoginAsync(Config.Login, Config.Password, Config.LoginServer);
-        _ = Task.Delay(200).ContinueWith(t => {
-            InputBC.Focus();
-            InputBC.IsEnabled = false;
-            Task.Delay(200);
-            InputBC.IsEnabled = true;
-        });
+        //_ = Task.Delay(200).ContinueWith(t => {
+        //    InputBC.Focus();
+        //    InputBC.IsEnabled = false;
+        //    Task.Delay(200);
+        //    InputBC.IsEnabled = true;
+        //});
         
     }
       
@@ -155,15 +160,24 @@ public partial class SplashPage : ContentPage
         _timer = null;
     }
 
-    private void TEMPHandIput(object sender, EventArgs e)
+
+    private void OnKeyboardTapped(object sender, TappedEventArgs e)
+    {
+        OnScreenKeyboard.IsVisible = !OnScreenKeyboard.IsVisible;
+    }
+
+    private void OnScreenKeyboard_OkPressed(object sender, EventArgs e)
     {
         MainThread.BeginInvokeOnMainThread(() =>
         {
             InputBC.IsEnabled = false;
             string text = InputBC.Text;
-            Task.Run(async () => BarCode(text, ""));
+            if (!string.IsNullOrEmpty(text)) Task.Run(async () => BarCode(text, ""));
             InputBC.Text = "";
             InputBC.IsEnabled = true;
         });
+
+        // сховати клаву і зняти фокус з Entry
+        OnScreenKeyboard.IsVisible = false;
     }
 }

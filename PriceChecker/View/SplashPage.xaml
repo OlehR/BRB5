@@ -1,25 +1,36 @@
-<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+﻿<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" 
              xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
-             Shell.FlyoutBehavior="Disabled"
+             Shell.FlyoutBehavior="Disabled" 
+             xmlns:controls="clr-namespace:PriceChecker.View"
              Shell.NavBarIsVisible="False"
              x:Class="PriceChecker.View.SplashPage"
-             HideSoftInputOnTapped="True"
-             >
-    <Grid>
-        <Image x:Name="BackgroundImage"
-               Opacity="0.3"
-           Aspect="AspectFill"
-           Grid.RowSpan="2"
-           Grid.ColumnSpan="2" />
-        <Label x:Name="SettingsShow" />
-        <VerticalStackLayout Padding="30" Spacing="20" VerticalOptions="Center">
-            <Image x:Name="LogoImage" Aspect="AspectFit" HeightRequest="300"/>
-            <Image Source="check_the_price.png" Aspect="AspectFit" HeightRequest="130"/>
+             HideSoftInputOnTapped="True" >
 
-            <Entry x:Name="InputBC" Completed="TEMPHandIput" />
+    <AbsoluteLayout>
+        <Grid AbsoluteLayout.LayoutBounds="0,0,1,1" AbsoluteLayout.LayoutFlags="All">
+            <Image x:Name="BackgroundImage" Opacity="0.3" Aspect="AspectFill"
+                   Grid.RowSpan="2" Grid.ColumnSpan="2" />
+            <Label x:Name="SettingsShow" />
+            <VerticalStackLayout Padding="30" Spacing="20" VerticalOptions="Center">
+                <Image x:Name="LogoImage" Aspect="AspectFit" HeightRequest="300"/>
+                <Image Source="check_the_price.png" Aspect="AspectFit" HeightRequest="130"/>
 
-        </VerticalStackLayout>
-    </Grid>
+                <StackLayout Orientation="Horizontal">
+                    <Label Text="⌨" FontSize="40" HorizontalOptions="Center">
+                        <Label.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="OnKeyboardTapped"/>
+                        </Label.GestureRecognizers>
+                    </Label>
+                    <Entry x:Name="InputBC" HorizontalOptions="FillAndExpand"/>
+                </StackLayout>
 
+            </VerticalStackLayout>
+        </Grid>
+
+        <controls:NumericKeyboard x:Name="OnScreenKeyboard"  IsVisible="False"
+                                  TargetText="{Binding Source={x:Reference InputBC}, Path=Text}"
+                                    AbsoluteLayout.LayoutBounds="1,1"
+                                    AbsoluteLayout.LayoutFlags="PositionProportional"  />
+    </AbsoluteLayout>
 </ContentPage>

@@ -294,7 +294,7 @@ namespace BRB6.View
         private void DocNameFocus(object sender, FocusEventArgs e) {  DocName.Focus(); }
         private async void F5Act(object sender, TappedEventArgs e)
         {
-            if(TypeDoc.KindDoc==eKindDoc.Lot)  await Navigation.PushAsync(new Act(Doc, TypeDoc));
+            if(TypeDoc.KindDoc==eKindDoc.Lot||TypeDoc.IsViewAct)  await Navigation.PushAsync(new Act(Doc, TypeDoc));
         }
         //private void SelectReason(object sender, EventArgs e)
         //{

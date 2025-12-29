@@ -86,5 +86,7 @@ namespace BRB5
         public bool IsOnlyHttp { get; set; } = false;
         public int LinkedCodeDoc { get; set; } = 0;
 
+        public bool IsViewAct { get; set; }
+
     }
 }

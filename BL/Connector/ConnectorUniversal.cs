@@ -823,7 +823,7 @@ namespace BL.Connector
             var dd = new { BarCode = pBarCode };
             HttpResult result = await GetDataHTTP.HTTPRequestAsync(0, "DCT/GetClient", dd.ToJSON(), "application/json", "brb", "brb");
 
-            if (result.HttpState == eStateHTTP.HTTP_OK)
+            if (result.HttpState == eStateHTTP.HTTP_OK&& !string.IsNullOrEmpty(result.Result))
             {
                 var r = JsonConvert.DeserializeObject<Result<IEnumerable<Client>>>(result.Result);
                 return r;
