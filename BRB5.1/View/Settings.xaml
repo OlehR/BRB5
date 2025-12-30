@@ -114,7 +114,7 @@
 
                 <Button Text="Сканувати QR" IsVisible="{Binding IsVisScan}" Clicked="QRCodeScan"  />
 
-                <Grid  ColumnDefinitions="2,*,*">
+                <Grid  ColumnDefinitions="2*,*,*">
 
                     <Picker Title="Компанія"
                             ItemsSource="{Binding ListCompany}"
