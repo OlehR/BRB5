@@ -32,7 +32,7 @@ namespace BRB6.View
         bool _IsVisibleDocF6 = false;
         public bool IsVisibleDocF6 { get { return _IsVisibleDocF6; } set { _IsVisibleDocF6 = value; OnPropertyChanged("IsVisibleDocF6"); } } 
         public ObservableCollection<DocWaresEx> MyDocWares { get; set; } = new ObservableCollection<DocWaresEx>();
-        public bool IsVisF5Act => TypeDoc.KindDoc == eKindDoc.Lot;
+        public bool IsVisF5Act => TypeDoc.KindDoc == eKindDoc.Lot|| TypeDoc.IsViewAct;
         public bool IsVisF2 => TypeDoc.KindDoc != eKindDoc.Lot;
         //// Колекція варіантів для Picker
         //public ObservableCollection<BRB5.Model.DB.Reason> Reasons { get; set; }
@@ -264,7 +264,7 @@ namespace BRB6.View
 
         private async void F2Save(object sender, EventArgs e)
         {
-            if (IsVisF5Act) return;
+            if (TypeDoc.KindDoc == eKindDoc.Lot) return;
 
             Doc.NumberOutInvoice = NumberOutInvoice;
             Doc.DateOutInvoice = ListDataStr[SelectedDataStr].DateString;

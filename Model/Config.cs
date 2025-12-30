@@ -78,5 +78,6 @@ namespace BRB5.Model
 
         public static int Compress { get; set; } = 90;
         public static eShopTM CodeTM { get; set; }
+        public static bool IsVisOrderF3 { get; set; }=false;
     }
 }

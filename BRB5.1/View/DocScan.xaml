@@ -106,14 +106,15 @@
 
                     <CollectionView.ItemTemplate>
                         <DataTemplate>
-                            <Grid RowSpacing="1" ColumnSpacing="1" Padding="1" BackgroundColor="#adaea7" ColumnDefinitions="12*,3*,3*">
+                            <Grid RowSpacing="1" ColumnSpacing="1" Padding="1" BackgroundColor="#adaea7" ColumnDefinitions="Auto,12*,3*,3*">
                                 <Grid.GestureRecognizers>
                                     <TapGestureRecognizer Tapped="OnListViewWaresItemTapped" />
                                 </Grid.GestureRecognizers>
-
-                                <Label Text="{Binding NameWares}" Grid.Column="0" LineBreakMode="NoWrap" BackgroundColor="{Binding GetBackgroundColor}" />
-                                <Label Text="{Binding InputQuantity}" Grid.Column="1" LineBreakMode="NoWrap" BackgroundColor="{Binding GetBackgroundColor}" />
-                                <Label Text="{Binding NameReason}" Grid.Column="2" LineBreakMode="NoWrap" BackgroundColor="{Binding GetBackgroundColor}" />
+                                <Label Text="{Binding OrderDoc}" HorizontalTextAlignment="Center"
+                                       BackgroundColor="{Binding GetBackgroundColor}" IsVisible="{Binding Config.IsVisOrderF3}"/>
+                                <Label Text="{Binding NameWares}" Grid.Column="1" LineBreakMode="NoWrap" BackgroundColor="{Binding GetBackgroundColor}" />
+                                <Label Text="{Binding InputQuantity}" Grid.Column="2" LineBreakMode="NoWrap" BackgroundColor="{Binding GetBackgroundColor}" />
+                                <Label Text="{Binding NameReason}" Grid.Column="3" LineBreakMode="NoWrap" BackgroundColor="{Binding GetBackgroundColor}" />
                             </Grid>
                         </DataTemplate>
                     </CollectionView.ItemTemplate>

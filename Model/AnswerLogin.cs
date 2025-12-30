@@ -41,5 +41,6 @@ namespace BRB5.Model
         public int CodeUnitWeight { get; set; }
         public int CodeUnitPiece { get; set; }
 
+        public  bool IsVisOrderF3 { get; set; }
     }
 }

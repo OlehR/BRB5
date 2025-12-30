@@ -80,6 +80,7 @@ namespace BL.Connector
                             Config.UserGuid = res.Data.UserGuid;
                             Config.GetCodeUnitWeight = res.Data.CodeUnitWeight;
                             Config.GetCodeUnitPiece = res.Data.CodeUnitPiece;
+                            Config.IsVisOrderF3 = res.Data.IsVisOrderF3;
                             CustomerBarCode = res.Data.CustomerBarCode;
                         }
 
