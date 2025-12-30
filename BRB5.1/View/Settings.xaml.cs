@@ -240,7 +240,7 @@ namespace BRB6.View
             db.SetConfig<DateTime>("DateLastLoadGuid", Config.DateLastLoadGuid);
             if (r.State == 0)
             {
-                ToastInfo($"Завантаження даних завершено. {r.Info}");
+                ToastInfo($"Завантаження даних завершено. {r.Data}");
             }
             else
             {
@@ -485,7 +485,7 @@ namespace BRB6.View
 
             var R = await c.GetInfo();
             if (R != null) //await Toast.Make(R.Info).Show();
-                await DisplayAlert("Info", R.Info/*+ temp*/, "ОК");
+                await DisplayAlert("Info", R.Data/*+ temp*/, "ОК");
         }
         private async void OnClean(object sender, EventArgs e)
         {

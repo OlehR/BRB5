@@ -85,7 +85,7 @@ namespace BL.Connector
                 if (result.HttpState != eStateHTTP.HTTP_OK)
                 {
                     Res = new Result(result);
-                    FileLogger.WriteLogMessage($"ConnectorPSU.Login=>(pLogin=>{pLogin}, pPassWord=>{pPassWord},pLoginServer=>{pLoginServer}) Res=>({Res.State},{Res.Info},{Res.TextError})", eTypeLog.Full);
+                    FileLogger.WriteLogMessage($"ConnectorPSU.Login=>(pLogin=>{pLogin}, pPassWord=>{pPassWord},pLoginServer=>{pLoginServer}) Res=>({Res.State},{Res.Data},{Res.TextError})", eTypeLog.Full);
                     return Res;
                 }
                 else
@@ -96,18 +96,18 @@ namespace BL.Connector
                         if (!t.success || t.data.userId <= 0)
                         {
                             Res = new Result(-1, "Не успішна авторизація. Можливо невірний логін чи пароль");
-                            FileLogger.WriteLogMessage($"ConnectorPSU.Login=>(pLogin=>{pLogin}, pPassWord=>{pPassWord},pLoginServer=>{pLoginServer}) Res=>({Res.State},{Res.Info},{Res.TextError})", eTypeLog.Expanded);
+                            FileLogger.WriteLogMessage($"ConnectorPSU.Login=>(pLogin=>{pLogin}, pPassWord=>{pPassWord},pLoginServer=>{pLoginServer}) Res=>({Res.State},{Res.Data},{Res.TextError})", eTypeLog.Expanded);
                             return Res;
                         }
                         Config.CodeUser = t.data.userId;
                         Res = new Result();
-                        FileLogger.WriteLogMessage($"ConnectorPSU.Login=>(pLogin=>{pLogin}, pPassWord=>{pPassWord},pLoginServer=>{pLoginServer}) Res=>({Res.State},{Res.Info},{Res.TextError})", eTypeLog.Expanded);
+                        FileLogger.WriteLogMessage($"ConnectorPSU.Login=>(pLogin=>{pLogin}, pPassWord=>{pPassWord},pLoginServer=>{pLoginServer}) Res=>({Res.State},{Res.Data},{Res.TextError})", eTypeLog.Expanded);
                         return Res;
                     }
                     catch (Exception e)
                     {
                         Res = new Result(e);
-                        FileLogger.WriteLogMessage($"ConnectorPSU.Login=>(pLogin=>{pLogin}, pPassWord=>{pPassWord},pLoginServer=>{pLoginServer}) Res=>({Res.State},{Res.Info},{Res.TextError})", eTypeLog.Error);
+                        FileLogger.WriteLogMessage($"ConnectorPSU.Login=>(pLogin=>{pLogin}, pPassWord=>{pPassWord},pLoginServer=>{pLoginServer}) Res=>({Res.State},{Res.Data},{Res.TextError})", eTypeLog.Error);
                         return Res;
                     }
                 }
@@ -124,7 +124,7 @@ namespace BL.Connector
                 else if (res.HttpState != eStateHTTP.HTTP_OK)
                 {
                     Res = new Result(res, "Ви не підключені до мережі " + Config.Company.ToString());
-                    FileLogger.WriteLogMessage($"ConnectorPSU.Login=>(pLogin=>{pLogin}, pPassWord=>{pPassWord},pLoginServer=>{pLoginServer}) Res=>({Res.State},{Res.Info},{Res.TextError})", eTypeLog.Expanded);
+                    FileLogger.WriteLogMessage($"ConnectorPSU.Login=>(pLogin=>{pLogin}, pPassWord=>{pPassWord},pLoginServer=>{pLoginServer}) Res=>({Res.State},{Res.Data},{Res.TextError})", eTypeLog.Expanded);
                     return Res;
                 }
                 else
@@ -137,20 +137,20 @@ namespace BL.Connector
                             Config.Role = (eRole)r.Profile;
                             Config.CodeUser = r.data?.userId ?? 0;
                             Config.NameUser = r.data?.userName;
-                            FileLogger.WriteLogMessage($"ConnectorPSU.Login=>(pLogin=>{pLogin}, pPassWord=>{pPassWord},pLoginServer=>{pLoginServer}) Res=>({Res.State},{Res.Info},{Res.TextError})", eTypeLog.Full);
+                            FileLogger.WriteLogMessage($"ConnectorPSU.Login=>(pLogin=>{pLogin}, pPassWord=>{pPassWord},pLoginServer=>{pLoginServer}) Res=>({Res.State},{Res.Data},{Res.TextError})", eTypeLog.Full);
                             return Res;
                         }
                         else
                         {
                             Res = new Result(r.State, r.TextError, "Неправильний логін або пароль");
-                            FileLogger.WriteLogMessage($"ConnectorPSU.Login=>(pLogin=>{pLogin}, pPassWord=>{pPassWord},pLoginServer=>{pLoginServer}) Res=>({Res.State},{Res.Info},{Res.TextError})", eTypeLog.Expanded);
+                            FileLogger.WriteLogMessage($"ConnectorPSU.Login=>(pLogin=>{pLogin}, pPassWord=>{pPassWord},pLoginServer=>{pLoginServer}) Res=>({Res.State},{Res.Data},{Res.TextError})", eTypeLog.Expanded);
                             return Res;
                         }
                     }
                     catch (Exception e)
                     {
                         Res = new Result(-1, e.Message);
-                        FileLogger.WriteLogMessage($"ConnectorPSU.Login=>(pLogin=>{pLogin}, pPassWord=>{pPassWord},pLoginServer=>{pLoginServer}) Res=>({Res.State},{Res.Info},{Res.TextError})", eTypeLog.Error);
+                        FileLogger.WriteLogMessage($"ConnectorPSU.Login=>(pLogin=>{pLogin}, pPassWord=>{pPassWord},pLoginServer=>{pLoginServer}) Res=>({Res.State},{Res.Data},{Res.TextError})", eTypeLog.Error);
                         return Res;
                     }
                 }
@@ -166,7 +166,7 @@ namespace BL.Connector
                     Config.Role = res.Data?.Role ?? 0;
                     Config.CodeUser = res.Data?.CodeUser ?? 0;
                     Config.NameUser = res.Data?.NameUser;
-                    FileLogger.WriteLogMessage($"ConnectorPSU.Login=>(pLogin=>{pLogin}, pPassWord=>{pPassWord},pLoginServer=>{pLoginServer}) Res=>({Res.State},{Res.Info},{Res.TextError})", eTypeLog.Full);
+                    FileLogger.WriteLogMessage($"ConnectorPSU.Login=>(pLogin=>{pLogin}, pPassWord=>{pPassWord},pLoginServer=>{pLoginServer}) Res=>({Res.State},{Res.Data},{Res.TextError})", eTypeLog.Full);
                     return res.GetResult;
                 }
                 else
@@ -375,14 +375,14 @@ namespace BL.Connector
                         }
                         */
 
-                        FileLogger.WriteLogMessage($"ConnectorPSU.LoadDocsData=>(pTypeDoc=>{pTypeDoc}, pNumberDoc=>{pNumberDoc},pIsClear=>{pIsClear}) Res=>(Doc=>{Doc.Count()},{Res.State},{Res.Info},{Res.TextError})", eTypeLog.Full);
+                        FileLogger.WriteLogMessage($"ConnectorPSU.LoadDocsData=>(pTypeDoc=>{pTypeDoc}, pNumberDoc=>{pNumberDoc},pIsClear=>{pIsClear}) Res=>(Doc=>{Doc.Count()},{Res.State},{Res.Data},{Res.TextError})", eTypeLog.Full);
 
                         return Res;
                     }
                     catch (Exception e)
                     {
                         Res = new Result(-1, e.Message);
-                        FileLogger.WriteLogMessage($"ConnectorPSU.LoadDocsData=>(pTypeDoc=>{pTypeDoc}, pNumberDoc=>{pNumberDoc},pIsClear=>{pIsClear}) Res=>({Res.State},{Res.Info},{Res.TextError})", eTypeLog.Error);
+                        FileLogger.WriteLogMessage($"ConnectorPSU.LoadDocsData=>(pTypeDoc=>{pTypeDoc}, pNumberDoc=>{pNumberDoc},pIsClear=>{pIsClear}) Res=>({Res.State},{Res.Data},{Res.TextError})", eTypeLog.Error);
                         return Res;
                     }
             }
@@ -484,7 +484,7 @@ namespace BL.Connector
                         db.ReplaceDocWaresSample(data.DocWaresSample);
 
                         Config.OnProgress?.Invoke(0.100);
-                        FileLogger.WriteLogMessage($"ConnectorPSU.LoadDocsData=>(pTypeDoc=>{pTypeDoc}, pNumberDoc=>{pNumberDoc},pIsClear=>{pIsClear}) Res=>({Res.State},{Res.Info},{Res.TextError})", eTypeLog.Full);
+                        FileLogger.WriteLogMessage($"ConnectorPSU.LoadDocsData=>(pTypeDoc=>{pTypeDoc}, pNumberDoc=>{pNumberDoc},pIsClear=>{pIsClear}) Res=>({Res.State},{Res.Data},{Res.TextError})", eTypeLog.Full);
 
                         return Res;
                     }
@@ -627,7 +627,7 @@ namespace BL.Connector
 
                 if (result.HttpState != eStateHTTP.HTTP_OK)
                 {
-                    FileLogger.WriteLogMessage($"ConnectorPSU.SendRaiting=>(NumberDoc=>{pDoc.NumberDoc}) Res=>({Res.State},{Res.Info},{Res.TextError})", eTypeLog.Error);
+                    FileLogger.WriteLogMessage($"ConnectorPSU.SendRaiting=>(NumberDoc=>{pDoc.NumberDoc}) Res=>({Res.State},{Res.Data},{Res.TextError})", eTypeLog.Error);
                     Res = new Result(result);
                 }
                 else
@@ -648,7 +648,7 @@ namespace BL.Connector
                 Res = new Result(ex);
                 OnSave?.Invoke($"Помилка збереження =>{Res.TextError}");
             }
-            FileLogger.WriteLogMessage($"ConnectorPSU.SendRaiting=>(NumberDoc=>{pDoc.NumberDoc}) Res=>({Res.State},{Res.Info},{Res.TextError})");
+            FileLogger.WriteLogMessage($"ConnectorPSU.SendRaiting=>(NumberDoc=>{pDoc.NumberDoc}) Res=>({Res.State},{Res.Data},{Res.TextError})");
 
             return Res;
         }
@@ -770,7 +770,7 @@ namespace BL.Connector
                         else
                         {
                             Error++;
-                            FileLogger.WriteLogMessage($"ConnectorPSU.SendRaitingFiles=>(File={f}) Res=>({Res.State},{Res.Info},{Res.TextError})", eTypeLog.Expanded);
+                            FileLogger.WriteLogMessage($"ConnectorPSU.SendRaitingFiles=>(File={f}) Res=>({Res.State},{Res.Data},{Res.TextError})", eTypeLog.Expanded);
                             LastError = Res;
                             OnSave?.Invoke($"[({i},{Error})/{Files.Length}] Файл не передано=>{Path.GetFileName(f)} {result.HttpState}");
                         }
@@ -779,7 +779,7 @@ namespace BL.Connector
                     {
                         Res = new Result(e);
                         OnSave?.Invoke($"помилка при передачі {Path.GetFileName(f)} Error=>{e.Message}");
-                        FileLogger.WriteLogMessage($"ConnectorPSU.SendRaitingFiles=>(File={f}) Res=>({Res.State},{Res.Info},{Res.TextError})", eTypeLog.Error);
+                        FileLogger.WriteLogMessage($"ConnectorPSU.SendRaitingFiles=>(File={f}) Res=>({Res.State},{Res.Data},{Res.TextError})", eTypeLog.Error);
                     }
                 }
                 Res = LastError ?? Res;

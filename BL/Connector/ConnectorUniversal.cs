@@ -95,7 +95,7 @@ namespace BL.Connector
                         }
 
                         //IsLocalPrice = Config.TypeDoc?.Where(el => el.KindDoc == eKindDoc.PriceCheck).FirstOrDefault()?.CodeApi == 1;
-                        FileLogger.WriteLogMessage($"ConnectorPSU.Login=>(pLogin=>{pLogin}, pPassWord=>{pPassWord},pLoginServer=>{pLoginServer}) Res=>({Res.State},{Res.Info},{Res.TextError})", eTypeLog.Full);
+                        FileLogger.WriteLogMessage($"ConnectorPSU.Login=>(pLogin=>{pLogin}, pPassWord=>{pPassWord},pLoginServer=>{pLoginServer}) Res=>({Res.State},{Res.Data},{Res.TextError})", eTypeLog.Full);
                         return res.GetResult;
                     }
                     else
@@ -132,7 +132,7 @@ namespace BL.Connector
                 }                
                 //await GetDaysLeft();
                 Config.OnProgress?.Invoke(1);               
-                return new Result(result) { Info=Info};
+                return new Result(result) { Data=Info};
             }
             catch (Exception e)
             {                 
@@ -414,7 +414,7 @@ namespace BL.Connector
             return new Result()
             {
                 State = Error,
-                Info = $"Передано файлів=>{Ok} з {Files.Count()}",
+                Data = $"Передано файлів=>{Ok} з {Files.Count()}",
                 TextError = Error > 0 ? $"Не передано файлів=>{Error}" : "Ok"
             };
         }
@@ -525,7 +525,7 @@ namespace BL.Connector
                                 else
                                 {
                                     Error++;
-                                    FileLogger.WriteLogMessage($"ConnectorPSU.SendRaitingFiles=>(File={f}) Res=>({Res.State},{Res.Info},{Res.TextError})", eTypeLog.Expanded);
+                                    FileLogger.WriteLogMessage($"ConnectorPSU.SendRaitingFiles=>(File={f}) Res=>({Res.State},{Res.Data},{Res.TextError})", eTypeLog.Expanded);
                                     LastError = Res;
                                     OnSave?.Invoke($"[({i},{Error})/{Files.Length}] Файл не передано=>{Path.GetFileName(f)}");
                                 }
@@ -534,7 +534,7 @@ namespace BL.Connector
                             {
                                 Res = new Result(e);
                                 OnSave?.Invoke($"помилка при передачі {Path.GetFileName(f)} Error=>{e.Message}");
-                                FileLogger.WriteLogMessage($"ConnectorPSU.SendRaitingFiles=>(File={f}) Res=>({Res.State},{Res.Info},{Res.TextError})", eTypeLog.Error);
+                                FileLogger.WriteLogMessage($"ConnectorPSU.SendRaitingFiles=>(File={f}) Res=>({Res.State},{Res.Data},{Res.TextError})", eTypeLog.Error);
                             }
                         }
                     Res = LastError ?? Res;
@@ -661,7 +661,7 @@ namespace BL.Connector
                 if (result.HttpState == eStateHTTP.HTTP_OK)
                 {
                     var res = result.Result;
-                    return new Result(){Info= res};
+                    return new Result(){Data= res};
                 }
                 return new Result<string>(result);
             }

@@ -105,7 +105,7 @@ namespace BRB6
                 else
                     Dispatcher.Dispatch(() =>
                     {
-                        _ = DisplayAlert("Проблеми з авторизацією", r.TextError +" "+ r.Info, "OK");
+                        _ = DisplayAlert("Проблеми з авторизацією", r.TextError +" "+ r.Data, "OK");
                     });
             });
         }

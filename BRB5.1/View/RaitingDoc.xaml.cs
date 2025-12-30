@@ -96,7 +96,7 @@ namespace BRB6
             if (isOk == true) 
             {
                 var Res= await c.SendRatingAsync(null, vDoc, true);
-                var toast = Toast.Make($"{Res.TextError} =>{Res.Info}", ToastDuration.Long, 14);
+                var toast = Toast.Make($"{Res.TextError} =>{Res.Data}", ToastDuration.Long, 14);
                 MainThread.BeginInvokeOnMainThread(async () => await toast.Show());                
             }
         }

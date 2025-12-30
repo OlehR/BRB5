@@ -59,7 +59,7 @@ namespace BL.Connector
             catch (Exception e)
             {
                 Res = new Result(-1, e.Message);
-                FileLogger.WriteLogMessage($"ConnectorSE_FTP.Login=>() Res=>({Res.State},{Res.Info},{Res.TextError})", eTypeLog.Error);
+                FileLogger.WriteLogMessage($"ConnectorSE_FTP.Login=>() Res=>({Res.State},{Res.Data},{Res.TextError})", eTypeLog.Error);
                 return Res;
             }
 
@@ -103,11 +103,11 @@ namespace BL.Connector
                 catch (Exception e)
                 {
                     Res = new Result(-1, e.Message);
-                    FileLogger.WriteLogMessage($"ConnectorSE_FTP.LoadDocsData=>(pTypeDoc=>{pTypeDoc}, pNumberDoc=>{pNumberDoc},pIsClear=>{pIsClear}) Res=>({Res.State},{Res.Info},{Res.TextError})", eTypeLog.Error);
+                    FileLogger.WriteLogMessage($"ConnectorSE_FTP.LoadDocsData=>(pTypeDoc=>{pTypeDoc}, pNumberDoc=>{pNumberDoc},pIsClear=>{pIsClear}) Res=>({Res.State},{Res.Data},{Res.TextError})", eTypeLog.Error);
                     return Res;
                 }
             }
-            FileLogger.WriteLogMessage($"ConnectorSE_FTP.LoadDocsData=>(pTypeDoc=>{pTypeDoc}, pNumberDoc=>{pNumberDoc},pIsClear=>{pIsClear}) Res=>({Res.State},{Res.Info},{Res.TextError})", eTypeLog.Error);
+            FileLogger.WriteLogMessage($"ConnectorSE_FTP.LoadDocsData=>(pTypeDoc=>{pTypeDoc}, pNumberDoc=>{pNumberDoc},pIsClear=>{pIsClear}) Res=>({Res.State},{Res.Data},{Res.TextError})", eTypeLog.Error);
 
             return Res;
         }
@@ -139,7 +139,7 @@ namespace BL.Connector
             catch (Exception ex)
             {
                 Res = new Result(ex);
-                FileLogger.WriteLogMessage($"ConnectorSE_FTP.SendRaiting=>() Res=>({Res.State},{Res.Info},{Res.TextError})", eTypeLog.Error);
+                FileLogger.WriteLogMessage($"ConnectorSE_FTP.SendRaiting=>() Res=>({Res.State},{Res.Data},{Res.TextError})", eTypeLog.Error);
             }
             return Res;
         }
@@ -172,13 +172,13 @@ namespace BL.Connector
                     else
                     {
                         Res = new Result(-1, "Не передався файл", f);
-                        FileLogger.WriteLogMessage($"ConnectorSE_FTP.SendRaitingFiles=>(File={f}) Res=>({Res.State},{Res.Info},{Res.TextError})", eTypeLog.Expanded);
+                        FileLogger.WriteLogMessage($"ConnectorSE_FTP.SendRaitingFiles=>(File={f}) Res=>({Res.State},{Res.Data},{Res.TextError})", eTypeLog.Expanded);
                     }
                 }
                 catch (Exception e)
                 {
                     Res = new Result(e);
-                    FileLogger.WriteLogMessage($"ConnectorSE_FTP.SendRaitingFiles=>(File={f}) Res=>({Res.State},{Res.Info},{Res.TextError})", eTypeLog.Error);
+                    FileLogger.WriteLogMessage($"ConnectorSE_FTP.SendRaitingFiles=>(File={f}) Res=>({Res.State},{Res.Data},{Res.TextError})", eTypeLog.Error);
                 }
             }
             return Res;
