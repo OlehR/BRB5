@@ -91,17 +91,17 @@ public partial class LotsCheck : ContentPage
         else
         {
             var result = await c.GetNameWarehouseFromDoc(new DocId { TypeDoc = TypeDoc.CodeDoc, NumberDoc = pBarCode });
-            MainThread.BeginInvokeOnMainThread(async() =>
+            MainThread.BeginInvokeOnMainThread((Action)(async() =>
             {
                 if (result.State == 0) // Assuming 0 means success
                 {
-                    await DisplayAlert("", "Даний товар належить " + result.Info, "OK");
+                    await DisplayAlert("", (string)("Даний товар належить " + result.Data), "OK");
                 }
                 else
                 {
                     await DisplayAlert("Помилка не цей магазин", "Не вдалося отримати назву " + result.TextError, "OK");
                 }
-            });
+            }));
         }
     }
     public void Dispose() { Config.BarCode -= BarCode; }

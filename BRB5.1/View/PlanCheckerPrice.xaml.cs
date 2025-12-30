@@ -43,12 +43,12 @@ namespace BRB6.View
         private async void GetData()
         {
             var temp = await c.GetPromotionData(Doc.NumberDoc);
-            if (temp == null || temp.Info == null)
+            if (temp == null || temp.Data == null)
             {
                 WaresList = new ObservableCollection<DocWaresEx>();
                 _ = DisplayAlert("Помилка", temp?.TextError, "OK");
             }
-            else WaresList = Bl.GetDataPCP(temp.Info, Doc, ShelfType);
+            else WaresList = Bl.GetDataPCP(temp.Data, Doc, ShelfType);
                   
         }
 

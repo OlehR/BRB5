@@ -20,19 +20,19 @@ namespace BRB6.View
             c = ConnectorBase.GetInstance();
 
             var temp = c.GetPromotion(Config.CodeWarehouse).Result;
-            if (temp.Info == null)
+            if (temp.Data == null)
             {
                 PromotionList = new ObservableCollection<DocVM>();
                 _ = DisplayAlert("Помилка", temp.TextError, "OK");
             }
             else
             {
-                PromotionList = new ObservableCollection<DocVM>(temp.Info);
-                foreach (var doc in temp.Info)
+                PromotionList = new ObservableCollection<DocVM>(temp.Data);
+                foreach (var doc in temp.Data)
                 {
                     doc.TypeDoc = 13;
                 }
-                db.ReplaceDoc(temp.Info.Select(el=> (Doc) el.Clone() ));
+                db.ReplaceDoc(temp.Data.Select(el=> (Doc) el.Clone() ));
             }
 
             this.BindingContext = this;

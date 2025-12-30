@@ -45,14 +45,14 @@ namespace BRB6.View
             //TypeDoc = pTypeDoc;
             BindingContext = this;
 
-            _ = Task.Run(async () =>
+            _ = Task.Run((Func<Task>)(async () =>
             {
                 Config.OnProgress.Invoke(0.1);
                 try { 
                  var res = //JsonConvert.DeserializeObject<IEnumerable<DocWaresExpirationSample>>(DataJson.ExpirationWares);
                 await c.GetExpirationDateAsync(Config.CodeWarehouse);
                     Config.OnProgress.Invoke(0.8);
-                    db.ReplaceDocWaresExpirationSample(res.Info);
+                    db.ReplaceDocWaresExpirationSample((IEnumerable<DocWaresExpirationSample>)res.Data);
                     Config.OnProgress.Invoke(1);
                     PopulateDocs();
                 }
@@ -61,7 +61,7 @@ namespace BRB6.View
                     Config.OnProgress.Invoke(0);
                     FileLogger.WriteLogMessage(this, "ExpirationDate", e);
                 }
-            });           
+            }));           
         }
         void Progress(double pProgress) => MainThread.BeginInvokeOnMainThread(() => PB = pProgress);
         protected override void OnAppearing()

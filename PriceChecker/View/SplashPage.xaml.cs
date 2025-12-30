@@ -115,9 +115,9 @@ public partial class SplashPage : ContentPage
             if(WP == null || (WP?.CodeUser == 0 && WP?.CodeWares==0))
             {
                 var clients = await bl.c.GetClient(pBarCode);
-                if (clients != null && clients.Info.Any())
+                if (clients != null && clients.Data.Any())
                 {
-                    MainThread.BeginInvokeOnMainThread(async () => { await Navigation.PushAsync(new CustomerInfo(clients.Info.FirstOrDefault())); });
+                    MainThread.BeginInvokeOnMainThread(async () => { await Navigation.PushAsync(new CustomerInfo(clients.Data.FirstOrDefault())); });
                 }
             }
         }

@@ -163,9 +163,9 @@ namespace BL.Connector
                 if (result.HttpState == eStateHTTP.HTTP_OK)
                 {
                     Result<BRB5.Model.AnswerLogin> res = JsonConvert.DeserializeObject<Result<BRB5.Model.AnswerLogin>>(result.Result);
-                    Config.Role = res.Info?.Role ?? 0;
-                    Config.CodeUser = res.Info?.CodeUser ?? 0;
-                    Config.NameUser = res.Info?.NameUser;
+                    Config.Role = res.Data?.Role ?? 0;
+                    Config.CodeUser = res.Data?.CodeUser ?? 0;
+                    Config.NameUser = res.Data?.NameUser;
                     FileLogger.WriteLogMessage($"ConnectorPSU.Login=>(pLogin=>{pLogin}, pPassWord=>{pPassWord},pLoginServer=>{pLoginServer}) Res=>({Res.State},{Res.Info},{Res.TextError})", eTypeLog.Full);
                     return res.GetResult;
                 }
@@ -188,7 +188,7 @@ namespace BL.Connector
                 {
                     var res = JsonConvert.DeserializeObject<Result<BRB5.Model.Guid>>(result.Result);
                     Config.OnProgress?.Invoke(0.60);
-                    SaveGuide(res.Info, pIsFull);                    
+                    SaveGuide(res.Data, pIsFull);                    
                 }                
                 //await GetDaysLeft();
                 Config.OnProgress?.Invoke(1);               
@@ -270,7 +270,7 @@ namespace BL.Connector
                 if (result.HttpState == eStateHTTP.HTTP_OK)
                 {
                     var res = JsonConvert.DeserializeObject<WaresPriceSE>(result.Result);
-                    return new() { Info = res.GetWaresPrice };
+                    return new() { Data = res.GetWaresPrice };
                 }
                 return new(result);
             }catch(Exception e)
@@ -400,8 +400,8 @@ namespace BL.Connector
                         var res = JsonConvert.DeserializeObject<Result<Docs>>(result.Result);
                         if (res.State == 0)
                         {
-                            db.ReplaceDoc(res.Info.Doc);
-                            db.ReplaceDocWaresSample(res.Info.Wares);
+                            db.ReplaceDoc(res.Data.Doc);
+                            db.ReplaceDocWaresSample(res.Data.Wares);
                         }
                         return new Result();
                     }

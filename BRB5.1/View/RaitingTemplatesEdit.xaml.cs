@@ -41,7 +41,7 @@ namespace BRB6.View
         private async void Create(object sender, EventArgs e)  
         {
             var r = await c.GetIdRaitingTemplate();
-            await Navigation.PushAsync(new RaitingTemplateCreate(r.Info)); 
+            await Navigation.PushAsync(new RaitingTemplateCreate(r.Data)); 
         }
 
         private async void Edit(object sender, EventArgs e)
@@ -95,7 +95,7 @@ namespace BRB6.View
             if (tempbool)
             {
                 var temp = await c.GetRaitingTemplateAsync();
-                if (temp.Info == null)
+                if (temp.Data == null)
                     _ = DisplayAlert("Помилка", temp.TextError, "OK");
                 else
                 {

@@ -71,23 +71,23 @@ namespace BL.Connector
                     {
                         Result<BRB5.Model.AnswerLogin> res = JsonConvert.DeserializeObject<Result<BRB5.Model.AnswerLogin>>(result.Result);
                         if (!res.Success) return res;
-                        if (res.Info != null)
+                        if (res.Data != null)
                         {
-                            Config.Role = res.Info.Role;
-                            Config.CodeUser = res.Info.CodeUser;
-                            Config.NameUser = res.Info.NameUser;
-                            Config.TypeDoc = res.Info.TypeDoc;
-                            Config.UserGuid = res.Info.UserGuid;
-                            Config.GetCodeUnitWeight = res.Info.CodeUnitWeight;
-                            Config.GetCodeUnitPiece = res.Info.CodeUnitPiece;
-                            CustomerBarCode = res.Info.CustomerBarCode;
+                            Config.Role = res.Data.Role;
+                            Config.CodeUser = res.Data.CodeUser;
+                            Config.NameUser = res.Data.NameUser;
+                            Config.TypeDoc = res.Data.TypeDoc;
+                            Config.UserGuid = res.Data.UserGuid;
+                            Config.GetCodeUnitWeight = res.Data.CodeUnitWeight;
+                            Config.GetCodeUnitPiece = res.Data.CodeUnitPiece;
+                            CustomerBarCode = res.Data.CustomerBarCode;
                         }
 
-                        if (!string.IsNullOrEmpty(res.Info?.PathAPK))
-                            Config.PathAPK = res.Info?.PathAPK;
+                        if (!string.IsNullOrEmpty(res.Data?.PathAPK))
+                            Config.PathAPK = res.Data?.PathAPK;
                         isGroup = Config.TypeDoc.Any(el => el.KindDoc == eKindDoc.NotDefined);
 
-                        Config.LocalCompany = res.Info?.LocalConnect ?? eCompany.NotDefined;
+                        Config.LocalCompany = res.Data?.LocalConnect ?? eCompany.NotDefined;
                         if (Config.LocalCompany == eCompany.Sim23)
                         {
                             СonnectorLocal = new ConnectorSE();
@@ -124,11 +124,11 @@ namespace BL.Connector
                 {
                     var res = JsonConvert.DeserializeObject<Result<BRB5.Model.Guid>>(result.Result);
                     Config.OnProgress?.Invoke(0.60);
-                    if(res.Info!=null)
-                        SaveGuide(res.Info, pIsFull);
+                    if(res.Data!=null)
+                        SaveGuide(res.Data, pIsFull);
                     Config.OnProgress?.Invoke(0.60);
                     var r=await GetRaitingTemplateAsync();
-                    Info=$"Товарів=>{res?.Info?.Wares?.Count()}\nСкладів=>{res?.Info?.Warehouse?.Count()} \nШаблонів рейтингу =>{r?.Info?.Count()}";
+                    Info=$"Товарів=>{res?.Data?.Wares?.Count()}\nСкладів=>{res?.Data?.Warehouse?.Count()} \nШаблонів рейтингу =>{r?.Data?.Count()}";
                 }                
                 //await GetDaysLeft();
                 Config.OnProgress?.Invoke(1);               
@@ -175,8 +175,8 @@ namespace BL.Connector
                     if (result.HttpState == eStateHTTP.HTTP_OK)
                     {
                         Res = JsonConvert.DeserializeObject<Result<WaresPrice>>(result.Result);
-                        if (Res.Info != null)                        
-                            Res.Info.ParseBarCode = pBC;
+                        if (Res.Data != null)                        
+                            Res.Data.ParseBarCode = pBC;
                     }
                     else Res= new(result);
                 }
@@ -250,7 +250,7 @@ namespace BL.Connector
                     {
                         var res = JsonConvert.DeserializeObject<Result<IEnumerable<Doc>>>(result.Result);
                         if (res.State == 0)                        
-                            db.ReplaceDoc(res.Info);                        
+                            db.ReplaceDoc(res.Data);                        
                     }
                     else
                         return new Result(result); 
@@ -273,8 +273,8 @@ namespace BL.Connector
                         var res = JsonConvert.DeserializeObject<Result<Docs>>(result.Result);
                         if (res.State == 0)
                         {
-                            db.ReplaceDoc(res.Info.Doc,TD?.IsOnlyHttp==true ?pTypeDoc : 0 );
-                            db.ReplaceDocWaresSample(res.Info.Wares);
+                            db.ReplaceDoc(res.Data.Doc,TD?.IsOnlyHttp==true ?pTypeDoc : 0 );
+                            db.ReplaceDocWaresSample(res.Data.Wares);
                         }
                         return new Result();
                     }
@@ -764,8 +764,8 @@ namespace BL.Connector
                     var res = JsonConvert.DeserializeObject<Result<IEnumerable<RaitingTemplate>>>(result.Result);
                     if (res.State == 0)
                     {
-                        db.ReplaceRaitingTemplate(res.Info);
-                        foreach (var el in res.Info)
+                        db.ReplaceRaitingTemplate(res.Data);
+                        foreach (var el in res.Data)
                             if (el.Item.Any())
                                 db.ReplaceRaitingTemplateItem(el.Item);
                         return res;
@@ -788,7 +788,7 @@ namespace BL.Connector
             if (result.HttpState == eStateHTTP.HTTP_OK)
             {
                 var r = JsonConvert.DeserializeObject<IEnumerable<DocVM>>(result.Result);
-                return new Result<IEnumerable<Doc>>() { Info = r };
+                return new Result<IEnumerable<Doc>>() { Data = r };
             }
             else
                 return new Result<IEnumerable<Doc>>(result, null);

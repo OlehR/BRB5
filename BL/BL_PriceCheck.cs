@@ -25,7 +25,7 @@ namespace BL
             {
                 var R = c.GetPrice(c.ParsedBarCode(pBarCode, pIsHandInput), pTPI);
                 if(R.Success)
-                  CheckWP =R.Info ?? new() { Name = $"Товар не знайдено =>{pBarCode}" };
+                  CheckWP =R.Data ?? new() { Name = $"Товар не знайдено =>{pBarCode}" };
                 else
                   CheckWP = new() { Name = $"{pBarCode}=>{R.TextError}" };
                 LastResult = R;

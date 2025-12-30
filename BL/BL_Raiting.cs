@@ -201,8 +201,8 @@ namespace BL
         public ObservableCollection<RaitingTemplate> DownloadRT(Result<IEnumerable<RaitingTemplate>> temp)
         {
           
-                db.ReplaceRaitingTemplate(temp.Info);
-                foreach (var el in temp.Info)
+                db.ReplaceRaitingTemplate(temp.Data);
+                foreach (var el in temp.Data)
                 {
                     if (el.Item.Any())
                         db.ReplaceRaitingTemplateItem(el.Item);

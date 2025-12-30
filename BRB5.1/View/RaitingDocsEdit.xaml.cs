@@ -27,10 +27,10 @@ namespace BRB6.View
         {
             base.OnAppearing();
 
-            Task.Run(async () =>
+            Task.Run((Func<Task>)(async () =>
             {
                 var temp = await c.GetRaitingDocsAsync();
-                if (temp.Info == null)
+                if (temp.Data == null)
                 {
                     RD = new ObservableCollection<DocVM>();
                     _ = DisplayAlert("Помилка", temp.TextError, "OK");
@@ -51,7 +51,7 @@ namespace BRB6.View
                             d.RaitingTemplateName = tempRT.FirstOrDefault(t => t.IdTemplate == d.IdTemplate).Text;
                         }
                         catch (Exception ex) { }
-            });
+            }));
 
         }
 
