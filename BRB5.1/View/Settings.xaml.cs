@@ -74,13 +74,26 @@ namespace BRB6.View
                 return wh;
             }
         }
-
-        public int SelectedWarehouse
+        private Warehouse _selectedWarehouse;
+        public Warehouse SelectedWarehouse
         {
-            get { return ListWarehouse?.FindIndex(x => x.Code == Config.CodeWarehouse) ?? 0; }
-            set { Config.CodeWarehouse = ListWarehouse[value].Code; OnPropertyChanged(nameof(SelectedWarehouse)); }
-        }
+            get
+            {
+                if (FilteredWarehousePicker == null || !FilteredWarehousePicker.Any())  return null;
+                if (_selectedWarehouse != null)  return _selectedWarehouse;
+                return FilteredWarehousePicker.FirstOrDefault(x => x.Code == Config.CodeWarehouse);
+                //return ListWarehouse?.FindIndex(x => x.Code == Config.CodeWarehouse) ?? 0; 
+            }
+            set 
+            {
+                if (value == null) { _selectedWarehouse = null; return;}
+                _selectedWarehouse = value;
 
+                Config.CodeWarehouse = value.Code; 
+                OnPropertyChanged(nameof(SelectedWarehouse)); 
+            }
+        }
+        public ObservableCollection<Warehouse> FilteredWarehousePicker { get; } = new ObservableCollection<Warehouse>();
         public int SelectedCompany { get { return ListCompany.FindIndex(x => x == Enum.GetName(typeof(eCompany), Config.Company)); } set { Config.Company = (eCompany)value; OnPropertyChanged(nameof(IsVisApi3)); } }
         public int SelectedTypePrinter { get { return Enum.GetNames(typeof(eTypeUsePrinter)).ToList().FindIndex(x => x == Enum.GetName(typeof(eTypeUsePrinter), Config.TypeUsePrinter)); } set { Config.TypeUsePrinter = (eTypeUsePrinter)value; } }
         public int SelectedTypeLog { get { return ListTypeLog.FindIndex(x => x == Enum.GetName(typeof(eTypeLog), FileLogger.TypeLog)); } set { FileLogger.TypeLog = (eTypeLog)value; } }
@@ -139,7 +152,7 @@ namespace BRB6.View
         public Settings()
         {
             InitializeComponent();
-            // TODO Xamarin.Forms.Device.RuntimePlatform is no longer supported. Use Microsoft.Maui.Devices.DeviceInfo.Platform instead. For more details see https://learn.microsoft.com/en-us/dotnet/maui/migration/forms-projects#device-changes
+            this.BindingContext = this;
             NavigationPage.SetHasNavigationBar(this, DeviceInfo.Platform == DevicePlatform.iOS);
 
             c = ConnectorBase.GetInstance();
@@ -154,20 +167,21 @@ namespace BRB6.View
                 }
             }
 
+            WarehousePicker.SelectedIndex = -1;
+            FilteredWarehousePicker.Clear();
+            foreach (var w in ListWarehouse) FilteredWarehousePicker.Add(w);
+
             FilteredWarehouses = new ObservableCollection<Warehouse>(Warehouses);
-
             FillFilterWarehouseList();
-
             //LWH.ItemTapped += (object sender, ItemTappedEventArgs e) => {
             //    if (e.Item == null) return;
             //    var temp = e.Item as Warehouse;
             //    temp.IsChecked = !temp.IsChecked;
             //    ((ListView)sender).SelectedItem = null;
             //};
-            FillFilterWarehouseList();
+            //FillFilterWarehouseList();
 
             if (Config.Company == eCompany.NotDefined) CurrentPage = Children[1];
-            this.BindingContext = this;
             Config.BarCode = BarCode;
         }
 
@@ -324,14 +338,14 @@ namespace BRB6.View
             }
             if (ListWarehouse.Any() && ListWarehouse.First().Name != "ddd")
             {
-                var matchingWarehouseIndex = ListWarehouse.FindIndex(warehouse =>
+                var matchingWarehouseIndex = ListWarehouse.FirstOrDefault(warehouse =>
                     warehouse.InternalIP.Split('.').Take(3).SequenceEqual(currentIP.Split('.').Take(3)));
 
-                if (matchingWarehouseIndex != -1)
+                if (matchingWarehouseIndex != null)
                 {
-                    SelectedWarehouse = matchingWarehouseIndex;
-                    Config.ApiUrl2 = ListWarehouse[matchingWarehouseIndex].Url;
-                    ToastInfo($"{ListWarehouse[matchingWarehouseIndex].Name} IP=>{currentIP}");
+                    SelectedWarehouse= matchingWarehouseIndex;
+                    Config.ApiUrl2 = matchingWarehouseIndex.Url;
+                    ToastInfo($"{matchingWarehouseIndex.Name} IP=>{currentIP}");
                 }
                 else
                 {
@@ -362,6 +376,38 @@ namespace BRB6.View
             var temp = sender as CheckBox;
             Bl.RefreshWarehouses(temp.AutomationId, temp.IsChecked);
         }
+        private void ApplyPickerFilter(string text)
+        {
+            MainThread.BeginInvokeOnMainThread(() =>
+            {
+                FilteredWarehousePicker.Clear();
+
+                if (string.IsNullOrWhiteSpace(text) || text.Length < 3)
+                {
+                    foreach (var w in ListWarehouse)
+                        FilteredWarehousePicker.Add(w);
+                    return;
+                }
+
+                text = text.ToLower();
+
+                foreach (var w in ListWarehouse.Where(w =>
+                             w.Name?.ToLower().Contains(text) == true))
+                {
+                    FilteredWarehousePicker.Add(w);
+                }
+            });
+        }
+        private void OnWarehouseFilterCompleted(object sender, EventArgs e)
+        {
+            ApplyPickerFilter(WarehouseFilterEntry.Text);
+        }
+
+        private void OnWarehouseFilterUnfocused(object sender, FocusEventArgs e)
+        {
+            ApplyPickerFilter(WarehouseFilterEntry.Text);
+        }
+
         private void FillFilterWarehouseList()
         {
             FilterWarehouseList.Children.Clear();

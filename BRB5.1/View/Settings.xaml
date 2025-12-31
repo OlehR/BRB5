@@ -23,13 +23,16 @@
                            Grid.Column="2" />
 
                 </Grid>
-
-                <Picker Title="Оберіть торговий зал"
-                        x:Name="WarehousePicker"
-                            ItemsSource="{Binding ListWarehouse}"
+                <Grid ColumnDefinitions="2*,*">
+                    <Picker Title="Оберіть торговий зал" 
+                            x:Name="WarehousePicker"
+                            ItemsSource="{Binding FilteredWarehousePicker}"
                             ItemDisplayBinding="{Binding Name}"
-                            SelectedIndex="{Binding SelectedWarehouse}"
+                            SelectedItem="{Binding SelectedWarehouse}"
                             HorizontalOptions="Fill" />
+                    <Entry Placeholder="Фільтр(від 3 букв)" x:Name="WarehouseFilterEntry" Grid.Column="1"
+                           Unfocused="OnWarehouseFilterUnfocused" Completed="OnWarehouseFilterCompleted"/>
+                </Grid>
                 <StackLayout Orientation="Horizontal" >
                     <CheckBox IsChecked="{Binding IsViewAllWH}" />
                     <Label Text="Показувати всі склади"  />
