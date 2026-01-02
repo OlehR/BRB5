@@ -65,7 +65,7 @@ namespace BL.Connector
         /// </summary>
         /// <param name="codeWares">Список товарів</param>
         /// <returns></returns>        
-        public override string PrintHTTP(IEnumerable<long> pCodeWares) => CU.PrintHTTP(pCodeWares);        
+        public override string PrintHTTP(IEnumerable<long> pCodeWares, bool pIsOnlyRest = false) => CU.PrintHTTP(pCodeWares);        
 
         public override async Task<Result<int>> GetIdRaitingTemplate() => await CU.GetIdRaitingTemplate();
 

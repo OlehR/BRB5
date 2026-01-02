@@ -88,6 +88,8 @@ namespace BL.Connector
             Config.OnProgress?.Invoke(0.97);
             if (pG.Reason?.Any() == true)
                 db.ReplaceReason(pG.Reason, pIsFull);
+            if (pG.SKU?.Any() == true)
+                db.ReplaceSKU(pG.SKU, pIsFull);
             return true;
         }
         

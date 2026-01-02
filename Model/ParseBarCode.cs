@@ -19,6 +19,10 @@ namespace BRB5.Model
         [JsonIgnore]
         public decimal PriceOpt { get; set; } = 0m;
         public int Article { get; set; }
+        /// <summary>
+        /// SKU нових версій 1С
+        /// </summary>
+        public long SKU { get; set; } = 0;
         [JsonIgnore]
         public decimal Quantity { get; set; } = 0m;
         public eTypePriceInfo TypePriceInfo { get; set; }

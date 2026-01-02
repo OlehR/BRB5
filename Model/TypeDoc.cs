@@ -84,9 +84,16 @@ namespace BRB5
         /// Чи використовувати лише HTTP  для отримання списку документів.
         /// </summary>
         public bool IsOnlyHttp { get; set; } = false;
+        /// <summary>
+        /// Звязаний документ Коли створюється документ на основі іншого
+        /// </summary>
         public int LinkedCodeDoc { get; set; } = 0;
+        /// <summary>
+        /// Чи показувати акт розбіжності
+        /// </summary>
+        public bool IsViewAct { get; set; } = false;
 
-        public bool IsViewAct { get; set; }
+        public eTypeCreateDoc TypeCreateDoc { get; set; } = eTypeCreateDoc.NotDefined;
 
     }
 }

@@ -330,6 +330,8 @@ namespace BL.Connector
                 return new Result(e);
             }
         }
+
+        public virtual async Task<Result<Doc>> CreateDoc(Doc pDoc) { pDoc.NumberDoc = DateTime.Now.ToString(); return new() { Data = pDoc }; }
         /// <summary>
         /// Вивантаження Рейтингів
         /// </summary>
@@ -685,13 +687,21 @@ namespace BL.Connector
         /// </summary>
         /// <param name="codeWares">Список товарів</param>
         /// <returns></returns>        
-        public override string PrintHTTP(IEnumerable<long> pCodeWares)
+        public override string PrintHTTP(IEnumerable<long> pCodeWares, bool pIsOnlyRest=false)
         {
             string Data = string.Join(",", pCodeWares);
 
             try
             {
-                string json = new ApiPrintHTTP(Data).ToJSON(); //Config.GetApiJson(999, BuildConfig.VERSION_CODE, "\"CodeWares\":\"" + sb.toString() + "\"");
+                var d= new WaresGL()
+                { Wares = pCodeWares,
+                    CodeWarehouse = Config.CodeWarehouse,
+                    Login = Config.Login, 
+                    SerialNumber = Config.SN,
+                    NameDCT = Environment.MachineName,
+                    IsOnlyRest = pIsOnlyRest
+                };
+                string json = d.ToJSON(); //new ApiPrintHTTP(Data).ToJSON(); //Config.GetApiJson(999, BuildConfig.VERSION_CODE, "\"CodeWares\":\"" + sb.toString() + "\"");
                 HttpResult res = GetDataHTTP.HTTPRequest(0, "print/", json, "application/json", null, null);//"http://znp.vopak.local:8088/Print"
                 if (res.HttpState == eStateHTTP.HTTP_OK)
                 {

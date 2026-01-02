@@ -1,4 +1,5 @@
-﻿using SQLite;
+﻿using Model;
+using SQLite;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -7,16 +8,7 @@ using Utils;
 
 namespace BRB5.Model
 {
-    /// <summary>
-    /// !!!! Задубльовано з ModelMID
-    /// </summary>
-    public enum eShopTM
-    {
-        NoDefine = 0,
-        Vopak = 1,
-        Spar = 2,
-        Lubo = 3
-    }
+    
     public class Warehouse : INotifyPropertyChanged
     {
         /// <summary>

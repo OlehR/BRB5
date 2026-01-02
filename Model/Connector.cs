@@ -52,6 +52,8 @@ namespace BRB5.Model
         /// <returns></returns>
         public virtual async Task<Result> SendDocsDataAsync(DocVM pDoc, IEnumerable<DocWares> pWares) { throw new NotImplementedException(); }
 
+
+        public virtual async Task<Result<Doc>> CreateDoc(Doc pDoc) { throw new NotImplementedException(); }
         //Збереження ПРосканованих товарів в 1С
         public virtual Result SendLogPrice(IEnumerable<LogPrice> pList) { throw new NotImplementedException(); }
 
@@ -74,7 +76,7 @@ namespace BRB5.Model
         /// </summary>
         /// <param name="codeWares">Список товарів</param>
         /// <returns></returns>        
-        public virtual string PrintHTTP(IEnumerable<long> pCodeWares) { throw new NotImplementedException(); }
+        public virtual string PrintHTTP(IEnumerable<long> pCodeWares, bool pIsOnlyRest = false) { throw new NotImplementedException(); }
 
         /// <summary>
         /// Розбір штрихкоду по правилам компанії
@@ -157,6 +159,9 @@ namespace BRB5.Model
                         case eTypeCode.Code:
                             Res.CodeWares = Code;
                             break;
+                        case eTypeCode.SKU:
+                            Res.SKU = Code;
+                            break;
                         case eTypeCode.PercentDiscount:
                             Res.PercentDiscount = Code;
                             break;
@@ -238,6 +243,7 @@ namespace BRB5.Model
         public IEnumerable<Warehouse> Warehouse { get; set; }
         public IEnumerable<GroupWares> GroupWares { get; set; }
         public IEnumerable<Reason> Reason { get; set; }
+        public IEnumerable<SKU> SKU { get; set; }
     }
 
     public class GetDocs

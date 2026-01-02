@@ -252,8 +252,14 @@ CREATE TABLE DocWaresExpiration(
     ExpirationDateInput TIMESTAMP
 );
 CREATE UNIQUE INDEX DocWaresExpirationTNC ON DocWaresExpiration (DateDoc, NumberDoc, DocId, CodeWares);
+
+CREATE TABLE SKU (
+    CodeSKU          INTEGER  NOT NULL,
+    CodeWares          INTEGER  NOT NULL,    
+    CodeUnit           INTEGER  NOT NULL);
+CREATE UNIQUE INDEX SKUId ON SKU (CodeSKU);
 ";
-        readonly int Ver = 10;
+        readonly int Ver = 11;
         string SqlTo6 = @"alter TABLE Reason add  Level INTEGER  DEFAULT (0);
 drop index ReasonId;
 CREATE UNIQUE INDEX ReasonId ON Reason (Level,CodeReason);";
@@ -262,6 +268,12 @@ CREATE UNIQUE INDEX ReasonId ON Reason (Level,CodeReason);";
         string SqlTo9 = "alter TABLE DocWaresSample add CodeReason  INTEGER NOT NULL DEFAULT (0)";
         string SqlTo10 = @"alter table wares  DROP COLUMN Article;
 alter table wares  ADD COLUMN Article INTEGER;";
+
+        string SqlTo11 = @"CREATE TABLE SKU (
+    CodeSKU          INTEGER  NOT NULL,
+    CodeWares          INTEGER  NOT NULL,    
+    CodeUnit           INTEGER  NOT NULL);
+CREATE UNIQUE INDEX SKUId ON SKU (CodeSKU);";
         public static string PathNameDB { get { return Path.Combine(BaseDir, NameDB); } }
 
         public DB(string pBaseDir) : this() { BaseDir = pBaseDir; }
@@ -287,6 +299,8 @@ alter table wares  ADD COLUMN Article INTEGER;";
                     SetSQL(SqlTo9, 9);
                 if (GetVersion < 10)
                     SetSQL(SqlTo10, 10);
+                if (GetVersion < 11)
+                    SetSQL(SqlTo11, 11);
             }            
         }
 
@@ -681,7 +695,13 @@ and bc.BarCode=?
                     if((!string.IsNullOrEmpty(pParseBarCode.BarCode) && pParseBarCode.CodeWares == 0 && pParseBarCode.Article == 0) || pParseBarCode.Price>0 )
                         GetCodeWares(pParseBarCode);
 
-                    if(pParseBarCode.CodeWares > 0 || pParseBarCode.Article > 0)
+                    if(pParseBarCode.CodeWares==0 && pParseBarCode.SKU > 0)
+                    {
+                        sql = $@"select s.CodeWares from SKU s where s.CodeSKU={pParseBarCode.SKU}";
+                        pParseBarCode.CodeWares = db.ExecuteScalar<long>(sql);                        
+                    }
+
+                    if(pParseBarCode.CodeWares > 0 || pParseBarCode.Article > 0 || pParseBarCode.SKU > 0)
                     {
                         String Find = pParseBarCode.CodeWares > 0 ? $"w.CodeWares={pParseBarCode.CodeWares}" : $"w.ARTICLE={pParseBarCode.Article}";
                         sql = @"select w.CODEWARES,w.NAMEWARES as NameWares, au.COEFFICIENT as Coefficient,w.CODEUNIT as CodeUnit, ud.ABRUNIT as NameUnit,
@@ -1130,6 +1150,12 @@ DE.ExpirationDateInput, DE.QuantityInput
         public bool ReplaceReason(IEnumerable<BRB5.Model.DB.Reason> pR, bool pIsFull = false)
         {
             if (pIsFull) ExecSQL("DELETE FROM Reason");
+            return db.ReplaceAll(pR) >= 0;
+        }
+
+        public bool ReplaceSKU(IEnumerable<BRB5.Model.DB.SKU> pR, bool pIsFull = false)
+        {
+            if (pIsFull) ExecSQL("DELETE FROM SKU");
             return db.ReplaceAll(pR) >= 0;
         }
         public bool ReplaceGroupWares(IEnumerable<GroupWares> pR, bool pIsFull = false)

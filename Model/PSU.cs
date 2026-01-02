@@ -82,7 +82,7 @@ namespace BRB5.Model
         }
         public IEnumerable<object[]> LogPrice { get; set; }
     }
-
+    /*
     public class ApiPrintHTTP : Api
     {
         public ApiPrintHTTP() : base() { }
@@ -92,5 +92,5 @@ namespace BRB5.Model
         }
         public string CodeWares { get; set; }
 
-    }
+    }*/
 }

@@ -179,4 +179,13 @@ namespace BRB5
         [Description("Невірна ціна")]
         BadPrice = 7,
     }
+
+    public enum eTypeCreateDoc
+    {
+        NotDefined = 0,
+        Nothing = 1,
+        Warehouse = 2,
+        Supplyer = 3
+    }
+    
 }
