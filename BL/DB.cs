@@ -123,6 +123,7 @@ CREATE TABLE Doc (
     DTStart          TIMESTAMP DEFAULT null,
     DTEnd            TIMESTAMP DEFAULT null,
     DTInsert         TIMESTAMP DEFAULT (DATETIME('NOW', 'LOCALTIME') )
+    CountWares      INTEGER   DEFAULT (0)
 );
 CREATE UNIQUE INDEX DocId ON DOC (TypeDoc,NumberDoc);
 
@@ -259,7 +260,7 @@ CREATE TABLE SKU (
     CodeUnit           INTEGER  NOT NULL);
 CREATE UNIQUE INDEX SKUId ON SKU (CodeSKU);
 ";
-        readonly int Ver = 11;
+        readonly int Ver = 12;
         string SqlTo6 = @"alter TABLE Reason add  Level INTEGER  DEFAULT (0);
 drop index ReasonId;
 CREATE UNIQUE INDEX ReasonId ON Reason (Level,CodeReason);";
@@ -268,12 +269,12 @@ CREATE UNIQUE INDEX ReasonId ON Reason (Level,CodeReason);";
         string SqlTo9 = "alter TABLE DocWaresSample add CodeReason  INTEGER NOT NULL DEFAULT (0)";
         string SqlTo10 = @"alter table wares  DROP COLUMN Article;
 alter table wares  ADD COLUMN Article INTEGER;";
-
         string SqlTo11 = @"CREATE TABLE SKU (
     CodeSKU          INTEGER  NOT NULL,
     CodeWares          INTEGER  NOT NULL,    
     CodeUnit           INTEGER  NOT NULL);
 CREATE UNIQUE INDEX SKUId ON SKU (CodeSKU);";
+        string SqlTo12 = "alter TABLE Doc add CountWares INTEGER DEFAULT(0)";
         public static string PathNameDB { get { return Path.Combine(BaseDir, NameDB); } }
 
         public DB(string pBaseDir) : this() { BaseDir = pBaseDir; }
@@ -301,6 +302,8 @@ CREATE UNIQUE INDEX SKUId ON SKU (CodeSKU);";
                     SetSQL(SqlTo10, 10);
                 if (GetVersion < 11)
                     SetSQL(SqlTo11, 11);
+                if (GetVersion < 12)
+                    SetSQL(SqlTo12, 12);
             }            
         }
 
@@ -540,7 +543,6 @@ from  DocWares dw
 
         public bool ReplaceDoc(IEnumerable<Doc> pDoc,int pTypeDoc=0)
         {
-           
             if (pTypeDoc != 0)
                 db.Execute($"delete from Doc where TypeDoc={pTypeDoc} and State=0");
 
@@ -549,15 +551,15 @@ from  DocWares dw
                                               CodeReason, 
                                               IdTemplate, ExtInfo, NameUser, BarCode, Description, 
                                               State,
-                                              IsControl, NumberDoc1C, DateOutInvoice, NumberOutInvoice, Color,DTStart,DTEnd) values 
+                                              IsControl, NumberDoc1C, DateOutInvoice, NumberOutInvoice, Color,DTStart,DTEnd,CountWares) values 
                                             (?,?,?,?,
                                              case when ?>0 then ? else (select max(d.CodeReason) from Doc d where d.Typedoc=? and d.numberdoc=? ) end,
                                              ?,?,?,?,?,
                                              case when ?>0 then ? else (select max(d.state) from Doc d where d.Typedoc=? and d.numberdoc=?) end,
                                              ?,?,?,?,?,
 (select max(d.DTStart) from Doc d where d.Typedoc=? and d.numberdoc=? ),
-(select max(d.DTEnd) from Doc d where d.Typedoc=? and d.numberdoc=? )
-)";//max(?, (select max(d.state) from Doc d where d.Typedoc=? and d.numberdoc=? )),
+(select max(d.DTEnd) from Doc d where d.Typedoc=? and d.numberdoc=? ),?
+)";
 
             try
             {
@@ -569,7 +571,7 @@ from  DocWares dw
                                              d.IdTemplate, d.ExtInfo,d.NameUser, d.BarCode,  d.Description, 
                                              d.State, d.State, d.TypeDoc, d.NumberDoc, 
                                              d.IsControl, d.NumberDoc1C, d.DateOutInvoice, d.NumberOutInvoice, d.Color+7777,
-                                             d.TypeDoc, d.NumberDoc, d.TypeDoc, d.NumberDoc);
+                                             d.TypeDoc, d.NumberDoc, d.TypeDoc, d.NumberDoc,d.CountWares);
                     }
                 });
             }
