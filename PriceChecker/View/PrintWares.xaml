@@ -18,6 +18,12 @@
                 Clicked="OnBackClicked" />
 
 
+            <StackLayout HorizontalOptions="Center" Grid.Column="1" Orientation="Horizontal">
+                <Label Text="Тільки з залишками"  FontSize="20" VerticalOptions="Center"/>
+                <CheckBox  IsChecked="{Binding IsOnlyRest}"/>
+            </StackLayout>
+            
+            
             <Button  FontSize="20" FontAttributes="Bold" 
                 Grid.Column="2"
                 Text="ДРУК"

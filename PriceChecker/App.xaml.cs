@@ -40,18 +40,18 @@ namespace PriceChecker
         static public ScanerCom ScanerCom;
         protected override Window CreateWindow(IActivationState? activationState)
         {
-            Window window = new Window(new AppShell());
-            window.Destroying += Window_Destroying;
-            return window;
+            //Window window = new Window(new AppShell());
+            //window.Destroying += Window_Destroying;
+            //return window;
 
             // return new Window(new AppShell());
 
-            //const int newheight = 768;
-            //const int newwidth = 1024;
-            //var wins = new Window(new AppShell());
-            //wins.Height = wins.MinimumHeight = wins.MaximumHeight = newheight;
-            //wins.Width = wins.MinimumWidth = wins.MaximumWidth = newwidth;
-            //return wins;
+            const int newheight = 768;
+            const int newwidth = 1024;
+            var wins = new Window(new AppShell());
+            wins.Height = wins.MinimumHeight = wins.MaximumHeight = newheight;
+            wins.Width = wins.MinimumWidth = wins.MaximumWidth = newwidth;
+            return wins;
         }
 
         private void Window_Destroying(object sender, EventArgs e)

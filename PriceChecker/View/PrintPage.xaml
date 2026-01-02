@@ -3,13 +3,17 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="PriceChecker.View.PrintPage"
              Title="PrintPage">
-    <Grid Padding="20,20,20,0">
+    <Grid Padding="20,20,20,0" RowDefinitions="Auto,*">
 
         <Grid.GestureRecognizers>
             <SwipeGestureRecognizer Direction="Right"  Swiped="OnSwipedRight"/>
         </Grid.GestureRecognizers>
+        <StackLayout Orientation="Horizontal" HorizontalOptions="Center">
+            <Label Text="Тільки з залишками"  FontSize="20" VerticalOptions="Center"/>
+            <CheckBox  IsChecked="{Binding IsOnlyRest}"/>
+        </StackLayout>
 
-        <CollectionView  VerticalOptions="Start"  HorizontalOptions="Center"  
+        <CollectionView Grid.Row="1"  VerticalOptions="Start"  HorizontalOptions="Center"  
                          ItemsSource="{Binding DocsToPrint}">
             <CollectionView.ItemsLayout>
                 <LinearItemsLayout Orientation="Vertical" ItemSpacing="10" />
