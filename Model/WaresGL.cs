@@ -24,7 +24,7 @@ namespace BRB5.Model
         public string SerialNumber { get; set; }
         public string NameDCT { get; set; }
         public string Login { get; set; }
-        [Obsolete("BrandName is deprecated, please use Brand from Warehouse")]
+        [Obsolete("BrandName is deprecated, please use ShopTM from Warehouse")]
         public eShopTM BrandName
         {
             get
