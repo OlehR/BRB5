@@ -58,7 +58,7 @@ public partial class PrintPage : ContentPage
 
         Task.Run(async () =>
         {
-            var r = await bl.c.LoadDocsDataAsync(51, null, false);
+            var r = await bl.c.LoadDocsDataAsync(TypeDoc.CodeDoc, null, false);
             if (TypeDoc != null)
             {
                 // Оновлення на головному потоці

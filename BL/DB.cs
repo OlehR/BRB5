@@ -543,6 +543,7 @@ from  DocWares dw
 
         public bool ReplaceDoc(IEnumerable<Doc> pDoc,int pTypeDoc=0)
         {
+            if (pDoc==null || !pDoc.Any() ) return false;
             if (pTypeDoc != 0)
                 db.Execute($"delete from Doc where TypeDoc={pTypeDoc} and State=0");
 
