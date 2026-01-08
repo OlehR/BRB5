@@ -9,6 +9,8 @@ public partial class PrintWares : ContentPage
 {
     protected DB db = DB.GetDB();
     BL.BL bl = BL.BL.GetBL();
+
+    public bool IsOnlyRest { get; set; }
     public ObservableCollection<DocWaresEx> Wares { get; set; }
     public PrintWares(DocVM pDocId, TypeDoc pTypeDoc)
 	{
@@ -36,7 +38,7 @@ public partial class PrintWares : ContentPage
             await DisplayAlert("Print", "No items selected", "OK");
             return;
         }
-        string result = bl.c.PrintHTTP(codesToPrint); 
+        string result = bl.c.PrintHTTP(codesToPrint,IsOnlyRest); 
 
         await DisplayAlert("Print result", result, "OK");
 

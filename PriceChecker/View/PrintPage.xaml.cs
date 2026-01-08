@@ -17,6 +17,7 @@ public partial class PrintPage : ContentPage
     BL.BL bl = BL.BL.GetBL();
     private TypeDoc TypeDoc;
     public bool IsEnabledPrint { get { return Config.CodeWarehouse != 0; } }
+    public bool IsOnlyRest { get; set; }
 
     private ObservableCollection<DocVM> _docsToPrint = new ObservableCollection<DocVM>();
     public ObservableCollection<DocVM> DocsToPrint
@@ -87,7 +88,7 @@ public partial class PrintPage : ContentPage
 
             if (IsEnabledPrint)
             {
-                var result = bl.c.PrintHTTP(codes);
+                var result = bl.c.PrintHTTP(codes, IsOnlyRest);
 
                 if (result.StartsWith("Print=>"))
                 {
