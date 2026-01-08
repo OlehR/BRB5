@@ -122,7 +122,7 @@ CREATE TABLE Doc (
     Color            INTEGER,
     DTStart          TIMESTAMP DEFAULT null,
     DTEnd            TIMESTAMP DEFAULT null,
-    DTInsert         TIMESTAMP DEFAULT (DATETIME('NOW', 'LOCALTIME') )
+    DTInsert         TIMESTAMP DEFAULT (DATETIME('NOW', 'LOCALTIME') ),
     CountWares      INTEGER   DEFAULT (0)
 );
 CREATE UNIQUE INDEX DocId ON DOC (TypeDoc,NumberDoc);
