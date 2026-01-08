@@ -701,7 +701,7 @@ namespace BL.Connector
                     NameDCT = Environment.MachineName,
                     IsOnlyRest = pIsOnlyRest
                 };
-                string json = d.ToJSON(); //new ApiPrintHTTP(Data).ToJSON(); //Config.GetApiJson(999, BuildConfig.VERSION_CODE, "\"CodeWares\":\"" + sb.toString() + "\"");
+                string json = d.ToJSON("yyyy-MM-ddTHH:mm:ss"); //new ApiPrintHTTP(Data).ToJSON(); //Config.GetApiJson(999, BuildConfig.VERSION_CODE, "\"CodeWares\":\"" + sb.toString() + "\"");
                 HttpResult res = GetDataHTTP.HTTPRequest(0, "print/", json, "application/json", null, null);//"http://znp.vopak.local:8088/Print"
                 if (res.HttpState == eStateHTTP.HTTP_OK)
                 {
