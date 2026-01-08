@@ -77,22 +77,19 @@ namespace BRB6.View
         private Warehouse _selectedWarehouse;
         public Warehouse SelectedWarehouse
         {
-            get
+            get => _selectedWarehouse;
+            set
             {
-                if (FilteredWarehousePicker == null || !FilteredWarehousePicker.Any())  return null;
-                if (_selectedWarehouse != null)  return _selectedWarehouse;
-                return FilteredWarehousePicker.FirstOrDefault(x => x.Code == Config.CodeWarehouse);
-                //return ListWarehouse?.FindIndex(x => x.Code == Config.CodeWarehouse) ?? 0; 
-            }
-            set 
-            {
-                if (value == null) { _selectedWarehouse = null; return;}
+                if (_selectedWarehouse == value) return;
                 _selectedWarehouse = value;
 
-                Config.CodeWarehouse = value.Code; 
-                OnPropertyChanged(nameof(SelectedWarehouse)); 
+                if (value != null)
+                    Config.CodeWarehouse = value.Code;
+
+                OnPropertyChanged(nameof(SelectedWarehouse));
             }
         }
+
         public ObservableCollection<Warehouse> FilteredWarehousePicker { get; } = new ObservableCollection<Warehouse>();
         public int SelectedCompany { get { return ListCompany.FindIndex(x => x == Enum.GetName(typeof(eCompany), Config.Company)); } set { Config.Company = (eCompany)value; OnPropertyChanged(nameof(IsVisApi3)); } }
         public int SelectedTypePrinter { get { return Enum.GetNames(typeof(eTypeUsePrinter)).ToList().FindIndex(x => x == Enum.GetName(typeof(eTypeUsePrinter), Config.TypeUsePrinter)); } set { Config.TypeUsePrinter = (eTypeUsePrinter)value; } }
@@ -167,9 +164,13 @@ namespace BRB6.View
                 }
             }
 
-            WarehousePicker.SelectedIndex = -1;
             FilteredWarehousePicker.Clear();
             foreach (var w in ListWarehouse) FilteredWarehousePicker.Add(w);
+            if (Config.CodeWarehouse != 0)
+            {
+                SelectedWarehouse = FilteredWarehousePicker
+                    .FirstOrDefault(x => x.Code == Config.CodeWarehouse);
+            }
 
             FilteredWarehouses = new ObservableCollection<Warehouse>(Warehouses);
             FillFilterWarehouseList();
@@ -380,24 +381,32 @@ namespace BRB6.View
         {
             MainThread.BeginInvokeOnMainThread(() =>
             {
+                var selectedCode = Config.CodeWarehouse; // або _selectedWarehouse?.Code
+
                 FilteredWarehousePicker.Clear();
+
+                IEnumerable<Warehouse> source;
 
                 if (string.IsNullOrWhiteSpace(text) || text.Length < 3)
                 {
-                    foreach (var w in ListWarehouse)
-                        FilteredWarehousePicker.Add(w);
-                    return;
+                    source = ListWarehouse;
                 }
-
-                text = text.ToLower();
-
-                foreach (var w in ListWarehouse.Where(w =>
-                             w.Name?.ToLower().Contains(text) == true))
+                else
                 {
-                    FilteredWarehousePicker.Add(w);
+                    text = text.ToLower();
+                    source = ListWarehouse.Where(w =>
+                        w.Name?.ToLower().Contains(text) == true);
                 }
+
+                foreach (var w in source)
+                    FilteredWarehousePicker.Add(w);
+
+                // 🔴 КРИТИЧНО: відновити вибір
+                SelectedWarehouse = FilteredWarehousePicker
+                    .FirstOrDefault(x => x.Code == selectedCode);
             });
         }
+
         private void OnWarehouseFilterCompleted(object sender, EventArgs e)
         {
             ApplyPickerFilter(WarehouseFilterEntry.Text);
