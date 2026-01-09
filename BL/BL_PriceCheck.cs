@@ -51,30 +51,30 @@ namespace BL
             return CheckWP;
         }
 
-        private void SearchDoubleScan(WaresPrice CheckWP, int PackageNumber, int LineNumber)
+        private void SearchDoubleScan(WaresPrice pCheckWP, int pPackageNumber, int pLineNumber)
         {
-            if (CheckWP?.CodeWares != 0)
+            if (pCheckWP?.CodeWares != 0)
             {
                 if (WPH == null)
                 {
-                    WPH = CheckWP;
-                    CheckWP.StateDoubleScan = (CheckWP.IsBarCode ? eCheckWareScaned.WareScaned : eCheckWareScaned.PriceTagScaned);
+                    WPH = pCheckWP;
+                    pCheckWP.StateDoubleScan = (pCheckWP.IsBarCode ? eCheckWareScaned.WareScaned : eCheckWareScaned.PriceTagScaned);
                 }
                 else
                 {
-                    eCheck R = CompareDoubleScan(CheckWP, WPH);
+                    eCheck R = CompareDoubleScan(pCheckWP, WPH);
                     if (R == eCheck.Same) return;
                     if (R == eCheck.Ok)
                     {
-                        SaveDoubleScan(100, CheckWP, PackageNumber, LineNumber);
+                        SaveDoubleScan(100, pCheckWP, pPackageNumber, pLineNumber);
                         ClearWPH();
-                        CheckWP.StateDoubleScan = eCheckWareScaned.Success;
+                        pCheckWP.StateDoubleScan = eCheckWareScaned.Success;
                     }
                     if (R == eCheck.Bad)
                     {
-                        SaveDoubleScan(WPH.IsBarCode ? 101 : 102, CheckWP, PackageNumber, LineNumber);
-                        WPH = CheckWP;
-                        CheckWP.StateDoubleScan = (CheckWP.IsBarCode ? eCheckWareScaned.WareScaned : eCheckWareScaned.PriceTagScaned);
+                        SaveDoubleScan(WPH.IsBarCode ? 101 : 102, WPH, pPackageNumber, pLineNumber);
+                        WPH = pCheckWP;
+                        pCheckWP.StateDoubleScan = (pCheckWP.IsBarCode ? eCheckWareScaned.WareScaned : eCheckWareScaned.PriceTagScaned);
                     }
                     //Res = "Скануйте цінник чи товар";
                 }
