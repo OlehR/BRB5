@@ -41,11 +41,12 @@ public partial class Act
         }
 
         var allDocs = db.GetWaresAct(Doc) ?? [];
-        /*if (Doc.CodeReason == 1)
-            MyDocWares = new ObservableCollection<WaresAct>(allDocs.Where(x => (x.CodeReason == -1 && (x.QuantityDifference != 0 || x.QuantityReason > 0)) 
-                                                                            || x.CodeReason >0 
-                                                                            || (x.CodeReason == 0 &&  x.Fact > 0)));
-        else*/
+        if (Doc.CodeReason == 1)
+            MyDocWares = new ObservableCollection<WaresAct>(allDocs.Where(x => (x.CodeReason == -1 && x.QuantityDifference != 0)         // Якщо обовязкове приймання і є розбіжність план факт);
+             || x.QuantityReason > 0 //Якщо щось прийняли з боєм браком
+             || (x.CodeReason >= 0 && x.Fact > 0 && x.QuantityDifference != 0))); //Якщо приймали і є розбіжність необовязкове приймання
+        //x => (x.CodeReason == -1 && (x.QuantityDifference != 0 || x.QuantityReason > 0))  || x.CodeReason > 0  || (x.CodeReason == 0 && x.Fact > 0))
+        else
             MyDocWares = new ObservableCollection<WaresAct>(allDocs.Where(x => x.QuantityReason != 0 || x.QuantityDifference != 0));
 
 
