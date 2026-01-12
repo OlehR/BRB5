@@ -951,7 +951,7 @@ and bc.BarCode=?
                 if (pActionType == 1)
                 ActionType = " AND ActionType IN (1,2)";
 
-            string Sql = $"SELECT {(pIsMultyLabel ? "" : "DISTINCT")} CodeWares FROM LogPrice WHERE CodeWares>0 and PackageNumber = {pPackageNumber} AND Status <= 0 AND date(DTInsert) > date('now','-1 day') {ActionType}";
+            string Sql = $"SELECT {(pIsMultyLabel ? "" : "DISTINCT")} CodeWares FROM LogPrice WHERE CodeWares>0 and PackageNumber = {pPackageNumber} AND (Status <= 0 or Status=101  ) and date(DTInsert) > date('now','-1 day') {ActionType}";
 
             var n = db.Query<WaresPrice>(Sql);
             return n.Select(el => el.CodeWares);

@@ -42,7 +42,7 @@ namespace BRB5.Model
         }
         public LogPrice(int pStatus, WaresPrice pWP, int pPackageNumber = 0, int pLineNumber = 0)
         {
-            BarCode = pWP?.ParseBarCode?.StartString;
+            BarCode = pWP?.ParseBarCode?.StartString?? pWP?.ParseBarCode?.BarCode;
             Status = pStatus;
             PackageNumber = pPackageNumber;
             CodeWares = pWP.CodeWares;

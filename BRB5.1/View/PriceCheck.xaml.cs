@@ -103,6 +103,7 @@ namespace BRB6
                 BadScan = r.BadScan;
                 LineNumber = r.LineNumber;
                 PackageNumber = r.PackageNumber;
+                OnClickAddPrintBlock(null, null);
             }
             if (!IsVisScan)
              Config.BarCode = BarCode;
@@ -174,12 +175,10 @@ namespace BRB6
                     Vibration.Vibrate(duration);
                 }
 
-                Config.OnProgress?.Invoke(0.9d);
-                
-                if(DeviceInfo.Platform != DevicePlatform.iOS)  BarCodeFocused(null, null);
-                
-            }                
-
+                Config.OnProgress?.Invoke(0.9d);                
+                if(DeviceInfo.Platform != DevicePlatform.iOS)  BarCodeFocused(null, null);                
+            }
+            OnPropertyChanged(nameof(ListPrintBlockItems));
         }
 
         public void Dispose() { Config.BarCode -= BarCode;   }

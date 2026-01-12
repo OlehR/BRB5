@@ -80,7 +80,6 @@ namespace BL
                 }
             return null;
             //SetProgress(100);
-           
         }
 
         public void PrintLabel(long pCodeWares)
