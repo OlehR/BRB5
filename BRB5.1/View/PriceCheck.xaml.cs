@@ -28,24 +28,24 @@ namespace BRB6
         public bool IsVisF4 { get { return Config.LocalCompany == eCompany.Sim23; } }
         public string F4Text { get { return IsOnline ? "OnLine" : "OffLine"; } }
         private bool _IsOnline = true;
-        public bool IsOnline { get { return _IsOnline; } set { _IsOnline = value; OnPropertyChanged("F4Text"); } }
+        public bool IsOnline { get { return _IsOnline; } set { _IsOnline = value; OnPropertyChanged(nameof(F4Text)); } }
 
         bool _IsVisRepl = false;
-        public bool IsVisRepl { get { return _IsVisRepl; } set { _IsVisRepl = value; OnPropertyChanged("IsVisRepl"); } }
+        public bool IsVisRepl { get { return _IsVisRepl; } set { _IsVisRepl = value; OnPropertyChanged(nameof(IsVisRepl)); } }
         public bool IsSoftKeyboard { get { return Config.IsSoftKeyboard; } }
         double _PB = 0;
         public double PB { get { return _PB; } set { _PB = value; OnPropertyChanged(nameof(PB)); } }
 
         WaresPrice _WP;
-        public WaresPrice WP { get { return _WP; } set { _WP = value; OnPropertyChanged("WP"); OnPropertyChanged("TextColorPrice");
-                OnPropertyChanged("IsVisPriceOpt"); OnPropertyChanged(nameof(IsVisPriceNormal)); OnPropertyChanged("TextColorHttp");
-                OnPropertyChanged("ColorPrintColorType"); OnPropertyChanged("IsVisPriceOptQ");
+        public WaresPrice WP { get { return _WP; } set { _WP = value; OnPropertyChanged(nameof(WP)); OnPropertyChanged(nameof(TextColorPrice));
+                OnPropertyChanged("IsVisPriceOpt"); OnPropertyChanged(nameof(IsVisPriceNormal)); OnPropertyChanged(nameof(TextColorHttp));
+                OnPropertyChanged("ColorPrintColorType"); OnPropertyChanged(nameof(IsVisPriceOptQ));
             } }
         //ZXingScannerView zxing;
         //ZXingDefaultOverlay overlay;
 
         int _PrintType = 0;//Колір чека 0-звичайний 1-жовтий, -1 не розділяти.        
-        public int PrintType { get { return _PrintType; } set { _PrintType = value; OnPropertyChanged("PrintType"); OnPropertyChanged("ColorPrintColorType"); } }
+        public int PrintType { get { return _PrintType; } set { _PrintType = value; OnPropertyChanged(nameof(PrintType)); OnPropertyChanged(nameof(ColorPrintColorType)); } }
         public bool IsEnabledPrint { get { return Config.TypeUsePrinter != eTypeUsePrinter.NotDefined; } }
         /// <summary>
         /// Номер сканування цінників за день !!!TMP Треба зберігати в базі.
@@ -109,8 +109,12 @@ namespace BRB6
              Config.BarCode = BarCode;
             
             this.BindingContext = this;
+            this.Unloaded += UnloadedEvent;
         }
-
+        void UnloadedEvent(object sender, EventArgs e) {
+            if (IsVisDoubleScan && bl.WPH != null) // При виході фіксувати останне не збережене в подвійному скануванні.
+                bl.SaveDoubleScan(bl.WPH.IsBarCode ? 101 : 102, bl.WPH, PackageNumber, LineNumber);
+        }
         void Progress(double pProgress) => MainThread.BeginInvokeOnMainThread(() => PB = pProgress);
         protected override void OnAppearing()
         {
@@ -141,7 +145,7 @@ namespace BRB6
         {
             base.OnDisappearing();
             if (IsVisScan) BarcodeScaner.CameraEnabled = false;
-
+           
             if (!IsSoftKeyboard)
             {
 #if ANDROID
@@ -150,6 +154,7 @@ namespace BRB6
             }
             bl.SendLogPrice();
             Config.OnProgress -= Progress;
+            
         }
         void BarCode(string pBarCode)=>FoundWares(pBarCode, false);
 

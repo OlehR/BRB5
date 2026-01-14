@@ -12,7 +12,7 @@ namespace BL
 {
     public partial class BL
     {
-        WaresPrice WPH;
+        public WaresPrice WPH;
         //WaresPrice[] WPH = new WaresPrice[2];
         public Result LastResult;
         public void ClearWPH() { WPH = null; /* WPH[0] = null; WPH[1]=null; */}
