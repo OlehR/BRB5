@@ -489,7 +489,7 @@ CREATE UNIQUE INDEX SKUId ON SKU (CodeSKU);";
                         ,r.NameReason
                             from Doc d 
                             join DocWares dw1 on (dw1.numberdoc = d.numberdoc and d.typedoc=dw1.typedoc)
-                             left join  Reason r on dw1.CodeReason=r.CodeReason 
+                            left join  Reason r on dw1.CodeReason=r.CodeReason and r.Level={-(int)DS.KindDoc}
                             left join Wares w on dw1.codewares = w.codewares 
                             left join (
                             select  dws.typedoc ,dws.numberdoc, dws.codewares,dws.name, sum(dws.quantity) as quantity,  min(dws.quantitymin) as quantitymin, max(dws.quantitymax) as quantitymax  
