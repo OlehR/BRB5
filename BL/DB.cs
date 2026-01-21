@@ -431,8 +431,8 @@ CREATE UNIQUE INDEX SKUId ON SKU (CodeSKU);";
             else
             if (DS.TypeColor == 2)
             {
-                Color = @", case when coalesce(dws.quantity,0) - coalesce(dw1.quantityinput,0) <0 then 3 
-                                when coalesce(dws.quantity,0) - coalesce(dw1.quantityinput,0) >0 then 2
+                Color = @", case when coalesce(dws.quantity,0) - coalesce(dw1.quantityinput,0) <-0.010 then 3 
+                                when coalesce(dws.quantity,0) - coalesce(dw1.quantityinput,0) >0.010 then 2
                                 when coalesce(dws.quantity,0) - coalesce(dw1.quantityinput,0)=0 and quantityreason>0 then 1
                            else 0 end as Ord ";
             }
