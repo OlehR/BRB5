@@ -13,7 +13,8 @@ namespace BRB5.Model
         /// -999 -Ofline,-9 - Проблема,
         /// </summary>
         public int Status { get; set; }
-        public DateTime DTInsert { get; set; }       
+        public DateTime DTInsert { get; set; }
+        public DateTime DInsert { get { return DTInsert.Date; } }
         public int IsSend { get; set; }
         public int ActionType { get; set; }
         public int PackageNumber { get; set; }
@@ -68,4 +69,10 @@ namespace BRB5.Model
         public IEnumerable<LogPrice> LogPrice { get; set; }
     }
 
+    public class LogPriceModel : LogPrice
+    {
+        public string SerialNumber { get; set; }
+        public int CodeWarehouse { get; set; }
+        public int CodeUser { get; set; }
+    }
 }
