@@ -1,12 +1,9 @@
 ﻿using BRB5;
 using BRB5.Model;
-using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Text;
 using UtilNetwork;
-using Utils;
 
 namespace BL
 {
@@ -20,14 +17,22 @@ namespace BL
         {
             WaresPrice CheckWP;            
             LogPrice l;
-
+            var pb= c.ParsedBarCode(pBarCode, pIsHandInput);
             if (IsOnline)
             {
-                var R = c.GetPrice(c.ParsedBarCode(pBarCode, pIsHandInput), pTPI);
-                if(R.Success)
-                  CheckWP =R.Data ?? new() { Name = $"Товар не знайдено =>{pBarCode}" };
+                var R = c.GetPrice(pb, pTPI);
+                if (R.Success)
+                {
+                    if (R.Data == null || R.Data.CodeWares == 0)
+                    {
+                        pb = db.GetCodeWares(pb);
+                        if (pb.CodeWares != 0)                        
+                            R = c.GetPrice(pb, pTPI);                        
+                    }
+                    CheckWP = R.Data ?? new() { Name = $"Товар не знайдено =>{pBarCode}" };
+                }
                 else
-                  CheckWP = new() { Name = $"{pBarCode}=>{R.TextError}" };
+                    CheckWP = new() { Name = $"{pBarCode}=>{R.TextError}" };
                 LastResult = R;
             }
             else
