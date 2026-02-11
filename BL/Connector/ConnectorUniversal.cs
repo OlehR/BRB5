@@ -81,6 +81,7 @@ namespace BL.Connector
                             Config.GetCodeUnitWeight = res.Data.CodeUnitWeight;
                             Config.GetCodeUnitPiece = res.Data.CodeUnitPiece;
                             Config.IsVisOrderF3 = res.Data.IsVisOrderF3;
+                            Config.IsUseArticle = res.Data.IsUseArticle;
                             CustomerBarCode = res.Data.CustomerBarCode;
                         }
 

@@ -36,32 +36,24 @@
                     </local:CustomEntry>
                 </Frame>
             </StackLayout>
-            <Grid RowSpacing="1"
-      ColumnSpacing="1"
-      Padding="1"
-      BackgroundColor="#adaea7">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="3*" />
-                    <ColumnDefinition Width="2*" />
-                    <ColumnDefinition Width="2*" />
-                    <ColumnDefinition Width="3*" />
-                </Grid.ColumnDefinitions>
-
-                <Label Text="Код"
-           Grid.Column="0"
-           BackgroundColor="White" />
-
-                <Label Text="План"
-           Grid.Column="1"
-           BackgroundColor="White" />
-                <Label Text="Факт"
-           Grid.Column="2"
-           BackgroundColor="White" />
-                <Label Text="Проблемні"
-           Grid.Column="3"
-           BackgroundColor="White" />
-
-            </Grid>
+            <VerticalStackLayout>
+                <Grid RowSpacing="1" ColumnSpacing="1" ColumnDefinitions="3*,2*,2*,3*"  
+                      IsVisible="{Binding IsViewReason}"
+                      Padding="1"  BackgroundColor="#adaea7">
+                    <Label Text="Код" Grid.Column="0" BackgroundColor="White" />
+                    <Label Text="План" Grid.Column="1" BackgroundColor="White" />
+                    <Label Text="Факт" Grid.Column="2" BackgroundColor="White" />
+                    <Label Text="Проблемні" Grid.Column="3" BackgroundColor="White"  />
+                </Grid>
+                <Grid RowSpacing="1" ColumnSpacing="1" ColumnDefinitions="3*,2*,2*" 
+                      IsVisible="{Binding IsViewNoReason}"
+                      Padding="1"  BackgroundColor="#adaea7">
+                    <Label Text="Код" Grid.Column="0" BackgroundColor="White" />
+                    <Label Text="План" Grid.Column="1" BackgroundColor="White" />
+                    <Label Text="Факт" Grid.Column="2" BackgroundColor="White" />
+                </Grid>
+            </VerticalStackLayout>
+            
             <Grid VerticalOptions="StartAndExpand">
                 <ScrollView>
                     <StackLayout x:Name="DocWaresStackLayout" />

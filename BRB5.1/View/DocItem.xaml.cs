@@ -34,6 +34,10 @@ namespace BRB6.View
         public ObservableCollection<DocWaresEx> MyDocWares { get; set; } = new ObservableCollection<DocWaresEx>();
         public bool IsVisF5Act => TypeDoc.KindDoc == eKindDoc.Lot|| TypeDoc.IsViewAct;
         public bool IsVisF2 => TypeDoc.KindDoc != eKindDoc.Lot;
+        public bool IsUseArticle => Config.IsUseArticle;
+        public bool IsViewReason { get { return TypeDoc.IsViewReason; } }
+        public bool IsViewNoReason { get { return !TypeDoc.IsViewReason; } }
+
         //// Колекція варіантів для Picker
         //public ObservableCollection<BRB5.Model.DB.Reason> Reasons { get; set; }
 
@@ -135,8 +139,7 @@ namespace BRB6.View
             {
                 docWares = MyDocWares.ToList();
             }
-
-
+            
             foreach (var docWare in docWares)
             {
                 // Create the main container StackLayout
@@ -149,30 +152,35 @@ namespace BRB6.View
                 // Create the first Grid
                 var grid = new Grid
                 {
-                    RowSpacing = 1, 
+                    RowSpacing = 1,
                     ColumnSpacing = 1,
                     Padding = 1,
                     BackgroundColor = Color.FromArgb("#adaea7"),
                     BindingContext = docWare
                 };
 
-                grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(3, GridUnitType.Star) });
-                grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(2, GridUnitType.Star) });
-                grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(2, GridUnitType.Star) });
-                grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(3, GridUnitType.Star) });
+                grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(3, GridUnitType.Star) }); // Назва/Код
+                grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(2, GridUnitType.Star) }); // Замовлення
+                grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(2, GridUnitType.Star) }); // Введено
+
+                if (IsViewReason)
+                {
+                    grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(3, GridUnitType.Star) }); // Причина
+                }
 
                 grid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Star });
                 grid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Star });
 
-                // Add Labels to the Grid
+                // 2. Назва (Span на всі колонки)
                 var nameLabel = new Label
                 {
                     Text = docWare.NameWares,
-                    BackgroundColor = Color.FromArgb(docWare.GetBackgroundColor) // Convert string to Color
+                    BackgroundColor = Color.FromArgb(docWare.GetBackgroundColor)
                 };
-                Grid.SetColumnSpan(nameLabel, 4); // Set column span using Grid.SetColumnSpan
+                Grid.SetColumnSpan(nameLabel, IsViewReason ? 4 : 3);
                 grid.Children.Add(nameLabel);
 
+                // 3. Код товару
                 var codeLabel = new Label
                 {
                     Text = docWare.CodeWares.ToString(),
@@ -183,13 +191,12 @@ namespace BRB6.View
                 {
                     await Navigation.PushAsync(new WareInfo(new ParseBarCode() { CodeWares = docWare.CodeWares }));
                 };
-
                 codeLabel.GestureRecognizers.Add(tapGesture);
-
                 Grid.SetRow(codeLabel, 1);
                 Grid.SetColumn(codeLabel, 0);
                 grid.Children.Add(codeLabel);
 
+                // 4. Кількість замовлення
                 var quantityOrderLabel = new Label
                 {
                     Text = docWare.QuantityOrder.ToString(),
@@ -199,6 +206,7 @@ namespace BRB6.View
                 Grid.SetColumn(quantityOrderLabel, 1);
                 grid.Children.Add(quantityOrderLabel);
 
+                // 5. Введена кількість
                 var inputQuantityLabel = new Label
                 {
                     Text = docWare.InputQuantity.ToString(),
@@ -208,60 +216,32 @@ namespace BRB6.View
                 Grid.SetColumn(inputQuantityLabel, 2);
                 grid.Children.Add(inputQuantityLabel);
 
-                var quantityReasonLabel = new Label
+                // 6. Умовне додавання колонки Причини
+                if (IsViewReason)
                 {
-                    Text = docWare.QuantityReason.ToString(),
-                    BackgroundColor = Color.FromArgb(docWare.GetBackgroundColor)
-                };
-                Grid.SetRow(quantityReasonLabel, 1);
-                Grid.SetColumn(quantityReasonLabel, 3);
-                grid.Children.Add(quantityReasonLabel);
+                    var quantityReasonLabel = new Label
+                    {
+                        Text = docWare.QuantityReason.ToString(),
+                        BackgroundColor = Color.FromArgb(docWare.GetBackgroundColor)
+                    };
+                    Grid.SetRow(quantityReasonLabel, 1);
+                    Grid.SetColumn(quantityReasonLabel, 3);
+                    grid.Children.Add(quantityReasonLabel);
+                }
 
                 mainStackLayout.Children.Add(grid);
 
-                // Create the second Grid for Problematic Items
+                // Блок проблемних товарів (без змін)
                 if (docWare.IsVisProblematic)
                 {
-                    var problematicGrid = new Grid
-                    {
-                        IsVisible = docWare.IsVisProblematic
-                    };
-
-                    var collectionView = new CollectionView
-                    {
-                        ItemsSource = docWare.ProblematicItems,
-                        ItemTemplate = new DataTemplate(() =>
-                        {
-                            var itemGrid = new Grid
-                            {
-                                BackgroundColor = Colors.Beige
-                            };
-
-                            itemGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
-                            itemGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(4, GridUnitType.Star) });
-
-                            var quantityLabel = new Label();
-                            quantityLabel.SetBinding(Label.TextProperty, "Quantity");
-                            itemGrid.Children.Add(quantityLabel);
-
-                            var reasonLabel = new Label();
-                            reasonLabel.SetBinding(Label.TextProperty, "ReasonName");
-                            Grid.SetColumn(reasonLabel, 1);
-                            itemGrid.Children.Add(reasonLabel);
-
-                            return itemGrid;
-                        })
-                    };
-
-                    problematicGrid.Children.Add(collectionView);
+                    var problematicGrid = new Grid { IsVisible = docWare.IsVisProblematic };
+                    problematicGrid.Children.Add(new Label { Text = "Проблемні позиції..." }); // Приклад
                     mainStackLayout.Children.Add(problematicGrid);
                 }
 
-                // Add the main StackLayout to the parent StackLayout
                 DocWaresStackLayout.Children.Add(mainStackLayout);
             }
         }
-
         private async void F2Save(object sender, EventArgs e)
         {
             if (TypeDoc.KindDoc == eKindDoc.Lot) return;

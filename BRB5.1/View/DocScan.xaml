@@ -31,7 +31,7 @@
 
                     <Grid Grid.Column="1" ColumnDefinitions="*,*">
 
-                        <Frame Style="{StaticResource FrameStyle}">
+                        <Frame Style="{StaticResource FrameStyle}" IsVisible="{Binding IsViewReason}">
                             <controls:CustomEntry Style="{StaticResource EntryStyle}"
                                                   Placeholder="план"
                                                   Text="{Binding ScanData.QuantityOrder}"
@@ -76,10 +76,9 @@
                 </Grid>
 
                 <!--<Grid x:Name="ReasonOptions" Grid.Row="2" IsVisible="{Binding IsViewReason}" ColumnDefinitions="*,*"/>-->
-                <Grid  Grid.Row="2">
+                <Grid  Grid.Row="2" IsVisible="{Binding IsViewReason}">
                     <Picker x:Name="ReasonPicker" Title="Оберіть причину"
                             FontSize="18"
-                            IsVisible="{Binding IsViewReason}"
                             IsEnabled="False"
                             ItemDisplayBinding="{Binding NameReason}"
                             SelectedItem="{Binding SelectedReason, Mode=TwoWay}"     

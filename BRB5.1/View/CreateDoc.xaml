@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="BRB6.View.CreateDoc">
+    <Grid RowDefinitions="Auto,*,60">
+        <Grid ColumnDefinitions="2*,*">
+            <Picker Title="Оберіть торговий зал"  x:Name="WarehousePicker"
+                    ItemsSource="{Binding FilteredWarehousePicker}"
+                    ItemDisplayBinding="{Binding Name}"
+                    SelectedItem="{Binding SelectedWarehouse}"
+                    HorizontalOptions="Fill" />
+            <Entry Placeholder="Фільтр(від 3 букв)" x:Name="WarehouseFilterEntry" Grid.Column="1"
+                    Unfocused="OnWarehouseFilterUnfocused" Completed="OnWarehouseFilterCompleted"/>
+        </Grid>
+
+        <CollectionView  Grid.Row="2">
+            
+        </CollectionView>
+
+        <Button Text="Створити" Grid.Row="2"/>
+
+    </Grid>
+</ContentPage>

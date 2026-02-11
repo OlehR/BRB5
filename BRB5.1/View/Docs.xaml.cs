@@ -122,6 +122,10 @@ namespace BRB6.View
         void BarCode(string pBarCode) { MyDocsR = Bl.SetColorType(db.GetDoc(TypeDoc, pBarCode, null));  }
         public void Dispose() {  Config.BarCode -= BarCode;  }
 
+        private async void CreateDoc(object sender, TappedEventArgs e)
+        {
+            await Navigation.PushAsync(new CreateDoc());
+        }
         private void UpDown(int key)
         {
             if (ZKPOEntry.IsFocused == false)
@@ -206,6 +210,9 @@ namespace BRB6.View
                return;
             case Keycode.F4:
                Down();
+               return;
+            case Keycode.F5:
+               CreateDoc(null, null);
                return;
             default:
                return;
