@@ -94,6 +94,10 @@ namespace BRB5
         public bool IsViewAct { get; set; } = false;
 
         public eTypeCreateDoc TypeCreateDoc { get; set; } = eTypeCreateDoc.NotDefined;
+        /// <summary>
+        /// Не показувати планову кількість в режимі F4
+        /// </summary>
+        public bool IsNotShowPlan { get; set; } = false;
 
     }
 }
