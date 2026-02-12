@@ -181,9 +181,12 @@ namespace BRB6.View
                 grid.Children.Add(nameLabel);
 
                 // 3. Код товару
+
+                string codeText = IsUseArticle ? docWare.Article : docWare.CodeWares.ToString();
+
                 var codeLabel = new Label
                 {
-                    Text = docWare.CodeWares.ToString(),
+                    Text = codeText,
                     BackgroundColor = Color.FromArgb(docWare.GetBackgroundColor)
                 };
                 var tapGesture = new TapGestureRecognizer();
