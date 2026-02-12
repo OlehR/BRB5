@@ -268,7 +268,7 @@ CREATE TABLE SKU (
     CodeUnit           INTEGER  NOT NULL);
 CREATE UNIQUE INDEX SKUId ON SKU (CodeSKU);
 ";
-        readonly int Ver = 12;
+        readonly int Ver = 13;
         string SqlTo6 = @"alter TABLE Reason add  Level INTEGER  DEFAULT (0);
 drop index ReasonId;
 CREATE UNIQUE INDEX ReasonId ON Reason (Level,CodeReason);";
@@ -285,7 +285,7 @@ CREATE UNIQUE INDEX SKUId ON SKU (CodeSKU);";
         string SqlTo12 = "alter TABLE Doc add CountWares INTEGER DEFAULT(0)";
 
         string SqlTo13 = @"alter TABLE Warehouse  add  TypeWarehouse INTEGER DEFAULT (0);
-alter TABLE Warehouse CodePartner INTEGER DEFAULT (0);
+alter TABLE Warehouse add CodePartner INTEGER DEFAULT (0);
 CREATE TABLE TypeWarehouse (
     TypeWarehouse       INTEGER  PRIMARY KEY NOT NULL,
     Name       TEXT,
@@ -393,8 +393,13 @@ CREATE INDEX TypeWarehouseId ON TypeWarehouse (TypeWarehouse);";
             foreach (var el in pSQL.Split(';'))
             {
                 string Sql = el.Replace("\r\n", " ").Trim();
-                if (Sql.Length > 4 && !Sql.StartsWith("--"))
-                    db.Execute(Sql);
+                try
+                {
+                    if (Sql.Length > 4 && !Sql.StartsWith("--"))
+                        db.Execute(Sql);
+                }
+                catch(Exception e)  
+                { FileLogger.WriteLogMessage(this, "SetSQL", e); }
             }
             SetVersion(pVer);
         }
