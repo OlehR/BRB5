@@ -12,6 +12,7 @@ namespace BRB5.Model
         //public DocSetting DocSetting;    
         public string NameWares{ get; set; }
         public int Coefficient{ get; set; }
+        public string Article { get; set; }
         public int CodeUnit{ get; set; }
         public string NameUnit{ get; set; }
         public string IsControl { get; set;  }
