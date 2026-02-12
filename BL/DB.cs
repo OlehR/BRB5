@@ -182,6 +182,8 @@ CREATE TABLE Warehouse (
     Code       INTEGER  PRIMARY KEY NOT NULL,
     Number     TEXT,
     Name       TEXT,
+    TypeWarehouse INTEGER DEFAULT (0),
+    CodePartner INTEGER DEFAULT (0),
     Url        TEXT,
     Address    TEXT,
     InternalIP TEXT,
@@ -189,6 +191,12 @@ CREATE TABLE Warehouse (
     Location TEXT,
     CodeTM INTEGER DEFAULT (0) );
 CREATE INDEX WarehouseId ON Warehouse (Code);
+
+CREATE TABLE TypeWarehouse (
+    TypeWarehouse       INTEGER  PRIMARY KEY NOT NULL,
+    Name       TEXT,
+    IsTrade INTEGER DEFAULT (0) );
+CREATE INDEX TypeWarehouseId ON TypeWarehouse (TypeWarehouse);
 
 CREATE TABLE GroupWares (
     CodeGroup INTEGER PRIMARY KEY NOT NULL,
@@ -275,6 +283,14 @@ alter table wares  ADD COLUMN Article INTEGER;";
     CodeUnit           INTEGER  NOT NULL);
 CREATE UNIQUE INDEX SKUId ON SKU (CodeSKU);";
         string SqlTo12 = "alter TABLE Doc add CountWares INTEGER DEFAULT(0)";
+
+        string SqlTo13 = @"alter TABLE Warehouse  add  TypeWarehouse INTEGER DEFAULT (0);
+alter TABLE Warehouse CodePartner INTEGER DEFAULT (0);
+CREATE TABLE TypeWarehouse (
+    TypeWarehouse       INTEGER  PRIMARY KEY NOT NULL,
+    Name       TEXT,
+    IsTrade INTEGER DEFAULT (0) );
+CREATE INDEX TypeWarehouseId ON TypeWarehouse (TypeWarehouse);";
         public static string PathNameDB { get { return Path.Combine(BaseDir, NameDB); } }
 
         public DB(string pBaseDir) : this() { BaseDir = pBaseDir; }
@@ -304,6 +320,8 @@ CREATE UNIQUE INDEX SKUId ON SKU (CodeSKU);";
                     SetSQL(SqlTo11, 11);
                 if (GetVersion < 12)
                     SetSQL(SqlTo12, 12);
+                if (GetVersion < 13)
+                    SetSQL(SqlTo13, 13);
             }            
         }
 
@@ -449,6 +467,7 @@ CREATE UNIQUE INDEX SKUId ON SKU (CodeSKU);";
                       ,dw1.quantityreason as QuantityReason, Max(dw1.CodeReason,dws.CodeReason ) as CodeReason
                         {Color}
                         ,w.codeunit as CodeUnit, dws.CodeReason as CodeReason
+                        ,w.Article
                             from Doc d  
                           join (select dw.typedoc ,dw.numberdoc, dw.codewares, sum(dw.quantity) as quantityinput,max(dw.orderdoc) as orderdoc,sum(quantityold) as quantityold,  sum(case when dw.CODEReason>0 then  dw.quantity else 0 end) as quantityreason,
                                        Max(CodeReason) as CodeReason  
@@ -465,6 +484,7 @@ CREATE UNIQUE INDEX SKUId ON SKU (CodeSKU);";
                            ,0 as  quantityreason, Max(dw1.CodeReason,dws.CodeReason ) as CodeReason
                       , 3 as Ord
                       ,w.codeunit, dws.CodeReason
+                      ,w.Article
                           from Doc d  
                           join DocWaresSample dws on d.numberdoc = dws.numberdoc and d.typedoc=dws.typedoc --and dws.codewares = w.codewares
                           left join Wares w on dws.codewares = w.codewares 
@@ -486,7 +506,7 @@ CREATE UNIQUE INDEX SKUId ON SKU (CodeSKU);";
                         coalesce(dws.quantitymin,0) as QuantityMin, coalesce(dws.quantitymax,0) as QuantityMax ,
                         coalesce(d.IsControl,0) as IsControl, coalesce(dw1.quantityold,0) as QuantityOld,dw1.CODEReason as  CodeReason
                         ,0 as Ord,w.codeunit
-                        ,r.NameReason
+                        ,r.NameReason,w.Article
                             from Doc d 
                             join DocWares dw1 on (dw1.numberdoc = d.numberdoc and d.typedoc=dw1.typedoc)
                             left join  Reason r on dw1.CodeReason=r.CodeReason and r.Level={-(int)DS.KindDoc}
@@ -519,6 +539,7 @@ max(dw1.orderdoc) as OrderDoc, dw1.CODEWARES as CodeWares,
 group_concat(dw.CodeReason ||':' || dw.quantity ||':' ||r.NameReason ,';') 
 from  DocWares dw 
     left join  Reason r on dw.CodeReason=r.CodeReason where dw1.numberdoc = dw.numberdoc and dw.typedoc=dw1.typedoc and dw.CodeWares=dw1.CodeWares ) as StrReason
+,w.Article
                             from Doc d 
                             join DocWares dw1 on (dw1.numberdoc = d.numberdoc and d.typedoc=dw1.typedoc)
                             left join Wares w on dw1.codewares = w.codewares 
