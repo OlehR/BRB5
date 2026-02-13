@@ -13,6 +13,8 @@ public partial class ExpirationDateElementTemplate : ContentView
     public event Action<ExpirationDateElementVM> RequestReturnToMainContent;
     public ExpirationDateElementVM DM { get; set; } = new();
     private ExpirationDateElementVM _DM;
+    IEnumerable<ExpirationDateElementVM> ListED { get; set; }
+
     public ExpirationDateElementTemplate()
     {
         InitializeComponent();
@@ -28,10 +30,11 @@ public partial class ExpirationDateElementTemplate : ContentView
         this.BindingContext = this;
     }
 
-    public void Set(ExpirationDateElementVM pED, string pNumberDoc)
+    public void Set(ExpirationDateElementVM pED, string pNumberDoc,IEnumerable<ExpirationDateElementVM> pListED )
     {
      NumberDoc=pNumberDoc;
         _DM = pED;
+        ListED= pListED;
         DM = (ExpirationDateElementVM)pED.Clone();
         DM.QuantityInput = DM.QuantityInput ?? DM.Quantity;
 
