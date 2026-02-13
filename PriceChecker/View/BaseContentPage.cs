@@ -13,17 +13,15 @@ namespace PriceChecker.View
         }
         protected void NokeyBoard()
         {
-            Microsoft.Maui.Handlers.EntryHandler.Mapper.ModifyMapping("MyCustomization", (handler, view, action) =>
+            Microsoft.Maui.Handlers.EntryHandler.Mapper.AppendToMapping("MyCustomization", (handler, view) =>
             {
                 if (view is CustomEntry)
                 {
 #if ANDROID
                     handler.PlatformView.ShowSoftInputOnFocus = false;
-#elif WINDOWS
-                    handler.PlatformView.PreventKeyboardDisplayOnProgrammaticFocus = true;
 #endif
+                    
                 }
-                action?.Invoke(handler, view);
             });
         }
     }

@@ -10,7 +10,7 @@ using Timer = System.Timers.Timer;
 
 namespace PriceChecker.View;
 
-public partial class SplashPage : BaseContentPage
+public partial class SplashPage : ContentPage
 {
     BL.BL bl;
     DB db;
@@ -19,7 +19,7 @@ public partial class SplashPage : BaseContentPage
     {
         InitializeComponent();
         this.BindingContext = this;
-        NokeyBoard();
+
         string Path = "";
         if (DeviceInfo.Platform == DevicePlatform.Android)
             Path = FileSystem.AppDataDirectory;
@@ -30,7 +30,7 @@ public partial class SplashPage : BaseContentPage
         bl = BL.BL.GetBL();
 
         InputBC.Completed += (s, e) =>
-        {
+            {
             if (!string.IsNullOrEmpty(InputBC.Text))
             {
                 string text = InputBC.Text;

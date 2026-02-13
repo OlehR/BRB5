@@ -54,11 +54,7 @@
             <ImageButton Source="add.png"  Aspect="AspectFit" HeightRequest="60" Grid.Column="1" Clicked="OnAddNewItem"/>
             <ImageButton Source="minus.png" Aspect="AspectFit" HeightRequest="60" Grid.Column="2" Clicked="OnNotFound"/>
             <VerticalStackLayout>
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="3*"/>
-                        <ColumnDefinition Width="2*"/>
-                    </Grid.ColumnDefinitions>
+                <Grid ColumnDefinitions="3*,2*">
                     <HorizontalStackLayout>
                         <Label Text="{Binding DM.Quantity}" FontSize="40" FontAttributes="Bold"/>
                         <Label Text="шт" FontSize="40" FontAttributes="Bold"/>
@@ -69,17 +65,7 @@
             </VerticalStackLayout>
         </Grid>
 
-        <Grid Padding="5">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="*"/>
-            </Grid.ColumnDefinitions>
-            <Grid.RowDefinitions>
-                <RowDefinition/>
-                <RowDefinition/>
-                <RowDefinition/>
-                <RowDefinition/>
-            </Grid.RowDefinitions>
+        <Grid Padding="5" ColumnDefinitions="*,*" RowDefinitions="*,*,*,*">
             <Label Text="Вжити до"   />
             <Label Text="Кількість"   Grid.Column="1" />
 

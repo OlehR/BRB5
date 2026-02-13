@@ -24,14 +24,16 @@
             </Label>
         </StackLayout>
     </NavigationPage.TitleView>-->
+    <NavigationPage.TitleView>
+        <HorizontalStackLayout IsVisible="False" x:Name="TotalStackLayout">
+            <Label VerticalOptions="Center" TextColor="White" FontAttributes="Bold" Text="Загальний обсяг - "/>
+            <Label VerticalOptions="Center" TextColor="White" FontAttributes="Bold" Text="{Binding CurrentRest}"/>
+        </HorizontalStackLayout>
+    </NavigationPage.TitleView>
     <ContentPage.Content>
         <Grid>
 
-            <Grid x:Name="MainContent" IsVisible="True" >
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="auto"/>
-                    <RowDefinition />
-                </Grid.RowDefinitions>
+            <Grid x:Name="MainContent" IsVisible="True" RowDefinitions="auto,*">
                 <!--<Grid RowSpacing="1"  ColumnSpacing="1"  Padding="1" BackgroundColor="#adaea7">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="2*"/>

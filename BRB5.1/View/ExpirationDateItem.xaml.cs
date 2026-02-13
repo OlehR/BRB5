@@ -7,6 +7,8 @@ using BRB6.Template;
 using CommunityToolkit.Maui.Core;
 using Microsoft.Maui.Controls;
 using Microsoft.Maui.Controls.Internals;
+using BRB5;
+
 
 #if ANDROID
 using Android.Views;
@@ -40,6 +42,12 @@ namespace BRB6.View
         public bool IsSoftKeyboard { get { return Config.IsSoftKeyboard; } }
         //public ObservableCollection<ExpirationDateElementVM> MyDocWares { get; set; } = new ObservableCollection<ExpirationDateElementVM>();
         private ExpirationDateElementVM SelectedWare;
+        private decimal _currentRest;
+        public decimal CurrentRest
+        {
+            get => _currentRest;
+            set { _currentRest = value; OnPropertyChanged(nameof(CurrentRest)); }
+        }
         public ExpiretionDateItem(string pNumberDoc)
         {
             NumberDoc = pNumberDoc;
@@ -217,6 +225,7 @@ namespace BRB6.View
             MainContent.IsVisible = true; 
             //TopSave.IsVisible = true;
             AlternateContent.IsVisible = false;
+            TotalStackLayout.IsVisible = false;
             pEDE = null;
         }
 
@@ -254,10 +263,25 @@ namespace BRB6.View
         
         private void HandleSelectedWare(ExpirationDateElementVM selectedWare)
         {
+            Task.Run(() => {
+                try
+                {
+                    BRB5.Model.Connector c = ConnectorBase.GetInstance();
+                    var Pr = c.GetPrice(new() { CodeWares = selectedWare.CodeWares }, eTypePriceInfo.Normal);
+
+                    // Оновлюємо властивість у головному потоці для UI
+                    MainThread.BeginInvokeOnMainThread(() => {
+                        CurrentRest = Pr?.Data?.Rest ?? 0;
+                    });
+                }
+                catch(Exception e) { /* Обробка помилок */ }
+            });
+
             // Hide MainContent and show AlternateContent
             MainContent.IsVisible = false;
             //TopSave.IsVisible = false;
             AlternateContent.IsVisible = true;
+            TotalStackLayout.IsVisible = true;
             (AlternateContent.Content as ExpirationDateElementTemplate).Set(selectedWare,NumberDoc);
         }
 #if ANDROID
