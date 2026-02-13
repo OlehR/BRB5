@@ -1,7 +1,8 @@
-﻿<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+﻿<view:BaseContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" 
              xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
              Shell.FlyoutBehavior="Disabled" 
+                      xmlns:view="clr-namespace:PriceChecker.View"
              xmlns:controls="clr-namespace:PriceChecker.View"
              Shell.NavBarIsVisible="False"
              x:Class="PriceChecker.View.SplashPage"
@@ -22,15 +23,15 @@
                             <TapGestureRecognizer Tapped="OnKeyboardTapped"/>
                         </Label.GestureRecognizers>
                     </Label>
-                    <Entry x:Name="InputBC" HorizontalOptions="FillAndExpand"/>
+                    <controls:CustomEntry x:Name="InputBC" HorizontalOptions="FillAndExpand"/>
                 </StackLayout>
 
             </VerticalStackLayout>
         </Grid>
 
         <controls:NumericKeyboard x:Name="OnScreenKeyboard"  IsVisible="False"
-                                  TargetText="{Binding Source={x:Reference InputBC}, Path=Text}"
+                                  TargetText="{Binding Source={x:Reference InputBC}, Path=Text, Mode=TwoWay}"
                                     AbsoluteLayout.LayoutBounds="1,1"
                                     AbsoluteLayout.LayoutFlags="PositionProportional"  />
     </AbsoluteLayout>
-</ContentPage>
+</view:BaseContentPage>

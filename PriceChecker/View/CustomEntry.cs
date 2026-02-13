@@ -1,0 +1,32 @@
+﻿using System.Globalization;
+using BRB5.Model;
+
+
+namespace PriceChecker.View
+{
+    public class CustomEntry : Entry
+    {
+
+    }
+    public class CodeUnitToKeyboardConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (DeviceInfo.Platform == DevicePlatform.iOS)
+                return Keyboard.Default;
+
+            if (value is int codeUnit &&
+                codeUnit == Config.GetCodeUnitWeight)
+            {
+                return Keyboard.Telephone;
+            }
+
+            return Keyboard.Numeric;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+}

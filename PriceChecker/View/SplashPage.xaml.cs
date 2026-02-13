@@ -10,7 +10,7 @@ using Timer = System.Timers.Timer;
 
 namespace PriceChecker.View;
 
-public partial class SplashPage : ContentPage
+public partial class SplashPage : BaseContentPage
 {
     BL.BL bl;
     DB db;
@@ -19,8 +19,8 @@ public partial class SplashPage : ContentPage
     {
         InitializeComponent();
         this.BindingContext = this;
-
-        string Path="";
+        NokeyBoard();
+        string Path = "";
         if (DeviceInfo.Platform == DevicePlatform.Android)
             Path = FileSystem.AppDataDirectory;
         if (DeviceInfo.Platform == DevicePlatform.WinUI)
@@ -29,12 +29,14 @@ public partial class SplashPage : ContentPage
         db = DB.GetDB(Path);
         bl = BL.BL.GetBL();
 
+        InputBC.Unfocused += (s, e) => { if (this.IsLoaded) InputBC.Focus(); };
+
         OnScreenKeyboard.OkPressed += OnScreenKeyboard_OkPressed;
         bl.Init();
         SetShopBranding();
         Config.TypeDoc = new[]{
             new TypeDoc { Group = eGroup.Doc, CodeDoc = 51, NameDoc = "Установка цін", KindDoc = eKindDoc.Normal },
-            new TypeDoc { Group = eGroup.Doc, CodeDoc = 52, NameDoc = "Друк пакетів", KindDoc = eKindDoc.Normal } 
+            new TypeDoc { Group = eGroup.Doc, CodeDoc = 52, NameDoc = "Друк пакетів", KindDoc = eKindDoc.Normal }
         };
     }
     private void SetShopBranding()
@@ -57,7 +59,7 @@ public partial class SplashPage : ContentPage
 
     }
     protected override async void OnAppearing()
-    {      
+    {
         base.OnAppearing();
         App.ScanerCom?.SetOnBarCode(BarCode);
 
@@ -68,9 +70,9 @@ public partial class SplashPage : ContentPage
         //    Task.Delay(200);
         //    InputBC.IsEnabled = true;
         //});
-        
+
     }
-      
+
     async void BarCode(string pBarCode, string pType)
     {
         FileLogger.WriteLogMessage("SplashPage", "BarCode", $"BarCode: {pBarCode}, Type: {pType}");
@@ -78,11 +80,12 @@ public partial class SplashPage : ContentPage
         if (pBarCode.StartsWith("BRB6=>"))
         {
             var CodeWarehouse = bl.QRSettingsParse(pBarCode);
-            if (CodeWarehouse != 0) {                
+            if (CodeWarehouse != 0)
+            {
                 try
                 {
                     Config.CodeWarehouse = 0;
-                    await bl.c.LoadGuidDataAsync(false); 
+                    await bl.c.LoadGuidDataAsync(false);
                     var wh = db.GetWarehouse().FirstOrDefault(el => el.CodeWarehouse == CodeWarehouse);
                     Config.CodeTM = wh?.CodeTM ?? default;
                 }
@@ -96,7 +99,7 @@ public partial class SplashPage : ContentPage
             bl.SaveSettings();
         }
         else
-        {  
+        {
             var WP = bl.FoundWares(pBarCode, 0, 0, false, false, true);
             bool tryClient = true;
             if (WP != null)
@@ -106,13 +109,13 @@ public partial class SplashPage : ContentPage
                 {
                     Config.CodeUser = (int)WP.CodeUser;
                     Config.NameUser = WP.Name;
-                    _ = Task.Run(async () => { bl.OnButtonLogin(Config.Login, Config.Password, false);    });
-                        MainThread.BeginInvokeOnMainThread(async () => { await Shell.Current.GoToAsync("//Admin"); });
+                    _ = Task.Run(async () => { bl.OnButtonLogin(Config.Login, Config.Password, false); });
+                    MainThread.BeginInvokeOnMainThread(async () => { await Shell.Current.GoToAsync("//Admin"); });
                 }
                 else
                     if (WP?.CodeWares != 0) MainThread.BeginInvokeOnMainThread(async () => { await Navigation.PushAsync(new UPriceChecker(WP)); });
             }
-            if(WP == null || (WP?.CodeUser == 0 && WP?.CodeWares==0))
+            if (WP == null || (WP?.CodeUser == 0 && WP?.CodeWares == 0))
             {
                 var clients = await bl.c.GetClient(pBarCode);
                 if (clients != null && clients.Data.Any())
