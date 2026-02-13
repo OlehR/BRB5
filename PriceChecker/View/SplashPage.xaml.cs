@@ -29,6 +29,15 @@ public partial class SplashPage : BaseContentPage
         db = DB.GetDB(Path);
         bl = BL.BL.GetBL();
 
+        InputBC.Completed += (s, e) =>
+        {
+            if (!string.IsNullOrEmpty(InputBC.Text))
+            {
+                string text = InputBC.Text;
+                InputBC.Text = string.Empty; // Очищуємо відразу для наступного сканування
+                Task.Run(async () => BarCode(text, "Scanner"));
+            }
+        };
         InputBC.Unfocused += (s, e) => { if (this.IsLoaded) InputBC.Focus(); };
 
         OnScreenKeyboard.OkPressed += OnScreenKeyboard_OkPressed;
