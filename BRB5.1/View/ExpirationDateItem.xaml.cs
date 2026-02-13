@@ -24,10 +24,11 @@ namespace BRB6.View
         //private DocVM Doc;
         private Connector c = ConnectorBase.GetInstance();
         ExpirationDateElementVM _VM;
-        ExpirationDateElementVM VM { get { return _VM; } set { _VM = value; OnPropertyChanged(nameof(VM)); } } 
+        ExpirationDateElementVM VM { get { return _VM; } set { _VM = value; OnPropertyChanged(nameof(VM)); } }
+        IEnumerable<ExpirationDateElementVM> All;
         protected DB db = DB.GetDB();
         string _NumberOutInvoice = "";
-        public string NumberOutInvoice { get { return _NumberOutInvoice; } set { _NumberOutInvoice = value; OnPropertyChanged("NumberOutInvoice"); } }
+        public string NumberOutInvoice { get { return _NumberOutInvoice; } set { _NumberOutInvoice = value; OnPropertyChanged(nameof(NumberOutInvoice)); } }
         public List<DataStr> ListDataStr
         {
             get
@@ -156,7 +157,8 @@ namespace BRB6.View
         private void AddCustomItems()
         {
             //int i = 0;
-            foreach (var item in db.GetDataExpiration(NumberDoc))
+            All = db.GetDataExpiration(NumberDoc);
+            foreach (var item in All)
             {
                 if(string.IsNullOrEmpty( item.DocId))
                     item.DocId = "zz" + DateTime.Now.ToString("yyyyMMddHHmmssffff");

@@ -19,6 +19,7 @@ namespace BRB5.Model
         /// Номер в випадку Sim23 4 значний код 1104
         /// </summary>
         public string Number {get;set;}
+        public int CodeParent { get; set; }
         public int CodeWarehouse { get { try { return Code; /*string.IsNullOrEmpty(Number)? Code: Convert.ToInt32(Number);*/ } catch { return 0; } }}
         /// <summary>
         /// Назва складу
@@ -35,8 +36,8 @@ namespace BRB5.Model
                 var l = Address.Split('-');
                 return (l.Length < 2 || l[1].Length < 2) ? Address : l[1];  
             }
-        } 
-
+        }
+        public int TypeWarehouse { get; set; }
         public string Url {get;set;}
         public string InternalIP {get;set;}
         public string ExternalIP {get;set;}

@@ -76,6 +76,9 @@ namespace BL.Connector
                 //pG.Warehouse.Last().InternalIP = "192.168.99.1";///!!!!TMP!!!!
                 db.ReplaceWarehouse(pG.Warehouse, pIsFull);
             }
+
+            if(pG.TypeWarehouse?.Any() == true)
+                db.ReplaceTypeWarehouse(pG.TypeWarehouse, pIsFull);
             Config.OnProgress?.Invoke(0.87);
             //Log.d(TAG, "Barcodes");
             Config.OnProgress?.Invoke(0.90);

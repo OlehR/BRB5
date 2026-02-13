@@ -183,7 +183,7 @@ CREATE TABLE Warehouse (
     Number     TEXT,
     Name       TEXT,
     TypeWarehouse INTEGER DEFAULT (0),
-    CodePartner INTEGER DEFAULT (0),
+    CodeParent INTEGER DEFAULT (0),
     Url        TEXT,
     Address    TEXT,
     InternalIP TEXT,
@@ -285,12 +285,12 @@ CREATE UNIQUE INDEX SKUId ON SKU (CodeSKU);";
         string SqlTo12 = "alter TABLE Doc add CountWares INTEGER DEFAULT(0)";
 
         string SqlTo13 = @"alter TABLE Warehouse  add  TypeWarehouse INTEGER DEFAULT (0);
-alter TABLE Warehouse add CodePartner INTEGER DEFAULT (0);
+alter TABLE Warehouse add CodeParent INTEGER DEFAULT (0);
 CREATE TABLE TypeWarehouse (
-    TypeWarehouse       INTEGER  PRIMARY KEY NOT NULL,
+    Code       INTEGER  PRIMARY KEY NOT NULL,
     Name       TEXT,
     IsTrade INTEGER DEFAULT (0) );
-CREATE INDEX TypeWarehouseId ON TypeWarehouse (TypeWarehouse);";
+CREATE INDEX TypeWarehouseId ON TypeWarehouse (Code);";
         public static string PathNameDB { get { return Path.Combine(BaseDir, NameDB); } }
 
         public DB(string pBaseDir) : this() { BaseDir = pBaseDir; }
@@ -902,6 +902,12 @@ and bc.BarCode=?
             return db.ReplaceAll(pWh) >= 0;
         }
 
+        public bool ReplaceTypeWarehouse(IEnumerable<TypeWarehouse> pTWh, bool pIsFull = false)
+        {
+            if (pIsFull) db.Execute("delete from TypeWarehouse");
+            return db.ReplaceAll(pTWh) >= 0;
+        }
+
         public bool ReplaceUser(IEnumerable<User> pUser)
         {
             //string Sql = @"replace into User ( CodeUser, NameUser, BarCode, Login, PassWord, TypeUser) values 
@@ -1253,5 +1259,15 @@ group by dw.CodeWares, w.NameWares
             db.Execute("vacuum;");
             db.Execute("REINDEX;");
         }
-    }
+
+        public IEnumerable<Warehouse> GetWarehouseCreateDoc(int pCodeWarehouse)
+        {
+            string Sql = $@"select wh.Code,wh.Number,tw.name,wh.Url,wh.Address,wh.InternalIP,Wh.ExternalIP,Wh.Location,Wh.CodeTM,Wh.TypeWarehouse,Wh.CodeParent
+ from Warehouse wh 
+join Warehouse whd on wh.CodeParent=whd.CodeParent
+join TypeWarehouse TW on TW.code=wh.TypeWarehouse and tw.code<>0 and
+where whd.Code={pCodeWarehouse}";
+            return db.Query<Warehouse>(Sql);
+        }
+     }
 }

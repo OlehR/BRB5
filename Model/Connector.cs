@@ -241,6 +241,7 @@ namespace BRB5.Model
         public IEnumerable<Wares> Wares { get; set; }
         public IEnumerable<BARCode> BarCode { get; set; }
         public IEnumerable<Warehouse> Warehouse { get; set; }
+        public IEnumerable<TypeWarehouse> TypeWarehouse { get; set; }
         public IEnumerable<GroupWares> GroupWares { get; set; }
         public IEnumerable<Reason> Reason { get; set; }
         public IEnumerable<SKU> SKU { get; set; }
