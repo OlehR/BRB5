@@ -10,7 +10,7 @@ using Timer = System.Timers.Timer;
 
 namespace PriceChecker.View;
 
-public partial class SplashPage : ContentPage
+public partial class SplashPage : BaseContentPage
 {
     BL.BL bl;
     DB db;
@@ -19,7 +19,7 @@ public partial class SplashPage : ContentPage
     {
         InitializeComponent();
         this.BindingContext = this;
-
+        NokeyBoard();
         string Path = "";
         if (DeviceInfo.Platform == DevicePlatform.Android)
             Path = FileSystem.AppDataDirectory;
@@ -38,8 +38,9 @@ public partial class SplashPage : ContentPage
                 Task.Run(async () => BarCode(text, "Scanner"));
             }
         };
+#if ANDROID
         InputBC.Unfocused += (s, e) => { if (this.IsLoaded) InputBC.Focus(); };
-
+#endif
         OnScreenKeyboard.OkPressed += OnScreenKeyboard_OkPressed;
         bl.Init();
         SetShopBranding();
@@ -71,14 +72,11 @@ public partial class SplashPage : ContentPage
     {
         base.OnAppearing();
         App.ScanerCom?.SetOnBarCode(BarCode);
-
+       
         var r = await bl.c.LoginAsync(Config.Login, Config.Password, Config.LoginServer);
-        //_ = Task.Delay(200).ContinueWith(t => {
-        //    InputBC.Focus();
-        //    InputBC.IsEnabled = false;
-        //    Task.Delay(200);
-        //    InputBC.IsEnabled = true;
-        //});
+
+        InputBC.Unfocus(); 
+        InputBC.Focus();
 
     }
 

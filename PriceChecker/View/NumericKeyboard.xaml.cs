@@ -10,7 +10,6 @@ public partial class NumericKeyboard : ContentView
         InitializeComponent();
     }
 
-    // Bindable property to connect keyboard to Entry.Text (two-way)
     public static readonly BindableProperty TargetTextProperty =
         BindableProperty.Create(
             nameof(TargetText),
@@ -25,18 +24,14 @@ public partial class NumericKeyboard : ContentView
         set => SetValue(TargetTextProperty, value);
     }
 
-    // Optional event when OK pressed
     public event EventHandler OkPressed;
-
     public event EventHandler? UserInteracted;
-    void Digit_Clicked(object sender, EventArgs e)
+
+    private void Digit_Pressed(object sender, EventArgs e)
     {
         if (sender is Button b && !string.IsNullOrEmpty(b.Text))
         {
-            // append digit
             TargetText = (TargetText ?? string.Empty) + b.Text;
-
-            // raise event so the parent page knows interaction happened
             UserInteracted?.Invoke(this, EventArgs.Empty);
         }
     }
@@ -46,13 +41,10 @@ public partial class NumericKeyboard : ContentView
     private void Backspace_Released(object sender, EventArgs e)
     {
         var duration = DateTime.UtcNow - _backspacePressStart;
-
         if (duration.TotalMilliseconds >= 1500) TargetText = string.Empty;
         else if (!string.IsNullOrEmpty(TargetText))
-                TargetText = TargetText.Substring(0, TargetText.Length - 1);
-        
+            TargetText = TargetText.Substring(0, TargetText.Length - 1);
     }
 
-    void Ok_Clicked(object sender, EventArgs e)  { OkPressed?.Invoke(this, EventArgs.Empty); }
-
+    private void Ok_Pressed(object sender, EventArgs e) { OkPressed?.Invoke(this, EventArgs.Empty); }
 }
