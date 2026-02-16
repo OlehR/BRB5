@@ -1265,7 +1265,7 @@ group by dw.CodeWares, w.NameWares
             string Sql = $@"select wh.Code,wh.Number,tw.name,wh.Url,wh.Address,wh.InternalIP,Wh.ExternalIP,Wh.Location,Wh.CodeTM,Wh.TypeWarehouse,Wh.CodeParent
  from Warehouse wh 
 join Warehouse whd on wh.CodeParent=whd.CodeParent
-join TypeWarehouse TW on TW.code=wh.TypeWarehouse and tw.code<>0 and
+join TypeWarehouse TW on TW.code=wh.TypeWarehouse and tw.code<>0 
 where whd.Code={pCodeWarehouse}";
             return db.Query<Warehouse>(Sql);
         }
