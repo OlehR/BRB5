@@ -193,7 +193,7 @@ CREATE TABLE Warehouse (
 CREATE INDEX WarehouseId ON Warehouse (Code);
 
 CREATE TABLE TypeWarehouse (
-    TypeWarehouse       INTEGER  PRIMARY KEY NOT NULL,
+    code       INTEGER  PRIMARY KEY NOT NULL,
     Name       TEXT,
     IsTrade INTEGER DEFAULT (0) );
 CREATE INDEX TypeWarehouseId ON TypeWarehouse (TypeWarehouse);

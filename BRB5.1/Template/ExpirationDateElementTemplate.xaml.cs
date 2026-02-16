@@ -14,6 +14,7 @@ public partial class ExpirationDateElementTemplate : ContentView
     public ExpirationDateElementVM DM { get; set; } = new();
     private ExpirationDateElementVM _DM;
     IEnumerable<ExpirationDateElementVM> ListED { get; set; }
+    public bool IsManual { get; set; }
 
     public ExpirationDateElementTemplate()
     {
@@ -41,6 +42,10 @@ public partial class ExpirationDateElementTemplate : ContentView
         if (DM.ExpirationDate == DateTime.MinValue && DM.ExpirationDateInput > DateTime.Today) DM.ExpirationDate = DM.ExpirationDateInput;
         if (DM.ExpirationDate == DateTime.MinValue)
             DM.ExpirationDate = DateTime.Today;
+        IsManual = DM.IsManual;
+        OnPropertyChanged(nameof(IsManual));
+
+        FillLotHistory(ListED);
 
         DM.ExpirationDateInput = DM.ExpirationDate;
         DM.ProductionDateInput = DM.ExpirationDate.AddDays(-(double)DM.Expiration);
@@ -104,8 +109,70 @@ public partial class ExpirationDateElementTemplate : ContentView
         DM.ExpirationDateInput = new DateTime( DateTime.Now.Date.Year, DateTime.Now.Date.Month, 1);
         //DM.ProductionDateInput = DM.ExpirationDate.AddDays(-(double)DM.Expiration);
         DM.QuantityInput = 0;
-    }
 
+        IsManual = DM.IsManual;
+        OnPropertyChanged(nameof(IsManual));
+
+    }
+    private void FillLotHistory(IEnumerable<ExpirationDateElementVM> listED)
+    {
+        LotHistoryStackLayout.Children.Clear();
+
+        // Створюємо одну сітку для всієї історії
+        var historyGrid = new Grid
+        {
+            ColumnDefinitions = new ColumnDefinitionCollection
+        {
+            new ColumnDefinition { Width = GridLength.Star }, // Ліва колонка (System)
+            new ColumnDefinition { Width = GridLength.Star }  // Права колонка (Manual)
+        },
+            RowSpacing = 2,
+            ColumnSpacing = 5
+        };
+
+        // Розділяємо дані на дві групи
+        var systemItems = listED.Where(x => !x.IsManual).ToList();
+        var manualItems = listED.Where(x => x.IsManual).ToList();
+
+        // Визначаємо максимальну кількість рядків, яка нам знадобиться
+        int rowCount = Math.Max(systemItems.Count, manualItems.Count);
+
+        for (int i = 0; i < rowCount; i++)
+        {
+            // Додаємо опис рядка в Grid
+            historyGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
+
+            // Якщо є системний елемент для цього рядка
+            if (i < systemItems.Count)
+            {
+                var item = systemItems[i];
+                var label = new Label
+                {
+                    Text = $"{item.ExpirationDate:dd.MM.yyyy} - {item.Quantity} {item.NameUnit}",
+                    TextColor = Colors.Blue,
+                    FontSize = 12,
+                    HorizontalOptions = LayoutOptions.Start
+                };
+                historyGrid.Add(label, 0, i); // Колонка 0, Рядок i
+            }
+
+            // Якщо є ручний елемент для цього рядка
+            if (i < manualItems.Count)
+            {
+                var item = manualItems[i];
+                var label = new Label
+                {
+                    Text = $"{item.ExpirationDateInput:dd.MM.yyyy} - {item.QuantityInput} {item.NameUnit}",
+                    TextColor = Colors.Gray,
+                    FontSize = 12,
+                    HorizontalOptions = LayoutOptions.Start
+                };
+                historyGrid.Add(label, 1, i); // Колонка 1, Рядок i
+            }
+        }
+
+        LotHistoryStackLayout.Children.Add(historyGrid);
+    }
     private void QuantityFocused(object sender, FocusEventArgs e)
     {
         Dispatcher.Dispatch(() =>

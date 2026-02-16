@@ -70,6 +70,7 @@
             <Label Text="Кількість"   Grid.Column="1" />
 
             <DatePicker Date="{Binding DM.ExpirationDateInput}" 
+                        IsEnabled="{Binding IsManual}"
                         DateSelected="ExpirationDateSelected"
                         Grid.Row="1" Format="dd.MM.yyyy" 
                         FontSize="Large"/>
@@ -83,6 +84,7 @@
             <Label Text="Виготовлено"  Padding="5" Grid.Row="2"/>
 
             <DatePicker Date="{Binding DM.ProductionDateInput}" 
+                        IsEnabled="{Binding IsManual}"
                         DateSelected="ProductionDateSelected"                        
                         Grid.Row="3" 
                         Format="dd.MM.yyyy"  
@@ -93,6 +95,10 @@
 
         <!--<Button Text="Назад" Clicked="Back"/>-->
 
-
+        <Grid  HeightRequest="60">
+            <ScrollView>
+                <StackLayout x:Name="LotHistoryStackLayout" />
+            </ScrollView>
+        </Grid>
     </VerticalStackLayout>
 </ContentView>

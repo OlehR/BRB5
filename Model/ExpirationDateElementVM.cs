@@ -37,7 +37,7 @@ namespace BRB5.Model
         public string BarCode { get; set; }
         public int CodeUnit { get; set; }
         public string NameUnit { get; set; }
-        public bool IsManual { get { return DocId?.StartsWith("xx") == true; } }
+        public bool IsManual { get { return DocId?.StartsWith("zz") == true; } }
         public int[] DaysRight { get { return DaysLeft?.Split(';')?.Select(e => (int)e.ToDecimal()).ToArray() ?? new int[0]; } }
 
         public Color GetColor { get { return GetPercentColor?.ColorNormal??Color.LightGray ;  } }
