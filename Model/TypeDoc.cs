@@ -4,8 +4,8 @@ using System.Text;
 
 namespace BRB5
 {
-    public enum eKindDoc { NotDefined=0, Normal=1, Simple=2, PriceCheck=3, RaitingDoc=4, RaitingTempate=5, RaitingTemplateCreate=6, PlanCheck=7, ExpirationDate=8, LotsCheck=9, Lot=10}
-    public enum eGroup { NotDefined, Price,Doc,Raiting, FixedAssets }
+    public enum eKindDoc { NotDefined=0, Normal=1, Simple=2, PriceCheck=3, RaitingDoc=4, RaitingTempate=5, RaitingTemplateCreate=6, PlanCheck=7, ExpirationDate=8, LotsCheck=9, Lot=10, NormalNoEdit=11}
+    public enum eGroup { NotDefined, Price,Doc,Raiting, FixedAssets, СollectionOfGoods }
     public enum eTypeReplenishment {None/*Відсутне*/,Input /*Вручну*/,Auto /* Проставляємо 1*/ }
     public class TypeDoc
     {
