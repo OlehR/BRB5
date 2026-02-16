@@ -2,23 +2,21 @@
 <ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="PriceChecker.View.NumericKeyboard"
-             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
-              x:Name="Root">
+             x:Name="Root">
     <Frame HasShadow="True"
-       CornerRadius="12"
-       Padding="4"
-       BackgroundColor="White"
-       WidthRequest="330" HeightRequest="360"
-       HorizontalOptions="End"
-       VerticalOptions="End"
-       Margin="12">
+           CornerRadius="12"
+           Padding="4"
+           BackgroundColor="White"
+           WidthRequest="330" HeightRequest="360"
+           HorizontalOptions="End"
+           VerticalOptions="End"
+           Margin="12">
 
         <Frame.Resources>
             <Style TargetType="Button">
                 <Setter Property="FontSize" Value="38"/>
                 <Setter Property="FontAttributes" Value="Bold"/>
                 <Setter Property="BackgroundColor" Value="#5d88ba"/>
-                <!-- тьмяний синій -->
                 <Setter Property="TextColor" Value="White"/>
                 <Setter Property="CornerRadius" Value="12"/>
             </Style>
@@ -37,24 +35,21 @@
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
 
-            <!-- digits 1..9 -->
-            <Button Text="1" Grid.Row="0" Grid.Column="0" Clicked="Digit_Clicked"/>
-            <Button Text="2" Grid.Row="0" Grid.Column="1" Clicked="Digit_Clicked"/>
-            <Button Text="3" Grid.Row="0" Grid.Column="2" Clicked="Digit_Clicked"/>
+            <Button Text="1" Grid.Row="0" Grid.Column="0" Pressed="Digit_Pressed"/>
+            <Button Text="2" Grid.Row="0" Grid.Column="1" Pressed="Digit_Pressed"/>
+            <Button Text="3" Grid.Row="0" Grid.Column="2" Pressed="Digit_Pressed"/>
 
-            <Button Text="4" Grid.Row="1" Grid.Column="0" Clicked="Digit_Clicked"/>
-            <Button Text="5" Grid.Row="1" Grid.Column="1" Clicked="Digit_Clicked"/>
-            <Button Text="6" Grid.Row="1" Grid.Column="2" Clicked="Digit_Clicked"/>
+            <Button Text="4" Grid.Row="1" Grid.Column="0" Pressed="Digit_Pressed"/>
+            <Button Text="5" Grid.Row="1" Grid.Column="1" Pressed="Digit_Pressed"/>
+            <Button Text="6" Grid.Row="1" Grid.Column="2" Pressed="Digit_Pressed"/>
 
-            <Button Text="7" Grid.Row="2" Grid.Column="0" Clicked="Digit_Clicked"/>
-            <Button Text="8" Grid.Row="2" Grid.Column="1" Clicked="Digit_Clicked"/>
-            <Button Text="9" Grid.Row="2" Grid.Column="2" Clicked="Digit_Clicked"/>
+            <Button Text="7" Grid.Row="2" Grid.Column="0" Pressed="Digit_Pressed"/>
+            <Button Text="8" Grid.Row="2" Grid.Column="1" Pressed="Digit_Pressed"/>
+            <Button Text="9" Grid.Row="2" Grid.Column="2" Pressed="Digit_Pressed"/>
 
-            <!-- bottom row: OK, 0, Backspace -->
             <Button Text="⌫" Grid.Row="3" Grid.Column="0" Pressed="Backspace_Pressed" Released="Backspace_Released" />
-            <Button Text="0" Grid.Row="3" Grid.Column="1" Clicked="Digit_Clicked"/>
-            <Button Text="OK" Grid.Row="3" Grid.Column="2" Clicked="Ok_Clicked" />
+            <Button Text="0" Grid.Row="3" Grid.Column="1" Pressed="Digit_Pressed"/>
+            <Button Text="OK" Grid.Row="3" Grid.Column="2" Pressed="Ok_Pressed" />
         </Grid>
     </Frame>
-
 </ContentView>
