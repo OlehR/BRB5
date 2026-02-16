@@ -120,8 +120,8 @@
                         </Label.GestureRecognizers>
                     </Label>
                 </Grid>
-                <Label Text="F5-" FontSize="16" TextColor="#ff5c5c" VerticalOptions="Center" />
-                <Label Text="створ." FontSize="18" TextColor="#816f20">
+                <Label Text="F5-" IsVisible="{Binding IsVisCreateDoc}" FontSize="16" TextColor="#ff5c5c" VerticalOptions="Center" />
+                <Label Text="створ." IsVisible="{Binding IsVisCreateDoc}" FontSize="18" TextColor="#816f20">
                     <Label.GestureRecognizers>
                         <TapGestureRecognizer Tapped="CreateDoc" />
                     </Label.GestureRecognizers>

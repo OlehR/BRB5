@@ -33,6 +33,7 @@ namespace BRB6.View
         public bool IsSoftKeyboard { get { return Config.IsSoftKeyboard; } }
         public bool IsVisScan { get { return Config.TypeScaner == eTypeScaner.Camera; } }
         CameraView BarcodeScaner;
+        public bool IsVisCreateDoc { get { return TypeDoc.TypeCreateDoc != eTypeCreateDoc.NotDefined; } }       
 
         public Docs(TypeDoc pTypeDoc )
         {
@@ -124,7 +125,7 @@ namespace BRB6.View
 
         private async void CreateDoc(object sender, TappedEventArgs e)
         {
-            await Navigation.PushAsync(new CreateDoc());
+            if(IsVisCreateDoc) await Navigation.PushAsync(new CreateDoc());
         }
         private void UpDown(int key)
         {
