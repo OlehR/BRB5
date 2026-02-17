@@ -208,9 +208,6 @@ namespace BRB5.Model
         public virtual async Task<Result> SaveTemplate(RaitingTemplate pRT) { throw new NotImplementedException(); }        
 
         public virtual async Task<Result> SaveDocRaiting(DocVM pDoc) { throw new NotImplementedException(); }
-
-        public virtual async Task<Result> CreateNewDocAsync(Doc pDoc) { throw new NotImplementedException(); }
-
         public virtual async Task<Result<IEnumerable<RaitingTemplate>>> GetRaitingTemplateAsync() { throw new NotImplementedException(); }
         public virtual async Task<Result<IEnumerable<Doc>>> GetRaitingDocsAsync() { throw new NotImplementedException(); }
         public virtual async Task<Result<IEnumerable<DocVM>>> GetPromotion(int pCodeWarehouse) { throw new NotImplementedException(); }

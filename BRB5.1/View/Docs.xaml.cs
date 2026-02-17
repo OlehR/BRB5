@@ -122,10 +122,16 @@ namespace BRB6.View
         }
         void BarCode(string pBarCode) { MyDocsR = Bl.SetColorType(db.GetDoc(TypeDoc, pBarCode, null));  }
         public void Dispose() {  Config.BarCode -= BarCode;  }
-
+        DocVM NDoc = null;
         private async void CreateDoc(object sender, TappedEventArgs e)
         {
-            if(IsVisCreateDoc) await Navigation.PushAsync(new CreateDoc());
+            NDoc = null;
+            if (IsVisCreateDoc) await Navigation.PushAsync(new CreateDoc(TypeDoc,Ac));
+            if (NDoc != null) await Navigation.PushAsync(new DocItem(NDoc, TypeDoc));
+        }
+        void Ac(DocVM pnn)
+        {
+            NDoc = pnn;            
         }
         private void UpDown(int key)
         {

@@ -1,4 +1,6 @@
 using BL;
+using BL.Connector;
+using BRB5;
 using BRB5.Model;
 using System.Collections.ObjectModel;
 using System.Windows.Input;
@@ -8,6 +10,8 @@ public partial class CreateDoc : ContentPage
 {
     DB db = DB.GetDB();
     BL.BL Bl = BL.BL.GetBL();
+    TypeDoc TD;
+    Action<DocVM> ActionNumberDoc;
     private int _initialCode; // Зберігаємо початковий код тут
 
     public ObservableCollection<Warehouse> QuickAccessWarehouses { get; } = new ObservableCollection<Warehouse>();
@@ -38,9 +42,11 @@ public partial class CreateDoc : ContentPage
     public string Comment { get; set; }
     public ICommand SelectQuickWarehouseCommand { get; }
 
-    public CreateDoc()
+    public CreateDoc(TypeDoc pTD,Action<DocVM> pActionNumberDoc)
     {
+        TD = pTD;
         InitializeComponent();
+        ActionNumberDoc= pActionNumberDoc;
 
         // 1. Читаємо конфіг один раз
         _initialCode = Config.CodeWarehouse;
@@ -132,7 +138,15 @@ public partial class CreateDoc : ContentPage
             await DisplayAlert("Помилка", "Будь ласка, оберіть склад", "ОК");
             return;
         }
-
+        var c = ConnectorBase.GetInstance();
+        var R = await c.CreateDoc(new Doc() { TypeDoc = TD.CodeDoc, CodeWarehouse = SelectedWarehouse.CodeWarehouse, Description = Comment });
+        if (R.State != 0)
+        {
+            await DisplayAlert("Помилка", $"Не вдалося створити документ: State=>{R.State} {R.TextError}", "ОК");
+            return;
+        }
+        db.ReplaceDoc([R.Data]);
+        ActionNumberDoc?.Invoke(R.Data);
         // Тут використовуйте SelectedWarehouse.Code та Comment для збереження
         await DisplayAlert("Успіх", $"Документ створено для {SelectedWarehouse.Name}", "ОК");
     }
