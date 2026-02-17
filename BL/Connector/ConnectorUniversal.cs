@@ -331,7 +331,38 @@ namespace BL.Connector
                 return new Result(e);
             }
         }
+        
+        public override async Task<Result> CreateNewDocAsync(Doc pDoc)
+        {
+            try
+            {
+                string Data = pDoc.ToJson();
+                var TD = Config.GetDocSetting(pDoc.TypeDoc);
+                int CodeApi = (TD?.CodeApiSave > 0 ? TD?.CodeApiSave : TD?.CodeApi) ?? 0;
+                
+                if (CodeApi == 1) // || (Config.LocalCompany==eCompany.Sim23 && (pDoc.TypeDoc==5 || pDoc.TypeDoc == 14 || pDoc.TypeDoc == 15) )) //!!!Тимчасовий хак.
+                {
+                    if (СonnectorLocal != null)
+                    {
+                        var Res = await СonnectorLocal.CreateNewDocAsync(pDoc);                        
+                        return Res;
+                    }
+                    else
+                        return new Result(-1, "Локальний конектор не визначено");
+                }
 
+                HttpResult result = await GetDataHTTP.HTTPRequestAsync(0, "DCT/CreateNewDoc", Data, "application/json", null);
+                if (result.HttpState == eStateHTTP.HTTP_OK)
+                    return JsonConvert.DeserializeObject<Result>(result.Result);
+
+                return new Result(result);
+            }
+            catch (Exception e)
+            {
+                FileLogger.WriteLogMessage(this, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+                return new Result(e);
+            }
+        }
         public virtual async Task<Result<Doc>> CreateDoc(Doc pDoc) { pDoc.NumberDoc = DateTime.Now.ToString(); return new() { Data = pDoc }; }
         /// <summary>
         /// Вивантаження Рейтингів

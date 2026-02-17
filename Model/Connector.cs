@@ -27,9 +27,9 @@ namespace BRB5.Model
         { Instance = null; }
 
         //Логін
-        public virtual Task<UtilNetwork.Result> LoginAsync(string pLogin, string pPassWord, eLoginServer pLoginServer, string pBarCode = null) { throw new NotImplementedException(); }
+        public virtual Task<Result> LoginAsync(string pLogin, string pPassWord, eLoginServer pLoginServer, string pBarCode = null) { throw new NotImplementedException(); }
         //Завантаження довідників.
-        public virtual async Task<UtilNetwork.Result> LoadGuidDataAsync(bool IsFull) => throw new NotImplementedException();
+        public virtual async Task<Result> LoadGuidDataAsync(bool IsFull) => throw new NotImplementedException();
 
         //Робота з документами.
         /// <summary>
@@ -40,9 +40,9 @@ namespace BRB5.Model
         /// <param name="pProgress"></param>
         /// <param name="pIsClear"></param>
         /// <returns></returns>
-        public virtual async Task<UtilNetwork.Result> LoadDocsDataAsync(int pTypeDoc, string pNumberDoc, bool pIsClear) { throw new NotImplementedException(); }
+        public virtual async Task<Result> LoadDocsDataAsync(int pTypeDoc, string pNumberDoc, bool pIsClear) { throw new NotImplementedException(); }
 
-        public virtual async Task<UtilNetwork.Result<string>> GetNameWarehouseFromDoc(DocId pD) { throw new NotImplementedException(); }
+        public virtual async Task<Result<string>> GetNameWarehouseFromDoc(DocId pD) { throw new NotImplementedException(); }
         /// <summary>
         /// Вивантаження документів з ТЗД (HTTP)
         /// </summary>
@@ -50,25 +50,25 @@ namespace BRB5.Model
         /// <param name="pWares"></param>
         /// <param name="pIsClose"></param>
         /// <returns></returns>
-        public virtual async Task<UtilNetwork.Result> SendDocsDataAsync(DocVM pDoc, IEnumerable<DocWares> pWares) { throw new NotImplementedException(); }
+        public virtual async Task<Result> SendDocsDataAsync(DocVM pDoc, IEnumerable<DocWares> pWares) { throw new NotImplementedException(); }
 
 
-        public virtual async Task<UtilNetwork.Result<Doc>> CreateDoc(Doc pDoc) { throw new NotImplementedException(); }
+        public virtual async Task<Result<Doc>> CreateDoc(Doc pDoc) { throw new NotImplementedException(); }
         //Збереження ПРосканованих товарів в 1С
-        public virtual UtilNetwork.Result SendLogPrice(IEnumerable<LogPrice> pList) { throw new NotImplementedException(); }
+        public virtual Result SendLogPrice(IEnumerable<LogPrice> pList) { throw new NotImplementedException(); }
 
         /// <summary>
         /// Вивантаження Рейтингів
         /// </summary>
         /// <param name="pR"></param>
         /// <returns></returns>
-        public virtual async Task<UtilNetwork.Result> SendRatingAsync(IEnumerable<RaitingDocItem> pR, DocVM pDoc,bool pIsArchive=false)  { throw new NotImplementedException(); }
+        public virtual async Task<Result> SendRatingAsync(IEnumerable<RaitingDocItem> pR, DocVM pDoc,bool pIsArchive=false)  { throw new NotImplementedException(); }
 
         /// <summary>
         /// Вивантажеємо на сервер файли Рейтингів
         /// </summary>
         /// <returns></returns>
-        public virtual async Task<UtilNetwork.Result> SendRatingFilesAsync(string pNumberDoc, int pTry =2, int pMaxSecondSend = 0, int pSecondSkip = 0) { throw new NotImplementedException(); }
+        public virtual async Task<Result> SendRatingFilesAsync(string pNumberDoc, int pTry =2, int pMaxSecondSend = 0, int pSecondSkip = 0) { throw new NotImplementedException(); }
 
 
         /// <summary>
@@ -188,7 +188,7 @@ namespace BRB5.Model
         /// </summary>
         /// <param name="pBC"></param>
         /// <returns></returns>
-        public virtual UtilNetwork.Result<WaresPrice> GetPrice(ParseBarCode pBC, eTypePriceInfo pTP = eTypePriceInfo.Short) { throw new NotImplementedException(); }
+        public virtual Result<WaresPrice> GetPrice(ParseBarCode pBC, eTypePriceInfo pTP = eTypePriceInfo.Short) { throw new NotImplementedException(); }
 
         /// <summary>
         /// Список Документів доступних по ролі
@@ -197,35 +197,37 @@ namespace BRB5.Model
         /// <returns></returns>
         public virtual IEnumerable<TypeDoc> GetTypeDoc(eRole pRole, eLoginServer pLS, eGroup pGroup = eGroup.NotDefined) { throw new NotImplementedException(); }
 
-        public virtual async Task<UtilNetwork.Result<IEnumerable<Warehouse>>> LoadWarehouse() { throw new NotImplementedException(); }
+        public virtual async Task<Result<IEnumerable<Warehouse>>> LoadWarehouse() { throw new NotImplementedException(); }
 
         public virtual IEnumerable<LoginServer> LoginServer() { throw new NotImplementedException(); }
 
-        public virtual async Task<UtilNetwork.Result<int>> GetIdRaitingTemplate() { throw new NotImplementedException(); }
+        public virtual async Task<Result<int>> GetIdRaitingTemplate() { throw new NotImplementedException(); }
 
-        public virtual async Task<UtilNetwork.Result> GetNumberDocRaiting() { throw new NotImplementedException(); }
+        public virtual async Task<Result> GetNumberDocRaiting() { throw new NotImplementedException(); }
 
-        public virtual async Task<UtilNetwork.Result> SaveTemplate(RaitingTemplate pRT) { throw new NotImplementedException(); }        
+        public virtual async Task<Result> SaveTemplate(RaitingTemplate pRT) { throw new NotImplementedException(); }        
 
-        public virtual async Task<UtilNetwork.Result> SaveDocRaiting(DocVM pDoc) { throw new NotImplementedException(); }
+        public virtual async Task<Result> SaveDocRaiting(DocVM pDoc) { throw new NotImplementedException(); }
 
-        public virtual async Task<UtilNetwork.Result<IEnumerable<RaitingTemplate>>> GetRaitingTemplateAsync() { throw new NotImplementedException(); }
-        public virtual async Task<UtilNetwork.Result<IEnumerable<Doc>>> GetRaitingDocsAsync() { throw new NotImplementedException(); }
-        public virtual async Task<UtilNetwork.Result<IEnumerable<DocVM>>> GetPromotion(int pCodeWarehouse) { throw new NotImplementedException(); }
-        public virtual async Task<UtilNetwork.Result<IEnumerable<DocWares>>> GetPromotionData(string pNumberDoc) { throw new NotImplementedException(); }
-        public virtual async Task<UtilNetwork.Result<IEnumerable<DocWaresExpirationSample>>> GetExpirationDateAsync(int pCodeWarehouse) { throw new NotImplementedException(); }
+        public virtual async Task<Result> CreateNewDocAsync(Doc pDoc) { throw new NotImplementedException(); }
+
+        public virtual async Task<Result<IEnumerable<RaitingTemplate>>> GetRaitingTemplateAsync() { throw new NotImplementedException(); }
+        public virtual async Task<Result<IEnumerable<Doc>>> GetRaitingDocsAsync() { throw new NotImplementedException(); }
+        public virtual async Task<Result<IEnumerable<DocVM>>> GetPromotion(int pCodeWarehouse) { throw new NotImplementedException(); }
+        public virtual async Task<Result<IEnumerable<DocWares>>> GetPromotionData(string pNumberDoc) { throw new NotImplementedException(); }
+        public virtual async Task<Result<IEnumerable<DocWaresExpirationSample>>> GetExpirationDateAsync(int pCodeWarehouse) { throw new NotImplementedException(); }
 
         //public virtual async Task<Result<IEnumerable<ExpirationWares>>> GetDaysLeft() { throw new NotImplementedException(); }
 
-        public virtual async Task<UtilNetwork.Result> SaveExpirationDate(DocWaresExpirationSave pED) { throw new NotImplementedException(); }
+        public virtual async Task<Result> SaveExpirationDate(DocWaresExpirationSave pED) { throw new NotImplementedException(); }
 
         static public PercentColor[] PercentColor = [];
 
-        public virtual async Task<UtilNetwork.Result> GetInfo() { throw new NotImplementedException(); }
+        public virtual async Task<Result> GetInfo() { throw new NotImplementedException(); }
 
-        public virtual async Task<UtilNetwork.Result> UploadFile(string pFile, string pFileName = null) { throw new NotImplementedException(); }
+        public virtual async Task<Result> UploadFile(string pFile, string pFileName = null) { throw new NotImplementedException(); }
 
-        public virtual async Task<UtilNetwork.Result<IEnumerable<Client>>> GetClient(string  pBarCode) { throw new NotImplementedException(); }
+        public virtual async Task<Result<IEnumerable<Client>>> GetClient(string  pBarCode) { throw new NotImplementedException(); }
     }
 
     public class LoginServer
