@@ -33,8 +33,10 @@ namespace BRB6.View
         public bool IsSoftKeyboard { get { return Config.IsSoftKeyboard; } }
         public bool IsVisScan { get { return Config.TypeScaner == eTypeScaner.Camera; } }
         CameraView BarcodeScaner;
-        public bool IsVisCreateDoc { get { return TypeDoc.TypeCreateDoc != eTypeCreateDoc.NotDefined; } }       
+        public bool IsVisCreateDoc { get { return TypeDoc.TypeCreateDoc != eTypeCreateDoc.NotDefined; } }
+        //public bool IsVisCreateDoc { get { return true; } }
 
+        private DocVM CreatedDoc = null;
         public Docs(TypeDoc pTypeDoc )
         {
             NokeyBoard();
@@ -122,16 +124,20 @@ namespace BRB6.View
         }
         void BarCode(string pBarCode) { MyDocsR = Bl.SetColorType(db.GetDoc(TypeDoc, pBarCode, null));  }
         public void Dispose() {  Config.BarCode -= BarCode;  }
-        DocVM NDoc = null;
         private async void CreateDoc(object sender, TappedEventArgs e)
         {
-            NDoc = null;
-            if (IsVisCreateDoc) await Navigation.PushAsync(new CreateDoc(TypeDoc,Ac));
-            if (NDoc != null) await Navigation.PushAsync(new DocItem(NDoc, TypeDoc));
+            CreatedDoc = null;
+            if (IsVisCreateDoc)
+            {
+                await Navigation.PushAsync(new CreateDoc(TypeDoc, ActionCreatedDoc));               
+            }
+
         }
-        void Ac(DocVM pnn)
+        void ActionCreatedDoc(DocVM pCreatedDoc)
         {
-            NDoc = pnn;            
+            CreatedDoc = pCreatedDoc;
+            Task.Delay(500);
+            if (CreatedDoc != null) _= Navigation.PushAsync(new DocItem(CreatedDoc, TypeDoc));
         }
         private void UpDown(int key)
         {

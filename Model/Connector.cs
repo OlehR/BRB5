@@ -53,7 +53,7 @@ namespace BRB5.Model
         public virtual async Task<Result> SendDocsDataAsync(DocVM pDoc, IEnumerable<DocWares> pWares) { throw new NotImplementedException(); }
 
 
-        public virtual async Task<Result<Doc>> CreateDoc(Doc pDoc) { throw new NotImplementedException(); }
+        public virtual async Task<Result<DocVM>> CreateDoc(DocVM pDoc) { throw new NotImplementedException(); }
         //Збереження ПРосканованих товарів в 1С
         public virtual Result SendLogPrice(IEnumerable<LogPrice> pList) { throw new NotImplementedException(); }
 

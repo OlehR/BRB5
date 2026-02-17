@@ -332,7 +332,7 @@ namespace BL.Connector
             }
         }        
        
-        public override async Task<Result<Doc>> CreateDoc(Doc pDoc) 
+        public override async Task<Result<DocVM>> CreateDoc(DocVM pDoc) 
         { 
             pDoc.NumberDoc = DateTime.Now.ToString(); 
             return new() { Data = pDoc };
@@ -356,7 +356,7 @@ namespace BL.Connector
 
                 HttpResult result = await GetDataHTTP.HTTPRequestAsync(0, "DCT/CreateNewDoc", Data, "application/json", null);
                 if (result.HttpState == eStateHTTP.HTTP_OK)
-                    return JsonConvert.DeserializeObject<Result<Doc>>(result.Result);
+                    return JsonConvert.DeserializeObject<Result<DocVM>>(result.Result);
 
                 return new(result);
             }

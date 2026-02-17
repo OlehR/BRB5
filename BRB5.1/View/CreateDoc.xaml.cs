@@ -11,7 +11,7 @@ public partial class CreateDoc : ContentPage
     DB db = DB.GetDB();
     BL.BL Bl = BL.BL.GetBL();
     TypeDoc TD;
-    Action<DocVM> ActionNumberDoc;
+    Action<DocVM> CreatedDoc;
     private int _initialCode; // Зберігаємо початковий код тут
 
     public ObservableCollection<Warehouse> QuickAccessWarehouses { get; } = new ObservableCollection<Warehouse>();
@@ -46,7 +46,7 @@ public partial class CreateDoc : ContentPage
     {
         TD = pTD;
         InitializeComponent();
-        ActionNumberDoc= pActionNumberDoc;
+        CreatedDoc= pActionNumberDoc;
 
         // 1. Читаємо конфіг один раз
         _initialCode = Config.CodeWarehouse;
@@ -129,7 +129,6 @@ public partial class CreateDoc : ContentPage
     private void OnWarehouseFilterUnfocused(object sender, FocusEventArgs e) => ApplyPickerFilter(WarehouseFilterEntry.Text);
     private void OnWarehouseFilterCompleted(object sender, EventArgs e) => ApplyPickerFilter(WarehouseFilterEntry.Text);
 
-
     private async void OnCreateDocumentClicked(object sender, EventArgs e)
     {
         // Логіка створення документа
@@ -139,15 +138,17 @@ public partial class CreateDoc : ContentPage
             return;
         }
         var c = ConnectorBase.GetInstance();
-        var R = await c.CreateDoc(new Doc() { TypeDoc = TD.CodeDoc, CodeWarehouse = SelectedWarehouse.CodeWarehouse, Description = Comment });
+        var R = await c.CreateDoc(new DocVM() { TypeDoc = TD.CodeDoc, CodeWarehouse = SelectedWarehouse.CodeWarehouse, Description = Comment });
         if (R.State != 0)
         {
             await DisplayAlert("Помилка", $"Не вдалося створити документ: State=>{R.State} {R.TextError}", "ОК");
             return;
         }
         db.ReplaceDoc([R.Data]);
-        ActionNumberDoc?.Invoke(R.Data);
+        
         // Тут використовуйте SelectedWarehouse.Code та Comment для збереження
         await DisplayAlert("Успіх", $"Документ створено для {SelectedWarehouse.Name}", "ОК");
+        await Navigation.PopAsync();
+        CreatedDoc?.Invoke(R.Data);
     }
 }

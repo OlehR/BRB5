@@ -47,6 +47,6 @@
             <Editor Text="{Binding Comment}" Placeholder="Введіть текст..." HeightRequest="70" />
         </VerticalStackLayout>
 
-        <Button Text="СТВОРИТИ" Grid.Row="4" BackgroundColor="#4CAF50" TextColor="White" />
+        <Button Text="СТВОРИТИ" Grid.Row="4" Clicked="OnCreateDocumentClicked" BackgroundColor="#4CAF50" TextColor="White" />
     </Grid>
 </ContentPage>
