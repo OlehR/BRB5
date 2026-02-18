@@ -276,10 +276,44 @@ namespace BRB6
             {
                 BarcodeScaner.PauseScanning = true;
                 FoundWares(e.BarcodeResults[0].DisplayValue);
-                Task.Run(async () => {                     
+                Task.Run(async () =>
+                {
                     await Task.Delay(1000);
                     BarcodeScaner.PauseScanning = false;
                 });
+            }
+        }
+
+        private void OnClearClicked(object sender, EventArgs e)
+        {
+            NumberOfReplenishment.Text = "0";
+        }
+
+        private void OnMinus1Clicked(object sender, EventArgs e)
+        {
+            ModifyValue(-1);
+        }
+
+        private void OnPlus1Clicked(object sender, EventArgs e)
+        {
+            ModifyValue(1);
+        }
+
+        private void OnPlus6Clicked(object sender, EventArgs e)
+        {
+            ModifyValue(6);
+        }
+
+        private void ModifyValue(int delta)
+        {
+            if (int.TryParse(NumberOfReplenishment.Text, out int currentVal))
+            {
+                int newVal = currentVal + delta;
+                NumberOfReplenishment.Text = (newVal < 0 ? 0 : newVal).ToString();
+            }
+            else
+            {
+                NumberOfReplenishment.Text = delta > 0 ? delta.ToString() : "0";
             }
         }
 

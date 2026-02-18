@@ -160,23 +160,26 @@
                 </Frame>
             </Grid>
 
-            <Grid IsVisible="{Binding IsVisRepl}">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="1*" />
-                    <ColumnDefinition Width="2*" />
-                </Grid.ColumnDefinitions>
+            <Grid IsVisible="{Binding IsVisRepl}" ColumnDefinitions="2*,*,2*,3*,2*,2*" HeightRequest="60" ColumnSpacing="0" Margin="0">
 
-                <Label Text="Поповнення:" />
-                <Frame Style="{StaticResource FrameStyle}"
-                       Grid.Column="1">
-                    <controls:CustomEntry Style="{StaticResource EntryStyle}"
-                                          Text=""    
-                                          AutomationId="ReplenishmentEntry"
-                                          x:Name="NumberOfReplenishment"
-                                          Unfocused="OnUpdateReplenishment"
-                                          Completed="OnUpdateReplenishment"
-                                          Keyboard="{OnPlatform Numeric, iOS=Default}" />
+                <Button Grid.Column="0" FontSize="30" FontAttributes="Bold" Text="C"  Padding="0" Margin="2" Clicked="OnClearClicked" BackgroundColor="#e31e24" TextColor="White" CornerRadius="15" />
+
+                <Button Grid.Column="2" FontSize="40" FontAttributes="Bold" Text="—" Margin="2"  Padding="0" Clicked="OnMinus1Clicked" BackgroundColor="#23b14d" TextColor="White" CornerRadius="15" />
+
+                <Frame Grid.Column="3" Padding="0" HasShadow="False"  CornerRadius="5">
+                    <controls:CustomEntry x:Name="NumberOfReplenishment"
+                              Style="{StaticResource EntryStyle}"
+                              Text="{Binding ReplenishmentValue}"
+                              HorizontalTextAlignment="Center"
+                              VerticalOptions="Center"
+                              Keyboard="Numeric"
+                              Unfocused="OnUpdateReplenishment"
+                              Completed="OnUpdateReplenishment" />
                 </Frame>
+
+                <Button Grid.Column="4" FontSize="40" FontAttributes="Bold" Text="+" Margin="2" Padding="0" Clicked="OnPlus1Clicked"  BackgroundColor="#23b14d" TextColor="White" CornerRadius="15" />
+
+                <Button Grid.Column="5" FontSize="30" FontAttributes="Bold" Text="+6" Margin="2" Padding="0" Clicked="OnPlus6Clicked" BackgroundColor="#23b14d" TextColor="White" CornerRadius="15" />
             </Grid>
 
             <StackLayout IsVisible="{Binding IsVisDoubleScan}">
