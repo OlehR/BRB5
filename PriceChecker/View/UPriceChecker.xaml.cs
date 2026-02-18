@@ -9,7 +9,7 @@ using Timer = System.Timers.Timer;
 
 namespace PriceChecker.View;
 
-public partial class UPriceChecker : ContentPage
+public partial class UPriceChecker : BaseContentPage
 {
     BL.BL bl = BL.BL.GetBL();
     private Timer _returnToSplashTimer;
@@ -70,17 +70,43 @@ public partial class UPriceChecker : ContentPage
                 break;
 
         }
+
+#if ANDROID
+        this.Loaded += (s, e) => {
+            InputBCU.Focus();
+        };
+        InputBCU.Completed += (s, e) =>
+        {
+            if (!string.IsNullOrEmpty(InputBCU.Text))
+            {
+                string text = InputBCU.Text;
+                InputBCU.Text = string.Empty; // Очищуємо відразу для наступного сканування
+                Task.Run(async () => BarCode(text, "Scanner"));
+            }
+        };
+        InputBCU.Unfocused += (s, e) => { if (this.IsLoaded) InputBCU.Focus(); };
+      
+#endif
     }
     protected override void OnAppearing()
     {
         base.OnAppearing();
         App.ScanerCom?.SetOnBarCode(BarCode);
         _returnToSplashTimer.Start();
+
+#if ANDROID
+        InputBCU.IsReadOnly = false;
+#endif
     }
 
     protected override void OnDisappearing()
     {
         _returnToSplashTimer.Stop();
+
+#if ANDROID
+        InputBCU.IsReadOnly = true;
+
+#endif
         base.OnDisappearing();
     }
 

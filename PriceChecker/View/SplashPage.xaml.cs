@@ -75,11 +75,16 @@ public partial class SplashPage : BaseContentPage
        
         var r = await bl.c.LoginAsync(Config.Login, Config.Password, Config.LoginServer);
 
+        InputBC.IsReadOnly = false;
         InputBC.Unfocus(); 
         InputBC.Focus();
 
     }
-
+    protected override async void OnDisappearing()
+    {
+        InputBC.IsReadOnly = true;
+        base.OnDisappearing();
+    }
     async void BarCode(string pBarCode, string pType)
     {
         FileLogger.WriteLogMessage("SplashPage", "BarCode", $"BarCode: {pBarCode}, Type: {pType}");

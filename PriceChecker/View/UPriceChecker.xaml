@@ -1,12 +1,14 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+<view:BaseContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:ffimageloading="clr-namespace:FFImageLoading.Maui;assembly=FFImageLoading.Maui"
-             x:Class="PriceChecker.View.UPriceChecker"            
+             x:Class="PriceChecker.View.UPriceChecker"           
+             xmlns:view="clr-namespace:PriceChecker.View"
+             xmlns:controls="clr-namespace:PriceChecker.View"          
              Shell.FlyoutBehavior="Disabled"
              Shell.NavBarIsVisible="False">
 
-    <ContentPage.Content>
+    <view:BaseContentPage.Content>
         <Grid>
             <Image x:Name="BackgroundImage"
                    Aspect="AspectFill"
@@ -19,7 +21,7 @@
                     <RowDefinition Height="1*" />
                 </Grid.RowDefinitions>
 
-                <StackLayout Orientation="Horizontal"  BackgroundColor="{Binding ColorBG}" >
+                <Grid ColumnDefinitions="auto,*,auto"  BackgroundColor="{Binding ColorBG}" >
                     <Frame IsVisible="{Binding IsCashback}"
                             CornerRadius="10"  
                             HasShadow="False"
@@ -27,11 +29,16 @@
                         <Image Source="cashback.png"                          
                                Aspect="AspectFit" />
                     </Frame>
+                    <OnPlatform x:TypeArguments="View" >
+                        <On Platform="Android">
+                            <controls:CustomEntry x:Name="InputBCU" Grid.Column="1" VerticalOptions="End" Margin="20,0,20,10"  />
+                        </On>
+                    </OnPlatform>
 
-                    <Image x:Name="LogoImage" 
+                    <Image x:Name="LogoImage" Grid.Column="2"
                            HorizontalOptions="EndAndExpand"  
                            Aspect="AspectFit"/>
-                </StackLayout>
+                </Grid>
 
 
                 <Grid Grid.Row="1" >
@@ -72,14 +79,15 @@
                                           IsVisible="{Binding IsVisPriceMain}"
                                            HeightRequest="190" 
                                            VerticalOptions="EndAndExpand">
-                                        <BoxView Color="White"    
+                                        <!--<BoxView Color="White"    
                                                  IsVisible="{Binding IsVisPromotion}"
                                                 HeightRequest="10"
                                                 HorizontalOptions="Fill"
                                                 VerticalOptions="Fill"
                                                 Rotation="-30" 
-                                                 Opacity="0.9"/>
-
+                                                 Opacity="0.9"/>-->
+                                        <Line IsVisible="{Binding IsVisPromotion}" X1="0" Y1="150"   X2="300" Y2="40" Stroke="White" StrokeThickness="10"
+                                               Aspect="Fill"  HorizontalOptions="Fill" VerticalOptions="Fill" Opacity="0.9"  InputTransparent="True"/>
                                         <Label Text="{Binding WP.Price}" 
                                            IsVisible="{Binding IsVisPriceOpt}"
                                            HorizontalOptions="Center" 
@@ -168,8 +176,8 @@
                                 FontSize="30"
                                 TextColor="Blue" />
                     </StackLayout>
-                </Grid>
+                </Grid>                   
             </Grid>
         </Grid>
-    </ContentPage.Content>
-</ContentPage>
+    </view:BaseContentPage.Content>
+</view:BaseContentPage>
