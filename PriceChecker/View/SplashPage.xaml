@@ -9,7 +9,7 @@
              HideSoftInputOnTapped="True" >
 
     <AbsoluteLayout>
-        <Grid AbsoluteLayout.LayoutBounds="0,0,1,1" AbsoluteLayout.LayoutFlags="All">
+        <Grid RowDefinitions="*,auto" AbsoluteLayout.LayoutBounds="0,0,1,1" AbsoluteLayout.LayoutFlags="All">
             <Image x:Name="BackgroundImage" Opacity="0.3" Aspect="AspectFill"
                    Grid.RowSpan="2" Grid.ColumnSpan="2" />
             <Label x:Name="SettingsShow" />
@@ -25,8 +25,11 @@
                     </Label>
                     <controls:CustomEntry x:Name="InputBC" TextColor="Black" HorizontalOptions="FillAndExpand"/>
                 </StackLayout>
-
+               
             </VerticalStackLayout>
+            <Label Grid.Row="1" Padding="20" FontAttributes="Bold" FontSize="30" HorizontalTextAlignment="Center" HorizontalOptions="FillAndExpand" BackgroundColor="#23b14d" TextColor="White"
+        Text="З питань працевлаштування звертайтесь за тел: 050 432 2665"/>
+
         </Grid>
 
         <controls:NumericKeyboard x:Name="OnScreenKeyboard"  IsVisible="False"

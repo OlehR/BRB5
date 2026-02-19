@@ -28,6 +28,7 @@ public partial class SplashPage : BaseContentPage
 
         db = DB.GetDB(Path);
         bl = BL.BL.GetBL();
+        bl.Init();
         Task.Run(async()=>
         {
             var r = await bl.c.LoginAsync(Config.Login, Config.Password, Config.LoginServer);
@@ -58,7 +59,7 @@ public partial class SplashPage : BaseContentPage
         InputBC.Unfocused += (s, e) => { if (this.IsLoaded) InputBC.Focus(); };
 #endif
         OnScreenKeyboard.OkPressed += OnScreenKeyboard_OkPressed;
-        bl.Init();
+        
         SetShopBranding();
         Config.TypeDoc = new[]{
             new TypeDoc { Group = eGroup.Doc, CodeDoc = 51, NameDoc = "Установка цін", KindDoc = eKindDoc.Normal },
@@ -104,7 +105,8 @@ public partial class SplashPage : BaseContentPage
 
         if (pBarCode.StartsWith("BRB6=>"))
         {
-            var CodeWarehouse = bl.QRSettingsParse(pBarCode);            
+            var CodeWarehouse = bl.QRSettingsParse(pBarCode); 
+            if(CodeWarehouse!=0) Config.CodeWarehouse = CodeWarehouse;
             ShowTextWithTimeout(pBarCode);
             bl.SaveSettings();
         }
@@ -171,7 +173,6 @@ public partial class SplashPage : BaseContentPage
         _timer.Dispose();
         _timer = null;
     }
-
 
     private void OnKeyboardTapped(object sender, TappedEventArgs e)
     {
