@@ -179,7 +179,7 @@
 
                 <Button Grid.Column="4" FontSize="40" FontAttributes="Bold" Text="+" Margin="2" Padding="0" Clicked="OnPlus1Clicked"  BackgroundColor="#23b14d" TextColor="White" CornerRadius="15" />
 
-                <Button Grid.Column="5" FontSize="30" FontAttributes="Bold" Text="+6" Margin="2" Padding="0" Clicked="OnPlus6Clicked" BackgroundColor="#23b14d" TextColor="White" CornerRadius="15" />
+                <Button Grid.Column="5" FontSize="30" FontAttributes="Bold" Text="{Binding QuantityToAddText}" Margin="2" Padding="0" Clicked="OnPlusDynamicClicked" BackgroundColor="#23b14d" TextColor="White" CornerRadius="15" />
             </Grid>
 
             <StackLayout IsVisible="{Binding IsVisDoubleScan}">

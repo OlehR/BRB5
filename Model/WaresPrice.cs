@@ -103,7 +103,7 @@ namespace BRB5.Model
 
         public string Parent { get; set; }
         public IEnumerable<СonditionClass> Сondition { get; set; }
-
+        public int QuantityShelf { get; set; }
         public bool IsPriceOptYellow { get; set; } = false;
 
         public event PropertyChangedEventHandler PropertyChanged;

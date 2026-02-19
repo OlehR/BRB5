@@ -39,7 +39,7 @@ namespace BRB6
         WaresPrice _WP;
         public WaresPrice WP { get { return _WP; } set { _WP = value; OnPropertyChanged(nameof(WP)); OnPropertyChanged(nameof(TextColorPrice));
                 OnPropertyChanged("IsVisPriceOpt"); OnPropertyChanged(nameof(IsVisPriceNormal)); OnPropertyChanged(nameof(TextColorHttp));
-                OnPropertyChanged("ColorPrintColorType"); OnPropertyChanged(nameof(IsVisPriceOptQ));
+                OnPropertyChanged("ColorPrintColorType"); OnPropertyChanged(nameof(IsVisPriceOptQ)); 
             } }
         //ZXingScannerView zxing;
         //ZXingDefaultOverlay overlay;
@@ -83,6 +83,19 @@ namespace BRB6
         public string ColorDoubleScan { get { return IsWareScaned == eCheckWareScaned.Success ? "#C5FFC4" : IsWareScaned == eCheckWareScaned.Bad || IsWareScaned== eCheckWareScaned.BadPrice ? "#FFC4C4" : 
                                                      IsWareScaned == eCheckWareScaned.PriceTagScaned || IsWareScaned == eCheckWareScaned.WareScaned ? "#FEFFC4" : "#FFFFFF"; } }
         CameraView BarcodeScaner;
+        public int QuantityToAdd
+        {
+            get
+            {
+                if (WP == null || WP.QuantityShelf <= 0)
+                    return 6;
+                if (WP.QuantityShelf > 10)
+                    return 10;
+
+                return WP.QuantityShelf;
+            }
+        }
+        public string QuantityToAddText => $"+{QuantityToAdd}";
         public PriceCheck(TypeDoc pTypeDoc)
         {
             InitializeComponent();
@@ -167,6 +180,8 @@ namespace BRB6
 
                 WP = bl.FoundWares(pBarCode, PackageNumber, LineNumber, pIsHandInput, IsVisDoubleScan, IsOnline);
 
+                OnPropertyChanged(nameof(QuantityToAdd)); 
+                OnPropertyChanged(nameof(QuantityToAddText));
                 if (WP != null)
                 {
                     AllScan++;
@@ -299,9 +314,9 @@ namespace BRB6
             ModifyValue(1);
         }
 
-        private void OnPlus6Clicked(object sender, EventArgs e)
+        private void OnPlusDynamicClicked(object sender, EventArgs e)
         {
-            ModifyValue(6);
+            ModifyValue(QuantityToAdd);
         }
 
         private void ModifyValue(int delta)
