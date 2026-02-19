@@ -28,7 +28,23 @@ public partial class SplashPage : BaseContentPage
 
         db = DB.GetDB(Path);
         bl = BL.BL.GetBL();
-
+        Task.Run(async()=>
+        {
+            var r = await bl.c.LoginAsync(Config.Login, Config.Password, Config.LoginServer);
+            int CodeWarehouse = Config.CodeWarehouse;
+            try
+            {               
+                Config.CodeWarehouse = 0;
+                await bl.c.LoadGuidDataAsync(false);
+                var wh = db.GetWarehouse().FirstOrDefault(el => el.CodeWarehouse == CodeWarehouse);
+                Config.CodeTM = wh?.CodeTM ?? default;
+            }
+            finally
+            {
+                Config.CodeWarehouse = CodeWarehouse;
+                SetShopBranding();
+            }
+        } );
         InputBC.Completed += (s, e) =>
             {
             if (!string.IsNullOrEmpty(InputBC.Text))
@@ -72,9 +88,6 @@ public partial class SplashPage : BaseContentPage
     {
         base.OnAppearing();
         App.ScanerCom?.SetOnBarCode(BarCode);
-       
-        var r = await bl.c.LoginAsync(Config.Login, Config.Password, Config.LoginServer);
-
         InputBC.IsReadOnly = false;
         InputBC.Unfocus(); 
         InputBC.Focus();
@@ -91,22 +104,7 @@ public partial class SplashPage : BaseContentPage
 
         if (pBarCode.StartsWith("BRB6=>"))
         {
-            var CodeWarehouse = bl.QRSettingsParse(pBarCode);
-            if (CodeWarehouse != 0)
-            {
-                try
-                {
-                    Config.CodeWarehouse = 0;
-                    await bl.c.LoadGuidDataAsync(false);
-                    var wh = db.GetWarehouse().FirstOrDefault(el => el.CodeWarehouse == CodeWarehouse);
-                    Config.CodeTM = wh?.CodeTM ?? default;
-                }
-                finally
-                {
-                    Config.CodeWarehouse = CodeWarehouse;
-                    SetShopBranding();
-                }
-            }
+            var CodeWarehouse = bl.QRSettingsParse(pBarCode);            
             ShowTextWithTimeout(pBarCode);
             bl.SaveSettings();
         }
