@@ -1046,11 +1046,12 @@ namespace BL.Connector
         public string[] BarCodes { get; set; }
         public string Unit { get; set; }
         public string Article { get; set; }
+        public decimal Rest { get; set; }
         public int ActionType { get; set; }
         public decimal PromotionPrice { get; set; }
         public WaresPrice GetWaresPrice
         {
-            get { return new WaresPrice() { CodeWares = Code, Name = Name, Price = Price, BarCodes = BarCodes?.Any() != true ? "" : string.Join(',', BarCodes), Unit = Unit, Article = Article, ActionType = ActionType, PriceOpt = PromotionPrice }; }
+            get { return new WaresPrice() { CodeWares = Code, Name = Name, Price = Price, BarCodes = BarCodes?.Any() != true ? "" : string.Join(',', BarCodes), Unit = Unit, Article = Article, ActionType = ActionType, PriceOpt = PromotionPrice,Rest=Rest }; }
         }
     }
     class InputWarehouse

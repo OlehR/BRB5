@@ -49,12 +49,16 @@ namespace BRB6.View
             {
                 Config.OnProgress.Invoke(0.1);
                 try { 
-                 var res = //JsonConvert.DeserializeObject<IEnumerable<DocWaresExpirationSample>>(DataJson.ExpirationWares);
-                await c.GetExpirationDateAsync(Config.CodeWarehouse);
-                    Config.OnProgress.Invoke(0.8);
-                    db.ReplaceDocWaresExpirationSample((IEnumerable<DocWaresExpirationSample>)res.Data);
-                    Config.OnProgress.Invoke(1);
-                    PopulateDocs();
+                 var res = await c.GetExpirationDateAsync(Config.CodeWarehouse);
+                    if (res != null && res.Success)
+                    {
+                        Config.OnProgress.Invoke(0.8);
+                        db.ReplaceDocWaresExpirationSample((IEnumerable<DocWaresExpirationSample>)res.Data);
+                        Config.OnProgress.Invoke(0.9);
+                        _MyDocsR = new ObservableCollection<DocExpiration>(db.GetDocExpiration());
+                        Config.OnProgress.Invoke(1);
+                        PopulateDocs();
+                    }
                 }
                 catch(Exception e)
                 {

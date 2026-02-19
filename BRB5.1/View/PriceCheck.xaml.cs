@@ -179,7 +179,7 @@ namespace BRB6
                 Config.OnProgress?.Invoke(0.2d);
 
                 WP = bl.FoundWares(pBarCode, PackageNumber, LineNumber, pIsHandInput, IsVisDoubleScan, IsOnline);
-
+                NumberOfReplenishment.Text = "0";
                 OnPropertyChanged(nameof(QuantityToAdd)); 
                 OnPropertyChanged(nameof(QuantityToAddText));
                 if (WP != null)
