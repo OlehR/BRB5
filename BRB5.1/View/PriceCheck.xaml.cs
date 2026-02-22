@@ -302,6 +302,8 @@ namespace BRB6
         private void OnClearClicked(object sender, EventArgs e)
         {
             NumberOfReplenishment.Text = "0";
+
+            OnUpdateReplenishment(null, null);
         }
 
         private void OnMinus1Clicked(object sender, EventArgs e)
@@ -330,6 +332,7 @@ namespace BRB6
             {
                 NumberOfReplenishment.Text = delta > 0 ? delta.ToString() : "0";
             }
+            OnUpdateReplenishment(null, null);
         }
 
 #if ANDROID

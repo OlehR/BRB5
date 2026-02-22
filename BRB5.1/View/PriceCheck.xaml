@@ -162,7 +162,7 @@
 
             <Grid IsVisible="{Binding IsVisRepl}" ColumnDefinitions="2*,*,2*,3*,2*,2*" HeightRequest="60" ColumnSpacing="0" Margin="0">
 
-                <Button Grid.Column="0" FontSize="30" FontAttributes="Bold" Text="C"  Padding="0" Margin="2" Clicked="OnClearClicked" BackgroundColor="#e31e24" TextColor="White" CornerRadius="15" />
+                <Button Grid.Column="0" FontSize="30"  FontAttributes="Bold" Text="C"  Padding="0" Margin="2" Clicked="OnClearClicked" BackgroundColor="#e31e24" TextColor="White" CornerRadius="15" />
 
                 <Button Grid.Column="2" FontSize="40" FontAttributes="Bold" Text="—" Margin="2"  Padding="0" Clicked="OnMinus1Clicked" BackgroundColor="#23b14d" TextColor="White" CornerRadius="15" />
 
