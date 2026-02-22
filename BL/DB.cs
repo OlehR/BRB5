@@ -945,7 +945,7 @@ and bc.BarCode=?
         {
             try
             {
-                string Sql = $"Update LogPrice set NumberOfReplenishment={pNumberOfReplenishment} where  date('now', '-1 day') and is_send = 0 and LineNumber ={pLineNumber}";
+                string Sql = $"Update LogPrice set NumberOfReplenishment={pNumberOfReplenishment} where date('now', '-1 day') < DTInsert and  IsSend = 0 and LineNumber ={pLineNumber}"; //
                 db.Execute(Sql);
             }
             catch (Exception e)
