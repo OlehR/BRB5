@@ -243,7 +243,8 @@ CREATE TABLE DocWaresExpirationSample (
     NumberDoc   TEXT,
     DocId      TEXT NOT NULL,    
     CodeWares   INTEGER         NOT NULL,
-    Quantity     NUMBER, 
+    Quantity     NUMBER DEFAULT (0), 
+    QuantityInput  NUMBER DEFAULT (0), 
     ExpirationDate TIMESTAMP,
     Expiration NUMBER,
     DaysLeft TEXT,
@@ -268,7 +269,7 @@ CREATE TABLE SKU (
     CodeUnit           INTEGER  NOT NULL);
 CREATE UNIQUE INDEX SKUId ON SKU (CodeSKU);
 ";
-        readonly int Ver = 13;
+        readonly int Ver = 14;
         string SqlTo6 = @"alter TABLE Reason add  Level INTEGER  DEFAULT (0);
 drop index ReasonId;
 CREATE UNIQUE INDEX ReasonId ON Reason (Level,CodeReason);";
@@ -291,6 +292,8 @@ CREATE TABLE TypeWarehouse (
     Name       TEXT,
     IsTrade INTEGER DEFAULT (0) );
 CREATE INDEX TypeWarehouseId ON TypeWarehouse (Code);";
+
+        string SqlTo14 = @"alter TABLE DocWaresExpirationSample  QuantityInput NUMBER DEFAULT (0)";
         public static string PathNameDB { get { return Path.Combine(BaseDir, NameDB); } }
 
         public DB(string pBaseDir) : this() { BaseDir = pBaseDir; }
@@ -322,6 +325,8 @@ CREATE INDEX TypeWarehouseId ON TypeWarehouse (Code);";
                     SetSQL(SqlTo12, 12);
                 if (GetVersion < 13)
                     SetSQL(SqlTo13, 13);
+                if (GetVersion < 14)
+                    SetSQL(SqlTo14, 14);
             }            
         }
 
