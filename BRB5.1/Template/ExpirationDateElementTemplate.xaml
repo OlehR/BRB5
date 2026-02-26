@@ -89,7 +89,7 @@
                         Grid.Row="3" 
                         Format="dd.MM.yyyy"  
                         FontSize="Large"/>
-            <Button Text="Зберегти" Grid.Column="1" Padding="5,2" Grid.Row="3" Clicked="OnAdd" />
+            <Button Text="Зберегти" Grid.Column="1" Padding="5,2" x:Name="ButtonSave" Grid.Row="3" Clicked="OnAdd" />
 
         </Grid>
 

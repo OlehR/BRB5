@@ -65,6 +65,9 @@ public partial class ExpirationDateElementTemplate : ContentView
         IsExpirationDateSelected = true;
         DM.ProductionDateInput = DM.ExpirationDateInput.AddDays(-(double)DM.Expiration);
         IsExpirationDateSelected = false;
+
+        ButtonSave.IsEnabled = (DM.ExpirationDateInput - DateTime.Today).TotalDays <= 32;
+
         //OnPropertyChanged(nameof(DM.GetPercentColor));
         //OnPropertyChanged(nameof(DM.GetColor));
     }
