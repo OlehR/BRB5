@@ -189,11 +189,37 @@ namespace BRB6.View
 
         protected override bool OnBackButtonPressed()
         {
-            if (MainContent.IsVisible) return base.OnBackButtonPressed();
-            else BackToMainContent();
-            return true;
-        }
+            // 1. Якщо відкритий шаблон окремого товару — повертаємося до основного списку
+            if (!MainContent.IsVisible)
+            {
+                BackToMainContent();
+                return true; // Блокуємо закриття сторінки
+            }
 
+            // 2. Якщо ми на головному контенті — перевіряємо незбережені дані
+            var unsavedData = db.GetDocWaresExpiration(NumberDoc);
+
+            if (unsavedData != null && unsavedData.Any())
+            {
+                Dispatcher.Dispatch(async () =>
+                {
+                    bool save = await DisplayAlert("Незбережені дані", "Зберегти зміни перед виходом?", "Зберегти", "Не зберігати");
+
+                    if (save)
+                    {
+                        // Викликаємо збереження (Toast покажеться вже на попередній сторінці)
+                        F2Save(null, null);
+                    }
+
+                    await Navigation.PopAsync(); // Повертаємось назад (Navigation stack)
+                });
+
+                return true; // Блокуємо стандартний вихід, щоб виконати нашу логіку
+            }
+
+            // 3. Якщо даних немає дозволяємо стандартний вихід
+            return base.OnBackButtonPressed();
+        }
         private void DocNameFocus(object sender, FocusEventArgs e) {/* DocName.Focus();*/ }
 
         private void OpenElement(object sender, EventArgs e)
