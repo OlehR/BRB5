@@ -236,6 +236,32 @@ namespace BRB6.View
 
         }
 
+        protected override bool OnBackButtonPressed()
+        {          
+            var unsavedData = db.GetDocWaresExpiration("");
+
+            if (unsavedData != null && unsavedData.Any())
+            {
+                Dispatcher.Dispatch(async () =>
+                {
+                    bool save = await DisplayAlert("Незбережені дані", "Зберегти зміни перед виходом?", "Зберегти", "Не зберігати");
+
+                    if (save)
+                    {
+                        // Викликаємо збереження (Toast покажеться вже на попередній сторінці)
+                        F2Save(null, null);
+                    }
+
+                    await Navigation.PopAsync(); // Повертаємось назад (Navigation stack)
+                });
+
+                return true; // Блокуємо стандартний вихід, щоб виконати нашу логіку
+            }
+
+            // 3. Якщо даних немає дозволяємо стандартний вихід
+            return base.OnBackButtonPressed();
+        }
+
 #if ANDROID
         public void OnPageKeyDown(Keycode keyCode, KeyEvent e)
         {
