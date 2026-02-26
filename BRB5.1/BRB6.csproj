@@ -31,8 +31,8 @@
     <ApplicationId>ua.UniCS.TM.BRB6</ApplicationId>
 
     <!-- Versions -->
-    <ApplicationDisplayVersion>6.1.34</ApplicationDisplayVersion>
-    <ApplicationVersion>6134</ApplicationVersion>
+    <ApplicationDisplayVersion>6.1.35</ApplicationDisplayVersion>
+    <ApplicationVersion>6135</ApplicationVersion>
 
     <SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">12.2</SupportedOSPlatformVersion>
     <SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">21.0</SupportedOSPlatformVersion>
