@@ -293,7 +293,7 @@ CREATE TABLE TypeWarehouse (
     IsTrade INTEGER DEFAULT (0) );
 CREATE INDEX TypeWarehouseId ON TypeWarehouse (Code);";
 
-        string SqlTo14 = @"alter TABLE DocWaresExpirationSample  QuantityInput NUMBER DEFAULT (0)";
+        string SqlTo14 = @"alter TABLE DocWaresExpirationSample add QuantityInput NUMBER DEFAULT (0)";
         public static string PathNameDB { get { return Path.Combine(BaseDir, NameDB); } }
 
         public DB(string pBaseDir) : this() { BaseDir = pBaseDir; }
@@ -1131,7 +1131,7 @@ order by gw.NameGroup";
             string sql = @"select DES.OrderDoc, DES.NumberDoc,DES.DocId, w.CodeWares,w.NameWares as NameWares, au.Coefficient as Coefficient,w.CodeUnit as CodeUnit, ud.ABRUNIT as NameUnit,
                             ( select group_concat(bc.BarCode,',') from BarCode bc where bc.CodeWares=w.CodeWares ) as BARCODE  ,w.CodeUnit as BaseCodeUnit,
                             des.Quantity,des.Expiration,des.ExpirationDate,coalesce( des.DaysLeft, w.DaysLeft) as DaysLeft
-,DE.ExpirationDateInput, DE.QuantityInput
+,DE.ExpirationDateInput, coalesce(DE.QuantityInput,DES.QuantityInput) as QuantityInput
                                 from WARES w 
                                 join ADDITIONUNIT au on w.CODEWARES=au.CODEWARES and au.CODEUNIT=w.CODEUNIT 
                                 join UNITDIMENSION ud on w.CODEUNIT=ud.CODEUNIT 
