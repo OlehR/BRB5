@@ -166,7 +166,7 @@
 
                 <Button Grid.Column="2" FontSize="40" FontAttributes="Bold" Text="—" Margin="2"  Padding="0" Clicked="OnMinus1Clicked"   CornerRadius="15" />
 
-                <Frame Grid.Column="3" Padding="0" HasShadow="False"  CornerRadius="5">
+                <Frame Grid.Column="3" Margin="2" Padding="0" HasShadow="False" Style="{StaticResource FrameStyle}">
                     <controls:CustomEntry x:Name="NumberOfReplenishment"
                               Style="{StaticResource EntryStyle}"
                               Text="{Binding ReplenishmentValue}"
