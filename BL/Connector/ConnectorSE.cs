@@ -518,6 +518,41 @@ namespace BL.Connector
 
         public override async Task<Result<IEnumerable<RaitingTemplate>>> GetRaitingTemplateAsync() { return null; }
 
+        class CreateDocData
+        {
+             public int TypeDoc { get; set; }
+             public int CodeWarehouseFrom { get; set; }
+             public int CodeWarehouseTo { get; set; }
+             public string Description { get; set; }
+        }
+        class ResultCreateDoc
+        {
+            
+public int State { get; set; }
+public string TextError { get; set; }
+//"Profile": null,
+public string Info { get; set; }
+        }
+        
+        public override async Task<Result<DocVM>> CreateDoc(DocVM pDoc) 
+        {
+            CreateDocData Data = new() { CodeWarehouseFrom = Config.CodeWarehouse, CodeWarehouseTo = pDoc.CodeWarehouse, Description = pDoc.Description, TypeDoc = pDoc.TypeDoc };
+            var res = await GetDataHTTP.HTTPRequestAsync(1, "newmovedoc", Data.ToJson(), "application/json", Config.Login, Config.Password);
+
+            if (res.HttpState != eStateHTTP.HTTP_OK)
+            {
+                FileLogger.WriteLogMessage(this, "SaveDocAsync Res=>", res.ToJSON(), eTypeLog.Error);
+                return new (res);
+            }
+            else
+            {
+                var r = JsonConvert.DeserializeObject<ResultCreateDoc>(res.Result);
+                FileLogger.WriteLogMessage(this, "SaveDocAsync Res=>", res.ToJSON());
+                pDoc.NumberDoc = r.Info;
+                return new(r.State, r.TextError) { Data=pDoc};
+            }
+        }
+        //Збереження ПРосканованих товарів в 1С
         /// <summary>
         /// Вивантаження документів з ТЗД (HTTP)
         /// </summary>
@@ -528,11 +563,11 @@ namespace BL.Connector
         {
             try
             {
-                if (pDoc.TypeDoc == 1 || pDoc.TypeDoc == 2 || pDoc.TypeDoc == 5)
+                if (pDoc.TypeDoc.In(1,2,3,5))
                 {
                     var d = (new[] { new OutputDoc(pDoc,pWares) }).ToJson();
                     FileLogger.WriteLogMessage(this, "SaveDocAsync documentin=>", d);                    
-                    var res = GetDataHTTP.HTTPRequest(1, "documentin", d, "application/json", Config.Login, Config.Password);
+                    var res = await GetDataHTTP.HTTPRequestAsync(1, "documentin", d, "application/json", Config.Login, Config.Password);
 
                     if (res.HttpState != eStateHTTP.HTTP_OK)
                     {

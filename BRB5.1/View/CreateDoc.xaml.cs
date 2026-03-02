@@ -138,7 +138,7 @@ public partial class CreateDoc : ContentPage
             return;
         }
         var c = ConnectorBase.GetInstance();
-        var R = await c.CreateDoc(new DocVM() { TypeDoc = TD.CodeDoc, CodeWarehouse = SelectedWarehouse.CodeWarehouse, Description = Comment });
+        var R = await c.CreateDoc(new DocVM() { TypeDoc = TD.CodeDoc, CodeWarehouse = SelectedWarehouse.CodeWarehouse, Description = Comment,DateDoc=DateTime.Now.Date });
         if (R.State != 0)
         {
             await DisplayAlert("Помилка", $"Не вдалося створити документ: State=>{R.State} {R.TextError}", "ОК");
@@ -147,7 +147,7 @@ public partial class CreateDoc : ContentPage
         db.ReplaceDoc([R.Data]);
         
         // Тут використовуйте SelectedWarehouse.Code та Comment для збереження
-        await DisplayAlert("Успіх", $"Документ створено для {SelectedWarehouse.Name}", "ОК");
+        await DisplayAlert("Успіх", $"Документ {R.Data.NumberDoc} створено для {SelectedWarehouse.Name}", "ОК");
         await Navigation.PopAsync();
         CreatedDoc?.Invoke(R.Data);
     }

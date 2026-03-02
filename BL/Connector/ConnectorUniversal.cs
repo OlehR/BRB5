@@ -334,8 +334,8 @@ namespace BL.Connector
        
         public override async Task<Result<DocVM>> CreateDoc(DocVM pDoc) 
         { 
-            pDoc.NumberDoc = DateTime.Now.ToString(); 
-            return new() { Data = pDoc };
+           // pDoc.NumberDoc = DateTime.Now.ToString(); 
+           // return new() { Data = pDoc };
 
             try
             {
