@@ -28,10 +28,10 @@
                                               Keyboard="Numeric"
                                               Placeholder="баркод" />
                     </Frame>
-
+                    
                     <Grid Grid.Column="1" ColumnDefinitions="*,*">
 
-                        <Frame Style="{StaticResource FrameStyle}" IsVisible="{Binding IsViewReason}">
+                        <Frame Style="{StaticResource FrameStyle}" IsVisible="{Binding IsShowPlan}" >  
                             <controls:CustomEntry Style="{StaticResource EntryStyle}"
                                                   Placeholder="план"
                                                   Text="{Binding ScanData.QuantityOrder}"

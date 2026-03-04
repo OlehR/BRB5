@@ -27,6 +27,7 @@ namespace BRB6.View
         public bool IsSoftKeyboard { get { return Config.IsSoftKeyboard; } }
         public bool IsVisScan { get { return Config.TypeScaner == eTypeScaner.Camera; } }
         public bool IsViewReason { get { return TypeDoc.IsViewReason; } }
+        public bool IsShowPlan { get { return !TypeDoc.IsNotShowPlan; } }
         private DocVM DocId;
         private bool _IsVisQ = false;
         public bool IsVisQ { get { return _IsVisQ; } set { _IsVisQ = value; OnPropertyChanged(nameof(IsVisQ)); } }
