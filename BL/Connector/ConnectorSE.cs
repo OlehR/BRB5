@@ -518,13 +518,7 @@ namespace BL.Connector
 
         public override async Task<Result<IEnumerable<RaitingTemplate>>> GetRaitingTemplateAsync() { return null; }
 
-        class CreateDocData
-        {
-             public int TypeDoc { get; set; }
-             public int CodeWarehouseFrom { get; set; }
-             public int CodeWarehouseTo { get; set; }
-             public string Description { get; set; }
-        }
+        
         class ResultCreateDoc
         {
             
@@ -534,7 +528,7 @@ public string TextError { get; set; }
 public string Info { get; set; }
         }
         
-        public override async Task<Result<DocVM>> CreateDoc(DocVM pDoc) 
+        public override async Task<Result<DocVM>> CreateDoc(CreateDocData pDoc) 
         {
             CreateDocData Data = new() { CodeWarehouseFrom = Config.CodeWarehouse, CodeWarehouseTo = pDoc.CodeWarehouse, Description = pDoc.Description, TypeDoc = pDoc.TypeDoc };
             var res = await GetDataHTTP.HTTPRequestAsync(1, "newmovedoc", Data.ToJson(), "application/json", Config.Login, Config.Password);
@@ -548,8 +542,8 @@ public string Info { get; set; }
             {
                 var r = JsonConvert.DeserializeObject<ResultCreateDoc>(res.Result);
                 FileLogger.WriteLogMessage(this, "SaveDocAsync Res=>", res.ToJSON());
-                pDoc.NumberDoc = r.Info;
-                return new(r.State, r.TextError) { Data=pDoc};
+                DocVM Res= new() {TypeDoc=pDoc.TypeDoc, CodeWarehouse = pDoc.CodeWarehouse, DateDoc = DateTime.Now, Description = pDoc.Description, NumberDoc = r.Info };
+                return new(r.State, r.TextError) { Data=Res};
             }
         }
         //Збереження ПРосканованих товарів в 1С

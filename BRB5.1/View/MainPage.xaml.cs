@@ -4,7 +4,6 @@ using BL.Connector;
 using BRB5;
 using BRB5.Model;
 using BRB6.View;
-using Microsoft.Extensions.Logging.Abstractions;
 using System.Collections.ObjectModel;
 using Docs = BRB6.View.Docs;
 
@@ -147,6 +146,7 @@ namespace BRB6
                     break;
                 case eKindDoc.Normal:
                 case eKindDoc.Simple:
+                case eKindDoc.NormalNoEdit:
                     await Navigation.PushAsync(new Docs(vTypeDoc));
                     break;
                 case eKindDoc.RaitingDoc:

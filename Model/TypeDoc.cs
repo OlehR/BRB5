@@ -5,7 +5,7 @@ using System.Text;
 namespace BRB5
 {
     public enum eKindDoc { NotDefined=0, Normal=1, Simple=2, PriceCheck=3, RaitingDoc=4, RaitingTempate=5, RaitingTemplateCreate=6, PlanCheck=7, ExpirationDate=8, LotsCheck=9, Lot=10, NormalNoEdit=11}
-    public enum eGroup { NotDefined, Price,Doc,Raiting, FixedAssets, СollectionOfGoods }
+    public enum eGroup { NotDefined, Price,Doc,Raiting, FixedAssets, СollectionOfGoods, Lot, ExpirationDate }
     public enum eTypeReplenishment {None/*Відсутне*/,Input /*Вручну*/,Auto /* Проставляємо 1*/ }
     public class TypeDoc
     {
@@ -31,10 +31,10 @@ namespace BRB5
         /// Показувати причину в шапці документа.
         /// </summary>
         public bool IsViewReasonHead { get; set; } = false;
-        /// <summary>
+       /* /// <summary>
         /// Показувати планові(фактичні) показники.
         /// </summary>
-        public bool IsViewPlan { get; set; } = false;
+        public bool IsViewPlan { get; set; } = false;*/
         /// <summary>
         /// Показувати користувача в списку.
         /// </summary>
@@ -76,7 +76,7 @@ namespace BRB5
         /// Якщо -1 використовуємо CodeApi , інакше цей код для збереження документа
         /// </summary>
         public int CodeApiSave { get; set; } = -1;
-        public bool IsCreateNewDoc { get; set; } = false;
+        //public bool IsCreateNewDoc { get; set; } = false;
         //public bool IsViewOPKO = false;
         public eTypeReplenishment TypeReplenishment { get; set; } = eTypeReplenishment.None;
         public bool IsVisible { get; set; } = true;
@@ -97,7 +97,13 @@ namespace BRB5
         /// <summary>
         /// Не показувати планову кількість в режимі F4
         /// </summary>
-        public bool IsNotShowPlan { get; set; } = false;
+        public bool IsNotViewPlan { get; set; } = false;
+
+        public bool IsNotViewPlanF4 { get; set; } = false;
+        /// <summary>
+        /// Чи дозволяти введення дати та номера розхідної в приході
+        /// </summary>
+        public bool IsViewInputDateDoc { get; set; } = false;
 
     }
 }

@@ -135,7 +135,7 @@
                     </Label.GestureRecognizers>
                 </Label>
 
-                <Label Text="F6-"
+                <Label Text="F6-" IsVisible="{Binding IsViewInputDateDoc}"
                        FontSize="16"
                        Grid.Column="6"
                        TextColor="#ff5c5c"
@@ -144,7 +144,7 @@
                         <TapGestureRecognizer Tapped="F6Doc" />
                     </Label.GestureRecognizers>
                 </Label>
-                <Label Text="Док"
+                <Label Text="Док" IsVisible="{Binding IsViewInputDateDoc}"
                        FontSize="18"
                        Grid.Column="7"
                        TextColor="#816f20">

@@ -31,7 +31,7 @@ namespace BRB6.View
                 }
                 else
                 {
-                    filtered = r.Where(x => x.QuantityOrder != 0);
+                    filtered = r.Where(x => x.QuantityOrder != 0 || x.InputQuantity!=0);
                 }
 
                 foreach (var item in filtered)

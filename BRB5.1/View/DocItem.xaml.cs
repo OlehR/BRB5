@@ -38,6 +38,7 @@ namespace BRB6.View
         public bool IsViewReason { get { return TypeDoc.IsViewReason; } }
         public bool IsViewNoReason { get { return !TypeDoc.IsViewReason; } }
 
+        public bool IsViewInputDateDoc { get { return TypeDoc.IsViewInputDateDoc; } }
         //// Колекція варіантів для Picker
         //public ObservableCollection<BRB5.Model.DB.Reason> Reasons { get; set; }
 
@@ -271,8 +272,11 @@ namespace BRB6.View
         private async void F4WrOff(object sender, EventArgs e) { await Navigation.PushAsync(new ManualInput(Doc, TypeDoc));  }
         private void F6Doc(object sender, EventArgs e)
         {
-            IsVisibleDocF6 = !IsVisibleDocF6;
-            if (IsVisibleDocF6) DocDate.Focus();
+            if (!IsViewInputDateDoc)
+            {
+                IsVisibleDocF6 = !IsVisibleDocF6;
+                if (IsVisibleDocF6) DocDate.Focus();
+            }
         }
         private void DocNameFocus(object sender, FocusEventArgs e) {  DocName.Focus(); }
         private async void F5Act(object sender, TappedEventArgs e)

@@ -332,18 +332,15 @@ namespace BL.Connector
             }
         }        
        
-        public override async Task<Result<DocVM>> CreateDoc(DocVM pDoc) 
+        public override async Task<Result<DocVM>> CreateDoc(CreateDocData pDoc) 
         { 
-           // pDoc.NumberDoc = DateTime.Now.ToString(); 
-           // return new() { Data = pDoc };
-
-            try
+           try
             {
                 string Data = pDoc.ToJson();
                 var TD = Config.GetDocSetting(pDoc.TypeDoc);
                 int CodeApi = (TD?.CodeApiSave > 0 ? TD?.CodeApiSave : TD?.CodeApi) ?? 0;
 
-                if (CodeApi == 1) // || (Config.LocalCompany==eCompany.Sim23 && (pDoc.TypeDoc==5 || pDoc.TypeDoc == 14 || pDoc.TypeDoc == 15) )) //!!!Тимчасовий хак.
+                if (CodeApi == 1)
                 {
                     if (СonnectorLocal != null)
                     {
