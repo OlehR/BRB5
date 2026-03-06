@@ -36,7 +36,7 @@
                     </local:CustomEntry>
                 </Frame>
             </StackLayout>
-            <VerticalStackLayout>
+            <!--<VerticalStackLayout>
                 <Grid RowSpacing="1" ColumnSpacing="1" ColumnDefinitions="3*,2*,2*,3*"  
                       IsVisible="{Binding IsViewReason}"
                       Padding="1"  BackgroundColor="#adaea7">
@@ -52,7 +52,7 @@
                     <Label Text="План" Grid.Column="1" BackgroundColor="White" />
                     <Label Text="Факт" Grid.Column="2" BackgroundColor="White" />
                 </Grid>
-            </VerticalStackLayout>
+            </VerticalStackLayout>-->
             
             <Grid VerticalOptions="StartAndExpand">
                 <ScrollView>

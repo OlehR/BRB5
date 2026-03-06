@@ -127,30 +127,32 @@ namespace BRB6.View
             if (MyDocWares == null || !MyDocWares.Any())
                 return;
 
-            DocWaresStackLayout.Children.Clear(); // Clear existing children
-            DocWaresStackLayout.Spacing = 0; // Remove vertical spacing between elements
+            DocWaresStackLayout.Children.Clear(); // Очищуємо існуючі елементи
+            DocWaresStackLayout.Spacing = 0;      // Прибираємо відступи між рядками
 
-            List<DocWaresEx> docWares = new ();
+            // Додаємо заголовок на початок списку
+            DocWaresStackLayout.Children.Add(CreateHeaderGrid());
+
+            List<DocWaresEx> docWares = new();
 
             if (Doc.CodeReason == 1)
             {
-                docWares = MyDocWares.Where(x => x.CodeReason==-1).ToList();
+                docWares = MyDocWares.Where(x => x.CodeReason == -1).ToList();
             }
             else
             {
                 docWares = MyDocWares.ToList();
             }
-            
+
             foreach (var docWare in docWares)
             {
-                // Create the main container StackLayout
+                // Контейнер для одного товару (основна сітка + можливий блок проблемних)
                 var mainStackLayout = new StackLayout
                 {
-                    Spacing = 0, // Remove spacing between child elements
-                    Padding = new Thickness(0), // Remove padding
+                    Spacing = 0,
+                    Padding = new Thickness(0),
                 };
 
-                // Create the first Grid
                 var grid = new Grid
                 {
                     RowSpacing = 1,
@@ -160,67 +162,90 @@ namespace BRB6.View
                     BindingContext = docWare
                 };
 
-                grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(3, GridUnitType.Star) }); // Назва/Код
-                grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(2, GridUnitType.Star) }); // Замовлення
-                grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(2, GridUnitType.Star) }); // Введено
+                // Визначення колонок (ідентично до заголовка)
+                grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(3, GridUnitType.Star) }); // Код
+                grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(45) });                  // Од.
+
+                if (!TypeDoc.IsNotViewPlan)
+                {
+                    grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(2, GridUnitType.Star) }); // План
+                }
+
+                grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(2, GridUnitType.Star) });    // Факт
 
                 if (IsViewReason)
                 {
-                    grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(3, GridUnitType.Star) }); // Причина
+                    grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(3, GridUnitType.Star) }); // Проблемні
                 }
 
-                grid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Star });
-                grid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Star });
+                grid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto }); // Рядок 0: Назва
+                grid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto }); // Рядок 1: Дані
 
-                // 2. Назва (Span на всі колонки)
+                // --- 1. Назва товару (на всю ширину) ---
                 var nameLabel = new Label
                 {
                     Text = docWare.NameWares,
                     BackgroundColor = Color.FromArgb(docWare.GetBackgroundColor)
                 };
-                Grid.SetColumnSpan(nameLabel, IsViewReason ? 4 : 3);
+                Grid.SetColumnSpan(nameLabel, grid.ColumnDefinitions.Count);
                 grid.Children.Add(nameLabel);
 
-                // 3. Код товару
+                int currentCol = 0;
 
+                // --- 2. Код товару ---
                 string codeText = IsUseArticle ? docWare.Article : docWare.CodeWares.ToString();
-
                 var codeLabel = new Label
                 {
                     Text = codeText,
                     BackgroundColor = Color.FromArgb(docWare.GetBackgroundColor)
                 };
+
                 var tapGesture = new TapGestureRecognizer();
                 tapGesture.Tapped += async (s, e) =>
                 {
                     await Navigation.PushAsync(new WareInfo(new ParseBarCode() { CodeWares = docWare.CodeWares }));
                 };
                 codeLabel.GestureRecognizers.Add(tapGesture);
+
                 Grid.SetRow(codeLabel, 1);
-                Grid.SetColumn(codeLabel, 0);
+                Grid.SetColumn(codeLabel, currentCol++);
                 grid.Children.Add(codeLabel);
 
-                // 4. Кількість замовлення
-                var quantityOrderLabel = new Label
+                // --- 3. Одиниці виміру (Од.) ---
+                var unitLabel = new Label
                 {
-                    Text = docWare.QuantityOrder.ToString(),
-                    BackgroundColor = Color.FromArgb(docWare.GetBackgroundColor)
+                    Text = docWare.NameUnit,
+                    BackgroundColor = Color.FromArgb(docWare.GetBackgroundColor),
+                    LineBreakMode = LineBreakMode.NoWrap
                 };
-                Grid.SetRow(quantityOrderLabel, 1);
-                Grid.SetColumn(quantityOrderLabel, 1);
-                grid.Children.Add(quantityOrderLabel);
+                Grid.SetRow(unitLabel, 1);
+                Grid.SetColumn(unitLabel, currentCol++);
+                grid.Children.Add(unitLabel);
 
-                // 5. Введена кількість
+                // --- 4. Кількість замовлення (План) ---
+                if (!TypeDoc.IsNotViewPlan)
+                {
+                    var quantityOrderLabel = new Label
+                    {
+                        Text = docWare.QuantityOrder.ToString(),
+                        BackgroundColor = Color.FromArgb(docWare.GetBackgroundColor)
+                    };
+                    Grid.SetRow(quantityOrderLabel, 1);
+                    Grid.SetColumn(quantityOrderLabel, currentCol++);
+                    grid.Children.Add(quantityOrderLabel);
+                }
+
+                // --- 5. Введена кількість (Факт) ---
                 var inputQuantityLabel = new Label
                 {
                     Text = docWare.InputQuantity.ToString(),
                     BackgroundColor = Color.FromArgb(docWare.GetBackgroundColor)
                 };
                 Grid.SetRow(inputQuantityLabel, 1);
-                Grid.SetColumn(inputQuantityLabel, 2);
+                Grid.SetColumn(inputQuantityLabel, currentCol++);
                 grid.Children.Add(inputQuantityLabel);
 
-                // 6. Умовне додавання колонки Причини
+                // --- 6. Причина (якщо активовано) ---
                 if (IsViewReason)
                 {
                     var quantityReasonLabel = new Label
@@ -229,13 +254,13 @@ namespace BRB6.View
                         BackgroundColor = Color.FromArgb(docWare.GetBackgroundColor)
                     };
                     Grid.SetRow(quantityReasonLabel, 1);
-                    Grid.SetColumn(quantityReasonLabel, 3);
+                    Grid.SetColumn(quantityReasonLabel, currentCol++);
                     grid.Children.Add(quantityReasonLabel);
                 }
 
                 mainStackLayout.Children.Add(grid);
 
-                // Блок проблемних товарів (без змін)
+                // Блок проблемних товарів
                 if (docWare.IsVisProblematic)
                 {
                     var problematicGrid = new Grid { IsVisible = docWare.IsVisProblematic };
@@ -243,8 +268,67 @@ namespace BRB6.View
                     mainStackLayout.Children.Add(problematicGrid);
                 }
 
+
                 DocWaresStackLayout.Children.Add(mainStackLayout);
             }
+        }
+        private Grid CreateHeaderGrid()
+        {
+            var headerGrid = new Grid
+            {
+                ColumnSpacing = 1,
+                Padding = 1,
+                BackgroundColor = Color.FromArgb("#adaea7")
+            };
+
+            // 1. Визначаємо структуру колонок
+            headerGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(3, GridUnitType.Star) }); // Код
+            headerGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(45) });                  // Од.
+
+            if (!TypeDoc.IsNotViewPlan)
+            {
+                headerGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(2, GridUnitType.Star) }); // План
+            }
+
+            headerGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(2, GridUnitType.Star) });    // Факт
+
+            if (IsViewReason)
+            {
+                headerGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(3, GridUnitType.Star) }); // Проблемні
+            }
+
+            // 2. Наповнюємо заголовки текстом
+            int currentCol = 0;
+
+            headerGrid.Children.Add(CreateHeaderLabel("Код", currentCol++));
+            headerGrid.Children.Add(CreateHeaderLabel("Од", currentCol++));
+
+            if (!TypeDoc.IsNotViewPlan)
+            {
+                headerGrid.Children.Add(CreateHeaderLabel("План", currentCol++));
+            }
+
+            headerGrid.Children.Add(CreateHeaderLabel("Факт", currentCol++));
+
+            if (IsViewReason)
+            {
+                headerGrid.Children.Add(CreateHeaderLabel("Проблемні", currentCol++));
+            }
+
+            return headerGrid;
+        }
+
+        // Допоміжний метод для створення комірки заголовка
+        private Label CreateHeaderLabel(string text, int column)
+        {
+            var label = new Label
+            {
+                Text = text,
+                BackgroundColor = Colors.White,
+                FontAttributes = FontAttributes.Bold
+            };
+            Grid.SetColumn(label, column);
+            return label;
         }
         private async void F2Save(object sender, EventArgs e)
         {
