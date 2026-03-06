@@ -21,7 +21,7 @@ namespace BRB6.View
             TypeDoc = pTypeDoc;
             Doc = pDoc;
             var r = db.GetDocWares(Doc, 1, eTypeOrder.Scan);
-            if (r != null)
+            if (r != null && r.Count() > 0)
             {
                 IEnumerable<DocWaresEx> filtered;
 
@@ -31,7 +31,7 @@ namespace BRB6.View
                 }
                 else
                 {
-                    filtered = r.Where(x => x.QuantityOrder != 0 || x.InputQuantity!=0);
+                    filtered = r.Where(x => x.QuantityOrder != 0 || x.InputQuantity != 0);
                 }
 
                 foreach (var item in filtered)
@@ -40,7 +40,7 @@ namespace BRB6.View
                     DocWares.Add(item);
                 }
 
-                OrderDoc = r.Max(el=> el.OrderDoc);
+                OrderDoc = r.Max(el => el.OrderDoc);
             }
             BindingContext = this;
             InitializeComponent();
