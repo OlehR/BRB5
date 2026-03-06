@@ -104,6 +104,5 @@ namespace BRB5
         /// Чи дозволяти введення дати та номера розхідної в приході
         /// </summary>
         public bool IsViewInputDateDoc { get; set; } = false;
-
     }
 }
