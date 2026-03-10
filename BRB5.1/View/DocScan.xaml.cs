@@ -25,7 +25,7 @@ namespace BRB6.View
         public TypeDoc TypeDoc { get; set; }
         public int OrderDoc { get; set; }
         public bool IsSoftKeyboard { get { return Config.IsSoftKeyboard; } }
-        public bool IsVisScan { get { return Config.TypeScaner == eTypeScaner.Camera; } }
+        public bool IsVisScan { get { return Config.IsVisScan; } }
         public bool IsViewReason { get { return TypeDoc.IsViewReason; } }
         public bool IsShowPlan { get { return !TypeDoc.IsNotViewPlanF4; } }
         private DocVM DocId;

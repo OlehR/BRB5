@@ -31,7 +31,7 @@ namespace BRB6.View
         public bool IsVisBarCode { get { return _IsVisBarCode; } set { _IsVisBarCode = value; OnPropertyChanged(nameof(IsVisBarCode)); } }
         public bool IsViewOut { get { return TypeDoc.IsViewOut; } }
         public bool IsSoftKeyboard { get { return Config.IsSoftKeyboard; } }
-        public bool IsVisScan { get { return Config.TypeScaner == eTypeScaner.Camera; } }
+        public bool IsVisScan { get { return Config.IsVisScan; } }
         CameraView BarcodeScaner;
         public bool IsVisCreateDoc { get { return TypeDoc.TypeCreateDoc != eTypeCreateDoc.NotDefined; } }
         //public bool IsVisCreateDoc { get { return true; } }

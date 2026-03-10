@@ -264,6 +264,7 @@ namespace BRB5.Model
         public string NameDCT { get; set; }
         public Doc Doc { get; set; }
         public IEnumerable<DocWares> Wares { get; set; }
+        public int CodeUser { get; set; }
     }
 
 }

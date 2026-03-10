@@ -114,6 +114,7 @@ namespace BRB5
     {
         NotDefine,
         Zebra,
+        ZebraWithOutKeyBoard,
         PM550,
         PM351,
         PM84,

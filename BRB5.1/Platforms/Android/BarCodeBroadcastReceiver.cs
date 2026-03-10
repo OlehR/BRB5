@@ -36,6 +36,7 @@ namespace BRB6
                         Res = "device.scanner.EVENT";
                         break;
                     case eTypeScaner.Zebra:
+                    case eTypeScaner.ZebraWithOutKeyBoard:
                         Res = "ua.UniCS.TM.BRB"; //"ua.uz.vopak.brb4";
                         break;
                     case eTypeScaner.BitaHC61:
@@ -59,6 +60,7 @@ namespace BRB6
                         Res = "EXTRA_EVENT_DECODE_VALUE";
                         break;
                     case eTypeScaner.Zebra:
+                    case eTypeScaner.ZebraWithOutKeyBoard:
                         Res = "com.symbol.datawedge.data_string";
                         break;
                     case eTypeScaner.BitaHC61:

@@ -21,6 +21,7 @@ namespace BRB5.Model
         public static List<int> CodesWarehouses { get; set; }
         //static eCompany _Company = eCompany.NotDefined;
         public static eTypeScaner TypeScaner;
+        public static bool IsVisScan { get { return Config.TypeScaner == eTypeScaner.Camera; } }
         public static eCompany Company { get; set; } = eCompany.NotDefined;
         public static eCompany LocalCompany { get; set; } = eCompany.NotDefined;
 
@@ -72,7 +73,7 @@ namespace BRB5.Model
         public static TypeDoc GetDocSetting(int pTypeDoc) => TypeDoc.FirstOrDefault(x => x.CodeDoc == pTypeDoc);
 
         //static object Lock= new object();
-        public static bool IsSoftKeyboard { get { return TypeScaner == eTypeScaner.Camera; } }
+        public static bool IsSoftKeyboard { get { return TypeScaner == eTypeScaner.Camera || TypeScaner == eTypeScaner.ZebraWithOutKeyBoard; } }
 
         public static NativeBase NativeBase;
         public static ePhotoQuality PhotoQuality { get;set; }

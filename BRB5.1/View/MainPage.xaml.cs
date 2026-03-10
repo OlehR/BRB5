@@ -32,7 +32,7 @@ namespace BRB6
         public string Company { get { return  Config.NameCompany; } }
         public bool IsSoftKeyboard { get { return Config.IsSoftKeyboard; } }
 
-        public bool IsVisScan { get { return Config.TypeScaner == eTypeScaner.Camera; } }
+        public bool IsVisScan { get { return Config.IsVisScan; } }
         bool _IsVisBarCode = false;
         public bool IsVisBarCode { get { return _IsVisBarCode; } set { _IsVisBarCode = value; OnPropertyChanged(nameof(IsVisBarCode)); } }
         CameraView BarcodeScaner;

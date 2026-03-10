@@ -70,7 +70,7 @@ public partial class AdminPriceChecker : ContentPage
     public bool _IsMultyLabel = false;
     public bool IsMultyLabel { get { return _IsMultyLabel; } set { _IsMultyLabel = value; OnPropertyChanged(nameof(IsMultyLabel)); OnPropertyChanged(nameof(F5Text)); } }
     public string F5Text { get { return IsMultyLabel ? "Дубл." : "Унік."; } }
-    public bool IsVisScan { get { return Config.TypeScaner == eTypeScaner.Camera; } }
+    public bool IsVisScan => Config.IsVisScan;
     /// <summary>
     /// 0 - нічого , 1 - сканований цінник, 2 - сканований товар, 3 - штрихкод товату не підходить, 4 - цінник не підходить, 5 - успішно
     /// </summary>

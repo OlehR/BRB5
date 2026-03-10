@@ -71,7 +71,7 @@ namespace BRB6
         public double OpacityAll => Choice == eTypeChoice.All ? 1d : 0.4d;
         public double OpacityOnlyHead => Choice == eTypeChoice.OnlyHead ? 1d : 0.4d;
         public double OpacityNoAnswer => Choice == eTypeChoice.NoAnswer ? 1d : 0.4d;
-        public bool IsVisScan => Config.TypeScaner == eTypeScaner.Camera;
+        public bool IsVisScan => Config.IsVisScan;
         CameraView BarcodeScaner;
         public bool IsVisibleBarcodeScanning { get; set; } = false;
 

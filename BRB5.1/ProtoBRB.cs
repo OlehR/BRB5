@@ -49,7 +49,7 @@ namespace BRB6
             if (DeviceInfo.Platform == DevicePlatform.iOS)
                 return eTypeScaner.Camera;
             if ((Config.Manufacturer.Contains("Zebra Technologies") || Config.Manufacturer.Contains("Motorola Solutions")))
-                return eTypeScaner.Zebra;
+                return Config.Model.StartsWith("TC56")? eTypeScaner.ZebraWithOutKeyBoard : eTypeScaner.Zebra;
             if (Config.Model.Equals("PM550") && (Config.Manufacturer.Contains("POINTMOBILE") || Config.Manufacturer.Contains("Point Mobile Co., Ltd.")))
                 return eTypeScaner.PM550;
             if (Config.Model.Equals("PM351") && (Config.Manufacturer.Contains("POINTMOBILE") || Config.Manufacturer.Contains("Point Mobile Co., Ltd.")))

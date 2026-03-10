@@ -17,7 +17,7 @@ namespace BRB6.View
         BL.BL Bl = BL.BL.GetBL();
         //ZXingScannerView zxing;
         private DocVM Doc;
-        public bool IsVisScan { get { return Config.TypeScaner == eTypeScaner.Camera; } }
+        public bool IsVisScan { get { return Config.IsVisScan   ; } }
         public ObservableCollection<DocWaresEx> WaresList { get; set; }
         //private object Sender;
         private int ShelfType;

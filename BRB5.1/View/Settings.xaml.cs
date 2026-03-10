@@ -23,7 +23,7 @@ namespace BRB6.View
         public string TypeScaner => Config.TypeScaner.ToString();
         public string Model => "Model:" + Config.Model;
         public string Manufacturer => "Виробник:" + Config.Manufacturer;
-        public bool IsVisScan => Config.TypeScaner == eTypeScaner.Camera;
+        public bool IsVisScan => Config.IsVisScan;
 
         double _PB = 0.0;
         public double PB { get { return _PB; } set { _PB = value; OnPropertyChanged(nameof(PB)); } }
