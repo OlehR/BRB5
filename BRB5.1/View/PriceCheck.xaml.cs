@@ -21,7 +21,7 @@ namespace BRB6
         public List<PrintBlockItems> ListPrintBlockItems { get { return db.GetPrintBlockItemsCount().ToList(); }  }
 
         public int SelectedPrintBlockItems { get { return ListPrintBlockItems.Count > 0 ? ListPrintBlockItems.Last().PackageNumber : -1; }  }
-        public bool IsVisPriceNormal { get { return WP != null && (WP.PriceOld != WP.PriceNormal); } }
+        public bool IsVisPriceNormal { get { return WP != null && (WP.PriceOld != WP.PriceNormal)&& WP.PriceNormal != 0; } }
         public bool IsVisPriceOpt { get { return WP != null && (WP.PriceOpt != 0 || WP.PriceOptOld != 0); } }
         public bool IsVisPriceOptQ { get { return WP != null && WP.QuantityOpt != 0 ; } }
 

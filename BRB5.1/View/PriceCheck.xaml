@@ -76,7 +76,7 @@
                        FontSize="24"
                        Grid.Column="3"
                        TextColor="{Binding TextColorPrice}" />
-                <Label Text="Роз.ціна:"
+                <Label Text="Роз.ціна:" MaxLines="1"
                        IsVisible="{Binding IsVisPriceNormal}"
                        VerticalOptions="Center"
                        FontSize="16"                       
