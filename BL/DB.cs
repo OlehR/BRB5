@@ -173,6 +173,7 @@ CREATE TABLE LogPrice (
 
 CREATE TABLE Reason (
     Level INTEGER  DEFAULT (0),
+    TypeWarehouse INTEGER  NOT NULL DEFAULT (0),
     CodeReason INTEGER  NOT NULL,
     NameReason TEXT     NOT NULL,
     DateInsert DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP);
@@ -269,7 +270,7 @@ CREATE TABLE SKU (
     CodeUnit           INTEGER  NOT NULL);
 CREATE UNIQUE INDEX SKUId ON SKU (CodeSKU);
 ";
-        readonly int Ver = 14;
+        readonly int Ver = 15;
         string SqlTo6 = @"alter TABLE Reason add  Level INTEGER  DEFAULT (0);
 drop index ReasonId;
 CREATE UNIQUE INDEX ReasonId ON Reason (Level,CodeReason);";
@@ -294,6 +295,7 @@ CREATE TABLE TypeWarehouse (
 CREATE INDEX TypeWarehouseId ON TypeWarehouse (Code);";
 
         string SqlTo14 = @"alter TABLE DocWaresExpirationSample add QuantityInput NUMBER DEFAULT (0)";
+        string SqlTo15 = @"alter TABLE Reason add TypeWarehouse INTEGER  NOT NULL DEFAULT (0)";
         public static string PathNameDB { get { return Path.Combine(BaseDir, NameDB); } }
 
         public DB(string pBaseDir) : this() { BaseDir = pBaseDir; }
@@ -327,6 +329,8 @@ CREATE INDEX TypeWarehouseId ON TypeWarehouse (Code);";
                     SetSQL(SqlTo13, 13);
                 if (GetVersion < 14)
                     SetSQL(SqlTo14, 14);
+                if (GetVersion < 15)
+                    SetSQL(SqlTo15, 15);
             }            
         }
 

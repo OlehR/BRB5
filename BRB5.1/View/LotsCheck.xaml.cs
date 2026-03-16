@@ -38,7 +38,7 @@ public partial class LotsCheck : ContentPage
         //F4ResaveLabel.IsVisible = !IsWares;
         //F3FilterLabel.IsVisible = IsWares;
 
-        var reasonsFromDb = db.GetReason(TypeDoc.KindDoc);
+        var reasonsFromDb = db.GetReason(TypeDoc.LevelReason);
         AllReasons = new ObservableCollection<BRB5.Model.DB.Reason>(reasonsFromDb);
         PopulateStackLayout();
         Task.Run(async () =>

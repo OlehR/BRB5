@@ -22,7 +22,12 @@ namespace BRB5
         /// <summary>
         /// Шукати документ по штрихкоду
         /// </summary>
-        public bool IsFindBarCode { get; set; }  = false;
+        public bool IsFindBarCode { get; set; } = false;
+        int _LevelReason = 0;
+        /// <summary>
+        /// Код причини в довіднику
+        /// </summary>
+        public int LevelReason { get { return LevelReason == 0 ? (int)KindDoc : LevelReason; } set { _LevelReason = value; } }
         /// <summary>
         /// Показувати причину( бій брак тощо)
         /// </summary>
