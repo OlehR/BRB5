@@ -27,7 +27,7 @@ namespace BRB5
         /// <summary>
         /// Код причини в довіднику
         /// </summary>
-        public int LevelReason { get { return LevelReason == 0 ? (int)KindDoc : LevelReason; } set { _LevelReason = value; } }
+        public int LevelReason { get { return _LevelReason == 0 ? (int)KindDoc : _LevelReason; } set { _LevelReason = value; } }
         /// <summary>
         /// Показувати причину( бій брак тощо)
         /// </summary>
