@@ -4,7 +4,7 @@
              x:Class="BRB6.View.CreateDoc"
              Title="Створення документу">
 
-    <Grid  RowDefinitions="Auto, Auto, *, Auto, 60" Padding="10" RowSpacing="10">
+    <Grid  RowDefinitions="Auto, Auto, Auto, *, Auto, 60" Padding="10" RowSpacing="10">
        
         <VerticalStackLayout Grid.Row="0" 
                      BindableLayout.ItemsSource="{Binding QuickAccessWarehouses}"
@@ -49,7 +49,7 @@ ItemDisplayBinding="{Binding NameReason}"
 SelectedItem="{Binding SelectedReason}" />
         </Grid>
 
-        <VerticalStackLayout Grid.Row="3" Spacing="2">
+        <VerticalStackLayout Grid.Row="4" Spacing="2">
             <Label Text="Коментар:" FontSize="12" />
             <Editor Text="{Binding Comment}" Placeholder="Введіть текст..." HeightRequest="70" />
         </VerticalStackLayout>
