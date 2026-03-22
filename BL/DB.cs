@@ -1227,10 +1227,10 @@ DE.ExpirationDateInput, DE.QuantityInput
             string sql = "select * from DocWaresExpiration where DATE(DateDoc) = DATE('now') --and NumberDoc=?";
             return db.Query<DocWaresExpiration>(sql);//, pNumberDoc);
         }
-        public IEnumerable<BRB5.Model.DB.Reason> GetReason(eKindDoc pKindDoc,bool pIsWares=false)
+        public IEnumerable<Reason> GetReason(int pLevelReason, bool pIsWares=false)
         {
-            string Sql = $"Select * FROM Reason where Level={(pIsWares?-1:1) *(int)pKindDoc}";
-            return db.Query<BRB5.Model.DB.Reason>(Sql);
+            string Sql = $"Select * FROM Reason where Level={(pIsWares?-1:1) * pLevelReason}";
+            return db.Query<Reason>(Sql);
         }
 
         public IEnumerable<WaresAct> GetWaresAct(DocId Doc)

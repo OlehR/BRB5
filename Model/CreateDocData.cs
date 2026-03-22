@@ -12,6 +12,7 @@ namespace BRB5.Model
         public int CodeWarehouse { get { return CodeWarehouseFrom; } }
         public int CodeWarehouseFrom { get; set; }
         public int CodeWarehouseTo { get; set; }
+        public int CodeReason { get; set; }
         public int CodeUser { get; set; }
         public string Description { get; set; }
     }

@@ -1185,7 +1185,7 @@ public string Info { get; set; }
         }
     }
 
-    public class Reason
+    class Reason
     {
         public int code { get; set; }
         public string reason { get; set; }

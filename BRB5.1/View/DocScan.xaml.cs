@@ -69,7 +69,7 @@ namespace BRB6.View
             else OrderDoc = 0;
             NavigationPage.SetHasNavigationBar(this, DeviceInfo.Platform == DevicePlatform.iOS || Config.TypeScaner == eTypeScaner.BitaHC61 || Config.TypeScaner == eTypeScaner.ChainwayC61 || Config.TypeScaner == eTypeScaner.Zebra || Config.TypeScaner == eTypeScaner.PM550 || Config.TypeScaner == eTypeScaner.PM351 || Config.TypeScaner == eTypeScaner.PM84 || Config.TypeScaner == eTypeScaner.PM68 || Config.TypeScaner == eTypeScaner.MetapaceM_K4);
             
-            Reason = db.GetReason(TypeDoc.KindDoc, true);
+            Reason = db.GetReason(TypeDoc.LevelReason, true);
             _defaultReason = Reason.FirstOrDefault(r => r.CodeReason == 0);
             if (_defaultReason == null)  _defaultReason = new BRB5.Model.DB.Reason {CodeReason = 0,NameReason = "— без причини —"};  
             PopulateReasonOptions();

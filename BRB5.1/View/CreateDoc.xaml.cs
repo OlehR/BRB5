@@ -2,6 +2,7 @@ using BL;
 using BL.Connector;
 using BRB5;
 using BRB5.Model;
+using BRB5.Model.DB;
 using System.Collections.ObjectModel;
 using System.Windows.Input;
 
@@ -14,11 +15,18 @@ public partial class CreateDoc : ContentPage
     Action<DocVM> CreatedDoc;
     private int _initialCode; // Зберігаємо початковий код тут
 
-    public ObservableCollection<Warehouse> QuickAccessWarehouses { get; } = new ObservableCollection<Warehouse>();
-    public ObservableCollection<Warehouse> FilteredWarehousePicker { get; } = new ObservableCollection<Warehouse>();
+    public ObservableCollection<Warehouse> QuickAccessWarehouses { get; } = [];
+    public ObservableCollection<Warehouse> FilteredWarehousePicker { get; } = [];
+
+    public ObservableCollection<Reason> FilteredReasonPicker { get; set; } = [];
+    public bool IsVisibleReason { get { return FilteredReasonPicker?.Any() == true; } }
 
     private List<Warehouse> _allWarehouses;
-    public List<Warehouse> ListWarehouse => _allWarehouses ??= db.GetWarehouse()?.OrderBy(q => q.Name).ToList() ?? new List<Warehouse>();
+    public List<Warehouse> ListWarehouse => _allWarehouses ??= db.GetWarehouse()?.OrderBy(q => q.Name).ToList() ?? [];
+
+    public List<Reason> ListReason = [];
+
+    public Reason SelectedReason { get; set; }
 
     private Warehouse _selectedWarehouse;
     public Warehouse SelectedWarehouse
@@ -36,6 +44,8 @@ public partial class CreateDoc : ContentPage
                     qw.IsChecked = (qw.Code == value.Code);
             }
             OnPropertyChanged(nameof(SelectedWarehouse));
+            FilteredReason();
+
         }
     }
 
@@ -44,9 +54,12 @@ public partial class CreateDoc : ContentPage
 
     public CreateDoc(TypeDoc pTD,Action<DocVM> pActionNumberDoc)
     {
+
         TD = pTD;
         InitializeComponent();
         CreatedDoc= pActionNumberDoc;
+
+        ListReason =  db.GetReason(TD.LevelReason)?.OrderBy(q => q.NameReason).ToList() ?? [];
 
         // 1. Читаємо конфіг один раз
         _initialCode = Config.CodeWarehouse;
@@ -73,12 +86,15 @@ public partial class CreateDoc : ContentPage
                 }
             }
         });
+        if (pTD.IsViewReasonHead )
+            FilteredReasonPicker = new();
 
         this.BindingContext = this;
 
         // Первинне заповнення
         foreach (var w in ListWarehouse)
             FilteredWarehousePicker.Add(w);
+       
 
         InitData();
     }
@@ -96,6 +112,17 @@ public partial class CreateDoc : ContentPage
                 QuickAccessWarehouses.Add(s);
             }
         }
+    }
+    void FilteredReason()
+    {
+        FilteredReasonPicker.Clear();
+        if (SelectedWarehouse != null)
+        {
+            var reasons = ListReason.Where(r => r.TypeWarehouse == SelectedWarehouse.TypeWarehouse);
+            foreach (var r in reasons)
+                FilteredReasonPicker.Add(r);
+        }
+        OnPropertyChanged(nameof(IsVisibleReason));
     }
 
     private void ApplyPickerFilter(string text)
@@ -138,7 +165,7 @@ public partial class CreateDoc : ContentPage
             return;
         }
         var c = ConnectorBase.GetInstance();
-        var R = await c.CreateDoc(new () { TypeDoc = TD.CodeDoc,CodeWarehouseFrom= Config.CodeWarehouse, CodeWarehouseTo = SelectedWarehouse.CodeWarehouse, Description = Comment, CodeUser=Config.CodeUser });
+        var R = await c.CreateDoc(new () { TypeDoc = TD.CodeDoc,CodeWarehouseFrom= Config.CodeWarehouse, CodeWarehouseTo = SelectedWarehouse.CodeWarehouse, CodeReason= SelectedReason.CodeReason, Description = Comment, CodeUser=Config.CodeUser });
         if (R.State != 0)
         {
             await DisplayAlert("Помилка", $"Не вдалося створити документ: State=>{R.State} {R.TextError}", "ОК");
