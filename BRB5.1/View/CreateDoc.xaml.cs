@@ -165,7 +165,7 @@ public partial class CreateDoc : ContentPage
             return;
         }
         var c = ConnectorBase.GetInstance();
-        var R = await c.CreateDoc(new () { TypeDoc = TD.CodeDoc,CodeWarehouseFrom= Config.CodeWarehouse, CodeWarehouseTo = SelectedWarehouse.CodeWarehouse, CodeReason= SelectedReason.CodeReason, Description = Comment, CodeUser=Config.CodeUser });
+        var R = await c.CreateDoc(new () { TypeDoc = TD.CodeDoc,CodeWarehouseFrom= Config.CodeWarehouse, CodeWarehouseTo = SelectedWarehouse?.CodeWarehouse??0, CodeReason= SelectedReason?.CodeReason??0, Description = Comment, CodeUser=Config.CodeUser });
         if (R.State != 0)
         {
             await DisplayAlert("Помилка", $"Не вдалося створити документ: State=>{R.State} {R.TextError}", "ОК");
