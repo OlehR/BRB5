@@ -530,8 +530,8 @@ public string Info { get; set; }
         
         public override async Task<Result<DocVM>> CreateDoc(CreateDocData pDoc) 
         {
-            CreateDocData Data = new() { CodeWarehouseFrom = pDoc.CodeWarehouseFrom, CodeWarehouseTo = pDoc.CodeWarehouseTo, Description = pDoc.Description, TypeDoc = pDoc.TypeDoc };
-            var res = await GetDataHTTP.HTTPRequestAsync(1, "newmovedoc", Data.ToJson(), "application/json", Config.Login, Config.Password);
+            //CreateDocData Data = new() { CodeWarehouseFrom = pDoc.CodeWarehouseFrom, CodeWarehouseTo = pDoc.CodeWarehouseTo, Description = pDoc.Description, TypeDoc = pDoc.TypeDoc };
+            var res = await GetDataHTTP.HTTPRequestAsync(1, "newmovedoc", pDoc.ToJson(), "application/json", Config.Login, Config.Password);
 
             if (res.HttpState != eStateHTTP.HTTP_OK)
             {
