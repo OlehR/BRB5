@@ -195,7 +195,7 @@ public partial class ExpirationDateElementTemplate : ContentView
     {
         Microsoft.Maui.Handlers.EntryHandler.Mapper.AppendToMapping("MyCustomization", (handler, view) =>
         {
-            if (Config.TypeScaner != eTypeScaner.Camera)
+            if (!Config.IsSoftKeyboard)// TypeScaner != eTypeScaner.Camera)
             {
                 if (view is CustomEntry)
                 {
