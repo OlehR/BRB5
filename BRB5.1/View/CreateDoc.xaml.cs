@@ -164,6 +164,12 @@ public partial class CreateDoc : ContentPage
             await DisplayAlert("Помилка", "Будь ласка, оберіть склад", "ОК");
             return;
         }
+        if (FilteredReasonPicker?.Any()==true && SelectedReason == null)
+        {
+            await DisplayAlert("Помилка", "Будь ласка, оберіть причину", "ОК");
+            return;
+        }
+
         var c = ConnectorBase.GetInstance();
         var R = await c.CreateDoc(new () { TypeDoc = TD.CodeDoc,CodeWarehouseFrom= Config.CodeWarehouse, CodeWarehouseTo = SelectedWarehouse?.CodeWarehouse??0, CodeReason= SelectedReason?.CodeReason??0, Description = Comment, CodeUser=Config.CodeUser });
         if (R.State != 0)
