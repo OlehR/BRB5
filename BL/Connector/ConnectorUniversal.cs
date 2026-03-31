@@ -496,8 +496,10 @@ namespace BL.Connector
 
                     if (!Directory.Exists(Path.Combine(DirArx, pNumberDoc)))
                         Directory.CreateDirectory(Path.Combine(DirArx, pNumberDoc));
+                    if (!Directory.Exists(Path.Combine(Config.PathFiles, pNumberDoc)))
+                        Directory.CreateDirectory(Path.Combine(Config.PathFiles, pNumberDoc));
 
-                    var Files = Directory.GetFiles(Path.Combine(Config.PathFiles, pNumberDoc));
+                   var Files = Directory.GetFiles(Path.Combine(Config.PathFiles, pNumberDoc));
                     FileLogger.WriteLogMessage($"SendRaitingFiles Files=>{Files?.Length}", eTypeLog.Full);
                     i = 0;
                     OnSave?.Invoke($"Файлів для передачі=>{Files.Count()}");

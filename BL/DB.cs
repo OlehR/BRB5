@@ -249,6 +249,7 @@ CREATE TABLE DocWaresExpirationSample (
     ExpirationDate TIMESTAMP,
     Expiration NUMBER,
     DaysLeft TEXT,
+    IsHide INTEGER NOT NULL DEFAULT (0),
     OrderDoc    INTEGER NOT NULL DEFAULT (0)
 );
 CREATE UNIQUE INDEX DocWaresExpirationSampleTNC ON DocWaresExpirationSample 
@@ -270,7 +271,7 @@ CREATE TABLE SKU (
     CodeUnit           INTEGER  NOT NULL);
 CREATE UNIQUE INDEX SKUId ON SKU (CodeSKU);
 ";
-        readonly int Ver = 15;
+        readonly int Ver = 16;
         string SqlTo6 = @"alter TABLE Reason add  Level INTEGER  DEFAULT (0);
 drop index ReasonId;
 CREATE UNIQUE INDEX ReasonId ON Reason (Level,CodeReason);";
@@ -296,6 +297,8 @@ CREATE INDEX TypeWarehouseId ON TypeWarehouse (Code);";
 
         string SqlTo14 = @"alter TABLE DocWaresExpirationSample add QuantityInput NUMBER DEFAULT (0)";
         string SqlTo15 = @"alter TABLE Reason add TypeWarehouse INTEGER  NOT NULL DEFAULT (0)";
+        string SqlTo16 = @"alter TABLE DocWaresExpirationSample add IsHide INTEGER NOT NULL DEFAULT (0),";
+
         public static string PathNameDB { get { return Path.Combine(BaseDir, NameDB); } }
 
         public DB(string pBaseDir) : this() { BaseDir = pBaseDir; }
@@ -331,6 +334,8 @@ CREATE INDEX TypeWarehouseId ON TypeWarehouse (Code);";
                     SetSQL(SqlTo14, 14);
                 if (GetVersion < 15)
                     SetSQL(SqlTo15, 15);
+                if (GetVersion < 16)
+                    SetSQL(SqlTo16, 16);
             }            
         }
 
@@ -1094,7 +1099,7 @@ order by gw.NameGroup";
                                 join DocWaresExpirationSample DES on w.CodeWares=DES.CodeWares
                                 left join DocWaresExpiration DE on DES.CodeWares=DE.CodeWares and DE.DocId=DES.DocId and DATE(DE.DateDoc) = DATE('now')                              
                                 where {Find}
-                            order by case when DE.CodeWares is null then 1 else 0 end,  des.ExpirationDate";
+                            order by case when DE.CodeWares is null then 1 else 0 end, des.IsHide,  des.ExpirationDate";
                     var r = db.Query<ExpirationDateElementVM>(sql);
                     if (r?.Count >= 1)
                     {
@@ -1141,7 +1146,7 @@ order by gw.NameGroup";
                                 join UNITDIMENSION ud on w.CODEUNIT=ud.CODEUNIT 
                                 join DocWaresExpirationSample DES on w.CodeWares=DES.CodeWares 
                                 left join DocWaresExpiration DE on DES.CodeWares=DE.CodeWares and DE.DocId=DES.DocId and DATE(DE.DateDoc) = DATE('now')                             
-                                where w.CodeGroup = ?                                
+                                where DES.IsHide=0 and w.CodeGroup = ?                                
                         union all 
         select DES.OrderDoc, DES.NumberDoc,DES.DocId, w.CodeWares,w.NameWares as NameWares, au.Coefficient as Coefficient,w.CodeUnit as CodeUnit, ud.ABRUNIT as NameUnit,
                             ( select group_concat(bc.BarCode,',') from BarCode bc where bc.CodeWares=w.CodeWares ) as BARCODE  ,w.CodeUnit as BaseCodeUnit,
