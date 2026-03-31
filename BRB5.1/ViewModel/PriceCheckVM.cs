@@ -4,6 +4,7 @@ using BRB5;
 using BRB5.Model;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using System.Windows.Input;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,9 +24,27 @@ namespace BRB6.ViewModel
         DB db = DB.GetDB();
         public BL.BL bl = BL.BL.GetBL();
 
+        public ICommand BarCodeHandInputCommand { get; }
+        public ICommand ModifyValueCommand { get; }
+        public ICommand UpdateReplenishmentCommand { get; }
+        public ICommand ClearCommand { get; }
+
         public List<PrintBlockItems> ListPrintBlockItems { get { return db.GetPrintBlockItemsCount().ToList(); } }
 
         public int SelectedPrintBlockItems { get { return ListPrintBlockItems.Count > 0 ? ListPrintBlockItems.Last().PackageNumber : -1; } }
+        private PrintBlockItems _selectedPrintItem;
+        public PrintBlockItems SelectedPrintItem
+        {
+            get => _selectedPrintItem;
+            set
+            {
+                if (_selectedPrintItem != value)
+                {
+                    _selectedPrintItem = value;
+                    OnPropertyChanged(nameof(SelectedPrintItem));
+                }
+            }
+        }
         public bool IsVisPriceNormal { get { return WP != null && (WP.PriceOld != WP.PriceNormal) && WP.PriceNormal != 0; } }
         public bool IsVisPriceOpt { get { return WP != null && (WP.PriceOpt != 0 || WP.PriceOptOld != 0); } }
         public bool IsVisPriceOptQ { get { return WP != null && WP.QuantityOpt != 0; } }
@@ -112,7 +131,12 @@ namespace BRB6.ViewModel
             }
         }
 
-        public string NumberOfReplenishment { get; set; } = "0";
+        private string _numberOfReplenishment = "0";
+        public string NumberOfReplenishment
+        {
+            get => _numberOfReplenishment;
+            set => SetProperty(ref _numberOfReplenishment, value);
+        }
         public string BarCodeInput { get; set; }
 
         public string QuantityToAddText => $"+{QuantityToAdd}";
@@ -136,6 +160,14 @@ namespace BRB6.ViewModel
             if (!IsVisScan)
                 Config.BarCode = BarCode;
 
+            BarCodeHandInputCommand = new RelayCommand(BarCodeHandInput);
+            UpdateReplenishmentCommand = new RelayCommand(OnUpdateReplenishment);
+            ClearCommand = new RelayCommand(() => NumberOfReplenishment = "0"); 
+            ModifyValueCommand = new RelayCommand<object>(p => {
+                if (p == null) return;
+                int delta = Convert.ToInt32(p);
+                ModifyValue(delta);
+            });
         }
             
         void BarCode(string pBarCode) => FoundWares(pBarCode, false);
@@ -184,11 +216,14 @@ namespace BRB6.ViewModel
             ListPrintBlockItems.Add(new PrintBlockItems() { PackageNumber = PackageNumber });
         }
 
-        private void OnClickPrintBlock(object sender, EventArgs e)
+        public async Task PrintBlock()
         {
-            var temp = PrintBlockItemsXaml.SelectedItem as PrintBlockItems;
-            if (IsEnabledPrint)
-                ForMVVM.DisplayAlert("Друк", bl.PrintPackage(PrintType, temp.PackageNumber, IsMultyLabel), "OK");
+            // Тепер ми беремо дані з властивості SelectedPrintItem, а не з Xaml по імені
+            if (SelectedPrintItem != null && IsEnabledPrint)
+            {
+                var message = bl.PrintPackage(PrintType, SelectedPrintItem.PackageNumber, IsMultyLabel);
+                ForMVVM.DisplayAlert("Друк", message, "OK");
+            }
         }
 
         private void OnF2(object sender, EventArgs e)
@@ -200,9 +235,8 @@ namespace BRB6.ViewModel
         private void OnF4(object sender, EventArgs e) { IsOnline = !IsOnline; }
 
         private void OnF5(object sender, EventArgs e) { IsMultyLabel = !IsMultyLabel; }
-
-       
-        private void BarCodeHandInput(object sender, EventArgs e)
+               
+        private void BarCodeHandInput()
         {
             var text = BarCodeInput;
             FoundWares(text, true);
@@ -214,7 +248,7 @@ namespace BRB6.ViewModel
                 ForMVVM.DisplayAlert("Друк", bl.c.PrintHTTP(new[] { WP.CodeWares }), "OK");
         }
 
-        private void OnUpdateReplenishment(object sender, EventArgs e)
+        private void OnUpdateReplenishment()
         {
             decimal d;
             if (decimal.TryParse(NumberOfReplenishment, out d))
@@ -242,27 +276,27 @@ namespace BRB6.ViewModel
         }
 
         
-        private void OnClearClicked(object sender, EventArgs e)
-        {
-            NumberOfReplenishment = "0";
+        //private void OnClearClicked(object sender, EventArgs e)
+        //{
+        //    NumberOfReplenishment = "0";
 
-            OnUpdateReplenishment(null, null);
-        }
+        //    OnUpdateReplenishment();
+        //}
 
-        private void OnMinus1Clicked(object sender, EventArgs e)
-        {
-            ModifyValue(-1);
-        }
+        //private void OnMinus1Clicked(object sender, EventArgs e)
+        //{
+        //    ModifyValue(-1);
+        //}
 
-        private void OnPlus1Clicked(object sender, EventArgs e)
-        {
-            ModifyValue(1);
-        }
+        //private void OnPlus1Clicked(object sender, EventArgs e)
+        //{
+        //    ModifyValue(1);
+        //}
 
-        private void OnPlusDynamicClicked(object sender, EventArgs e)
-        {
-            ModifyValue(QuantityToAdd);
-        }
+        //private void OnPlusDynamicClicked(object sender, EventArgs e)
+        //{
+        //    ModifyValue(QuantityToAdd);
+        //}
 
         private void ModifyValue(int delta)
         {
@@ -275,7 +309,7 @@ namespace BRB6.ViewModel
             {
                 NumberOfReplenishment = delta > 0 ? delta.ToString() : "0";
             }
-            OnUpdateReplenishment(null, null);
+            OnUpdateReplenishment();
         }
     }
 }

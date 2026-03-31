@@ -4,281 +4,89 @@
                           xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
                           xmlns:controls="clr-namespace:BRB6.View"
                           xmlns:scanner="clr-namespace:BarcodeScanning;assembly=BarcodeScanning.Native.Maui"
+                          xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
                           x:Class="BRB6.PriceCheckSim23">
     <ContentPage.Content>
-        <StackLayout BackgroundColor="{Binding ColorPrintColorType}" Spacing="0">
-
-            <Grid x:Name="GridZxing" IsVisible="{Binding IsVisScan}" 
-                  HeightRequest="200">
-            </Grid>
-            <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition />
-                    <ColumnDefinition />
-                </Grid.ColumnDefinitions>
-                <Button Text="Інформація" 
-                        Margin="5,5,2,5"
-                        HorizontalOptions="Fill"
-                        Clicked="OnClickWareInfo" />
-                <Button Margin="3,5,5,5"
-                    Grid.Column="1"
-                    Text="{Binding PackageNumber}"
-                    HorizontalOptions="Fill"
-                    Clicked="OnClickAddPrintBlock" />
-            </Grid>
-
-            <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="2*" />
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="2*" />
-                    <ColumnDefinition Width="2*" />
-                </Grid.ColumnDefinitions>
-
-                <Label Text="Арт:" />
-                <Label Text="{Binding WP.Article}"
-                       Grid.Column="1" />
-                <Label Text="Зал:"
-                       Grid.Column="2" />
-                <Label Text="{Binding WP.Rest}"
-                       Grid.Column="3" />
-                <Label Text="{Binding WP.Unit}"
-                       Grid.Column="4" />
-            </Grid>
-
-            <Grid RowSpacing="0"  ColumnSpacing="0">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="2*" />
-                    <ColumnDefinition Width="3*" />
-                    <ColumnDefinition Width="2*" />
-                    <ColumnDefinition Width="3*" />
-                </Grid.ColumnDefinitions>
-                <Grid.RowDefinitions>
-                    <RowDefinition />
-                    <RowDefinition Height="auto"/>
-                </Grid.RowDefinitions>
-
-                <Label Text="Ціна с:"
-                       VerticalOptions="Center"
-                       FontSize="16"
-                       TextColor="{Binding TextColorPrice}" />
-                <Label Text="{Binding WP.PriceOld}"
-                       Grid.Column="1"
-                       FontSize="24"
-                       TextColor="{Binding TextColorPrice}" />
-                <Label Text="Ціна н:"
-                       VerticalOptions="Center"
-                       FontSize="16"
-                       Grid.Column="2"
-                       TextColor="{Binding TextColorPrice}" />
-                <Label Text="{Binding WP.Price}"
-                       FontSize="24"
-                       Grid.Column="3"
-                       TextColor="{Binding TextColorPrice}" />
-                <Label Text="Роз.ціна:" MaxLines="1"
-                       IsVisible="{Binding IsVisPriceNormal}"
-                       VerticalOptions="Center"
-                       FontSize="16"                       
-                       Grid.Row="1"
-                       TextColor="{Binding TextColorPrice}" />
-                <Label Text="{Binding WP.PriceNormal}"
-                       IsVisible="{Binding IsVisPriceNormal}"
-                       Grid.Column="1"
-                       Grid.Row="1"
-                       FontSize="24"
-                       TextColor="{Binding TextColorPrice}" />
-            </Grid>
+        <VerticalStackLayout>
+            <Grid x:Name="GridZxing" IsVisible="{Binding IsVisScan}"  HeightRequest="{Binding GridZxingHeight}"/>
             
-            <Grid RowSpacing="0"  ColumnSpacing="0" IsVisible="{Binding IsVisPriceOpt}">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="2*" />
-                    <ColumnDefinition Width="3*" />
-                    <ColumnDefinition Width="2*" />
-                    <ColumnDefinition Width="3*" />
-                </Grid.ColumnDefinitions>
-                <Grid.RowDefinitions>
-                    <RowDefinition />
-                    <RowDefinition />
-                </Grid.RowDefinitions>
+            <VerticalStackLayout Padding="15" Spacing="15">
 
-                <Label Text="Ц.с.опт."
-                       VerticalOptions="Center"
-                       FontSize="16" 
-                       TextColor="{Binding TextColorPrice}" />
-                <Label Text="{Binding WP.PriceOptOld}"
-                       FontSize="24"
-                       Grid.Column="1"
-                       TextColor="{Binding TextColorPrice}" />
-                <Label Text="Ц.н.опт."
-                       VerticalOptions="Center"
-                       FontSize="16"
-                       Grid.Column="2"
-                       TextColor="{Binding TextColorPrice}" />
-                <Label Text="{Binding WP.PriceOpt}"
-                       FontSize="24"
-                       Grid.Column="3"
-                       TextColor="{Binding TextColorPrice}" />
+                <Grid ColumnDefinitions="Auto, *, Auto, Auto" VerticalOptions="Center">
+                    <Image Source="barcode_scanning.png" HeightRequest="30" VerticalOptions="Center" />
+                    <Label Grid.Column="1" Text="{Binding WP.BarCodes}" FontSize="22" Margin="10,0" VerticalOptions="Center" FontAttributes="Bold" />
+                    <Label Grid.Column="2" Text="Код: " VerticalOptions="Center" TextColor="Gray" />
+                    <Label Grid.Column="3" Text="{Binding WP.Article}" FontSize="22" VerticalOptions="Center" />
+                </Grid>
 
+                <BoxView HeightRequest="1" Color="#EEEEEE" Margin="0,-5" />
+
+                <Grid ColumnDefinitions="80, *" ColumnSpacing="15">
+                    <Image Source="product_placeholder.png" HeightRequest="100" WidthRequest="80" Aspect="AspectFit" VerticalOptions="Start" />
+                    <Label Grid.Column="1" Text="{Binding WP.Name}" FontSize="22" FontAttributes="Bold" LineBreakMode="WordWrap" VerticalOptions="Center" />
+                </Grid>
+
+                <Frame BackgroundColor="#F8F9FA" CornerRadius="20" HasShadow="False" Padding="15" BorderColor="#E0E0E0">
+                    <Grid ColumnDefinitions="*, Auto" RowDefinitions="Auto, Auto">
+                        <Label Text="Ціна:" FontSize="16" TextColor="Black" />
+                        <Label Grid.Row="1" Text="{Binding WP.Price}" FontSize="48" FontAttributes="Bold" TextColor="{Binding TextColorPrice}" VerticalOptions="Start" />
+
+                        <VerticalStackLayout Grid.Column="1" Spacing="5" VerticalOptions="Center">
+                            <Button Text="Купи за FreeCard" BackgroundColor="#FF7A00" TextColor="White" CornerRadius="8" HeightRequest="36" Padding="10,0" FontSize="14" />
+                            <Label Text="Діє до: 12.03.26" FontSize="14" HorizontalOptions="End" FontAttributes="Bold" />
+                        </VerticalStackLayout>
+                    </Grid>
+                </Frame>
+
+                <VerticalStackLayout Spacing="10">
+                    <Grid ColumnDefinitions="*, Auto">
+                        <Label Text="Термін придатності:" TextColor="Black" FontSize="16" />
+                        <Label Grid.Column="1" Text="24 місяці" FontAttributes="Bold" FontSize="16" />
+                    </Grid>
+                    <BoxView HeightRequest="1" Color="#EEEEEE" />
+
+                    <Grid ColumnDefinitions="*, Auto">
+                        <Label Text="Залишок (шт):" TextColor="Black" FontSize="16" />
+                        <Label Grid.Column="1" Text="{Binding WP.Rest}" FontAttributes="Bold" FontSize="16" />
+                    </Grid>
+
+                    <Button Text="Провести МР" BackgroundColor="#E9EAEF" TextColor="Black" CornerRadius="20" HeightRequest="50" Margin="0,10" FontAttributes="Bold" />
+
+                    <Grid ColumnDefinitions="*, Auto">
+                        <Label Text="Місць викладки:" TextColor="Black" FontSize="16" />
+                        <Label Grid.Column="1" Text="2" FontAttributes="Bold" FontSize="16" />
+                    </Grid>
+                </VerticalStackLayout>
+
+                <Grid ColumnDefinitions="1.2*, 2*" ColumnSpacing="15" Margin="0,10">
+                    <Border StrokeShape="RoundRectangle 25" Stroke="#CCCCCC" Padding="5" HeightRequest="60">
+                        <Grid ColumnDefinitions="*, *, *">
+                            <Button Text="—"   Command="{Binding ModifyValueCommand}" CommandParameter="-1" BackgroundColor="Transparent" 
+                                    TextColor="#7B2CBF" FontSize="24" FontAttributes="Bold" />
+
+                            <controls:CustomEntry Grid.Column="1" Text="{Binding NumberOfReplenishment, Mode=TwoWay}" HorizontalTextAlignment="Center" FontSize="20" Keyboard="Numeric">
+                                <controls:CustomEntry.Behaviors>
+                                    <toolkit:EventToCommandBehavior EventName="Unfocused" Command="{Binding UpdateReplenishmentCommand}" />
+                                    <toolkit:EventToCommandBehavior EventName="Completed" Command="{Binding UpdateReplenishmentCommand}" />
+                                </controls:CustomEntry.Behaviors>
+                            </controls:CustomEntry>
+
+                            <Button Grid.Column="2" Text="+"  Command="{Binding ModifyValueCommand}" CommandParameter="1"  BackgroundColor="Transparent" 
+                                    TextColor="#7B2CBF" FontSize="24" FontAttributes="Bold" />
+                        </Grid>
+                    </Border>
+
+                    <Button Grid.Column="1" Text="Додати в лист поповнення" BackgroundColor="#7B2CBF" TextColor="White" CornerRadius="20" FontSize="15" FontAttributes="Bold" />
+                </Grid>
+
+                <controls:CustomEntry x:Name="BarCodeInput" Opacity="0" HeightRequest="1" >
+                    <controls:CustomEntry.Behaviors>
+                        <toolkit:EventToCommandBehavior EventName="Completed" Command="{Binding BarCodeHandInputCommand}" />
+                    </controls:CustomEntry.Behaviors>
+                </controls:CustomEntry>
                 
-                <Label Text="к-ть опт." Grid.Row="1"
-                       VerticalOptions="Center"
-                       FontSize="16" Grid.ColumnSpan="2"
-                       IsVisible="{Binding IsVisPriceOptQ}"
-                       TextColor="Blue" />
-                <Label Text="{Binding WP.QuantityOpt}"  
-                       Grid.Row="1"
-                       FontSize="24"
-                       Grid.Column="2"
-                       IsVisible="{Binding IsVisPriceOptQ}"
-                       TextColor="Blue" />
-
-            </Grid>
-
-            <Grid>
-                <Label Text="{Binding WP.Name}"
-                       FontSize="28" />
-            </Grid>
-
-            <Grid IsVisible="{Binding IsVisBarcode}">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="1*" />
-                    <ColumnDefinition Width="2*" />
-                </Grid.ColumnDefinitions>
-
-                <Label Text="Штрих код:" />
-                <Frame Style="{StaticResource FrameStyle}" Grid.Column="1">
-                    <controls:CustomEntry Keyboard="{OnPlatform Numeric, iOS=Default}"
-                                          ReturnType="Done"
-                                          Style="{StaticResource EntryStyle}"
-                                          Text="{Binding WP.BarCodes}" 
-                                          x:Name="BarCodeInput"
-                                          AutomationId="BarcodeEntry"
-                                          Focused="BarCodeFocused"
-                                          IsReadOnly="{Binding IsVisDoubleScan}"
-                                          Completed="BarCodeHandInput"/>
-                </Frame>
-            </Grid>
-
-            <Grid IsVisible="{Binding IsVisRepl}" ColumnDefinitions="2*,*,2*,3*,2*,2*" HeightRequest="60" ColumnSpacing="0" Margin="0">
-
-                <Button Grid.Column="0" FontSize="30"  FontAttributes="Bold" Text="C"  Padding="0" Margin="2" Clicked="OnClearClicked" BackgroundColor="#D16F72"  CornerRadius="15" />
-
-                <Button Grid.Column="2" FontSize="40" FontAttributes="Bold" Text="—" Margin="2"  Padding="0" Clicked="OnMinus1Clicked"   CornerRadius="15" />
-
-                <Frame Grid.Column="3" Margin="2" Padding="0" HasShadow="False" Style="{StaticResource FrameStyle}">
-                    <controls:CustomEntry x:Name="NumberOfReplenishment"
-                              Style="{StaticResource EntryStyle}"
-                              Text="{Binding ReplenishmentValue}"
-                              HorizontalTextAlignment="Center"
-                              VerticalOptions="Center"
-                              Keyboard="Numeric"
-                              Unfocused="OnUpdateReplenishment"
-                              Completed="OnUpdateReplenishment" />
-                </Frame>
-
-                <Button Grid.Column="4" FontSize="40" FontAttributes="Bold" Text="+" Margin="2" Padding="0" Clicked="OnPlus1Clicked"  CornerRadius="15" />
-
-                <Button Grid.Column="5" FontSize="30" FontAttributes="Bold" Text="{Binding QuantityToAddText}" Margin="2" Padding="0" Clicked="OnPlusDynamicClicked" CornerRadius="15" />
-            </Grid>
-
-            <StackLayout IsVisible="{Binding IsVisDoubleScan}">
-                <Frame HasShadow="False"  BackgroundColor="{Binding ColorDoubleScan}">
-                    <Label FontSize="Large" Text="{Binding MessageDoubleScan}"/>
-                </Frame>
-                <!--<Button Text="{Binding ButtonDoubleScan}" Clicked="DoubleScanReact"/>-->
-            </StackLayout>            
-            
-            <Grid VerticalOptions="EndAndExpand">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition />
-                    <ColumnDefinition />
-                </Grid.ColumnDefinitions>
-
-                <Picker Title="пакети" x:Name="PrintBlockItemsXaml"
-                        ItemsSource="{Binding ListPrintBlockItems}"
-                        ItemDisplayBinding="{Binding stringPrintBlockItem}"
-                        SelectedIndex="{Binding SelectedPrintBlockItems}" />
-
-                <Button Text="f1-Друк"
-                        Grid.Column="1"
-                        HorizontalOptions="Fill"
-                        IsEnabled="{Binding IsEnabledPrint}"
-                        Clicked="OnClickPrintBlock" />
-            </Grid>
-
-            <Grid VerticalOptions="End">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition />
-                    <ColumnDefinition />
-                    <ColumnDefinition />
-                </Grid.ColumnDefinitions>
-
-                <Label Text="" />
-                <Label Grid.Column="1"
-                    Text="{Binding WP.StrHttpResult}"
-                    TextColor="{Binding TextColorHttp}" />
-                <StackLayout Orientation="Horizontal" Spacing="0" Grid.Column="2">
-                    <Label Text="{Binding BadScan}" />
-                    <Label Text="/" />
-                    <Label Text="{Binding AllScan}" />
-                </StackLayout>
-            </Grid>
-
-            <StackLayout VerticalOptions="End" Orientation="Horizontal" Spacing="2">                
-                <Label Text="F2"
-                       VerticalOptions="Center"
-                       FontSize="16"
-                       TextColor="#ff5c5c" />
-                <Label Text="Підбір"
-                       FontSize="16"
-                       TextColor="#816f20">
-                    <Label.GestureRecognizers>
-                        <TapGestureRecognizer Tapped="OnF2" />
-                    </Label.GestureRecognizers>
-                </Label>
-                <Label Text="F4" FontSize="16"
-                       IsVisible="{Binding IsVisF4}"
-                       TextColor="#ff5c5c"
-                       VerticalOptions="Center" />
-                <Label Text="{Binding F4Text}"
-                       FontSize="16"
-                       IsVisible="{Binding IsVisF4}"
-                       TextColor="#816f20">
-                    <Label.GestureRecognizers>
-                        <TapGestureRecognizer Tapped="OnF4" />
-                    </Label.GestureRecognizers>
-                </Label>
-                <Label Text="F5"
-                       FontSize="16"
-                       TextColor="#ff5c5c"
-                       VerticalOptions="Center" />
-                <Label Text="{Binding F5Text}"
-                       FontSize="16"
-                       TextColor="#816f20">
-                    <Label.GestureRecognizers>
-                        <TapGestureRecognizer Tapped="OnF5" />
-                    </Label.GestureRecognizers>
-                </Label>
-                <Label Text="F6"
-                       VerticalOptions="Center"
-                       FontSize="16"
-                       TextColor="#ff5c5c" />
-                <Label Text="Др.поточ."
-                       FontSize="16"
-                       TextColor="#816f20">
-                    <Label.GestureRecognizers>
-                        <TapGestureRecognizer Tapped="OnClickPrintOne" />
-                    </Label.GestureRecognizers>
-                </Label>
-
-            </StackLayout>
-
-            <Grid VerticalOptions="End">
-                <ProgressBar x:Name="pb" ScaleY="2" Progress="{Binding PB}" ProgressColor="Black" />
-            </Grid>
-
-        </StackLayout>
+            </VerticalStackLayout>
+        </VerticalStackLayout>
 
     </ContentPage.Content>
 </controls:BaseContentPage>

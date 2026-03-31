@@ -106,8 +106,8 @@ namespace BRB6
         {
             if (pName == "BarCodeInput")
                 BarCodeFocused(null, null);
-            else
-                NumberOfReplenishment.Focus();
+            //else
+            //    NumberOfReplenishment.Focus();
         }
 
         public void DisplayAlert(string title, string message, string cancel)

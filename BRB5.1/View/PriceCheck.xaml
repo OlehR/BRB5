@@ -182,6 +182,35 @@
                 <Button Grid.Column="5" FontSize="30" FontAttributes="Bold" Text="{Binding QuantityToAddText}" Margin="2" Padding="0" Clicked="OnPlusDynamicClicked" CornerRadius="15" />
             </Grid>
 
+            <!--<Grid IsVisible="{Binding IsVisRepl}" ...>
+                <Button Grid.Column="0" Text="C" 
+            Command="{Binding ClearCommand}" ... />
+
+                <Button Grid.Column="2" Text="—" 
+            Command="{Binding ModifyValueCommand}" 
+            CommandParameter="-1" ... />
+
+                <Frame Grid.Column="3" ...>
+                    <controls:CustomEntry 
+                  Text="{Binding NumberOfReplenishment, Mode=TwoWay}"
+                  Keyboard="Numeric">
+                        <controls:CustomEntry.Behaviors>
+                            <toolkit:EventToCommandBehavior EventName="Unfocused" Command="{Binding UpdateReplenishmentCommand}" />
+                            <toolkit:EventToCommandBehavior EventName="Completed" Command="{Binding UpdateReplenishmentCommand}" />
+                        </controls:CustomEntry.Behaviors>
+                    </controls:CustomEntry>
+                </Frame>
+
+                <Button Grid.Column="4" Text="+" 
+            Command="{Binding ModifyValueCommand}" 
+            CommandParameter="1" ... />
+
+               <Button Grid.Column="5" 
+        Text="{Binding QuantityToAddText}" 
+        Command="{Binding ModifyValueCommand}" 
+        CommandParameter="{Binding QuantityToAdd}" 
+        Margin="2" Padding="0" CornerRadius="15" />-->
+
             <StackLayout IsVisible="{Binding IsVisDoubleScan}">
                 <Frame HasShadow="False"  BackgroundColor="{Binding ColorDoubleScan}">
                     <Label FontSize="Large" Text="{Binding MessageDoubleScan}"/>
@@ -205,6 +234,17 @@
                         HorizontalOptions="Fill"
                         IsEnabled="{Binding IsEnabledPrint}"
                         Clicked="OnClickPrintBlock" />
+                
+                <!--
+                <Picker Title="пакети" 
+                    ItemsSource="{Binding ListPrintBlockItems}"
+                    ItemDisplayBinding="{Binding stringPrintBlockItem}"
+                    SelectedIndex="{Binding SelectedPrintBlockItems, Mode=TwoWay}"
+                    SelectedItem="{Binding SelectedPrintItem, Mode=TwoWay}" />
+
+                <Button  Command="{Binding PrintBlockCommand}" />                
+                -->
+                
             </Grid>
 
             <Grid VerticalOptions="End">
