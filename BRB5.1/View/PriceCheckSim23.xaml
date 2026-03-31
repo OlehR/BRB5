@@ -11,7 +11,7 @@
         <VerticalStackLayout>
             <Grid x:Name="GridZxing" IsVisible="{Binding IsVisScan}" HeightRequest="150"/>
 
-            <VerticalStackLayout Margin="15" Spacing="5">
+            <VerticalStackLayout Margin="12" Spacing="5">
 
                 <Border StrokeShape="RoundRectangle 12" Stroke="#E0E0E0" BackgroundColor="White" Padding="10,0">
                     <Grid ColumnDefinitions="Auto, *, Auto">
@@ -41,7 +41,7 @@
                     <Label Grid.Column="1" Text="{Binding WP.Name}" FontSize="22" FontAttributes="Bold" LineBreakMode="TailTruncation" MaxLines="4" VerticalOptions="Center" />
                 </Grid>
 
-                <Frame BackgroundColor="{Binding BackgroundColorPrice}" CornerRadius="20" HasShadow="False" Padding="15" BorderColor="#E0E0E0">
+                <Frame BackgroundColor="{Binding BackgroundColorPrice}" CornerRadius="20" HasShadow="False" Padding="10,5" BorderColor="#E0E0E0">
                     <Grid ColumnDefinitions="*, Auto" RowDefinitions="Auto, Auto">
 
                         <Label Grid.Row="0" Grid.Column="0" Text="Ціна:" FontSize="16" TextColor="Gray" />
@@ -49,15 +49,15 @@
                                FontAttributes="Bold" TextColor="{Binding TextColorPrice}" VerticalOptions="Start" />
 
                         <VerticalStackLayout Grid.Row="0" Grid.Column="1" Grid.RowSpan="2" Spacing="5" VerticalOptions="Center" HorizontalOptions="End">
-                            <Button Text="Купи за FreeCard" BackgroundColor="#FF7A00" TextColor="White"
-                                    CornerRadius="8" HeightRequest="36" Padding="10,0" FontSize="14" />
+                            <Button Text="Купи за FreeCard"  BackgroundColor="#FF7A00" TextColor="White"
+                                    CornerRadius="8" HeightRequest="34" Padding="10,0" FontSize="14" />
                             <Label Text="Діє до: 12.03.26" FontSize="12" HorizontalOptions="End" TextColor="Gray" />
                         </VerticalStackLayout>
 
                     </Grid>
                 </Frame>
 
-                <VerticalStackLayout Spacing="10">
+                <VerticalStackLayout Spacing="5">
                     <Grid ColumnDefinitions="*, Auto">
                         <Label Text="Код товару:" TextColor="Black" FontSize="16" />
                         <Label Grid.Column="1" Text="{Binding WP.Article}" FontAttributes="Bold" FontSize="16" />
@@ -74,7 +74,7 @@
                         <Label Grid.Column="1" Text="{Binding WP.Rest}" FontAttributes="Bold" FontSize="16" />
                     </Grid>
 
-                    <Button Text="Провести МР" BackgroundColor="#E9EAEF" TextColor="Black" CornerRadius="20" HeightRequest="50" FontSize="20" FontAttributes="Bold" />
+                    <Button Text="Провести МР" BackgroundColor="#E9EAEF" TextColor="Black" CornerRadius="20" Padding="0" HeightRequest="40" FontSize="20" FontAttributes="Bold" />
 
                     <BoxView HeightRequest="1" Color="#EEEEEE" Margin="0,-5" />
                     
@@ -106,7 +106,7 @@
                             Margin="2" Padding="0" Command="{Binding ModifyValueCommand}" CommandParameter="1" CornerRadius="15" />
 
                     <Button Grid.Column="5" FontSize="30" FontAttributes="Bold" Text="{Binding QuantityToAddText}" Margin="2" Padding="0" 
-                            TextColor="#7B2CBF" BackgroundColor="White"
+                            TextColor="#7B2CBF" BackgroundColor="White" BorderWidth="1" BorderColor="#E0E0E0"
                             Command="{Binding ModifyValueCommand}" CommandParameter="{Binding QuantityToAdd}"   CornerRadius="15" />
                 </Grid>
 
