@@ -4,41 +4,65 @@
                           xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
                           xmlns:controls="clr-namespace:BRB6.View"
                           xmlns:scanner="clr-namespace:BarcodeScanning;assembly=BarcodeScanning.Native.Maui"
-                          xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+                          xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"                          
+                          xmlns:ffimageloading="clr-namespace:FFImageLoading.Maui;assembly=FFImageLoading.Maui"
                           x:Class="BRB6.PriceCheckSim23">
     <ContentPage.Content>
         <VerticalStackLayout>
-            <Grid x:Name="GridZxing" IsVisible="{Binding IsVisScan}"  HeightRequest="{Binding GridZxingHeight}"/>
-            
-            <VerticalStackLayout Padding="15" Spacing="15">
+            <Grid x:Name="GridZxing" IsVisible="{Binding IsVisScan}" HeightRequest="150"/>
 
-                <Grid ColumnDefinitions="Auto, *, Auto, Auto" VerticalOptions="Center">
-                    <Image Source="barcode_scanning.png" HeightRequest="30" VerticalOptions="Center" />
-                    <Label Grid.Column="1" Text="{Binding WP.BarCodes}" FontSize="22" Margin="10,0" VerticalOptions="Center" FontAttributes="Bold" />
-                    <Label Grid.Column="2" Text="Код: " VerticalOptions="Center" TextColor="Gray" />
-                    <Label Grid.Column="3" Text="{Binding WP.Article}" FontSize="22" VerticalOptions="Center" />
-                </Grid>
+            <VerticalStackLayout Margin="15" Spacing="5">
 
-                <BoxView HeightRequest="1" Color="#EEEEEE" Margin="0,-5" />
+                <Border StrokeShape="RoundRectangle 12" Stroke="#E0E0E0" BackgroundColor="White" Padding="10,0">
+                    <Grid ColumnDefinitions="Auto, *, Auto">
+
+                        <Image Grid.Column="0" Source="barcode_scanning.png" HeightRequest="24" WidthRequest="24" VerticalOptions="Center" />
+
+                        <controls:CustomEntry Grid.Column="1" x:Name="BarCodeInput" Keyboard="Numeric" Text="{Binding BarCodeInput, Mode=TwoWay}" VerticalOptions="Center" Margin="8,0">
+                            <controls:CustomEntry.Behaviors>
+                                <toolkit:EventToCommandBehavior EventName="Completed" Command="{Binding BarCodeHandInputCommand}" />
+                            </controls:CustomEntry.Behaviors>
+                        </controls:CustomEntry>
+
+                        <Label Grid.Column="2" Text="{Binding ExtraBarCodesCount, StringFormat='+{0}'}" FontSize="16" TextColor="#7B2CBF" FontAttributes="Bold" VerticalOptions="Center" IsVisible="{Binding HasExtraBarCodes}">
+                            <Label.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding ShowAllBarCodesCommand}" />
+                            </Label.GestureRecognizers>
+                        </Label>
+
+                    </Grid>
+                </Border>
+
+                <BoxView HeightRequest="1" Color="#EEEEEE" />
 
                 <Grid ColumnDefinitions="80, *" ColumnSpacing="15">
-                    <Image Source="product_placeholder.png" HeightRequest="100" WidthRequest="80" Aspect="AspectFit" VerticalOptions="Start" />
-                    <Label Grid.Column="1" Text="{Binding WP.Name}" FontSize="22" FontAttributes="Bold" LineBreakMode="WordWrap" VerticalOptions="Center" />
+                    <ffimageloading:CachedImage x:Name="WareImage" Grid.Column="0" ErrorPlaceholder="photo.png" Source="{Binding UriPicture}" 
+                                                WidthRequest="80" MaximumHeightRequest="100" Aspect="AspectFit" VerticalOptions="Start" />
+                    <Label Grid.Column="1" Text="{Binding WP.Name}" FontSize="22" FontAttributes="Bold" LineBreakMode="TailTruncation" MaxLines="4" VerticalOptions="Center" />
                 </Grid>
 
-                <Frame BackgroundColor="#F8F9FA" CornerRadius="20" HasShadow="False" Padding="15" BorderColor="#E0E0E0">
+                <Frame BackgroundColor="{Binding BackgroundColorPrice}" CornerRadius="20" HasShadow="False" Padding="15" BorderColor="#E0E0E0">
                     <Grid ColumnDefinitions="*, Auto" RowDefinitions="Auto, Auto">
-                        <Label Text="Ціна:" FontSize="16" TextColor="Black" />
-                        <Label Grid.Row="1" Text="{Binding WP.Price}" FontSize="48" FontAttributes="Bold" TextColor="{Binding TextColorPrice}" VerticalOptions="Start" />
 
-                        <VerticalStackLayout Grid.Column="1" Spacing="5" VerticalOptions="Center">
-                            <Button Text="Купи за FreeCard" BackgroundColor="#FF7A00" TextColor="White" CornerRadius="8" HeightRequest="36" Padding="10,0" FontSize="14" />
-                            <Label Text="Діє до: 12.03.26" FontSize="14" HorizontalOptions="End" FontAttributes="Bold" />
+                        <Label Grid.Row="0" Grid.Column="0" Text="Ціна:" FontSize="16" TextColor="Gray" />
+                        <Label Grid.Row="1" Grid.Column="0" Text="{Binding WP.Price}" FontSize="48" 
+                               FontAttributes="Bold" TextColor="{Binding TextColorPrice}" VerticalOptions="Start" />
+
+                        <VerticalStackLayout Grid.Row="0" Grid.Column="1" Grid.RowSpan="2" Spacing="5" VerticalOptions="Center" HorizontalOptions="End">
+                            <Button Text="Купи за FreeCard" BackgroundColor="#FF7A00" TextColor="White"
+                                    CornerRadius="8" HeightRequest="36" Padding="10,0" FontSize="14" />
+                            <Label Text="Діє до: 12.03.26" FontSize="12" HorizontalOptions="End" TextColor="Gray" />
                         </VerticalStackLayout>
+
                     </Grid>
                 </Frame>
 
                 <VerticalStackLayout Spacing="10">
+                    <Grid ColumnDefinitions="*, Auto">
+                        <Label Text="Код товару:" TextColor="Black" FontSize="16" />
+                        <Label Grid.Column="1" Text="{Binding WP.Article}" FontAttributes="Bold" FontSize="16" />
+                    </Grid>
+                    <BoxView HeightRequest="1" Color="#EEEEEE" />
                     <Grid ColumnDefinitions="*, Auto">
                         <Label Text="Термін придатності:" TextColor="Black" FontSize="16" />
                         <Label Grid.Column="1" Text="24 місяці" FontAttributes="Bold" FontSize="16" />
@@ -50,41 +74,42 @@
                         <Label Grid.Column="1" Text="{Binding WP.Rest}" FontAttributes="Bold" FontSize="16" />
                     </Grid>
 
-                    <Button Text="Провести МР" BackgroundColor="#E9EAEF" TextColor="Black" CornerRadius="20" HeightRequest="50" Margin="0,10" FontAttributes="Bold" />
+                    <Button Text="Провести МР" BackgroundColor="#E9EAEF" TextColor="Black" CornerRadius="20" HeightRequest="50" FontSize="20" FontAttributes="Bold" />
 
+                    <BoxView HeightRequest="1" Color="#EEEEEE" Margin="0,-5" />
+                    
                     <Grid ColumnDefinitions="*, Auto">
                         <Label Text="Місць викладки:" TextColor="Black" FontSize="16" />
                         <Label Grid.Column="1" Text="2" FontAttributes="Bold" FontSize="16" />
                     </Grid>
                 </VerticalStackLayout>
 
-                <Grid ColumnDefinitions="1.2*, 2*" ColumnSpacing="15" Margin="0,10">
-                    <Border StrokeShape="RoundRectangle 25" Stroke="#CCCCCC" Padding="5" HeightRequest="60">
-                        <Grid ColumnDefinitions="*, *, *">
-                            <Button Text="—"   Command="{Binding ModifyValueCommand}" CommandParameter="-1" BackgroundColor="Transparent" 
-                                    TextColor="#7B2CBF" FontSize="24" FontAttributes="Bold" />
+                <Grid ColumnDefinitions="2*,*,2*,3*,2*,2*" HeightRequest="60" ColumnSpacing="0" Margin="0">
 
-                            <controls:CustomEntry Grid.Column="1" Text="{Binding NumberOfReplenishment, Mode=TwoWay}" HorizontalTextAlignment="Center" FontSize="20" Keyboard="Numeric">
-                                <controls:CustomEntry.Behaviors>
-                                    <toolkit:EventToCommandBehavior EventName="Unfocused" Command="{Binding UpdateReplenishmentCommand}" />
-                                    <toolkit:EventToCommandBehavior EventName="Completed" Command="{Binding UpdateReplenishmentCommand}" />
-                                </controls:CustomEntry.Behaviors>
-                            </controls:CustomEntry>
+                    <Button Grid.Column="0" FontSize="30"  FontAttributes="Bold" Text="C" TextColor="White" BackgroundColor="#7B2CBF" 
+                            Command="{Binding ClearCommand}" Padding="0" Margin="2" CornerRadius="15" />
 
-                            <Button Grid.Column="2" Text="+"  Command="{Binding ModifyValueCommand}" CommandParameter="1"  BackgroundColor="Transparent" 
-                                    TextColor="#7B2CBF" FontSize="24" FontAttributes="Bold" />
-                        </Grid>
+                    <Button Grid.Column="2" FontSize="40" FontAttributes="Bold" Text="—" TextColor="#7B2CBF" BackgroundColor="White" 
+                            Margin="2"  Padding="0" Command="{Binding ModifyValueCommand}" CommandParameter="-1" CornerRadius="15" />
+
+                    <Border Grid.Column="3" StrokeShape="RoundRectangle 12" Stroke="#E0E0E0" BackgroundColor="White" Padding="10,0">
+                        <controls:CustomEntry Text="{Binding NumberOfReplenishment, Mode=TwoWay}" Keyboard="Numeric" HorizontalOptions="Center" 
+                                              VerticalOptions="Center" FontSize="28" FontAttributes="Bold" >
+                            <controls:CustomEntry.Behaviors>
+                                <toolkit:EventToCommandBehavior EventName="Unfocused" Command="{Binding UpdateReplenishmentCommand}" />
+                                <toolkit:EventToCommandBehavior EventName="Completed" Command="{Binding UpdateReplenishmentCommand}" />
+                            </controls:CustomEntry.Behaviors>
+                        </controls:CustomEntry>
                     </Border>
 
-                    <Button Grid.Column="1" Text="Додати в лист поповнення" BackgroundColor="#7B2CBF" TextColor="White" CornerRadius="20" FontSize="15" FontAttributes="Bold" />
+                    <Button Grid.Column="4" FontSize="40" FontAttributes="Bold" Text="+" TextColor="#7B2CBF" BackgroundColor="White" 
+                            Margin="2" Padding="0" Command="{Binding ModifyValueCommand}" CommandParameter="1" CornerRadius="15" />
+
+                    <Button Grid.Column="5" FontSize="30" FontAttributes="Bold" Text="{Binding QuantityToAddText}" Margin="2" Padding="0" 
+                            TextColor="#7B2CBF" BackgroundColor="White"
+                            Command="{Binding ModifyValueCommand}" CommandParameter="{Binding QuantityToAdd}"   CornerRadius="15" />
                 </Grid>
 
-                <controls:CustomEntry x:Name="BarCodeInput" Opacity="0" HeightRequest="1" >
-                    <controls:CustomEntry.Behaviors>
-                        <toolkit:EventToCommandBehavior EventName="Completed" Command="{Binding BarCodeHandInputCommand}" />
-                    </controls:CustomEntry.Behaviors>
-                </controls:CustomEntry>
-                
             </VerticalStackLayout>
         </VerticalStackLayout>
 
