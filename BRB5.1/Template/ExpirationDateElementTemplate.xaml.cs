@@ -82,10 +82,23 @@ public partial class ExpirationDateElementTemplate : ContentView
 
     private void OnAdd(object sender, EventArgs e)
     {
+        bool IsSave = false;
         if (String.IsNullOrEmpty(DM.NumberDoc)) DM.NumberDoc = NumberDoc;
         if (!String.IsNullOrEmpty(DM.DocId) && !String.IsNullOrEmpty(DM.NumberDoc))
         {
-            db.ReplaceDocWaresExpiration(DM.GetDocWaresExpiration());
+            if (DM.DocId.StartsWith("zz"))
+            {
+                var r = db.GetDataExpiration(NumberDoc, DM.CodeWares);
+                var R = r?.FirstOrDefault(x => x.ExpirationDate == DM.ExpirationDateInput);
+                if (R != null)
+                {
+                    R.QuantityInput = DM.QuantityInput ?? 0;
+                    db.ReplaceDocWaresExpiration(R.GetDocWaresExpiration());
+                    IsSave = true;
+                }
+            }
+            if (!IsSave)
+                db.ReplaceDocWaresExpiration(DM.GetDocWaresExpiration());
             if (_DM.DocId?.Equals(DM.DocId) == true)
             {
                 _DM.ExpirationDateInput = DM.ExpirationDateInput;

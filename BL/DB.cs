@@ -1135,9 +1135,9 @@ order by gw.NameGroup";
             return res;
         }
         
-        public IEnumerable<ExpirationDateElementVM> GetDataExpiration(string pNumberDoc)
+        public IEnumerable<ExpirationDateElementVM> GetDataExpiration(string pNumberDoc,long pCodeWares=0 )
         {
-            string sql = @"select DES.OrderDoc, DES.NumberDoc,DES.DocId, w.CodeWares,w.NameWares as NameWares, au.Coefficient as Coefficient,w.CodeUnit as CodeUnit, ud.ABRUNIT as NameUnit,
+            string sql = $@"select DES.OrderDoc, DES.NumberDoc,DES.DocId, w.CodeWares,w.NameWares as NameWares, au.Coefficient as Coefficient,w.CodeUnit as CodeUnit, ud.ABRUNIT as NameUnit,
                             ( select group_concat(bc.BarCode,',') from BarCode bc where bc.CodeWares=w.CodeWares ) as BARCODE  ,w.CodeUnit as BaseCodeUnit,
                             des.Quantity,des.Expiration,des.ExpirationDate,coalesce( des.DaysLeft, w.DaysLeft) as DaysLeft
 ,coalesce(DE.ExpirationDateInput,des.ExpirationDate) as ExpirationDateInput, coalesce(DE.QuantityInput,case when DES.QuantityInput>0 then DES.QuantityInput else null end) as QuantityInput
@@ -1146,7 +1146,7 @@ order by gw.NameGroup";
                                 join UNITDIMENSION ud on w.CODEUNIT=ud.CODEUNIT 
                                 join DocWaresExpirationSample DES on w.CodeWares=DES.CodeWares 
                                 left join DocWaresExpiration DE on DES.CodeWares=DE.CodeWares and DE.DocId=DES.DocId and DATE(DE.DateDoc) = DATE('now')                             
-                                where DES.IsHide=0 and w.CodeGroup = ?                                
+                                where DES.IsHide=0 and w.CodeGroup = ?  {(pCodeWares>0?$"and w.CodeWares={pCodeWares}" : "")}                              
                         union all 
         select DES.OrderDoc, DES.NumberDoc,DES.DocId, w.CodeWares,w.NameWares as NameWares, au.Coefficient as Coefficient,w.CodeUnit as CodeUnit, ud.ABRUNIT as NameUnit,
                             ( select group_concat(bc.BarCode,',') from BarCode bc where bc.CodeWares=w.CodeWares ) as BARCODE  ,w.CodeUnit as BaseCodeUnit,
@@ -1157,7 +1157,7 @@ DE.ExpirationDateInput, DE.QuantityInput
                                 join UNITDIMENSION ud on w.CODEUNIT=ud.CODEUNIT 
                                 join DocWaresExpiration DE on w.CodeWares=DE.CodeWares and DATE(DE.DateDoc) = DATE('now')
                                 left join DocWaresExpirationSample DES on DES.CodeWares=DE.CodeWares and DE.DocId=DES.DocId                                                               
-                                where DES.CodeWares is null and w.CodeGroup = ?
+                                where DES.CodeWares is null and w.CodeGroup = ? {(pCodeWares > 0 ? $"and w.CodeWares={pCodeWares}" : "")}
                                 order by 1
 ";
             try
