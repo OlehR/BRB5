@@ -69,10 +69,13 @@
                         <Label Grid.Row="1" Grid.Column="0" Text="{Binding WP.Price}" FontSize="48" 
                                FontAttributes="Bold" TextColor="{Binding TextColorPrice}" VerticalOptions="Start" />
 
-                        <VerticalStackLayout Grid.Row="0" Grid.Column="1" Grid.RowSpan="2" Spacing="5" VerticalOptions="Center" HorizontalOptions="End">
-                            <Button Text="Купи за FreeCard"  BackgroundColor="#FF7A00" TextColor="White"
+                        <VerticalStackLayout IsVisible="{Binding IsVisPromotion}" Grid.Row="0" Grid.Column="1" Grid.RowSpan="2" Spacing="5" VerticalOptions="Center" HorizontalOptions="End">
+                            <Button Text="{Binding WP.PromotionName}"  BackgroundColor="#FF7A00" TextColor="White"
                                     CornerRadius="8" HeightRequest="34" Padding="10,0" FontSize="14" />
-                            <Label Text="Діє до: 12.03.26" FontSize="12" HorizontalOptions="End" TextColor="Gray" />
+                            <HorizontalStackLayout>
+                                <Label Text="Діє до: " FontSize="12" HorizontalOptions="End"  />
+                                <Label Text="{Binding WP.PromotionEnd, StringFormat='{}{0:dd.MM.yy}'}"  FontAttributes="Bold" FontSize="12" HorizontalOptions="End" />
+                            </HorizontalStackLayout>
                         </VerticalStackLayout>
 
                     </Grid>
@@ -84,9 +87,10 @@
                         <Label Grid.Column="1" Text="{Binding WP.Article}" FontAttributes="Bold" FontSize="16" />
                     </Grid>
                     <BoxView HeightRequest="1" Color="#EEEEEE" />
-                    <Grid ColumnDefinitions="*, Auto">
+                    <Grid ColumnDefinitions="*, Auto, Auto">
                         <Label Text="Термін придатності:" TextColor="Black" FontSize="16" />
-                        <Label Grid.Column="1" Text="24 місяці" FontAttributes="Bold" FontSize="16" />
+                        <Label Grid.Column="1" Text="{Binding WP.ExpirationDay}" FontAttributes="Bold" FontSize="16" />
+                        <Label Grid.Column="2" Text=" дні" FontAttributes="Bold" FontSize="16" />
                     </Grid>
                     <BoxView HeightRequest="1" Color="#EEEEEE" />
 
@@ -101,7 +105,7 @@
                     
                     <Grid ColumnDefinitions="*, Auto">
                         <Label Text="Місць викладки:" TextColor="Black" FontSize="16" />
-                        <Label Grid.Column="1" Text="2" FontAttributes="Bold" FontSize="16" />
+                        <Label Grid.Column="1" Text="{Binding WP.Shelves}" FontAttributes="Bold" FontSize="16" />
                     </Grid>
                 </VerticalStackLayout>
 

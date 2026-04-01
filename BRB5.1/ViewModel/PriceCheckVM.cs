@@ -57,7 +57,7 @@ namespace BRB6.ViewModel
         bool _IsVisRepl = false;
         public bool IsVisRepl { get { return _IsVisRepl; } set { _IsVisRepl = value; OnPropertyChanged(nameof(IsVisRepl)); } }
         public bool IsSoftKeyboard { get { return Config.IsSoftKeyboard; } }
-        
+        public bool IsVisPromotion => !string.IsNullOrEmpty(WP?.PromotionName) && WP?.PromotionEnd != default(DateTime);
 
         WaresPrice _WP;
         public WaresPrice WP

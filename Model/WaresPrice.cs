@@ -103,7 +103,14 @@ namespace BRB5.Model
 
         public string Parent { get; set; }
         public IEnumerable<СonditionClass> Сondition { get; set; }
+        /// <summary>
+        /// кількість SKU на поличках
+        /// </summary>
         public int QuantityShelf { get; set; }
+        /// <summary>
+        /// Кількість місць викладки
+        /// </summary>
+        public int Shelves { get; set; }
         public bool IsPriceOptYellow { get; set; } = false;
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -111,6 +118,8 @@ namespace BRB5.Model
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
+        public int ExpirationDay { get; set; }
+
     }
     public class RestWarehouse
     {
