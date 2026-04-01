@@ -16,7 +16,7 @@ public partial class CreateDoc : ContentPage
     private int _initialCode; // Зберігаємо початковий код тут
 
     public ObservableCollection<Warehouse> QuickAccessWarehouses { get; } = [];
-    public ObservableCollection<Warehouse> FilteredWarehousePicker { get; } = [];
+    public ObservableCollection<Warehouse> FilteredWarehousePicker { get; set; } = [];
 
     public ObservableCollection<Reason> FilteredReasonPicker { get; set; } = [];
     public bool IsVisibleReason { get { return FilteredReasonPicker?.Any() == true; } }
@@ -41,7 +41,7 @@ public partial class CreateDoc : ContentPage
             if (value != null)
             {
                 foreach (var qw in QuickAccessWarehouses)
-                    qw.IsChecked = (qw.Code == value.Code);
+                    qw.IsChecked = (qw.TypeWarehouse == value.TypeWarehouse);
             }
             OnPropertyChanged(nameof(SelectedWarehouse));
             FilteredReason();
@@ -67,7 +67,23 @@ public partial class CreateDoc : ContentPage
         // 2. Команда з логікою віджаття та очищення фільтра
         SelectQuickWarehouseCommand = new Command<Warehouse>((clickedBtn) =>
         {
-            if (SelectedWarehouse != null && SelectedWarehouse.Code == clickedBtn.Code)
+            WarehouseFilterEntry.Text = "";
+
+            WarehouseFilterEntry.Unfocus();
+            if (clickedBtn.IsChecked)
+            {
+                FilteredWarehousePicker = new(ListWarehouse);
+            }
+            else
+            { 
+            FilteredWarehousePicker.Clear();
+            var Wh = ListWarehouse.Where(r => r.TypeWarehouse == clickedBtn.TypeWarehouse);
+            foreach (var r in Wh)
+                FilteredWarehousePicker.Add(r);
+
+            SelectedWarehouse = FilteredWarehousePicker.FirstOrDefault(); //FilteredWarehousePicker.Count() > 1?null: FilteredWarehousePicker.FirstOrDefault();
+            }
+            /*if (SelectedWarehouse != null && SelectedWarehouse.Code == clickedBtn.Code)
             {
                 WarehouseFilterEntry.Text = string.Empty;
                 ApplyPickerFilter(null);
@@ -84,7 +100,7 @@ public partial class CreateDoc : ContentPage
 
                     SelectedWarehouse = target;
                 }
-            }
+            }*/
         });
         if (pTD.IsViewReasonHead )
             FilteredReasonPicker = new();
@@ -92,8 +108,8 @@ public partial class CreateDoc : ContentPage
         this.BindingContext = this;
 
         // Первинне заповнення
-        foreach (var w in ListWarehouse)
-            FilteredWarehousePicker.Add(w);
+        //foreach (var w in ListWarehouse)
+        //    FilteredWarehousePicker.Add(w);
        
 
         InitData();
@@ -108,7 +124,7 @@ public partial class CreateDoc : ContentPage
         {
             foreach (var s in subs)
             {
-                s.IsChecked = (s.Code == _initialCode);
+                //s.IsChecked = (s.Code == _initialCode);
                 QuickAccessWarehouses.Add(s);
             }
         }

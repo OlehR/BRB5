@@ -65,13 +65,14 @@ namespace BRB6.ViewModel
             get { return _WP; }
             set
             {
-                _WP = value; OnPropertyChanged(nameof(WP)); OnPropertyChanged(nameof(TextColorPrice));
+                _WP = value;
+                BarCodeInput = _WP?.BarCodes?.Split(',').FirstOrDefault() ?? string.Empty; OnPropertyChanged(nameof(AllBarCodes));
+                OnPropertyChanged(nameof(ExtraBarCodesCount)); OnPropertyChanged(nameof(HasExtraBarCodes));
+                OnPropertyChanged(nameof(WP)); OnPropertyChanged(nameof(TextColorPrice)); OnPropertyChanged(nameof(BackgroundColorPrice));
                 OnPropertyChanged("IsVisPriceOpt"); OnPropertyChanged(nameof(IsVisPriceNormal)); OnPropertyChanged(nameof(TextColorHttp));
                 OnPropertyChanged("ColorPrintColorType"); OnPropertyChanged(nameof(IsVisPriceOptQ));
             }
         }
-        //ZXingScannerView zxing;
-        //ZXingDefaultOverlay overlay;
 
         int _PrintType = 0;//Колір чека 0-звичайний 1-жовтий, -1 не розділяти.        
         public int PrintType { get { return _PrintType; } set { _PrintType = value; OnPropertyChanged(nameof(PrintType)); OnPropertyChanged(nameof(ColorPrintColorType)); } }
@@ -93,6 +94,8 @@ namespace BRB6.ViewModel
 
         public string ColorPrintColorType { get { return WP == null ? "#ffffff" : WP.MinQuantity == 0 ? "#ffd8d8" : WP.ActionType > 0 ? "#F0DC82" : "#ffffff"; } }
         public string TextColorPrice { get { return (WP != null && WP.Price != 0 && WP.Price == WP.PriceOld && WP.PriceOpt == WP.PriceOptOld) ? "#009800" : "#ff5c5c"; } set { OnPropertyChanged(nameof(TextColorPrice)); } }
+        public string BackgroundColorPrice { get { return (WP == null ||( WP.Price != 0 && WP.Price == WP.PriceOld && WP.PriceOpt == WP.PriceOptOld)) ? "#F8F9FA" : "#fff0f0"; }  }
+
         public string TextColorHttp { get { return (bl.LastResult != null && bl.LastResult.StateHTTP == eStateHTTP.HTTP_OK) ? "#009800" : "#ff5c5c"; } }
 
         public bool _IsMultyLabel = false;
@@ -137,8 +140,28 @@ namespace BRB6.ViewModel
             get => _numberOfReplenishment;
             set => SetProperty(ref _numberOfReplenishment, value);
         }
-        public string BarCodeInput { get; set; }
+        private string _barCodeInput;
+        public string BarCodeInput
+        {
+            get => _barCodeInput;
+            set => SetProperty(ref _barCodeInput, value);
+        }
+        private Uri _uriPicture;
+        public Uri UriPicture
+        {
+            get => _uriPicture;
+            set { _uriPicture = value; OnPropertyChanged(); }
+        }
+       
+        private bool _isBarCodesDropdownVisible;
+        public bool IsBarCodesDropdownVisible { get => _isBarCodesDropdownVisible; set => SetProperty(ref _isBarCodesDropdownVisible, value); }
 
+        public List<string> AllBarCodes => WP?.BarCodes?.Split(',').Select(x => x.Trim()).ToList() ?? new List<string>();
+        public int ExtraBarCodesCount => AllBarCodes.Count > 1 ? AllBarCodes.Count - 1 : 0;
+        public bool HasExtraBarCodes => ExtraBarCodesCount > 0;
+
+        public ICommand ShowAllBarCodesCommand => new Command(() => IsBarCodesDropdownVisible = true);
+        public ICommand CloseBarCodesCommand => new Command(() => IsBarCodesDropdownVisible = false);
         public string QuantityToAddText => $"+{QuantityToAdd}";
         public PriceCheckVM(TypeDoc pTypeDoc, ForMVVM pForMVVM)
         {
@@ -189,6 +212,7 @@ namespace BRB6.ViewModel
                     if (!WP.IsPriceOk)
                         BadScan++;
                     IsWareScaned = WP.StateDoubleScan;
+                    UriPicture = new Uri(Config.ApiUrl1 + $"Wares/{WP.CodeWares:D9}.png");
                 }
                 if (Config.IsVibration)
                 {
