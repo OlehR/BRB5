@@ -12,13 +12,8 @@
                      HorizontalOptions="Fill">
             <BindableLayout.ItemTemplate>
                 <DataTemplate>
-                    <Button Text="{Binding Name}" 
-                    Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=SelectQuickWarehouseCommand}"
-                    CommandParameter="{Binding .}"
-                    HeightRequest="45"
-                    HorizontalOptions="Fill"
-                    Margin="0,1" 
-                    TextColor="White">
+                    <Button Text="{Binding Name}" Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=SelectQuickWarehouseCommand}"
+                            CommandParameter="{Binding .}" HeightRequest="45" HorizontalOptions="Fill" Margin="0,1" TextColor="White">
                         <Button.Triggers>
                             <DataTrigger TargetType="Button" Binding="{Binding IsChecked}" Value="True">
                                 <Setter Property="BackgroundColor" Value="#2196F3" />
@@ -33,20 +28,13 @@
         </VerticalStackLayout>
 
         <Grid Grid.Row="1" ColumnDefinitions="2*,*" ColumnSpacing="5">
-            <Picker Title="Оберіть торговий зал" 
-         ItemsSource="{Binding FilteredWarehousePicker}"
-         ItemDisplayBinding="{Binding Name}"
-         SelectedItem="{Binding SelectedWarehouse}" />
-            <Entry Placeholder="Фільтр..." x:Name="WarehouseFilterEntry" Grid.Column="1"
-        Unfocused="OnWarehouseFilterUnfocused" Completed="OnWarehouseFilterCompleted"/>
+            <Picker Title="Оберіть торговий зал" ItemsSource="{Binding FilteredWarehousePicker}" ItemDisplayBinding="{Binding Name}" SelectedItem="{Binding SelectedWarehouse}" />
+            <Entry Placeholder="Фільтр..." x:Name="WarehouseFilterEntry" Grid.Column="1"  Unfocused="OnWarehouseFilterUnfocused" Completed="OnWarehouseFilterCompleted"/>
         </Grid>
 
 
         <Grid   Grid.Row="2"  IsVisible="{Binding IsVisibleReason}" >
-            <Picker Title="Оберіть причину" 
-ItemsSource="{Binding FilteredReasonPicker}"
-ItemDisplayBinding="{Binding NameReason}"
-SelectedItem="{Binding SelectedReason}" />
+            <Picker Title="Оберіть причину" ItemsSource="{Binding FilteredReasonPicker}" ItemDisplayBinding="{Binding NameReason}" SelectedItem="{Binding SelectedReason}" />
         </Grid>
 
         <VerticalStackLayout Grid.Row="4" Spacing="2">
