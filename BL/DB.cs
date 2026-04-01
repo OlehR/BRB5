@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 using Utils;
 public static class ProtoDB
 { 
@@ -271,7 +272,7 @@ CREATE TABLE SKU (
     CodeUnit           INTEGER  NOT NULL);
 CREATE UNIQUE INDEX SKUId ON SKU (CodeSKU);
 ";
-        readonly int Ver = 16;
+        readonly int Ver = 17;
         string SqlTo6 = @"alter TABLE Reason add  Level INTEGER  DEFAULT (0);
 drop index ReasonId;
 CREATE UNIQUE INDEX ReasonId ON Reason (Level,CodeReason);";
@@ -297,7 +298,7 @@ CREATE INDEX TypeWarehouseId ON TypeWarehouse (Code);";
 
         string SqlTo14 = @"alter TABLE DocWaresExpirationSample add QuantityInput NUMBER DEFAULT (0)";
         string SqlTo15 = @"alter TABLE Reason add TypeWarehouse INTEGER  NOT NULL DEFAULT (0)";
-        string SqlTo16 = @"alter TABLE DocWaresExpirationSample add IsHide INTEGER NOT NULL DEFAULT (0),";
+        string SqlTo16 = @"alter TABLE DocWaresExpirationSample add IsHide INTEGER NOT NULL DEFAULT (0)";
 
         public static string PathNameDB { get { return Path.Combine(BaseDir, NameDB); } }
 
@@ -336,6 +337,8 @@ CREATE INDEX TypeWarehouseId ON TypeWarehouse (Code);";
                     SetSQL(SqlTo15, 15);
                 if (GetVersion < 16)
                     SetSQL(SqlTo16, 16);
+                if (GetVersion < 17)
+                    SetSQL(SqlTo16, 17);
             }            
         }
 
@@ -1053,13 +1056,16 @@ and bc.BarCode=?
         {
             return db.InsertOrReplace(pDWS) >= 0;
         }
-        
+
         public IEnumerable<DocExpiration> GetDocExpiration()
         {
-            string sql = @"select gw.CodeGroup as NumberDoc,gw.NameGroup as Description,count(*) as Count,sum(d.CountInput) as CountInput from
+            try
+            {
+                string sql = @"select gw.CodeGroup as NumberDoc,gw.NameGroup as Description,count(*) as Count,sum(d.CountInput) as CountInput from
 (select DES.DocId,DES.CodeWares, case when de.DocId is  null and  des.QuantityInput=0 then 0 else 1 end as CountInput
  from DocWaresExpirationSample DES 
-   left join DocWaresExpiration DE on DES.CodeWares=DE.CodeWares and DE.DocId=DES.DocId and DATE(DE.DateDoc) = DATE('now')                                              
+   left join DocWaresExpiration DE on DES.CodeWares=DE.CodeWares and DE.DocId=DES.DocId and DATE(DE.DateDoc) = DATE('now') 
+    where DES.IsHide=0
                         union all 
         select  DE.DocId,DE.CodeWares,1 as nn
                                 from DocWaresExpiration DE
@@ -1070,7 +1076,13 @@ join Wares w on d.CodeWares=w.CodeWares
 join GroupWares gw on w.codeGroup=gw.CodeGroup
 group by gw.CodeGroup,gw.NameGroup
 order by gw.NameGroup";
-            return db.Query<DocExpiration>(sql);
+                return db.Query<DocExpiration>(sql);
+            }
+            catch (Exception e)
+            {
+                FileLogger.WriteLogMessage(this, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+            }
+            return [];
         }
 
         public ExpirationDateElementVM GetScanDataExpiration(string pNumberDoc, ParseBarCode pParseBarCode)
