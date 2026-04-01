@@ -121,8 +121,8 @@ namespace BRB6
             {
                 BarCodeInput.CursorPosition = 0;
                 BarCodeInput.SelectionLength = BarCodeInput.Text == null ? 0 : BarCodeInput.Text.Length;
-                if (!BarCodeInput.IsFocused || Config.IsVisScan)
-                    BarCodeInput.Focus();
+                //if (!BarCodeInput.IsFocused || Config.IsVisScan)
+                //    BarCodeInput.Focus();
             });
         }
 #if ANDROID

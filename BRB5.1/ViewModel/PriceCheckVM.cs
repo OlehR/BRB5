@@ -65,13 +65,14 @@ namespace BRB6.ViewModel
             get { return _WP; }
             set
             {
-                _WP = value; OnPropertyChanged(nameof(WP)); OnPropertyChanged(nameof(TextColorPrice)); OnPropertyChanged(nameof(BackgroundColorPrice));
+                _WP = value;
+                BarCodeInput = _WP?.BarCodes?.Split(',').FirstOrDefault() ?? string.Empty; OnPropertyChanged(nameof(AllBarCodes));
+                OnPropertyChanged(nameof(ExtraBarCodesCount)); OnPropertyChanged(nameof(HasExtraBarCodes));
+                OnPropertyChanged(nameof(WP)); OnPropertyChanged(nameof(TextColorPrice)); OnPropertyChanged(nameof(BackgroundColorPrice));
                 OnPropertyChanged("IsVisPriceOpt"); OnPropertyChanged(nameof(IsVisPriceNormal)); OnPropertyChanged(nameof(TextColorHttp));
                 OnPropertyChanged("ColorPrintColorType"); OnPropertyChanged(nameof(IsVisPriceOptQ));
             }
         }
-        //ZXingScannerView zxing;
-        //ZXingDefaultOverlay overlay;
 
         int _PrintType = 0;//Колір чека 0-звичайний 1-жовтий, -1 не розділяти.        
         public int PrintType { get { return _PrintType; } set { _PrintType = value; OnPropertyChanged(nameof(PrintType)); OnPropertyChanged(nameof(ColorPrintColorType)); } }
@@ -151,7 +152,16 @@ namespace BRB6.ViewModel
             get => _uriPicture;
             set { _uriPicture = value; OnPropertyChanged(); }
         }
+       
+        private bool _isBarCodesDropdownVisible;
+        public bool IsBarCodesDropdownVisible { get => _isBarCodesDropdownVisible; set => SetProperty(ref _isBarCodesDropdownVisible, value); }
 
+        public List<string> AllBarCodes => WP?.BarCodes?.Split(',').Select(x => x.Trim()).ToList() ?? new List<string>();
+        public int ExtraBarCodesCount => AllBarCodes.Count > 1 ? AllBarCodes.Count - 1 : 0;
+        public bool HasExtraBarCodes => ExtraBarCodesCount > 0;
+
+        public ICommand ShowAllBarCodesCommand => new Command(() => IsBarCodesDropdownVisible = true);
+        public ICommand CloseBarCodesCommand => new Command(() => IsBarCodesDropdownVisible = false);
         public string QuantityToAddText => $"+{QuantityToAdd}";
         public PriceCheckVM(TypeDoc pTypeDoc, ForMVVM pForMVVM)
         {
