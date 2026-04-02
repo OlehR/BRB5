@@ -208,6 +208,9 @@
     <MauiXaml Update="Template\ExpirationDateElementTemplate.xaml">
       <Generator>MSBuild:Compile</Generator>
     </MauiXaml>
+    <MauiXaml Update="Template\MRDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </MauiXaml>
     <MauiXaml Update="Template\QuestionHeadTemplate.xaml">
       <Generator>MSBuild:Compile</Generator>
     </MauiXaml>

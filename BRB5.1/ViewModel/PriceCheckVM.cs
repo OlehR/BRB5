@@ -24,6 +24,25 @@ namespace BRB6.ViewModel
         DB db = DB.GetDB();
         public BL.BL bl = BL.BL.GetBL();
 
+        // Кількість для МР
+        private int _mrQuantity = 0;
+        public int MrQuantity
+        {
+            get => _mrQuantity;
+            set => SetProperty(ref _mrQuantity, value);
+        }
+
+        private bool _isMrDialogVisible;
+        public bool IsMrDialogVisible
+        {
+            get => _isMrDialogVisible;
+            set => SetProperty(ref _isMrDialogVisible, value);
+        }
+
+        public ICommand OpenMrDialogCommand { get; }
+        public ICommand IncrementCommand { get; }
+        public ICommand DecrementCommand { get; }
+        public ICommand ConfirmMrCommand { get; }
         public ICommand BarCodeHandInputCommand { get; }
         public ICommand ModifyValueCommand { get; }
         public ICommand UpdateReplenishmentCommand { get; }
@@ -74,13 +93,13 @@ namespace BRB6.ViewModel
             {
                 _WP = value;
                 BarCodeInput = _WP?.BarCodes?.Split(',').FirstOrDefault() ?? string.Empty; OnPropertyChanged(nameof(AllBarCodes));
-                OnPropertyChanged(nameof(ExtraBarCodesCount)); OnPropertyChanged(nameof(HasExtraBarCodes));
+                OnPropertyChanged(nameof(ExtraBarCodesCount)); OnPropertyChanged(nameof(HasExtraBarCodes)); OnPropertyChanged(nameof(HasWare));
                 OnPropertyChanged(nameof(WP)); OnPropertyChanged(nameof(TextColorPrice)); OnPropertyChanged(nameof(BackgroundColorPrice));
                 OnPropertyChanged("IsVisPriceOpt"); OnPropertyChanged(nameof(IsVisPriceNormal)); OnPropertyChanged(nameof(TextColorHttp));
                 OnPropertyChanged("ColorPrintColorType"); OnPropertyChanged(nameof(IsVisPriceOptQ));
             }
         }
-
+        public bool HasWare => WP != null;
         int _PrintType = 0;//Колір чека 0-звичайний 1-жовтий, -1 не розділяти.        
         public int PrintType { get { return _PrintType; } set { _PrintType = value; OnPropertyChanged(nameof(PrintType)); OnPropertyChanged(nameof(ColorPrintColorType)); } }
         public bool IsEnabledPrint { get { return Config.TypeUsePrinter != eTypeUsePrinter.NotDefined; } }
@@ -172,7 +191,7 @@ namespace BRB6.ViewModel
         public string QuantityToAddText => $"+{QuantityToAdd}";
         public PriceCheckVM(TypeDoc pTypeDoc, ForMVVM pForMVVM)
         {
-            ForMVVM=pForMVVM;
+            ForMVVM = pForMVVM;
             bl.ClearWPH();
             var r = db.GetCountScanCode();
             IsVisDoubleScan = pTypeDoc.CodeDoc == 15;
@@ -192,20 +211,23 @@ namespace BRB6.ViewModel
 
             BarCodeHandInputCommand = new RelayCommand(BarCodeHandInput);
             UpdateReplenishmentCommand = new RelayCommand(OnUpdateReplenishment);
-            ClearCommand = new RelayCommand(() => NumberOfReplenishment = "0"); 
-            ModifyValueCommand = new RelayCommand<object>(p => {
+            ClearCommand = new RelayCommand(() => NumberOfReplenishment = "0");
+            ModifyValueCommand = new RelayCommand<object>(p =>
+            {
                 if (p == null) return;
                 int delta = Convert.ToInt32(p);
                 ModifyValue(delta);
             });
             PrintBlockCommand = new RelayCommand(async () => await PrintBlock());
 
-            AddPrintBlockCommand = new RelayCommand(() => {
+            AddPrintBlockCommand = new RelayCommand(() =>
+            {
                 PackageNumber++;
                 ListPrintBlockItems.Add(new PrintBlockItems() { PackageNumber = PackageNumber });
             });
 
-            F2Command = new RelayCommand(() => {
+            F2Command = new RelayCommand(() =>
+            {
                 IsVisRepl = !IsVisRepl;
                 if (IsVisRepl) ForMVVM.Focused("NumberOfReplenishment");
             });
@@ -216,12 +238,30 @@ namespace BRB6.ViewModel
 
             DoubleScanReactCommand = new RelayCommand(DoubleScanReact);
 
-            PrintOneCommand = new RelayCommand(() => {
+            PrintOneCommand = new RelayCommand(() =>
+            {
                 if (IsEnabledPrint && WP != null)
                     ForMVVM.DisplayAlert("Друк", bl.c.PrintHTTP(new[] { WP.CodeWares }), "OK");
             });
+
+            OpenMrDialogCommand = new RelayCommand(() => {
+                MrQuantity = 0;
+                IsMrDialogVisible = true;
+            });
+
+            IncrementCommand = new RelayCommand(() => MrQuantity++);
+
+            DecrementCommand = new RelayCommand(() => {
+                if (MrQuantity > 0) MrQuantity--;
+            });
+
+            ConfirmMrCommand = new RelayCommand(() => {
+                // тут зберігаєте MrQuantity в базу
+                //db.UpdateMrRest(WP?.CodeWares ?? 0, MrQuantity);
+                IsMrDialogVisible = false;
+            });
         }
-            
+
         void BarCode(string pBarCode) => FoundWares(pBarCode, false);
 
         public void FoundWares(string pBarCode, bool pIsHandInput = false)

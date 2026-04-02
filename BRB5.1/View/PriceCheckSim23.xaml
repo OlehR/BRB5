@@ -3,11 +3,13 @@
 <controls:BaseContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
                           xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
                           xmlns:controls="clr-namespace:BRB6.View"
+                          xmlns:templates="clr-namespace:BRB6.Template"
                           xmlns:scanner="clr-namespace:BarcodeScanning;assembly=BarcodeScanning.Native.Maui"
                           xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"                          
                           xmlns:ffimageloading="clr-namespace:FFImageLoading.Maui;assembly=FFImageLoading.Maui"
                           x:Class="BRB6.PriceCheckSim23">
     <ContentPage.Content>
+        <Grid>
         <VerticalStackLayout>
             <Grid x:Name="GridZxing" IsVisible="{Binding IsVisScan}" HeightRequest="150"/>
 
@@ -99,7 +101,8 @@
                         <Label Grid.Column="1" Text="{Binding WP.Rest}" FontAttributes="Bold" FontSize="16" />
                     </Grid>
 
-                    <Button Text="Провести МР" BackgroundColor="#E9EAEF" TextColor="Black" CornerRadius="20" Padding="0" HeightRequest="40" FontSize="20" FontAttributes="Bold" />
+                        <Button Text="Провести МР" BackgroundColor="#E9EAEF" TextColor="Black" Command="{Binding OpenMrDialogCommand}"
+                                IsEnabled="{Binding HasWare}" CornerRadius="20" Padding="0" HeightRequest="40" FontSize="20" FontAttributes="Bold" />
 
                     <BoxView HeightRequest="1" Color="#EEEEEE" Margin="0,-5" />
                     
@@ -138,6 +141,9 @@
 
             </VerticalStackLayout>
         </VerticalStackLayout>
-
+            <templates:MRDialog x:Name="MRDialogView"
+                               BindingContext="{Binding}"
+                               ZIndex="10" />
+        </Grid>
     </ContentPage.Content>
 </controls:BaseContentPage>
