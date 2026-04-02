@@ -11,11 +11,7 @@
             <Grid x:Name="GridZxing" IsVisible="{Binding IsVisScan}" 
                   HeightRequest="200">
             </Grid>
-            <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition />
-                    <ColumnDefinition />
-                </Grid.ColumnDefinitions>
+            <Grid ColumnDefinitions="*,*">
                 <Button Text="Інформація" 
                         Margin="5,5,2,5"
                         HorizontalOptions="Fill"
@@ -27,15 +23,7 @@
                     Clicked="OnClickAddPrintBlock" />
             </Grid>
 
-            <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="2*" />
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="2*" />
-                    <ColumnDefinition Width="2*" />
-                </Grid.ColumnDefinitions>
-
+            <Grid ColumnDefinitions="*,2*,*,2*,2*">
                 <Label Text="Арт:" />
                 <Label Text="{Binding WP.Article}"
                        Grid.Column="1" />
@@ -47,17 +35,7 @@
                        Grid.Column="4" />
             </Grid>
 
-            <Grid RowSpacing="0"  ColumnSpacing="0">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="2*" />
-                    <ColumnDefinition Width="3*" />
-                    <ColumnDefinition Width="2*" />
-                    <ColumnDefinition Width="3*" />
-                </Grid.ColumnDefinitions>
-                <Grid.RowDefinitions>
-                    <RowDefinition />
-                    <RowDefinition Height="auto"/>
-                </Grid.RowDefinitions>
+            <Grid RowSpacing="0"  ColumnSpacing="0" ColumnDefinitions="2*,3*,2*,3*" RowDefinitions="*,auto">
 
                 <Label Text="Ціна с:"
                        VerticalOptions="Center"
@@ -89,19 +67,8 @@
                        FontSize="24"
                        TextColor="{Binding TextColorPrice}" />
             </Grid>
-            
-            <Grid RowSpacing="0"  ColumnSpacing="0" IsVisible="{Binding IsVisPriceOpt}">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="2*" />
-                    <ColumnDefinition Width="3*" />
-                    <ColumnDefinition Width="2*" />
-                    <ColumnDefinition Width="3*" />
-                </Grid.ColumnDefinitions>
-                <Grid.RowDefinitions>
-                    <RowDefinition />
-                    <RowDefinition />
-                </Grid.RowDefinitions>
 
+            <Grid RowSpacing="0" ColumnDefinitions="2*,3*,2*,3*" RowDefinitions="*,*"  ColumnSpacing="0" IsVisible="{Binding IsVisPriceOpt}">
                 <Label Text="Ц.с.опт."
                        VerticalOptions="Center"
                        FontSize="16" 
@@ -216,13 +183,9 @@
                     <Label FontSize="Large" Text="{Binding MessageDoubleScan}"/>
                 </Frame>
                 <!--<Button Text="{Binding ButtonDoubleScan}" Clicked="DoubleScanReact"/>-->
-            </StackLayout>            
-            
-            <Grid VerticalOptions="EndAndExpand">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition />
-                    <ColumnDefinition />
-                </Grid.ColumnDefinitions>
+            </StackLayout>
+
+            <Grid VerticalOptions="EndAndExpand"  ColumnDefinitions="*,*">
 
                 <Picker Title="пакети" x:Name="PrintBlockItemsXaml"
                         ItemsSource="{Binding ListPrintBlockItems}"
@@ -247,13 +210,7 @@
                 
             </Grid>
 
-            <Grid VerticalOptions="End">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition />
-                    <ColumnDefinition />
-                    <ColumnDefinition />
-                </Grid.ColumnDefinitions>
-
+            <Grid VerticalOptions="End" ColumnDefinitions="*,*,*">
                 <Label Text="" />
                 <Label Grid.Column="1"
                     Text="{Binding WP.StrHttpResult}"
