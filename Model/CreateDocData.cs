@@ -15,5 +15,6 @@ namespace BRB5.Model
         public int CodeReason { get; set; }
         public int CodeUser { get; set; }
         public string Description { get; set; }
+        public string ExtInfo { get; set; }
     }
 }

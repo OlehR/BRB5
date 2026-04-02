@@ -542,7 +542,7 @@ public string Info { get; set; }
             {
                 var r = JsonConvert.DeserializeObject<ResultCreateDoc>(res.Result);
                 FileLogger.WriteLogMessage(this, "SaveDocAsync Res=>", res.ToJSON());
-                DocVM Res= new() {TypeDoc=pDoc.TypeDoc, CodeWarehouse = pDoc.CodeWarehouse, DateDoc = DateTime.Now, Description = pDoc.Description, NumberDoc = r.Info };
+                DocVM Res= new() {TypeDoc=pDoc.TypeDoc, CodeWarehouse = pDoc.CodeWarehouse, DateDoc = DateTime.Now, Description = pDoc.Description, NumberDoc = r.Info, ExtInfo= pDoc.ExtInfo };
                 return new(r.State, r.TextError) { Data=Res};
             }
         }
