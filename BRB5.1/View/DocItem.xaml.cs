@@ -37,7 +37,7 @@ namespace BRB6.View
         public bool IsUseArticle => Config.IsUseArticle;
         public bool IsViewReason { get { return TypeDoc.IsViewReason; } }
         public bool IsViewNoReason { get { return !TypeDoc.IsViewReason; } }
-
+        public string ExtInfo => Doc.ExtInfo;
         public bool IsViewInputDateDoc { get { return TypeDoc.IsViewInputDateDoc; } }
         //// Колекція варіантів для Picker
         //public ObservableCollection<BRB5.Model.DB.Reason> Reasons { get; set; }
