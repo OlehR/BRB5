@@ -28,6 +28,13 @@ namespace BRB6.ViewModel
         public ICommand ModifyValueCommand { get; }
         public ICommand UpdateReplenishmentCommand { get; }
         public ICommand ClearCommand { get; }
+        public ICommand PrintBlockCommand { get; }
+        public ICommand AddPrintBlockCommand { get; }
+        public ICommand F2Command { get; }
+        public ICommand F4Command { get; }
+        public ICommand F5Command { get; }
+        public ICommand DoubleScanReactCommand { get; }
+        public ICommand PrintOneCommand { get; }
 
         public List<PrintBlockItems> ListPrintBlockItems { get { return db.GetPrintBlockItemsCount().ToList(); } }
 
@@ -178,7 +185,7 @@ namespace BRB6.ViewModel
                 BadScan = r.BadScan;
                 LineNumber = r.LineNumber;
                 PackageNumber = r.PackageNumber;
-                OnClickAddPrintBlock(null, null);
+                OnClickAddPrintBlock();
             }
             if (!IsVisScan)
                 Config.BarCode = BarCode;
@@ -190,6 +197,28 @@ namespace BRB6.ViewModel
                 if (p == null) return;
                 int delta = Convert.ToInt32(p);
                 ModifyValue(delta);
+            });
+            PrintBlockCommand = new RelayCommand(async () => await PrintBlock());
+
+            AddPrintBlockCommand = new RelayCommand(() => {
+                PackageNumber++;
+                ListPrintBlockItems.Add(new PrintBlockItems() { PackageNumber = PackageNumber });
+            });
+
+            F2Command = new RelayCommand(() => {
+                IsVisRepl = !IsVisRepl;
+                if (IsVisRepl) ForMVVM.Focused("NumberOfReplenishment");
+            });
+
+            F4Command = new RelayCommand(() => IsOnline = !IsOnline);
+
+            F5Command = new RelayCommand(() => IsMultyLabel = !IsMultyLabel);
+
+            DoubleScanReactCommand = new RelayCommand(DoubleScanReact);
+
+            PrintOneCommand = new RelayCommand(() => {
+                if (IsEnabledPrint && WP != null)
+                    ForMVVM.DisplayAlert("Друк", bl.c.PrintHTTP(new[] { WP.CodeWares }), "OK");
             });
         }
             
@@ -234,7 +263,7 @@ namespace BRB6.ViewModel
                 bl.SaveDoubleScan(bl.WPH.IsBarCode ? 101 : 102, bl.WPH, PackageNumber, LineNumber);
         }
 
-        private void OnClickAddPrintBlock(object sender, EventArgs e)
+        private void OnClickAddPrintBlock()
         {
             PackageNumber++;
             ListPrintBlockItems.Add(new PrintBlockItems() { PackageNumber = PackageNumber });
@@ -249,27 +278,11 @@ namespace BRB6.ViewModel
                 ForMVVM.DisplayAlert("Друк", message, "OK");
             }
         }
-
-        private void OnF2(object sender, EventArgs e)
-        {
-            IsVisRepl = !IsVisRepl;
-            if (IsVisRepl) ForMVVM.Focused("NumberOfReplenishment");
-        }
-
-        private void OnF4(object sender, EventArgs e) { IsOnline = !IsOnline; }
-
-        private void OnF5(object sender, EventArgs e) { IsMultyLabel = !IsMultyLabel; }
-               
+                       
         private void BarCodeHandInput()
         {
             var text = BarCodeInput;
             FoundWares(text, true);
-        }
-
-        private void OnClickPrintOne(object sender, EventArgs e)
-        {
-            if (IsEnabledPrint && WP != null)
-                ForMVVM.DisplayAlert("Друк", bl.c.PrintHTTP(new[] { WP.CodeWares }), "OK");
         }
 
         private void OnUpdateReplenishment()
@@ -279,7 +292,7 @@ namespace BRB6.ViewModel
                 db.UpdateReplenishment(LineNumber, d);
         }
 
-        private void DoubleScanReact(object sender, EventArgs e)
+        private void DoubleScanReact()
         {
 
             if (IsWareScaned == eCheckWareScaned.PriceTagScaned || IsWareScaned == eCheckWareScaned.WareNotFit)//Відсутній товар
@@ -298,29 +311,6 @@ namespace BRB6.ViewModel
             }
 
         }
-
-        
-        //private void OnClearClicked(object sender, EventArgs e)
-        //{
-        //    NumberOfReplenishment = "0";
-
-        //    OnUpdateReplenishment();
-        //}
-
-        //private void OnMinus1Clicked(object sender, EventArgs e)
-        //{
-        //    ModifyValue(-1);
-        //}
-
-        //private void OnPlus1Clicked(object sender, EventArgs e)
-        //{
-        //    ModifyValue(1);
-        //}
-
-        //private void OnPlusDynamicClicked(object sender, EventArgs e)
-        //{
-        //    ModifyValue(QuantityToAdd);
-        //}
 
         private void ModifyValue(int delta)
         {

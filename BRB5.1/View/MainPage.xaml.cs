@@ -142,7 +142,8 @@ namespace BRB6
             switch (vTypeDoc.KindDoc)
             {
                 case eKindDoc.PriceCheck:
-                    await Navigation.PushAsync(new PriceCheck(vTypeDoc));
+                    if(Config.LocalCompany==eCompany.Sim23) await Navigation.PushAsync(new PriceCheckSim23(vTypeDoc));
+                    else await Navigation.PushAsync(new PriceCheckUniversal(vTypeDoc));
                     break;
                 case eKindDoc.Normal:
                 case eKindDoc.Simple:

@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<controls:BaseContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+                          xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+                          xmlns:controls="clr-namespace:BRB6.View"
+                          xmlns:scanner="clr-namespace:BarcodeScanning;assembly=BarcodeScanning.Native.Maui"
+                          xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"      
+                          x:Class="BRB6.View.PriceCheckUniversal">
+    <ContentPage.Content>
+        <StackLayout BackgroundColor="{Binding ColorPrintColorType}" Spacing="0">
+
+            <Grid x:Name="GridZxing" IsVisible="{Binding IsVisScan}"  HeightRequest="200"/>
+
+            <Grid ColumnDefinitions="*,*">
+                <Button Text="Інформація" Margin="5,5,2,5" HorizontalOptions="Fill" Clicked="OnClickWareInfo" />
+                <Button Margin="3,5,5,5" Grid.Column="1" Text="{Binding PackageNumber}" HorizontalOptions="Fill" Command="{Binding AddPrintBlockCommand}"/>
+            </Grid>
+
+            <Grid ColumnDefinitions="*,2*,*,2*,2*">
+                <Label Text="Арт:" />
+                <Label Text="{Binding WP.Article}" Grid.Column="1" />
+                <Label Text="Зал:"  Grid.Column="2" />
+                <Label Text="{Binding WP.Rest}" Grid.Column="3" />
+                <Label Text="{Binding WP.Unit}" Grid.Column="4" />
+            </Grid>
+
+            <Grid RowSpacing="0"  ColumnSpacing="0" ColumnDefinitions="2*,3*,2*,3*" RowDefinitions="*,auto">
+
+                <Label Text="Ціна с:" VerticalOptions="Center" FontSize="16" TextColor="{Binding TextColorPrice}" />
+                
+                <Label Text="{Binding WP.PriceOld}" Grid.Column="1" FontSize="24" TextColor="{Binding TextColorPrice}" />
+                
+                <Label Text="Ціна н:" VerticalOptions="Center" FontSize="16" Grid.Column="2" TextColor="{Binding TextColorPrice}" />
+                
+                <Label Text="{Binding WP.Price}" FontSize="24" Grid.Column="3" TextColor="{Binding TextColorPrice}" />
+                
+                <Label Text="Роз.ціна:" MaxLines="1" IsVisible="{Binding IsVisPriceNormal}" VerticalOptions="Center" 
+                       FontSize="16" Grid.Row="1" TextColor="{Binding TextColorPrice}" />
+                
+                <Label Text="{Binding WP.PriceNormal}" IsVisible="{Binding IsVisPriceNormal}" 
+                       Grid.Column="1" Grid.Row="1" FontSize="24" TextColor="{Binding TextColorPrice}" />
+            </Grid>
+
+            <Grid RowSpacing="0" ColumnDefinitions="2*,3*,2*,3*" RowDefinitions="*,*"  ColumnSpacing="0" IsVisible="{Binding IsVisPriceOpt}">
+                
+                <Label Text="Ц.с.опт." VerticalOptions="Center" FontSize="16" TextColor="{Binding TextColorPrice}" />
+                
+                <Label Text="{Binding WP.PriceOptOld}" FontSize="24" Grid.Column="1" TextColor="{Binding TextColorPrice}" />
+                
+                <Label Text="Ц.н.опт." VerticalOptions="Center" FontSize="16" Grid.Column="2" TextColor="{Binding TextColorPrice}" />
+                
+                <Label Text="{Binding WP.PriceOpt}" FontSize="24" Grid.Column="3" TextColor="{Binding TextColorPrice}" />
+
+                <Label Text="к-ть опт." Grid.Row="1" VerticalOptions="Center" FontSize="16" 
+                       Grid.ColumnSpan="2" IsVisible="{Binding IsVisPriceOptQ}" TextColor="Blue" />
+                
+                <Label Text="{Binding WP.QuantityOpt}" Grid.Row="1" FontSize="24" Grid.Column="2" 
+                       IsVisible="{Binding IsVisPriceOptQ}" TextColor="Blue" />
+            </Grid>
+
+            <Grid>
+                <Label Text="{Binding WP.Name}" FontSize="28" />
+            </Grid>
+
+            <Grid IsVisible="{Binding IsVisBarcode}" ColumnDefinitions="*,2*">
+
+                <Label Text="Штрих код:" />
+                <Frame Style="{StaticResource FrameStyle}" Grid.Column="1">
+                    <controls:CustomEntry Keyboard="{OnPlatform Numeric, iOS=Default}" ReturnType="Done" Style="{StaticResource EntryStyle}"
+                                          Text="{Binding BarCodeInput, Mode=TwoWay}" x:Name="BarCodeInput" AutomationId="BarcodeEntry" IsReadOnly="{Binding IsVisDoubleScan}">
+                        <controls:CustomEntry.Behaviors>
+                            <toolkit:EventToCommandBehavior EventName="Completed" Command="{Binding BarCodeHandInputCommand}" />
+                            <toolkit:EventToCommandBehavior EventName="Focused" Command="{Binding BarCodeHandInputCommand}" />
+                        </controls:CustomEntry.Behaviors>
+                    </controls:CustomEntry>
+                </Frame>
+            </Grid>
+
+            <Grid IsVisible="{Binding IsVisRepl}" ColumnDefinitions="2*,*,2*,3*,2*,2*" HeightRequest="60" ColumnSpacing="0" Margin="0">
+
+                <Button Grid.Column="0" FontSize="30"  FontAttributes="Bold" Text="C"  Padding="0" Margin="2" Command="{Binding ClearCommand}"
+                        BackgroundColor="#D16F72"  CornerRadius="15" />
+
+                <Button Grid.Column="2" FontSize="40" FontAttributes="Bold" Text="—" Command="{Binding ModifyValueCommand}" CommandParameter="-1"
+                        Margin="2"  Padding="0" CornerRadius="15" />
+
+                <Frame Grid.Column="3" Margin="2" Padding="0" HasShadow="False" Style="{StaticResource FrameStyle}">
+                    <controls:CustomEntry x:Name="NumberOfReplenishment" Text="{Binding NumberOfReplenishment, Mode=TwoWay}"
+                                          Style="{StaticResource EntryStyle}" HorizontalTextAlignment="Center" VerticalOptions="Center" Keyboard="Numeric">
+                        <controls:CustomEntry.Behaviors>
+                            <toolkit:EventToCommandBehavior EventName="Unfocused" Command="{Binding UpdateReplenishmentCommand}" />
+                            <toolkit:EventToCommandBehavior EventName="Completed" Command="{Binding UpdateReplenishmentCommand}" />
+                        </controls:CustomEntry.Behaviors>
+                    </controls:CustomEntry>
+                </Frame>
+
+                <Button Grid.Column="4" FontSize="40" FontAttributes="Bold" Text="+" Command="{Binding ModifyValueCommand}" CommandParameter="1"
+                        Margin="2" Padding="0" CornerRadius="15" />
+
+                <Button Grid.Column="5" FontSize="30" FontAttributes="Bold" Text="{Binding QuantityToAddText}" Margin="2" Padding="0" 
+                        Command="{Binding ModifyValueCommand}" CommandParameter="{Binding QuantityToAdd}" CornerRadius="15" />
+            </Grid>
+
+            <StackLayout IsVisible="{Binding IsVisDoubleScan}">
+                <Frame HasShadow="False"  BackgroundColor="{Binding ColorDoubleScan}">
+                    <Label FontSize="Large" Text="{Binding MessageDoubleScan}"/>
+                </Frame>
+            </StackLayout>
+
+            <Grid VerticalOptions="EndAndExpand"  ColumnDefinitions="*,*">
+                <Picker ItemsSource="{Binding ListPrintBlockItems}" ItemDisplayBinding="{Binding stringPrintBlockItem}"
+                        SelectedIndex="{Binding SelectedPrintBlockItems}" SelectedItem="{Binding SelectedPrintItem, Mode=TwoWay}" />
+                <Button Text="f1-Друк" IsEnabled="{Binding IsEnabledPrint}" Command="{Binding PrintBlockCommand}" Grid.Column="1"/>        
+            </Grid>
+
+            <Grid VerticalOptions="End" ColumnDefinitions="*,*,*">
+                <Label Text="" />
+                <Label Grid.Column="1" Text="{Binding WP.StrHttpResult}" TextColor="{Binding TextColorHttp}" />
+                <StackLayout Orientation="Horizontal" Spacing="0" Grid.Column="2">
+                    <Label Text="{Binding BadScan}" />
+                    <Label Text="/" />
+                    <Label Text="{Binding AllScan}" />
+                </StackLayout>
+            </Grid>
+
+            <StackLayout VerticalOptions="End" Orientation="Horizontal" Spacing="2">
+                <Label Text="F2" VerticalOptions="Center" FontSize="16" TextColor="#ff5c5c" />
+                <Label Text="Підбір" FontSize="16" TextColor="#816f20">
+                    <Label.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding F2Command}" />
+                    </Label.GestureRecognizers>
+                </Label>
+                <Label Text="F4" FontSize="16" IsVisible="{Binding IsVisF4}" TextColor="#ff5c5c" VerticalOptions="Center" />
+                <Label Text="{Binding F4Text}" FontSize="16" IsVisible="{Binding IsVisF4}" TextColor="#816f20">
+                    <Label.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding F4Command}" />
+                    </Label.GestureRecognizers>
+                </Label>
+                <Label Text="F5" FontSize="16" TextColor="#ff5c5c" VerticalOptions="Center" />
+                <Label Text="{Binding F5Text}" FontSize="16" TextColor="#816f20">
+                    <Label.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding F5Command}" />
+                    </Label.GestureRecognizers>
+                </Label>
+                <Label Text="F6" VerticalOptions="Center" FontSize="16" TextColor="#ff5c5c" />
+                <Label Text="Др.поточ." FontSize="16" TextColor="#816f20">
+                    <Label.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding PrintOneCommand}" />
+                    </Label.GestureRecognizers>
+                </Label>
+            </StackLayout>
+
+            <Grid VerticalOptions="End">
+                <ProgressBar x:Name="pb" ScaleY="2" Progress="{Binding PB}" ProgressColor="Black" />
+            </Grid>
+
+        </StackLayout>
+
+    </ContentPage.Content>
+</controls:BaseContentPage>

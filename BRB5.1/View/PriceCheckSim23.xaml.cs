@@ -7,9 +7,6 @@ using CommunityToolkit.Maui.Core.Platform;
 using UtilNetwork;
 using BRB6.ViewModel;
 
-
-
-
 #if ANDROID
 using Android.Views;
 #endif
