@@ -7,6 +7,7 @@
                        x:Class="BRB6.View.DocItem">
     <NavigationPage.TitleView>
         <StackLayout Spacing="10" Orientation="Horizontal" Padding="0,0,10,0">
+            <Label Text="{Binding Doc.ExtInfo}"/>
             <!--<Picker x:Name="ReasonPicker"
                     IsEnabled="{Binding IsVisF5Act}"
                     IsVisible="{Binding IsVisF5Act}"
