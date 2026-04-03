@@ -90,7 +90,7 @@
                 SelectionMode="None">
 
                 <CollectionView.ItemTemplate>
-                    <DataTemplate x:DataType="models:ProductDisplayItem">
+                    <DataTemplate x:DataType="models:DocWaresEx">
                         <Grid
                             Padding="16,12"
                             ColumnDefinitions="32,*,64,64"
@@ -106,7 +106,7 @@
                             <!-- Checkbox -->
                             <CheckBox
                                 Grid.Column="0"
-                                IsChecked="{Binding IsSelected}"
+                                IsChecked="{Binding IsRecord}"
                                 Color="#7B2FBE"
                                 VerticalOptions="Center" />
 
