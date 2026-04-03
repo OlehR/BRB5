@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:BRB6.ViewModel"
+             xmlns:models="clr-namespace:BRB5.Model"
+             x:DataType="vm:DocItemCheckVM"
+             BackgroundColor="White"
+             x:Class="BRB6.View.DocItemCheck">
+
+    <Grid RowDefinitions="Auto,*,Auto">
+
+        <!-- ═══ HEADER ═══ -->
+        <Grid
+            Grid.Row="0"
+            Padding="16,52,16,12"
+            BackgroundColor="White"
+            ColumnDefinitions="Auto,*">
+
+            <ImageButton
+                Grid.Column="0"
+                Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=GoBackCommand}"
+                HeightRequest="36"
+                WidthRequest="36"
+                CornerRadius="18"
+                BackgroundColor="Transparent"
+                VerticalOptions="Center">
+                <ImageButton.Source>
+                    <FontImageSource
+                        FontFamily="MaterialIcons"
+                        Glyph="&#xe5c4;"
+                        Color="#333333"
+                        Size="24" />
+                </ImageButton.Source>
+            </ImageButton>
+
+            <Label
+                Grid.Column="1"
+                Text="{Binding Title}"
+                FontSize="20"
+                FontAttributes="Bold"
+                TextColor="#1A1A1A"
+                VerticalOptions="Center"
+                Margin="12,0,0,0" />
+        </Grid>
+
+        <!-- ═══ TABLE ═══ -->
+        <Grid Grid.Row="1" RowDefinitions="Auto,*">
+
+            <!-- Заголовок таблиці -->
+            <Grid
+                Grid.Row="0"
+                Padding="16,8"
+                BackgroundColor="#F5F5F5"
+                ColumnDefinitions="32,*,64,64"
+                ColumnSpacing="8">
+
+                <BoxView Grid.Column="0" Color="Transparent" />
+
+                <Label
+                    Grid.Column="1"
+                    Text="Назва товару"
+                    FontSize="13"
+                    TextColor="#666666"
+                    FontAttributes="Bold"
+                    VerticalOptions="Center" />
+
+                <Label
+                    Grid.Column="2"
+                    Text="Облік"
+                    FontSize="13"
+                    TextColor="#666666"
+                    FontAttributes="Bold"
+                    HorizontalOptions="Center"
+                    VerticalOptions="Center" />
+
+                <Label
+                    Grid.Column="3"
+                    Text="Викл-ка"
+                    FontSize="13"
+                    TextColor="#666666"
+                    FontAttributes="Bold"
+                    HorizontalOptions="Center"
+                    VerticalOptions="Center" />
+            </Grid>
+
+            <!-- Список товарів -->
+            <CollectionView
+                Grid.Row="1"
+                ItemsSource="{Binding Products}"
+                SelectionMode="None">
+
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="models:ProductDisplayItem">
+                        <Grid
+                            Padding="16,12"
+                            ColumnDefinitions="32,*,64,64"
+                            ColumnSpacing="8">
+
+                            <!-- Separator -->
+                            <BoxView
+                                Grid.ColumnSpan="4"
+                                HeightRequest="1"
+                                BackgroundColor="#EEEEEE"
+                                VerticalOptions="End" />
+
+                            <!-- Checkbox -->
+                            <CheckBox
+                                Grid.Column="0"
+                                IsChecked="{Binding IsSelected}"
+                                Color="#7B2FBE"
+                                VerticalOptions="Center" />
+
+                            <!-- Назва -->
+                            <Label
+                                Grid.Column="1"
+                                Text="{Binding ProductName}"
+                                FontSize="14"
+                                TextColor="#1A1A1A"
+                                LineBreakMode="WordWrap"
+                                VerticalOptions="Center" />
+
+                            <!-- Облік -->
+                            <Label
+                                Grid.Column="2"
+                                Text="{Binding StockCount}"
+                                FontSize="14"
+                                TextColor="#1A1A1A"
+                                HorizontalOptions="Center"
+                                VerticalOptions="Center" />
+
+                            <!-- Викладка -->
+                            <Label
+                                Grid.Column="3"
+                                Text="{Binding DisplayCount}"
+                                FontSize="14"
+                                TextColor="#1A1A1A"
+                                HorizontalOptions="Center"
+                                VerticalOptions="Center" />
+                        </Grid>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+
+            <!-- Індикатор завантаження -->
+            <ActivityIndicator
+                Grid.Row="1"
+                IsRunning="{Binding IsLoading}"
+                IsVisible="{Binding IsLoading}"
+                Color="#7B2FBE"
+                VerticalOptions="Center"
+                HorizontalOptions="Center" />
+        </Grid>
+
+        <!-- ═══ FOOTER BUTTON ═══ -->
+        <Grid
+            Grid.Row="2"
+            Padding="16,12,16,32"
+            BackgroundColor="White">
+
+            <Button
+                Text="Відвантажити корзину"
+                Command="{Binding LoadCartCommand}"
+                BackgroundColor="#7B2FBE"
+                TextColor="White"
+                FontSize="16"
+                FontAttributes="Bold"
+                CornerRadius="28"
+                HeightRequest="56"
+                HorizontalOptions="Fill" />
+        </Grid>
+
+    </Grid>
+</ContentPage>

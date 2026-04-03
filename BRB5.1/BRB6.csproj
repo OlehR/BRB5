@@ -229,6 +229,9 @@
     <MauiXaml Update="View\CreateDoc.xaml">
       <Generator>MSBuild:Compile</Generator>
     </MauiXaml>
+    <MauiXaml Update="View\DocItemCheck.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </MauiXaml>
     <MauiXaml Update="View\ExpirationDateItem.xaml">
       <Generator>MSBuild:Compile</Generator>
     </MauiXaml>
@@ -323,10 +326,6 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </MauiXaml>
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="ViewModel\" />
   </ItemGroup>
 
 </Project>
