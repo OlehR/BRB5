@@ -771,9 +771,10 @@ and bc.BarCode=?
                 res.ParseBarCode = pParseBarCode;
                 //res.QuantityBarCode = pParseBarCode.Quantity;
                 sql = $@"select coalesce(d.IsControl,0) as IsControl, coalesce(QuantityMax,0) as QuantityMax, coalesce(quantity,0) as QuantityOrder, 
-                        case when dws.Typedoc is null then 0 else 1 end as IsRecord from DOC d
-                         left join DOCWARESsample dws on d.Typedoc=dws.Typedoc and d.NumberDoc=dws.NumberDoc and dws.codewares={res.CodeWares}
-                         where  d.Typedoc={pDocId.TypeDoc} and d.NumberDoc='{pDocId.NumberDoc}'";
+       case when dws.Typedoc is not null or (select count() as IsRecord from DocWares dw where  d.Typedoc=dw.Typedoc and d.NumberDoc=dw.NumberDoc and dw.codewares={res.CodeWares} )>0  then 1 else 0 end as IsRecord 
+      from Doc d
+      left join DocWaresSample dws on d.Typedoc=dws.Typedoc and d.NumberDoc=dws.NumberDoc and dws.codewares={res.CodeWares}                         
+      where  d.Typedoc={pDocId.TypeDoc} and d.NumberDoc='{pDocId.NumberDoc}'";
                 var r = db.Query<DocWaresEx>(sql);
                 if (r != null && r.Count == 1)
                 {
