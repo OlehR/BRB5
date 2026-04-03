@@ -15,7 +15,7 @@ public partial class PrintWares : ContentPage
     public PrintWares(DocVM pDocId, TypeDoc pTypeDoc)
 	{
 		InitializeComponent();
-        Wares = new ObservableCollection<DocWaresEx>(db.GetDocWares(pDocId, 1, eTypeOrder.Scan));
+        Wares = new ObservableCollection<DocWaresEx>(db.GetDocWares(pDocId, eTypeResult.All, eTypeOrder.Scan));
         BindingContext=this;
 	}
     private async void OnBackClicked(object sender, EventArgs e)

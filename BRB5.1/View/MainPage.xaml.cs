@@ -169,6 +169,9 @@ namespace BRB6
                 case eKindDoc.Lot:
                     await Navigation.PushAsync(new LotsCheck(vTypeDoc));
                     break;
+                case eKindDoc.DocCheck:
+                    await Navigation.PushAsync(new DocItemCheck());
+                    break;
                 case eKindDoc.NotDefined:
                     Dispatcher.Dispatch(() =>
                     {

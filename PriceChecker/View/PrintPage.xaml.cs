@@ -83,7 +83,7 @@ public partial class PrintPage : ContentPage
     {
         if (sender is Label label && label.BindingContext is DocVM doc)
         {
-            var r = db.GetDocWares(doc, 1, eTypeOrder.Scan);
+            var r = db.GetDocWares(doc, eTypeResult.All, eTypeOrder.Scan);
             var codes = r.Select(x => x.CodeWares);
 
             if (IsEnabledPrint)

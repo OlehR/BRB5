@@ -189,6 +189,7 @@ namespace BRB6.ViewModel
         public ICommand ShowAllBarCodesCommand => new Command(() => IsBarCodesDropdownVisible = true);
         public ICommand CloseBarCodesCommand => new Command(() => IsBarCodesDropdownVisible = false);
         public string QuantityToAddText => $"+{QuantityToAdd}";
+
         public PriceCheckVM(TypeDoc pTypeDoc, ForMVVM pForMVVM)
         {
             ForMVVM = pForMVVM;
@@ -244,20 +245,30 @@ namespace BRB6.ViewModel
                     ForMVVM.DisplayAlert("Друк", bl.c.PrintHTTP(new[] { WP.CodeWares }), "OK");
             });
 
-            OpenMrDialogCommand = new RelayCommand(() => {
+            OpenMrDialogCommand = new RelayCommand(() =>
+            {
                 MrQuantity = 0;
                 IsMrDialogVisible = true;
             });
 
             IncrementCommand = new RelayCommand(() => MrQuantity++);
 
-            DecrementCommand = new RelayCommand(() => {
+            DecrementCommand = new RelayCommand(() =>
+            {
                 if (MrQuantity > 0) MrQuantity--;
             });
 
-            ConfirmMrCommand = new RelayCommand(() => {
-                // тут зберігаєте MrQuantity в базу
-                //db.UpdateMrRest(WP?.CodeWares ?? 0, MrQuantity);
+            ConfirmMrCommand = new RelayCommand(() =>
+            {
+                int TypeDoc=Config.TypeDoc.Where(el=> el.KindDoc==eKindDoc.DocCheck).FirstOrDefault()?.CodeDoc ?? 0;
+                if (WP != null)
+                {
+                    var DWId = new DocWaresId() { CodeWares = WP.CodeWares, NumberDoc = DateTime.Now.ToString("yyyyMMdd"), TypeDoc = TypeDoc };
+                    // тут зберігаєте MrQuantity в базу
+                    var xx = db.GetDocWaresSample(DWId);
+                    decimal r = xx?.Quantity ?? 0 + MrQuantity;
+                    db.ReplaceDocWaresSample([new(DWId) { Quantity =r }]);                    
+                }
                 IsMrDialogVisible = false;
             });
         }

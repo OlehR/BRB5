@@ -456,8 +456,7 @@ CREATE INDEX TypeWarehouseId ON TypeWarehouse (Code);";
 
         public bool SetVersion(int pVer) => db.Execute($"PRAGMA user_version={pVer}") > 0;
         public bool ExecSQL(string pSQL) => db.Execute(pSQL) > 0;
-
-        public IEnumerable<DocWaresEx> GetDocWares(DocId pDocId, int pTypeResult, eTypeOrder pTypeOrder, int pCodeReason = 0)
+        public IEnumerable<DocWaresEx> GetDocWares(DocId pDocId, eTypeResult pTypeResult, eTypeOrder pTypeOrder, int pCodeReason = 0)
         {
             var DS = Config.GetDocSetting(pDocId.TypeDoc);
             string Sql = "";
@@ -479,7 +478,7 @@ CREATE INDEX TypeWarehouseId ON TypeWarehouse (Code);";
             try
             {
 
-                if (pTypeResult == 1)
+                if (pTypeResult == eTypeResult.All)
                 {
                     Sql = $@"select d.TypeDoc as TypeDoc, d.numberdoc as NumberDoc, dw1.orderdoc as OrderDoc, dw1.CODEWARES as CodeWares,coalesce(dws.name,w.NAMEWARES) as NameWares,
                          --coalesce(dws.quantity,0) as QuantityOrderStr,
@@ -519,7 +518,7 @@ CREATE INDEX TypeWarehouseId ON TypeWarehouse (Code);";
                     var r = db.Query<DocWaresEx>(Sql);
                     return r;
                 }
-                if (pTypeResult == 2)
+                if (pTypeResult == eTypeResult.OnlyInput)
                 {
                     Sql = $@"select d.TypeDoc as TypeDoc, d.numberdoc as NumberDoc, dw1.orderdoc as OrderDoc, dw1.CODEWARES as CodeWares,coalesce(dws.name,w.NAMEWARES) as NameWares,
                         coalesce(dws.quantity,0) as QuantityOrderStr,
@@ -542,7 +541,7 @@ CREATE INDEX TypeWarehouseId ON TypeWarehouse (Code);";
                     var r = db.Query<DocWaresEx>(Sql);
                     return r;
                 }
-                if (pTypeResult == 3)
+                /*if (pTypeResult == 3)
                 {
                     Sql = $@"select d.TypeDoc as TypeDoc, d.numberdoc as NumberDoc, 
 max(dw1.orderdoc) as OrderDoc, dw1.CODEWARES as CodeWares,
@@ -574,7 +573,7 @@ from  DocWares dw
                          order by dw1.orderdoc desc";
                     var r = db.Query<DocWaresEx>(Sql);
                     return r;
-                }
+                }*/
 
             }
             catch (Exception e)
@@ -877,6 +876,11 @@ and bc.BarCode=?
            // string Sql = @"replace into DocWaresSample ( TypeDoc, NumberDoc, OrderDoc, CodeWares, Quantity, QuantityMin, QuantityMax, Name, BarCode, ExpirationDate, Expiration) values 
            //                                           (@TypeDoc,@NumberDoc,@OrderDoc,@CodeWares,@Quantity,@QuantityMin,@QuantityMax,@Name,@BarCode,@ExpirationDate,@Expiration)";
             return db.ReplaceAll(pDWS) >= 0;
+        }
+        public DocWaresSample GetDocWaresSample(DocWaresId pDW)
+        {
+            var r=db.Query<DocWaresSample>($"select * from DocWaresSample  dw  where dw.TypeDoc={pDW.TypeDoc}  and dw.NumberDoc= '{pDW.NumberDoc}' dw.CodeWares={pDW.CodeWares}");
+            return r.FirstOrDefault();
         }
 
         public bool ReplaceDocWares(DocWares pDW, bool pIsDelete = false)
@@ -1281,10 +1285,19 @@ group by dw.CodeWares, w.NameWares
             string Sql = $@"Update Doc set CodeReason={Doc.CodeReason}  where TypeDoc = {Doc.TypeDoc} and NumberDoc = '{Doc.NumberDoc}'";
             return db.Execute(Sql) >= 0;
         }
-        public void Repair()
+        public string Repair()
         {
-            db.Execute("vacuum;");
-            db.Execute("REINDEX;");
+            try
+            {
+                db.Execute("vacuum;");
+                db.Execute("REINDEX;");
+                return "Ok";
+            }
+            catch (Exception e)
+            {
+                FileLogger.WriteLogMessage(this, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+                return e.Message;
+            }
         }
 
         public IEnumerable<Warehouse> GetWarehouseCreateDoc(int pCodeWarehouse)

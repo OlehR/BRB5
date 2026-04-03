@@ -55,7 +55,7 @@ namespace BRB6.View
             DocId = pDocId;
             TypeDoc = pTypeDoc != null ? pTypeDoc : Config.GetDocSetting(pDocId.TypeDoc);
             c = ConnectorBase.GetInstance();
-            var tempListWares = db.GetDocWares(pDocId, 2, eTypeOrder.Scan);
+            var tempListWares = db.GetDocWares(pDocId, eTypeResult.OnlyInput, eTypeOrder.Scan);
             if(tempListWares.Any())
                 foreach (var t in tempListWares) { t.Ord = -1; }
             _originalListWares = tempListWares == null ? new ObservableCollection<DocWaresEx>() : new ObservableCollection<DocWaresEx>(tempListWares);

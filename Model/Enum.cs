@@ -56,6 +56,11 @@ namespace BRB5
         Scan,
         Name
     }
+    public enum eTypeResult
+    {
+        All = 1,
+        OnlyInput = 2
+    }
 
     public enum eTypeUsePrinter
     {

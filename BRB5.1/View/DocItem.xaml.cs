@@ -96,7 +96,7 @@ namespace BRB6.View
                 MainActivity.Key += OnPageKeyDown;
 #endif
             }
-            var r = db.GetDocWares(Doc, 1, eTypeOrder.Scan);
+            var r = db.GetDocWares(Doc, eTypeResult.All, eTypeOrder.Scan);
             if (r != null)
             {
                 MyDocWares.Clear();
@@ -343,7 +343,7 @@ namespace BRB6.View
                 db.ReplaceDoc([dl]);
             }
 
-            var d = db.GetDocWares(Doc, 2, eTypeOrder.Scan);
+            var d = db.GetDocWares(Doc, eTypeResult.OnlyInput, eTypeOrder.Scan);
             var r = await c.SendDocsDataAsync(Doc,d );
             if (r?.State != 0) _ = DisplayAlert("Помилка", r.TextError, "OK");
             else

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using UtilNetwork;
+using static BL.DB;
 
 namespace BL
 {
@@ -145,7 +146,7 @@ namespace BL
                 item.OrderDoc = i++;
             }
             db.ReplaceDocWaresSample(tempInfo.Select(el => new DocWaresSample(el)));
-            return new ObservableCollection<DocWaresEx>(db.GetDocWares(Doc, 1, eTypeOrder.Name, ShelfType));
+            return new ObservableCollection<DocWaresEx>(db.GetDocWares(Doc, eTypeResult.All, eTypeOrder.Name, ShelfType));
         }
     }
 }

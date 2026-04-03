@@ -20,7 +20,7 @@ namespace BRB6.View
             NokeyBoard();
             TypeDoc = pTypeDoc;
             Doc = pDoc;
-            var r = db.GetDocWares(Doc, 1, eTypeOrder.Scan);
+            var r = db.GetDocWares(Doc, eTypeResult.All, eTypeOrder.Scan);
             if (r != null && r.Count() > 0)
             {
                 IEnumerable<DocWaresEx> filtered;

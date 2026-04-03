@@ -156,7 +156,7 @@ public partial class Act
 
     private async void F1Create(object sender, TappedEventArgs e)
     {
-        var r = await c.SendDocsDataAsync(Doc, db.GetDocWares(Doc, 2, eTypeOrder.Scan));
+        var r = await c.SendDocsDataAsync(Doc, db.GetDocWares(Doc, eTypeResult.OnlyInput, eTypeOrder.Scan));
         if (r.State != 0) _ = DisplayAlert("Помилка", r.TextError, "OK");
         else
         {

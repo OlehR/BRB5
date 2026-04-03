@@ -526,7 +526,11 @@ namespace BRB6.View
         }
         async private void OnInfo(object sender, EventArgs e)
         {
-            db.Repair();
+            string r=db.Repair();
+            if (!"Ok".Equals(r))
+            {
+                await DisplayAlert("Помилка!!!", r, "ОК");
+            }
             string appDir = FileSystem.AppDataDirectory;
             var beforeStats = FileAndDir.GetDirectoryStats(appDir);
             var temp = $"\nBefore AppDataDirectory: {beforeStats.fileCount} files, {beforeStats.totalSize / 1024.0 / 1024.0:F2} MB";
