@@ -50,14 +50,8 @@ namespace BRB6.ViewModel
             var DId = new DocId() { NumberDoc = DateTime.Now.ToString("yyyyMMdd"), TypeDoc = 6 };
             var xx = db.GetDocWares(DId, eTypeResult.All, eTypeOrder.Scan);
             Wares = new ObservableCollection<DocWaresEx>(xx);
-            //    Products =
-            //    [
-            //        new(1, "Ш-д \"Мілка\" з карамарах начинкою і повітр рисом 276г /Монделіс/", 334, 8, true),
-            //    new(2, "Ш-д \"Корона\" Max Fun мол з мармеладом 150г /Монделіс/", 45, 8, true),
-            //    new(3, "Ш-д \"Несквік\" молочний 100г /Нестле/", 45, 8, true),
-            //    new(4, "Халва соняш. ванільна 60г/Ференро/", 45, 8, true),
-            //    new(5, "Ц-ки \"Яблучні\" натуральні 20г/ФРУТІМ/", 45, 8, true),
-            //];
+
+            //Wares = new ObservableCollection<DocWaresEx>( Enumerable.Repeat(xx, 5).SelectMany(x => x));            
         }
 
         private void ToggleSelect(DocWaresEx? item)
