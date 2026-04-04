@@ -966,8 +966,8 @@ and bc.BarCode=?
 
         public void InsLogPrice(LogPrice pLP)
         {            
-            string Sql = $@"insert into LogPrice ( BarCode, Status,  ActionType, PackageNumber, CodeWares, LineNumber, Article,NumberOfReplenishment) 
-                                          values ('{pLP.BarCode}',{pLP.Status}, {pLP.ActionType},{pLP.PackageNumber},{pLP.CodeWares},{pLP.LineNumber},{(string.IsNullOrEmpty( pLP.Article) ? "0":pLP.Article)},{pLP.NumberOfReplenishment})";
+            string Sql = $@"insert into LogPrice ( BarCode, Status,  ActionType, PackageNumber, CodeWares, LineNumber, Article, NumberOfReplenishment, NumberOfMR) 
+                                          values ('{pLP.BarCode}',{pLP.Status}, {pLP.ActionType},{pLP.PackageNumber},{pLP.CodeWares},{pLP.LineNumber},{(string.IsNullOrEmpty( pLP.Article) ? "0":pLP.Article)},{pLP.NumberOfReplenishment},{pLP.NumberOfMR})";
             db.Execute(Sql);
             /* try
              {
@@ -1014,7 +1014,7 @@ and bc.BarCode=?
             int varN;
             try
             {
-                string sql = "select count(*) from   LogPrice where IsSend=-1";
+                string sql = "select count(*) from LogPrice where IsSend=-1";
                 varN = db.ExecuteScalar<int>(sql);
 
                 if (varN < pLimit)

@@ -1051,12 +1051,14 @@ public string Info { get; set; }
             Status = pLP.Status;
             LineNumber = pLP.LineNumber;
             NumberOfReplenishment = pLP.NumberOfReplenishment;
+            NumberOfMR = pLP.NumberOfMR;
         }
         public string BarCode { get; set; }
         public long Code { get; set; }
         public int Status { get; set; }
         public int LineNumber { get; set; }
-        public double NumberOfReplenishment { get; set; }
+        public decimal NumberOfReplenishment { get; set; }
+        public decimal NumberOfMR { get; set; }
     }
 
     public class WaresPriceSE
@@ -1066,15 +1068,31 @@ public string Info { get; set; }
         public decimal Price { get; set; }
         public string[] BarCodes { get; set; }
         public string Unit { get; set; }
-        public string Article { get; set; }
-        public decimal Rest { get; set; }
+        public string Article { get; set; }   
         public int ActionType { get; set; }
         public decimal PromotionPrice { get; set; }
-        public WaresPrice GetWaresPrice
-        {
-            get { return new WaresPrice() { CodeWares = Code, Name = Name, Price = Price, BarCodes = BarCodes?.Any() != true ? "" : string.Join(',', BarCodes), Unit = Unit, Article = Article, ActionType = ActionType, PriceOpt = PromotionPrice,Rest=Rest }; }
-        }
-    }
+        /// <summary>
+        /// місць викладки
+        /// </summary>
+        public int Shelves { get; set; }
+        /// <summary>
+        /// Назва акції
+        /// </summary>
+        public string PromotionName { get; set; }
+        /// <summary>
+        /// залишок
+        /// </summary>
+        public decimal Rest { get; set; }
+        /// <summary>
+        /// Дата завершення акції
+        /// </summary>
+        public DateTime PromotionEnd { get; set; }
+        /// <summary>
+        /// Термін придатності в днях
+        /// </summary>
+        public int ExpirationDay { get; set; }
+        public WaresPrice GetWaresPrice=>  new() { CodeWares = Code, Name = Name, Price = Price, BarCodes = BarCodes?.Any() != true ? "" : string.Join(',', BarCodes), Unit = Unit, Article = Article, ActionType = ActionType, PriceOpt = PromotionPrice,Rest=Rest , Shelves = Shelves, PromotionName= PromotionName, PromotionEnd= PromotionEnd, ExpirationDay= ExpirationDay };
+      }
     class InputWarehouse
     {
         public int Code { get; set; }
