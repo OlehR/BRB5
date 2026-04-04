@@ -587,6 +587,22 @@ from  DocWares dw
             }
             return null;
         }
+        public bool  DelDocWaresSend(DocId pDocId)
+        {
+            try
+            {
+                string Sql = @$"delete from DocWaresSample where TypeDoc={pDocId.TypeDoc} and NumberDoc='{pDocId.NumberDoc}'
+and CodeWares in (select CodeWares from DocWares where TypeDoc={pDocId.TypeDoc} and NumberDoc='{pDocId.NumberDoc}')";
+                db.Execute(Sql);
+                Sql = @$"delete from DocWares where TypeDoc={pDocId.TypeDoc} and NumberDoc='{pDocId.NumberDoc}'";
+                return db.Execute(Sql) > 0;
+            }
+            catch (Exception e)
+            {
+                FileLogger.WriteLogMessage(this, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+            }
+            return false;
+}
 
         public bool ReplaceDoc(IEnumerable<Doc> pDoc,int pTypeDoc=0)
         {

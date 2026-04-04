@@ -555,6 +555,7 @@ public string Info { get; set; }
         /// <returns></returns>
         public override async Task<Result> SendDocsDataAsync(DocVM pDoc, IEnumerable<DocWares> pWares)
         {
+            Result Res = null;
             try
             {
                 if (pDoc.TypeDoc.In(1,2,3,5))
@@ -566,12 +567,12 @@ public string Info { get; set; }
                     if (res.HttpState != eStateHTTP.HTTP_OK)
                     {
                         FileLogger.WriteLogMessage(this, "SaveDocAsync Res=>", res.ToJSON(), eTypeLog.Error);
-                        return new Result(res);
+                        Res= new(res);
                     }
                     else
                     {
                         FileLogger.WriteLogMessage(this, "SaveDocAsync Res=>", res.ToJSON());
-                        return new Result();
+                        Res= new();
                     }
                 }
                 if (pDoc.TypeDoc == 14)
@@ -580,30 +581,23 @@ public string Info { get; set; }
                     var res = GetDataHTTP.HTTPRequest(1, $"confirmdocuments/{pDoc.NumberDoc}", null, "application/json", Config.Login, Config.Password);             
                     FileLogger.WriteLogMessage(this, "SaveDocAsync Res=>", res.ToJSON());
                     if (res.HttpState != eStateHTTP.HTTP_OK)
-                        return new Result(res);
+                        Res = new(res);
                     else
-                    {
-                        var r = JsonConvert.DeserializeObject<Result>(res.Result);
-                        return r;
-                    }
+                        Res = JsonConvert.DeserializeObject<Result>(res.Result);
                 }
-
-                /*
-                SaveDoc Data = new SaveDoc() { Doc = pDoc, Wares = pWares };
-                HttpResult result = await GetDataHTTP.HTTPRequestAsync(1, "DCT/SaveDoc", Data.ToJson(), "application/json", null);
-                if (result.HttpState == eStateHTTP.HTTP_OK)
+                if(Res.Success)
                 {
-                    var res = JsonConvert.DeserializeObject<Result>(result.Result);
-                    if (res.State == 0) return res;
+                    var r=Config.GetDocSetting(pDoc.TypeDoc);
+                    if (r?.IsDelAfterSend==true)
+                        db.DelDocWaresSend(pDoc);
                 }
-                return new Result(result);*/
             }
             catch (Exception e)
             {
                 FileLogger.WriteLogMessage(this, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
                 return new (e);
             }
-            return new();
+            return Res;
         }
         /// <summary>
         /// Вивантаження Рейтингів
@@ -618,9 +612,7 @@ public string Info { get; set; }
             {
                 var RD = new List<Raitings>();
                 foreach (var el in pR)
-                {
                     RD.Add(new Raitings() { questionId = el.Id, value = el.Rating, comment = el.Note });
-                }
 
                 RaitingDocItem e = pR.FirstOrDefault(d => d.Id == -1);
                 if (e == null || e.Id == 0)
