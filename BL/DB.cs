@@ -170,7 +170,9 @@ CREATE TABLE LogPrice (
     CodeWares              INTEGER,
     Article                 INTEGER,
     LineNumber             INTEGER,
-    NumberOfReplenishment NUMERIC);
+    NumberOfReplenishment NUMERIC,
+    NumberOfMR NUMERIC
+);
 
 CREATE TABLE Reason (
     Level INTEGER  DEFAULT (0),
@@ -299,6 +301,7 @@ CREATE INDEX TypeWarehouseId ON TypeWarehouse (Code);";
         string SqlTo14 = @"alter TABLE DocWaresExpirationSample add QuantityInput NUMBER DEFAULT (0)";
         string SqlTo15 = @"alter TABLE Reason add TypeWarehouse INTEGER  NOT NULL DEFAULT (0)";
         string SqlTo16 = @"alter TABLE DocWaresExpirationSample add IsHide INTEGER NOT NULL DEFAULT (0)";
+        string SqlTo18 = @"alter TABLE LogPrice add NumberOfMR NUMERIC";
 
         public static string PathNameDB { get { return Path.Combine(BaseDir, NameDB); } }
 
@@ -339,6 +342,8 @@ CREATE INDEX TypeWarehouseId ON TypeWarehouse (Code);";
                     SetSQL(SqlTo16, 16);
                 if (GetVersion < 17)
                     SetSQL(SqlTo16, 17);
+                if (GetVersion < 18)
+                    SetSQL(SqlTo18, 18);
             }            
         }
 
@@ -879,7 +884,7 @@ and bc.BarCode=?
         }
         public DocWaresSample GetDocWaresSample(DocWaresId pDW)
         {
-            var r=db.Query<DocWaresSample>($"select * from DocWaresSample  dw  where dw.TypeDoc={pDW.TypeDoc}  and dw.NumberDoc= '{pDW.NumberDoc}' dw.CodeWares={pDW.CodeWares}");
+            var r=db.Query<DocWaresSample>($"select * from DocWaresSample as dw  where dw.TypeDoc={pDW.TypeDoc}  and dw.NumberDoc= '{pDW.NumberDoc}' and dw.CodeWares={pDW.CodeWares}");
             return r.FirstOrDefault();
         }
 
@@ -968,6 +973,18 @@ and bc.BarCode=?
             try
             {
                 string Sql = $"Update LogPrice set NumberOfReplenishment={pNumberOfReplenishment} where date('now', '-1 day') < DTInsert and  IsSend = 0 and LineNumber ={pLineNumber}"; //
+                db.Execute(Sql);
+            }
+            catch (Exception e)
+            {
+                FileLogger.WriteLogMessage(this, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+            }
+        }
+        public void UpdateMR(int pLineNumber, decimal pNumberOfMR)
+        {
+            try
+            {
+                string Sql = $"Update LogPrice set NumberOfMR={pNumberOfMR} where date('now', '-1 day') < DTInsert and  IsSend = 0 and LineNumber ={pLineNumber}"; //
                 db.Execute(Sql);
             }
             catch (Exception e)

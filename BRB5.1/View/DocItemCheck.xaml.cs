@@ -12,4 +12,22 @@ public partial class DocItemCheck : ContentPage
         _viewModel = new DocItemCheckVM();
         BindingContext = _viewModel;
     }
+    protected override void OnAppearing()
+    {
+        base.OnAppearing();
+        if (Parent is NavigationPage navPage)
+        {
+            navPage.BarBackgroundColor = Colors.White;
+            navPage.BarTextColor = Color.FromArgb("#1A1A1A");
+        }
+    }
+    protected override void OnDisappearing()
+    {
+        base.OnDisappearing();
+        if (Parent is NavigationPage navPage)
+        {
+            navPage.BarBackgroundColor = Colors.Transparent; // або ваш стандартний колір
+            navPage.BarTextColor = Colors.White; // або ваш стандартний колір
+        }
+    }
 }

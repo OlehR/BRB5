@@ -18,7 +18,7 @@ namespace BRB6.ViewModel
         void Focused(string pName);
         void DisplayAlert(string title, string message, string cancel);
     }
-    internal class PriceCheckVM: ObservableObject, IDisposable
+    internal class PriceCheckVM : ObservableObject, IDisposable
     {
         ForMVVM ForMVVM;
         DB db = DB.GetDB();
@@ -120,7 +120,7 @@ namespace BRB6.ViewModel
 
         public string ColorPrintColorType { get { return WP == null ? "#ffffff" : WP.MinQuantity == 0 ? "#ffd8d8" : WP.ActionType > 0 ? "#F0DC82" : "#ffffff"; } }
         public string TextColorPrice { get { return (WP != null && WP.Price != 0 && WP.Price == WP.PriceOld && WP.PriceOpt == WP.PriceOptOld) ? "#009800" : "#ff5c5c"; } set { OnPropertyChanged(nameof(TextColorPrice)); } }
-        public string BackgroundColorPrice { get { return (WP == null ||( WP.Price != 0 && WP.Price == WP.PriceOld && WP.PriceOpt == WP.PriceOptOld)) ? "#F8F9FA" : "#fff0f0"; }  }
+        public string BackgroundColorPrice { get { return (WP == null || (WP.Price != 0 && WP.Price == WP.PriceOld && WP.PriceOpt == WP.PriceOptOld)) ? "#F8F9FA" : "#fff0f0"; } }
 
         public string TextColorHttp { get { return (bl.LastResult != null && bl.LastResult.StateHTTP == eStateHTTP.HTTP_OK) ? "#009800" : "#ff5c5c"; } }
 
@@ -178,7 +178,7 @@ namespace BRB6.ViewModel
             get => _uriPicture;
             set { _uriPicture = value; OnPropertyChanged(); }
         }
-       
+
         private bool _isBarCodesDropdownVisible;
         public bool IsBarCodesDropdownVisible { get => _isBarCodesDropdownVisible; set => SetProperty(ref _isBarCodesDropdownVisible, value); }
 
@@ -260,15 +260,8 @@ namespace BRB6.ViewModel
 
             ConfirmMrCommand = new RelayCommand(() =>
             {
-                int TypeDoc=Config.TypeDoc.Where(el=> el.KindDoc==eKindDoc.DocCheck).FirstOrDefault()?.CodeDoc ?? 0;
-                if (WP != null)
-                {
-                    var DWId = new DocWaresId() { CodeWares = WP.CodeWares, NumberDoc = DateTime.Now.ToString("yyyyMMdd"), TypeDoc = TypeDoc };
-                    // тут зберігаєте MrQuantity в базу
-                    var xx = db.GetDocWaresSample(DWId);
-                    decimal r = xx?.Quantity ?? 0 + MrQuantity;
-                    db.ReplaceDocWaresSample([new(DWId) { Quantity =r }]);                    
-                }
+                db.UpdateReplenishment(LineNumber, MrQuantity);
+
                 IsMrDialogVisible = false;
             });
         }
@@ -329,7 +322,7 @@ namespace BRB6.ViewModel
                 ForMVVM.DisplayAlert("Друк", message, "OK");
             }
         }
-                       
+
         private void BarCodeHandInput()
         {
             var text = BarCodeInput;
@@ -338,9 +331,22 @@ namespace BRB6.ViewModel
 
         private void OnUpdateReplenishment()
         {
-            decimal d;
-            if (decimal.TryParse(NumberOfReplenishment, out d))
-                db.UpdateReplenishment(LineNumber, d);
+            if (WP != null)
+            {
+                decimal d;
+                if (decimal.TryParse(NumberOfReplenishment, out d))
+                    db.UpdateReplenishment(LineNumber, d);
+
+
+                int TypeDoc = Config.TypeDoc.Where(el => el.KindDoc == eKindDoc.DocCheck).FirstOrDefault()?.CodeDoc ?? 0;
+
+                var DWId = new DocWaresId() { CodeWares = WP.CodeWares, NumberDoc = DateTime.Now.ToString("yyyyMMdd"), TypeDoc = TypeDoc };
+
+                db.ReplaceDoc([new(DWId)]);
+                var xx = db.GetDocWaresSample(DWId);
+                decimal r = xx?.Quantity ?? 0 + MrQuantity;
+                db.ReplaceDocWaresSample([new(DWId) { Quantity = r }]);
+            }
         }
 
         private void DoubleScanReact()
@@ -365,16 +371,19 @@ namespace BRB6.ViewModel
 
         private void ModifyValue(int delta)
         {
-            if (int.TryParse(NumberOfReplenishment, out int currentVal))
+            if (WP != null)
             {
-                int newVal = currentVal + delta;
-                NumberOfReplenishment = (newVal < 0 ? 0 : newVal).ToString();
+                if (int.TryParse(NumberOfReplenishment, out int currentVal))
+                {
+                    int newVal = currentVal + delta;
+                    NumberOfReplenishment = (newVal < 0 ? 0 : newVal).ToString();
+                }
+                else
+                {
+                    NumberOfReplenishment = delta > 0 ? delta.ToString() : "0";
+                }
+                OnUpdateReplenishment();
             }
-            else
-            {
-                NumberOfReplenishment = delta > 0 ? delta.ToString() : "0";
-            }
-            OnUpdateReplenishment();
         }
     }
 }
