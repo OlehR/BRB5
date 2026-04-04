@@ -112,7 +112,7 @@
                                         <!-- Облік -->
                                         <Label
                                             Grid.Column="2"
-                                            Text="{Binding QuantityOrder}" FontSize="14"
+                                            Text="{Binding Quantity}" FontSize="14"
                                             TextColor="#1A1A1A" HorizontalOptions="Center"
                                             VerticalOptions="Center" />
 
@@ -125,7 +125,7 @@
                                         <!-- Викладка -->
                                         <Label
                                             Grid.Column="3"
-                                            Text="{Binding Quantity}" FontSize="14"
+                                            Text="{Binding InputQuantity}" FontSize="14"
                                             TextColor="#1A1A1A" HorizontalOptions="Center"
                                             VerticalOptions="Center" />
                                     </Grid>

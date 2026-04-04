@@ -1,4 +1,5 @@
 ﻿using BL;
+using BL.Connector;
 using BRB5;
 using BRB5.Model;
 using CommunityToolkit.Mvvm.ComponentModel;
@@ -12,6 +13,7 @@ namespace BRB6.ViewModel
     class DocItemCheckVM : ObservableObject
     {
         DB db = DB.GetDB();
+        Connector c = ConnectorBase.GetInstance();
         private ObservableCollection<DocWaresEx> _wares = [];
         private bool _isLoading;
         private string _title = "Лист викладки";
@@ -52,6 +54,24 @@ namespace BRB6.ViewModel
             Wares = new ObservableCollection<DocWaresEx>(xx);
 
             //Wares = new ObservableCollection<DocWaresEx>( Enumerable.Repeat(xx, 5).SelectMany(x => x));            
+        }
+
+        public void BarCode(string pBarCode)
+        {
+            var pb = c.ParsedBarCode(pBarCode, false);
+            var r=db.GetCodeWares(pb);
+            if (r.CodeWares != 0)
+            {
+                var item = Wares.FirstOrDefault(w => w.CodeWares == r.CodeWares);
+                if (item != null)
+                {
+                    //                   ToggleSelect(item);
+                }
+                else
+                { 
+                
+                }
+            }
         }
 
         private void ToggleSelect(DocWaresEx? item)
