@@ -1196,7 +1196,7 @@ order by gw.NameGroup";
                                 join UNITDIMENSION ud on w.CODEUNIT=ud.CODEUNIT 
                                 join DocWaresExpirationSample DES on w.CodeWares=DES.CodeWares 
                                 left join DocWaresExpiration DE on DES.CodeWares=DE.CodeWares and DE.DocId=DES.DocId and DATE(DE.DateDoc) = DATE('now')                             
-                                where DES.IsHide=0 and w.CodeGroup = ?  {(pCodeWares>0?$"and w.CodeWares={pCodeWares}" : "")}                              
+                                where {(pCodeWares>0?$"w.CodeWares={pCodeWares}" : "DES.IsHide=0 and w.CodeGroup = ? ")}                              
                         union all 
         select DES.OrderDoc, DES.NumberDoc,DES.DocId, w.CodeWares,w.NameWares as NameWares, au.Coefficient as Coefficient,w.CodeUnit as CodeUnit, ud.ABRUNIT as NameUnit,
                             ( select group_concat(bc.BarCode,',') from BarCode bc where bc.CodeWares=w.CodeWares ) as BARCODE  ,w.CodeUnit as BaseCodeUnit,
@@ -1207,7 +1207,7 @@ DE.ExpirationDateInput, DE.QuantityInput
                                 join UNITDIMENSION ud on w.CODEUNIT=ud.CODEUNIT 
                                 join DocWaresExpiration DE on w.CodeWares=DE.CodeWares and DATE(DE.DateDoc) = DATE('now')
                                 left join DocWaresExpirationSample DES on DES.CodeWares=DE.CodeWares and DE.DocId=DES.DocId                                                               
-                                where DES.CodeWares is null and w.CodeGroup = ? {(pCodeWares > 0 ? $"and w.CodeWares={pCodeWares}" : "")}
+                                where DES.CodeWares is null {(pCodeWares > 0 ? $"and w.CodeWares={pCodeWares}" : "and w.CodeGroup = ?")}
                                 order by 1
 ";
             try

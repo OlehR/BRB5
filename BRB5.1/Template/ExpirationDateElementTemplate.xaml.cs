@@ -31,11 +31,11 @@ public partial class ExpirationDateElementTemplate : ContentView
         this.BindingContext = this;
     }
 
-    public void Set(ExpirationDateElementVM pED, string pNumberDoc,IEnumerable<ExpirationDateElementVM> pListED )
+    public void Set(ExpirationDateElementVM pED, string pNumberDoc )
     {
      NumberDoc=pNumberDoc;
         _DM = pED;
-        ListED= pListED;
+        ListED = db.GetDataExpiration(NumberDoc, pED.CodeWares)?.Where(el => el.DocId != pED.DocId);
         DM = (ExpirationDateElementVM)pED.Clone();
         DM.QuantityInput = DM.QuantityInput ?? DM.Quantity;
 
