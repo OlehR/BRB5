@@ -5,12 +5,8 @@
              xmlns:models="clr-namespace:BRB5.Model;assembly=BRB5.Model"
              x:DataType="vm:DocItemCheckVM"
              xmlns:tmpl="clr-namespace:BRB6.Template"
-             xmlns:converters="clr-namespace:BRB6.View"
              BackgroundColor="White"
              x:Class="BRB6.View.DocItemCheck">
-    <ContentPage.Resources>
-        <converters:BoolToRowColorConverter x:Key="BoolToRowColorConverter" />
-    </ContentPage.Resources>
     <NavigationPage.TitleView>
         <Grid BackgroundColor="White" >
             <Label Text="{Binding Title}" FontSize="20"  FontAttributes="Bold" TextColor="#1A1A1A" VerticalOptions="Center"  Margin="12,0,0,0" />
@@ -78,16 +74,13 @@
                         VerticalOptions="End" />
 
                     <!-- Список товарів -->
-                    <CollectionView  Grid.Row="1" x:Name="WaresCollection" ItemsSource="{Binding Wares}" SelectedItem="{Binding SelectedItem}" SelectionMode="Single">
+                    <CollectionView  Grid.Row="1" x:Name="WaresCollection" ItemsSource="{Binding Wares}" SelectedItem="{Binding SelectedWare}" SelectionMode="Single">
 
                         <CollectionView.ItemTemplate>
                             <DataTemplate x:DataType="models:DocWaresEx">
                                 <Grid>
                                     <!-- Фон рядка: сірий якщо відмічено, білий якщо ні -->
-                                    <Grid
-                                        Padding="5,5"
-                                        ColumnDefinitions="32,*,56,64" ColumnSpacing="0"
-                                        BackgroundColor="{Binding IsInputQuantity, Converter={StaticResource BoolToRowColorConverter}}">
+                                    <Grid Padding="5,5" ColumnDefinitions="32,*,56,64" ColumnSpacing="0">
 
                                         <!-- Checkbox -->
                                         <CheckBox

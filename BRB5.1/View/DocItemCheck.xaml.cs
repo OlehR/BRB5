@@ -4,13 +4,13 @@ using BRB5.Model;
 
 namespace BRB6.View;
 
-public partial class DocItemCheck : ContentPage
+public partial class DocItemCheck : ForMVVM
 {
     private readonly DocItemCheckVM _viewModel;
     public DocItemCheck()
 	{
 		InitializeComponent();
-        _viewModel = new DocItemCheckVM();
+        _viewModel = new DocItemCheckVM(this);
         BindingContext = _viewModel;
     }
     protected override void OnAppearing()
@@ -44,5 +44,15 @@ public partial class DocItemCheck : ContentPage
         {
             WaresCollection.ScrollTo(item, animate: true);
         });
+    }
+
+    void ForMVVM.Focused(string pName)
+    {
+       // throw new NotImplementedException();
+    }
+
+    void ForMVVM.DisplayAlert(string title, string message, string cancel)
+    {
+        Dispatcher.Dispatch(() => DisplayAlert(title, message, cancel));
     }
 }

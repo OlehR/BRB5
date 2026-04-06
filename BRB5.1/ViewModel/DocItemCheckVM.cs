@@ -12,6 +12,7 @@ namespace BRB6.ViewModel
 {
     class DocItemCheckVM : ObservableObject
     {
+        ForMVVM ForMVVM;
         DB db = DB.GetDB();
         Connector c = ConnectorBase.GetInstance();
         private ObservableCollection<DocWaresEx> _wares = [];
@@ -37,15 +38,13 @@ namespace BRB6.ViewModel
         }
 
         public ICommand LoadCartCommand { get; }
-        public ICommand ToggleSelectCommand { get; }
         public event Action<DocWaresEx>? ScrollToItem;
 
-        private DocWaresEx? _selectedWare {  get; set; }
-        private DocWaresEx? _selectedItem;
-        public DocWaresEx? SelectedItem
+        private DocWaresEx? _selectedWare;
+        public DocWaresEx? SelectedWare
         {
-            get => _selectedItem;
-            set => SetProperty(ref _selectedItem, value);
+            get => _selectedWare;
+            set => SetProperty(ref _selectedWare, value);
         }
         private bool _isMrDialogVisible;
         private decimal _mrQuantity;
@@ -66,10 +65,10 @@ namespace BRB6.ViewModel
         public ICommand IncrementCommand { get; }
         public ICommand DecrementCommand { get; }
         public ICommand ConfirmMrCommand { get; }
-        public DocItemCheckVM()
+        public DocItemCheckVM( ForMVVM pForMVVM)
         {
+            ForMVVM = pForMVVM;
             LoadCartCommand = new Command(async () => await LoadCartAsync());
-            ToggleSelectCommand = new Command<DocWaresEx>(ToggleSelect);
             OpenDialogCommand = new Command<DocWaresEx>(OpenDialog);
             IncrementCommand = new Command(() => MrQuantity++);
             DecrementCommand = new Command(() => { if (MrQuantity > 0) MrQuantity--; });
@@ -114,20 +113,18 @@ namespace BRB6.ViewModel
                 var item = Wares.FirstOrDefault(w => w.CodeWares == r.CodeWares);
                 if (item != null)
                 {
-                    SelectedItem = item;
+                    SelectedWare = item;
                     ScrollToItem?.Invoke(item);
                 }
                 else
-                { 
-                                    
+                {
+                    ForMVVM.DisplayAlert("", "Даної позиції немає в листі поповнення", "OK");
                 }
             }
-        }
-
-        private void ToggleSelect(DocWaresEx? item)
-        {
-            if (item is null) return;
-            item.IsInputQuantity = !item.IsInputQuantity;
+            else
+            {
+                ForMVVM.DisplayAlert("", "Даний штрихкод відсутній в базі", "OK");
+            }
         }
 
         private async Task LoadCartAsync()
