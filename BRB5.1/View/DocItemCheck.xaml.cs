@@ -16,12 +16,13 @@ public partial class DocItemCheck : ContentPage
     protected override void OnAppearing()
     {
         base.OnAppearing();
-        if (Parent is NavigationPage navPage)
-        {
-            navPage.BarBackgroundColor = Colors.White;
-            navPage.BarTextColor = Color.FromArgb("#1A1A1A");
-        }
+        //if (Parent is NavigationPage navPage)
+        //{
+        //    navPage.BarBackgroundColor = Colors.White;
+        //    navPage.BarTextColor = Color.FromArgb("#1A1A1A");
+        //}
         Config.BarCode = BacCode;
+        _viewModel.ScrollToItem += OnScrollToItem;
     }
 
     public void BacCode(string pBarCode)=> _viewModel.BarCode(pBarCode);
@@ -29,11 +30,19 @@ public partial class DocItemCheck : ContentPage
     protected override void OnDisappearing()
     {
         base.OnDisappearing();
-        if (Parent is NavigationPage navPage)
-        {
-            navPage.BarBackgroundColor = Colors.Transparent; // або ваш стандартний колір
-            navPage.BarTextColor = Colors.White; // або ваш стандартний колір
-        }
+        //if (Parent is NavigationPage navPage)
+        //{
+        //    navPage.BarBackgroundColor = Colors.Transparent; 
+        //    navPage.BarTextColor = Color.FromArgb("#2196F3");
+        //}
         Config.BarCode -= BacCode;
+        _viewModel.ScrollToItem -= OnScrollToItem;
+    }
+    private void OnScrollToItem(DocWaresEx item)
+    {
+        MainThread.BeginInvokeOnMainThread(() =>
+        {
+            WaresCollection.ScrollTo(item, animate: true);
+        });
     }
 }

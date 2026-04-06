@@ -4,6 +4,7 @@
              xmlns:vm="clr-namespace:BRB6.ViewModel"
              xmlns:models="clr-namespace:BRB5.Model;assembly=BRB5.Model"
              x:DataType="vm:DocItemCheckVM"
+             xmlns:tmpl="clr-namespace:BRB6.Template"
              xmlns:converters="clr-namespace:BRB6.View"
              BackgroundColor="White"
              x:Class="BRB6.View.DocItemCheck">
@@ -77,9 +78,7 @@
                         VerticalOptions="End" />
 
                     <!-- Список товарів -->
-                    <CollectionView
-                        Grid.Row="1"
-                        ItemsSource="{Binding Wares}" SelectionMode="Single">
+                    <CollectionView  Grid.Row="1" x:Name="WaresCollection" ItemsSource="{Binding Wares}" SelectedItem="{Binding SelectedItem}" SelectionMode="Single">
 
                         <CollectionView.ItemTemplate>
                             <DataTemplate x:DataType="models:DocWaresEx">
@@ -88,12 +87,12 @@
                                     <Grid
                                         Padding="5,5"
                                         ColumnDefinitions="32,*,56,64" ColumnSpacing="0"
-                                        BackgroundColor="{Binding IsRecord, Converter={StaticResource BoolToRowColorConverter}}">
+                                        BackgroundColor="{Binding IsInputQuantity, Converter={StaticResource BoolToRowColorConverter}}">
 
                                         <!-- Checkbox -->
                                         <CheckBox
                                             Grid.Column="0"
-                                            IsChecked="{Binding IsRecord}" Color="#7B2FBE"
+                                            IsChecked="{Binding IsInputQuantity}" Color="#7B2FBE"
                                             VerticalOptions="Center" HorizontalOptions="Center" />
 
                                         <!-- Назва -->
@@ -123,11 +122,14 @@
                                             HorizontalOptions="Start" VerticalOptions="Fill" />
 
                                         <!-- Викладка -->
-                                        <Label
-                                            Grid.Column="3"
-                                            Text="{Binding InputQuantity}" FontSize="14"
-                                            TextColor="#1A1A1A" HorizontalOptions="Center"
-                                            VerticalOptions="Center" />
+
+                                        <Grid Grid.Column="3" BackgroundColor="Transparent">
+                                            <Grid.GestureRecognizers>
+                                                <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}},
+                                                    Path=BindingContext.OpenDialogCommand}" CommandParameter="{Binding}" />
+                                            </Grid.GestureRecognizers>
+                                            <Label Text="{Binding Quantity}" FontSize="14" TextColor="#1A1A1A" HorizontalOptions="Center" VerticalOptions="Center" />
+                                        </Grid>
                                     </Grid>
 
                                     <!-- Горизонтальний розмежовувач -->
@@ -137,26 +139,7 @@
                                 </Grid>
                             </DataTemplate>
                         </CollectionView.ItemTemplate>
-
-                        <!-- Стиль сфокусованого елементу -->
-                        <CollectionView.ItemsLayout>
-                            <LinearItemsLayout Orientation="Vertical" ItemSpacing="0" />
-                        </CollectionView.ItemsLayout>
-
-                        <VisualStateManager.VisualStateGroups>
-                            <VisualStateGroup Name="CommonStates">
-                                <VisualState Name="Normal">
-                                    <VisualState.Setters>
-                                        <Setter Property="BackgroundColor" Value="Transparent" />
-                                    </VisualState.Setters>
-                                </VisualState>
-                                <VisualState Name="Selected">
-                                    <VisualState.Setters>
-                                        <Setter Property="BackgroundColor" Value="#EDE7F6" />
-                                    </VisualState.Setters>
-                                </VisualState>
-                            </VisualStateGroup>
-                        </VisualStateManager.VisualStateGroups>
+                      
                     </CollectionView>
 
                     <!-- Індикатор завантаження -->
@@ -185,6 +168,7 @@
                 HeightRequest="56"
                 HorizontalOptions="Fill" />
         </Grid>
-
+        <tmpl:MRDialog Grid.RowSpan="2" DialogTitle="Оновіть кількість для винесення товару" 
+                       BindingContext="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext}" />
     </Grid>
 </ContentPage>
