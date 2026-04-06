@@ -80,7 +80,7 @@
                             <DataTemplate x:DataType="models:DocWaresEx">
                                 <Grid>
                                     <!-- Фон рядка: сірий якщо відмічено, білий якщо ні -->
-                                    <Grid Padding="5,5" ColumnDefinitions="32,*,56,64" ColumnSpacing="0">
+                                    <Grid Padding="5,5" ColumnDefinitions="32,*,56,64" ColumnSpacing="0" BackgroundColor="{Binding RowColor}">
 
                                         <!-- Checkbox -->
                                         <CheckBox

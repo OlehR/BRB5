@@ -44,7 +44,16 @@ namespace BRB6.ViewModel
         public DocWaresEx? SelectedWare
         {
             get => _selectedWare;
-            set => SetProperty(ref _selectedWare, value);
+            set
+            {
+                if (_selectedWare != null)
+                    _selectedWare.IsSelected = false;   // знімаємо підсвітку з попереднього
+
+                SetProperty(ref _selectedWare, value);
+
+                if (_selectedWare != null)
+                    _selectedWare.IsSelected = true;    // вмикаємо на новому
+            }
         }
         private bool _isMrDialogVisible;
         private decimal _mrQuantity;
@@ -92,7 +101,7 @@ namespace BRB6.ViewModel
             if (_selectedWare.InputQuantity > 0) _selectedWare.Quantity = _selectedWare.InputQuantity;
             _selectedWare.OnPropertyChanged("IsInputQuantity");
 
-            _selectedWare = null;
+            SelectedWare = null;
             IsMrDialogVisible = false;
         }
         private void LoadSampleData()

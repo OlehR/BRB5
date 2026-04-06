@@ -47,7 +47,7 @@ namespace BRB5.Model
         //public string InputQuantityStr { private get { return _InputQuantity.ToString(); } set { 
         //        _InputQuantity = Convert.ToDecimal(value); } }
 
-        public bool IsInputQuantity { get { return InputQuantity > 0; } set { if (value) InputQuantity = Quantity; else InputQuantity = 0; } }
+        public bool IsInputQuantity { get { return InputQuantity > 0; } set { if (value) InputQuantity = Quantity; else InputQuantity = 0; OnPropertyChanged(nameof(RowColor)); } }
         public int CodeReason { get; set; }
         public DateTime ExpirationDate { get; set; }
         public DateTime DTInsert { get; set; }
@@ -65,6 +65,19 @@ namespace BRB5.Model
                     default:
                         return "#ffffff";
                 }
+            }
+        }
+
+        private bool _isSelected;
+        public bool IsSelected { get => _isSelected;  set  { _isSelected = value;  OnPropertyChanged(nameof(RowColor));    }
+        }
+        public string RowColor
+        {
+            get
+            {
+                if (_isSelected) return "#EDE7F6";
+                if (IsInputQuantity) return "#00F0F0";
+                return "#FFFFFF";
             }
         }
     }
