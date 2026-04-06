@@ -83,7 +83,6 @@ namespace BRB5.Model
                     };
             }
         }
-        public bool IsInputQuantity { get { return InputQuantity > 0; } set { if (value ) InputQuantity = Quantity; else InputQuantity = 0; } }
 
         /*
         public string GetNameUnit() { return NameUnit + "X"; }

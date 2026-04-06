@@ -141,9 +141,7 @@
 
             </VerticalStackLayout>
         </VerticalStackLayout>
-            <templates:MRDialog x:Name="MRDialogView"
-                               BindingContext="{Binding}"
-                               ZIndex="10" />
+            <templates:MRDialog x:Name="MRDialogView" BindingContext="{Binding}"  ZIndex="10" DialogTitle="Вкажіть актуальну кількість товару" />
         </Grid>
     </ContentPage.Content>
 </controls:BaseContentPage>

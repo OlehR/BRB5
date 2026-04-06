@@ -43,9 +43,11 @@ namespace BRB5.Model
         //public string QuantityOldStr { set { _QuantityOld = Convert.ToDecimal(value); } }
 
         private decimal _InputQuantity;       
-        public decimal InputQuantity { get { return _InputQuantity; } set { _InputQuantity = value; OnPropertyChanged("InputQuantity"); OnPropertyChanged(nameof(Scaned)); OnPropertyChanged(nameof(GetBackgroundColorDocWares)); } }
+        public decimal InputQuantity { get { return _InputQuantity; } set { _InputQuantity = value; OnPropertyChanged(nameof(InputQuantity)); /*OnPropertyChanged(nameof(IsInputQuantity));*/ OnPropertyChanged(nameof(Scaned)); OnPropertyChanged(nameof(GetBackgroundColorDocWares)); } }
         //public string InputQuantityStr { private get { return _InputQuantity.ToString(); } set { 
         //        _InputQuantity = Convert.ToDecimal(value); } }
+
+        public bool IsInputQuantity { get { return InputQuantity > 0; } set { if (value) InputQuantity = Quantity; else InputQuantity = 0; OnPropertyChanged(nameof(RowColor)); } }
         public int CodeReason { get; set; }
         public DateTime ExpirationDate { get; set; }
         public DateTime DTInsert { get; set; }
@@ -63,6 +65,19 @@ namespace BRB5.Model
                     default:
                         return "#ffffff";
                 }
+            }
+        }
+
+        private bool _isSelected;
+        public bool IsSelected { get => _isSelected;  set  { _isSelected = value;  OnPropertyChanged(nameof(RowColor));    }
+        }
+        public string RowColor
+        {
+            get
+            {
+                if (_isSelected) return "#EDE7F6";
+                if (IsInputQuantity) return "#00F0F0";
+                return "#FFFFFF";
             }
         }
     }
