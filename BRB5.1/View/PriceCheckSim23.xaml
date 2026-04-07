@@ -112,34 +112,29 @@
                     </Grid>
                 </VerticalStackLayout>
 
-                <Grid ColumnDefinitions="2*,*,2*,3*,2*,2*" HeightRequest="52" ColumnSpacing="0" Margin="0">
+                    <Grid ColumnDefinitions="*,*" HeightRequest="52" ColumnSpacing="6" Margin="0">
+                        <Border Grid.Column="0" StrokeShape="RoundRectangle 12" Stroke="#E0E0E0" BackgroundColor="White" Padding="0" HeightRequest="52">
+                            <Grid ColumnDefinitions="2*,3*,2*" ColumnSpacing="0" VerticalOptions="Fill" HorizontalOptions="Fill">
 
-                    <Button Grid.Column="0" FontSize="30"  FontAttributes="Bold" Text="C" TextColor="White" BackgroundColor="#7B2CBF" 
-                            Command="{Binding ClearCommand}" Padding="0" Margin="2" CornerRadius="15" />
+                                <Button Grid.Column="0" Text="—" FontSize="40"  TextColor="#7B2CBF" BackgroundColor="Transparent" Margin="0,-4,0,0"
+                                        Command="{Binding ModifyValueCommand}" CommandParameter="-1" Padding="0" HorizontalOptions="Fill" VerticalOptions="Center" />
 
-                    <Button Grid.Column="2" FontSize="40" FontAttributes="Bold" Text="—" TextColor="#7B2CBF" BackgroundColor="White" 
-                            Margin="2"  Padding="0" Command="{Binding ModifyValueCommand}" CommandParameter="-1" CornerRadius="15" />
+                                <controls:CustomEntry Margin="0" Grid.Column="1" Text="{Binding NumberOfReplenishment, Mode=TwoWay}" Keyboard="Numeric"
+                                                      HorizontalOptions="Center" VerticalOptions="Center" FontSize="28" FontAttributes="Bold"  />
 
-                    <Border Grid.Column="3" StrokeShape="RoundRectangle 12" Stroke="#E0E0E0" BackgroundColor="White" >
-                        <controls:CustomEntry Text="{Binding NumberOfReplenishment, Mode=TwoWay}" Keyboard="Numeric"  
-                                              HorizontalOptions="Center" VerticalOptions="Center" FontSize="28" FontAttributes="Bold" >
-                            <controls:CustomEntry.Behaviors>
-                                <toolkit:EventToCommandBehavior EventName="Unfocused" Command="{Binding UpdateReplenishmentCommand}" />
-                                <toolkit:EventToCommandBehavior EventName="Completed" Command="{Binding UpdateReplenishmentCommand}" />
-                            </controls:CustomEntry.Behaviors>
-                        </controls:CustomEntry>
-                    </Border>
+                                <Button Grid.Column="2" Text="+" FontSize="40" TextColor="#7B2CBF" BackgroundColor="Transparent" 
+                                        Command="{Binding ModifyValueCommand}" CommandParameter="1" Padding="0" HorizontalOptions="Fill" Margin="0,-4,0,0"
+                                        VerticalOptions="Center" />
 
-                    <Button Grid.Column="4" FontSize="40" FontAttributes="Bold" Text="+" TextColor="#7B2CBF" BackgroundColor="White" 
-                            HorizontalOptions="Center" VerticalOptions="Center" 
-                            Margin="2" Padding="0" Command="{Binding ModifyValueCommand}" CommandParameter="1" CornerRadius="15" />
+                            </Grid>
+                        </Border>
 
-                    <Button Grid.Column="5" FontSize="30" FontAttributes="Bold" Text="{Binding QuantityToAddText}" Margin="2" Padding="0" 
-                            TextColor="#7B2CBF" BackgroundColor="White" BorderWidth="1" BorderColor="#E0E0E0"
-                            Command="{Binding ModifyValueCommand}" CommandParameter="{Binding QuantityToAdd}"   CornerRadius="15" />
-                </Grid>
+                        <Button Grid.Column="1" Text="Додати в ЛП" FontSize="18" FontAttributes="Bold" Margin="2" HeightRequest="52" VerticalOptions="Fill" 
+                                TextColor="White" BackgroundColor="#7B2CBF" CornerRadius="12" Command="{Binding UpdateReplenishmentCommand}" />
 
-            </VerticalStackLayout>
+                    </Grid>
+
+                </VerticalStackLayout>
         </VerticalStackLayout>
             <templates:MRDialog x:Name="MRDialogView" BindingContext="{Binding}"  ZIndex="10" DialogTitle="Вкажіть актуальну кількість товару" />
         </Grid>

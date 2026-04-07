@@ -189,10 +189,16 @@ namespace BRB6.ViewModel
         public ICommand ShowAllBarCodesCommand => new Command(() => IsBarCodesDropdownVisible = true);
         public ICommand CloseBarCodesCommand => new Command(() => IsBarCodesDropdownVisible = false);
         public string QuantityToAddText => $"+{QuantityToAdd}";
-
-        public PriceCheckVM(TypeDoc pTypeDoc, ForMVVM pForMVVM)
+        private bool _autoSave;
+        public bool IsAutoSave
+        {
+            get => _autoSave;
+            set => SetProperty(ref _autoSave, value);
+        }
+        public PriceCheckVM(TypeDoc pTypeDoc, ForMVVM pForMVVM, bool autoSave = true)
         {
             ForMVVM = pForMVVM;
+            IsAutoSave = autoSave;
             bl.ClearWPH();
             var r = db.GetCountScanCode();
             IsVisDoubleScan = pTypeDoc.CodeDoc == 15;
@@ -382,7 +388,8 @@ namespace BRB6.ViewModel
                 {
                     NumberOfReplenishment = delta > 0 ? delta.ToString() : "0";
                 }
-                OnUpdateReplenishment();
+                if (IsAutoSave)
+                    OnUpdateReplenishment();
             }
         }
     }

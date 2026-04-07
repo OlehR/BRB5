@@ -26,7 +26,7 @@ namespace BRB6
             InitializeComponent();
             NokeyBoard();
             NavigationPage.SetHasNavigationBar(this, DeviceInfo.Platform == DevicePlatform.iOS);
-            VM = new PriceCheckVM(pTypeDoc,this);
+            VM = new PriceCheckVM(pTypeDoc,this,false);
             this.BindingContext = VM;
      
         this.Unloaded += UnloadedEvent;
