@@ -8,6 +8,11 @@
                           xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"                          
                           xmlns:ffimageloading="clr-namespace:FFImageLoading.Maui;assembly=FFImageLoading.Maui"
                           x:Class="BRB6.PriceCheckSim23">
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <controls:TextLengthToFontSizeConverter x:Key="LengthToFontConv" />
+        </ResourceDictionary>
+    </ContentPage.Resources>
     <ContentPage.Content>
         <Grid>
         <VerticalStackLayout>
@@ -61,14 +66,15 @@
                 <Grid ColumnDefinitions="80, *" ColumnSpacing="15">
                     <ffimageloading:CachedImage x:Name="WareImage" Grid.Column="0" ErrorPlaceholder="photo.png" Source="{Binding UriPicture}" 
                                                 WidthRequest="80" MaximumHeightRequest="100" Aspect="AspectFit" VerticalOptions="Start" />
-                    <Label Grid.Column="1" Text="{Binding WP.Name}" FontSize="22" FontAttributes="Bold" LineBreakMode="TailTruncation" MaxLines="4" VerticalOptions="Center" />
+                    <Label Grid.Column="1" Text="{Binding WP.Name}" FontAttributes="Bold" LineBreakMode="TailTruncation" LineHeight="1.1"
+                           FontSize="{Binding WP.Name, Converter={StaticResource LengthToFontConv}}" MaxLines="3" VerticalOptions="Center" />
                 </Grid>
 
                 <Frame BackgroundColor="{Binding BackgroundColorPrice}" CornerRadius="20" HasShadow="False" Padding="10,5" BorderColor="#E0E0E0">
-                    <Grid ColumnDefinitions="*, Auto" RowDefinitions="Auto, Auto">
+                    <Grid ColumnDefinitions="*, Auto" RowSpacing="0" RowDefinitions="Auto, Auto">
 
-                        <Label Grid.Row="0" Grid.Column="0" Text="Ціна:" FontSize="16" TextColor="Gray" />
-                        <Label Grid.Row="1" Grid.Column="0" Text="{Binding WP.Price}" FontSize="48" 
+                        <Label Grid.Row="0" Grid.Column="0" Text="Ціна:" FontSize="16" TextColor="Gray" VerticalOptions="End"/>
+                            <Label Grid.Row="1" Grid.Column="0" Text="{Binding WP.Price}" FontSize="44" Margin="0, -10, 0, -5" 
                                FontAttributes="Bold" TextColor="{Binding TextColorPrice}" VerticalOptions="Start" />
 
                         <VerticalStackLayout IsVisible="{Binding IsVisPromotion}" Grid.Row="0" Grid.Column="1" Grid.RowSpan="2" Spacing="5" VerticalOptions="Center" HorizontalOptions="End">
