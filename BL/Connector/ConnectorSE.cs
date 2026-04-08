@@ -1064,7 +1064,7 @@ public string Info { get; set; }
     {
         public int Code { get; set; }
         public string Name { get; set; }
-        public decimal Price { get; set; }
+        public string Price { get; set; }
         public string[] BarCodes { get; set; }
         public string Unit { get; set; }
         public string Article { get; set; }   
@@ -1090,7 +1090,7 @@ public string Info { get; set; }
         /// Термін придатності в днях
         /// </summary>
         public int ExpirationDay { get; set; }
-        public WaresPrice GetWaresPrice=>  new() { CodeWares = Code, Name = Name, Price = Price, BarCodes = BarCodes?.Any() != true ? "" : string.Join(',', BarCodes), Unit = Unit, Article = Article, ActionType = ActionType, PriceOpt = PromotionPrice,Rest=Rest , Shelves = Shelves, PromotionName= PromotionName, PromotionEnd= PromotionEnd, ExpirationDay= ExpirationDay };
+        public WaresPrice GetWaresPrice=>  new() { CodeWares = Code, Name = Name, Price = Price.ToDecimal(), BarCodes = BarCodes?.Any() != true ? "" : string.Join(',', BarCodes), Unit = Unit, Article = Article, ActionType = ActionType, PriceOpt = PromotionPrice,Rest=Rest , Shelves = Shelves, PromotionName= PromotionName, PromotionEnd= PromotionEnd, ExpirationDay= ExpirationDay };
       }
     class InputWarehouse
     {
