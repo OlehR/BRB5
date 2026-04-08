@@ -16,7 +16,8 @@ namespace BRB6.ViewModel
 {
     interface ForMVVM {
         void Focused(string pName);
-        void DisplayAlert(string title, string message, string cancel);
+        void DisplayAlert(string title, string message, string cancel); 
+        void ShowToast(string message, bool isLong = false);
     }
     internal class PriceCheckVM : ObservableObject, IDisposable
     {
@@ -349,6 +350,7 @@ namespace BRB6.ViewModel
                 var xx = db.GetDocWaresSample(DWId);
                 decimal r = (xx?.Quantity ?? 0) + d;
                 db.ReplaceDocWaresSample([new(DWId) { Quantity = r, QuantityMax=WP.Rest }]);
+                ForMVVM.ShowToast("Додано");
             }
         }
 

@@ -6,6 +6,9 @@ using BarcodeScanning;
 using CommunityToolkit.Maui.Core.Platform;
 using UtilNetwork;
 using BRB6.ViewModel;
+using CommunityToolkit.Maui.Core;
+using CommunityToolkit.Maui.Alerts;
+
 
 #if ANDROID
 using Android.Views;
@@ -111,7 +114,17 @@ namespace BRB6
         {
             Dispatcher.Dispatch(() => DisplayAlert(title, message, cancel));
         }
+        public void ShowToast(string message, bool isLong = false)
+        {
+            MainThread.BeginInvokeOnMainThread(async () =>
+            {
+                var duration = isLong ? ToastDuration.Long : ToastDuration.Short;
+                var fontSize = 14;
 
+                var toast = Toast.Make(message, duration, fontSize);
+                await toast.Show();
+            });
+        }
         private void BarCodeFocused(object sender, FocusEventArgs e)
         {
             Dispatcher.Dispatch(() =>

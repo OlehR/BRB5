@@ -5,6 +5,9 @@ using BRB6.ViewModel;
 using BL;
 using CommunityToolkit.Maui.Core.Platform;
 using UtilNetwork;
+using CommunityToolkit.Maui.Alerts;
+using CommunityToolkit.Maui.Core;
+
 
 #if ANDROID
 using Android.Views;
@@ -38,7 +41,19 @@ namespace BRB6.View
 
         public void DisplayAlert(string title, string message, string cancel)
             => _ = base.DisplayAlert(title, message, cancel);
-               
+        public void ShowToast(string message, bool isLong = false)
+        {
+            // Toast має виконуватися в UI-потоці
+            MainThread.BeginInvokeOnMainThread(async () =>
+            {
+                var duration = isLong ? ToastDuration.Long : ToastDuration.Short;
+                var fontSize = 14;
+
+                var toast = Toast.Make(message, duration, fontSize);
+                await toast.Show();
+            });
+        }
+
         // ── Lifecycle ──────────────────────────────────────────────────────────
         CameraView BarcodeScaner;
 

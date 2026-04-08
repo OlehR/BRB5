@@ -1,6 +1,8 @@
 using BRB5;
-using BRB6.ViewModel;
 using BRB5.Model;
+using BRB6.ViewModel;
+using CommunityToolkit.Maui.Core;
+using CommunityToolkit.Maui.Alerts;
 
 namespace BRB6.View;
 
@@ -54,5 +56,17 @@ public partial class DocItemCheck : ForMVVM
     void ForMVVM.DisplayAlert(string title, string message, string cancel)
     {
         Dispatcher.Dispatch(() => DisplayAlert(title, message, cancel));
+    }
+    public void ShowToast(string message, bool isLong = false)
+    {
+        // Toast має виконуватися в UI-потоці
+        MainThread.BeginInvokeOnMainThread(async () =>
+        {
+            var duration = isLong ? ToastDuration.Long : ToastDuration.Short;
+            var fontSize = 14;
+
+            var toast = Toast.Make(message, duration, fontSize);
+            await toast.Show();
+        });
     }
 }
