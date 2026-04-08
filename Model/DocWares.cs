@@ -16,6 +16,12 @@ namespace BRB5.Model
             CodeWares = pDW.CodeWares;
             Quantity = pDW.Quantity;
         }
+
+        public DocWaresId(DocId pDocId,long pCodeWares=0) : base(pDocId)
+        {
+            CodeWares = pCodeWares;
+        }
+
         /// <summary>
         /// порядок по порядку в документі
         /// </summary>
@@ -38,6 +44,9 @@ namespace BRB5.Model
             QuantityOld = pDW.QuantityOld;
             CodeReason = pDW.CodeReason;
                 }
+        public DocWares(DocWaresId pDW) : base(pDW)
+        {
+        }
         private decimal _QuantityOld;
         public decimal QuantityOld { get { return _QuantityOld; } set { _QuantityOld = value; OnPropertyChanged(nameof(QuantityOld)); } }
         //public string QuantityOldStr { set { _QuantityOld = Convert.ToDecimal(value); } }
@@ -76,7 +85,7 @@ namespace BRB5.Model
             get
             {
                 if (_isSelected) return "#EDE7F6";
-                if (IsInputQuantity) return "#00F0F0";
+                if (IsInputQuantity) return "#F0F0F0";
                 return "#FFFFFF";
             }
         }

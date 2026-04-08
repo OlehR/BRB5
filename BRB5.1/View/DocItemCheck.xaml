@@ -104,7 +104,7 @@
                                         <!-- Облік -->
                                         <Label
                                             Grid.Column="2"
-                                            Text="{Binding Quantity}" FontSize="14"
+                                            Text="{Binding QuantityMax}" FontSize="14"
                                             TextColor="#1A1A1A" HorizontalOptions="Center"
                                             VerticalOptions="Center" />
 

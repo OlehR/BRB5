@@ -217,7 +217,7 @@ namespace BRB6.View
                     .Select(view => view.BindingContext as ExpirationDateElementVM)
                     .FirstOrDefault(ware => ware != null && ware.CodeWares == pEDE.CodeWares && pEDE?.DocId.Equals(ware?.DocId)==true);
 
-                if (existingItem == null)
+                if (existingItem == null && pEDE.QuantityInput>0)
                 {
                     Insert(pEDE);
                     //WareItemsContainer.Children.Add(CreateWareItemTemplate(pEDE));
@@ -285,7 +285,7 @@ namespace BRB6.View
             TotalStackLayout.IsVisible = true;
             
 
-            (AlternateContent.Content as ExpirationDateElementTemplate).Set(selectedWare, NumberDoc);
+            (AlternateContent.Content as ExpirationDateElementTemplate).Set(selectedWare, NumberDoc,All);
         }
 #if ANDROID
         public void OnPageKeyDown(Keycode keyCode, KeyEvent e)

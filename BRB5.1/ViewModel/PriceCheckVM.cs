@@ -339,19 +339,16 @@ namespace BRB6.ViewModel
         {
             if (WP != null)
             {
-                decimal d;
-                if (decimal.TryParse(NumberOfReplenishment, out d))
+                if (decimal.TryParse(NumberOfReplenishment, out decimal d))
                     db.UpdateReplenishment(LineNumber, d);
 
-
                 int TypeDoc = Config.TypeDoc.Where(el => el.KindDoc == eKindDoc.DocCheck).FirstOrDefault()?.CodeDoc ?? 0;
-
                 var DWId = new DocWaresId() { CodeWares = WP.CodeWares, NumberDoc = DateTime.Now.ToString("yyyyMMdd"), TypeDoc = TypeDoc };
 
                 db.ReplaceDoc([new(DWId)]);
                 var xx = db.GetDocWaresSample(DWId);
-                decimal r = xx?.Quantity ?? 0 + MrQuantity;
-                db.ReplaceDocWaresSample([new(DWId) { Quantity = r }]);
+                decimal r = (xx?.Quantity ?? 0) + d;
+                db.ReplaceDocWaresSample([new(DWId) { Quantity = r, QuantityMax=WP.Rest }]);
             }
         }
 

@@ -284,7 +284,6 @@ namespace BL.Connector
         {
             if (pLogPrice == null)
                 return new Result();
-            StringBuilder sb = new StringBuilder();
             var Data = pLogPrice.Select(el => new LogPriceSE(el)); //Where(el => el.IsGoodBarCode).
             HttpResult res = GetDataHTTP.HTTPRequest(1, "pricetag", Data.ToJSON(), "application/json", Config.Login, Config.Password);
             return new Result(res);
@@ -558,7 +557,7 @@ public string Info { get; set; }
             Result Res = null;
             try
             {
-                if (pDoc.TypeDoc.In(1,2,3,5))
+                if (pDoc.TypeDoc.In(1,2,3,5,6))
                 {
                     var d = (new[] { new OutputDoc(pDoc,pWares) }).ToJson();
                     FileLogger.WriteLogMessage(this, "SaveDocAsync documentin=>", d);                    

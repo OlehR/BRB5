@@ -11,11 +11,11 @@ namespace BRB5.Model
         /// <summary>
         /// не використовується
         /// </summary>
-        public double QuantityMin { get; set; }
+        public decimal QuantityMin { get; set; }
         /// <summary>
         /// Максимальна кількість товару в документі, контролюється якщо IsControl=1
         /// </summary>
-        public double QuantityMax { get; set; }
+        public decimal QuantityMax { get; set; }
         /// <summary>
         /// Назва ОЗ(Основного Засобу)
         /// </summary>

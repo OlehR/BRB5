@@ -1,7 +1,5 @@
 ﻿using BRB5.Model;
 using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Linq;
 using BRB5;
 using BL.Connector;
@@ -36,13 +34,10 @@ namespace BL
                     try
                     {
                         db.AfterSendData();
-                        //int[] varRes = db.GetCountScanCode();
-                        //LI.AllScan = varRes[0];
-                        //LI.BadScan = varRes[1];
                     }
                     catch (Exception e)
                     {
-                        //Utils.WriteLog("e", TAG, "SendLogPricePSU  >>", e);
+                        FileLogger.WriteLogMessage(this, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
                         break;
                     }
                 }
@@ -151,27 +146,24 @@ namespace BL
             { //Якщо ревізія а товар не знайдено
 
                 DocWaresSample DWS = new DocWaresSample() { TypeDoc = pTypeDoc, NumberDoc = pNumberDoc, OrderDoc = 100000 + (int)PBarcode.CodeWares,
-                    Quantity = 1m, QuantityMax = 1d, Name = pBarCode };
+                    Quantity = 1m, QuantityMax = 1m, Name = pBarCode };
                 
-                db.ReplaceDocWaresSample(new DocWaresSample[] { DWS});
-                res = new DocWaresEx();//(DWS);
-                res.Coefficient = 1;
-                res.CodeUnit = Config.GetCodeUnitPiece;
-                res.BaseCodeUnit = res.CodeUnit;
-                res.NameUnit = "Шт";
+                db.ReplaceDocWaresSample([ DWS]);
+                res = new()
+                {
+                    Coefficient = 1,
+                    CodeUnit = Config.GetCodeUnitPiece,
+                    BaseCodeUnit = Config.GetCodeUnitPiece,
+                    NameUnit = "Шт"
+                };
             }
-
-           // Utils.WriteLog("i", TAG, "SaveDocWares=>" + String.valueOf(pTypeDoc) + "," + pNumberDoc + "," + gson.toJson(PBarcode) +
-            //        ",\nres=>" + outLog);
             return res;
         }
 
         public  Warehouse GetWarehouse(int pCodeWarehouse)
         {
-            var Warehouses = db.GetWarehouse();
-             
+            var Warehouses = db.GetWarehouse();             
              if (Warehouses == null) return null;
-
              foreach (var el in Warehouses)
                  if (el.CodeWarehouse == pCodeWarehouse)
                      return el;
@@ -181,11 +173,8 @@ namespace BL
         public Warehouse GetWarehouseByNumber(string pNumberWarehouse)
         {
             var Warehouses = db.GetWarehouse();
-
             if (Warehouses == null) return null;
-
             var res = Warehouses.FirstOrDefault(w => w.Number?.Equals( pNumberWarehouse)==true);
-
             return res;
         }
     }

@@ -69,7 +69,7 @@ namespace BRB6.ViewModel
             get => _mrQuantity;
             set => SetProperty(ref _mrQuantity, value);
         }
-
+        DocId DId => new DocId() { NumberDoc = DateTime.Now.ToString("yyyyMMdd"), TypeDoc = 6 };
         public ICommand OpenDialogCommand { get; }
         public ICommand IncrementCommand { get; }
         public ICommand DecrementCommand { get; }
@@ -100,17 +100,18 @@ namespace BRB6.ViewModel
 
             if (_selectedWare.InputQuantity > 0) _selectedWare.Quantity = _selectedWare.InputQuantity;
             _selectedWare.OnPropertyChanged("IsInputQuantity");
-
+            db.ReplaceDocWares(new DocWares(new DocWaresId(DId, _selectedWare.CodeWares)) { Quantity= _selectedWare .Quantity},true);
             SelectedWare = null;
             IsMrDialogVisible = false;
         }
         private void LoadSampleData()
         {
-            var DId = new DocId() { NumberDoc = DateTime.Now.ToString("yyyyMMdd"), TypeDoc = 6 };
+            
             var xx = db.GetDocWares(DId, eTypeResult.All, eTypeOrder.Scan);
-            Wares = new ObservableCollection<DocWaresEx>(xx);
+            foreach (var el in xx)
+                el.Quantity = el.InputQuantity > 0? el.InputQuantity:el.QuantityOrder;
 
-            //Wares = new ObservableCollection<DocWaresEx>( Enumerable.Repeat(xx, 3).SelectMany(x => x));            
+            Wares = new ObservableCollection<DocWaresEx>(xx);
         }
 
         public void BarCode(string pBarCode)
@@ -143,10 +144,7 @@ namespace BRB6.ViewModel
             try
             {
                 IsLoading = true;
-                // TODO: замінити на реальний API-виклик
-                await Task.Delay(1500); // симуляція завантаження
-                                        // наприклад: var items = await _apiService.GetDisplayItemsAsync();
-                                        // Products = new ObservableCollection<ProductDisplayItem>(items);
+                await c.SendDocsDataAsync(new() { TypeDoc = 6, NumberDoc = DateTime.Now.ToString("yyyyMMdd") } ,Wares);
             }
             finally
             {

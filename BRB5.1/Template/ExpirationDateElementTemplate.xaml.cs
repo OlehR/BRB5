@@ -14,6 +14,7 @@ public partial class ExpirationDateElementTemplate : ContentView
     public ExpirationDateElementVM DM { get; set; } = new();
     private ExpirationDateElementVM _DM;
     IEnumerable<ExpirationDateElementVM> ListED { get; set; }
+    IEnumerable<ExpirationDateElementVM> All { get; set; }
     public bool IsManual { get; set; }
 
     public ExpirationDateElementTemplate()
@@ -31,10 +32,11 @@ public partial class ExpirationDateElementTemplate : ContentView
         this.BindingContext = this;
     }
 
-    public void Set(ExpirationDateElementVM pED, string pNumberDoc )
+    public void Set(ExpirationDateElementVM pED, string pNumberDoc, IEnumerable<ExpirationDateElementVM> pAll)
     {
      NumberDoc=pNumberDoc;
         _DM = pED;
+        All = pAll;
         ListED = db.GetDataExpiration(NumberDoc, pED.CodeWares)?.Where(el => el.DocId != pED.DocId);
         DM = (ExpirationDateElementVM)pED.Clone();
         DM.QuantityInput = DM.QuantityInput ?? DM.Quantity;
@@ -82,22 +84,29 @@ public partial class ExpirationDateElementTemplate : ContentView
 
     private void OnAdd(object sender, EventArgs e)
     {
-        bool IsSave = false;
+        bool IsSave = true;
         if (String.IsNullOrEmpty(DM.NumberDoc)) DM.NumberDoc = NumberDoc;
         if (!String.IsNullOrEmpty(DM.DocId) && !String.IsNullOrEmpty(DM.NumberDoc))
         {
             if (DM.DocId.StartsWith("zz"))
             {
-                var r = db.GetDataExpiration(NumberDoc, DM.CodeWares);
-                var R = r?.FirstOrDefault(x => x.ExpirationDate == DM.ExpirationDateInput);
+                ExpirationDateElementVM R = All.FirstOrDefault(x => x.ExpirationDateInput == DM.ExpirationDateInput);
                 if (R != null)
                 {
-                    R.QuantityInput = DM.QuantityInput ?? 0;
-                    db.ReplaceDocWaresExpiration(R.GetDocWaresExpiration());
-                    IsSave = true;
+                    R.QuantityInput = DM.QuantityInput;
+                    DM = R;
+                }
+                else
+                {
+                    var r = db.GetDataExpiration(NumberDoc, DM.CodeWares);
+                    R = r?.FirstOrDefault(x => x.ExpirationDateInput == DM.ExpirationDateInput);
+                    if (R != null)
+                        DM.DocId = R.DocId;
+                    else
+                        IsSave = DM.QuantityInput > 0;
                 }
             }
-            if (!IsSave)
+            if (IsSave)
                 db.ReplaceDocWaresExpiration(DM.GetDocWaresExpiration());
             if (_DM.DocId?.Equals(DM.DocId) == true)
             {
@@ -111,11 +120,13 @@ public partial class ExpirationDateElementTemplate : ContentView
     private void OnNotFound(object sender, EventArgs e)
     {
         DM.QuantityInput = 0;
+        OnAdd(null, null);
+        /*
         db.ReplaceDocWaresExpiration(DM.GetDocWaresExpiration());
 
         _DM.ExpirationDateInput = DM.ExpirationDateInput;
         _DM.QuantityInput = DM.QuantityInput;
-        RequestReturnToMainContent?.Invoke(_DM);
+        RequestReturnToMainContent?.Invoke(_DM);*/
     }
 
     private void OnAddNewItem(object sender, EventArgs e)

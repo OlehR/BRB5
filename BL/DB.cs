@@ -274,7 +274,7 @@ CREATE TABLE SKU (
     CodeUnit           INTEGER  NOT NULL);
 CREATE UNIQUE INDEX SKUId ON SKU (CodeSKU);
 ";
-        readonly int Ver = 17;
+        readonly int Ver = 18;
         string SqlTo6 = @"alter TABLE Reason add  Level INTEGER  DEFAULT (0);
 drop index ReasonId;
 CREATE UNIQUE INDEX ReasonId ON Reason (Level,CodeReason);";
@@ -1198,9 +1198,9 @@ order by gw.NameGroup";
                                 left join DocWaresExpiration DE on DES.CodeWares=DE.CodeWares and DE.DocId=DES.DocId and DATE(DE.DateDoc) = DATE('now')                             
                                 where {(pCodeWares>0?$"w.CodeWares={pCodeWares}" : "DES.IsHide=0 and w.CodeGroup = ? ")}                              
                         union all 
-        select DES.OrderDoc, DES.NumberDoc,DES.DocId, w.CodeWares,w.NameWares as NameWares, au.Coefficient as Coefficient,w.CodeUnit as CodeUnit, ud.ABRUNIT as NameUnit,
+        select DES.OrderDoc, DE.NumberDoc,DE.DocId, w.CodeWares,w.NameWares as NameWares, au.Coefficient as Coefficient,w.CodeUnit as CodeUnit, ud.ABRUNIT as NameUnit,
                             ( select group_concat(bc.BarCode,',') from BarCode bc where bc.CodeWares=w.CodeWares ) as BARCODE  ,w.CodeUnit as BaseCodeUnit,
-                            des.Quantity,des.Expiration,des.ExpirationDate,w.DaysLeft,
+                            0 as Quantity,w.Expiration,des.ExpirationDate,w.DaysLeft,
 DE.ExpirationDateInput, DE.QuantityInput
                                 from WARES w 
                                 join ADDITIONUNIT au on w.CODEWARES=au.CODEWARES and au.CODEUNIT=w.CODEUNIT 
