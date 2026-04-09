@@ -1,6 +1,43 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
-	<application android:label="BRB6" android:allowBackup="true" android:icon="@mipmap/appicon" android:roundIcon="@mipmap/appicon_round" android:supportsRtl="true">
+	<application android:label="BRB6" android:allowBackup="true" android:icon="@mipmap/icon_default" android:roundIcon="@mipmap/icon_default_round" android:supportsRtl="true">
+
+	<activity
+        android:name="ua.UniCS.TM.BRB6.MainActivity"
+        android:exported="true"
+		android:theme="@style/Maui.SplashTheme"
+        android:configChanges="orientation|screenSize|smallestScreenSize|screenLayout|uiMode" />
+
+		<activity-alias
+			android:name=".MainActivityDefault"
+			android:enabled="true"
+			android:exported="true"
+			android:icon="@mipmap/icon_default"
+			android:roundIcon="@mipmap/icon_default_round"
+			android:label="BRB6"
+			android:theme="@style/Maui.SplashTheme"
+			android:targetActivity="ua.UniCS.TM.BRB6.MainActivity">
+			<intent-filter>
+				<action android:name="android.intent.action.MAIN" />
+				<category android:name="android.intent.category.LAUNCHER" />
+			</intent-filter>
+		</activity-alias>
+
+		<activity-alias
+			android:name=".MainActivitySpar"
+			android:enabled="false"
+			android:exported="true"
+			android:icon="@mipmap/icon_spar"
+			android:roundIcon="@mipmap/icon_spar_round"
+			android:label="BRB6"
+			android:theme="@style/Maui.SplashTheme"
+			android:targetActivity="ua.UniCS.TM.BRB6.MainActivity">
+			<intent-filter>
+				<action android:name="android.intent.action.MAIN" />
+				<category android:name="android.intent.category.LAUNCHER" />
+			</intent-filter>
+		</activity-alias>
+		
     <receiver android:enabled="true" android:name="crc64e34d2be477e2069f.MyBroadcastReceiver" android:exported="true">
       <intent-filter>
         <action android:name="device.scanner.EVENT" />
