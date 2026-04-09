@@ -41,7 +41,7 @@ public partial class CreateDoc : ContentPage
             if (value != null)
             {
                 foreach (var qw in QuickAccessWarehouses)
-                    qw.IsChecked = (qw.TypeWarehouse == value.TypeWarehouse);
+                    qw.IsChecked = (qw.TypeWarehouse == value.TypeWarehouse);                
             }
             OnPropertyChanged(nameof(SelectedWarehouse));
             FilteredReason();
@@ -65,66 +65,51 @@ public partial class CreateDoc : ContentPage
         _initialCode = Config.CodeWarehouse;
 
         // 2. Команда з логікою віджаття та очищення фільтра
-        SelectQuickWarehouseCommand = new Command<Warehouse>((clickedBtn) =>
-        {
-            WarehouseFilterEntry.Text = "";
-
-            WarehouseFilterEntry.Unfocus();
-            if (clickedBtn.IsChecked)
-            {
-                FilteredWarehousePicker = new(ListWarehouse);
-            }
-            else
-            { 
-            FilteredWarehousePicker.Clear();
-            var Wh = ListWarehouse.Where(r => r.TypeWarehouse == clickedBtn.TypeWarehouse);
-            foreach (var r in Wh)
-                FilteredWarehousePicker.Add(r);
-
-            SelectedWarehouse = FilteredWarehousePicker.FirstOrDefault(); //FilteredWarehousePicker.Count() > 1?null: FilteredWarehousePicker.FirstOrDefault();
-            }
-            /*if (SelectedWarehouse != null && SelectedWarehouse.Code == clickedBtn.Code)
-            {
-                WarehouseFilterEntry.Text = string.Empty;
-                ApplyPickerFilter(null);
-                SelectedWarehouse = ListWarehouse.FirstOrDefault(x => x.Code == _initialCode);
-            }
-            else
-            {
-                // ЗВИЧАЙНЕ НАТИСКАННЯ (вибір іншого складу)
-                var target = ListWarehouse.FirstOrDefault(x => x.Code == clickedBtn.Code);
-                if (target != null)
-                {
-                    WarehouseFilterEntry.Text = string.Empty;
-                    ApplyPickerFilter(null);
-
-                    SelectedWarehouse = target;
-                }
-            }*/
-        });
-        if (pTD.IsViewReasonHead )
-            FilteredReasonPicker = new();
+        SelectQuickWarehouseCommand = new Command<Warehouse>((clickedBtn) => Select(clickedBtn));
+        
+        //if (pTD.IsViewReasonHead )
+        //    FilteredReasonPicker = new();
 
         this.BindingContext = this;
 
         // Первинне заповнення
         //foreach (var w in ListWarehouse)
         //    FilteredWarehousePicker.Add(w);
-       
 
-        InitData();
+       InitData();
     }
 
+    void Select(Warehouse clickedBtn)
+    {
+        MainThread.BeginInvokeOnMainThread(() =>
+        {
+            WarehouseFilterEntry.Text = "";
+            WarehouseFilterEntry.Unfocus();
+            if (clickedBtn.IsChecked)
+            {
+              //  FilteredWarehousePicker = new(ListWarehouse);
+            }
+            else
+            {
+                FilteredWarehousePicker.Clear();
+                var Wh = ListWarehouse.Where(r => r.TypeWarehouse == clickedBtn.TypeWarehouse);
+                foreach (var r in Wh)
+                    FilteredWarehousePicker.Add(r);
+
+                SelectedWarehouse = FilteredWarehousePicker.FirstOrDefault(); //FilteredWarehousePicker.Count() > 1?null: FilteredWarehousePicker.FirstOrDefault();
+            }
+        });
+    }
+ 
     private void InitData()
     {
-        SelectedWarehouse = ListWarehouse.FirstOrDefault(x => x.Code == _initialCode);
+        //SelectedWarehouse = ListWarehouse.FirstOrDefault(x => x.Code == _initialCode);
 
-        var subs = db.GetWarehouseCreateDoc(_initialCode);
+        var subs = db.GetWarehouseCreateDoc(_initialCode).OrderBy(x=>x.Name);
         if (subs != null)
         {
             foreach (var s in subs)
             {
-                //s.IsChecked = (s.Code == _initialCode);
                 QuickAccessWarehouses.Add(s);
             }
         }
@@ -199,5 +184,13 @@ public partial class CreateDoc : ContentPage
         await DisplayAlert("Успіх", $"Документ {R.Data.NumberDoc} створено для {SelectedWarehouse.Name}", "ОК");
         await Navigation.PopAsync();
         CreatedDoc?.Invoke(R.Data);
+    }
+
+    private void OnTypeWh(object sender, EventArgs e)
+    {
+        var Bt = sender as Button;        
+        if (Bt?.BindingContext is Warehouse)
+            Select((Warehouse)Bt.BindingContext);
+        
     }
 }
