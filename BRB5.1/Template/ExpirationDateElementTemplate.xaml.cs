@@ -50,7 +50,7 @@ public partial class ExpirationDateElementTemplate : ContentView
         FillLotHistory(ListED);
 
         DM.ExpirationDateInput = DM.ExpirationDate;
-        DM.ProductionDateInput = DM.ExpirationDate.AddDays(-(double)DM.Expiration);
+        DM.ProductionDateInput = DM.ExpirationDate.AddDays(-(double)DM.Expiration+1D);
         KeyboardSelection();
         OnPropertyChanged(nameof(DM));
     }
@@ -65,7 +65,7 @@ public partial class ExpirationDateElementTemplate : ContentView
     private void ExpirationDateSelected(object sender, DateChangedEventArgs e)
     {
         IsExpirationDateSelected = true;
-        DM.ProductionDateInput = DM.ExpirationDateInput.AddDays(-(double)DM.Expiration);
+        DM.ProductionDateInput = DM.ExpirationDateInput.AddDays(-(double)DM.Expiration+1D);
         IsExpirationDateSelected = false;
 
         ButtonSave.IsEnabled = (DM.ExpirationDateInput - DateTime.Today).TotalDays <= 32;
@@ -77,7 +77,7 @@ public partial class ExpirationDateElementTemplate : ContentView
     private void ProductionDateSelected(object sender, DateChangedEventArgs e)
     {
         if(!IsExpirationDateSelected)
-            DM.ExpirationDateInput = DM.ProductionDateInput.AddDays((double)DM.Expiration);
+            DM.ExpirationDateInput = DM.ProductionDateInput.AddDays((double)DM.Expiration-1d);
         //OnPropertyChanged(nameof(DM.GetPercentColor));
         //OnPropertyChanged(nameof(DM.GetColor));
     }
