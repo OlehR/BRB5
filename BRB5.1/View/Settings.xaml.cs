@@ -372,7 +372,8 @@ namespace BRB6.View
             Bl.SaveSettings();
 
 #if ANDROID
-            BRB6.Platforms.Android.IconService.SwitchToSpar(Config.LocalCompany);
+     //       if (Config.LocalCompany != Config.CurrentIcon)
+                   BRB6.Platforms.Android.IconService.SwitchIcon(Config.Company);
 #endif
 
             ToastInfo("Успішно збережено");
