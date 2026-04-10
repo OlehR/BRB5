@@ -372,8 +372,8 @@ namespace BRB6.View
             Bl.SaveSettings();
 
 #if ANDROID
-     //       if (Config.LocalCompany != Config.CurrentIcon)
-                   BRB6.Platforms.Android.IconService.SwitchIcon(Config.Company);
+            if (Config.LocalCompany != Config.CurrentIcon)
+                   BRB6.Platforms.Android.IconService.SwitchIcon(Config.LocalCompany);
 #endif
 
             ToastInfo("Успішно збережено");
