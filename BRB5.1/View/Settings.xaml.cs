@@ -370,6 +370,12 @@ namespace BRB6.View
             else
                 Config.CodesWarehouses = [];
             Bl.SaveSettings();
+
+#if ANDROID
+            if (Config.LocalCompany != Config.CurrentIcon)
+                   BRB6.Platforms.Android.IconService.SwitchIcon(Config.LocalCompany);
+#endif
+
             ToastInfo("Успішно збережено");
         }
         private void RefreshWarehouses(object sender, CheckedChangedEventArgs e)

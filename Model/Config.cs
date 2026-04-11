@@ -23,7 +23,8 @@ namespace BRB5.Model
         public static eTypeScaner TypeScaner;
         public static bool IsVisScan { get { return Config.TypeScaner == eTypeScaner.Camera; } }
         public static eCompany Company { get; set; } = eCompany.NotDefined;
-        public static eCompany LocalCompany { get; set; } = eCompany.NotDefined;
+        public static eCompany LocalCompany { get; set; } = eCompany.NotDefined; 
+        public static eCompany CurrentIcon { get; set; } = eCompany.NotDefined;
 
         public static string PathDownloads = null;
 

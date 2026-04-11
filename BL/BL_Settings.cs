@@ -45,7 +45,7 @@ namespace BL
             db.SetConfig<ePhotoQuality>("PhotoQuality", Config.PhotoQuality);
             db.SetConfig<eTypeUsePrinter>("TypeUsePrinter", Config.TypeUsePrinter);
             db.SetConfig<int>("CodeWarehouse", Config.CodeWarehouse);
-            db.SetConfig<string>("CodesWarehouses", Config.CodesWarehouses.ToJSON());
+            db.SetConfig<string>("CodesWarehouses", Config.CodesWarehouses.ToJSON());          
         }
 
         public void GenApiUrl()
