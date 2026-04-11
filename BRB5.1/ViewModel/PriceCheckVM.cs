@@ -292,7 +292,7 @@ namespace BRB6.ViewModel
                     if (!WP.IsPriceOk)
                         BadScan++;
                     IsWareScaned = WP.StateDoubleScan;
-                    UriPicture = new Uri(Config.ApiUrl1 + $"Wares/{WP.CodeWares:D9}.png");
+                    UriPicture = new Uri(Config.ApiUrl1 + $"Wares/{WP.CodeWares}.png");
                 }
                 if (Config.IsVibration)
                 {
