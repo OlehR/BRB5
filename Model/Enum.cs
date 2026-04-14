@@ -129,6 +129,7 @@ namespace BRB5
         ChainwayC61,
         MetapaceM_K4,
         NLS_MT67,
+        NLS_MT93,
         KeyBoard
     }
     public enum eTermsForIlliquidWare

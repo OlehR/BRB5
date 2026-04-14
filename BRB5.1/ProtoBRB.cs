@@ -66,10 +66,10 @@ namespace BRB6
                 return eTypeScaner.ChainwayC61;
             if (Config.Model.Equals("M-K4") || Config.Manufacturer.Contains("METAPACE"))
                 return eTypeScaner.MetapaceM_K4;
-            if (Config.Model.Equals("NLS-MT67") || Config.Manufacturer.Contains("Newland"))
+            if (Config.Model.Equals("NLS-MT67"))
                 return eTypeScaner.NLS_MT67;
-
-
+            if (Config.Model.Equals("NLS-MT93") || Config.Manufacturer.Contains("Newland"))
+                return eTypeScaner.NLS_MT93;
 
             return eTypeScaner.Camera;
         }

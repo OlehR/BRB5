@@ -43,6 +43,7 @@ namespace BRB6
                     case eTypeScaner.ChainwayC61:
                     case eTypeScaner.MetapaceM_K4:
                     case eTypeScaner.NLS_MT67:
+                    case eTypeScaner.NLS_MT93:
                         Res = "com.scanner.broadcast" ;
                         break;
                 }
@@ -67,6 +68,7 @@ namespace BRB6
                     case eTypeScaner.ChainwayC61:
                     case eTypeScaner.MetapaceM_K4:
                     case eTypeScaner.NLS_MT67:
+                    case eTypeScaner.NLS_MT93:
                         Res = "data";
                         break;
                 }

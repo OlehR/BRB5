@@ -74,7 +74,7 @@ namespace BRB5.Model
         public static TypeDoc GetDocSetting(int pTypeDoc) => TypeDoc.FirstOrDefault(x => x.CodeDoc == pTypeDoc);
 
         //static object Lock= new object();
-        public static bool IsSoftKeyboard { get { return TypeScaner == eTypeScaner.Camera || TypeScaner == eTypeScaner.ZebraWithOutKeyBoard; } }
+        public static bool IsSoftKeyboard { get { return TypeScaner == eTypeScaner.Camera || TypeScaner == eTypeScaner.ZebraWithOutKeyBoard || TypeScaner == eTypeScaner.NLS_MT93; } }
 
         public static NativeBase NativeBase;
         public static ePhotoQuality PhotoQuality { get;set; }
