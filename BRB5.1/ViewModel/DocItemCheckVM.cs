@@ -18,7 +18,7 @@ namespace BRB6.ViewModel
         private ObservableCollection<DocWaresEx> _wares = [];
         private bool _isLoading;
         private string _title = "Лист викладки";
-
+        public ICommand CloseMRDialogCommand { get; }
         public ObservableCollection<DocWaresEx> Wares
         {
             get => _wares;
@@ -83,6 +83,10 @@ namespace BRB6.ViewModel
             DecrementCommand = new Command(() => { if (MrQuantity > 0) MrQuantity--; });
             ConfirmMrCommand = new Command(ConfirmDialog);
             LoadSampleData();
+            CloseMRDialogCommand = new RelayCommand(() =>
+            {
+                IsMrDialogVisible = false;
+            });
         }
         private void OpenDialog(DocWaresEx? item)
         {

@@ -7,16 +7,25 @@
 
     <!-- Затемнений фон -->
     <Grid>
-        <BoxView Color="Black" Opacity="0.5" />
+        <BoxView Color="Black" Opacity="0.5" >
+            <BoxView.GestureRecognizers>
+                <TapGestureRecognizer Command="{Binding CloseMRDialogCommand}" />
+            </BoxView.GestureRecognizers>
+        </BoxView>
 
         <!-- Саме вікно по центру -->
-        <Frame CornerRadius="16" BackgroundColor="White" Padding="24"
+        <Frame CornerRadius="16" BackgroundColor="White" Padding="20"
                HorizontalOptions="Center" VerticalOptions="Center"
                WidthRequest="300" HasShadow="True">
-            <VerticalStackLayout Spacing="16">
+            <VerticalStackLayout Spacing="14">
 
-                <Label Text="{Binding DialogTitle, Source={x:Reference this}}" FontSize="18" HorizontalTextAlignment="Center" LineBreakMode="WordWrap" />
+                <Grid  ColumnDefinitions="*, 30">                   
+                    <Label Text="{Binding DialogTitle, Source={x:Reference this}}" FontSize="18" HorizontalTextAlignment="Center" LineBreakMode="WordWrap" />
+                    <Button Text="X" Grid.Column="1" BackgroundColor="#C79FE9" VerticalOptions="Start" HeightRequest="35" 
+                            Margin="0" Padding="10,5" HorizontalOptions="End" Command="{Binding CloseMRDialogCommand}" />                    
 
+                </Grid>
+                
                 <!-- Лічильник: — кількість + -->
                 <Border StrokeShape="RoundRectangle 50" Stroke="#E0E0E0" Padding="10,0">
                     <Grid ColumnDefinitions="Auto,*,Auto" HeightRequest="52">

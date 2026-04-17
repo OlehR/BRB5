@@ -44,6 +44,7 @@ namespace BRB6.ViewModel
         public ICommand IncrementCommand { get; }
         public ICommand DecrementCommand { get; }
         public ICommand ConfirmMrCommand { get; }
+        public ICommand CloseMRDialogCommand { get; }
         public ICommand BarCodeHandInputCommand { get; }
         public ICommand ModifyValueCommand { get; }
         public ICommand UpdateReplenishmentCommand { get; }
@@ -269,6 +270,10 @@ namespace BRB6.ViewModel
             {
                 db.UpdateReplenishment(LineNumber, MrQuantity);
 
+                IsMrDialogVisible = false;
+            });
+            CloseMRDialogCommand = new RelayCommand(() =>
+            {  
                 IsMrDialogVisible = false;
             });
         }
