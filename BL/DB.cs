@@ -1107,7 +1107,7 @@ and bc.BarCode=?
                         union all 
         select  DE.DocId,DE.CodeWares,1 as nn
                                 from DocWaresExpiration DE
-                                left join DocWaresExpirationSample DES on DES.CodeWares=DE.CodeWares and DE.DocId=DES.DocId                                                               
+                                left join DocWaresExpirationSample DES on DES.CodeWares=DE.CodeWares and DE.DocId=DES.DocId and DES.IsHide=0                                                              
                                 where DATE(DE.DateDoc) = DATE('now') and DES.CodeWares is null
                                 ) d
 join Wares w on d.CodeWares=w.CodeWares
@@ -1206,7 +1206,7 @@ DE.ExpirationDateInput, DE.QuantityInput
                                 join ADDITIONUNIT au on w.CODEWARES=au.CODEWARES and au.CODEUNIT=w.CODEUNIT 
                                 join UNITDIMENSION ud on w.CODEUNIT=ud.CODEUNIT 
                                 join DocWaresExpiration DE on w.CodeWares=DE.CodeWares and DATE(DE.DateDoc) = DATE('now')
-                                left join DocWaresExpirationSample DES on DES.CodeWares=DE.CodeWares and DE.DocId=DES.DocId                                                               
+                                left join DocWaresExpirationSample DES on DES.CodeWares=DE.CodeWares and DE.DocId=DES.DocId  and DES.IsHide=0                                                            
                                 where DES.CodeWares is null {(pCodeWares > 0 ? $"and w.CodeWares={pCodeWares}" : "and w.CodeGroup = ?")}
                                 order by 1
 ";
