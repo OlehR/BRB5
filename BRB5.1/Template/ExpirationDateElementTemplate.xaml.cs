@@ -90,7 +90,7 @@ public partial class ExpirationDateElementTemplate : ContentView
         {
             if (DM.DocId.StartsWith("zz"))
             {
-                ExpirationDateElementVM R = All.FirstOrDefault(x => x.ExpirationDateInput == DM.ExpirationDateInput);
+                ExpirationDateElementVM R = All.FirstOrDefault(x => x.ExpirationDateInput == DM.ExpirationDateInput && x.CodeWares == DM.CodeWares);
                 if (R != null)
                 {
                     R.QuantityInput = DM.QuantityInput;
@@ -99,7 +99,7 @@ public partial class ExpirationDateElementTemplate : ContentView
                 else
                 {
                     var r = db.GetDataExpiration(NumberDoc, DM.CodeWares);
-                    R = r?.FirstOrDefault(x => x.ExpirationDateInput == DM.ExpirationDateInput);
+                    R = r?.FirstOrDefault(x => x.ExpirationDateInput == DM.ExpirationDateInput && x.CodeWares==DM.CodeWares);
                     if (R != null)
                         DM.DocId = R.DocId;
                     else
@@ -175,7 +175,7 @@ public partial class ExpirationDateElementTemplate : ContentView
                 var item = systemItems[i];
                 var label = new Label
                 {
-                    Text = $"{item.ExpirationDate:dd.MM.yyyy} - {item.Quantity} {item.NameUnit}",
+                    Text = $"{item.ExpirationDate:dd.MM.yyyy}",// - {item.Quantity} {item.NameUnit}",
                     TextColor = Colors.Blue,
                     FontSize = 12,
                     HorizontalOptions = LayoutOptions.Start
@@ -189,7 +189,7 @@ public partial class ExpirationDateElementTemplate : ContentView
                 var item = manualItems[i];
                 var label = new Label
                 {
-                    Text = $"{item.ExpirationDateInput:dd.MM.yyyy} - {item.QuantityInput} {item.NameUnit}",
+                    Text = $"{item.ExpirationDateInput:dd.MM.yyyy}",// - {item.QuantityInput} {item.NameUnit}",
                     TextColor = Colors.Gray,
                     FontSize = 12,
                     HorizontalOptions = LayoutOptions.Start

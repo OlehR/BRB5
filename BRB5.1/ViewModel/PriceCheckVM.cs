@@ -97,8 +97,10 @@ namespace BRB6.ViewModel
                 BarCodeInput = _WP?.BarCodes?.Split(',').FirstOrDefault() ?? string.Empty; OnPropertyChanged(nameof(AllBarCodes));
                 OnPropertyChanged(nameof(ExtraBarCodesCount)); OnPropertyChanged(nameof(HasExtraBarCodes)); OnPropertyChanged(nameof(HasWare));
                 OnPropertyChanged(nameof(WP)); OnPropertyChanged(nameof(TextColorPrice)); OnPropertyChanged(nameof(BackgroundColorPrice));
-                OnPropertyChanged("IsVisPriceOpt"); OnPropertyChanged(nameof(IsVisPriceNormal)); OnPropertyChanged(nameof(TextColorHttp));
-                OnPropertyChanged("ColorPrintColorType"); OnPropertyChanged(nameof(IsVisPriceOptQ));
+                OnPropertyChanged(nameof(IsVisPriceOpt)); OnPropertyChanged(nameof(IsVisPriceNormal)); OnPropertyChanged(nameof(TextColorHttp));
+                OnPropertyChanged(nameof(ColorPrintColorType)); OnPropertyChanged(nameof(IsVisPriceOptQ));
+                OnPropertyChanged(nameof(IsVisPromotion));
+
             }
         }
         public bool HasWare => WP != null;
@@ -268,7 +270,7 @@ namespace BRB6.ViewModel
 
             ConfirmMrCommand = new RelayCommand(() =>
             {
-                db.UpdateReplenishment(LineNumber, MrQuantity);
+                db.UpdateMR(LineNumber, MrQuantity);
 
                 IsMrDialogVisible = false;
             });

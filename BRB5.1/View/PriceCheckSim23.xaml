@@ -71,7 +71,7 @@
                 </Grid>
 
                 <Frame BackgroundColor="{Binding BackgroundColorPrice}" CornerRadius="20" HasShadow="False" Padding="10,5" BorderColor="#E0E0E0">
-                    <Grid ColumnDefinitions="*, Auto" RowSpacing="0" RowDefinitions="Auto, Auto">
+                    <Grid ColumnDefinitions="Auto, Auto" RowSpacing="0" RowDefinitions="Auto, Auto">
 
                         <Label Grid.Row="0" Grid.Column="0" Text="Ціна:" FontSize="16" TextColor="Gray" VerticalOptions="End"/>
                             <Label Grid.Row="1" Grid.Column="0" Text="{Binding WP.Price}" FontSize="44" Margin="0, -10, 0, -5" 
@@ -92,7 +92,7 @@
                 <VerticalStackLayout Spacing="5">
                     <Grid ColumnDefinitions="*, Auto">
                         <Label Text="Код товару:" TextColor="Black" FontSize="16" />
-                        <Label Grid.Column="1" Text="{Binding WP.Article}" FontAttributes="Bold" FontSize="16" />
+                            <Label Grid.Column="1" Text="{Binding WP.CodeWares}" FontAttributes="Bold" FontSize="16" />
                     </Grid>
                     <BoxView HeightRequest="1" Color="#EEEEEE" />
                     <Grid ColumnDefinitions="*, Auto, Auto">
