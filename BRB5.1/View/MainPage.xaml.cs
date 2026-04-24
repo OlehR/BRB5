@@ -116,7 +116,7 @@ namespace BRB6
             // Отримання вибраного елемента
             var vTypeDoc = e.Item as TypeDoc;
 
-            if (Config.TypeScaner == eTypeScaner.Camera)
+            if (Config.IsVisScan)
             {
                 var cameraStatus = await Permissions.CheckStatusAsync<Permissions.Camera>();
                 if (cameraStatus != PermissionStatus.Granted)
@@ -271,18 +271,16 @@ namespace BRB6
         {
             if (IsVisScan)
             {
-                if (Config.TypeScaner == eTypeScaner.Camera)
-                {
-                    var cameraStatus = await Permissions.CheckStatusAsync<Permissions.Camera>();
-                    if (cameraStatus != PermissionStatus.Granted)
-                        cameraStatus = await Permissions.RequestAsync<Permissions.Camera>();
+                var cameraStatus = await Permissions.CheckStatusAsync<Permissions.Camera>();
+                if (cameraStatus != PermissionStatus.Granted)
+                    cameraStatus = await Permissions.RequestAsync<Permissions.Camera>();
 
-                    if (cameraStatus != PermissionStatus.Granted)
-                    {
-                        await DisplayAlert("Помилка", "Потрібен дозвіл камери", "OK", FlowDirection.MatchParent);
-                        return;
-                    }
+                if (cameraStatus != PermissionStatus.Granted)
+                {
+                    await DisplayAlert("Помилка", "Потрібен дозвіл камери", "OK", FlowDirection.MatchParent);
+                    return;
                 }
+
                 MainThread.BeginInvokeOnMainThread(() =>
                 {
                     IsVisBarCode = !IsVisBarCode;

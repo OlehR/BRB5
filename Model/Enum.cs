@@ -127,10 +127,12 @@ namespace BRB5
         Camera,
         BitaHC61,
         ChainwayC61,
+        ChainwayC66,
         MetapaceM_K4,
         NLS_MT67,
         NLS_MT93,
-        KeyBoard
+        KeyBoard,
+        iOS
     }
     public enum eTermsForIlliquidWare
     {

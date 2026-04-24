@@ -41,6 +41,7 @@ namespace BRB6
                         break;
                     case eTypeScaner.BitaHC61:
                     case eTypeScaner.ChainwayC61:
+                    case eTypeScaner.ChainwayC66:
                     case eTypeScaner.MetapaceM_K4:
                     case eTypeScaner.NLS_MT67:
                     case eTypeScaner.NLS_MT93:
@@ -66,6 +67,7 @@ namespace BRB6
                         break;
                     case eTypeScaner.BitaHC61:
                     case eTypeScaner.ChainwayC61:
+                    case eTypeScaner.ChainwayC66:
                     case eTypeScaner.MetapaceM_K4:
                     case eTypeScaner.NLS_MT67:
                     case eTypeScaner.NLS_MT93:

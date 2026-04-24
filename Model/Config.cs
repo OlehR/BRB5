@@ -21,7 +21,10 @@ namespace BRB5.Model
         public static List<int> CodesWarehouses { get; set; }
         //static eCompany _Company = eCompany.NotDefined;
         public static eTypeScaner TypeScaner;
-        public static bool IsVisScan { get { return Config.TypeScaner == eTypeScaner.Camera; } }
+        public static bool IsVisScan { get { return Config.TypeScaner == eTypeScaner.Camera || Config.TypeScaner == eTypeScaner.iOS; } }
+        public static bool IsSoftKeyboard { get { return TypeScaner == eTypeScaner.Camera || TypeScaner == eTypeScaner.iOS || TypeScaner == eTypeScaner.ZebraWithOutKeyBoard || TypeScaner == eTypeScaner.NLS_MT93 || TypeScaner == eTypeScaner.ChainwayC66; } }
+        public static bool IsCreateBroadcastReceiver { get { return Config.TypeScaner == eTypeScaner.NLS_MT93 && Config.TypeScaner == eTypeScaner.NLS_MT67 || Config.TypeScaner == eTypeScaner.PM351 || Config.TypeScaner == eTypeScaner.PM68 || Config.TypeScaner == eTypeScaner.PM84 || Config.TypeScaner == eTypeScaner.Zebra || Config.TypeScaner == eTypeScaner.ZebraWithOutKeyBoard || Config.TypeScaner == eTypeScaner.MetapaceM_K4 || Config.TypeScaner == eTypeScaner.ChainwayC61 || Config.TypeScaner == eTypeScaner.ChainwayC66; } }
+        public static bool IsShowNavigationBar { get { return Config.TypeScaner == eTypeScaner.iOS || Config.TypeScaner == eTypeScaner.BitaHC61 || Config.TypeScaner == eTypeScaner.ChainwayC61 || Config.TypeScaner == eTypeScaner.ChainwayC66 || Config.TypeScaner == eTypeScaner.Zebra || Config.TypeScaner == eTypeScaner.PM550 || Config.TypeScaner == eTypeScaner.PM351 || Config.TypeScaner == eTypeScaner.PM84 || Config.TypeScaner == eTypeScaner.PM68 || Config.TypeScaner == eTypeScaner.MetapaceM_K4; } }
         public static eCompany Company { get; set; } = eCompany.NotDefined;
         public static eCompany LocalCompany { get; set; } = eCompany.NotDefined; 
         public static eCompany CurrentIcon { get; set; } = eCompany.NotDefined;
@@ -74,8 +77,6 @@ namespace BRB5.Model
         public static TypeDoc GetDocSetting(int pTypeDoc) => TypeDoc.FirstOrDefault(x => x.CodeDoc == pTypeDoc);
 
         //static object Lock= new object();
-        public static bool IsSoftKeyboard { get { return TypeScaner == eTypeScaner.Camera || TypeScaner == eTypeScaner.ZebraWithOutKeyBoard || TypeScaner == eTypeScaner.NLS_MT93; } }
-
         public static NativeBase NativeBase;
         public static ePhotoQuality PhotoQuality { get;set; }
 

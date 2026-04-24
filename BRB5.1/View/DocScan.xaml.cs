@@ -67,7 +67,7 @@ namespace BRB6.View
                 OrderDoc = ListWares.Max(el => el.OrderDoc);
             }
             else OrderDoc = 0;
-            NavigationPage.SetHasNavigationBar(this, DeviceInfo.Platform == DevicePlatform.iOS || Config.TypeScaner == eTypeScaner.BitaHC61 || Config.TypeScaner == eTypeScaner.ChainwayC61 || Config.TypeScaner == eTypeScaner.Zebra || Config.TypeScaner == eTypeScaner.PM550 || Config.TypeScaner == eTypeScaner.PM351 || Config.TypeScaner == eTypeScaner.PM84 || Config.TypeScaner == eTypeScaner.PM68 || Config.TypeScaner == eTypeScaner.MetapaceM_K4);
+            NavigationPage.SetHasNavigationBar(this, Config.IsShowNavigationBar);
             
             Reason = db.GetReason(TypeDoc.LevelReason, true);
             _defaultReason = Reason.FirstOrDefault(r => r.CodeReason == 0);

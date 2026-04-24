@@ -512,9 +512,8 @@ namespace BRB6.View
         {
             MainThread.BeginInvokeOnMainThread(async () =>
             {
-                if (Config.TypeScaner == eTypeScaner.Camera)
+                if (Config.IsVisScan)
                 {
-
                     var cameraStatus = await Permissions.CheckStatusAsync<Permissions.Camera>();
                     if (cameraStatus != PermissionStatus.Granted)
                         cameraStatus = await Permissions.RequestAsync<Permissions.Camera>();
@@ -527,7 +526,6 @@ namespace BRB6.View
                     IsVisBarCode = !IsVisBarCode;
                     BarcodeScaner.CameraEnabled = IsVisBarCode;
                 }
-
             });
         }
         async private void OnInfo(object sender, EventArgs e)

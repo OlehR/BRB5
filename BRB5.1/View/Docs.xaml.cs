@@ -139,7 +139,7 @@ namespace BRB6.View
             Task.Delay(500);
             if (CreatedDoc != null) _= Navigation.PushAsync(new DocItem(CreatedDoc, TypeDoc));
         }
-        private void UpDown(int key)
+        /*private void UpDown(int key)
         {
             if (ZKPOEntry.IsFocused == false)
             {
@@ -154,7 +154,7 @@ namespace BRB6.View
                     else if (Config.TypeScaner == eTypeScaner.Zebra || Config.TypeScaner == eTypeScaner.BitaHC61 || Config.TypeScaner == eTypeScaner.ChainwayC61 || Config.TypeScaner == eTypeScaner.MetapaceM_K4) Up();
                 }
             }
-        }
+        }*/
         private void Up()
         {
             var selectedItem = (DocVM)ListDocs.SelectedItem;
