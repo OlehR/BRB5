@@ -26,54 +26,24 @@ namespace BRB6
             var xx = GetHashCode();
         }
         static public string IntentEvent { get {
-                string Res = null;
-                    switch(Config.TypeScaner)
+                string Res  = Config.TypeScaner switch
                 {
-                    case eTypeScaner.PM351:
-                    case eTypeScaner.PM550:
-                    case eTypeScaner.PM84:
-                    case eTypeScaner.PM68:
-                        Res = "device.scanner.EVENT";
-                        break;
-                    case eTypeScaner.Zebra:
-                    case eTypeScaner.ZebraWithOutKeyBoard:
-                        Res = "ua.UniCS.TM.BRB"; //"ua.uz.vopak.brb4";
-                        break;
-                    case eTypeScaner.BitaHC61:
-                    case eTypeScaner.ChainwayC61:
-                    case eTypeScaner.ChainwayC66:
-                    case eTypeScaner.MetapaceM_K4:
-                    case eTypeScaner.NLS_MT67:
-                    case eTypeScaner.NLS_MT93:
-                        Res = "com.scanner.broadcast" ;
-                        break;
-                }
+                    eTypeScaner.PM351 or eTypeScaner.PM550 or eTypeScaner.PM84 or eTypeScaner.PM68 => "device.scanner.EVENT",
+                    eTypeScaner.Zebra or eTypeScaner.ZebraWithOutKeyBoard => "ua.UniCS.TM.BRB",//"ua.uz.vopak.brb4";
+                    eTypeScaner.BitaHC61 or eTypeScaner.ChainwayC61 or eTypeScaner.ChainwayC66 or eTypeScaner.MetapaceM_K4 or eTypeScaner.NLS_MT67 or eTypeScaner.NLS_MT93 => "com.scanner.broadcast",
+                    _ => "ua.UniCS.TM.BRB",
+                };
                 return Res;
                     } }
 
         static public string IntentEventValue { get {
-                string Res = null;
-                    switch(Config.TypeScaner)
+                string Res = Config.TypeScaner switch
                 {
-                    case eTypeScaner.PM351:
-                    case eTypeScaner.PM550:
-                    case eTypeScaner.PM84:
-                    case eTypeScaner.PM68:
-                        Res = "EXTRA_EVENT_DECODE_VALUE";
-                        break;
-                    case eTypeScaner.Zebra:
-                    case eTypeScaner.ZebraWithOutKeyBoard:
-                        Res = "com.symbol.datawedge.data_string";
-                        break;
-                    case eTypeScaner.BitaHC61:
-                    case eTypeScaner.ChainwayC61:
-                    case eTypeScaner.ChainwayC66:
-                    case eTypeScaner.MetapaceM_K4:
-                    case eTypeScaner.NLS_MT67:
-                    case eTypeScaner.NLS_MT93:
-                        Res = "data";
-                        break;
-                }
+                    eTypeScaner.PM351 or eTypeScaner.PM550 or eTypeScaner.PM84 or eTypeScaner.PM68 => "EXTRA_EVENT_DECODE_VALUE",
+                    eTypeScaner.Zebra or eTypeScaner.ZebraWithOutKeyBoard => "com.symbol.datawedge.data_string",             
+                    eTypeScaner.BitaHC61 or eTypeScaner.ChainwayC61 or eTypeScaner.ChainwayC66 or eTypeScaner.MetapaceM_K4 or eTypeScaner.NLS_MT67 or eTypeScaner.NLS_MT93 => "data",
+                    _=> "data"
+                };
                 return Res;
                     } }
         static bool IsByte { get { return Config.TypeScaner == eTypeScaner.PM351 || Config.TypeScaner == eTypeScaner.PM550 || Config.TypeScaner == eTypeScaner.PM84 || Config.TypeScaner == eTypeScaner.PM68 ; } }
