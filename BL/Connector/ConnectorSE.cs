@@ -458,15 +458,8 @@ namespace BL.Connector
                         var data = JsonConvert.DeserializeObject<InputDocs>(result.Result);
 
 
-                        if (pIsClear)
-                        {
-                            // string sql = "DELETE FROM DOC; DELETE FROM DOC_WARES_sample; DELETE FROM DOC_WARES;";
-                            db.db.Execute("DELETE FROM DOC");
-                            db.db.Execute("DELETE FROM DocWaresSample");
-                            db.db.Execute("DELETE FROM DocWares");
-                        }
-                        //else
-                        //    db.db.Execute("update doc set state=-1 where type_doc not in (5,6)" + (pTypeDoc > 0 ? $" and type_doc={pTypeDoc}" : ""));
+                        if (pIsClear) db.ClearDoc();
+                        
 
                         foreach (Doc v in data.Doc)
                         {

@@ -14,16 +14,18 @@ namespace BRB5.Model
         public static Action<string> BarCode;
         public static Action<double> OnProgress;
         public static string Manufacturer = "";
-        public static string Model = "";     
+        public static string Model = "";
         public static int CodeWarehouse;
-        public static string NameCompany="?";   
-        public static string PathAPK = "https://dct.spar.uz.ua/apk/ua.UniCS.TM.BRB6.apk"; //"https://media.githubusercontent.com/media/OlehR/BRB5/refs/heads/master/Apk/ua.UniCS.TM.BRB6.apk";
+        public static string NameCompany = "?";
+        public static string PathBRB = $"https://dct.spar.uz.ua/apk/{(IsTest?"test/":"")}";
+        public static string PathAPK => $"{PathBRB}ua.UniCS.TM.BRB6.apk";  //"https://media.githubusercontent.com/media/OlehR/BRB5/refs/heads/master/Apk/ua.UniCS.TM.BRB6.apk";
+        public static string PathVer => $"{PathBRB}Ver.txt"; 
         public static List<int> CodesWarehouses { get; set; }
         //static eCompany _Company = eCompany.NotDefined;
         public static eTypeScaner TypeScaner;
         public static bool IsVisScan { get { return Config.TypeScaner == eTypeScaner.Camera || Config.TypeScaner == eTypeScaner.iOS; } }
         public static bool IsSoftKeyboard { get { return TypeScaner == eTypeScaner.Camera || TypeScaner == eTypeScaner.iOS || TypeScaner == eTypeScaner.ZebraWithOutKeyBoard || TypeScaner == eTypeScaner.NLS_MT93 || TypeScaner == eTypeScaner.ChainwayC66; } }
-        public static bool IsCreateBroadcastReceiver { get { return Config.TypeScaner == eTypeScaner.NLS_MT93 && Config.TypeScaner == eTypeScaner.NLS_MT67 || Config.TypeScaner == eTypeScaner.PM351 || Config.TypeScaner == eTypeScaner.PM68 || Config.TypeScaner == eTypeScaner.PM84 || Config.TypeScaner == eTypeScaner.Zebra || Config.TypeScaner == eTypeScaner.ZebraWithOutKeyBoard || Config.TypeScaner == eTypeScaner.MetapaceM_K4 || Config.TypeScaner == eTypeScaner.ChainwayC61 || Config.TypeScaner == eTypeScaner.ChainwayC66; } }
+        public static bool IsCreateBroadcastReceiver { get { return Config.TypeScaner != eTypeScaner.PM550; /*Config.TypeScaner == eTypeScaner.NLS_MT93 && Config.TypeScaner == eTypeScaner.NLS_MT67 || Config.TypeScaner == eTypeScaner.PM351 || Config.TypeScaner == eTypeScaner.PM68 || Config.TypeScaner == eTypeScaner.PM84 || Config.TypeScaner == eTypeScaner.Zebra || Config.TypeScaner == eTypeScaner.ZebraWithOutKeyBoard || Config.TypeScaner == eTypeScaner.MetapaceM_K4 || Config.TypeScaner == eTypeScaner.ChainwayC61 || Config.TypeScaner == eTypeScaner.ChainwayC66 || Config.TypeScaner == eTypeScaner.BitaHC61 || Config.TypeScaner == eTypeScaner.NLS_MT93; */ } }
         public static bool IsShowNavigationBar { get { return Config.TypeScaner == eTypeScaner.iOS || Config.TypeScaner == eTypeScaner.BitaHC61 || Config.TypeScaner == eTypeScaner.ChainwayC61 || Config.TypeScaner == eTypeScaner.ChainwayC66 || Config.TypeScaner == eTypeScaner.Zebra || Config.TypeScaner == eTypeScaner.PM550 || Config.TypeScaner == eTypeScaner.PM351 || Config.TypeScaner == eTypeScaner.PM84 || Config.TypeScaner == eTypeScaner.PM68 || Config.TypeScaner == eTypeScaner.MetapaceM_K4; } }
         public static eCompany Company { get; set; } = eCompany.NotDefined;
         public static eCompany LocalCompany { get; set; } = eCompany.NotDefined; 

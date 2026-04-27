@@ -59,7 +59,7 @@ namespace BRB6
             try
             {
                 var versionString = AppInfo.BuildString;
-                var ver = await UtilAndroid.DownloadStringAsync("https://raw.githubusercontent.com/OlehR/BRB5/master/Apk/Ver.txt");
+                var ver = await UtilAndroid.DownloadStringAsync(Config.PathVer); //"https://raw.githubusercontent.com/OlehR/BRB5/master/Apk/Ver.txt");
                 return ver.ToInt() > versionString.ToInt();
             }
             catch (Exception e)

@@ -41,7 +41,7 @@ namespace BL
             return Db;
         }
 
-        public SQLiteConnection db;
+        SQLiteConnection db;
         const string NameDB = "BRB6.db";
         public static string BaseDir = null;
 
@@ -398,7 +398,7 @@ CREATE INDEX TypeWarehouseId ON TypeWarehouse (Code);";
                 {
                     db = new SQLiteConnection( PathNameDB ,false);
                     db.Execute("PRAGMA synchronous = EXTRA;");
-                    db.Execute("PRAGMA journal_mode = DELETE;");
+                    db.Execute("PRAGMA journal_mode = WAL;");
                     db.Execute("PRAGMA wal_autocheckpoint = 5;");
                 }
                 return true;
@@ -1341,6 +1341,13 @@ join Warehouse whd on wh.CodeParent=whd.CodeParent
 join TypeWarehouse TW on TW.code=wh.TypeWarehouse -- and tw.code<>0 
 where whd.Code={pCodeWarehouse}";
             return db.Query<Warehouse>(Sql);
+        }
+
+        public void ClearDoc()
+        {
+            db.Execute("DELETE FROM DOC");
+            db.Execute("DELETE FROM DocWaresSample");
+            db.Execute("DELETE FROM DocWares");
         }
      }
 }

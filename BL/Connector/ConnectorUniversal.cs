@@ -86,7 +86,7 @@ namespace BL.Connector
                         }
 
                         if (!string.IsNullOrEmpty(res.Data?.PathAPK))
-                            Config.PathAPK = res.Data?.PathAPK;
+                            Config.PathBRB = res.Data?.PathAPK;
                         isGroup = Config.TypeDoc.Any(el => el.KindDoc == eKindDoc.NotDefined);
 
                         Config.LocalCompany = res.Data?.LocalConnect ?? eCompany.NotDefined;
