@@ -131,6 +131,7 @@ namespace BL.Connector
                     Config.OnProgress?.Invoke(0.60);
                     var r=await GetRaitingTemplateAsync();
                     Info=$"Товарів=>{res?.Data?.Wares?.Count()}\nСкладів=>{res?.Data?.Warehouse?.Count()} \nШаблонів рейтингу =>{r?.Data?.Count()}";
+                    FileLogger.WriteLogMessage(this, System.Reflection.MethodBase.GetCurrentMethod().Name, Info, eTypeLog.Full);
                 }                
                 //await GetDaysLeft();
                 Config.OnProgress?.Invoke(1);               

@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Text.Json.Serialization;
 
 namespace BRB5.Model
 {
@@ -55,7 +56,7 @@ namespace BRB5.Model
         public decimal InputQuantity { get { return _InputQuantity; } set { _InputQuantity = value; OnPropertyChanged(nameof(InputQuantity)); /*OnPropertyChanged(nameof(IsInputQuantity));*/ OnPropertyChanged(nameof(Scaned)); OnPropertyChanged(nameof(GetBackgroundColorDocWares)); } }
         //public string InputQuantityStr { private get { return _InputQuantity.ToString(); } set { 
         //        _InputQuantity = Convert.ToDecimal(value); } }
-
+        [JsonIgnore]
         public bool IsInputQuantity { get { return InputQuantity > 0; } set { if (value) InputQuantity = Quantity; else InputQuantity = 0; OnPropertyChanged(nameof(RowColor)); } }
         public int CodeReason { get; set; }
         public DateTime ExpirationDate { get; set; }
