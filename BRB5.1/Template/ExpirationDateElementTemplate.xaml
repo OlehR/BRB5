@@ -26,18 +26,25 @@
                 <Grid.RowDefinitions>
                     <RowDefinition Height="auto"/>
                 </Grid.RowDefinitions>
-                <HorizontalStackLayout Spacing="20" Margin="0" Padding="0" >
-                    <Label Text="{Binding DM.CodeWares}" FontSize="Medium"  />
+                <VerticalStackLayout>
+                    <HorizontalStackLayout Spacing="20" Margin="0" Padding="0" >
+                        <Label Text="{Binding DM.CodeWares}" FontSize="Medium"  />
 
-                    <HorizontalStackLayout>
-                        <Label Text="{Binding DM.Expiration}" FontSize="Medium"  />
-                        <Label Text="діб" FontSize="Medium"  />
+                        <HorizontalStackLayout>
+                            <Label Text="{Binding DM.Expiration}" FontSize="Medium"  />
+                            <Label Text="діб" FontSize="Medium"  />
+                        </HorizontalStackLayout>
+                        <HorizontalStackLayout Spacing="3" IsVisible="False">
+                            <Label Text="ціна" FontSize="Medium"  />
+                            <Label Text="грн" FontSize="Medium"  />
+                        </HorizontalStackLayout>
                     </HorizontalStackLayout>
-                    <HorizontalStackLayout Spacing="3" IsVisible="False">
-                        <Label Text="ціна" FontSize="Medium"  />
-                        <Label Text="грн" FontSize="Medium"  />
+                    <HorizontalStackLayout Spacing="3" IsVisible="{Binding IsManual}">
+                        <Label Text="Додана вручну " FontSize="Small"  />
+                        <Label Text="" FontSize="Small"  />
                     </HorizontalStackLayout>
-                </HorizontalStackLayout>
+                </VerticalStackLayout>
+                
                 <HorizontalStackLayout Margin="0" Padding="0" Spacing="0" Grid.Column="1">
                     <Label Text="{Binding DM.GetPercentColor.Percent}" Margin="0" Padding="0"  FontAttributes="Bold" FontSize="35" />
                     <Label Text="%" FontSize="35" FontAttributes="Bold" Margin="0" Padding="0"  />
