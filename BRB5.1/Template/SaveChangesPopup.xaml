@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<toolkit:Popup xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+               x:Class="BRB6.Template.SaveChangesPopup" 
+               xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+               xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+               CanBeDismissedByTappingOutsideOfPopup="False">
+    <VerticalStackLayout Padding="24" Spacing="16" BackgroundColor="White">
+        <Label Text="Незбережені дані" FontSize="18" FontAttributes="Bold"/>
+        <Label Text="Зберегти зміни перед виходом?"/> 
+
+        <HorizontalStackLayout Spacing="12" HorizontalOptions="End">
+            <Button Text="Не зберігати" Clicked="OnDiscard"/>
+            <Button Text="Зберегти" Clicked="OnSave"/>
+        </HorizontalStackLayout>
+    </VerticalStackLayout>
+</toolkit:Popup>

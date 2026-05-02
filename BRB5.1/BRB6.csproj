@@ -217,6 +217,9 @@
     <MauiXaml Update="Template\QuestionItemTemplate.xaml">
       <Generator>MSBuild:Compile</Generator>
     </MauiXaml>
+    <MauiXaml Update="Template\SaveChangesPopup.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </MauiXaml>
     <MauiXaml Update="Template\SectionHeaderTemplate.xaml">
       <Generator>MSBuild:Compile</Generator>
     </MauiXaml>
