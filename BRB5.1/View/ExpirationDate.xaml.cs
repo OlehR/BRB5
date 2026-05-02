@@ -13,6 +13,10 @@ using Microsoft.Maui.Controls;
 using CommunityToolkit.Maui.Alerts;
 using CommunityToolkit.Maui.Core;
 using Microsoft.Maui.Graphics.Text;
+using CommunityToolkit.Maui.Views;
+
+using BRB6.Template;
+
 
 
 
@@ -244,8 +248,9 @@ namespace BRB6.View
             {
                 Dispatcher.Dispatch(async () =>
                 {
-                    bool save = await DisplayAlert("Незбережені дані", "Зберегти зміни перед виходом?", "Зберегти", "Не зберігати");
-
+                    //bool save = await DisplayAlert("Незбережені дані", "Зберегти зміни перед виходом?", "Зберегти", "Не зберігати");
+                    var popup = new SaveChangesPopup();
+                    bool save = (bool)await this.ShowPopupAsync(popup);
                     if (save)
                     {
                         // Викликаємо збереження (Toast покажеться вже на попередній сторінці)
