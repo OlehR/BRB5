@@ -17,7 +17,8 @@ namespace BRB5.Model
         public static string Model = "";
         public static int CodeWarehouse;
         public static string NameCompany = "?";
-        public static string PathBRB = $"https://dct.spar.uz.ua/apk/{(IsTest?"test/":"")}";
+        static string _PathBRB;
+        public static string PathBRB {get{ return string.IsNullOrEmpty(_PathBRB) ? $"https://dct.spar.uz.ua/apk/{(IsTest?"test/":"")}" : _PathBRB;} set { _PathBRB = value; } }
         public static string PathAPK => $"{PathBRB}ua.UniCS.TM.BRB6.apk";  //"https://media.githubusercontent.com/media/OlehR/BRB5/refs/heads/master/Apk/ua.UniCS.TM.BRB6.apk";
         public static string PathVer => $"{PathBRB}Ver.txt"; 
         public static List<int> CodesWarehouses { get; set; }

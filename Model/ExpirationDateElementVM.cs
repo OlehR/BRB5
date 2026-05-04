@@ -57,21 +57,17 @@ namespace BRB5.Model
             }
             return i;
         }
-        public Color GetNameWareColor { get { return QuantityInput== null? Color.White : Color.FromArgb(0xD4D8F2) ; } }
+        public Color GetNameWareColor => QuantityInput== null? Color.White : Color.FromArgb(0xD4D8F2) ;
 
-
-        public DocWaresExpiration GetDocWaresExpiration()
-        {
-            return new DocWaresExpiration() { CodeWares = CodeWares, DocId = DocId, DateDoc = DateTime.Today, NumberDoc = NumberDoc, QuantityInput = QuantityInput??0, ExpirationDateInput = ExpirationDateInput };
-        }
+        public DocWaresExpiration GetDocWaresExpiration()=> new DocWaresExpiration() { CodeWares = CodeWares, DocId = DocId, DateDoc = DateTime.Today, NumberDoc = NumberDoc, QuantityInput = QuantityInput??0, ExpirationDateInput = ExpirationDateInput };
+        
         public event PropertyChangedEventHandler PropertyChanged;
         protected virtual void OnPropertyChanged(string propertyName)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
-        public object Clone()
-        {
-            return this.MemberwiseClone();
-        }
+        public object Clone()=> this.MemberwiseClone();
+        public string DateDocStr => $"{DateDoc:yyyy-MM-dd}";
+
     }
 }

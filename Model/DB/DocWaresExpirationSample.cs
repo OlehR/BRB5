@@ -17,6 +17,7 @@ namespace BRB5.Model.DB
         public string DaysLeft { get; set; }
         public bool IsHide { get; set; }
         public int OrderDoc { get; set; }
+        public DateTime DateDoc { get; set; }
 
     }
 }

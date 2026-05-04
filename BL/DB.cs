@@ -253,7 +253,8 @@ CREATE TABLE DocWaresExpirationSample (
     Expiration NUMBER,
     DaysLeft TEXT,
     IsHide INTEGER NOT NULL DEFAULT (0),
-    OrderDoc    INTEGER NOT NULL DEFAULT (0)
+    OrderDoc    INTEGER NOT NULL DEFAULT (0),
+    DateDoc DATE
 );
 CREATE UNIQUE INDEX DocWaresExpirationSampleTNC ON DocWaresExpirationSample 
         (NumberDoc, DocId, CodeWares);
@@ -274,7 +275,7 @@ CREATE TABLE SKU (
     CodeUnit           INTEGER  NOT NULL);
 CREATE UNIQUE INDEX SKUId ON SKU (CodeSKU);
 ";
-        readonly int Ver = 18;
+        readonly int Ver = 19;
         string SqlTo6 = @"alter TABLE Reason add  Level INTEGER  DEFAULT (0);
 drop index ReasonId;
 CREATE UNIQUE INDEX ReasonId ON Reason (Level,CodeReason);";
@@ -302,6 +303,7 @@ CREATE INDEX TypeWarehouseId ON TypeWarehouse (Code);";
         string SqlTo15 = @"alter TABLE Reason add TypeWarehouse INTEGER  NOT NULL DEFAULT (0)";
         string SqlTo16 = @"alter TABLE DocWaresExpirationSample add IsHide INTEGER NOT NULL DEFAULT (0)";
         string SqlTo18 = @"alter TABLE LogPrice add NumberOfMR NUMERIC";
+        string SqlTo19 = @"alter TABLE DocWaresExpirationSample add DateDoc DATE";
 
         public static string PathNameDB { get { return Path.Combine(BaseDir, NameDB); } }
 
@@ -344,6 +346,8 @@ CREATE INDEX TypeWarehouseId ON TypeWarehouse (Code);";
                     SetSQL(SqlTo16, 17);
                 if (GetVersion < 18)
                     SetSQL(SqlTo18, 18);
+                if (GetVersion < 19)
+                    SetSQL(SqlTo19, 19);
             }            
         }
 
@@ -1088,8 +1092,6 @@ and bc.BarCode=?
             return db.ReplaceAll(pDWS) >= 0;
         }
 
-
-
         public bool ReplaceDocWaresExpiration(DocWaresExpiration pDWS)
         {
             return db.InsertOrReplace(pDWS) >= 0;
@@ -1142,7 +1144,7 @@ order by gw.NameGroup";
                     String Find = pParseBarCode.CodeWares > 0 ? $"w.CodeWares={pParseBarCode.CodeWares}" : $"w.ARTICLE={pParseBarCode.Article}";
                     sql = $@"select  DES.NumberDoc,DES.DocId, w.CodeWares,w.NAMEWARES as NameWares, au.COEFFICIENT as Coefficient,w.CODEUNIT as CodeUnit, ud.ABRUNIT as NameUnit,
                             ( select group_concat(bc.BarCode,',') from BarCode bc where bc.CodeWares=w.CodeWares ) as BARCODE  ,w.CODEUNIT as BaseCodeUnit,
-                            des.Quantity,des.Expiration,des.ExpirationDate,des.DaysLeft
+                            des.Quantity,des.Expiration,des.ExpirationDate,des.DaysLeft,des.DateDoc
                                 from WARES w 
                                 join ADDITIONUNIT au on w.CODEWARES=au.CODEWARES and au.CODEUNIT=w.CODEUNIT 
                                 join UNITDIMENSION ud on w.CODEUNIT=ud.CODEUNIT 
@@ -1161,7 +1163,7 @@ order by gw.NameGroup";
                         sql = $@"select  w.CodeGroup as NumberDoc,'zz'||hex(randomblob(15)) as DocId, w.CodeWares,w.NAMEWARES as NameWares, au.COEFFICIENT as Coefficient,w.CODEUNIT as CodeUnit, ud.ABRUNIT as NameUnit,
                             ( select group_concat(bc.BarCode,',') from BarCode bc where bc.CodeWares=w.CodeWares ) as BARCODE  ,w.CODEUNIT as BaseCodeUnit,
                             0 as Quantity, w.Expiration,--des.ExpirationDate,
-                            w.DaysLeft
+                            w.DaysLeft, CURRENT_DATE DateDoc
                                 from WARES w 
                                 join ADDITIONUNIT au on w.CODEWARES=au.CODEWARES and au.CODEUNIT=w.CODEUNIT 
                                 join UNITDIMENSION ud on w.CODEUNIT=ud.CODEUNIT                                                               
@@ -1190,7 +1192,8 @@ order by gw.NameGroup";
             string sql = $@"select DES.OrderDoc, DES.NumberDoc,DES.DocId, w.CodeWares,w.NameWares as NameWares, au.Coefficient as Coefficient,w.CodeUnit as CodeUnit, ud.ABRUNIT as NameUnit,
                             ( select group_concat(bc.BarCode,',') from BarCode bc where bc.CodeWares=w.CodeWares ) as BARCODE  ,w.CodeUnit as BaseCodeUnit,
                             des.Quantity,des.Expiration,des.ExpirationDate,coalesce( des.DaysLeft, w.DaysLeft) as DaysLeft
-,coalesce(DE.ExpirationDateInput,des.ExpirationDate) as ExpirationDateInput, coalesce(DE.QuantityInput,case when DES.QuantityInput>0 then DES.QuantityInput else null end) as QuantityInput
+,coalesce(DE.ExpirationDateInput,des.ExpirationDate) as ExpirationDateInput, coalesce(DE.QuantityInput,case when DES.QuantityInput>0 then DES.QuantityInput else null end) as QuantityInput,
+des.DateDoc
                                 from WARES w 
                                 join ADDITIONUNIT au on w.CODEWARES=au.CODEWARES and au.CODEUNIT=w.CODEUNIT 
                                 join UNITDIMENSION ud on w.CODEUNIT=ud.CODEUNIT 
@@ -1201,7 +1204,7 @@ order by gw.NameGroup";
         select DES.OrderDoc, DE.NumberDoc,DE.DocId, w.CodeWares,w.NameWares as NameWares, au.Coefficient as Coefficient,w.CodeUnit as CodeUnit, ud.ABRUNIT as NameUnit,
                             ( select group_concat(bc.BarCode,',') from BarCode bc where bc.CodeWares=w.CodeWares ) as BARCODE  ,w.CodeUnit as BaseCodeUnit,
                             0 as Quantity,w.Expiration,des.ExpirationDate,w.DaysLeft,
-DE.ExpirationDateInput, DE.QuantityInput
+DE.ExpirationDateInput, DE.QuantityInput, CURRENT_DATE DateDoc
                                 from WARES w 
                                 join ADDITIONUNIT au on w.CODEWARES=au.CODEWARES and au.CODEUNIT=w.CODEUNIT 
                                 join UNITDIMENSION ud on w.CODEUNIT=ud.CODEUNIT 

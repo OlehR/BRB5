@@ -158,8 +158,8 @@ public partial class ExpirationDateElementTemplate : ContentView
         };
 
         // Розділяємо дані на дві групи
-        var systemItems = listED.Where(x => !x.IsManual).ToList();
-        var manualItems = listED.Where(x => x.IsManual).ToList();
+        var systemItems = listED.Where(x => !x.IsManual).OrderBy(x => x.ExpirationDate).ToList();
+        var manualItems = listED.Where(x => x.IsManual).OrderBy(x => x.ExpirationDateInput).ToList();
 
         // Визначаємо максимальну кількість рядків, яка нам знадобиться
         int rowCount = Math.Max(systemItems.Count, manualItems.Count);
