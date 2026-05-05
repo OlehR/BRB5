@@ -67,7 +67,7 @@ namespace BRB5.Model
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
         public object Clone()=> this.MemberwiseClone();
-        public string DateDocStr => $"{DateDoc:yyyy-MM-dd}";
+        public string DateDocStr => $"{DateDoc:dd.MM.yyyy}";
 
     }
 }
