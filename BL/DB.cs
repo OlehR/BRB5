@@ -31,13 +31,13 @@ namespace BL
 {
     public class DB
     {
-        static DB Db = null; 
+        static DB Db = null;
         public static DB GetDB(string pPathDB = null)
         {
             if (!string.IsNullOrEmpty(pPathDB))
-            { BaseDir = pPathDB;}
+            { BaseDir = pPathDB; }
             if (!string.IsNullOrEmpty(BaseDir) && Db == null)
-                Db = new DB();            
+                Db = new DB();
             return Db;
         }
 
@@ -311,8 +311,8 @@ CREATE INDEX TypeWarehouseId ON TypeWarehouse (Code);";
         public DB()
         {
             FileLogger.WriteLogMessage($"PathNameDB=>{PathNameDB}");
-            if (!File.Exists(PathNameDB))            
-                CreateDB();            
+            if (!File.Exists(PathNameDB))
+                CreateDB();
             else
                 OpenDB();
 
@@ -348,12 +348,12 @@ CREATE INDEX TypeWarehouseId ON TypeWarehouse (Code);";
                     SetSQL(SqlTo18, 18);
                 if (GetVersion < 19)
                     SetSQL(SqlTo19, 19);
-            }            
+            }
         }
 
         public bool CreateDB()
         {
-            string Sql = null ;
+            string Sql = null;
             try
             {
                 DeleteDB();
@@ -361,7 +361,7 @@ CREATE INDEX TypeWarehouseId ON TypeWarehouse (Code);";
                 {
                     db = null;
                     OpenDB();
-                    SetSQL(SqlCreateDB, Ver);                    
+                    SetSQL(SqlCreateDB, Ver);
                     return true;
                 }
                 else
@@ -400,7 +400,7 @@ CREATE INDEX TypeWarehouseId ON TypeWarehouse (Code);";
             {
                 if (db == null)
                 {
-                    db = new SQLiteConnection( PathNameDB ,false);
+                    db = new SQLiteConnection(PathNameDB, false);
                     db.Execute("PRAGMA synchronous = EXTRA;");
                     db.Execute("PRAGMA journal_mode = WAL;");
                     db.Execute("PRAGMA wal_autocheckpoint = 5;");
@@ -414,7 +414,7 @@ CREATE INDEX TypeWarehouseId ON TypeWarehouse (Code);";
             }
         }
 
-        void SetSQL(string pSQL,int pVer)
+        void SetSQL(string pSQL, int pVer)
         {
             foreach (var el in pSQL.Split(';'))
             {
@@ -424,7 +424,7 @@ CREATE INDEX TypeWarehouseId ON TypeWarehouse (Code);";
                     if (Sql.Length > 4 && !Sql.StartsWith("--"))
                         db.Execute(Sql);
                 }
-                catch(Exception e)  
+                catch (Exception e)
                 { FileLogger.WriteLogMessage(this, "SetSQL", e); }
             }
             SetVersion(pVer);
@@ -446,7 +446,7 @@ CREATE INDEX TypeWarehouseId ON TypeWarehouse (Code);";
                 if (typeof(T).BaseType == typeof(Enum))
                 {
                     var r = db.ExecuteScalar<string>(SqlConfig, pStr);
-                    if(!string.IsNullOrEmpty(r))
+                    if (!string.IsNullOrEmpty(r))
                         Res = (T)Enum.Parse(typeof(T), r, true);
                 }
                 else
@@ -461,7 +461,7 @@ CREATE INDEX TypeWarehouseId ON TypeWarehouse (Code);";
             return Res;
         }
 
-        public int GetVersion => db?.ExecuteScalar<int>("PRAGMA user_version")??0;
+        public int GetVersion => db?.ExecuteScalar<int>("PRAGMA user_version") ?? 0;
 
         public bool SetVersion(int pVer) => db.Execute($"PRAGMA user_version={pVer}") > 0;
         public bool ExecSQL(string pSQL) => db.Execute(pSQL) > 0;
@@ -591,7 +591,7 @@ from  DocWares dw
             }
             return null;
         }
-        public bool  DelDocWaresSend(DocId pDocId)
+        public bool DelDocWaresSend(DocId pDocId)
         {
             try
             {
@@ -606,11 +606,11 @@ and CodeWares in (select CodeWares from DocWares where TypeDoc={pDocId.TypeDoc} 
                 FileLogger.WriteLogMessage(this, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
             }
             return false;
-}
+        }
 
-        public bool ReplaceDoc(IEnumerable<Doc> pDoc,int pTypeDoc=0)
+        public bool ReplaceDoc(IEnumerable<Doc> pDoc, int pTypeDoc = 0)
         {
-            if (pDoc==null || !pDoc.Any() ) return false;
+            if (pDoc == null || !pDoc.Any()) return false;
             if (pTypeDoc != 0)
                 db.Execute($"delete from Doc where TypeDoc={pTypeDoc} and State=0");
 
@@ -636,10 +636,10 @@ and CodeWares in (select CodeWares from DocWares where TypeDoc={pDocId.TypeDoc} 
                     foreach (Doc d in pDoc)
                     {
                         c += db.Execute(Sql, d.DateDoc, d.TypeDoc, d.NumberDoc, d.CodeWarehouse, d.CodeReason, d.CodeReason, d.TypeDoc, d.NumberDoc,
-                                             d.IdTemplate, d.ExtInfo,d.NameUser, d.BarCode,  d.Description, 
-                                             d.State, d.State, d.TypeDoc, d.NumberDoc, 
-                                             d.IsControl, d.NumberDoc1C, d.DateOutInvoice, d.NumberOutInvoice, d.Color+7777,
-                                             d.TypeDoc, d.NumberDoc, d.TypeDoc, d.NumberDoc,d.CountWares);
+                                             d.IdTemplate, d.ExtInfo, d.NameUser, d.BarCode, d.Description,
+                                             d.State, d.State, d.TypeDoc, d.NumberDoc,
+                                             d.IsControl, d.NumberDoc1C, d.DateOutInvoice, d.NumberOutInvoice, d.Color + 7777,
+                                             d.TypeDoc, d.NumberDoc, d.TypeDoc, d.NumberDoc, d.CountWares);
                     }
                 });
             }
@@ -656,7 +656,7 @@ and CodeWares in (select CodeWares from DocWares where TypeDoc={pDocId.TypeDoc} 
  left join Warehouse  Wh on d.CodeWarehouse = wh.number 
                                 where TypeDoc = {pTypeDoc.CodeDoc} and DateDoc >= date(datetime(CURRENT_TIMESTAMP,'-{pTypeDoc.DayBefore} day'))" +
                                 (string.IsNullOrEmpty(pBarCode) ? "" : $" and BarCode like'%{pBarCode}%'") +
-                                (string.IsNullOrEmpty(pExFilrer) ? "" : $" and ExtInfo like'%{pExFilrer}%'") +@"
+                                (string.IsNullOrEmpty(pExFilrer) ? "" : $" and ExtInfo like'%{pExFilrer}%'") + @"
  order by DateDoc DESC";
 
             var res = db.Query<DocVM>(Sql);
@@ -689,7 +689,7 @@ and bc.BarCode=?
         public ParseBarCode GetCodeWares(ParseBarCode pParseBarCode)
         {
             string sql;
-            if (pParseBarCode?.CodeWares>0 && pParseBarCode?.BarCode?.Length==13 && pParseBarCode?.Price>0)
+            if (pParseBarCode?.CodeWares > 0 && pParseBarCode?.BarCode?.Length == 13 && pParseBarCode?.Price > 0)
             {
                 sql = $"select count(*) from wares w where w.CodeWares={pParseBarCode.CodeWares}";
                 int n = db.ExecuteScalar<int>(sql);
@@ -706,7 +706,7 @@ and bc.BarCode=?
                                 join wares w on w.CODEWARES=bc.CODEWARES 
                                 join UNITDIMENSION ud on bc.CODEUNIT=ud.CODEUNIT 
                                 where bc.BARCODE=?";
-      
+
             var rr1 = db.Query<AdditionUnit>(sql, pParseBarCode.BarCode);
             if (rr1 != null && rr1.Count == 1)
             {
@@ -716,10 +716,10 @@ and bc.BarCode=?
                     pParseBarCode.CodeWares = r.CodeWares;
                     pParseBarCode.Coefficient = r.Coefficient;
                     pParseBarCode.CodeUnit = r.CodeUnit;
-                }                
-            }            
-            else            
-            if (pParseBarCode.BarCode.Length == 13 && pParseBarCode.CodeWares==0)
+                }
+            }
+            else
+            if (pParseBarCode.BarCode.Length == 13 && pParseBarCode.CodeWares == 0)
             {
                 sql = $@"select bc.codewares as CodeWares,bc.BARCODE as BarCode from BARCODE bc 
                                      join wares w on bc.codewares=w.codewares and w.codeunit={Config.GetCodeUnitWeight}
@@ -730,11 +730,11 @@ and bc.BarCode=?
                     if (pParseBarCode.BarCode[..el.BarCode.Length].Equals(el.BarCode))
                     {
                         pParseBarCode.CodeWares = el.CodeWares;
-                        pParseBarCode.Quantity = pParseBarCode.BarCode[8..12].ToDecimal()/1000M;                      
+                        pParseBarCode.Quantity = pParseBarCode.BarCode[8..12].ToDecimal() / 1000M;
                         break;
                     }
                 }
-            }          
+            }
             return pParseBarCode;
         }
         public DocWaresEx GetScanData(DocId pDocId, ParseBarCode pParseBarCode)
@@ -762,16 +762,16 @@ and bc.BarCode=?
                 }
                 else
                 {
-                    if((!string.IsNullOrEmpty(pParseBarCode.BarCode) && pParseBarCode.CodeWares == 0 && pParseBarCode.Article == 0) || pParseBarCode.Price>0 )
+                    if ((!string.IsNullOrEmpty(pParseBarCode.BarCode) && pParseBarCode.CodeWares == 0 && pParseBarCode.Article == 0) || pParseBarCode.Price > 0)
                         GetCodeWares(pParseBarCode);
 
-                    if(pParseBarCode.CodeWares==0 && pParseBarCode.SKU > 0)
+                    if (pParseBarCode.CodeWares == 0 && pParseBarCode.SKU > 0)
                     {
                         sql = $@"select s.CodeWares from SKU s where s.CodeSKU={pParseBarCode.SKU}";
-                        pParseBarCode.CodeWares = db.ExecuteScalar<long>(sql);                        
+                        pParseBarCode.CodeWares = db.ExecuteScalar<long>(sql);
                     }
 
-                    if(pParseBarCode.CodeWares > 0 || pParseBarCode.Article > 0 || pParseBarCode.SKU > 0)
+                    if (pParseBarCode.CodeWares > 0 || pParseBarCode.Article > 0 || pParseBarCode.SKU > 0)
                     {
                         String Find = pParseBarCode.CodeWares > 0 ? $"w.CodeWares={pParseBarCode.CodeWares}" : $"w.ARTICLE={pParseBarCode.Article}";
                         sql = @"select w.CODEWARES,w.NAMEWARES as NameWares, au.COEFFICIENT as Coefficient,w.CODEUNIT as CodeUnit, ud.ABRUNIT as NameUnit,
@@ -784,7 +784,7 @@ and bc.BarCode=?
                         if (r != null && r.Count == 1)
                             res = r.First();
                     }
-                } 
+                }
             }
             catch (Exception e)
             {
@@ -809,14 +809,14 @@ and bc.BarCode=?
                     res.IsRecord = el.IsRecord;
                 }
             }
-            
+
             if (res != null)
             {
                 res.NumberDoc = pDocId.NumberDoc;
                 res.TypeDoc = pDocId.TypeDoc;
                 res.ParseBarCode = pParseBarCode;
             }
-            if(res!=null && pParseBarCode.Coefficient>1 && pParseBarCode.CodeUnit>0)
+            if (res != null && pParseBarCode.Coefficient > 1 && pParseBarCode.CodeUnit > 0)
             {
                 res.Coefficient = (int)pParseBarCode.Coefficient;
                 res.CodeUnit = pParseBarCode.CodeUnit;
@@ -872,7 +872,7 @@ and bc.BarCode=?
             return db.ReplaceAll(pR) >= 0;
         }
 
-        public bool ReplaceRaitingTemplate(IEnumerable<RaitingTemplate> pR )
+        public bool ReplaceRaitingTemplate(IEnumerable<RaitingTemplate> pR)
         {
             //string Sql = @"replace into RaitingTemplate ( IdTemplate, Text, IsActive ) values (@IdTemplate,@Text,@IsActive)";
             return db.ReplaceAll(pR) >= 0;
@@ -898,13 +898,13 @@ and bc.BarCode=?
         {
             int rr = pDWS.Where(r => r.CodeReason > 0).Count();
             rr++;
-           // string Sql = @"replace into DocWaresSample ( TypeDoc, NumberDoc, OrderDoc, CodeWares, Quantity, QuantityMin, QuantityMax, Name, BarCode, ExpirationDate, Expiration) values 
-           //                                           (@TypeDoc,@NumberDoc,@OrderDoc,@CodeWares,@Quantity,@QuantityMin,@QuantityMax,@Name,@BarCode,@ExpirationDate,@Expiration)";
+            // string Sql = @"replace into DocWaresSample ( TypeDoc, NumberDoc, OrderDoc, CodeWares, Quantity, QuantityMin, QuantityMax, Name, BarCode, ExpirationDate, Expiration) values 
+            //                                           (@TypeDoc,@NumberDoc,@OrderDoc,@CodeWares,@Quantity,@QuantityMin,@QuantityMax,@Name,@BarCode,@ExpirationDate,@Expiration)";
             return db.ReplaceAll(pDWS) >= 0;
         }
         public DocWaresSample GetDocWaresSample(DocWaresId pDW)
         {
-            var r=db.Query<DocWaresSample>($"select * from DocWaresSample as dw  where dw.TypeDoc={pDW.TypeDoc}  and dw.NumberDoc= '{pDW.NumberDoc}' and dw.CodeWares={pDW.CodeWares}");
+            var r = db.Query<DocWaresSample>($"select * from DocWaresSample as dw  where dw.TypeDoc={pDW.TypeDoc}  and dw.NumberDoc= '{pDW.NumberDoc}' and dw.CodeWares={pDW.CodeWares}");
             return r.FirstOrDefault();
         }
 
@@ -941,7 +941,7 @@ and bc.BarCode=?
             return db.Execute(Sql) >= 0;
         }
 
-        public bool ReplaceWarehouse(IEnumerable<Warehouse> pWh,bool pIsFull=false)
+        public bool ReplaceWarehouse(IEnumerable<Warehouse> pWh, bool pIsFull = false)
         {
             if (pIsFull) db.Execute("delete from warehouse");
             //string Sql = @"replace into Warehouse ( Code, Number, Name, Url, InternalIP, ExternalIP, Location ) values 
@@ -969,9 +969,9 @@ and bc.BarCode=?
         }
 
         public void InsLogPrice(LogPrice pLP)
-        {            
+        {
             string Sql = $@"insert into LogPrice ( BarCode, Status,  ActionType, PackageNumber, CodeWares, LineNumber, Article, NumberOfReplenishment, NumberOfMR) 
-                                          values ('{pLP.BarCode}',{pLP.Status}, {pLP.ActionType},{pLP.PackageNumber},{pLP.CodeWares},{pLP.LineNumber},{(string.IsNullOrEmpty( pLP.Article) ? "0":pLP.Article)},{pLP.NumberOfReplenishment},{pLP.NumberOfMR})";
+                                          values ('{pLP.BarCode}',{pLP.Status}, {pLP.ActionType},{pLP.PackageNumber},{pLP.CodeWares},{pLP.LineNumber},{(string.IsNullOrEmpty(pLP.Article) ? "0" : pLP.Article)},{pLP.NumberOfReplenishment},{pLP.NumberOfMR})";
             db.Execute(Sql);
             /* try
              {
@@ -1169,13 +1169,13 @@ order by gw.NameGroup";
                                 join UNITDIMENSION ud on w.CODEUNIT=ud.CODEUNIT                                                               
                                 where " + Find;
                         r = db.Query<ExpirationDateElementVM>(sql);
-                        
+
                         if (r?.Count >= 1)
                         {
                             // @TypeDoc as TypeDoc, @NumberDoc as NumberDoc,
                             res = r.First();
-                            res.ExpirationDate= new DateTime(DateTime.Now.Date.Year, DateTime.Now.Date.Month, 1);
-                            if (pParseBarCode.Quantity>0) res.Quantity = pParseBarCode.Quantity;
+                            res.ExpirationDate = new DateTime(DateTime.Now.Date.Year, DateTime.Now.Date.Month, 1);
+                            if (pParseBarCode.Quantity > 0) res.Quantity = pParseBarCode.Quantity;
                         }
                     }
                 }
@@ -1186,8 +1186,8 @@ order by gw.NameGroup";
             }
             return res;
         }
-        
-        public IEnumerable<ExpirationDateElementVM> GetDataExpiration(string pNumberDoc,long pCodeWares=0 )
+
+        public IEnumerable<ExpirationDateElementVM> GetDataExpiration(string pNumberDoc, long pCodeWares = 0)
         {
             string sql = $@"select DES.OrderDoc, DES.NumberDoc,DES.DocId, w.CodeWares,w.NameWares as NameWares, au.Coefficient as Coefficient,w.CodeUnit as CodeUnit, ud.ABRUNIT as NameUnit,
                             ( select group_concat(bc.BarCode,',') from BarCode bc where bc.CodeWares=w.CodeWares ) as BARCODE  ,w.CodeUnit as BaseCodeUnit,
@@ -1199,7 +1199,7 @@ des.DateDoc
                                 join UNITDIMENSION ud on w.CODEUNIT=ud.CODEUNIT 
                                 join DocWaresExpirationSample DES on w.CodeWares=DES.CodeWares 
                                 left join DocWaresExpiration DE on DES.CodeWares=DE.CodeWares and DE.DocId=DES.DocId and DATE(DE.DateDoc) = DATE('now')                             
-                                where {(pCodeWares>0?$"w.CodeWares={pCodeWares}" : "DES.IsHide=0 and w.CodeGroup = ? ")}                              
+                                where {(pCodeWares > 0 ? $"w.CodeWares={pCodeWares}" : "DES.IsHide=0 and w.CodeGroup = ? ")}                              
                         union all 
         select DES.OrderDoc, DE.NumberDoc,DE.DocId, w.CodeWares,w.NameWares as NameWares, au.Coefficient as Coefficient,w.CodeUnit as CodeUnit, ud.ABRUNIT as NameUnit,
                             ( select group_concat(bc.BarCode,',') from BarCode bc where bc.CodeWares=w.CodeWares ) as BARCODE  ,w.CodeUnit as BaseCodeUnit,
@@ -1285,9 +1285,9 @@ DE.ExpirationDateInput, DE.QuantityInput, CURRENT_DATE DateDoc
             string sql = "select * from DocWaresExpiration where DATE(DateDoc) = DATE('now') --and NumberDoc=?";
             return db.Query<DocWaresExpiration>(sql);//, pNumberDoc);
         }
-        public IEnumerable<Reason> GetReason(int pLevelReason, bool pIsWares=false)
+        public IEnumerable<Reason> GetReason(int pLevelReason, bool pIsWares = false)
         {
-            string Sql = $"Select * FROM Reason where Level={(pIsWares?-1:1) * pLevelReason}";
+            string Sql = $"Select * FROM Reason where Level={(pIsWares ? -1 : 1) * pLevelReason}";
             return db.Query<Reason>(Sql);
         }
 
@@ -1352,5 +1352,18 @@ where whd.Code={pCodeWarehouse}";
             db.Execute("DELETE FROM DocWaresSample");
             db.Execute("DELETE FROM DocWares");
         }
-     }
+
+        public bool DelDocData(DocId pD)
+        {
+            FileLogger.WriteLogMessage(this, "DelDocData", $"Data=>{pD.ToJSON()}");
+            try
+            {
+                db.Execute($@"delete from DocWaresSample where TypeDoc={pD.TypeDoc} and NumberDoc='{pD.NumberDoc}'
+                       and CodeWares in (select CodeWares from DocWares where TypeDoc={pD.TypeDoc} and NumberDoc='{pD.NumberDoc}' and Quantity>0 )");
+                return db.Execute($@"delete from DocWares where TypeDoc={pD.TypeDoc} and NumberDoc='{pD.NumberDoc}'") >= 0;
+            }
+            catch (Exception e)
+            { FileLogger.WriteLogMessage(this, System.Reflection.MethodBase.GetCurrentMethod().Name, e); return false; }
+        }
+    }
 }

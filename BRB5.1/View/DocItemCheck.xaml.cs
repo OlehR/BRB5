@@ -23,11 +23,11 @@ public partial class DocItemCheck : ForMVVM
         //    navPage.BarBackgroundColor = Colors.White;
         //    navPage.BarTextColor = Color.FromArgb("#1A1A1A");
         //}
-        Config.BarCode = BacCode;
+        Config.BarCode = BarCode;
         _viewModel.ScrollToItem += OnScrollToItem;
     }
 
-    public void BacCode(string pBarCode)=> _viewModel.BarCode(pBarCode);
+    public void BarCode(string pBarCode)=> _viewModel.BarCode(pBarCode);
     
     protected override void OnDisappearing()
     {
@@ -37,7 +37,7 @@ public partial class DocItemCheck : ForMVVM
         //    navPage.BarBackgroundColor = Colors.Transparent; 
         //    navPage.BarTextColor = Color.FromArgb("#2196F3");
         //}
-        Config.BarCode -= BacCode;
+        Config.BarCode -= BarCode;
         _viewModel.ScrollToItem -= OnScrollToItem;
     }
     private void OnScrollToItem(DocWaresEx item)

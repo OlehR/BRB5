@@ -88,7 +88,8 @@ public partial class ExpirationDateElementTemplate : ContentView
         if (String.IsNullOrEmpty(DM.NumberDoc)) DM.NumberDoc = NumberDoc;
         if (!String.IsNullOrEmpty(DM.DocId) && !String.IsNullOrEmpty(DM.NumberDoc))
         {
-            if (DM.DocId.StartsWith("zz"))
+            var find= All.Where(x => x.DocId == DM.DocId && x.CodeWares == DM.CodeWares);
+            if (DM.DocId.StartsWith("zz") && !(find?.Any() == true))
             {
                 ExpirationDateElementVM R = All.FirstOrDefault(x => x.ExpirationDateInput == DM.ExpirationDateInput && x.CodeWares == DM.CodeWares);
                 if (R != null)

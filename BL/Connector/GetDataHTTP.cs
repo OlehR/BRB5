@@ -130,10 +130,10 @@ namespace BL.Connector
                     pLogin = "TSD";
                     pPassWord = "321123Sd";
                 }
-                if (pLogin != null && pLogin.Equals("Admin"))
+                if (pLogin != null && (pLogin.Equals("Admin") || ( pLogin.ToLower().Equals("revizor") && Config.LocalCompany == eCompany.Sim23)))
                 {
-                    pLogin = (Config.Company == eCompany.Sim23 ? "brb" : "c");
-                    pPassWord = (Config.Company == eCompany.Sim23 ? "brb" : "c");
+                    pLogin = (Config.LocalCompany == eCompany.Sim23 ? "brb" : "c");
+                    pPassWord = (Config.LocalCompany == eCompany.Sim23 ? "brb" : "c");
                 }
                 HttpResult res = new();// { HttpState=eStateHTTP.HTTP_CLIENT_TIMEOUT};
                 //return res;

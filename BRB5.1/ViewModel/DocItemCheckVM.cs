@@ -6,6 +6,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Runtime.Intrinsics.Arm;
 using System.Windows.Input;
 
 namespace BRB6.ViewModel
@@ -99,23 +100,26 @@ namespace BRB6.ViewModel
         private void ConfirmDialog()
         {
             if (_selectedWare is null) return;
-
             _selectedWare.InputQuantity = MrQuantity;
 
             if (_selectedWare.InputQuantity > 0) _selectedWare.Quantity = _selectedWare.InputQuantity;
             _selectedWare.OnPropertyChanged("IsInputQuantity");
-            db.ReplaceDocWares(new DocWares(new DocWaresId(DId, _selectedWare.CodeWares)) { Quantity= _selectedWare .Quantity},true);
+            //db.ReplaceDocWares(new DocWares(new DocWaresId(DId, _selectedWare.CodeWares)) { Quantity= _selectedWare .Quantity},true);
+            Save(_selectedWare);
             SelectedWare = null;
             IsMrDialogVisible = false;
         }
+        void Save(DocWares pDW) => db.ReplaceDocWares(new DocWares(new DocWaresId(pDW, pDW.CodeWares)) {Quantity = pDW.InputQuantity }, true);
+        
         private void LoadSampleData()
-        {
-            
+        {            
             var xx = db.GetDocWares(DId, eTypeResult.All, eTypeOrder.Scan);
             foreach (var el in xx)
-                el.Quantity = el.InputQuantity > 0? el.InputQuantity:el.QuantityOrder;
-
-            Wares = new ObservableCollection<DocWaresEx>(xx);
+            {
+                el.Quantity = el.InputQuantity > 0 ? el.InputQuantity : el.QuantityOrder;
+                el.OnAutoSave = Save;
+            }
+            Wares = new ObservableCollection<DocWaresEx>(xx);            
         }
 
         public void BarCode(string pBarCode)
@@ -144,11 +148,15 @@ namespace BRB6.ViewModel
         private async Task LoadCartAsync()
         {
             if (IsLoading) return;
-
             try
             {
                 IsLoading = true;
-                await c.SendDocsDataAsync(new() { TypeDoc = 6, NumberDoc = DateTime.Now.ToString("yyyyMMdd") } ,Wares);
+                var Res=await c.SendDocsDataAsync(new() { TypeDoc = 6, NumberDoc = DateTime.Now.ToString("yyyyMMdd") } ,Wares);
+                if(Res.Success)
+                {
+                    db.DelDocData(new() { TypeDoc = 6, NumberDoc = DateTime.Now.ToString("yyyyMMdd") });
+                    LoadSampleData();
+                }
             }
             finally
             {
