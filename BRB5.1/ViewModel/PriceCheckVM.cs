@@ -123,8 +123,8 @@ namespace BRB6.ViewModel
         //public int ColorPrintColorType() { return Color.parseColor(HttpState != eStateHTTP.HTTP_OK ? "#ffb3b3" : (PrintType == 0 ? "#ffffff" : "#3fffff00")); }
 
         public string ColorPrintColorType { get { return WP == null ? "#ffffff" : WP.MinQuantity == 0 ? "#ffd8d8" : WP.ActionType > 0 ? "#F0DC82" : "#ffffff"; } }
-        public string TextColorPrice { get { return (WP != null && WP.Price != 0 && WP.Price == WP.PriceOld && WP.PriceOpt == WP.PriceOptOld) ? "#009800" : "#ff5c5c"; } set { OnPropertyChanged(nameof(TextColorPrice)); } }
-        public string BackgroundColorPrice { get { return (WP == null || (WP.Price != 0 && WP.Price == WP.PriceOld && WP.PriceOpt == WP.PriceOptOld)) ? "#F8F9FA" : "#fff0f0"; } }
+        public string TextColorPrice { get { return (WP != null && WP.Price != 0 && WP.Price == WP.PriceOld && (WP.PriceOpt == WP.PriceOptOld || WP.PriceOpt== WP.Price)) ? "#009800" : "#ff5c5c"; } set { OnPropertyChanged(nameof(TextColorPrice)); } }
+        public string BackgroundColorPrice { get { return (WP == null || (WP.Price != 0 && WP.Price == WP.PriceOld && (WP.PriceOpt == WP.PriceOptOld || WP.PriceOpt== WP.Price))) ? "#F8F9FA" : "#fff0f0"; } }
 
         public string TextColorHttp { get { return (bl.LastResult != null && bl.LastResult.StateHTTP == eStateHTTP.HTTP_OK) ? "#009800" : "#ff5c5c"; } }
 

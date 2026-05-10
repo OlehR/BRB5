@@ -270,7 +270,7 @@ namespace BL.Connector
                 if (result.HttpState == eStateHTTP.HTTP_OK)
                 {
                     var res = JsonConvert.DeserializeObject<WaresPriceSE>(result.Result);
-                    return new() { Data = res.GetWaresPrice };
+                    return new() { Data = res.GetWaresPrice(pBC) };
                 }
                 return new(result);
             }catch(Exception e)
@@ -1062,7 +1062,7 @@ public string Info { get; set; }
         public string Unit { get; set; }
         public string Article { get; set; }   
         public int ActionType { get; set; }
-        public decimal PromotionPrice { get; set; }
+        public string PromotionPrice { get; set; }
         /// <summary>
         /// місць викладки
         /// </summary>
@@ -1083,7 +1083,11 @@ public string Info { get; set; }
         /// Термін придатності в днях
         /// </summary>
         public int ExpirationDay { get; set; }
-        public WaresPrice GetWaresPrice=>  new() { CodeWares = Code, Name = Name, Price = Price.ToDecimal(), BarCodes = BarCodes?.Any() != true ? "" : string.Join(',', BarCodes), Unit = Unit, Article = Article, ActionType = ActionType, PriceOpt = PromotionPrice,Rest=Rest , Shelves = Shelves, PromotionName= PromotionName, PromotionEnd= PromotionEnd, ExpirationDay= ExpirationDay };
+        public WaresPrice GetWaresPrice(ParseBarCode pPBC)
+        {
+            return new() { CodeWares = Code, Name = Name, Price = Price.ToDecimal(), BarCodes = BarCodes?.Any() != true ? "" : string.Join(',', BarCodes), Unit = Unit, Article = Article, ActionType = ActionType, PriceOpt = PromotionPrice.ToDecimal(), Rest = Rest, Shelves = Shelves, PromotionName = PromotionName, PromotionEnd = PromotionEnd, ExpirationDay = ExpirationDay 
+            , ParseBarCode= pPBC  };        
+        }
       }
     class InputWarehouse
     {
