@@ -147,14 +147,16 @@ namespace BRB6.ViewModel
 
         private async Task LoadCartAsync()
         {
+            DocVM D = new() { TypeDoc = 6, NumberDoc = DateTime.Now.ToString("yyyyMMdd") };
             if (IsLoading) return;
             try
             {
                 IsLoading = true;
-                var Res=await c.SendDocsDataAsync(new() { TypeDoc = 6, NumberDoc = DateTime.Now.ToString("yyyyMMdd") } ,Wares);
+                var d = db.GetDocWares(D, eTypeResult.OnlyInput, eTypeOrder.Scan);
+                var Res=await c.SendDocsDataAsync(D ,d);
                 if(Res.Success)
                 {
-                    db.DelDocData(new() { TypeDoc = 6, NumberDoc = DateTime.Now.ToString("yyyyMMdd") });
+                    db.DelDocData(D);
                     LoadSampleData();
                 }
             }

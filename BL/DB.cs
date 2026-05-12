@@ -1,4 +1,5 @@
-﻿using BRB5;
+﻿using BL.Connector;
+using BRB5;
 using BRB5.Model;
 using BRB5.Model.DB;
 using SQLite;
@@ -646,7 +647,8 @@ and CodeWares in (select CodeWares from DocWares where TypeDoc={pDocId.TypeDoc} 
             catch (Exception e)
             {
                 FileLogger.WriteLogMessage(this, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-            }
+            }            
+
             return c > 0;
         }
 
@@ -686,7 +688,7 @@ and bc.BarCode=?
             return null;
         }
 
-        public ParseBarCode GetCodeWares(ParseBarCode pParseBarCode)
+        public ParseBarCode GetCodeWares(ParseBarCode pParseBarCode, bool pIsFirstRun = true)
         {
             string sql;
             if (pParseBarCode?.CodeWares > 0 && pParseBarCode?.BarCode?.Length == 13 && pParseBarCode?.Price > 0)
@@ -734,6 +736,12 @@ and bc.BarCode=?
                         break;
                     }
                 }
+            }
+            if(pParseBarCode.CodeWares==0 && pIsFirstRun)
+            {
+                BRB5.Model.Connector c = ConnectorBase.GetInstance();
+                AsyncHelper.RunSync(() =>c.LoadGuidDataFromCodeAsync(new() { BarCode = [pParseBarCode.BarCode] }));  
+                return GetCodeWares(pParseBarCode, false);
             }
             return pParseBarCode;
         }
@@ -894,14 +902,37 @@ and bc.BarCode=?
             return db.Query<RaitingTemplate>(Sql);
         }
 
-        public bool ReplaceDocWaresSample(IEnumerable<DocWaresSample> pDWS)
+        public bool ReplaceDocWaresSample(IEnumerable<DocWaresSample> pDWS, bool IsReload = false)
         {
             int rr = pDWS.Where(r => r.CodeReason > 0).Count();
             rr++;
             // string Sql = @"replace into DocWaresSample ( TypeDoc, NumberDoc, OrderDoc, CodeWares, Quantity, QuantityMin, QuantityMax, Name, BarCode, ExpirationDate, Expiration) values 
             //                                           (@TypeDoc,@NumberDoc,@OrderDoc,@CodeWares,@Quantity,@QuantityMin,@QuantityMax,@Name,@BarCode,@ExpirationDate,@Expiration)";
-            return db.ReplaceAll(pDWS) >= 0;
+            bool Res= db.ReplaceAll(pDWS) >= 0;
+            if(IsReload)
+                ReloadWares();
+            return Res;
         }
+        class R { public long CodeWares { get; set; } };
+        void ReloadWares()
+        {
+           Task.Run(async () => {               
+                string Sql = @"select distinct dws.codeWares from DocWaresSample dws
+ left join Wares w on w.CodeWares=dws.CodeWares
+ where w.CodeWares is null and dws.codeWares>0
+ union 
+ select distinct dw.codeWares from DocWares dw
+ left join Wares w on w.CodeWares=dw.CodeWares
+ where w.CodeWares is null and dw.CodeWares>0";
+               GetGuid Par = new(){ CodeWares = db.Query<R>(Sql).Select(r => r.CodeWares) };
+               if (Par.CodeWares?.Any()==true)
+                {
+                    BRB5.Model.Connector c = ConnectorBase.GetInstance();
+                    await c.LoadGuidDataFromCodeAsync(Par);
+                }
+            });
+        }
+
         public DocWaresSample GetDocWaresSample(DocWaresId pDW)
         {
             var r = db.Query<DocWaresSample>($"select * from DocWaresSample as dw  where dw.TypeDoc={pDW.TypeDoc}  and dw.NumberDoc= '{pDW.NumberDoc}' and dw.CodeWares={pDW.CodeWares}");
@@ -1285,10 +1316,10 @@ DE.ExpirationDateInput, DE.QuantityInput, CURRENT_DATE DateDoc
             string sql = "select * from DocWaresExpiration where DATE(DateDoc) = DATE('now') --and NumberDoc=?";
             return db.Query<DocWaresExpiration>(sql);//, pNumberDoc);
         }
-        public IEnumerable<Reason> GetReason(int pLevelReason, bool pIsWares = false)
+        public IEnumerable<BRB5.Model.DB.Reason> GetReason(int pLevelReason, bool pIsWares = false)
         {
             string Sql = $"Select * FROM Reason where Level={(pIsWares ? -1 : 1) * pLevelReason}";
-            return db.Query<Reason>(Sql);
+            return db.Query<BRB5.Model.DB.Reason>(Sql);
         }
 
         public IEnumerable<WaresAct> GetWaresAct(DocId Doc)

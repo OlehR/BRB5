@@ -128,7 +128,7 @@ namespace BL.Connector
                     Config.OnProgress?.Invoke(0.60);
                     if(res.Data!=null)
                         SaveGuide(res.Data, pIsFull);
-                    Config.OnProgress?.Invoke(0.60);
+                    Config.OnProgress?.Invoke(0.80);
                     var r=await GetRaitingTemplateAsync();
                     Info=$"Товарів=>{res?.Data?.Wares?.Count()}\nСкладів=>{res?.Data?.Warehouse?.Count()} \nШаблонів рейтингу =>{r?.Data?.Count()}";
                     FileLogger.WriteLogMessage(this, System.Reflection.MethodBase.GetCurrentMethod().Name, Info, eTypeLog.Full);
@@ -139,6 +139,38 @@ namespace BL.Connector
             }
             catch (Exception e)
             {                 
+                FileLogger.WriteLogMessage(this, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+                return new Result(e);
+            }
+        }
+
+
+        public override async Task<Result> LoadGuidDataFromCodeAsync(GetGuid pCode)
+        {
+            string Info = null;
+            try
+            {
+                Config.OnProgress?.Invoke(0.03);
+                AppContext.SetSwitch("System.Reflection.NullabilityInfoContext.IsSupported", true);
+                //string Data = Config.CodeWarehouse.ToString();
+                HttpResult result = await GetDataHTTP.HTTPRequestAsync(0, "DCT/GetGuidFromCode", pCode.ToJson(), "application/json", null, null, 2);
+                Config.OnProgress?.Invoke(0.4);
+                if (result.HttpState == eStateHTTP.HTTP_OK)
+                {
+                    var res = JsonConvert.DeserializeObject<Result<BRB5.Model.Guid>>(result.Result);
+                    Config.OnProgress?.Invoke(0.6);
+                    if (res.Data != null)
+                        SaveGuide(res.Data, false);
+                    Config.OnProgress?.Invoke(0.9);
+                    
+                    Info = $"Товарів=>{res?.Data?.Wares?.Count()}\nСкладів=>{res?.Data?.Warehouse?.Count()}";
+                    FileLogger.WriteLogMessage(this, System.Reflection.MethodBase.GetCurrentMethod().Name, Info, eTypeLog.Full);
+                }
+                Config.OnProgress?.Invoke(1);
+                return new Result(result) { Data = Info };
+            }
+            catch (Exception e)
+            {
                 FileLogger.WriteLogMessage(this, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
                 return new Result(e);
             }
@@ -277,7 +309,7 @@ namespace BL.Connector
                         if (res.State == 0)
                         {
                             db.ReplaceDoc(res.Data.Doc,TD?.IsOnlyHttp==true ?pTypeDoc : 0 );
-                            db.ReplaceDocWaresSample(res.Data.Wares);
+                            db.ReplaceDocWaresSample(res.Data.Wares,true);
                         }
                         return new Result();
                     }
@@ -306,7 +338,10 @@ namespace BL.Connector
 
                 var TD = Config.GetDocSetting(pDoc.TypeDoc);
                 int CodeApi = (TD?.CodeApiSave>0 ? TD?.CodeApiSave: TD?.CodeApi)??0;
-                string Data = new SaveDoc() { NameDCT = Config.SN, Doc = pDoc, Wares = pWares }.ToJson();
+                var DataD = new SaveDoc() { NameDCT = Config.SN, Doc = pDoc, 
+                    Wares = pWares 
+                };
+                string Data = DataD.ToJson();
                 if (CodeApi == 1) // || (Config.LocalCompany==eCompany.Sim23 && (pDoc.TypeDoc==5 || pDoc.TypeDoc == 14 || pDoc.TypeDoc == 15) )) //!!!Тимчасовий хак.
                 {
                     if (СonnectorLocal != null)

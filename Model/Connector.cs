@@ -31,6 +31,8 @@ namespace BRB5.Model
         //Завантаження довідників.
         public virtual async Task<Result> LoadGuidDataAsync(bool IsFull) => throw new NotImplementedException();
 
+        public virtual async Task<Result> LoadGuidDataFromCodeAsync(GetGuid pCode) => throw new NotImplementedException();
+
         //Робота з документами.
         /// <summary>
         /// Завантаження документів в ТЗД (HTTP)
@@ -267,4 +269,11 @@ namespace BRB5.Model
         public int CodeUser { get; set; }
     }
 
+    public class GetGuid 
+    {
+        public IEnumerable<long> CodeWares { get; set; }
+        public string StrCodeWares => CodeWares?.Any()==true?string.Join(",", CodeWares):"null";
+        public IEnumerable<string> BarCode { get; set; }
+        public string StrBarCode => BarCode?.Any()==true?string.Join(",", BarCode.Select(el=>$"'{el}'")):"null";
+    }
 }

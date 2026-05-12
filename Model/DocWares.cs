@@ -9,10 +9,10 @@ namespace BRB5.Model
     public class DocWaresId : DocId
     {
         public DocWaresId() { }
-        public DocWaresId(DocWaresId pDW)
+        public DocWaresId(DocWaresId pDW) : base(pDW)
         {
-            TypeDoc = pDW.TypeDoc;
-            NumberDoc = pDW.NumberDoc;
+            //TypeDoc = pDW.TypeDoc;
+            //NumberDoc = pDW.NumberDoc;
             OrderDoc = pDW.OrderDoc;
             CodeWares = pDW.CodeWares;
             Quantity = pDW.Quantity;
