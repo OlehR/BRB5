@@ -26,7 +26,7 @@ namespace BRB5.Model
         
         public decimal NumberOfReplenishment { get; set; }
         public string ProductArea { get; set; }
-        public decimal NumberOfMR { get; set; }
+        public decimal NumberOfMR { get; set; } = -1;
         //DateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         //public string GetJsonPSU() { return "[\"" + BarCode + "\"," + Status + ",\"" + format.format(DTInsert) + "\"," + PackageNumber + "," + CodeWares + "]"; }
         public LogPrice() { }

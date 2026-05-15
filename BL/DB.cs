@@ -695,12 +695,29 @@ and bc.BarCode=?
             {
                 sql = $"select count(*) from wares w where w.CodeWares={pParseBarCode.CodeWares}";
                 int n = db.ExecuteScalar<int>(sql);
-                if (n == 0)
+                if (n == 0)                
+                    pParseBarCode.CodeWares = 0;                
+            }
+
+            if(pParseBarCode.SKU!=0 && pParseBarCode.CodeWares == 0)
+            {
+                sql = @"select sku.CODEWARES,au.CodeUnit,au.Coefficient from SKU sku 
+                                left join ADDITIONUNIT au on sku.CODEWARES=au.CODEWARES and au.DefaultUnit=1
+                                where  sku.CodeSKU=?";
+                var rr = db.Query<AdditionUnit>(sql, pParseBarCode.SKU);
+                if ( rr?.Count == 1)
                 {
-                    pParseBarCode.CodeWares = 0;
+                    var r = rr.FirstOrDefault();
+                    if (r?.CodeWares > 0)
+                    {
+                        pParseBarCode.CodeWares = r.CodeWares;
+                        pParseBarCode.Coefficient = r.Coefficient;
+                        pParseBarCode.CodeUnit = r.CodeUnit;
+                        return pParseBarCode;
+                    }
                 }
             }
-            //long Res = 0;
+            
             sql = $@"select w.CODEWARES as CodeWares,w.NAMEWARES as NameWares,au.COEFFICIENT as Coefficient,bc.CODEUNIT as CodeUnit, ud.ABRUNIT as NameUnit,
                                  bc.BARCODE as BarCode ,w.CODEUNIT as BaseCodeUnit 
                                 from BARCODE bc 
@@ -773,13 +790,13 @@ and bc.BarCode=?
                     if ((!string.IsNullOrEmpty(pParseBarCode.BarCode) && pParseBarCode.CodeWares == 0 && pParseBarCode.Article == 0) || pParseBarCode.Price > 0)
                         GetCodeWares(pParseBarCode);
 
-                    if (pParseBarCode.CodeWares == 0 && pParseBarCode.SKU > 0)
+                    /*if (pParseBarCode.CodeWares == 0 && pParseBarCode.SKU > 0)
                     {
                         sql = $@"select s.CodeWares from SKU s where s.CodeSKU={pParseBarCode.SKU}";
                         pParseBarCode.CodeWares = db.ExecuteScalar<long>(sql);
-                    }
+                    }*/
 
-                    if (pParseBarCode.CodeWares > 0 || pParseBarCode.Article > 0 || pParseBarCode.SKU > 0)
+                    if (pParseBarCode.CodeWares > 0 || pParseBarCode.Article > 0 )
                     {
                         String Find = pParseBarCode.CodeWares > 0 ? $"w.CodeWares={pParseBarCode.CodeWares}" : $"w.ARTICLE={pParseBarCode.Article}";
                         sql = @"select w.CODEWARES,w.NAMEWARES as NameWares, au.COEFFICIENT as Coefficient,w.CODEUNIT as CodeUnit, ud.ABRUNIT as NameUnit,

@@ -117,7 +117,7 @@ namespace BL.Connector
             string Info = null;
             try
             {
-                Config.OnProgress?.Invoke(0.03);
+                Config.OnProgress?.Invoke(0.05);
                 AppContext.SetSwitch("System.Reflection.NullabilityInfoContext.IsSupported", true);
                 string Data = Config.CodeWarehouse.ToString();
                 HttpResult result = await GetDataHTTP.HTTPRequestAsync(0, "DCT/GetGuid", Data, "application/json", null,null,30);
@@ -125,10 +125,10 @@ namespace BL.Connector
                 if (result.HttpState == eStateHTTP.HTTP_OK)
                 {
                     var res = JsonConvert.DeserializeObject<Result<BRB5.Model.Guid>>(result.Result);
-                    Config.OnProgress?.Invoke(0.60);
+                    Config.OnProgress?.Invoke(0.55);
                     if(res.Data!=null)
                         SaveGuide(res.Data, pIsFull);
-                    Config.OnProgress?.Invoke(0.80);
+                    Config.OnProgress?.Invoke(0.99);
                     var r=await GetRaitingTemplateAsync();
                     Info=$"Товарів=>{res?.Data?.Wares?.Count()}\nСкладів=>{res?.Data?.Warehouse?.Count()} \nШаблонів рейтингу =>{r?.Data?.Count()}";
                     FileLogger.WriteLogMessage(this, System.Reflection.MethodBase.GetCurrentMethod().Name, Info, eTypeLog.Full);
@@ -158,7 +158,7 @@ namespace BL.Connector
                 if (result.HttpState == eStateHTTP.HTTP_OK)
                 {
                     var res = JsonConvert.DeserializeObject<Result<BRB5.Model.Guid>>(result.Result);
-                    Config.OnProgress?.Invoke(0.6);
+                    Config.OnProgress?.Invoke(0.55);
                     if (res.Data != null)
                         SaveGuide(res.Data, false);
                     Config.OnProgress?.Invoke(0.9);

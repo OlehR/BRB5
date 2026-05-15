@@ -85,10 +85,10 @@ namespace BL.Connector
             if (pG.UnitDimension?.Any() == true)
                 db.ReplaceUnitDimension(pG.UnitDimension, pIsFull);
             //Log.d(TAG, "GroupWares");
-            Config.OnProgress?.Invoke(0.95);
+            Config.OnProgress?.Invoke(0.93);
             if (pG.GroupWares?.Any() == true)
                 db.ReplaceGroupWares(pG.GroupWares, pIsFull);
-            Config.OnProgress?.Invoke(0.97);
+            Config.OnProgress?.Invoke(0.96);
             if (pG.Reason?.Any() == true)
                 db.ReplaceReason(pG.Reason, pIsFull);
             if (pG.SKU?.Any() == true)

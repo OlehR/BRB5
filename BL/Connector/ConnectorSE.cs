@@ -187,7 +187,7 @@ namespace BL.Connector
                 if (result.HttpState == eStateHTTP.HTTP_OK)
                 {
                     var res = JsonConvert.DeserializeObject<Result<BRB5.Model.Guid>>(result.Result);
-                    Config.OnProgress?.Invoke(0.60);
+                    Config.OnProgress?.Invoke(0.50);
                     SaveGuide(res.Data, pIsFull);                    
                 }                
                 //await GetDaysLeft();
