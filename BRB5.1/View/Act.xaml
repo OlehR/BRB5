@@ -38,11 +38,15 @@
             <Label Text="Факт"
                     Grid.Column="2"
                     BackgroundColor="White" />
-            <Label Text="Відхилення"
+                <Label Text="Відхилення"
                     Grid.Column="3"
-                    BackgroundColor="White" />
+                    BackgroundColor="White" >
+                    <Label.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="QuantitySort"/>
+                    </Label.GestureRecognizers>
+                </Label>
 
-        </Grid>
+            </Grid>
         <Grid VerticalOptions="StartAndExpand">
             <ScrollView>
                 <VerticalStackLayout x:Name="StackLayoutDocs" />

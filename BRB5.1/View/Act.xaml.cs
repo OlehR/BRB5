@@ -53,7 +53,7 @@ public partial class Act
         //MyDocWares = new ObservableCollection<WaresAct>(db.GetWaresAct(Doc)); 
         if (MyDocWares != null)
         {
-            PopulateStackLayoutDocs();
+            PopulateStackLayoutDocs(MyDocWares);
         }
     }
     
@@ -68,15 +68,15 @@ public partial class Act
 #endif
         }
     }
-    private void PopulateStackLayoutDocs()
+    private void PopulateStackLayoutDocs(IEnumerable<WaresAct> pDocWare)
     {
-        if (MyDocWares == null || !MyDocWares.Any())
+        if (pDocWare == null || !pDocWare.Any())
             return;
 
         StackLayoutDocs.Children.Clear(); 
         StackLayoutDocs.Spacing = 0;
 
-        foreach (var docWare in MyDocWares)
+        foreach (var docWare in pDocWare)
         {
             // Create the main container StackLayout
             var mainStackLayout = new StackLayout
@@ -109,6 +109,14 @@ public partial class Act
                 Text = docWare.NameWares,
                 BackgroundColor = Color.FromArgb("#ffffff"),
             };
+
+            var tapGesture = new TapGestureRecognizer();
+            tapGesture.Tapped += async (s, e) =>
+            {
+                await Navigation.PushAsync(new WareInfo(new ParseBarCode() { CodeWares = docWare.CodeWares }));
+            };
+            nameLabel.GestureRecognizers.Add(tapGesture);
+
             Grid.SetColumnSpan(nameLabel, 4); // Set column span using Grid.SetColumnSpan
             grid.Children.Add(nameLabel);
 
@@ -164,7 +172,37 @@ public partial class Act
             _ = toast.Show();
         }
     }
+    
+    private bool _isSorted = false;
+    private void QuantitySort(object sender, TappedEventArgs e)
+    {
+        if (sender is Label label)
+        {
+            if (!_isSorted)
+            {
+                // 1. Змінюємо колір фону на злегка сірий
+                label.BackgroundColor = Colors.LightGray; // або Color.FromArgb("#E0E0E0")
 
+                // 2. Сортуємо за зростанням (не змінюючи оригінальний MyDocWares)
+                var sortedList = MyDocWares.OrderBy(x => x.QuantityDifference).ToList();
+
+                // 3. Відображаємо відсортований список
+                PopulateStackLayoutDocs(sortedList);
+
+                _isSorted = true;
+            }
+            else
+            {
+                // 1. Повертаємо початковий білий колір
+                label.BackgroundColor = Colors.White;
+
+                // 2. Відображаємо оригінальний (початковий) список
+                PopulateStackLayoutDocs(MyDocWares);
+
+                _isSorted = false;
+            }
+        }
+    }
 #if ANDROID
     public void OnPageKeyDown(Keycode keyCode, KeyEvent e)
     {
@@ -178,5 +216,6 @@ public partial class Act
                 return;
         }
     }
+
 #endif
 }
