@@ -4,7 +4,7 @@
              x:Class="BRB6.View.CreateDoc"
              Title="Створення документу">
 
-    <Grid  RowDefinitions="Auto,1, Auto, Auto, *, Auto, 60" Padding="10" RowSpacing="10">
+    <Grid  RowDefinitions="Auto,1, Auto, Auto, *, Auto, 60" Padding="10" RowSpacing="5">
        
         <VerticalStackLayout Grid.Row="0" 
                      BindableLayout.ItemsSource="{Binding QuickAccessWarehouses}"
@@ -12,13 +12,13 @@
                      HorizontalOptions="Fill">
             <BindableLayout.ItemTemplate>
                 <DataTemplate>
-                    <Button Text="{Binding Name}" Clicked="OnTypeWh"  HeightRequest="45" HorizontalOptions="Fill" Margin="0,1" TextColor="White">
+                    <Button Text="{Binding Name}" Clicked="OnTypeWh" FontSize="24" Padding="0"  HeightRequest="45" HorizontalOptions="Fill" Margin="0,1" TextColor="Black">
                         <Button.Triggers>
                             <DataTrigger TargetType="Button" Binding="{Binding IsChecked}" Value="True">
                                 <Setter Property="BackgroundColor" Value="#2196F3" />
                             </DataTrigger>
                             <DataTrigger TargetType="Button" Binding="{Binding IsChecked}" Value="False">
-                                <Setter Property="BackgroundColor" Value="#9E9E9E" />
+                                <Setter Property="BackgroundColor" Value="#DBDBDB" />
                             </DataTrigger>
                         </Button.Triggers>
                     </Button> 
@@ -41,7 +41,6 @@
             <Picker Title="Оберіть торговий зал" ItemsSource="{Binding FilteredWarehousePicker}"  ItemDisplayBinding="{Binding Name}" SelectedItem="{Binding SelectedWarehouse}" />
             <Entry Placeholder="Фільтр..." x:Name="WarehouseFilterEntry" Grid.Column="1"  Unfocused="OnWarehouseFilterUnfocused" Completed="OnWarehouseFilterCompleted"/>
         </Grid>
-
 
         <Grid   Grid.Row="3"  IsVisible="{Binding IsVisibleReason}" >
             <Picker Title="Оберіть причину" ItemsSource="{Binding FilteredReasonPicker}" ItemDisplayBinding="{Binding NameReason}" SelectedItem="{Binding SelectedReason}" />
