@@ -87,10 +87,24 @@ namespace BRB5.Model
         //public string StrHttpResult { get { return StateHTTP.ToString(); } }
         public bool IsPriceOk { get { return PriceOld == Price && PriceOptOld == PriceOpt; } }
 
-        //Датa останнього приходу товару на склад торговий зал
+        /// <summary>
+        /// Датa останнього приходу товару на склад торговий зал
+        /// </summary>
         public DateTime LastIncomeDate { get; set; }
-        //Кількість останнього приходу товару на склад торговий зал
+        /// <summary>
+        /// Кількість останнього приходу товару на склад торговий зал
+        /// </summary>
         public decimal LastIncomeQuantity { get; set; }
+
+        /// <summary>
+        /// Датa останнього переміщення товару на склад
+        /// </summary>
+        public DateTime LastMovementDate { get; set; }
+        /// <summary>
+        /// Кількість останнього переміщення товару на склад
+        /// </summary>
+        public decimal LastMovementQuantity { get; set; }
+
         // Кількість АМ
         public int MinQuantity { get; set; }
         //Умови роботи з неліквідним товаром (100% повернення, списання)
