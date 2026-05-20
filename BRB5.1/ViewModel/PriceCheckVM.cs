@@ -259,6 +259,7 @@ namespace BRB6.ViewModel
             {
                 MrQuantity = 0;
                 IsMrDialogVisible = true;
+                ForMVVM.Focused("MRQuantityEntry");
             });
 
             IncrementCommand = new RelayCommand(() => MrQuantity++);

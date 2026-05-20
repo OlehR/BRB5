@@ -16,4 +16,8 @@ public partial class MRDialog : ContentView
 	}
     public void Show() => IsVisible = true;
     public void Hide() => IsVisible = false;
+    public void FocusEntry()
+    {
+        MainThread.BeginInvokeOnMainThread(() => MRQuantityEntry.Focus());       
+    }
 }

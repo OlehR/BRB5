@@ -8,6 +8,8 @@ using UtilNetwork;
 using BRB6.ViewModel;
 using CommunityToolkit.Maui.Core;
 using CommunityToolkit.Maui.Alerts;
+using BRB6.Template;
+
 
 
 #if ANDROID
@@ -106,6 +108,12 @@ namespace BRB6
         {
             if (pName == "BarCodeInput")
                 BarCodeFocused(null, null);
+            else if (pName == "MRQuantityEntry")
+            {
+                // Оскільки вікно стає видимим, ми викликаємо метод Focus 
+                // у нашого діалогу mrDialog
+                MRDialogView.FocusEntry();
+            }
             //else
             //    NumberOfReplenishment.Focus();
         }

@@ -32,9 +32,12 @@
                         <Button Grid.Column="0" Text="−" FontSize="24" FontAttributes="Bold"
                                 TextColor="#333" BackgroundColor="Transparent"  Padding="0"
                                 Command="{Binding DecrementCommand}" />
-                        <Label Grid.Column="1" Text="{Binding MrQuantity}"
+                        <!--<Label Grid.Column="1" Text="{Binding MrQuantity}"
                                FontSize="24" FontAttributes="Bold"
-                               HorizontalTextAlignment="Center" VerticalOptions="Center" />
+                               HorizontalTextAlignment="Center" VerticalOptions="Center" />-->
+                        <Entry Grid.Column="1"  Text="{Binding MrQuantity, Mode=TwoWay, UpdateSourceEventName=TextChanged}"
+                               Keyboard="Numeric" HorizontalTextAlignment="Center"  VerticalOptions="Center" FontSize="24" 
+                               x:Name="MRQuantityEntry" FontAttributes="Bold" TextColor="Black" BackgroundColor="Transparent" />
                         <Button Grid.Column="2" Text="+" FontSize="24" FontAttributes="Bold" Padding="0"
                                 TextColor="#333" BackgroundColor="Transparent"
                                 Command="{Binding IncrementCommand}" />
