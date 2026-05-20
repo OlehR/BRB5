@@ -125,7 +125,7 @@
                                 <Button Grid.Column="0" Text="—" FontSize="40"  TextColor="#7B2CBF" BackgroundColor="Transparent" Margin="0,-4,0,0"
                                         Command="{Binding ModifyValueCommand}" CommandParameter="-1" Padding="0" HorizontalOptions="Fill" VerticalOptions="Center" />
 
-                                <controls:CustomEntry Margin="0" Grid.Column="1" Text="{Binding NumberOfReplenishment, Mode=TwoWay}" Keyboard="Numeric"
+                                <controls:CustomEntry Margin="0" Grid.Column="1" Text="{Binding NumberOfReplenishment, Mode=TwoWay, UpdateSourceEventName='TextChanged'}" Keyboard="Numeric"
                                                       HorizontalOptions="Center" VerticalOptions="Center" FontSize="28" FontAttributes="Bold"  />
 
                                 <Button Grid.Column="2" Text="+" FontSize="40" TextColor="#7B2CBF" BackgroundColor="Transparent" 
