@@ -1192,7 +1192,7 @@ order by gw.NameGroup";
                     String Find = pParseBarCode.CodeWares > 0 ? $"w.CodeWares={pParseBarCode.CodeWares}" : $"w.ARTICLE={pParseBarCode.Article}";
                     sql = $@"select  DES.NumberDoc,DES.DocId, w.CodeWares,w.NAMEWARES as NameWares, au.COEFFICIENT as Coefficient,w.CODEUNIT as CodeUnit, ud.ABRUNIT as NameUnit,
                             ( select group_concat(bc.BarCode,',') from BarCode bc where bc.CodeWares=w.CodeWares ) as BARCODE  ,w.CODEUNIT as BaseCodeUnit,
-                            des.Quantity,des.Expiration,des.ExpirationDate,des.DaysLeft,des.DateDoc
+                            des.Quantity,des.Expiration,des.ExpirationDate, coalesce(des.DaysLeft, w.DaysLeft) DaysLeft, des.DateDoc
                                 from WARES w 
                                 join ADDITIONUNIT au on w.CODEWARES=au.CODEWARES and au.CODEUNIT=w.CODEUNIT 
                                 join UNITDIMENSION ud on w.CODEUNIT=ud.CODEUNIT 
