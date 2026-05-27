@@ -1351,7 +1351,7 @@ from
         where dw.TypeDoc={Doc.TypeDoc}  and dw.NumberDoc= '{Doc.NumberDoc}'
      group by dw.CodeWares,dw.CodeReason) dw
      join wares w on dw.CodeWares=w.CodeWares
-group by dw.CodeWares, w.NameWares
+group by dw.CodeWares, w.NameWares, w.Article
 ";
             try
             {
