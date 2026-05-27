@@ -192,11 +192,10 @@ namespace BRB6.View
 
                 int currentCol = 0;
 
-                // --- 2. Код товару ---
-                string codeText = IsUseArticle ? docWare.Article : docWare.CodeWares.ToString();
+                // --- 2. Код товару ---                
                 var codeLabel = new Label
                 {
-                    Text = codeText,
+                    Text = docWare.ViewCode,
                     BackgroundColor = Color.FromArgb(docWare.GetBackgroundColor)
                 };
 

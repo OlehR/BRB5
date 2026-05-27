@@ -122,7 +122,7 @@ public partial class Act
 
             var codeLabel = new Label
             {
-                Text = docWare.CodeWares.ToString(),
+                Text = docWare.ViewCode,
                 BackgroundColor = Color.FromArgb("#ffffff"),
             };
             Grid.SetRow(codeLabel, 1);
