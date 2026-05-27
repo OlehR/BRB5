@@ -8,7 +8,9 @@ namespace BRB5.Model
 {
     public class WaresAct
     {
+        public string ViewCode => Config.IsUseArticle ? Article : CodeWares.ToString();
         public long CodeWares { get; set; }
+        public string Article { get; set; }
         public string NameWares { get; set; }
         public decimal Plan { get; set; }
         public decimal Fact { get; set; }
