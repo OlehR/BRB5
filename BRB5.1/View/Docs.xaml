@@ -1,120 +1,84 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <local:BaseContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
                        xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" 
                        xmlns:local="clr-namespace:BRB6.View"
-                      xmlns:Model="clr-namespace:BRB5.Model;assembly=BRB5.Model"
+                       xmlns:Model="clr-namespace:BRB5.Model;assembly=BRB5.Model"
                        x:Class="BRB6.View.Docs">
     <ContentPage.Content>
-        <StackLayout>
-            <Grid IsVisible="{Binding IsVisZKPO}" HeightRequest="60">
-                <Frame Style="{StaticResource FrameStyle}">
-                    <local:CustomEntry Style="{StaticResource EntryStyle}"
-                                          Placeholder="ЗКПО"
-                                          Text="{Binding ZKPOstr}"                                          
-                                          x:Name="ZKPOEntry"
-                                          Completed="FilterDocs" />
-                    <!--Keyboard="{OnPlatform Numeric, iOS=Default}"-->
-                </Frame>
+        <Grid RowDefinitions="*, Auto">
+
+            <Grid Grid.Row="0">
+
+                <StackLayout>
+                    <Grid IsVisible="{Binding IsVisZKPO}" HeightRequest="60">
+                        <Frame Style="{StaticResource FrameStyle}">
+                            <local:CustomEntry Style="{StaticResource EntryStyle}"
+                                               Placeholder="ЗКПО"
+                                               Text="{Binding ZKPOstr}"                                          
+                                               x:Name="ZKPOEntry"
+                                               Completed="FilterDocs" />
+                        </Frame>
+                    </Grid>
+
+                    <Grid IsVisible="{Binding IsVisBarCode}" HeightRequest="150" x:Name="GridZxing"/>
+
+                    <ListView ItemsSource="{Binding MyDocsR}" x:Name="ListDocs" 
+                              VerticalOptions="FillAndExpand"
+                              SeparatorVisibility="None"                      
+                              CachingStrategy="RecycleElement"
+                              HasUnevenRows="True">
+                        <ListView.ItemTemplate>
+                            <DataTemplate x:DataType="Model:DocVM">
+                                <ViewCell>
+                                    <Grid RowSpacing="1" ColumnSpacing="1" Padding="1" BackgroundColor="#adaea7">
+                                        <Grid.GestureRecognizers>
+                                            <TapGestureRecognizer Tapped="OpenDoc" />
+                                        </Grid.GestureRecognizers>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="1*" />
+                                            <ColumnDefinition Width="1*" />
+                                        </Grid.ColumnDefinitions>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto" />
+                                            <RowDefinition Height="Auto" />
+                                            <RowDefinition Height="Auto" />
+                                            <RowDefinition Height="Auto" />
+                                        </Grid.RowDefinitions>
+
+                                        <Label Text="{Binding DateDoc}" BackgroundColor="{Binding GetColor}" />
+                                        <Label Text="{Binding NumberDoc}" Grid.Column="1" BackgroundColor="{Binding GetColor}" />
+                                        <Label Text="{Binding Description}" Grid.ColumnSpan="2" Grid.Row="1" BackgroundColor="{Binding GetColor}" />
+                                        <Label Text="{Binding ExtInfo}" IsVisible="{Binding IsVisExtInfo}" BackgroundColor="{Binding GetColor}" Grid.ColumnSpan="2" Grid.Row="2" />
+                                        <Label Text="{Binding NameUser}" IsVisible="{Binding IsVisNameUser}" BackgroundColor="{Binding GetColor}" Grid.ColumnSpan="2" Grid.Row="3" />
+                                    </Grid>
+                                </ViewCell>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ListView>
+                    <BoxView HeightRequest="60"  IsVisible="{Binding IsVisButtonCreateDoc}" Color="White" HorizontalOptions="FillAndExpand" />
+                </StackLayout>
+
+                <Button Text="Створити документ" IsVisible="{Binding IsVisButtonCreateDoc}" Clicked="CreateDoc" VerticalOptions="End" HorizontalOptions="Center"
+                        BackgroundColor="#4CAF50" TextColor="White" FontAttributes="Bold" FontSize="20" CornerRadius="8"
+                        HeightRequest="50" WidthRequest="250" Margin="0,0,0,5" />
             </Grid>
 
-            <Grid IsVisible="{Binding IsVisBarCode}" HeightRequest="150" x:Name="GridZxing"/>
-            
-            <ListView ItemsSource="{Binding MyDocsR}" x:Name="ListDocs" VerticalOptions="CenterAndExpand"
-                      SeparatorVisibility="None"                      
-                      CachingStrategy="RecycleElement"
-                      HasUnevenRows="True" >
-                <ListView.ItemTemplate>
-                    <DataTemplate  x:DataType="Model:DocVM">
-                        <ViewCell>
-                            <Grid RowSpacing="1"
-              ColumnSpacing="1"
-              Padding="1"
-              BackgroundColor="#adaea7">
-                                <Grid.GestureRecognizers>
-                                    <TapGestureRecognizer Tapped="OpenDoc" />
-                                </Grid.GestureRecognizers>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="1*" />
-                                    <ColumnDefinition Width="1*" />
-                                </Grid.ColumnDefinitions>
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="Auto" />
-                                    <RowDefinition Height="Auto" />
-                                    <RowDefinition Height="Auto" />
-                                    <RowDefinition Height="Auto" />
-                                </Grid.RowDefinitions>
-
-                                <Label Text="{Binding DateDoc}"
-                                        BackgroundColor="{Binding GetColor}" />
-
-                                <Label Text="{Binding NumberDoc}"
-                                        Grid.Column="1"
-                                        BackgroundColor="{Binding GetColor}" />
-                                <Label Text="{Binding Description}"
-                                        Grid.ColumnSpan="2"
-                                        Grid.Row="1"
-                                        BackgroundColor="{Binding GetColor}" />
-
-                                <Label Text="{Binding ExtInfo}"
-                                       IsVisible="{Binding IsVisExtInfo}"
-                                        BackgroundColor="{Binding GetColor}"
-                                        Grid.ColumnSpan="2"
-                                        Grid.Row="2" />
-                                <Label Text="{Binding NameUser}"
-                                       IsVisible="{Binding IsVisNameUser}"
-                                        BackgroundColor="{Binding GetColor}"
-                                        Grid.ColumnSpan="2"
-                                        Grid.Row="3" />
-                            </Grid>
-                        </ViewCell>
-                    </DataTemplate>
-                </ListView.ItemTemplate>
-            </ListView>
-
-            <StackLayout VerticalOptions="End" Orientation="Horizontal" Spacing="1">
-                <Label Text="F1-"
-                       IsVisible="{Binding IsViewOut}"
-                       FontSize="16"
-                       TextColor="#ff5c5c"
-                       VerticalOptions="Center" />
-                <Label Text="{Binding F1Text}"
-                       IsVisible="{Binding IsViewOut}"
-                       FontSize="18"
-                       TextColor="#816f20">
+            <StackLayout Grid.Row="1" Orientation="Horizontal" Spacing="1" BackgroundColor="White" Padding="0,5">
+                <Label Text="F1-" IsVisible="{Binding IsViewOut}" FontSize="16" TextColor="#ff5c5c" VerticalOptions="Center" />
+                <Label Text="{Binding F1Text}" IsVisible="{Binding IsViewOut}" FontSize="18" TextColor="#816f20">
                     <Label.GestureRecognizers>
                         <TapGestureRecognizer Tapped="ZKPO" />
                     </Label.GestureRecognizers>
                 </Label>
-                <Label Text="F2-"
-                       VerticalOptions="Center"
-                       FontSize="16"
-                       TextColor="#ff5c5c" />
-                <Label Text="↑"
-                       FontSize="18"
-                       TextColor="#816f20">
-                </Label>
-                <Label Text="F3-" FontSize="16"
-                       TextColor="#ff5c5c"
-                       VerticalOptions="Center" />
-                <Label Text="вибір"
-                       FontSize="18"
-                       TextColor="#816f20">
-                </Label>
-                <Label Text="F4-"
-                       FontSize="16"
-                       TextColor="#ff5c5c"
-                       VerticalOptions="Center" />
-                <Label Text="↓"
-                       FontSize="18"
-                       TextColor="#816f20">
-                </Label>                
+                <Label Text="F2-" VerticalOptions="Center" FontSize="16" TextColor="#ff5c5c" />
+                <Label Text="↑" FontSize="18" TextColor="#816f20" />
+                <Label Text="F3-" FontSize="16" TextColor="#ff5c5c" VerticalOptions="Center" />
+                <Label Text="вибір" FontSize="18" TextColor="#816f20" />
+                <Label Text="F4-" FontSize="16" TextColor="#ff5c5c" VerticalOptions="Center" />
+                <Label Text="↓" FontSize="18" TextColor="#816f20" />
 
                 <Grid IsVisible="{Binding IsVisScan}">
-                    <Label Text="штрихкод"
-                           IsVisible="{Binding IsViewOut}"
-                           FontSize="18"
-                           TextColor="#816f20">
+                    <Label Text="штрихкод" IsVisible="{Binding IsViewOut}" FontSize="18" TextColor="#816f20">
                         <Label.GestureRecognizers>
                             <TapGestureRecognizer Tapped="TabBarCode" />
                         </Label.GestureRecognizers>
@@ -127,6 +91,7 @@
                     </Label.GestureRecognizers>
                 </Label>
             </StackLayout>
-        </StackLayout>
+
+        </Grid>
     </ContentPage.Content>
 </local:BaseContentPage>

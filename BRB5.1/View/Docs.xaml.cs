@@ -34,6 +34,7 @@ namespace BRB6.View
         public bool IsVisScan { get { return Config.IsVisScan; } }
         CameraView BarcodeScaner;
         public bool IsVisCreateDoc { get { return TypeDoc.TypeCreateDoc != eTypeCreateDoc.NotDefined; } }
+        public bool IsVisButtonCreateDoc { get { return IsVisCreateDoc && Config.LocalCompany==eCompany.Sim23; } }
         //public bool IsVisCreateDoc { get { return true; } }
 
         private DocVM CreatedDoc = null;
@@ -124,15 +125,15 @@ namespace BRB6.View
         }
         void BarCode(string pBarCode) { MyDocsR = Bl.SetColorType(db.GetDoc(TypeDoc, pBarCode, null));  }
         public void Dispose() {  Config.BarCode -= BarCode;  }
-        private async void CreateDoc(object sender, TappedEventArgs e)
+        private async void CreateDoc(object sender, EventArgs e)
         {
             CreatedDoc = null;
             if (IsVisCreateDoc)
             {
                 await Navigation.PushAsync(new CreateDoc(TypeDoc, ActionCreatedDoc));               
             }
-
         }
+
         void ActionCreatedDoc(DocVM pCreatedDoc)
         {
             CreatedDoc = pCreatedDoc;
@@ -231,6 +232,7 @@ namespace BRB6.View
                return;
            }
          }
+
 #endif
     }
 }
