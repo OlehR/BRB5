@@ -125,9 +125,15 @@
 
             <StackLayout VerticalOptions="End" Orientation="Horizontal" Spacing="2">
                 <Label Text="F2" VerticalOptions="Center" FontSize="16" TextColor="#ff5c5c" />
-                <Label Text="Підбір" FontSize="16" TextColor="#816f20">
+                <Label Text="Зберегти" FontSize="16" TextColor="#816f20">
                     <Label.GestureRecognizers>
                         <TapGestureRecognizer Command="{Binding F2Command}" />
+                    </Label.GestureRecognizers>
+                </Label>
+                <Label Text="F3" VerticalOptions="Center" FontSize="16" TextColor="#ff5c5c" />
+                <Label Text="Підбір" FontSize="16" TextColor="#816f20">
+                    <Label.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding F3Command}" />
                     </Label.GestureRecognizers>
                 </Label>
                 <Label Text="F4" FontSize="16" IsVisible="{Binding IsVisF4}" TextColor="#ff5c5c" VerticalOptions="Center" />

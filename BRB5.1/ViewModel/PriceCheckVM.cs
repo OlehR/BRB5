@@ -52,6 +52,7 @@ namespace BRB6.ViewModel
         public ICommand PrintBlockCommand { get; }
         public ICommand AddPrintBlockCommand { get; }
         public ICommand F2Command { get; }
+        public ICommand F3Command { get; }
         public ICommand F4Command { get; }
         public ICommand F5Command { get; }
         public ICommand DoubleScanReactCommand { get; }
@@ -239,9 +240,16 @@ namespace BRB6.ViewModel
 
             F2Command = new RelayCommand(() =>
             {
+                var Res=bl.SendLogPrice();
+                ForMVVM.DisplayAlert("Збереження", Res?.TextError??"Помилка збереження", "OK");
+            });
+
+            F3Command = new RelayCommand(() =>
+            {
                 IsVisRepl = !IsVisRepl;
                 if (IsVisRepl) ForMVVM.Focused("NumberOfReplenishment");
             });
+
 
             F4Command = new RelayCommand(() => IsOnline = !IsOnline);
 

@@ -10,6 +10,7 @@ namespace BRB5.Model
     public class DocWaresEx:DocWares
     {               
         //public DocSetting DocSetting;    
+        public string ViewCode => Config.IsUseArticle ? Article :CodeWares.ToString();
         public string NameWares{ get; set; }
         public int Coefficient{ get; set; }
         public string Article { get; set; }

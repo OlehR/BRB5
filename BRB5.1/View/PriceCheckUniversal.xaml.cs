@@ -137,6 +137,7 @@ namespace BRB6.View
             {
                 case Keycode.F1: vm.PrintBlockCommand.Execute(null); return;
                 case Keycode.F2: vm.F2Command.Execute(null); return;
+                case Keycode.F3: vm.F3Command.Execute(null); return;
                 case Keycode.F4: vm.F4Command.Execute(null); return;
                 case Keycode.F5: vm.F5Command.Execute(null); return;
                 case Keycode.F6: vm.PrintOneCommand.Execute(null); return;

@@ -20,30 +20,42 @@ namespace BL
 
         public DB db = DB.GetDB();
         public BRB5.Model.Connector c = ConnectorBase.GetInstance();
-        public void SendLogPrice()
+        public Result SendLogPrice()
         {
+            Result res=null;
+            int All=0;
             for (int i = 0; i < 20; i++)
             {
                 var List = db.GetSendData(100);
-                if (List == null && List.Count() == 0)
-                    break;
-
-                Result res = c.SendLogPrice(List);
-                if (res.State == 0)
+                if (List?.Any() == true)
                 {
-                    try
+                    All += List.Count();
+                    res = c.SendLogPrice(List);
+                    if (res.State == 0)
                     {
-                        db.AfterSendData();
+                        try
+                        {
+                            db.AfterSendData();
+                        }
+                        catch (Exception e)
+                        {
+                            FileLogger.WriteLogMessage(this, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+                            break;
+                        }
                     }
-                    catch (Exception e)
-                    {
-                        FileLogger.WriteLogMessage(this, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+                    else
                         break;
-                    }
                 }
                 else
+                {
+                    if (res==null && All == 0) 
+                        res= new Result(0, "Немає даних для відправки");
                     break;
+                }
             }
+            if(All>0 && res != null)
+                res.TextError = $"Збережено {All} записів. {res.TextError}";
+            return res;
 
         }
 
