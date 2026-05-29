@@ -2,6 +2,7 @@
 using BRB5;
 using BRB5.Model;
 using BRB5.Model.DB;
+using Microsoft.VisualBasic;
 using SQLite;
 using System;
 using System.Collections;
@@ -124,6 +125,7 @@ CREATE TABLE Doc (
     Color            INTEGER,
     DTStart          TIMESTAMP DEFAULT null,
     DTEnd            TIMESTAMP DEFAULT null,
+    DTUpdate         TIMESTAMP DEFAULT null,
     DTInsert         TIMESTAMP DEFAULT (DATETIME('NOW', 'LOCALTIME') ),
     CountWares      INTEGER   DEFAULT (0)
 );
@@ -138,6 +140,7 @@ CREATE TABLE DocWares (
     QuantityOld NUMBER ,   
     CodeReason  INTEGER NOT NULL DEFAULT (0),
     ExpirationDate TIMESTAMP,
+    DTUpdate    TIMESTAMP DEFAULT (DATETIME('NOW', 'LOCALTIME') ),
     DTInsert    TIMESTAMP       DEFAULT (DATETIME('NOW', 'LOCALTIME') )
 );
 --CREATE INDEX DocWaresTNO ON DocWares (TypeDoc, NumberDoc, OrderDoc, CodeReason);
@@ -266,7 +269,9 @@ CREATE TABLE DocWaresExpiration(
     DocId      TEXT NOT NULL,   
     CodeWares   INTEGER         NOT NULL,    
     QuantityInput     NUMBER,  
-    ExpirationDateInput TIMESTAMP
+    ExpirationDateInput TIMESTAMP,
+    DTUpdate         TIMESTAMP DEFAULT (DATETIME('NOW', 'LOCALTIME') ),
+    DTInsert         TIMESTAMP DEFAULT (DATETIME('NOW', 'LOCALTIME') )
 );
 CREATE UNIQUE INDEX DocWaresExpirationTNC ON DocWaresExpiration (DateDoc, NumberDoc, DocId, CodeWares);
 
@@ -276,15 +281,8 @@ CREATE TABLE SKU (
     CodeUnit           INTEGER  NOT NULL);
 CREATE UNIQUE INDEX SKUId ON SKU (CodeSKU);
 ";
-        readonly int Ver = 19;
-        string SqlTo6 = @"alter TABLE Reason add  Level INTEGER  DEFAULT (0);
-drop index ReasonId;
-CREATE UNIQUE INDEX ReasonId ON Reason (Level,CodeReason);";
-        string SqlTo7 = "alter TABLE Doc add CodeReason INTEGER DEFAULT (0)";
-        string SqlTo8 = "alter TABLE Warehouse add CodeTM INTEGER DEFAULT (0)";
-        string SqlTo9 = "alter TABLE DocWaresSample add CodeReason  INTEGER NOT NULL DEFAULT (0)";
-        string SqlTo10 = @"alter table wares  DROP COLUMN Article;
-alter table wares  ADD COLUMN Article INTEGER;";
+        readonly int Ver = 20;
+        
         string SqlTo11 = @"CREATE TABLE SKU (
     CodeSKU          INTEGER  NOT NULL,
     CodeWares          INTEGER  NOT NULL,    
@@ -305,6 +303,8 @@ CREATE INDEX TypeWarehouseId ON TypeWarehouse (Code);";
         string SqlTo16 = @"alter TABLE DocWaresExpirationSample add IsHide INTEGER NOT NULL DEFAULT (0)";
         string SqlTo18 = @"alter TABLE LogPrice add NumberOfMR NUMERIC";
         string SqlTo19 = @"alter TABLE DocWaresExpirationSample add DateDoc DATE";
+        string SqlTo20 = @"alter TABLE DocWares  add  DTUpdate TIMESTAMP DEFAULT (DATETIME('NOW', 'LOCALTIME') );
+alter TABLE Doc  add  DTUpdate TIMESTAMP DEFAULT null;";
 
         public static string PathNameDB { get { return Path.Combine(BaseDir, NameDB); } }
 
@@ -317,20 +317,10 @@ CREATE INDEX TypeWarehouseId ON TypeWarehouse (Code);";
             else
                 OpenDB();
 
-            if (GetVersion < 5)
+            if (GetVersion < 10)
                 CreateDB();
             else
-            {
-                if (GetVersion < 6)
-                    SetSQL(SqlTo6, 6);
-                if (GetVersion < 7)
-                    SetSQL(SqlTo7, 7);
-                if (GetVersion < 8)
-                    SetSQL(SqlTo8, 8);
-                if (GetVersion < 9)
-                    SetSQL(SqlTo9, 9);
-                if (GetVersion < 10)
-                    SetSQL(SqlTo10, 10);
+            {                
                 if (GetVersion < 11)
                     SetSQL(SqlTo11, 11);
                 if (GetVersion < 12)
@@ -349,6 +339,8 @@ CREATE INDEX TypeWarehouseId ON TypeWarehouse (Code);";
                     SetSQL(SqlTo18, 18);
                 if (GetVersion < 19)
                     SetSQL(SqlTo19, 19);
+                if (GetVersion < 20)
+                    SetSQL(SqlTo20, 20);
             }
         }
 
@@ -620,14 +612,15 @@ and CodeWares in (select CodeWares from DocWares where TypeDoc={pDocId.TypeDoc} 
                                               CodeReason, 
                                               IdTemplate, ExtInfo, NameUser, BarCode, Description, 
                                               State,
-                                              IsControl, NumberDoc1C, DateOutInvoice, NumberOutInvoice, Color,DTStart,DTEnd,CountWares) values 
+                                              IsControl, NumberDoc1C, DateOutInvoice, NumberOutInvoice, Color,DTStart,DTEnd,CountWares,DTUpdate) values 
                                             (?,?,?,?,
                                              case when ?>0 then ? else (select max(d.CodeReason) from Doc d where d.Typedoc=? and d.numberdoc=? ) end,
                                              ?,?,?,?,?,
                                              case when ?>0 then ? else (select max(d.state) from Doc d where d.Typedoc=? and d.numberdoc=?) end,
                                              ?,?,?,?,?,
 (select max(d.DTStart) from Doc d where d.Typedoc=? and d.numberdoc=? ),
-(select max(d.DTEnd) from Doc d where d.Typedoc=? and d.numberdoc=? ),?
+(select max(d.DTEnd) from Doc d where d.Typedoc=? and d.numberdoc=? ),?,
+(select max(d.DTUpdate) from Doc d where d.Typedoc=? and d.numberdoc=?)
 )";
 
             try
@@ -640,7 +633,7 @@ and CodeWares in (select CodeWares from DocWares where TypeDoc={pDocId.TypeDoc} 
                                              d.IdTemplate, d.ExtInfo, d.NameUser, d.BarCode, d.Description,
                                              d.State, d.State, d.TypeDoc, d.NumberDoc,
                                              d.IsControl, d.NumberDoc1C, d.DateOutInvoice, d.NumberOutInvoice, d.Color + 7777,
-                                             d.TypeDoc, d.NumberDoc, d.TypeDoc, d.NumberDoc, d.CountWares);
+                                             d.TypeDoc, d.NumberDoc, d.TypeDoc, d.NumberDoc, d.CountWares, d.TypeDoc, d.NumberDoc);
                     }
                 });
             }
@@ -654,8 +647,10 @@ and CodeWares in (select CodeWares from DocWares where TypeDoc={pDocId.TypeDoc} 
 
         public IEnumerable<DocVM> GetDoc(TypeDoc pTypeDoc, string pBarCode = null, string pExFilrer = null)
         {
-            string Sql = $@"select d.*, Wh.Address as Address,d.State as Color from Doc d 
+            string Sql = $@"select d.*, Wh.Address as Address,d.State as Color, case when dwu.DTUpdate>coalesce( d.DTUpdate, '0001-01-01') then 1 else 0 end as IsNeedSave 
+from Doc d 
  left join Warehouse  Wh on d.CodeWarehouse = wh.number 
+ left join (select NumberDoc,max(DTUpdate) as DTUpdate from DocWares dw where TypeDoc = {pTypeDoc.CodeDoc} ) dwu on  dwu.numberdoc=d.numberdoc
                                 where TypeDoc = {pTypeDoc.CodeDoc} and DateDoc >= date(datetime(CURRENT_TIMESTAMP,'-{pTypeDoc.DayBefore} day'))" +
                                 (string.IsNullOrEmpty(pBarCode) ? "" : $" and BarCode like'%{pBarCode}%'") +
                                 (string.IsNullOrEmpty(pExFilrer) ? "" : $" and ExtInfo like'%{pExFilrer}%'") + @"
@@ -664,11 +659,12 @@ and CodeWares in (select CodeWares from DocWares where TypeDoc={pDocId.TypeDoc} 
             var res = db.Query<DocVM>(Sql);
             if (res.Count == 0 && !string.IsNullOrEmpty(pBarCode))
             {
-                Sql = $@"select d.*, Wh.Address as Address,d.State as Color  
+                Sql = $@"select d.*, Wh.Address as Address,d.State as Color, case when dwu.DTUpdate>coalesce( d.DTUpdate, '0001-01-01') then 1 else 0 end as IsNeedSave 
 from Doc d 
  left join Warehouse  Wh on d.CodeWarehouse = wh.number 
  Join DOCWARESSAMPLE dw on dw.numberdoc=d.numberdoc and dw.TypeDoc=d.TypeDoc
- join barcode bc on dw.codewares=bc.CODEWARES 
+ join barcode bc on dw.codewares=bc.CODEWARES
+left join (select NumberDoc,max(DTUpdate) as DTUpdate from DocWares dw where TypeDoc = {pTypeDoc.CodeDoc} ) dwu on  dwu.numberdoc=d.numberdoc
    where d.TypeDoc = {pTypeDoc.CodeDoc} and DateDoc >= date(datetime(CURRENT_TIMESTAMP,'-{pTypeDoc.DayBefore} day'))
 and bc.BarCode=?
  order by DateDoc DESC";
@@ -872,11 +868,15 @@ and bc.BarCode=?
         {
             FileLogger.WriteLogMessage(this, "ReplaceRaitingDocItem", $"RaitingDocItem=>{pR.ToJSON()}");
             string Sql = @"replace into RaitingDocItem ( TypeDoc, NumberDoc, Id, Rating, QuantityPhoto, Note) values (?, ?, ?, ?, ?, ?)";
-
             var res = db.Execute(Sql, pR.TypeDoc, pR.NumberDoc, pR.Id, pR.Rating, pR.QuantityPhoto, pR.Note) >= 0;
+            UpdateDocDTStartDTEnd(pR);
+            return res;
+        }
 
-            Sql = $@"update doc set  DTStart = case when DTStart is null then (DATETIME('NOW', 'LOCALTIME')) else DTStart end,
-        DTEnd = (DATETIME('NOW', 'LOCALTIME')) where  Typedoc={pR.TypeDoc} and numberdoc={pR.NumberDoc}";
+        void UpdateDocDTStartDTEnd(DocId pDoc)
+        {
+            string Sql = $@"update doc set  DTStart = case when DTStart is null then (DATETIME('NOW', 'LOCALTIME')) else DTStart end,
+        DTEnd = (DATETIME('NOW', 'LOCALTIME')) where  Typedoc={pDoc.TypeDoc} and numberdoc={pDoc.NumberDoc}";
             try
             {
                 db.Execute(Sql);
@@ -885,8 +885,9 @@ and bc.BarCode=?
             {
                 FileLogger.WriteLogMessage(this, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
             }
-            return res;
+
         }
+
 
         public bool ReplaceRaitingTemplateItem(IEnumerable<RaitingTemplateItem> pR)
         {
@@ -967,8 +968,8 @@ and bc.BarCode=?
                 if (pDW.OrderDoc == 0)
                     pDW.OrderDoc = db.ExecuteScalar<int>($"select coalesce(max(OrderDoc),0)+1 from DocWares where TypeDoc={pDW.TypeDoc} and NumberDoc='{pDW.NumberDoc}'");
 
-                string Sql = $@"replace into DocWares ( TypeDoc, NumberDoc, OrderDoc, CodeWares, Quantity, QuantityOld, CodeReason,ExpirationDate) values 
-                                                 ({pDW.TypeDoc},'{pDW.NumberDoc}',{pDW.OrderDoc},{pDW.CodeWares},{pDW.Quantity},{pDW.QuantityOld},{pDW.CodeReason},'{pDW.ExpirationDate}')";
+                string Sql = $@"replace into DocWares ( TypeDoc, NumberDoc, OrderDoc, CodeWares, Quantity, QuantityOld, CodeReason,ExpirationDate,DtUpdate) values 
+                                                 ({pDW.TypeDoc},'{pDW.NumberDoc}',{pDW.OrderDoc},{pDW.CodeWares},{pDW.Quantity},{pDW.QuantityOld},{pDW.CodeReason},'{pDW.ExpirationDate}',DATETIME('NOW', 'LOCALTIME'))";
 
                 return db.Execute(Sql) >= 0;
             }
@@ -983,10 +984,18 @@ and bc.BarCode=?
             return db.Query<Warehouse>(Sql);
         }
 
-        public bool SetStateDoc(DocVM pDoc)
+        public bool SetStateDoc(Doc pDoc)
         {
-            string Sql = $@"Update Doc set State={pDoc.State}  where TypeDoc = {pDoc.TypeDoc} and NumberDoc = '{pDoc.NumberDoc}'";
-            return db.Execute(Sql) >= 0;
+            try
+            {
+                string Sql = $@"Update Doc set State={pDoc.State}, DTUpdate = DATETIME('NOW', 'LOCALTIME') where TypeDoc = {pDoc.TypeDoc} and NumberDoc = '{pDoc.NumberDoc}'";
+                return db.Execute(Sql) >= 0;
+            }
+            catch (Exception e)
+            {
+                FileLogger.WriteLogMessage(this, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+                return false;
+            }
         }
 
         public bool ReplaceWarehouse(IEnumerable<Warehouse> pWh, bool pIsFull = false)
@@ -1142,6 +1151,7 @@ and bc.BarCode=?
 
         public bool ReplaceDocWaresExpiration(DocWaresExpiration pDWS)
         {
+            pDWS.DTUpdate = DateTime.Now;
             return db.InsertOrReplace(pDWS) >= 0;
         }
 

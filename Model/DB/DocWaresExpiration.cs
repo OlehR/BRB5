@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.VisualBasic;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -12,6 +13,7 @@ namespace BRB5.Model.DB
         public long CodeWares { get; set; }
         public decimal QuantityInput { get; set; }
         public DateTime ExpirationDateInput { get; set; }
+        public DateTime DTUpdate { get; set; } = DateTime.Now;
     }
 
     public class DocWaresExpirationSave

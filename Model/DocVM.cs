@@ -114,6 +114,10 @@ namespace BRB5.Model
         public string ExtInfo { get; set; }
 
         public int CountWares { get; set; } // Кількість товарних позицій
+        /// <summary>
+        /// Чи потрібно зберігати документ, 
+        /// </summary>
+        public bool IsNeedSave { get; set; } 
     }
 
     public class DocVM:Doc

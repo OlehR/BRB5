@@ -168,6 +168,7 @@ public partial class Act
         if (r.State != 0) _ = DisplayAlert("Помилка", r.TextError, "OK");
         else
         {
+            db.SetStateDoc(new Doc(Doc) { State=1 });
             var toast = Toast.Make("Документ успішно збережений");
             _ = toast.Show();
         }
