@@ -207,7 +207,10 @@ namespace BRB6.View
                 });
             }
         }
+        private void SaveDoc_Clicked(object sender, EventArgs e)
+        {
 
+        }
 #if ANDROID
         public void OnPageKeyDown(Keycode keyCode, KeyEvent e)
         {
@@ -231,7 +234,7 @@ namespace BRB6.View
             default:
                return;
            }
-         }
+         }        
 
 #endif
     }
