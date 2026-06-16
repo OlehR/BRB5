@@ -114,7 +114,6 @@ public partial class LotsCheck : ContentPage
         // Завантажуємо всі документи
         var allDocs = db.GetDoc(TypeDoc);
 
-        
         if (IsWares)
             MyDocs = new ObservableCollection<DocVM>(allDocs.Where(el => el.CodeReason != 0));
         else
@@ -173,7 +172,7 @@ public partial class LotsCheck : ContentPage
 
             var numberLabel = new Label { Text = doc.NumberDoc };
             numberLabel.SetBinding(Label.BackgroundColorProperty, new Binding("GetColor", source: doc));
-            Grid.SetColumn(numberLabel, 1);           
+            Grid.SetColumn(numberLabel, 1);
 
             var extInfoStackLayout = new StackLayout();
             extInfoStackLayout.SetBinding(Label.BackgroundColorProperty, new Binding("GetColor", source: doc));
@@ -188,52 +187,113 @@ public partial class LotsCheck : ContentPage
                     extInfoStackLayout.Children.Add(new Label { Text = line });
                 }
             }
-            // === Picker для вибору причини ===
 
-            var reasonSource = doc.CodeReason != 1?AllReasons.Where(x=>x.CodeReason!=1): AllReasons;
+            // ==================== МОДИФІКОВАНИЙ БЛОК PICKER З ПОДВІЙНИМ ТАПОМ ====================
+
+            var pickerContainer = new Grid
+            {
+                HorizontalOptions = LayoutOptions.Fill,
+                VerticalOptions = LayoutOptions.Fill,
+                RowDefinitions = { new RowDefinition { Height = GridLength.Star } },
+                ColumnDefinitions = { new ColumnDefinition { Width = GridLength.Star } }
+            };
+            Grid.SetRow(pickerContainer, 1);
+            Grid.SetColumn(pickerContainer, 0);
+
+            var reasonLabel = new Label
+            {
+                LineBreakMode = LineBreakMode.WordWrap,
+                HorizontalOptions = LayoutOptions.Fill,
+                VerticalOptions = LayoutOptions.Fill,
+                VerticalTextAlignment = Microsoft.Maui.TextAlignment.Center,
+                Padding = new Thickness(4, 5),
+                FontSize = 14
+            };
+            reasonLabel.SetBinding(Label.BackgroundColorProperty, new Binding("GetColor", source: doc));
+
+            var reasonSource = doc.CodeReason != 1 ? AllReasons.Where(x => x.CodeReason != 1) : AllReasons;
             var reasonPicker = new Picker
             {
                 Title = "Причина",
                 ItemsSource = reasonSource.ToList(),
                 ItemDisplayBinding = new Binding("NameReason"),
-                IsEnabled = false,
-                IsVisible = false,
+                IsEnabled = false, // ЗА ЗАМОВЧУВАННЯМ ЗАБЛОКОВАНО ДЛЯ ВСІХ
+                Opacity = 0,
+                HorizontalOptions = LayoutOptions.Fill,
+                VerticalOptions = LayoutOptions.Fill
             };
-            // встановлюємо вибір з документа
-            if (doc.CodeReason != 0 )
+
+            // Логіка початкового завантаження
+            if (doc.CodeReason != 0)
             {
                 var current = AllReasons.FirstOrDefault(r => r.CodeReason == doc.CodeReason);
                 if (current != null)
                 {
                     reasonPicker.SelectedItem = current;
-                    reasonPicker.IsVisible = true;
+                    reasonLabel.Text = current.NameReason;
 
+                    // Якщо причина вже була, і це не товари, вона доступна ОДРАЗУ з одного кліку
                     if (!IsWares)
+                    {
                         reasonPicker.IsEnabled = true;
+                        reasonPicker.InputTransparent = false; // Дозволяємо звичайні тапи, бо причина вже є
+                    }
+                }
+            }
+            else
+            {
+                // ПРИЧИНИ НЕМАЄ
+                reasonLabel.Text = " ";
+                reasonLabel.TextColor = Colors.Gray;
+
+                // Наказуємо пікеру ігнорувати кліки, щоб вони летіли в Label під ним
+                reasonPicker.IsEnabled = false;
+                reasonPicker.InputTransparent = true;
+
+                if (!IsWares)
+                {
+                    var doubleTapGesture = new TapGestureRecognizer { NumberOfTapsRequired = 2 };
+                    doubleTapGesture.Tapped += (s, e) =>
+                    {
+                        // Рятувальний круг: повертаємо пікер до життя
+                        reasonPicker.InputTransparent = false;
+                        reasonPicker.IsEnabled = true;
+
+                        // Програмно відкриваємо вікно вибору
+                        reasonPicker.Focus();
+                    };
+
+                    // Вішаємо жест НАПРЯМУ на текст (тепер ніщо його не блокує)
+                    reasonLabel.GestureRecognizers.Add(doubleTapGesture);
                 }
             }
 
-            // при зміні вибору оновлюємо Doc.CodeReason
+            // Подія зміни значення
             reasonPicker.SelectedIndexChanged += (s, e) =>
             {
                 if (reasonPicker.SelectedItem is BRB5.Model.DB.Reason r)
                 {
                     doc.CodeReason = r.CodeReason;
+                    reasonLabel.Text = r.NameReason;
+                    reasonLabel.TextColor = Colors.Black;
                     var t = db.SetDocReason(doc);
-                }
 
+                    // Після того, як причина з'явилася, вона стає доступною в один клік
+                    reasonPicker.IsEnabled = true;
+                    reasonPicker.InputTransparent = false;
+                }
             };
-            reasonPicker.SetBinding(Picker.BackgroundColorProperty, new Binding("GetColor", source: doc));
-            Grid.SetRow(reasonPicker, 1);
-            var emptyLabel = new Label { Text = "" };
-            emptyLabel.SetBinding(Label.BackgroundColorProperty, new Binding("GetColor", source: doc));
-            Grid.SetRow(emptyLabel, 1);
+
+            // Черговість додавання важлива: спочатку текст, поверх нього — пікер
+            pickerContainer.Children.Add(reasonLabel);
+            pickerContainer.Children.Add(reasonPicker);
+
+            // ===================================================================
 
             grid.Children.Add(dateLabel);
             grid.Children.Add(numberLabel);
             grid.Children.Add(extInfoStackLayout);
-            grid.Children.Add(emptyLabel);
-            grid.Children.Add(reasonPicker);
+            grid.Children.Add(pickerContainer);
 
             tempStackLayout.Children.Add(grid);
         }
@@ -243,7 +303,6 @@ public partial class LotsCheck : ContentPage
             StackLayoutDocs.Children.Add(tempStackLayout);
         });
     }
-
     private async void OpenDoc(object sender, TappedEventArgs e)
     {
         if (SelectedDoc != null)
