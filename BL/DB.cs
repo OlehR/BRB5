@@ -126,7 +126,7 @@ CREATE TABLE Doc (
     DTStart          TIMESTAMP DEFAULT null,
     DTEnd            TIMESTAMP DEFAULT null,
     DTUpdate         TIMESTAMP DEFAULT null,
-    DTInsert         TIMESTAMP DEFAULT (DATETIME('NOW', 'LOCALTIME') ),
+    DTInsert         TIMESTAMP DEFAULT (current_timestamp),
     CountWares      INTEGER   DEFAULT (0)
 );
 CREATE UNIQUE INDEX DocId ON DOC (TypeDoc,NumberDoc);
@@ -140,8 +140,8 @@ CREATE TABLE DocWares (
     QuantityOld NUMBER ,   
     CodeReason  INTEGER NOT NULL DEFAULT (0),
     ExpirationDate TIMESTAMP,
-    DTUpdate    TIMESTAMP DEFAULT (DATETIME('NOW', 'LOCALTIME') ),
-    DTInsert    TIMESTAMP       DEFAULT (DATETIME('NOW', 'LOCALTIME') )
+    DTUpdate    TIMESTAMP DEFAULT (current_timestamp ),
+    DTInsert    TIMESTAMP       DEFAULT (current_timestamp )
 );
 --CREATE INDEX DocWaresTNO ON DocWares (TypeDoc, NumberDoc, OrderDoc, CodeReason);
 CREATE INDEX DocWaresTNW ON DocWares (TypeDoc, NumberDoc, CodeWares );
@@ -167,7 +167,7 @@ CREATE UNIQUE INDEX DOCWaresSampleTNC ON DocWaresSample (TypeDoc, NumberDoc, Cod
 CREATE TABLE LogPrice (
     BarCode                TEXT,
     Status                  INTEGER,
-    DTInsert               TIMESTAMP DEFAULT (DATETIME('NOW', 'LOCALTIME') ),
+    DTInsert               TIMESTAMP DEFAULT (current_timestamp ),
     IsSend                 INTEGER   DEFAULT 0,
     ActionType             INTEGER,
     PackageNumber          INTEGER,
@@ -231,7 +231,7 @@ CREATE TABLE RaitingTemplateItem(
     RatingTemplate INTEGER         NOT NULL DEFAULT (0),
     OrderRS INTEGER,
     ValueRating         NUMBER   NOT NULL DEFAULT (0),
-    DTInsert    TIMESTAMP  DEFAULT (DATETIME('NOW', 'LOCALTIME')),
+    DTInsert    TIMESTAMP  DEFAULT (current_timestamp),
     DTDelete    TIMESTAMP
 );
 CREATE UNIQUE INDEX RaitingTemplateItemId ON RaitingTemplateItem (IdTemplate,Id);
@@ -243,7 +243,7 @@ CREATE TABLE RaitingDocItem(
     Rating       INTEGER NOT NULL DEFAULT (0),   
     QuantityPhoto INTEGER NOT NULL DEFAULT (0),
     Note TEXT,
-    DTInsert    TIMESTAMP  DEFAULT (DATETIME('NOW', 'LOCALTIME'))
+    DTInsert    TIMESTAMP  DEFAULT (current_timestamp)
 );
 CREATE UNIQUE INDEX RaitingDocItemId ON RaitingDocItem (TypeDoc,NumberDoc,Id);
 
@@ -270,8 +270,8 @@ CREATE TABLE DocWaresExpiration(
     CodeWares   INTEGER         NOT NULL,    
     QuantityInput     NUMBER,  
     ExpirationDateInput TIMESTAMP,
-    DTUpdate         TIMESTAMP DEFAULT (DATETIME('NOW', 'LOCALTIME') ),
-    DTInsert         TIMESTAMP DEFAULT (DATETIME('NOW', 'LOCALTIME') )
+    DTUpdate         TIMESTAMP DEFAULT (current_timestamp ),
+    DTInsert         TIMESTAMP DEFAULT (current_timestamp )
 );
 CREATE UNIQUE INDEX DocWaresExpirationTNC ON DocWaresExpiration (DateDoc, NumberDoc, DocId, CodeWares);
 
@@ -281,7 +281,7 @@ CREATE TABLE SKU (
     CodeUnit           INTEGER  NOT NULL);
 CREATE UNIQUE INDEX SKUId ON SKU (CodeSKU);
 ";
-        readonly int Ver = 20;
+        readonly int Ver = 22;
         
         string SqlTo11 = @"CREATE TABLE SKU (
     CodeSKU          INTEGER  NOT NULL,
@@ -289,7 +289,6 @@ CREATE UNIQUE INDEX SKUId ON SKU (CodeSKU);
     CodeUnit           INTEGER  NOT NULL);
 CREATE UNIQUE INDEX SKUId ON SKU (CodeSKU);";
         string SqlTo12 = "alter TABLE Doc add CountWares INTEGER DEFAULT(0)";
-
         string SqlTo13 = @"alter TABLE Warehouse  add  TypeWarehouse INTEGER DEFAULT (0);
 alter TABLE Warehouse add CodeParent INTEGER DEFAULT (0);
 CREATE TABLE TypeWarehouse (
@@ -297,14 +296,15 @@ CREATE TABLE TypeWarehouse (
     Name       TEXT,
     IsTrade INTEGER DEFAULT (0) );
 CREATE INDEX TypeWarehouseId ON TypeWarehouse (Code);";
-
         string SqlTo14 = @"alter TABLE DocWaresExpirationSample add QuantityInput NUMBER DEFAULT (0)";
         string SqlTo15 = @"alter TABLE Reason add TypeWarehouse INTEGER  NOT NULL DEFAULT (0)";
         string SqlTo16 = @"alter TABLE DocWaresExpirationSample add IsHide INTEGER NOT NULL DEFAULT (0)";
         string SqlTo18 = @"alter TABLE LogPrice add NumberOfMR NUMERIC";
         string SqlTo19 = @"alter TABLE DocWaresExpirationSample add DateDoc DATE";
-        string SqlTo20 = @"alter TABLE DocWares  add  DTUpdate TIMESTAMP DEFAULT (DATETIME('NOW', 'LOCALTIME') );
-alter TABLE Doc  add  DTUpdate TIMESTAMP DEFAULT null;";
+        string SqlTo22 = @"alter TABLE DocWares  add  DTUpdate TIMESTAMP;
+alter TABLE Doc  add  DTUpdate TIMESTAMP DEFAULT null;
+alter TABLE DocWaresExpiration add DTUpdate         TIMESTAMP;
+alter TABLE DocWaresExpiration add DTInsert         TIMESTAMP;";
 
         public static string PathNameDB { get { return Path.Combine(BaseDir, NameDB); } }
 
@@ -339,8 +339,9 @@ alter TABLE Doc  add  DTUpdate TIMESTAMP DEFAULT null;";
                     SetSQL(SqlTo18, 18);
                 if (GetVersion < 19)
                     SetSQL(SqlTo19, 19);
-                if (GetVersion < 20)
-                    SetSQL(SqlTo20, 20);
+                if (GetVersion < 22)
+                    SetSQL(SqlTo22, 22);
+
             }
         }
 
@@ -409,6 +410,7 @@ alter TABLE Doc  add  DTUpdate TIMESTAMP DEFAULT null;";
 
         void SetSQL(string pSQL, int pVer)
         {
+            bool IsOk=true;
             foreach (var el in pSQL.Split(';'))
             {
                 string Sql = el.Replace("\r\n", " ").Trim();
@@ -647,19 +649,21 @@ and CodeWares in (select CodeWares from DocWares where TypeDoc={pDocId.TypeDoc} 
 
         public IEnumerable<DocVM> GetDoc(TypeDoc pTypeDoc, string pBarCode = null, string pExFilrer = null)
         {
-            string Sql = $@"select d.*, Wh.Address as Address,d.State as Color, case when dwu.DTUpdate>coalesce( d.DTUpdate, '0001-01-01') then 1 else 0 end as IsNeedSave 
+            try
+            {
+                string Sql = $@"select d.*, Wh.Address as Address,d.State as Color, case when dwu.DTUpdate>coalesce( d.DTUpdate, '0001-01-01') then 1 else 0 end as IsNeedSave 
 from Doc d 
  left join Warehouse  Wh on d.CodeWarehouse = wh.number 
  left join (select NumberDoc,max(DTUpdate) as DTUpdate from DocWares dw where TypeDoc = {pTypeDoc.CodeDoc} ) dwu on  dwu.numberdoc=d.numberdoc
                                 where TypeDoc = {pTypeDoc.CodeDoc} and DateDoc >= date(datetime(CURRENT_TIMESTAMP,'-{pTypeDoc.DayBefore} day'))" +
-                                (string.IsNullOrEmpty(pBarCode) ? "" : $" and BarCode like'%{pBarCode}%'") +
-                                (string.IsNullOrEmpty(pExFilrer) ? "" : $" and ExtInfo like'%{pExFilrer}%'") + @"
+                                    (string.IsNullOrEmpty(pBarCode) ? "" : $" and BarCode like'%{pBarCode}%'") +
+                                    (string.IsNullOrEmpty(pExFilrer) ? "" : $" and ExtInfo like'%{pExFilrer}%'") + @"
  order by DateDoc DESC";
 
-            var res = db.Query<DocVM>(Sql);
-            if (res.Count == 0 && !string.IsNullOrEmpty(pBarCode))
-            {
-                Sql = $@"select d.*, Wh.Address as Address,d.State as Color, case when dwu.DTUpdate>coalesce( d.DTUpdate, '0001-01-01') then 1 else 0 end as IsNeedSave 
+                var res = db.Query<DocVM>(Sql);
+                if (res.Count == 0 && !string.IsNullOrEmpty(pBarCode))
+                {
+                    Sql = $@"select d.*, Wh.Address as Address,d.State as Color, case when dwu.DTUpdate>coalesce( d.DTUpdate, '0001-01-01') then 1 else 0 end as IsNeedSave 
 from Doc d 
  left join Warehouse  Wh on d.CodeWarehouse = wh.number 
  Join DOCWARESSAMPLE dw on dw.numberdoc=d.numberdoc and dw.TypeDoc=d.TypeDoc
@@ -668,19 +672,31 @@ left join (select NumberDoc,max(DTUpdate) as DTUpdate from DocWares dw where Typ
    where d.TypeDoc = {pTypeDoc.CodeDoc} and DateDoc >= date(datetime(CURRENT_TIMESTAMP,'-{pTypeDoc.DayBefore} day'))
 and bc.BarCode=?
  order by DateDoc DESC";
-                res = db.Query<DocVM>(Sql, pBarCode);
+                    res = db.Query<DocVM>(Sql, pBarCode);
+                }
+                return res;
             }
-            return res;
+            catch (Exception e)
+            {
+                FileLogger.WriteLogMessage(this, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+            }
+            return [];
         }
 
         public DocVM GetDoc(DocId pDocId)
         {
-            string Sql = $@"select d.* , Wh.Name as Address from Doc d 
+            try {
+                string Sql = $@"select d.* , Wh.Name as Address from Doc d 
    left join Warehouse Wh on d.CodeWarehouse = wh.number 
    where d.TypeDoc = {pDocId.TypeDoc} and d.numberdoc = '{pDocId.NumberDoc}'";
-            var r = db.Query<DocVM>(Sql);
-            if (r != null && r.Count != 0)
-                return r.First();
+                var r = db.Query<DocVM>(Sql);
+                if (r != null && r.Count != 0)
+                    return r.First();
+            }
+            catch (Exception e)
+            {
+                FileLogger.WriteLogMessage(this, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+            }
             return null;
         }
 

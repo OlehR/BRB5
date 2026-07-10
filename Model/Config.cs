@@ -55,8 +55,8 @@ namespace BRB5.Model
 
         public static bool IsLoginCO = true;
         public static eLoginServer LoginServer = eLoginServer.Bitrix;
-        public static string Login { get; set; } = "LOX";
-        public static string Password { get; set; } = "321";
+        public static string Login { get; set; } = null;
+        public static string Password { get; set; } = null;
         public static eRole Role = eRole.NotDefined;
         public static int CodeUser { get; set; } = 233;
         public static System.Guid UserGuid { get; set; } = System.Guid.Empty;

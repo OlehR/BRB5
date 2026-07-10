@@ -347,7 +347,7 @@ namespace BRB6.View
             if (r?.State != 0) _ = DisplayAlert("Помилка", r.TextError, "OK");
             else
             {
-                var toast = Toast.Make("Документ успішно збережений");
+                var toast = Toast.Make($"Документ успішно збережений=>{r.Data}");
                 _ = toast.Show();
             }
         }

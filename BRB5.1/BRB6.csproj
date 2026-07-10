@@ -31,8 +31,8 @@
     <ApplicationId>ua.UniCS.TM.BRB6</ApplicationId>
 
     <!-- Versions -->
-    <ApplicationDisplayVersion>6.1.75</ApplicationDisplayVersion>
-    <ApplicationVersion>6175</ApplicationVersion>
+    <ApplicationDisplayVersion>6.1.82</ApplicationDisplayVersion>
+    <ApplicationVersion>6182</ApplicationVersion>
 
     <SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">12.2</SupportedOSPlatformVersion>
     <SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">21.0</SupportedOSPlatformVersion>
@@ -69,13 +69,13 @@
     <CodesignProvision>VS: ua.UniCS.TM.BRB6 Development</CodesignProvision>
   </PropertyGroup>
 
-
-
-  <PropertyGroup Condition="'$(TargetFramework)'=='net9.0-ios'">
-    <CodesignKey>Apple Development: Created via API (U6H6UU6YGM)</CodesignKey>
-    <CodesignProvision>VS: ua.UniCS.TM.BRB6 Development</CodesignProvision>
+  <PropertyGroup Condition="'$(TargetFramework)'=='net9.0-ios' and '$(Configuration)' == 'Release'">
+    <CodesignKey>Apple Distribution: Alina Rutkovska (485ZWQ5A76)</CodesignKey>
+    <ProvisioningType>automatic</ProvisioningType>
+    <UseInterpreter>True</UseInterpreter>
   </PropertyGroup>
-  
+
+ 
   <ItemGroup>
     <!-- App Icon -->
     <MauiIcon Include="Resources\AppIcon\appicon.svg" />

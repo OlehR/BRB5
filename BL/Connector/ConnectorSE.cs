@@ -550,7 +550,7 @@ public string Info { get; set; }
             Result Res = null;
             try
             {
-                if (pDoc.TypeDoc.In(1,2,3,5,6))
+                if (pDoc.TypeDoc.In(1,2,3,5,6,15))
                 {
                     var d = (new[] { new OutputDoc(pDoc,pWares) }).ToJson();
                     FileLogger.WriteLogMessage(this, "SaveDocAsync documentin=>", d);                    

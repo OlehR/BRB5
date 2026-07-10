@@ -30,7 +30,8 @@ namespace BRB6.View
             c = ConnectorBase.GetInstance();
             // TODO Xamarin.Forms.Device.RuntimePlatform is no longer supported. Use Microsoft.Maui.Devices.DeviceInfo.Platform instead. For more details see https://learn.microsoft.com/en-us/dotnet/maui/migration/forms-projects#device-changes
             NavigationPage.SetHasNavigationBar(this, DeviceInfo.Platform == DevicePlatform.iOS);            
-            WP = c.GetPrice(parseBarCode, eTypePriceInfo.Full)?.Data;                
+            WP = c.GetPrice(parseBarCode, eTypePriceInfo.Full)?.Data;
+            if (WP == null) WP= new();
             if (WP.RestWarehouse != null)  RestWarehouseListShow(WP.RestWarehouse);
             if (WP.Сondition != null) FillConditionList(WP.Сondition);
             if (WP.ActionType > 0)  IsVisPromotion = true;            
@@ -49,6 +50,18 @@ namespace BRB6.View
             } 
             this.BindingContext = this;
             CalculateAndSetScrollViewHeight();
+        }
+        protected override void OnAppearing()
+        {
+            if (WP == null)
+            {
+                var parentWindow = this.Window;
+                if (parentWindow != null)
+                {
+                    Application.Current.CloseWindow(parentWindow);
+                }
+            }
+
         }
         private void RestWarehouseListShow(IEnumerable<RestWarehouse> warehouses)
         {
@@ -144,7 +157,7 @@ namespace BRB6.View
             var scrollViewHeight = screenHeight - imageHeight - navigationBarHeight;
             WareInfoMainScrollView.HeightRequest = scrollViewHeight;
         }
-
+        
         private double GetNavigationBarHeight()
         {
             const double navigationBarHeightDp = 36;
