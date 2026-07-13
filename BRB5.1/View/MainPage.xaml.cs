@@ -32,6 +32,7 @@ namespace BRB6
         public string Company { get { return  Config.NameCompany; } }
         public bool IsSoftKeyboard { get { return Config.IsSoftKeyboard; } }
 
+        private TypeDoc CurrentTypeDoc;
         public bool IsVisScan { get { return Config.IsVisScan; } }
         bool _IsVisBarCode = false;
         public bool IsVisBarCode { get { return _IsVisBarCode; } set { _IsVisBarCode = value; OnPropertyChanged(nameof(IsVisBarCode)); } }
@@ -57,7 +58,7 @@ namespace BRB6
                 System.Diagnostics.Debug.WriteLine(ex);
             }
         }
-               
+        
         public void Dispose() { Config.BarCode -= BarCode; }
         void BarCode(string pBC)
         {
@@ -115,6 +116,7 @@ namespace BRB6
 
             // Отримання вибраного елемента
             var vTypeDoc = e.Item as TypeDoc;
+            CurrentTypeDoc = vTypeDoc;
 
             if (Config.IsVisScan)
             {
@@ -223,6 +225,16 @@ namespace BRB6
         {
             base.OnAppearing();
 
+            if (CurrentTypeDoc != null)
+            {
+                OCTypeDoc?.Clear();
+
+                var r = c.GetTypeDoc(Config.Role, Config.LoginServer, CurrentTypeDoc.Group).Where(x => x.KindDoc != eKindDoc.NotDefined);
+                foreach (var i in r) OCTypeDoc.Add(i);
+
+                IsVisibleBack = true;
+                ExitLabel.IsVisible = false;
+            }
             if (IsVisScan)
             {
                 BarcodeScaner = Helper.GetCameraView();
@@ -231,14 +243,14 @@ namespace BRB6
             }
 
 #if ANDROID
-            if (Config.NativeBase !=null && await Config.NativeBase.CheckNewVerAsync())
+            if (Config.NativeBase != null && await Config.NativeBase.CheckNewVerAsync())
             {
                 var res = await DisplayAlert("Оновлення доступне", "Доступна нова версія. Бажаєте встановити?", "Yes", "No");
                 MyProgress.IsVisible = true;
-                if (res)  
-                    _=Task.Run(async()=> Config.NativeBase.InstallAsync(Progress));
+                if (res)
+                    _ = Task.Run(async () => Config.NativeBase.InstallAsync(Progress));
             }
-            #endif
+#endif
         }
         void Progress(double pProgress) => MainThread.BeginInvokeOnMainThread(() => PB = pProgress);
         protected override void OnDisappearing()  
@@ -247,7 +259,7 @@ namespace BRB6
             if (IsVisScan) BarcodeScaner.CameraEnabled = false;
         }
 
-        private async void OnSettingsClicked(object sender, EventArgs e) { await Navigation.PushAsync(new Settings());  }
+        private async void OnSettingsClicked(object sender, EventArgs e) { await Navigation.PushAsync(new Settings()); CurrentTypeDoc = null;  }
 
         private void OnAuthorizationClicked(object sender, EventArgs e)
         {
