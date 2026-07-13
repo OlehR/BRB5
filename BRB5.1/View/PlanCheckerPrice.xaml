@@ -35,7 +35,7 @@
                             <StackLayout Grid.Column="1">
                                 <Frame Style="{StaticResource FrameStyle}">
                                     <controls:CustomEntry Style="{StaticResource EntryStyle}"  
-                                              AutomationId="{Binding CodeWares}"
+                                              AutomationId="{Binding ViewCode}"
                                               Focused="EntryFocused"
                                               Text="{Binding InputQuantity}" 
                                               Unfocused="SaveItem"
