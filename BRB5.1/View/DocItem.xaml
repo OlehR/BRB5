@@ -6,7 +6,8 @@
                       xmlns:Model="clr-namespace:BRB5.Model;assembly=BRB5.Model"
                        x:Class="BRB6.View.DocItem">
     <NavigationPage.TitleView>
-        <StackLayout Spacing="10" Orientation="Horizontal" Padding="0,0,10,0">
+        <StackLayout Spacing="15" Orientation="Horizontal" Padding="0,0,10,0">
+            <Label Text="{Binding NumberDoc}" VerticalOptions="Center"/>
             <Label Text="{Binding ExtInfo}" VerticalOptions="Center"/>
             <!--<Picker x:Name="ReasonPicker"
                     IsEnabled="{Binding IsVisF5Act}"
@@ -15,8 +16,7 @@
                     ItemsSource="{Binding Reasons}"
                     ItemDisplayBinding="{Binding NameReason}"
                     SelectedIndexChanged="SelectReason"
-                    SelectedItem="{Binding SelectedReason}" />-->
-
+                    SelectedItem="{Binding SelectedReason}" />-->            
         </StackLayout>
     </NavigationPage.TitleView>
     <ContentPage.Content>       
