@@ -17,6 +17,9 @@ public partial class ExpirationDateElementTemplate : ContentView
     IEnumerable<ExpirationDateElementVM> All { get; set; }
     public bool IsManual { get; set; }
     public event Action<string> RequestShowMessage;
+
+    private readonly List<Label> _historyLabels = new();
+    private bool _isLotHistoryExpanded;
     public ExpirationDateElementTemplate()
     {
         InitializeComponent();
@@ -146,7 +149,7 @@ public partial class ExpirationDateElementTemplate : ContentView
     private void FillLotHistory(IEnumerable<ExpirationDateElementVM> listED)
     {
         LotHistoryStackLayout.Children.Clear();
-
+        _historyLabels.Clear();
         // Створюємо одну сітку для всієї історії
         var historyGrid = new Grid
         {
@@ -182,6 +185,8 @@ public partial class ExpirationDateElementTemplate : ContentView
                     FontSize = 12,
                     HorizontalOptions = LayoutOptions.Start
                 };
+
+                _historyLabels.Add(label);
                 historyGrid.Add(label, 0, i); // Колонка 0, Рядок i
             }
 
@@ -196,11 +201,24 @@ public partial class ExpirationDateElementTemplate : ContentView
                     FontSize = 12,
                     HorizontalOptions = LayoutOptions.Start
                 };
+
+                _historyLabels.Add(label);
                 historyGrid.Add(label, 1, i); // Колонка 1, Рядок i
             }
         }
 
         LotHistoryStackLayout.Children.Add(historyGrid);
+    }
+    private void HistoryTapped(object sender, TappedEventArgs e)
+    {
+        _isLotHistoryExpanded = !_isLotHistoryExpanded;
+
+        EditGrid.IsVisible = !_isLotHistoryExpanded;
+
+        HistoryGrid.HeightRequest = _isLotHistoryExpanded ? 260 : 60;
+
+        foreach (var label in _historyLabels)
+            label.FontSize = _isLotHistoryExpanded ? 20 : 12;
     }
     private void QuantityFocused(object sender, FocusEventArgs e)
     {

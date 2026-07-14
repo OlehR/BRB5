@@ -72,7 +72,7 @@
             </VerticalStackLayout>
         </Grid>
 
-        <Grid Padding="5" ColumnDefinitions="*,*" RowDefinitions="*,*,*,*">
+        <Grid Padding="5" ColumnDefinitions="*,*" x:Name="EditGrid" RowDefinitions="*,*,*,*">
             <Label Text="Вжити до"   />
             <Label Text="Кількість"   Grid.Column="1" />
 
@@ -102,9 +102,14 @@
 
         <!--<Button Text="Назад" Clicked="Back"/>-->
 
-        <Grid  HeightRequest="60">
+        <Grid x:Name="HistoryGrid" HeightRequest="60">
+
             <ScrollView>
-                <StackLayout x:Name="LotHistoryStackLayout" />
+                <StackLayout x:Name="LotHistoryStackLayout" >
+                    <StackLayout.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="HistoryTapped"/>
+                    </StackLayout.GestureRecognizers>
+                </StackLayout>
             </ScrollView>
         </Grid>
     </VerticalStackLayout>
