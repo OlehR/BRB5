@@ -29,7 +29,7 @@
                 <ColumnDefinition Width="3*" />
             </Grid.ColumnDefinitions>
 
-            <Label Text="Код"
+            <Label Text="{Binding ArticleCodeText}"
                     Grid.Column="0"
                     BackgroundColor="White" />
             <Label Text="План"
@@ -38,13 +38,13 @@
             <Label Text="Факт"
                     Grid.Column="2"
                     BackgroundColor="White" />
-                <Label Text="Відхилення"
+            <Label Text="Відхилення"
                     Grid.Column="3"
                     BackgroundColor="White" >
                     <Label.GestureRecognizers>
                         <TapGestureRecognizer Tapped="QuantitySort"/>
                     </Label.GestureRecognizers>
-                </Label>
+            </Label>
 
             </Grid>
         <Grid VerticalOptions="StartAndExpand">

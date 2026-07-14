@@ -21,6 +21,7 @@ public partial class Act
     private Connector c = ConnectorBase.GetInstance();
     public bool IsSoftKeyboard { get { return Config.IsSoftKeyboard; } }
     public ObservableCollection<WaresAct> MyDocWares { get; set; } = new ObservableCollection<WaresAct>();
+    public string ArticleCodeText => Config.IsUseArticle ? "Артикул" : "Код";
     public Act(DocVM pDocId, TypeDoc pTypeDoc)
     {
         NokeyBoard();

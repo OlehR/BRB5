@@ -299,7 +299,7 @@ namespace BRB6.View
             // 2. Наповнюємо заголовки текстом
             int currentCol = 0;
 
-            headerGrid.Children.Add(CreateHeaderLabel("Код", currentCol++));
+            headerGrid.Children.Add(CreateHeaderLabel(Config.IsUseArticle ? "Артикул" : "Код", currentCol++));
             headerGrid.Children.Add(CreateHeaderLabel("Од", currentCol++));
 
             if (!TypeDoc.IsNotViewPlan)
