@@ -16,7 +16,7 @@ public partial class ExpirationDateElementTemplate : ContentView
     IEnumerable<ExpirationDateElementVM> ListED { get; set; }
     IEnumerable<ExpirationDateElementVM> All { get; set; }
     public bool IsManual { get; set; }
-
+    public event Action<string> RequestShowMessage;
     public ExpirationDateElementTemplate()
     {
         InitializeComponent();
@@ -96,6 +96,7 @@ public partial class ExpirationDateElementTemplate : ContentView
                 {
                     R.QuantityInput = DM.QuantityInput;
                     DM = R;
+                    RequestShowMessage?.Invoke("Запис з цією датою вже є в системі");
                 }
                 else
                 {

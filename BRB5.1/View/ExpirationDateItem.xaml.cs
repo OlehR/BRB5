@@ -64,6 +64,10 @@ namespace BRB6.View
             BindingContext = this;
             var expirationDateTemplate = new ExpirationDateElementTemplate();
             expirationDateTemplate.RequestReturnToMainContent += BackToMainContent;
+            expirationDateTemplate.RequestShowMessage += async message =>
+            {
+                await DisplayAlert("", message, "OK");
+            };
             AlternateContent.Content = expirationDateTemplate;
         }
         protected override void OnAppearing()
