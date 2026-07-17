@@ -1,15 +1,17 @@
-﻿using BarcodeScanning;
+﻿using Android.Views;
+using BarcodeScanning;
 using BL;
 using BRB5;
 using BRB5.Model;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using System.Windows.Input;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Input;
 using UtilNetwork;
 
 namespace BRB6.ViewModel
@@ -195,6 +197,37 @@ namespace BRB6.ViewModel
         public ICommand CloseBarCodesCommand => new Command(() => IsBarCodesDropdownVisible = false);
         public string QuantityToAddText => $"+{QuantityToAdd}";
         private bool _autoSave;
+        public bool IsPromoProposalMode => true;//_typeDoc.CodeDoc == 99; // TODO: потрібний CodeDoc
+
+        private readonly TypeDoc _typeDoc;
+        private DateTime _selectedDate = DateTime.Today;
+        public DateTime SelectedDate
+        {
+            get => _selectedDate;
+            set => SetProperty(ref _selectedDate, value);
+        }
+
+        public List<string> ReasonList { get; } =   [ "Заблоковані СКЮ", "Моніторинг",  "Надмірні залишки" , "Терміни що спливають" ];
+
+        private string _selectedReason;
+        public string SelectedReason
+        {
+            get => _selectedReason;
+            set => SetProperty(ref _selectedReason, value);
+        }
+        public ObservableCollection<DocWaresPromo> PromoItems { get; } = new();
+
+        private bool _isPromoListVisible;
+        public bool IsPromoListVisible
+        {
+            get => _isPromoListVisible;
+            set => SetProperty(ref _isPromoListVisible, value);
+        }
+        public ICommand ShowPromoListCommand { get; }
+        public ICommand ClosePromoListCommand { get; }
+        public ICommand SubmitPromoCommand { get; }
+        public ICommand AddPromoItemCommand { get; }
+
         public bool IsAutoSave
         {
             get => _autoSave;
@@ -207,6 +240,7 @@ namespace BRB6.ViewModel
             bl.ClearWPH();
             var r = db.GetCountScanCode();
             IsVisDoubleScan = pTypeDoc.CodeDoc == 15;
+            _typeDoc = pTypeDoc;
 
             if (Config.TypeUsePrinter == eTypeUsePrinter.StationaryWithCutAuto) PrintType = -1;
 
@@ -287,6 +321,22 @@ namespace BRB6.ViewModel
             {  
                 IsMrDialogVisible = false;
             });
+            ShowPromoListCommand = new Command(() => IsPromoListVisible = true);
+
+            ClosePromoListCommand = new Command(() => IsPromoListVisible = false);
+
+            SubmitPromoCommand = new Command(async () =>
+            {
+                await Application.Current.MainPage.DisplayAlert(
+                    "Пропозиція акції",
+                    $"Заглушка.\nБуде відправлено {PromoItems.Count} товарів.",
+                    "OK");
+
+                PromoItems.Clear();
+                IsPromoListVisible = false;
+            });
+
+            AddPromoItemCommand = new Command(AddPromoItem);
         }
 
         void BarCode(string pBarCode) => FoundWares(pBarCode, false);
@@ -406,6 +456,34 @@ namespace BRB6.ViewModel
                 if (IsAutoSave)
                     OnUpdateReplenishment();
             }
+        }
+
+        public void AddPromoItem()
+        {
+            if (WP == null)
+                return;
+
+            if (PromoItems.Any(x =>
+                x.CodeWares == WP.CodeWares &&
+                x.ExpirationDate.Date == SelectedDate.Date))
+            {
+                ForMVVM.ShowToast("Товар з цією датою вже додано.");
+                return;
+            }
+
+            PromoItems.Add(new DocWaresPromo
+            {
+                CodeWares = WP.CodeWares,
+                Description = WP.Name,
+                ExpirationDate = SelectedDate
+            });
+
+            ForMVVM.ShowToast($"Додано");
+
+            WP = null;
+            SelectedReason = null;
+            SelectedDate = DateTime.Today;
+            ForMVVM.Focused("BarCodeInput");
         }
     }
 }

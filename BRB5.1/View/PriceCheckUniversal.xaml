@@ -7,7 +7,8 @@
                           xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"      
                           x:Class="BRB6.View.PriceCheckUniversal">
     <ContentPage.Content>
-        <StackLayout BackgroundColor="{Binding ColorPrintColorType}" Spacing="0">
+        <Grid>
+            <StackLayout BackgroundColor="{Binding ColorPrintColorType}" Spacing="0">
 
             <Grid x:Name="GridZxing" IsVisible="{Binding IsVisScan}"  HeightRequest="200"/>
 
@@ -106,7 +107,23 @@
                     <Label FontSize="Large" Text="{Binding MessageDoubleScan}"/>
                 </Frame>
             </StackLayout>
+            
+                <Grid IsVisible="{Binding IsPromoProposalMode}" RowDefinitions="Auto,Auto" ColumnDefinitions="*,3*" >
 
+                    <Label Text="Вжити до:" VerticalOptions="Center"/>
+                    <Grid Grid.Column="1" ColumnDefinitions="*,Auto">
+                        <DatePicker  Date="{Binding SelectedDate}" HorizontalOptions="StartAndExpand" />
+                        <Button Grid.Column="1" Text="Переглянути" HorizontalOptions="End" Command="{Binding ShowPromoListCommand}" />
+                    </Grid>
+
+                    <Label Grid.Row="1" Text="Причина:" VerticalOptions="Center"/>
+                    <Grid Grid.Row="1" Grid.Column="1" ColumnDefinitions="*,Auto">
+                        <Picker Grid.Column="0" ItemsSource="{Binding ReasonList}" 
+                                SelectedItem="{Binding SelectedReason}" Title="Причина подання"/>
+                        <Button Grid.Column="1" Text="Додати" Command="{Binding AddPromoItemCommand}"/>
+                    </Grid>
+                </Grid>
+            
             <Grid VerticalOptions="EndAndExpand"  ColumnDefinitions="*,*">
                 <Picker ItemsSource="{Binding ListPrintBlockItems}" ItemDisplayBinding="{Binding stringPrintBlockItem}"
                         SelectedIndex="{Binding SelectedPrintBlockItems}" SelectedItem="{Binding SelectedPrintItem, Mode=TwoWay}" />
@@ -161,6 +178,45 @@
             </Grid>
 
         </StackLayout>
+            <Grid IsVisible="{Binding IsPromoListVisible}"  BackgroundColor="#80000000" ZIndex="100">
 
+                <Border  BackgroundColor="White" Stroke="Gray" StrokeThickness="1" Margin="20"
+                         Padding="8" VerticalOptions="Center" HorizontalOptions="Center">
+
+                    <Grid RowDefinitions="Auto,*,Auto">
+
+                        <Grid ColumnDefinitions="*,Auto">
+                            <Label Text="Пропозиція акції" FontSize="22" FontAttributes="Bold"/>
+                            <Button  Grid.Column="1" Padding="3" VerticalOptions="Start" Text="✕" Command="{Binding ClosePromoListCommand}"/>
+                        </Grid>
+
+                        <CollectionView Grid.Row="1" Margin="0" ItemsSource="{Binding PromoItems}">
+
+                            <!--<CollectionView.Header>
+                                <Grid ColumnDefinitions="65,*">
+                                    <Label Text="Код" FontAttributes="Bold"/>
+                                    <Label Grid.Column="1" Text="Товар" FontAttributes="Bold"/>
+                                </Grid>
+                            </CollectionView.Header>-->
+
+                            <CollectionView.ItemTemplate>
+                                <DataTemplate>
+                                    <Grid  Padding="0,0,0,5" ColumnDefinitions="65,*">
+                                        <Label Text="{Binding CodeWares}"/>
+                                        <Label Grid.Column="1" Text="{Binding Description}"/>
+                                    </Grid>
+                                </DataTemplate>
+                            </CollectionView.ItemTemplate>
+
+                        </CollectionView>
+
+                        <Button Grid.Row="2" Margin="0,10,0,0" HeightRequest="45" Text="Подати" Command="{Binding SubmitPromoCommand}"/>
+
+                    </Grid>
+
+                </Border>
+
+            </Grid>
+        </Grid>
     </ContentPage.Content>
 </controls:BaseContentPage>
