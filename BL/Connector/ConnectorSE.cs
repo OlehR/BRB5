@@ -23,12 +23,12 @@ namespace BL.Connector
         public ConnectorSE()
         {
             PercentColor = [
-                new(0, Color.White, Color.White, ""), //Товар з хорошим строком
-                new(10, Color.FromArgb(0x84FF57), Color.FromArgb(0x84FF57), "72301609"),  //10%
-                new(25, Color.FromArgb(0xFFF157), Color.FromArgb(0xFFF157), "72301616"),  //25%
-                new(50, Color.FromArgb(0xFEB044), Color.FromArgb(0xFEB044), "72301623"), //50%
-                new(50, Color.FromArgb(0xE874FF), Color.FromArgb(0xE874FF), "72301630") , //75%
-                new(100, Color.Gray, Color.Gray, "") //Протермінований товар
+                new(0, Color.White, Color.Black, Color.Black,""), //Товар з хорошим строком
+                new(10, Color.FromArgb(0x84FF57), Color.Black, Color.Black,"72301609"),  //10%
+                new(25, Color.FromArgb(0xFFF157), Color.Black, Color.Black, "72301616"),  //25%
+                new(50, Color.FromArgb(0xFEB044), Color.Black, Color.Black, "72301623"), //50%
+                new(50, Color.Red, Color.White, Color.Black, "72301630") , //75%
+                new(100, Color.Gray, Color.Black, Color.Black, "") //Протермінований товар
             ];
         }
         /// <summary>
