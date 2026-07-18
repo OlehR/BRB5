@@ -39,6 +39,9 @@ public partial class WareItemTemplate : ContentView
         QuantityLabel.SetBinding(Label.BackgroundColorProperty, new Binding("GetColor", converter: new ColorConverter()));
         ExpirationDateLabel.SetBinding(Label.BackgroundColorProperty, new Binding("GetColor", converter: new ColorConverter()));
 
+        NameWaresLabel.SetBinding(Label.TextColorProperty, new Binding("GetPercentColor.ColorNameText", converter: new ColorConverter()));
+        QuantityLabel.SetBinding(Label.TextColorProperty, new Binding("GetPercentColor.ColorText", converter: new ColorConverter()));
+        ExpirationDateLabel.SetBinding(Label.TextColorProperty, new Binding("GetPercentColor.ColorText", converter: new ColorConverter()));
     }
 }
 

@@ -27,7 +27,7 @@ namespace BL.Connector
                 new(10, Color.FromArgb(0x84FF57), Color.Black, Color.Black,"72301609"),  //10%
                 new(25, Color.FromArgb(0xFFF157), Color.Black, Color.Black, "72301616"),  //25%
                 new(50, Color.FromArgb(0xFEB044), Color.Black, Color.Black, "72301623"), //50%
-                new(50, Color.Red, Color.White, Color.Black, "72301630") , //75%
+                new(50, Color.Red, Color.White, Color.Red, "72301630") , //75%
                 new(100, Color.Gray, Color.Black, Color.Black, "") //Протермінований товар
             ];
         }

@@ -1,5 +1,4 @@
-﻿using Android.Views;
-using BarcodeScanning;
+﻿using BarcodeScanning;
 using BL;
 using BRB5;
 using BRB5.Model;
@@ -197,7 +196,7 @@ namespace BRB6.ViewModel
         public ICommand CloseBarCodesCommand => new Command(() => IsBarCodesDropdownVisible = false);
         public string QuantityToAddText => $"+{QuantityToAdd}";
         private bool _autoSave;
-        public bool IsPromoProposalMode => true;//_typeDoc.CodeDoc == 99; // TODO: потрібний CodeDoc
+        public bool IsPromoProposalMode => _typeDoc.CodeDoc == 99; // TODO: потрібний CodeDoc true;//
 
         private readonly TypeDoc _typeDoc;
         private DateTime _selectedDate = DateTime.Today;
