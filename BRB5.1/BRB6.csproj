@@ -28,11 +28,11 @@
     <ApplicationTitle>BRB6</ApplicationTitle>
 
     <!-- App Identifier -->
-    <ApplicationId>ua.UniCS.TM.BRB6.1</ApplicationId>
+    <ApplicationId>ua.UniCS.TM.BRB6</ApplicationId>
 
     <!-- Versions -->
-    <ApplicationDisplayVersion>6.1.83</ApplicationDisplayVersion>
-    <ApplicationVersion>6183</ApplicationVersion>
+    <ApplicationDisplayVersion>6.1.84</ApplicationDisplayVersion>
+    <ApplicationVersion>6184</ApplicationVersion>
 
     <SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">12.2</SupportedOSPlatformVersion>
     <SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">21.0</SupportedOSPlatformVersion>

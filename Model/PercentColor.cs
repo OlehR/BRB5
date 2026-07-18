@@ -9,17 +9,19 @@ namespace BRB5.Model
     {
         //public bool IsLight { get; set; } = false;
         public PercentColor() { }
-        public PercentColor(int pPercent, Color pColorLight, Color pColorNormal, string pBarCode)
+        public PercentColor(int pPercent, Color pColorNormal,Color pColorText, Color pColorNameText, string pBarCode=null)
         {
             Percent = pPercent;
-            ColorLight = pColorLight;
+            ColorText = pColorText;
+            ColorNameText = pColorNameText;
             ColorNormal = pColorNormal;
             BarCode = pBarCode;
         }
         public int Percent { get; set; }
         // public Color Color { get { return IsLight ? ColorLight : ColorNormal; } }
-        [Obsolete("ColorLight is deprecated, please use ColorNormal instead.")]
-        public Color ColorLight { get; set; }
+        //[Obsolete("ColorLight is deprecated, please use ColorNormal instead.")]
+        public Color ColorText { get; set; }
+        public Color ColorNameText { get; set; }
         public Color ColorNormal { get; set; }
         public string BarCode { get; set; }
     }
