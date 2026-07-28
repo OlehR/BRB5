@@ -11,6 +11,9 @@
         </ResourceDictionary>
     </ContentView.Resources>
     <VerticalStackLayout >
+        <VerticalStackLayout.GestureRecognizers>
+            <TapGestureRecognizer Tapped="HistoryTappedOff"/>
+        </VerticalStackLayout.GestureRecognizers>
         <VerticalStackLayout x:Name="StackBackground"  Margin="0" Padding="0"  Spacing="0">
             <Label Text="{Binding DM.NameWares}"
                    LineBreakMode="TailTruncation"

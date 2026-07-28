@@ -10,7 +10,10 @@ namespace BRB5.Model
     {
         [JsonIgnore]
         public bool IsHandInput { get; set; } = false;
-        [JsonIgnore]
+        /// <summary>
+        /// Штрихкод перед парсінгом
+        /// </summary>
+        [JsonIgnore]        
         public string StartString { get; set; } = null;
         public string BarCode { get; set; } = null;
         public long CodeWares { get; set; } = 0;

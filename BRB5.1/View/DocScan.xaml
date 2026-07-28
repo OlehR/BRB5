@@ -48,8 +48,9 @@
                     <Grid Grid.Row="1" ColumnDefinitions="3*,*,*,2*">
 
                         <Frame Grid.Column="0" Style="{StaticResource FrameStyle}">
-                            <controls:CustomEntry Style="{StaticResource EntryStyle}"
-                                                  Text="{Binding ScanData.InputQuantity}"
+                            <controls:CustomEntry Style="{StaticResource EntryStyle}" 
+                                                  IsEnabled="{Binding IsNotAddAuto}"
+                                                  Text="{Binding InputQuantity}"
                                                   x:Name="inputQ"
                                                   Unfocused="UnfocusedInputQ"
                                                   TextChanged="CalcQuantity"
@@ -148,6 +149,19 @@
                         <TapGestureRecognizer Tapped="Down" />
                     </Label.GestureRecognizers>
                 </Label>
+
+                <Label Text="F4-" FontSize="16" TextColor="#ff5c5c" IsVisible="{Binding IsShowAddAuto}" >
+                    <Label.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="AddAuto" />
+                    </Label.GestureRecognizers>
+                </Label>
+                <Label Text="+1" FontSize="18" TextColor="#816f20" IsVisible="{Binding IsShowAddAuto}">
+                    <Label.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="AddAuto" />
+                    </Label.GestureRecognizers>
+                </Label>
+
+
                 <Label Text="F8-" FontSize="16" TextColor="#ff5c5c">
                     <Label.GestureRecognizers>
                         <TapGestureRecognizer Tapped="ResetAndAdd" />

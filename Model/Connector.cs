@@ -89,7 +89,7 @@ namespace BRB5.Model
         
         public virtual ParseBarCode ParsedBarCode(string pBarCode, bool pIsHandInput)
         {
-            ParseBarCode Res = new() { BarCode = pBarCode };
+            ParseBarCode Res = new() { BarCode = pBarCode,StartString=pBarCode };
             if (pBarCode.Length>25 && pBarCode.StartsWith("010")) //MatrixCode Упаковочний штрихкод.
             {
                 Res.BarCode = pBarCode.Substring(3, 13);

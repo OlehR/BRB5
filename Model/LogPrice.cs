@@ -36,7 +36,7 @@ namespace BRB5.Model
             BarCode = pWP?.ParseBarCode?.StartString ?? pWP?.ParseBarCode?.BarCode;
             Status = Config.LocalCompany == eCompany.Sim23 ?
                     (!pIsOnline ? -999 : (pWP.CodeWares == 0 ? 1 : (BarCode[..2].Equals("29") ? (pWP.PriceOld == pWP.Price ? -1 : 0) : (pWP?.ParseBarCode.IsHandInput ?? false ? 3 : 2)))) :
-                    (/*isError*/false ? -9 : (pWP.Price > 0 && pWP.PriceOld == pWP.Price && pWP.PriceOpt == pWP.PriceOptOld ? 1 : (/*this.Printer.varPrinterError != ePrinterError.None */false ? -1 : 0)));
+                    (!pIsOnline ? -999 : (pWP.Price > 0 && pWP.PriceOld == pWP.Price && pWP.PriceOpt == pWP.PriceOptOld ? 1 : (/*this.Printer.varPrinterError != ePrinterError.None */false ? -1 : 0)));
             PackageNumber = pPackageNumber;
             CodeWares = pWP.CodeWares;
             LineNumber = pLineNumber;

@@ -38,8 +38,8 @@ namespace BL
             }
             else
             {
-                var data = GetWaresFromBarcode(0, null, pBarCode, pIsHandInput);
-                CheckWP = new WaresPrice(data);
+                var data = GetWaresFromBarcode(0, null, pb, pIsHandInput);
+                CheckWP = data == null ? new() {ParseBarCode=pb, BarCodes= pBarCode} :new WaresPrice(data);
                 LastResult = new();
             }
 

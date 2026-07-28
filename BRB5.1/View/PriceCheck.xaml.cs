@@ -25,7 +25,7 @@ namespace BRB6
         public bool IsVisPriceOpt { get { return WP != null && (WP.PriceOpt != 0 || WP.PriceOptOld != 0); } }
         public bool IsVisPriceOptQ { get { return WP != null && WP.QuantityOpt != 0 ; } }
 
-        public bool IsVisF4 { get { return Config.LocalCompany == eCompany.Sim23; } }
+        public bool IsVisF4 { get { return Config.LocalCompany == eCompany.Sim23 || Config.LocalCompany == eCompany.PSU; } }
         public string F4Text { get { return IsOnline ? "OnLine" : "OffLine"; } }
         private bool _IsOnline = true;
         public bool IsOnline { get { return _IsOnline; } set { _IsOnline = value; OnPropertyChanged(nameof(F4Text)); } }

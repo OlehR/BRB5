@@ -33,6 +33,13 @@ namespace BRB6.View
         public bool IsVisQ { get { return _IsVisQ; } set { _IsVisQ = value; OnPropertyChanged(nameof(IsVisQ)); } }
         private bool _IsVisQOk = false;
         public bool IsVisQOk { get { return _IsVisQOk; } set { _IsVisQOk = value; OnPropertyChanged(nameof(IsVisQOk)); } }
+        public bool IsShowAddAuto { get; set; } = true;//= Config.IsShowAddAuto;
+        bool _IsAddAuto;
+        public bool IsAddAuto { get { return _IsAddAuto; } set { _IsAddAuto = value; OnPropertyChanged(nameof(IsAddAuto)); OnPropertyChanged(nameof(InputQuantity)); OnPropertyChanged(nameof(IsNotAddAuto)); } }
+
+        public decimal? InputQuantity { get { return IsAddAuto?1: ScanData?.InputQuantity; } set { if(ScanData!=null&& value!=null) ScanData.InputQuantity = value??0; OnPropertyChanged(nameof(InputQuantity)); } }
+        public bool IsNotAddAuto => !IsAddAuto;
+
         private string _DisplayQuestion;
         public string DisplayQuestion { get { return _DisplayQuestion; } set { _DisplayQuestion = value; OnPropertyChanged(nameof(DisplayQuestion)); } }
         private string TempBarcode;
@@ -98,6 +105,12 @@ namespace BRB6.View
                 inputQ.IsReadOnly = false;
                 //AddWare();
             }
+            if(IsAddAuto && ScanData != null)
+            {
+                if(ScanData.InputQuantity == 0) ScanData.InputQuantity = 1;
+                AddWare();
+            }
+            OnPropertyChanged(nameof(InputQuantity));
         }
         public void Dispose() { Config.BarCode -= BarCode; }
         private async void AddWare()
@@ -123,7 +136,8 @@ namespace BRB6.View
                         if (ware.CodeWares == ScanData.CodeWares) ware.Ord = -1;
                     }
                     CollectionViewWares.SelectedItem = ListWares[0];
-                    ScanData = null;
+                    if(!IsAddAuto)                    
+                        ScanData = null;
 
                     ReasonPicker.SelectedItem = _defaultReason;
                 }
@@ -271,6 +285,8 @@ namespace BRB6.View
                 OnPropertyChanged(nameof(ListWares));
             }
         }
+
+        private void AddAuto(object sender, EventArgs e) => IsAddAuto = !IsAddAuto;
 
         private void CameraView_OnDetectionFinished(object sender, OnDetectionFinishedEventArg e)
         {
@@ -450,6 +466,9 @@ namespace BRB6.View
                     return;
                 case Keycode.F3:
                     Down(null, EventArgs.Empty);
+                    return;
+                case Keycode.F4:
+                    AddAuto(null, EventArgs.Empty);
                     return;
                 case Keycode.F8:
                     ResetAndAdd(null, EventArgs.Empty);

@@ -36,10 +36,11 @@ public partial class ExpirationDateElementTemplate : ContentView
     }
 
     public void Set(ExpirationDateElementVM pED, string pNumberDoc, IEnumerable<ExpirationDateElementVM> pAll)
-    {
-     NumberDoc=pNumberDoc;
+    {       
+        NumberDoc =pNumberDoc;
         _DM = pED;
         All = pAll;
+        HistoryTappedOff(null, null);
         ListED = db.GetDataExpiration(NumberDoc, pED.CodeWares)?.Where(el => el.DocId != pED.DocId);
         DM = (ExpirationDateElementVM)pED.Clone();
         DM.QuantityInput = DM.QuantityInput ?? DM.Quantity;
@@ -98,8 +99,7 @@ public partial class ExpirationDateElementTemplate : ContentView
                 if (R != null)
                 {
                     R.QuantityInput = DM.QuantityInput;
-                    DM = R;
-                    RequestShowMessage?.Invoke("Запис з цією датою вже є в системі");
+                    DM = R;                    
                 }
                 else
                 {
@@ -110,6 +110,8 @@ public partial class ExpirationDateElementTemplate : ContentView
                     else
                         IsSave = DM.QuantityInput > 0;
                 }
+                if(ListED?.Where(x => x.ExpirationDateInput == DM.ExpirationDateInput && x.CodeWares == DM.CodeWares)?.Any()==true)
+                    RequestShowMessage?.Invoke("Запис з цією датою вже був у системі");
             }
             if (IsSave)
                 db.ReplaceDocWaresExpiration(DM.GetDocWaresExpiration());
@@ -183,7 +185,8 @@ public partial class ExpirationDateElementTemplate : ContentView
                     Text = $"{item.ExpirationDate:dd.MM.yyyy}",// - {item.Quantity} {item.NameUnit}",
                     TextColor = Colors.Blue,
                     FontSize = 12,
-                    HorizontalOptions = LayoutOptions.Start
+                    HorizontalOptions = LayoutOptions.Start,
+                    TextDecorations = TextDecorations.Underline
                 };
 
                 _historyLabels.Add(label);
@@ -199,7 +202,8 @@ public partial class ExpirationDateElementTemplate : ContentView
                     Text = $"{item.ExpirationDateInput:dd.MM.yyyy}",// - {item.QuantityInput} {item.NameUnit}",
                     TextColor = Colors.Gray,
                     FontSize = 12,
-                    HorizontalOptions = LayoutOptions.Start
+                    HorizontalOptions = LayoutOptions.Start,
+                    TextDecorations = TextDecorations.Underline
                 };
 
                 _historyLabels.Add(label);
@@ -212,11 +216,21 @@ public partial class ExpirationDateElementTemplate : ContentView
     private void HistoryTapped(object sender, TappedEventArgs e)
     {
         _isLotHistoryExpanded = !_isLotHistoryExpanded;
+        HistoryTapped();
+    }
+    private void HistoryTappedOff(object sender, TappedEventArgs e)
+    {
+        if (_isLotHistoryExpanded)
+        {
+            _isLotHistoryExpanded = false;
+            HistoryTapped();
+        }
+    }
 
+    private void HistoryTapped()
+    {
         EditGrid.IsVisible = !_isLotHistoryExpanded;
-
         HistoryGrid.HeightRequest = _isLotHistoryExpanded ? 260 : 60;
-
         foreach (var label in _historyLabels)
             label.FontSize = _isLotHistoryExpanded ? 20 : 12;
     }

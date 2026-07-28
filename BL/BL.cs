@@ -143,22 +143,22 @@ namespace BL
         /// <param name="pBarCode"></param>
         /// <param name="pIsOnlyBarCode"></param>
         /// <returns></returns>
-        public DocWaresEx GetWaresFromBarcode(int pTypeDoc, String pNumberDoc, String pBarCode, bool pIsHandInput)
+        public DocWaresEx GetWaresFromBarcode(int pTypeDoc, String pNumberDoc, ParseBarCode pPB, bool pIsHandInput)
         {            
             bool IsSimpleDoc = false;
             if (pTypeDoc > 0)
                 IsSimpleDoc = Config.GetDocSetting(pTypeDoc).IsSimpleDoc;
-            ParseBarCode PBarcode = c.ParsedBarCode(pBarCode, !pIsHandInput && !IsSimpleDoc);
-            DocWaresEx res = db.GetScanData( new DocId() { TypeDoc = pTypeDoc, NumberDoc = pNumberDoc }, PBarcode);// pBarCode, pIsOnlyBarCode,false);
+            //ParseBarCode pPB = c.ParsedBarCode(pBarCode, !pIsHandInput && !IsSimpleDoc);
+            DocWaresEx res = db.GetScanData( new DocId() { TypeDoc = pTypeDoc, NumberDoc = pNumberDoc }, pPB);// pBarCode, pIsOnlyBarCode,false);
             //String outLog = "Null";
             if (res != null) ;
             //  outLog = res.CodeWares + "," + res.QuantityBarCode + "," + res.NameWares;
             else
-              if (Config.LocalCompany == eCompany.Sim23 && pTypeDoc == 7 && PBarcode.CodeWares != 0)
+              if (Config.LocalCompany == eCompany.Sim23 && pTypeDoc == 7 && pPB.CodeWares != 0)
             { //Якщо ревізія а товар не знайдено
 
-                DocWaresSample DWS = new DocWaresSample() { TypeDoc = pTypeDoc, NumberDoc = pNumberDoc, OrderDoc = 100000 + (int)PBarcode.CodeWares,
-                    Quantity = 1m, QuantityMax = 1m, Name = pBarCode };
+                DocWaresSample DWS = new DocWaresSample() { TypeDoc = pTypeDoc, NumberDoc = pNumberDoc, OrderDoc = 100000 + (int)pPB.CodeWares,
+                    Quantity = 1m, QuantityMax = 1m, Name = pPB.BarCode };
                 
                 db.ReplaceDocWaresSample([ DWS]);
                 res = new()
