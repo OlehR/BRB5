@@ -76,6 +76,22 @@ namespace BRB6
             return eTypeScaner.Camera;
         }
         public static Color ToColor(this System.Drawing.Color color)=>Color.FromRgb(color.R, color.G, color.B);
-        
+
+        public static void PlayNativeBeep()
+        {
+#if WINDOWS
+    // Для Windows працює класичний системний сигнал
+    System.Console.Beep(800, 200); // 800 Гц, 200 мілісекунд
+#elif ANDROID
+            // Для Android використовуємо нативний ToneGenerator
+            var toneGen = new Android.Media.ToneGenerator(Android.Media.Stream.Music, 100);
+            // Tone.PropBip — стандартний однотонний сигнал (можна замінити на KeyConfirm або DTMF)
+            toneGen.StartTone(Android.Media.Tone.PropBeep, 150);
+#elif IOS || MACCATALYST
+    // Для iOS відтворюємо системний звук (1052 — це звук повідомлення/Beep)
+    //AudioToolbox.SystemSound.FromFile(1052).PlaySystemSound();
+#endif
+        }
+
     }
 }

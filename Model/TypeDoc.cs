@@ -113,5 +113,14 @@ namespace BRB5
         /// Видалення з DocWaesSample та DocWaes після відправки документа  
         /// </summary>
         public bool IsDelAfterSend { get; set; } = false;
+        /// <summary>
+        /// Автодобавлення +1 шт  при скануванні товару
+        /// </summary>
+        public bool IsAddAuto { get; set; } = false;
+        /// <summary>
+        /// Для прайсчекера - чи дозволяти сканувати товар з OffLine
+        /// </summary>
+        public bool IsOffLine { get; set; } = false;
+
     }
 }

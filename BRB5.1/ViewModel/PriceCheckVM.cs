@@ -79,10 +79,10 @@ namespace BRB6.ViewModel
         public bool IsVisPriceOpt { get { return WP != null && (WP.PriceOpt != 0 || WP.PriceOptOld != 0); } }
         public bool IsVisPriceOptQ { get { return WP != null && WP.QuantityOpt != 0; } }
 
-        public bool IsVisF4 { get { return true; /*Config.LocalCompany == eCompany.Sim23 || Config.LocalCompany == eCompany.PSU; */ } }
+        public bool IsVisF4 { get { return _TypeDoc.IsOffLine; /*Config.LocalCompany == eCompany.Sim23 || Config.LocalCompany == eCompany.PSU; */ } }
         public string F4Text { get { return IsOnline ? "OnLine" : "OffLine"; } }
         private bool _IsOnline = true;
-        public bool IsOnline { get { return _IsOnline; } set { _IsOnline = value; OnPropertyChanged(nameof(F4Text)); } }
+        public bool IsOnline { get { return _IsOnline; } set { if(IsVisF4) _IsOnline = value; OnPropertyChanged(nameof(F4Text)); } }
 
         bool _IsVisRepl = false;
         public bool IsVisRepl { get { return _IsVisRepl; } set { _IsVisRepl = value; OnPropertyChanged(nameof(IsVisRepl)); } }
@@ -196,9 +196,9 @@ namespace BRB6.ViewModel
         public ICommand CloseBarCodesCommand => new Command(() => IsBarCodesDropdownVisible = false);
         public string QuantityToAddText => $"+{QuantityToAdd}";
         private bool _autoSave;
-        public bool IsPromoProposalMode => _typeDoc.CodeDoc == 99; // TODO: потрібний CodeDoc true;//
+        public bool IsPromoProposalMode => _TypeDoc.CodeDoc == 99; // TODO: потрібний CodeDoc true;//
 
-        private readonly TypeDoc _typeDoc;
+        private readonly TypeDoc _TypeDoc;
         private DateTime _selectedDate = DateTime.Today;
         public DateTime SelectedDate
         {
@@ -214,7 +214,7 @@ namespace BRB6.ViewModel
             get => _selectedReason;
             set => SetProperty(ref _selectedReason, value);
         }
-        public ObservableCollection<DocWaresPromo> PromoItems { get; } = new();
+        public ObservableCollection<DocWaresPromo> PromoItems { get; } = [];
 
         private bool _isPromoListVisible;
         public bool IsPromoListVisible
@@ -239,7 +239,8 @@ namespace BRB6.ViewModel
             bl.ClearWPH();
             var r = db.GetCountScanCode();
             IsVisDoubleScan = pTypeDoc.CodeDoc == 15;
-            _typeDoc = pTypeDoc;
+            //IsVisF4 = pTypeDoc.IsOffLine    ;
+            _TypeDoc = pTypeDoc;
 
             if (Config.TypeUsePrinter == eTypeUsePrinter.StationaryWithCutAuto) PrintType = -1;
 

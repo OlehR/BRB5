@@ -33,7 +33,7 @@ namespace BRB6.View
         public bool IsVisQ { get { return _IsVisQ; } set { _IsVisQ = value; OnPropertyChanged(nameof(IsVisQ)); } }
         private bool _IsVisQOk = false;
         public bool IsVisQOk { get { return _IsVisQOk; } set { _IsVisQOk = value; OnPropertyChanged(nameof(IsVisQOk)); } }
-        public bool IsShowAddAuto { get; set; } = true;//= Config.IsShowAddAuto;
+        public bool IsShowAddAuto { get; set; }
         bool _IsAddAuto;
         public bool IsAddAuto { get { return _IsAddAuto; } set { _IsAddAuto = value; OnPropertyChanged(nameof(IsAddAuto)); OnPropertyChanged(nameof(InputQuantity)); OnPropertyChanged(nameof(IsNotAddAuto)); } }
 
@@ -57,6 +57,7 @@ namespace BRB6.View
 
         public DocScan(DocVM pDocId, TypeDoc pTypeDoc = null)
         {
+            IsShowAddAuto = pTypeDoc.IsAddAuto;
             InitializeComponent();
             NokeyBoard();
             DocId = pDocId;

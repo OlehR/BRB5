@@ -7,6 +7,7 @@ using SQLite;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -175,7 +176,12 @@ CREATE TABLE LogPrice (
     Article                 INTEGER,
     LineNumber             INTEGER,
     NumberOfReplenishment NUMERIC,
-    NumberOfMR NUMERIC
+    NumberOfMR NUMERIC,
+    Quantity     NUMBER,
+    Price        NUMBER,
+    CodeReason INTEGER,
+    ExpirationDate DATE
+
 );
 
 CREATE TABLE Reason (
@@ -281,7 +287,7 @@ CREATE TABLE SKU (
     CodeUnit           INTEGER  NOT NULL);
 CREATE UNIQUE INDEX SKUId ON SKU (CodeSKU);
 ";
-        readonly int Ver = 22;
+        readonly int Ver = 23;
         
         string SqlTo11 = @"CREATE TABLE SKU (
     CodeSKU          INTEGER  NOT NULL,
@@ -305,6 +311,11 @@ CREATE INDEX TypeWarehouseId ON TypeWarehouse (Code);";
 alter TABLE Doc  add  DTUpdate TIMESTAMP DEFAULT null;
 alter TABLE DocWaresExpiration add DTUpdate         TIMESTAMP;
 alter TABLE DocWaresExpiration add DTInsert         TIMESTAMP;";
+
+        string SqlTo23 = @"alter TABLE LogPrice add Quantity     NUMBER;
+    alter TABLE LogPrice add Price NUMBER;
+    alter TABLE LogPrice add CodeReason INTEGER;
+    alter TABLE LogPrice add ExpirationDate DATE;";
 
         public static string PathNameDB { get { return Path.Combine(BaseDir, NameDB); } }
 

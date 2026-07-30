@@ -27,6 +27,10 @@ namespace BRB5.Model
         public decimal NumberOfReplenishment { get; set; }
         public string ProductArea { get; set; }
         public decimal NumberOfMR { get; set; } = -1;
+        public decimal Quantity { get; set; }
+        //public decimal Price { get; set; }
+        public int CodeReason { get; set; }
+        public DateTime ExpirationDate { get; set; }
         //DateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         //public string GetJsonPSU() { return "[\"" + BarCode + "\"," + Status + ",\"" + format.format(DTInsert) + "\"," + PackageNumber + "," + CodeWares + "]"; }
         public LogPrice() { }

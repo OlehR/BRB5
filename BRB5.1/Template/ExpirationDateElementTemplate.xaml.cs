@@ -103,6 +103,11 @@ public partial class ExpirationDateElementTemplate : ContentView
                 }
                 else
                 {
+                    if (ListED?.Where(x => x.ExpirationDateInput == DM.ExpirationDateInput && x.CodeWares == DM.CodeWares)?.Any() == true)
+                    {
+                        RequestShowMessage?.Invoke("Запис з цією датою вже був у системі");
+                        return;
+                    }
                     var r = db.GetDataExpiration(NumberDoc, DM.CodeWares);
                     R = r?.FirstOrDefault(x => x.ExpirationDateInput == DM.ExpirationDateInput && x.CodeWares==DM.CodeWares);
                     if (R != null)
@@ -110,8 +115,7 @@ public partial class ExpirationDateElementTemplate : ContentView
                     else
                         IsSave = DM.QuantityInput > 0;
                 }
-                if(ListED?.Where(x => x.ExpirationDateInput == DM.ExpirationDateInput && x.CodeWares == DM.CodeWares)?.Any()==true)
-                    RequestShowMessage?.Invoke("Запис з цією датою вже був у системі");
+                   
             }
             if (IsSave)
                 db.ReplaceDocWaresExpiration(DM.GetDocWaresExpiration());
