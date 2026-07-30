@@ -352,6 +352,8 @@ alter TABLE DocWaresExpiration add DTInsert         TIMESTAMP;";
                     SetSQL(SqlTo19, 19);
                 if (GetVersion < 22)
                     SetSQL(SqlTo22, 22);
+                if (GetVersion < 23)
+                    SetSQL(SqlTo23, 23);
 
             }
         }
