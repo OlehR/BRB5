@@ -8,6 +8,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Diagnostics.Metrics;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -1451,6 +1452,18 @@ where whd.Code={pCodeWarehouse}";
             }
             catch (Exception e)
             { FileLogger.WriteLogMessage(this, System.Reflection.MethodBase.GetCurrentMethod().Name, e); return false; }
+        }
+        public void UpdatePromotion(int pLineNumber, decimal pQuantity, decimal pPrice, int pCodeReason, DateTime pExpirationDate)
+        {
+            try
+            {
+                string Sql = $"Update LogPrice set Quantity={pQuantity}, Price={pPrice}, CodeReason={pCodeReason}, ExpirationDate='{pExpirationDate.ToString("yyyy-MM-dd")}' where date('now', '-1 day') < DTInsert and  IsSend = 0 and LineNumber ={pLineNumber}"; //
+                db.Execute(Sql);
+            }
+            catch (Exception e)
+            {
+                FileLogger.WriteLogMessage(this, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+            }
         }
     }
 }
