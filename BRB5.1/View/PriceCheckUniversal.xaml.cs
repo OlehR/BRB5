@@ -105,6 +105,7 @@ namespace BRB6.View
         // ── Barcode entry focus ────────────────────────────────────────────────
         private void BarCodeFocused(object sender, FocusEventArgs e)
         {
+            if (vm.IsPromoListVisible) return;
             Dispatcher.Dispatch(() =>
             {
                 BarCodeInput.CursorPosition = 0;
@@ -117,6 +118,7 @@ namespace BRB6.View
         // ── Camera ─────────────────────────────────────────────────────────────
         private void CameraView_OnDetectionFinished(object sender, OnDetectionFinishedEventArg e)
         {
+            if (vm.IsPromoListVisible) return;
             if (e.BarcodeResults.Length > 0)
             {
                 BarcodeScaner.PauseScanning = true;
@@ -133,11 +135,12 @@ namespace BRB6.View
 #if ANDROID
         public void OnPageKeyDown(Keycode keyCode, KeyEvent e)
         {
+            if (vm.IsPromoListVisible) return;
             switch (keyCode)
             {
                 case Keycode.F1: vm.PrintBlockCommand.Execute(null); return;
-                case Keycode.F2: vm.F2Command.Execute(null); return;
-                case Keycode.F3: vm.F3Command.Execute(null); return;
+                case Keycode.F2: if (!vm.IsPromoProposalMode) vm.F2Command.Execute(null); return;
+                case Keycode.F3: if (!vm.IsPromoProposalMode) vm.F3Command.Execute(null); return;
                 case Keycode.F4: vm.F4Command.Execute(null); return;
                 case Keycode.F5: vm.F5Command.Execute(null); return;
                 case Keycode.F6: vm.PrintOneCommand.Execute(null); return;

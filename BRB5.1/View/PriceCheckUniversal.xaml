@@ -2,13 +2,13 @@
 
 <controls:BaseContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
                           xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-                          xmlns:controls="clr-namespace:BRB6.View"
+                          xmlns:controls="clr-namespace:BRB6.View"  x:Name="page"
                           xmlns:scanner="clr-namespace:BarcodeScanning;assembly=BarcodeScanning.Native.Maui"
                           xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"      
                           x:Class="BRB6.View.PriceCheckUniversal">
     <ContentPage.Content>
         <Grid>
-            <StackLayout BackgroundColor="{Binding ColorPrintColorType}" Spacing="0">
+            <StackLayout BackgroundColor="{Binding ColorPrintColorType}" IsEnabled="{Binding IsPromoListNotVisible}" Spacing="0">
 
             <Grid x:Name="GridZxing" IsVisible="{Binding IsVisScan}"  HeightRequest="200"/>
 
@@ -77,7 +77,7 @@
                 </Frame>
             </Grid>
 
-            <Grid IsVisible="{Binding IsVisRepl}" ColumnDefinitions="2*,*,2*,3*,2*,2*" HeightRequest="60" ColumnSpacing="0" Margin="0">
+            <Grid IsVisible="{Binding IsVisRepl}" IsEnabled="{Binding HasWare}" ColumnDefinitions="2*,*,2*,3*,2*,2*" HeightRequest="60" ColumnSpacing="0" Margin="0">
 
                 <Button Grid.Column="0" FontSize="30"  FontAttributes="Bold" Text="C"  Padding="0" Margin="2" Command="{Binding ClearCommand}"
                         BackgroundColor="#D16F72"  CornerRadius="15" />
@@ -112,15 +112,15 @@
 
                     <Label Text="Вжити до:" VerticalOptions="Center"/>
                     <Grid Grid.Column="1" ColumnDefinitions="*,Auto">
-                        <DatePicker  Date="{Binding SelectedDate}" HorizontalOptions="StartAndExpand" />
+                        <DatePicker  Date="{Binding SelectedDate}" HorizontalOptions="StartAndExpand" IsEnabled="{Binding HasWare}" />
                         <Button Grid.Column="1" Text="Переглянути" HorizontalOptions="End" Command="{Binding ShowPromoListCommand}" />
                     </Grid>
 
                     <Label Grid.Row="1" Text="Причина:" VerticalOptions="Center"/>
                     <Grid Grid.Row="1" Grid.Column="1" ColumnDefinitions="*,Auto">
-                        <Picker Grid.Column="0" ItemsSource="{Binding ReasonList}" 
-                                SelectedItem="{Binding SelectedReason}" Title="Причина подання"/>
-                        <Button Grid.Column="1" Text="Додати" Command="{Binding AddPromoItemCommand}"/>
+                        <Picker Grid.Column="0" ItemsSource="{Binding ReasonList}" ItemDisplayBinding="{Binding NameReason}"
+                                SelectedItem="{Binding SelectedReason}" Title="Причина подання" IsEnabled="{Binding HasWare}"/>
+                        <Button Grid.Column="1" Text="Додати" IsEnabled="{Binding HasWare}"  Command="{Binding AddPromoItemCommand}"/>
                     </Grid>
                 </Grid>
             
@@ -141,14 +141,14 @@
             </Grid>
 
             <StackLayout VerticalOptions="End" Orientation="Horizontal" Spacing="2">
-                <Label Text="F2" VerticalOptions="Center" FontSize="16" TextColor="#ff5c5c" />
-                <Label Text="Зберегти" FontSize="16" TextColor="#816f20">
+                <Label Text="F2" IsVisible="{Binding IsNotPromoProposalMode}"  VerticalOptions="Center" FontSize="16" TextColor="#ff5c5c" />
+                <Label Text="Зберегти" IsVisible="{Binding IsNotPromoProposalMode}"  FontSize="16" TextColor="#816f20">
                     <Label.GestureRecognizers>
                         <TapGestureRecognizer Command="{Binding F2Command}" />
                     </Label.GestureRecognizers>
                 </Label>
-                <Label Text="F3" VerticalOptions="Center" FontSize="16" TextColor="#ff5c5c" />
-                <Label Text="Підбір" FontSize="16" TextColor="#816f20">
+                <Label Text="F3" IsVisible="{Binding IsNotPromoProposalMode}"  VerticalOptions="Center" FontSize="16" TextColor="#ff5c5c" />
+                <Label Text="Підбір" IsVisible="{Binding IsNotPromoProposalMode}" FontSize="16" TextColor="#816f20">
                     <Label.GestureRecognizers>
                         <TapGestureRecognizer Command="{Binding F3Command}" />
                     </Label.GestureRecognizers>
@@ -180,30 +180,54 @@
         </StackLayout>
             <Grid IsVisible="{Binding IsPromoListVisible}"  BackgroundColor="#80000000" ZIndex="100">
 
-                <Border  BackgroundColor="White" Stroke="Gray" StrokeThickness="1" Margin="20"
-                         Padding="8" VerticalOptions="Center" HorizontalOptions="Center">
+                <Border BackgroundColor="White" Stroke="Gray" StrokeThickness="1" Margin="10"
+                        Padding="8" VerticalOptions="Center" HorizontalOptions="Center">
 
-                    <Grid RowDefinitions="Auto,*,Auto">
+                    <Grid RowDefinitions="Auto,*,Auto" WidthRequest="340">
 
                         <Grid ColumnDefinitions="*,Auto">
-                            <Label Text="Пропозиція акції" FontSize="22" FontAttributes="Bold"/>
-                            <Button  Grid.Column="1" Padding="3" VerticalOptions="Start" Text="✕" Command="{Binding ClosePromoListCommand}"/>
+                            <Label Text="Пропозиція акції" FontSize="20" FontAttributes="Bold"/>
+                            <Button Grid.Column="1" Padding="3" VerticalOptions="Start" Text="✕" Command="{Binding ClosePromoListCommand}"/>
                         </Grid>
 
-                        <CollectionView Grid.Row="1" Margin="0" ItemsSource="{Binding PromoItems}">
+                        <CollectionView Grid.Row="1" Margin="0,5" ItemsSource="{Binding PromoItems}">
 
-                            <!--<CollectionView.Header>
-                                <Grid ColumnDefinitions="65,*">
-                                    <Label Text="Код" FontAttributes="Bold"/>
-                                    <Label Grid.Column="1" Text="Товар" FontAttributes="Bold"/>
+                            <!-- Шапка таблиці -->
+                            <CollectionView.Header>
+                                <Grid Padding="0" ColumnDefinitions="60,*,30,30,30">
+                                    <Label Text="Арт." FontAttributes="Bold" FontSize="11"/>
+                                    <Label Grid.Column="1" Text="Товар" FontAttributes="Bold" FontSize="11"/>
+                                    <Label Grid.Column="2" Text="К-ть" FontAttributes="Bold" FontSize="11" HorizontalTextAlignment="Center"/>
+                                    <Label Grid.Column="3" Text="Прич" FontAttributes="Bold" FontSize="11"/>
+                                    <Label Grid.Column="4" Text="" />
                                 </Grid>
-                            </CollectionView.Header>-->
+                            </CollectionView.Header>
 
                             <CollectionView.ItemTemplate>
                                 <DataTemplate>
-                                    <Grid  Padding="0,0,0,5" ColumnDefinitions="65,*">
-                                        <Label Text="{Binding CodeWares}"/>
-                                        <Label Grid.Column="1" Text="{Binding Description}"/>
+                                    <Grid RowDefinitions="Auto, Auto" Padding="0">
+                                        <Grid Grid.Row="0" Padding="0,4" ColumnDefinitions="60,*,30,30,30" VerticalOptions="Center">
+                                        <!-- Артикул замість коду -->
+                                        <Label Text="{Binding Article}" VerticalOptions="Center" FontSize="11"/>
+
+                                        <!-- Назва товару -->
+                                        <Label Grid.Column="1" Text="{Binding Description}" LineBreakMode="WordWrap" MaxLines="2" VerticalOptions="Center" FontSize="11"/>
+
+                                        <!-- Кількість -->
+                                        <Label Grid.Column="2" Text="{Binding Quantity}" HorizontalTextAlignment="Center" VerticalOptions="Center" FontSize="11"/>
+
+                                        <!-- Причина -->
+                                        <Label Grid.Column="3" Text="{Binding CodeReason}" LineBreakMode="TailTruncation" 
+                                               HorizontalTextAlignment="Center" VerticalOptions="Center" FontSize="11"/>
+
+                                        <!-- Кнопка видалення -->
+                                        <Button Grid.Column="4" Text="✕" TextColor="Red" BackgroundColor="Transparent" Padding="0" 
+                                                HeightRequest="25" WidthRequest="25" FontSize="12"
+                                                Command="{Binding BindingContext.DeletePromoItemCommand, Source={x:Reference page}}"
+                                                CommandParameter="{Binding .}"/>
+                                        </Grid>
+                                        <!-- Тонка роздільна лінія (висота 1, колір світло-сірий) -->
+                                        <BoxView Grid.Row="1" HeightRequest="1" BackgroundColor="#E0E0E0" HorizontalOptions="Fill" Margin="0" />
                                     </Grid>
                                 </DataTemplate>
                             </CollectionView.ItemTemplate>

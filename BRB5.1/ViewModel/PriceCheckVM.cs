@@ -58,7 +58,7 @@ namespace BRB6.ViewModel
         public ICommand F5Command { get; }
         public ICommand DoubleScanReactCommand { get; }
         public ICommand PrintOneCommand { get; }
-
+        public ICommand DeletePromoItemCommand { get; }
         public List<PrintBlockItems> ListPrintBlockItems { get { return db.GetPrintBlockItemsCount().ToList(); } }
 
         public int SelectedPrintBlockItems { get { return ListPrintBlockItems.Count > 0 ? ListPrintBlockItems.Last().PackageNumber : -1; } }
@@ -85,7 +85,7 @@ namespace BRB6.ViewModel
         public bool IsOnline { get { return _IsOnline; } set { if(IsVisF4) _IsOnline = value; OnPropertyChanged(nameof(F4Text)); } }
 
         bool _IsVisRepl = false;
-        public bool IsVisRepl { get { return _IsVisRepl; } set { _IsVisRepl = value; OnPropertyChanged(nameof(IsVisRepl)); } }
+        public bool IsVisRepl { get => _IsVisRepl || IsPromoProposalMode; set { _IsVisRepl = value; OnPropertyChanged(nameof(IsVisRepl)); } }
         public bool IsSoftKeyboard { get { return Config.IsSoftKeyboard; } }
         public bool IsVisPromotion => !string.IsNullOrEmpty(WP?.PromotionName) && WP?.PromotionEnd != default(DateTime);
 
@@ -196,7 +196,8 @@ namespace BRB6.ViewModel
         public ICommand CloseBarCodesCommand => new Command(() => IsBarCodesDropdownVisible = false);
         public string QuantityToAddText => $"+{QuantityToAdd}";
         private bool _autoSave;
-        public bool IsPromoProposalMode => _TypeDoc.CodeDoc == 99; // TODO: потрібний CodeDoc true;//
+        public bool IsPromoProposalMode => _TypeDoc.CodeDoc == 16; 
+        public bool IsNotPromoProposalMode => !IsPromoProposalMode;
 
         private readonly TypeDoc _TypeDoc;
         private DateTime _selectedDate = DateTime.Today;
@@ -206,13 +207,19 @@ namespace BRB6.ViewModel
             set => SetProperty(ref _selectedDate, value);
         }
 
-        public List<string> ReasonList { get; } =   [ "Заблоковані СКЮ", "Моніторинг",  "Надмірні залишки" , "Терміни що спливають" ];
-
-        private string _selectedReason;
-        public string SelectedReason
+        private BRB5.Model.DB.Reason _selectedReason;
+        public BRB5.Model.DB.Reason SelectedReason
         {
             get => _selectedReason;
             set => SetProperty(ref _selectedReason, value);
+        }
+
+        // Тип списку тепер містить об'єкти класу Reason
+        private List<BRB5.Model.DB.Reason> _reasonList;
+        public List<BRB5.Model.DB.Reason> ReasonList
+        {
+            get => _reasonList;
+            set => SetProperty(ref _reasonList, value);
         }
         public ObservableCollection<DocWaresPromo> PromoItems { get; } = [];
 
@@ -220,8 +227,10 @@ namespace BRB6.ViewModel
         public bool IsPromoListVisible
         {
             get => _isPromoListVisible;
-            set => SetProperty(ref _isPromoListVisible, value);
+            set { if (SetProperty(ref _isPromoListVisible, value)) { OnPropertyChanged(nameof(IsPromoListNotVisible)); } }
         }
+        public bool IsPromoListNotVisible => !IsPromoListVisible;
+
         public ICommand ShowPromoListCommand { get; }
         public ICommand ClosePromoListCommand { get; }
         public ICommand SubmitPromoCommand { get; }
@@ -274,12 +283,14 @@ namespace BRB6.ViewModel
 
             F2Command = new RelayCommand(() =>
             {
-                var Res=bl.SendLogPrice();
-                ForMVVM.DisplayAlert("Збереження", Res?.TextError??"Помилка збереження", "OK");
+                if (IsPromoProposalMode) return; // Блокуємо дію
+                var Res = bl.SendLogPrice();
+                ForMVVM.DisplayAlert("Збереження", Res?.TextError ?? "Помилка збереження", "OK");
             });
 
             F3Command = new RelayCommand(() =>
             {
+                if (IsPromoProposalMode) return; // Блокуємо дію (блок і так завжди видимий)
                 IsVisRepl = !IsVisRepl;
                 if (IsVisRepl) ForMVVM.Focused("NumberOfReplenishment");
             });
@@ -336,7 +347,19 @@ namespace BRB6.ViewModel
                 IsPromoListVisible = false;
             });
 
+            // Майбутнє джерело даних з БД (закоментовано):
+            // ReasonList = db.GetReason(pTypeDoc.LevelReason, true).ToList();
+
+            // Тимчасове заповнення реальними об'єктами для збереження вигляду:
+            ReasonList = new List<BRB5.Model.DB.Reason>
+            {
+                new() { CodeReason = 1, NameReason = "Заблоковані СКЮ" },
+                new() { CodeReason = 2, NameReason = "Моніторинг" },
+                new() { CodeReason = 3, NameReason = "Надмірні залишки" },
+                new() { CodeReason = 4, NameReason = "Терміни що спливають" }
+            };
             AddPromoItemCommand = new Command(AddPromoItem);
+            DeletePromoItemCommand = new RelayCommand<DocWaresPromo>(DeletePromoItem);
         }
 
         void BarCode(string pBarCode) => FoundWares(pBarCode, false);
@@ -471,11 +494,16 @@ namespace BRB6.ViewModel
                 return;
             }
 
+            decimal.TryParse(NumberOfReplenishment, out decimal qty);
+
             PromoItems.Add(new DocWaresPromo
             {
                 CodeWares = WP.CodeWares,
+                Article = WP.Article,
                 Description = WP.Name,
-                ExpirationDate = SelectedDate
+                ExpirationDate = SelectedDate,
+                Quantity = qty,               
+                CodeReason = SelectedReason?.CodeReason ?? 0
             });
 
             ForMVVM.ShowToast($"Додано");
@@ -483,7 +511,17 @@ namespace BRB6.ViewModel
             WP = null;
             SelectedReason = null;
             SelectedDate = DateTime.Today;
+            NumberOfReplenishment = "0";
             ForMVVM.Focused("BarCodeInput");
         }
+        private void DeletePromoItem(DocWaresPromo item)
+        {
+            if (item != null && PromoItems.Contains(item))
+            {
+                PromoItems.Remove(item);
+                ForMVVM.ShowToast("Вилучено");
+            }
+        }
+
     }
 }
