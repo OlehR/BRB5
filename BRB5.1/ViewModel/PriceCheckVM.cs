@@ -229,6 +229,12 @@ namespace BRB6.ViewModel
             get => _isPromoListVisible;
             set { if (SetProperty(ref _isPromoListVisible, value)) { OnPropertyChanged(nameof(IsPromoListNotVisible)); } }
         }
+        private string _proposedPrice = string.Empty;
+        public string ProposedPrice
+        {
+            get => _proposedPrice;
+            set => SetProperty(ref _proposedPrice, value);
+        }
         public bool IsPromoListNotVisible => !IsPromoListVisible;
 
         public ICommand ShowPromoListCommand { get; }
@@ -332,32 +338,43 @@ namespace BRB6.ViewModel
             {  
                 IsMrDialogVisible = false;
             });
-            ShowPromoListCommand = new Command(() => IsPromoListVisible = true);
+            ShowPromoListCommand = new Command(() =>
+            {
+                // 1. Очищуємо поточний список на екрані
+                PromoItems.Clear();
 
+                // 2. Зчитуємо свіжі дані з локальної бази даних
+                var savedItems = db.GetPromoProposalItems();
+                foreach (var item in savedItems)
+                {
+                    PromoItems.Add(item);
+                }
+
+                // 3. Відкриваємо модальне вікно
+                IsPromoListVisible = true;
+            });
             ClosePromoListCommand = new Command(() => IsPromoListVisible = false);
 
             SubmitPromoCommand = new Command(async () =>
             {
-                await Application.Current.MainPage.DisplayAlert(
-                    "Пропозиція акції",
-                    $"Заглушка.\nБуде відправлено {PromoItems.Count} товарів.",
-                    "OK");
+                var Res = bl.SendLogPrice();
+                ForMVVM.DisplayAlert("Збереження", Res?.TextError ?? "Помилка збереження", "OK");
 
                 PromoItems.Clear();
                 IsPromoListVisible = false;
             });
 
             // Майбутнє джерело даних з БД (закоментовано):
-            // ReasonList = db.GetReason(pTypeDoc.LevelReason, true).ToList();
+            ReasonList = db.GetReason(pTypeDoc.LevelReason, true).ToList();
 
             // Тимчасове заповнення реальними об'єктами для збереження вигляду:
-            ReasonList = new List<BRB5.Model.DB.Reason>
-            {
-                new() { CodeReason = 1, NameReason = "Заблоковані СКЮ" },
-                new() { CodeReason = 2, NameReason = "Моніторинг" },
-                new() { CodeReason = 3, NameReason = "Надмірні залишки" },
-                new() { CodeReason = 4, NameReason = "Терміни що спливають" }
-            };
+            //ReasonList = new List<BRB5.Model.DB.Reason>
+            //{
+            //    new() { CodeReason = 1, NameReason = "Заблоковані СКЮ" },
+            //    new() { CodeReason = 2, NameReason = "Моніторинг" },
+            //    new() { CodeReason = 3, NameReason = "Надмірні залишки" },
+            //    new() { CodeReason = 4, NameReason = "Терміни що спливають" }
+            //};
             AddPromoItemCommand = new Command(AddPromoItem);
             DeletePromoItemCommand = new RelayCommand<DocWaresPromo>(DeletePromoItem);
         }
@@ -476,7 +493,7 @@ namespace BRB6.ViewModel
                 {
                     NumberOfReplenishment = delta > 0 ? delta.ToString() : "0";
                 }
-                if (IsAutoSave)
+                if (IsAutoSave&&IsNotPromoProposalMode)
                     OnUpdateReplenishment();
             }
         }
@@ -486,6 +503,7 @@ namespace BRB6.ViewModel
             if (WP == null)
                 return;
 
+            // Перевірка на дублікат перед додаванням
             if (PromoItems.Any(x =>
                 x.CodeWares == WP.CodeWares &&
                 x.ExpirationDate.Date == SelectedDate.Date))
@@ -495,29 +513,38 @@ namespace BRB6.ViewModel
             }
 
             decimal.TryParse(NumberOfReplenishment, out decimal qty);
+            decimal.TryParse(ProposedPrice, out decimal price);
 
-            PromoItems.Add(new DocWaresPromo
+            // 1. Оновлюємо локальну базу даних SQLite
+            db.UpdatePromoProposalItem(LineNumber, qty, price, SelectedReason?.CodeReason ?? 0, SelectedDate);
+
+            // 2. Оновлюємо візуальний список на екрані виключно з бази даних
+            PromoItems.Clear();
+            var savedItems = db.GetPromoProposalItems();
+            foreach (var item in savedItems)
             {
-                CodeWares = WP.CodeWares,
-                Article = WP.Article,
-                Description = WP.Name,
-                ExpirationDate = SelectedDate,
-                Quantity = qty,               
-                CodeReason = SelectedReason?.CodeReason ?? 0
-            });
+                PromoItems.Add(item);
+            }
 
             ForMVVM.ShowToast($"Додано");
 
+            // Очищення полів введення
             WP = null;
             SelectedReason = null;
             SelectedDate = DateTime.Today;
             NumberOfReplenishment = "0";
+            ProposedPrice = string.Empty;
+
             ForMVVM.Focused("BarCodeInput");
         }
+
         private void DeletePromoItem(DocWaresPromo item)
         {
             if (item != null && PromoItems.Contains(item))
             {
+                // Оновлюємо кількість на 0 в локальній базі даних перед вилученням з екрану
+                db.UpdatePromoProposalItem(item.LineNumber, 0, item.Price, item.CodeReason, item.ExpirationDate);
+
                 PromoItems.Remove(item);
                 ForMVVM.ShowToast("Вилучено");
             }

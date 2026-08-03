@@ -107,24 +107,22 @@
                     <Label FontSize="Large" Text="{Binding MessageDoubleScan}"/>
                 </Frame>
             </StackLayout>
-            
-                <Grid IsVisible="{Binding IsPromoProposalMode}" RowDefinitions="Auto,Auto" ColumnDefinitions="*,3*" >
 
-                    <Label Text="Вжити до:" VerticalOptions="Center"/>
-                    <Grid Grid.Column="1" ColumnDefinitions="*,Auto">
-                        <DatePicker  Date="{Binding SelectedDate}" HorizontalOptions="StartAndExpand" IsEnabled="{Binding HasWare}" />
-                        <Button Grid.Column="1" Text="Переглянути" HorizontalOptions="End" Command="{Binding ShowPromoListCommand}" />
-                    </Grid>
+                <Grid IsVisible="{Binding IsPromoProposalMode}" RowDefinitions="Auto,Auto" ColumnDefinitions="*,Auto,Auto" >
 
-                    <Label Grid.Row="1" Text="Причина:" VerticalOptions="Center"/>
-                    <Grid Grid.Row="1" Grid.Column="1" ColumnDefinitions="*,Auto">
-                        <Picker Grid.Column="0" ItemsSource="{Binding ReasonList}" ItemDisplayBinding="{Binding NameReason}"
-                                SelectedItem="{Binding SelectedReason}" Title="Причина подання" IsEnabled="{Binding HasWare}"/>
-                        <Button Grid.Column="1" Text="Додати" IsEnabled="{Binding HasWare}"  Command="{Binding AddPromoItemCommand}"/>
-                    </Grid>
+                    <Label Text="Вжити до:" VerticalOptions="Center" HorizontalTextAlignment="End" />
+                    <DatePicker  Grid.Column="1" Date="{Binding SelectedDate}" HorizontalOptions="StartAndExpand" IsEnabled="{Binding HasWare}" />
+                    <Button Grid.Column="2"  Text="Додати" IsEnabled="{Binding HasWare}"  Command="{Binding AddPromoItemCommand}"/>
+
+                    <Entry Grid.Column="0" Grid.Row="1" Text="{Binding ProposedPrice}" Margin="10,0" Keyboard="Numeric"
+                           HorizontalTextAlignment="End" Placeholder="Пропоз. ціни" IsEnabled="{Binding HasWare}" />
+                    <Picker Grid.Column="1" Grid.Row="1" ItemsSource="{Binding ReasonList}" ItemDisplayBinding="{Binding NameReason}"
+                            SelectedItem="{Binding SelectedReason}" Title="Причина подання" IsEnabled="{Binding HasWare}"/>
+                    <Button Grid.Column="2" Grid.Row="1" Text="Переглянути" HorizontalOptions="End" Command="{Binding ShowPromoListCommand}" />
+
                 </Grid>
-            
-            <Grid VerticalOptions="EndAndExpand"  ColumnDefinitions="*,*">
+
+                <Grid VerticalOptions="EndAndExpand"  ColumnDefinitions="*,*">
                 <Picker ItemsSource="{Binding ListPrintBlockItems}" ItemDisplayBinding="{Binding stringPrintBlockItem}"
                         SelectedIndex="{Binding SelectedPrintBlockItems}" SelectedItem="{Binding SelectedPrintItem, Mode=TwoWay}" />
                 <Button Text="f1-Друк" IsEnabled="{Binding IsEnabledPrint}" Command="{Binding PrintBlockCommand}" Grid.Column="1"/>        
@@ -180,10 +178,10 @@
         </StackLayout>
             <Grid IsVisible="{Binding IsPromoListVisible}"  BackgroundColor="#80000000" ZIndex="100">
 
-                <Border BackgroundColor="White" Stroke="Gray" StrokeThickness="1" Margin="10"
-                        Padding="8" VerticalOptions="Center" HorizontalOptions="Center">
+                <Border BackgroundColor="White" Stroke="Gray" StrokeThickness="1" Margin="5"
+                        Padding="5" VerticalOptions="Center" HorizontalOptions="Center">
 
-                    <Grid RowDefinitions="Auto,*,Auto" WidthRequest="340">
+                    <Grid RowDefinitions="Auto,*,Auto">
 
                         <Grid ColumnDefinitions="*,Auto">
                             <Label Text="Пропозиція акції" FontSize="20" FontAttributes="Bold"/>
@@ -194,11 +192,11 @@
 
                             <!-- Шапка таблиці -->
                             <CollectionView.Header>
-                                <Grid Padding="0" ColumnDefinitions="60,*,30,30,30">
+                                <Grid Padding="0" ColumnDefinitions="60,*,30,60,30">
                                     <Label Text="Арт." FontAttributes="Bold" FontSize="11"/>
                                     <Label Grid.Column="1" Text="Товар" FontAttributes="Bold" FontSize="11"/>
                                     <Label Grid.Column="2" Text="К-ть" FontAttributes="Bold" FontSize="11" HorizontalTextAlignment="Center"/>
-                                    <Label Grid.Column="3" Text="Прич" FontAttributes="Bold" FontSize="11"/>
+                                    <Label Grid.Column="3" Text="Причина" FontAttributes="Bold" FontSize="11"/>
                                     <Label Grid.Column="4" Text="" />
                                 </Grid>
                             </CollectionView.Header>
@@ -206,18 +204,18 @@
                             <CollectionView.ItemTemplate>
                                 <DataTemplate>
                                     <Grid RowDefinitions="Auto, Auto" Padding="0">
-                                        <Grid Grid.Row="0" Padding="0,4" ColumnDefinitions="60,*,30,30,30" VerticalOptions="Center">
+                                        <Grid Grid.Row="0" Padding="0,4" ColumnDefinitions="60,*,30,60,30" VerticalOptions="Center">
                                         <!-- Артикул замість коду -->
                                         <Label Text="{Binding Article}" VerticalOptions="Center" FontSize="11"/>
 
                                         <!-- Назва товару -->
-                                        <Label Grid.Column="1" Text="{Binding Description}" LineBreakMode="WordWrap" MaxLines="2" VerticalOptions="Center" FontSize="11"/>
+                                            <Label Grid.Column="1" Text="{Binding WareName}" LineBreakMode="WordWrap" MaxLines="2" VerticalOptions="Center" FontSize="11"/>
 
                                         <!-- Кількість -->
                                         <Label Grid.Column="2" Text="{Binding Quantity}" HorizontalTextAlignment="Center" VerticalOptions="Center" FontSize="11"/>
 
                                         <!-- Причина -->
-                                        <Label Grid.Column="3" Text="{Binding CodeReason}" LineBreakMode="TailTruncation" 
+                                        <Label Grid.Column="3" Text="{Binding Reason}" LineBreakMode="NoWrap" 
                                                HorizontalTextAlignment="Center" VerticalOptions="Center" FontSize="11"/>
 
                                         <!-- Кнопка видалення -->

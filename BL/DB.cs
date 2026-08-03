@@ -1453,7 +1453,7 @@ where whd.Code={pCodeWarehouse}";
             catch (Exception e)
             { FileLogger.WriteLogMessage(this, System.Reflection.MethodBase.GetCurrentMethod().Name, e); return false; }
         }
-        public void UpdatePromotion(int pLineNumber, decimal pQuantity, decimal pPrice, int pCodeReason, DateTime pExpirationDate)
+        public void UpdatePromoProposalItem(int pLineNumber, decimal pQuantity, decimal pPrice, int pCodeReason, DateTime pExpirationDate)
         {
             try
             {
@@ -1463,6 +1463,36 @@ where whd.Code={pCodeWarehouse}";
             catch (Exception e)
             {
                 FileLogger.WriteLogMessage(this, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+            }
+        }
+        public IEnumerable<DocWaresPromo> GetPromoProposalItems()
+        {
+            try
+            {
+                string Sql = @"
+            SELECT 
+                lp.LineNumber, 
+                lp.CodeWares, 
+                lp.Quantity, 
+                lp.Price, 
+                lp.CodeReason, 
+                lp.ExpirationDate,
+                w.NameWares AS WareName, 
+                w.Article,
+                r.NameReason AS Reason
+            FROM LogPrice lp
+            LEFT JOIN Wares w ON lp.CodeWares = w.CodeWares
+            LEFT JOIN Reason r ON lp.CodeReason = r.CodeReason
+            WHERE date('now', '-1 day') < lp.DTInsert 
+              AND lp.IsSend = 0 
+              AND lp.Quantity > 0";
+
+                return db.Query<DocWaresPromo>(Sql);
+            }
+            catch (Exception e)
+            {
+                FileLogger.WriteLogMessage(this, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+                return Enumerable.Empty<DocWaresPromo>();
             }
         }
     }
