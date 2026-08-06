@@ -71,7 +71,7 @@
                                     <Label Text="{Binding NameDoc}"
                                            TextColor="{AppThemeBinding Light='#000000', Dark='#FFFFFF'}"
                                                 FontSize="Large"
-                                                HorizontalOptions="CenterAndExpand"/>
+                                                HorizontalOptions="Center"/>
                                 </Grid>
                             </ViewCell.View>
                         </ViewCell>

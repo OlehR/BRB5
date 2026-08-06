@@ -37,7 +37,21 @@ namespace BRB6.View
         bool _IsAddAuto;
         public bool IsAddAuto { get { return _IsAddAuto; } set { _IsAddAuto = value; OnPropertyChanged(nameof(IsAddAuto)); OnPropertyChanged(nameof(InputQuantity)); OnPropertyChanged(nameof(IsNotAddAuto)); } }
 
-        public decimal? InputQuantity { get { return IsAddAuto?1: ScanData?.InputQuantity; } set { if(ScanData!=null&& value!=null) ScanData.InputQuantity = value??0; OnPropertyChanged(nameof(InputQuantity)); } }
+        // Оновлюємо властивість InputQuantity, щоб вона повертала null, якщо значення 0 (для відображення плейсхолдера)
+        public decimal? InputQuantity
+        {
+            get
+            {
+                if (IsAddAuto) return 1;
+                if (ScanData == null || ScanData.InputQuantity == 0) return null;
+                return ScanData.InputQuantity;
+            }
+            set
+            {
+                if (ScanData != null && value != null) ScanData.InputQuantity = value ?? 0;
+                OnPropertyChanged(nameof(InputQuantity));
+            }
+        }
         public bool IsNotAddAuto => !IsAddAuto;
 
         private string _DisplayQuestion;
@@ -50,7 +64,10 @@ namespace BRB6.View
         private BRB5.Model.DB.Reason _defaultReason = new BRB5.Model.DB.Reason { CodeReason = 0, NameReason = "— без причини —" };
         private BRB5.Model.DB.Reason _selectedReason;
         public BRB5.Model.DB.Reason SelectedReason { get => _selectedReason; set { if (_selectedReason != value) { _selectedReason = value;  OnPropertyChanged(nameof(SelectedReason)); } } }
-
+        // Додаємо властивості для керування видимістю елементів
+        public bool IsNotSim23 => Config.LocalCompany != eCompany.Sim23;
+        public bool IsNotSoftKeyboard => !Config.IsSoftKeyboard;
+      
         CameraView BarcodeScaner;
         //ZXingScannerView zxing;
         private ObservableCollection<DocWaresEx> _originalListWares;
@@ -139,7 +156,7 @@ namespace BRB6.View
                     CollectionViewWares.SelectedItem = ListWares[0];
                     if(!IsAddAuto)                    
                         ScanData = null;
-
+                    InputQuantity = 0;
                     ReasonPicker.SelectedItem = _defaultReason;
                 }
                 inputQ.Unfocus();
@@ -480,5 +497,21 @@ namespace BRB6.View
          }
 
 #endif
+    }
+    public class ZeroToNullConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            if (value == null) return null;
+            if (decimal.TryParse(value.ToString(), out decimal d) && d == 0) return null;
+            return value;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            if (string.IsNullOrWhiteSpace(value as string)) return 0m;
+            if (decimal.TryParse(value.ToString(), out decimal result)) return result;
+            return 0m;
+        }
     }
 }
