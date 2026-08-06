@@ -60,101 +60,98 @@
                     <StackLayout x:Name="DocWaresStackLayout" />
                 </ScrollView>
             </Grid>
-            <StackLayout VerticalOptions="End" Orientation="Horizontal">
+            <!-- ПАНЕЛЬ 1: Стара текстова панель (ховається для Sim23 на сенсорних пристроях) -->
+            <StackLayout VerticalOptions="End" Orientation="Horizontal" IsVisible="{Binding IsOldPanelVisible}">
 
-                <Label Text="F2-"
-                       IsVisible="{Binding IsVisF2}"
-                       FontSize="16"
-                       Grid.Column="6"
-                       TextColor="#ff5c5c"
-                       VerticalOptions="Center" >
+                <Label Text="F2-" IsVisible="{Binding IsVisF2}" FontSize="16" Grid.Column="6" TextColor="#ff5c5c" VerticalOptions="Center" >
                     <Label.GestureRecognizers>
                         <TapGestureRecognizer Tapped="F2Save" />
                     </Label.GestureRecognizers>
                 </Label>
-                <Label Text="Збер"
-                       IsVisible="{Binding IsVisF2}"
-                       FontSize="18"
-                       Grid.Column="7"
-                       TextColor="#816f20">
+                <Label Text="Збер" IsVisible="{Binding IsVisF2}" FontSize="18" Grid.Column="7" TextColor="#816f20">
                     <Label.GestureRecognizers>
                         <TapGestureRecognizer Tapped="F2Save" />
                     </Label.GestureRecognizers>
                 </Label>
 
-                <Label Text="F3-"
-                       FontSize="16"
-                       Grid.Column="6"
-                       TextColor="#ff5c5c"
-                       VerticalOptions="Center" >
+                <Label Text="F3-" FontSize="16" Grid.Column="6" TextColor="#ff5c5c" VerticalOptions="Center" >
                     <Label.GestureRecognizers>
                         <TapGestureRecognizer Tapped="F3Scan" />
                     </Label.GestureRecognizers>
                 </Label>
-                <Label Text="Скан"
-                       FontSize="18"
-                       Grid.Column="7"
-                       TextColor="#816f20">
+                <Label Text="Скан" FontSize="18" Grid.Column="7" TextColor="#816f20">
                     <Label.GestureRecognizers>
                         <TapGestureRecognizer Tapped="F3Scan" />
                     </Label.GestureRecognizers>
                 </Label>
 
-                <Label Text="F4-"
-                       FontSize="16"
-                       Grid.Column="6"
-                       TextColor="#ff5c5c"
-                       VerticalOptions="Center" >
+                <Label Text="F4-" FontSize="16" Grid.Column="6" TextColor="#ff5c5c" VerticalOptions="Center" >
                     <Label.GestureRecognizers>
                         <TapGestureRecognizer Tapped="F4WrOff" />
                     </Label.GestureRecognizers>
                 </Label>
-                <Label Text="Спис"
-                       FontSize="18"
-                       Grid.Column="7"
-                       TextColor="#816f20">
+                <Label Text="Спис" FontSize="18" Grid.Column="7" TextColor="#816f20">
                     <Label.GestureRecognizers>
                         <TapGestureRecognizer Tapped="F4WrOff" />
                     </Label.GestureRecognizers>
                 </Label>
 
-                <Label Text="F5-" IsVisible="{Binding IsVisF5Act}"
-                        FontSize="16"
-                        Grid.Column="6"
-                        TextColor="#ff5c5c"
-                        VerticalOptions="Center" >
+                <Label Text="F5-" IsVisible="{Binding IsVisF5Act}" FontSize="16" Grid.Column="6" TextColor="#ff5c5c" VerticalOptions="Center" >
                     <Label.GestureRecognizers>
                         <TapGestureRecognizer Tapped="F5Act" />
                     </Label.GestureRecognizers>
                 </Label>
-                <Label Text="Акт" IsVisible="{Binding IsVisF5Act}"
-                        FontSize="18"
-                        Grid.Column="7"
-                        TextColor="#816f20">
+                <Label Text="Акт" IsVisible="{Binding IsVisF5Act}" FontSize="18" Grid.Column="7" TextColor="#816f20">
                     <Label.GestureRecognizers>
                         <TapGestureRecognizer Tapped="F5Act" />
                     </Label.GestureRecognizers>
                 </Label>
 
-                <Label Text="F6-" IsVisible="{Binding IsViewInputDateDoc}"
-                       FontSize="16"
-                       Grid.Column="6"
-                       TextColor="#ff5c5c"
-                       VerticalOptions="Center" >
+                <Label Text="F6-" IsVisible="{Binding IsViewInputDateDoc}" FontSize="16" Grid.Column="6" TextColor="#ff5c5c" VerticalOptions="Center" >
                     <Label.GestureRecognizers>
                         <TapGestureRecognizer Tapped="F6Doc" />
                     </Label.GestureRecognizers>
                 </Label>
-                <Label Text="Док" IsVisible="{Binding IsViewInputDateDoc}"
-                       FontSize="18"
-                       Grid.Column="7"
-                       TextColor="#816f20">
+                <Label Text="Док" IsVisible="{Binding IsViewInputDateDoc}" FontSize="18" Grid.Column="7" TextColor="#816f20">
                     <Label.GestureRecognizers>
                         <TapGestureRecognizer Tapped="F6Doc" />
                     </Label.GestureRecognizers>
                 </Label>
 
             </StackLayout>
+
+            <!-- ПАНЕЛЬ 2: Нова панель з картинками (Тільки для Sim23 без фізичної клавіатури) -->
+            <HorizontalStackLayout VerticalOptions="End" HorizontalOptions="Center" Spacing="25" Padding="10" IsVisible="{Binding IsImagePanelVisible}">
+
+                <ImageButton Source="save.png" 
+                             Clicked="F2Save" 
+                             IsVisible="{Binding IsVisF2}" 
+                             HeightRequest="60" WidthRequest="60" 
+                             BackgroundColor="Transparent" Aspect="AspectFit" />
+
+                <ImageButton Source="barcode_scanning.png" 
+                             Clicked="F3Scan" 
+                             HeightRequest="60" WidthRequest="60" 
+                             BackgroundColor="Transparent" Aspect="AspectFit" />
+
+                <ImageButton Source="hand_input.png" 
+                             Clicked="F4WrOff" 
+                             HeightRequest="60" WidthRequest="60" 
+                             BackgroundColor="Transparent" Aspect="AspectFit" />
+
+                <!-- Залишаємо F5 та F6 у вигляді тексту, щоб не втратити цей функціонал, якщо він увімкнений для документу -->
+                <Label Text="Акт" IsVisible="{Binding IsVisF5Act}" FontSize="18" TextColor="#816f20" VerticalOptions="Center" FontAttributes="Bold">
+                    <Label.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="F5Act" />
+                    </Label.GestureRecognizers>
+                </Label>
+                <Label Text="Док" IsVisible="{Binding IsViewInputDateDoc}" FontSize="18" TextColor="#816f20" VerticalOptions="Center" FontAttributes="Bold">
+                    <Label.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="F6Doc" />
+                    </Label.GestureRecognizers>
+                </Label>
+
+            </HorizontalStackLayout>
         </StackLayout>
     </ContentPage.Content>
 </local:BaseContentPage>
