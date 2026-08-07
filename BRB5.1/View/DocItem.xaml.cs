@@ -39,11 +39,11 @@ namespace BRB6.View
         public bool IsViewNoReason { get { return !TypeDoc.IsViewReason; } }
         public string ExtInfo => Doc.ExtInfo;
         public string NumberDoc => Doc.NumberDoc;
-        // Стару панель показуємо, якщо це НЕ (Sim23 БЕЗ фізичної клавіатури)
-        public bool IsOldPanelVisible => !(Config.IsSoftKeyboard && Config.LocalCompany == eCompany.Sim23);
+        // Стара панель
+        public bool IsOldPanelVisible => !IsImagePanelVisible;
 
         // Нову панель з картинками показуємо тільки для Sim23 БЕЗ фізичної клавіатури
-        public bool IsImagePanelVisible => Config.IsSoftKeyboard && Config.LocalCompany == eCompany.Sim23;
+        public bool IsImagePanelVisible => Config.IsSoftKeyboard && Config.LocalCompany == eCompany.Sim23 && !IsViewInputDateDoc && !IsVisF5Act;
         public bool IsViewInputDateDoc { get { return TypeDoc.IsViewInputDateDoc; } }
         //// Колекція варіантів для Picker
         //public ObservableCollection<BRB5.Model.DB.Reason> Reasons { get; set; }
