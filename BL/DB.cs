@@ -661,8 +661,22 @@ and CodeWares in (select CodeWares from DocWares where TypeDoc={pDocId.TypeDoc} 
             return c > 0;
         }
 
-        public IEnumerable<DocVM> GetDoc(TypeDoc pTypeDoc, string pBarCode = null, string pExFilrer = null)
+
+        bool IsNeedSaveDoc(DocId pDocId, TypeDoc pTypeDoc)
         {
+            var R = GetDoc(pTypeDoc, null, null, pDocId.NumberDoc);
+            return R?.FirstOrDefault()?.IsNeedSave ?? false;
+        }
+
+        public IEnumerable<DocVM> GetDoc(TypeDoc pTypeDoc, string pBarCode = null, string pExFilrer = null,  string pNumberDoc = null, eSortDoc pSort = eSortDoc.DateDoc)
+        {
+            string OrderBy = pSort switch
+            {
+               eSortDoc.DateDoc => " order by d.DateDoc DESC",
+               eSortDoc.NumberDoc => " order by d.NumberDoc DESC",
+               eSortDoc.EditDoc => " order by max(dwu.DTUpdate, d.DTUpdate) DESC",
+               _ => ""
+            };
             try
             {
                 string Sql = $@"select d.*, Wh.Address as Address,d.State as Color, case when dwu.DTUpdate>coalesce( d.DTUpdate, '0001-01-01') then 1 else 0 end as IsNeedSave 
@@ -670,9 +684,10 @@ from Doc d
  left join Warehouse  Wh on d.CodeWarehouse = wh.number 
  left join (select NumberDoc,max(DTUpdate) as DTUpdate from DocWares dw where TypeDoc = {pTypeDoc.CodeDoc} ) dwu on  dwu.numberdoc=d.numberdoc
                                 where TypeDoc = {pTypeDoc.CodeDoc} and DateDoc >= date(datetime(CURRENT_TIMESTAMP,'-{pTypeDoc.DayBefore} day'))" +
+                                   (string.IsNullOrEmpty(pNumberDoc) ? "" : $" and d.NumberDoc like'%{pNumberDoc}%'") +
                                     (string.IsNullOrEmpty(pBarCode) ? "" : $" and BarCode like'%{pBarCode}%'") +
                                     (string.IsNullOrEmpty(pExFilrer) ? "" : $" and ExtInfo like'%{pExFilrer}%'") + @"
- order by DateDoc DESC";
+" + OrderBy;
 
                 var res = db.Query<DocVM>(Sql);
                 if (res.Count == 0 && !string.IsNullOrEmpty(pBarCode))
@@ -685,7 +700,7 @@ from Doc d
 left join (select NumberDoc,max(DTUpdate) as DTUpdate from DocWares dw where TypeDoc = {pTypeDoc.CodeDoc} ) dwu on  dwu.numberdoc=d.numberdoc
    where d.TypeDoc = {pTypeDoc.CodeDoc} and DateDoc >= date(datetime(CURRENT_TIMESTAMP,'-{pTypeDoc.DayBefore} day'))
 and bc.BarCode=?
- order by DateDoc DESC";
+" + OrderBy;
                     res = db.Query<DocVM>(Sql, pBarCode);
                 }
                 return res;

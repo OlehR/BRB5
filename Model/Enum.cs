@@ -196,5 +196,13 @@ namespace BRB5
         Warehouse = 2,
         Supplyer = 3
     }
+
+    public enum eSortDoc
+    {
+        NotDefined,
+        DateDoc ,
+        NumberDoc,
+        EditDoc
+    }
     
 }
