@@ -39,9 +39,19 @@ namespace BRB6.View
         public bool IsViewNoReason { get { return !TypeDoc.IsViewReason; } }
         public string ExtInfo => Doc.ExtInfo;
         public string NumberDoc => Doc.NumberDoc;
+        private bool _hasChanges = false;
+        // Властивість для керування станом кнопки збереження
+        public bool HasChanges
+        {
+            get => _hasChanges;
+            set
+            {
+                _hasChanges = value;
+                OnPropertyChanged(nameof(HasChanges));
+            }
+        }
         // Стара панель
         public bool IsOldPanelVisible => !IsImagePanelVisible;
-
         // Нову панель з картинками показуємо тільки для Sim23 БЕЗ фізичної клавіатури
         public bool IsImagePanelVisible => Config.IsSoftKeyboard && Config.LocalCompany == eCompany.Sim23 && !IsViewInputDateDoc && !IsVisF5Act;
         public bool IsViewInputDateDoc { get { return TypeDoc.IsViewInputDateDoc; } }
@@ -70,7 +80,7 @@ namespace BRB6.View
             NokeyBoard();
             TypeDoc = pTypeDoc;
             Doc = pDocId;
-
+            HasChanges = Doc.IsNeedSave;
             //// Отримуємо список причин із бази
             //var reasonsFromDb = db.GetReason(pTypeDoc.KindDoc);
 

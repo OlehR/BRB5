@@ -121,37 +121,47 @@
             </StackLayout>
 
             <!-- ПАНЕЛЬ 2: Нова панель з картинками (Тільки для Sim23 без фізичної клавіатури) -->
-            <HorizontalStackLayout VerticalOptions="End" HorizontalOptions="Center" Spacing="25" Padding="10" IsVisible="{Binding IsImagePanelVisible}">
+            <Grid VerticalOptions="End" ColumnDefinitions="*, Auto" Padding="0" ColumnSpacing="25" IsVisible="{Binding IsImagePanelVisible}">
 
-                <ImageButton Source="save.png" 
-                             Clicked="F2Save" 
-                             IsVisible="{Binding IsVisF2}" 
-                             HeightRequest="60" WidthRequest="60" 
-                             BackgroundColor="Transparent" Aspect="AspectFit" />
+                <!-- Кнопка збереження (займає ліву частину екрану) -->
+                <Button Grid.Column="0"
+                        Clicked="F2Save" 
+                        IsVisible="{Binding IsVisF2}"
+                        CornerRadius="8"
+                        FontAttributes="Bold"
+                        HeightRequest="60">
+                    <Button.Triggers>
+                        <!-- Стан 1: Немає змін (Збережено) -->
+                        <DataTrigger TargetType="Button" Binding="{Binding HasChanges}" Value="False">
+                            <Setter Property="Text" Value="Збережено документ" />
+                            <Setter Property="BackgroundColor" Value="LightGray" />
+                            <Setter Property="TextColor" Value="Black" />
+                        </DataTrigger>
 
-                <ImageButton Source="barcode_scanning.png" 
-                             Clicked="F3Scan" 
-                             HeightRequest="60" WidthRequest="60" 
-                             BackgroundColor="Transparent" Aspect="AspectFit" />
+                        <!-- Стан 2: Є зміни (Треба зберегти) -->
+                        <DataTrigger TargetType="Button" Binding="{Binding HasChanges}" Value="True">
+                            <Setter Property="Text" Value="Зберегти документ" />
+                            <Setter Property="BackgroundColor" Value="#4CAF50" />
+                            <!-- Зелений колір -->
+                            <Setter Property="TextColor" Value="White" />
+                        </DataTrigger>
+                    </Button.Triggers>
+                </Button>
 
-                <ImageButton Source="hand_input.png" 
-                             Clicked="F4WrOff" 
-                             HeightRequest="60" WidthRequest="60" 
-                             BackgroundColor="Transparent" Aspect="AspectFit" />
+                <!-- Блок з картинками (вирівняний по правому краю) -->
+                <HorizontalStackLayout Grid.Column="1" Spacing="25" HorizontalOptions="End" VerticalOptions="Center">
+                    <ImageButton Source="barcode_scanning.png" 
+                                 Clicked="F3Scan" 
+                                 HeightRequest="60" WidthRequest="60" 
+                                 BackgroundColor="Transparent" Aspect="AspectFit" />
 
-                <!-- Залишаємо F5 та F6 у вигляді тексту, щоб не втратити цей функціонал, якщо він увімкнений для документу -->
-                <Label Text="Акт" IsVisible="{Binding IsVisF5Act}" FontSize="18" TextColor="#816f20" VerticalOptions="Center" FontAttributes="Bold">
-                    <Label.GestureRecognizers>
-                        <TapGestureRecognizer Tapped="F5Act" />
-                    </Label.GestureRecognizers>
-                </Label>
-                <Label Text="Док" IsVisible="{Binding IsViewInputDateDoc}" FontSize="18" TextColor="#816f20" VerticalOptions="Center" FontAttributes="Bold">
-                    <Label.GestureRecognizers>
-                        <TapGestureRecognizer Tapped="F6Doc" />
-                    </Label.GestureRecognizers>
-                </Label>
+                    <ImageButton Source="hand_input.png" 
+                                 Clicked="F4WrOff" 
+                                 HeightRequest="60" WidthRequest="60" 
+                                 BackgroundColor="Transparent" Aspect="AspectFit" />
+                </HorizontalStackLayout>
 
-            </HorizontalStackLayout>
+            </Grid>
         </StackLayout>
     </ContentPage.Content>
 </local:BaseContentPage>
