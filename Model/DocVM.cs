@@ -169,7 +169,13 @@ namespace BRB5.Model
         public string GetColor
         {
             get
-            {
+            {                
+                if (Config.LocalCompany == eCompany.Sim23) 
+                {
+                    if (IsNeedSave) return "#87c98a";
+                    else return "#dcdcdc";
+                }
+
                 if (SelectedColor) return "#a0c4ff";
                 if (Even)
                     switch (Color)

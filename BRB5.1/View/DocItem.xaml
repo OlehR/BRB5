@@ -123,13 +123,8 @@
             <!-- ПАНЕЛЬ 2: Нова панель з картинками (Тільки для Sim23 без фізичної клавіатури) -->
             <Grid VerticalOptions="End" ColumnDefinitions="*, Auto" Padding="0" ColumnSpacing="25" IsVisible="{Binding IsImagePanelVisible}">
 
-                <!-- Кнопка збереження (займає ліву частину екрану) -->
-                <Button Grid.Column="0"
-                        Clicked="F2Save" 
-                        IsVisible="{Binding IsVisF2}"
-                        CornerRadius="8"
-                        FontAttributes="Bold"
-                        HeightRequest="60">
+                <!-- Кнопка 1: Збереження (Показується, коли IsVisF2 == True) -->
+                <Button Grid.Column="0" Clicked="F2Save" IsVisible="{Binding IsVisF2}" CornerRadius="8" FontAttributes="Bold" HeightRequest="60">
                     <Button.Triggers>
                         <!-- Стан 1: Немає змін (Збережено) -->
                         <DataTrigger TargetType="Button" Binding="{Binding HasChanges}" Value="False">
@@ -142,23 +137,19 @@
                         <DataTrigger TargetType="Button" Binding="{Binding HasChanges}" Value="True">
                             <Setter Property="Text" Value="Зберегти документ" />
                             <Setter Property="BackgroundColor" Value="#4CAF50" />
-                            <!-- Зелений колір -->
                             <Setter Property="TextColor" Value="White" />
                         </DataTrigger>
                     </Button.Triggers>
                 </Button>
 
+                <!-- Кнопка 2: Акт (Показується на тому ж місці, коли IsVisF5Act == True) -->
+                <Button Grid.Column="0" Text="Створити акт" Clicked="F5Act" IsVisible="{Binding IsVisF5Act}" BackgroundColor="#FF9800"
+                        TextColor="White" CornerRadius="8" FontAttributes="Bold" HeightRequest="60" />
+
                 <!-- Блок з картинками (вирівняний по правому краю) -->
                 <HorizontalStackLayout Grid.Column="1" Spacing="25" HorizontalOptions="End" VerticalOptions="Center">
-                    <ImageButton Source="barcode_scanning.png" 
-                                 Clicked="F3Scan" 
-                                 HeightRequest="60" WidthRequest="60" 
-                                 BackgroundColor="Transparent" Aspect="AspectFit" />
-
-                    <ImageButton Source="hand_input.png" 
-                                 Clicked="F4WrOff" 
-                                 HeightRequest="60" WidthRequest="60" 
-                                 BackgroundColor="Transparent" Aspect="AspectFit" />
+                    <ImageButton Source="barcode_scanning.png" Clicked="F3Scan" HeightRequest="60" WidthRequest="60" BackgroundColor="Transparent" Aspect="AspectFit" />
+                    <ImageButton Source="hand_input.png" Clicked="F4WrOff" HeightRequest="60" WidthRequest="60" BackgroundColor="Transparent" Aspect="AspectFit" />
                 </HorizontalStackLayout>
 
             </Grid>

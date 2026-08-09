@@ -10,29 +10,29 @@ using Android.Views;
 
 namespace BRB6.View
 {
-    public partial class DocItem 
+    public partial class DocItem
     {
-        private readonly TypeDoc TypeDoc;        
+        private readonly TypeDoc TypeDoc;
         private DocVM Doc;
-        private Connector c = ConnectorBase.GetInstance(); 
+        private Connector c = ConnectorBase.GetInstance();
         protected DB db = DB.GetDB();
         string _NumberOutInvoice = "";
         public string NumberOutInvoice { get { return _NumberOutInvoice; } set { _NumberOutInvoice = value; OnPropertyChanged("NumberOutInvoice"); } }
-        public List<DataStr> ListDataStr { 
-            get { 
+        public List<DataStr> ListDataStr {
+            get {
                 var list = new List<DataStr>();
-                for(int i=0; i<10; i++)
+                for (int i = 0; i < 10; i++)
                     list.Add(new DataStr(DateTime.Today.AddDays(-1 * i)));
-                
+
                 return list;
-                }
+            }
         }
         public int SelectedDataStr { get; set; } = 0;
-        public bool IsSoftKeyboard { get {  return Config.IsSoftKeyboard; } }
+        public bool IsSoftKeyboard { get { return Config.IsSoftKeyboard; } }
         bool _IsVisibleDocF6 = false;
-        public bool IsVisibleDocF6 { get { return _IsVisibleDocF6; } set { _IsVisibleDocF6 = value; OnPropertyChanged("IsVisibleDocF6"); } } 
+        public bool IsVisibleDocF6 { get { return _IsVisibleDocF6; } set { _IsVisibleDocF6 = value; OnPropertyChanged("IsVisibleDocF6"); } }
         public ObservableCollection<DocWaresEx> MyDocWares { get; set; } = new ObservableCollection<DocWaresEx>();
-        public bool IsVisF5Act => TypeDoc.KindDoc == eKindDoc.Lot|| TypeDoc.IsViewAct;
+        public bool IsVisF5Act => TypeDoc.KindDoc == eKindDoc.Lot || TypeDoc.IsViewAct;
         public bool IsVisF2 => TypeDoc.KindDoc != eKindDoc.Lot;
         public bool IsUseArticle => Config.IsUseArticle;
         public bool IsViewReason { get { return TypeDoc.IsViewReason; } }
@@ -53,7 +53,7 @@ namespace BRB6.View
         // Стара панель
         public bool IsOldPanelVisible => !IsImagePanelVisible;
         // Нову панель з картинками показуємо тільки для Sim23 БЕЗ фізичної клавіатури
-        public bool IsImagePanelVisible => Config.IsSoftKeyboard && Config.LocalCompany == eCompany.Sim23 && !IsViewInputDateDoc && !IsVisF5Act;
+        public bool IsImagePanelVisible => Config.IsSoftKeyboard && Config.LocalCompany == eCompany.Sim23 && !IsViewInputDateDoc ;
         public bool IsViewInputDateDoc { get { return TypeDoc.IsViewInputDateDoc; } }
         //// Колекція варіантів для Picker
         //public ObservableCollection<BRB5.Model.DB.Reason> Reasons { get; set; }
@@ -74,7 +74,7 @@ namespace BRB6.View
         //        }
         //    }
         //}
-        public DocItem(DocVM pDocId,  TypeDoc pTypeDoc)
+        public DocItem(DocVM pDocId, TypeDoc pTypeDoc)
         {
             InitializeComponent();
             NokeyBoard();
@@ -125,6 +125,7 @@ namespace BRB6.View
                 }
                 PopulateDocWaresStackLayout();
             }
+            HasChanges = db.IsNeedSaveDoc(Doc, TypeDoc);
         }
 
         protected override void OnDisappearing()
@@ -134,7 +135,7 @@ namespace BRB6.View
             if (!IsSoftKeyboard)
             {
 #if ANDROID
-            MainActivity.Key-= OnPageKeyDown;
+                MainActivity.Key -= OnPageKeyDown;
 #endif
             }
         }
@@ -347,7 +348,7 @@ namespace BRB6.View
         }
         private async void F2Save(object sender, EventArgs e)
         {
-            if (TypeDoc.KindDoc == eKindDoc.Lot) return;
+            if (TypeDoc.KindDoc == eKindDoc.Lot|| !HasChanges) return;
 
             Doc.NumberOutInvoice = NumberOutInvoice;
             Doc.DateOutInvoice = ListDataStr[SelectedDataStr].DateString;
@@ -365,6 +366,7 @@ namespace BRB6.View
             {
                 var toast = Toast.Make($"Документ успішно збережений=>{r.Data}");
                 _ = toast.Show();
+                HasChanges = false;
             }
         }
         private async void F3Scan(object sender, EventArgs e) { await Navigation.PushAsync(new DocScan(Doc, TypeDoc)); }
@@ -378,7 +380,7 @@ namespace BRB6.View
             }
         }
         private void DocNameFocus(object sender, FocusEventArgs e) {  DocName.Focus(); }
-        private async void F5Act(object sender, TappedEventArgs e)
+        private async void F5Act(object sender, EventArgs e)
         {
             if(TypeDoc.KindDoc==eKindDoc.Lot||TypeDoc.IsViewAct)  await Navigation.PushAsync(new Act(Doc, TypeDoc));
         }

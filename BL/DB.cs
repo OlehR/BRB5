@@ -662,7 +662,7 @@ and CodeWares in (select CodeWares from DocWares where TypeDoc={pDocId.TypeDoc} 
         }
 
 
-        bool IsNeedSaveDoc(DocId pDocId, TypeDoc pTypeDoc)
+        public bool IsNeedSaveDoc(DocId pDocId, TypeDoc pTypeDoc)
         {
             var R = GetDoc(pTypeDoc, null, null, pDocId.NumberDoc);
             return R?.FirstOrDefault()?.IsNeedSave ?? false;
@@ -682,7 +682,7 @@ and CodeWares in (select CodeWares from DocWares where TypeDoc={pDocId.TypeDoc} 
                 string Sql = $@"select d.*, Wh.Address as Address,d.State as Color, case when dwu.DTUpdate>coalesce( d.DTUpdate, '0001-01-01') then 1 else 0 end as IsNeedSave 
 from Doc d 
  left join Warehouse  Wh on d.CodeWarehouse = wh.number 
- left join (select NumberDoc,max(DTUpdate) as DTUpdate from DocWares dw where TypeDoc = {pTypeDoc.CodeDoc} ) dwu on  dwu.numberdoc=d.numberdoc
+ left join (select NumberDoc,max(DTUpdate) as DTUpdate from DocWares dw where TypeDoc = {pTypeDoc.CodeDoc} group by NumberDoc) dwu on  dwu.numberdoc=d.numberdoc
                                 where TypeDoc = {pTypeDoc.CodeDoc} and DateDoc >= date(datetime(CURRENT_TIMESTAMP,'-{pTypeDoc.DayBefore} day'))" +
                                    (string.IsNullOrEmpty(pNumberDoc) ? "" : $" and d.NumberDoc like'%{pNumberDoc}%'") +
                                     (string.IsNullOrEmpty(pBarCode) ? "" : $" and BarCode like'%{pBarCode}%'") +
