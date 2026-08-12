@@ -7,6 +7,7 @@ using BRB5;
 using Grid = Microsoft.Maui.Controls.Grid;
 using BarcodeScanning;
 using Utils;
+using CommunityToolkit.Maui.Alerts;
 
 #if ANDROID
 using Android.Views;
@@ -207,9 +208,21 @@ namespace BRB6.View
                 });
             }
         }
-        private void SaveDoc_Clicked(object sender, EventArgs e)
+        
+        private async void SaveDoc_ClickedAsync(object sender, EventArgs e)
         {
-
+            if (sender is ImageButton IB)
+            {
+                var VM = IB.BindingContext as DocVM;
+                var d = db.GetDocWares(VM, eTypeResult.OnlyInput, eTypeOrder.Scan);
+                var r = await c.SendDocsDataAsync(VM, d);
+                if (r?.State != 0) _ = DisplayAlert("Помилка", r.TextError, "OK");
+                else
+                {
+                    var toast = Toast.Make($"Документ успішно збережений=>{r.TextError} {r.Data}");
+                    _ = toast.Show();                    
+                }
+            }
         }
 #if ANDROID
         public void OnPageKeyDown(Keycode keyCode, KeyEvent e)
