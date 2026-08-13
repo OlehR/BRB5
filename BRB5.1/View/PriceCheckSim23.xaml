@@ -11,6 +11,7 @@
     <ContentPage.Resources>
         <ResourceDictionary>
             <controls:TextLengthToFontSizeConverter x:Key="LengthToFontConv" />
+            <controls:ZeroToNullConverter x:Key="ZeroToNullConverter" />
         </ResourceDictionary>
     </ContentPage.Resources>
     <ContentPage.Content>
@@ -104,8 +105,18 @@
 
                     <Grid ColumnDefinitions="*, Auto">
                         <Label Text="Залишок (шт):" TextColor="Black" FontSize="16" />
-                        <Label Grid.Column="1" Text="{Binding WP.Rest}" FontAttributes="Bold" FontSize="16" />
-                    </Grid>
+                            <Label Grid.Column="1" Text="{Binding WP.Rest}" FontAttributes="Bold" FontSize="16">
+                                <!-- Задаємо колір за замовчуванням (якщо значення не 0) -->
+                                <Label.TextColor>Black</Label.TextColor>
+
+                                <Label.Triggers>
+                                    <DataTrigger TargetType="Label" Binding="{Binding WP.Rest}" Value="0">
+                                        <!-- Якщо WP.Rest == 0, встановлюємо червоний колір -->
+                                        <Setter Property="TextColor" Value="Red" />
+                                    </DataTrigger>
+                                </Label.Triggers>
+                            </Label>
+                        </Grid>
 
                         <Button Text="Провести МР" BackgroundColor="#E9EAEF" TextColor="Black" Command="{Binding OpenMrDialogCommand}"
                                 IsEnabled="{Binding HasWare}" CornerRadius="20" Padding="0" HeightRequest="40" FontSize="20" FontAttributes="Bold" />
@@ -125,8 +136,9 @@
                                 <Button Grid.Column="0" Text="—" FontSize="40"  TextColor="#7B2CBF" BackgroundColor="Transparent" Margin="0,-4,0,0"
                                         Command="{Binding ModifyValueCommand}" CommandParameter="-1" Padding="0" HorizontalOptions="Fill" VerticalOptions="Center" />
 
-                                <controls:CustomEntry Margin="0" Grid.Column="1" Text="{Binding NumberOfReplenishment, Mode=TwoWay, UpdateSourceEventName='TextChanged'}" Keyboard="Numeric"
-                                                      HorizontalOptions="Center" VerticalOptions="Center" FontSize="28" FontAttributes="Bold"  />
+                                <controls:CustomEntry Margin="0" Grid.Column="1"
+                                                      Text="{Binding NumberOfReplenishment, Mode=TwoWay, UpdateSourceEventName='TextChanged', Converter={StaticResource ZeroToNullConverter}}"
+                                                      HorizontalOptions="Center" VerticalOptions="Center" FontSize="28" FontAttributes="Bold" Placeholder="0" />
 
                                 <Button Grid.Column="2" Text="+" FontSize="40" TextColor="#7B2CBF" BackgroundColor="Transparent" 
                                         Command="{Binding ModifyValueCommand}" CommandParameter="1" Padding="0" HorizontalOptions="Fill" Margin="0,-4,0,0"

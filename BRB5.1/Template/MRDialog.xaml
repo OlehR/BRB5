@@ -1,10 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="BRB6.Template.MRDialog"
+             x:Class="BRB6.Template.MRDialog" 
+             xmlns:controls="clr-namespace:BRB6.View"
              IsVisible="{Binding IsMrDialogVisible}"
               x:Name="this">
-
+    <ContentView.Resources>
+        <ResourceDictionary>
+            <controls:ZeroToNullConverter x:Key="ZeroToNullConverter" />
+        </ResourceDictionary>
+    </ContentView.Resources>
     <!-- Затемнений фон -->
     <Grid>
         <BoxView Color="Black" Opacity="0.5" >
@@ -35,8 +40,8 @@
                         <!--<Label Grid.Column="1" Text="{Binding MrQuantity}"
                                FontSize="24" FontAttributes="Bold"
                                HorizontalTextAlignment="Center" VerticalOptions="Center" />-->
-                        <Entry Grid.Column="1"  Text="{Binding MrQuantity, Mode=TwoWay, UpdateSourceEventName=TextChanged}"
-                               Keyboard="Numeric" HorizontalTextAlignment="Center"  VerticalOptions="Center" FontSize="24" 
+                        <Entry Grid.Column="1"  Text="{Binding MrQuantity, Mode=TwoWay, UpdateSourceEventName=TextChanged, Converter={StaticResource ZeroToNullConverter}}"
+                               Placeholder="0" Keyboard="Numeric" HorizontalTextAlignment="Center"  VerticalOptions="Center" FontSize="24" 
                                x:Name="MRQuantityEntry" FontAttributes="Bold" TextColor="Black" BackgroundColor="Transparent" />
                         <Button Grid.Column="2" Text="+" FontSize="24" FontAttributes="Bold" Padding="0"
                                 TextColor="#333" BackgroundColor="Transparent"

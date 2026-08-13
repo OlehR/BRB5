@@ -82,7 +82,7 @@ namespace BRB6.ViewModel
         public bool IsVisF4 { get { return _TypeDoc.IsOffLine; /*Config.LocalCompany == eCompany.Sim23 || Config.LocalCompany == eCompany.PSU; */ } }
         public string F4Text { get { return IsOnline ? "OnLine" : "OffLine"; } }
         private bool _IsOnline = true;
-        public bool IsOnline { get { return _IsOnline; } set { if(IsVisF4) _IsOnline = value; OnPropertyChanged(nameof(F4Text)); } }
+        public bool IsOnline { get { return _IsOnline; } set { if (IsVisF4) _IsOnline = value; OnPropertyChanged(nameof(F4Text)); } }
 
         bool _IsVisRepl = false;
         public bool IsVisRepl { get => _IsVisRepl || IsPromoProposalMode; set { _IsVisRepl = value; OnPropertyChanged(nameof(IsVisRepl)); } }
@@ -125,8 +125,8 @@ namespace BRB6.ViewModel
         //public int ColorPrintColorType() { return Color.parseColor(HttpState != eStateHTTP.HTTP_OK ? "#ffb3b3" : (PrintType == 0 ? "#ffffff" : "#3fffff00")); }
 
         public string ColorPrintColorType { get { return WP == null ? "#ffffff" : WP.MinQuantity == 0 ? "#ffd8d8" : WP.ActionType > 0 ? "#F0DC82" : "#ffffff"; } }
-        public string TextColorPrice { get { return (WP != null && WP.Price != 0 && WP.Price == WP.PriceOld && (WP.PriceOpt == WP.PriceOptOld || WP.PriceOpt== WP.Price)) ? "#009800" : "#ff5c5c"; } set { OnPropertyChanged(nameof(TextColorPrice)); } }
-        public string BackgroundColorPrice { get { return (WP == null || (WP.Price != 0 && WP.Price == WP.PriceOld && (WP.PriceOpt == WP.PriceOptOld || WP.PriceOpt== WP.Price))) ? "#F8F9FA" : "#fff0f0"; } }
+        public string TextColorPrice { get { return (WP != null && WP.Price != 0 && WP.Price == WP.PriceOld && (WP.PriceOpt == WP.PriceOptOld || WP.PriceOpt == WP.Price)) ? "#009800" : "#ff5c5c"; } set { OnPropertyChanged(nameof(TextColorPrice)); } }
+        public string BackgroundColorPrice { get { return (WP == null || (WP.Price != 0 && WP.Price == WP.PriceOld && (WP.PriceOpt == WP.PriceOptOld || WP.PriceOpt == WP.Price))) ? "#F8F9FA" : "#fff0f0"; } }
 
         public string TextColorHttp { get { return (bl.LastResult != null && bl.LastResult.StateHTTP == eStateHTTP.HTTP_OK) ? "#009800" : "#ff5c5c"; } }
 
@@ -196,7 +196,7 @@ namespace BRB6.ViewModel
         public ICommand CloseBarCodesCommand => new Command(() => IsBarCodesDropdownVisible = false);
         public string QuantityToAddText => $"+{QuantityToAdd}";
         private bool _autoSave;
-        public bool IsPromoProposalMode => _TypeDoc.CodeDoc == 16; 
+        public bool IsPromoProposalMode => _TypeDoc.CodeDoc == 16;
         public bool IsNotPromoProposalMode => !IsPromoProposalMode;
 
         private readonly TypeDoc _TypeDoc;
@@ -335,7 +335,7 @@ namespace BRB6.ViewModel
                 IsMrDialogVisible = false;
             });
             CloseMRDialogCommand = new RelayCommand(() =>
-            {  
+            {
                 IsMrDialogVisible = false;
             });
             ShowPromoListCommand = new Command(() =>
@@ -399,6 +399,10 @@ namespace BRB6.ViewModel
                         BadScan++;
                     IsWareScaned = WP.StateDoubleScan;
                     UriPicture = new Uri(Config.ApiUrl1 + $"Wares/{WP.CodeWares}.png");
+                    if (IsPriceRedAlert())
+                    {
+                        ProtoBRB.PlayNativeBeep();
+                    }
                 }
                 if (Config.IsVibration)
                 {
@@ -411,7 +415,17 @@ namespace BRB6.ViewModel
             }
             OnPropertyChanged(nameof(ListPrintBlockItems));
         }
+        private bool IsPriceRedAlert()
+        {
+            if (WP == null) return false;
 
+            // Умова з BackgroundColorPrice/TextColorPrice
+            bool isPriceMatch = WP.PriceOld == 0 || (WP.Price != 0
+                             && WP.Price == WP.PriceOld
+                             && (WP.PriceOpt == WP.PriceOptOld || WP.PriceOpt == WP.Price));
+
+            return !isPriceMatch;
+        }
         public void Dispose() { Config.BarCode -= BarCode; }
 
         public void UnloadedEvent()
