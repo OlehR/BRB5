@@ -170,7 +170,11 @@ namespace BRB5.Model
         {
             get
             {
-                if (Config.LocalCompany == eCompany.Sim23) 
+                var docSetting = Config.GetDocSetting(this.TypeDoc);
+                var kindDoc = docSetting?.KindDoc ?? eKindDoc.NotDefined;
+                if (Config.LocalCompany == eCompany.Sim23 &&
+                    kindDoc != eKindDoc.LotsCheck &&
+                    kindDoc != eKindDoc.Lot)
                 {
                     if (IsNeedSave) return "#87c98a";
                     else return "#dcdcdc";
