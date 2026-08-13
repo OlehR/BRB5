@@ -335,7 +335,6 @@ namespace BL.Connector
         {
             try
             {
-
                 var TD = Config.GetDocSetting(pDoc.TypeDoc);
                 int CodeApi = (TD?.CodeApiSave>0 ? TD?.CodeApiSave: TD?.CodeApi)??0;
                 var DataD = new SaveDoc() { NameDCT = Config.SN, Doc = pDoc, 

@@ -575,7 +575,7 @@ public string Info { get; set; }
                     if (res.HttpState != eStateHTTP.HTTP_OK)
                         Res = new(res);
                     else
-                        Res = JsonConvert.DeserializeObject<Result>(res.Result);
+                        Res = JsonConvert.DeserializeObject<Result>(res.Result);                    
                 }
                 if(Res.Success)
                 {
