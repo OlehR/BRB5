@@ -34,8 +34,8 @@
                 <!-- Лічильник: — кількість + -->
                 <Border StrokeShape="RoundRectangle 50" Stroke="#E0E0E0" Padding="10,0">
                     <Grid ColumnDefinitions="Auto,*,Auto" HeightRequest="52">
-                        <Button Grid.Column="0" Text="−" FontSize="24" FontAttributes="Bold"
-                                TextColor="#333" BackgroundColor="Transparent"  Padding="0"
+                        <Button Grid.Column="0" Text="−" FontSize="30" FontAttributes="Bold" HorizontalOptions="Fill" VerticalOptions="Fill"
+                                TextColor="#333"   Padding="10,0"  BackgroundColor="Transparent"
                                 Command="{Binding DecrementCommand}" />
                         <!--<Label Grid.Column="1" Text="{Binding MrQuantity}"
                                FontSize="24" FontAttributes="Bold"
@@ -43,8 +43,8 @@
                         <Entry Grid.Column="1"  Text="{Binding MrQuantity, Mode=TwoWay, UpdateSourceEventName=TextChanged, Converter={StaticResource ZeroToNullConverter}}"
                                Placeholder="0" Keyboard="Numeric" HorizontalTextAlignment="Center"  VerticalOptions="Center" FontSize="24" 
                                x:Name="MRQuantityEntry" FontAttributes="Bold" TextColor="Black" BackgroundColor="Transparent" />
-                        <Button Grid.Column="2" Text="+" FontSize="24" FontAttributes="Bold" Padding="0"
-                                TextColor="#333" BackgroundColor="Transparent"
+                        <Button Grid.Column="2" Text="+" FontSize="30" FontAttributes="Bold" Padding="15,0"
+                                TextColor="#333" HorizontalOptions="Fill" VerticalOptions="Fill" BackgroundColor="Transparent"
                                 Command="{Binding IncrementCommand}" />
                     </Grid>
                 </Border>

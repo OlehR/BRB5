@@ -134,7 +134,7 @@
                             <Grid ColumnDefinitions="2*,3*,2*" ColumnSpacing="0" VerticalOptions="Fill" HorizontalOptions="Fill">
 
                                 <Button Grid.Column="0" Text="—" FontSize="40"  TextColor="#7B2CBF" BackgroundColor="Transparent" Margin="0,-4,0,0"
-                                        Command="{Binding ModifyValueCommand}" CommandParameter="-1" Padding="0" HorizontalOptions="Fill" VerticalOptions="Center" />
+                                        Command="{Binding ModifyValueCommand}" CommandParameter="-1" Padding="0" HorizontalOptions="Fill" VerticalOptions="Fill" />
 
                                 <controls:CustomEntry Margin="0" Grid.Column="1"
                                                       Text="{Binding NumberOfReplenishment, Mode=TwoWay, UpdateSourceEventName='TextChanged', Converter={StaticResource ZeroToNullConverter}}"
@@ -142,7 +142,7 @@
 
                                 <Button Grid.Column="2" Text="+" FontSize="40" TextColor="#7B2CBF" BackgroundColor="Transparent" 
                                         Command="{Binding ModifyValueCommand}" CommandParameter="1" Padding="0" HorizontalOptions="Fill" Margin="0,-4,0,0"
-                                        VerticalOptions="Center" />
+                                        VerticalOptions="Fill" />
 
                             </Grid>
                         </Border>
