@@ -120,13 +120,13 @@ namespace BRB5.Model
         public bool IsNeedSave { get; set; } 
     }
 
-    public class DocVM:Doc
-    {        
+    public class DocVM : Doc
+    {
         [Ignore]
         public string RaitingTemplateName { get; set; } = string.Empty;
-        
+
         [Ignore]
-        public string CodeWarehouseName { get; set; } = string.Empty;        
+        public string CodeWarehouseName { get; set; } = string.Empty;
 
         /// <summary>
         /// Адреса
@@ -134,13 +134,13 @@ namespace BRB5.Model
         public string Address { get; set; } // 
         [JsonIgnore]
         [Ignore]
-        public string ShortAddress { 
+        public string ShortAddress {
             get {
                 if (Address == null) return null;
                 var temp = Address.Split('-');
                 if (temp.Length >= 2) return temp[1];
                 return Address;
-            }  } // 
+            } } // 
 
         [JsonIgnore]
         [Ignore]
@@ -150,15 +150,15 @@ namespace BRB5.Model
         public bool IsVisExtInfo => !string.IsNullOrEmpty(ExtInfo);
         [JsonIgnore]
         [Ignore]
-        public bool IsVisDoc => State!=1;
+        public bool IsVisDoc => State != 1;
         [JsonIgnore]
         [Ignore]
-        public bool IsPrinted => State!=0;
+        public bool IsPrinted => State != 0;
 
         private bool _SelectedColor = false;
         [JsonIgnore]
         [Ignore]
-        public bool SelectedColor { get { return _SelectedColor; } set { _SelectedColor = value;   OnPropertyChanged(nameof(GetColor)); } }
+        public bool SelectedColor { get { return _SelectedColor; } set { _SelectedColor = value; OnPropertyChanged(nameof(GetColor)); } }
 
         public void RefreshColor() { OnPropertyChanged(nameof(GetColor)); OnPropertyChanged(nameof(IsVisDoc)); }
         [JsonIgnore]
@@ -169,7 +169,7 @@ namespace BRB5.Model
         public string GetColor
         {
             get
-            {                
+            {
                 if (Config.LocalCompany == eCompany.Sim23) 
                 {
                     if (IsNeedSave) return "#87c98a";
