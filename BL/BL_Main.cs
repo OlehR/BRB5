@@ -1,4 +1,5 @@
-﻿using BRB5;
+﻿using BL.Connector;
+using BRB5;
 using BRB5.Model;
 using Newtonsoft.Json;
 using SharedLib;
@@ -8,14 +9,14 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Timers;
 using Utils;
-using BL.Connector;
 
 namespace BL
 {
     public partial class BL
     {
-
+        Timer TimerLoadGuid;
         public void OnButtonLogin(string Login, string Password, bool DeviceAndroid)
         {
 
@@ -39,12 +40,17 @@ namespace BL
                     FileLogger.WriteLogMessage($"{Path.Combine(Config.PathFiles, "arx")} => SizeDel={SizeDel}, SizeUse=>{SizeUse}");
                 }
             }
+            LoadGuid();
+        }
 
-            if (Config.DateLastLoadGuid.Date != DateTime.Today.Date && Config.CodeWarehouse!=0 )
+        void LoadGuid(Object source=null, ElapsedEventArgs e=null)
+        {
+            FileLogger.WriteLogMessage($"LoadGuid: Config.DateLastLoadGuid=>{Config.DateLastLoadGuid.Date} now=>{DateTime.Today.Date}");
+            if (Config.DateLastLoadGuid.Date != DateTime.Today.Date && Config.CodeWarehouse != 0)
             {
                 _ = Task.Run(async () =>
-                {
-                    var r = await c.LoadGuidDataAsync(true);
+                {                   
+                    var r = await c.LoadGuidDataAsync(false);
                     if (r.State == 0)
                     {
                         Config.DateLastLoadGuid = DateTime.Now;
@@ -85,6 +91,10 @@ namespace BL
             if (!string.IsNullOrEmpty(tempstr)) Config.CodesWarehouses = JsonConvert.DeserializeObject<List<int>>(tempstr);
             FileLogger.TypeLog = db.GetConfig<eTypeLog>("TypeLog",eTypeLog.Memory);
             c=Connector.ConnectorBase.GetInstance();
+
+            TimerLoadGuid = new System.Timers.Timer(TimeSpan.FromMinutes(30).TotalMilliseconds);
+            TimerLoadGuid.Elapsed += new ElapsedEventHandler(LoadGuid);
+            TimerLoadGuid.AutoReset = true;
         }
     }
 }
