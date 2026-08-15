@@ -161,7 +161,8 @@ CREATE TABLE DocWaresSample (
     Name         TEXT,
     BarCode      TEXT,
     ExpirationDate TIMESTAMP,
-    Expiration NUMBER
+    Expiration NUMBER,
+    ExtInfo           TEXT
 );
 CREATE INDEX DOCWaresSampleBC ON DocWaresSample (BarCode);
 CREATE UNIQUE INDEX DOCWaresSampleTNC ON DocWaresSample (TypeDoc, NumberDoc, CodeWares);
@@ -288,7 +289,7 @@ CREATE TABLE SKU (
     CodeUnit           INTEGER  NOT NULL);
 CREATE UNIQUE INDEX SKUId ON SKU (CodeSKU);
 ";
-        readonly int Ver = 23;
+        readonly int Ver = 24;
         
         string SqlTo11 = @"CREATE TABLE SKU (
     CodeSKU          INTEGER  NOT NULL,
@@ -317,6 +318,8 @@ alter TABLE DocWaresExpiration add DTInsert         TIMESTAMP;";
     alter TABLE LogPrice add Price NUMBER;
     alter TABLE LogPrice add CodeReason INTEGER;
     alter TABLE LogPrice add ExpirationDate DATE;";
+
+        string SqlTo24 = @"alter TABLE DocWaresSample add ExtInfo TEXT;";
 
         public static string PathNameDB { get { return Path.Combine(BaseDir, NameDB); } }
 
@@ -355,6 +358,8 @@ alter TABLE DocWaresExpiration add DTInsert         TIMESTAMP;";
                     SetSQL(SqlTo22, 22);
                 if (GetVersion < 23)
                     SetSQL(SqlTo23, 23);
+                if (GetVersion < 24)
+                    SetSQL(SqlTo24, 24);
 
             }
         }
@@ -506,7 +511,7 @@ alter TABLE DocWaresExpiration add DTInsert         TIMESTAMP;";
                       ,dw1.quantityreason as QuantityReason, Max(dw1.CodeReason,dws.CodeReason ) as CodeReason
                         {Color}
                         ,w.codeunit as CodeUnit, dws.CodeReason as CodeReason
-                        ,w.Article
+                        ,w.Article,dws.ExtInfo
                             from Doc d  
                           join (select dw.typedoc ,dw.numberdoc, dw.codewares, sum(dw.quantity) as quantityinput,max(dw.orderdoc) as orderdoc,sum(quantityold) as quantityold,  sum(case when dw.CODEReason>0 then  dw.quantity else 0 end) as quantityreason,
                                        Max(CodeReason) as CodeReason  
@@ -514,7 +519,7 @@ alter TABLE DocWaresExpiration add DTInsert         TIMESTAMP;";
                             on (dw1.numberdoc = d.numberdoc and d.typedoc=dw1.typedoc)
                           Left join Wares w on dw1.codewares = w.codewares 
                           left join (
-                            select  dws.typedoc ,dws.numberdoc, dws.codewares,dws.name, sum(dws.quantity) as quantity,  min(dws.quantitymin) as quantitymin, max(dws.quantitymax) as quantitymax, max(dws.CodeReason) as CodeReason
+                            select  dws.typedoc ,dws.numberdoc, dws.codewares,dws.name, sum(dws.quantity) as quantity,  min(dws.quantitymin) as quantitymin, max(dws.quantitymax) as quantitymax, max(dws.CodeReason) as CodeReason, max(dws.ExtInfo) as ExtInfo
                                     from   DocWaresSample dws   group by dws.typedoc ,dws.numberdoc,dws.codewares,dws.name
                             ) as dws on d.numberdoc = dws.numberdoc and d.typedoc=dws.typedoc and dws.codewares = dw1.codewares
                           where d.typedoc={pDocId.TypeDoc} and  d.numberdoc = '{pDocId.NumberDoc}'
@@ -523,7 +528,7 @@ alter TABLE DocWaresExpiration add DTInsert         TIMESTAMP;";
                            ,0 as  quantityreason, Max(dw1.CodeReason,dws.CodeReason ) as CodeReason
                       , 3 as Ord
                       ,w.codeunit, dws.CodeReason
-                      ,w.Article
+                      ,w.Article, dws.ExtInfo
                           from Doc d  
                           join DocWaresSample dws on d.numberdoc = dws.numberdoc and d.typedoc=dws.typedoc --and dws.codewares = w.codewares
                           left join Wares w on dws.codewares = w.codewares 
@@ -545,13 +550,13 @@ alter TABLE DocWaresExpiration add DTInsert         TIMESTAMP;";
                         coalesce(dws.quantitymin,0) as QuantityMin, coalesce(dws.quantitymax,0) as QuantityMax ,
                         coalesce(d.IsControl,0) as IsControl, coalesce(dw1.quantityold,0) as QuantityOld,dw1.CODEReason as  CodeReason
                         ,0 as Ord,w.codeunit
-                        ,r.NameReason,w.Article
+                        ,r.NameReason,w.Article, dws.ExtInfo
                             from Doc d 
                             join DocWares dw1 on (dw1.numberdoc = d.numberdoc and d.typedoc=dw1.typedoc)
                             left join  Reason r on dw1.CodeReason=r.CodeReason and r.Level={-(int)DS.KindDoc}
                             left join Wares w on dw1.codewares = w.codewares 
                             left join (
-                            select  dws.typedoc ,dws.numberdoc, dws.codewares,dws.name, sum(dws.quantity) as quantity,  min(dws.quantitymin) as quantitymin, max(dws.quantitymax) as quantitymax  
+                            select  dws.typedoc ,dws.numberdoc, dws.codewares,dws.name, sum(dws.quantity) as quantity,  min(dws.quantitymin) as quantitymin, max(dws.quantitymax) as quantitymax  , max(dws.ExtInfo) as ExtInfo
                                     from   DocWaresSample dws   group by dws.typedoc ,dws.numberdoc,dws.codewares,dws.name
                             ) as dws on d.numberdoc = dws.numberdoc and d.typedoc=dws.typedoc and dws.codewares = dw1.codewares
                             where d.typedoc={pDocId.TypeDoc} and  d.numberdoc = '{pDocId.NumberDoc}'

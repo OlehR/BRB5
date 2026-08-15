@@ -34,6 +34,6 @@ namespace BRB5.Model
         /// <summary>
         /// Додаткова інформація      
         /// </summary>
-        //public string ExtInfo { get; set; }
+        public string ExtInfo { get; set; }
     }
 }
