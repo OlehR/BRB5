@@ -102,7 +102,7 @@ namespace BRB6.ViewModel
             if (_selectedWare is null) return;
             _selectedWare.InputQuantity = MrQuantity;
 
-            if (_selectedWare.InputQuantity > 0) _selectedWare.Quantity = _selectedWare.InputQuantity;
+            if (_selectedWare.InputQuantity >= 0) _selectedWare.Quantity = _selectedWare.InputQuantity;
             _selectedWare.OnPropertyChanged("IsInputQuantity");
             //db.ReplaceDocWares(new DocWares(new DocWaresId(DId, _selectedWare.CodeWares)) { Quantity= _selectedWare .Quantity},true);
             Save(_selectedWare);
@@ -112,14 +112,14 @@ namespace BRB6.ViewModel
         void Save(DocWares pDW) => db.ReplaceDocWares(new DocWares(new DocWaresId(pDW, pDW.CodeWares)) {Quantity = pDW.InputQuantity }, true);
         
         private void LoadSampleData()
-        {            
+        {
             var xx = db.GetDocWares(DId, eTypeResult.All, eTypeOrder.Scan);
             foreach (var el in xx)
             {
                 el.Quantity = el.InputQuantity > 0 ? el.InputQuantity : el.QuantityOrder;
                 el.OnAutoSave = Save;
             }
-            Wares = new ObservableCollection<DocWaresEx>(xx);            
+            Wares = new ObservableCollection<DocWaresEx>(xx);
         }
 
         public void BarCode(string pBarCode)

@@ -12,6 +12,7 @@ namespace BRB5.Model
         //public DocSetting DocSetting;    
         public string ViewCode => Config.IsUseArticle ? Article :CodeWares.ToString();
         public string NameWares{ get; set; }
+        public string NameWareView => string.IsNullOrEmpty(ExtInfo) ? NameWares : "      "+ NameWares;
         public int Coefficient{ get; set; }
         public string Article { get; set; }
         public int CodeUnit{ get; set; }
@@ -51,6 +52,12 @@ namespace BRB5.Model
 
         public string NameReason { get; set; }
         public bool IsVisProblematic { get { return QuantityReason > 0; } }
+
+        /// <summary>
+        /// Додаткова інформація      
+        /// </summary>
+        public string ExtInfo { get; set; }
+        public bool IsPromo => !string.IsNullOrEmpty(ExtInfo);
         private bool _Even = false;
         public bool Even { get { return _Even; } set { _Even = value; OnPropertyChanged(nameof(Even)); } }
 

@@ -89,11 +89,13 @@
                                             VerticalOptions="Center" HorizontalOptions="Center" />
 
                                         <!-- Назва -->
-                                        <Label
-                                            Grid.Column="1"
-                                            Text="{Binding NameWares}" FontSize="14"
+                                        <Grid  Grid.Column="1">
+                                            <Image IsVisible="{Binding IsPromo}" Source="promo.png" WidthRequest="18" HeightRequest="18" HorizontalOptions="Start" VerticalOptions="Start" />
+                                            <Label                                           
+                                            Text="{Binding NameWareView}" FontSize="14"
                                             TextColor="#1A1A1A" LineBreakMode="WordWrap"
                                             HorizontalOptions="Center" VerticalOptions="Center" />
+                                        </Grid>
 
                                         <!-- Вертикальний розмежовувач -->
                                         <BoxView

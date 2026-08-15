@@ -469,7 +469,7 @@ namespace BRB6.ViewModel
                 db.ReplaceDoc([new(DWId)]);
                 var xx = db.GetDocWaresSample(DWId);
                 decimal r = (xx?.Quantity ?? 0) + d;
-                db.ReplaceDocWaresSample([new(DWId) { Quantity = r, QuantityMax=WP.Rest }]);
+                db.ReplaceDocWaresSample([new(DWId) { Quantity = r, QuantityMax=WP.Rest , ExtInfo=WP.PromotionName}]);
                 ForMVVM.ShowToast("Додано");
             }
         }

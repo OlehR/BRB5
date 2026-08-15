@@ -176,8 +176,8 @@ namespace BRB5.Model
                     kindDoc != eKindDoc.LotsCheck &&
                     kindDoc != eKindDoc.Lot)
                 {
-                    if (IsNeedSave) return "#87c98a";
-                    else return "#dcdcdc";
+                    if (IsNeedSave) return "#dcdcdc";
+                    else return "#87c98a";
                 }
 
                 if (SelectedColor) return "#a0c4ff";

@@ -135,22 +135,22 @@
     <Compile Update="View\ExpirationDateItem.xaml.cs">
       <DependentUpon>ExpirationDateItem.xaml</DependentUpon>
     </Compile>
-    <Compile Update="View\DocItem.xaml.cs">
+    <Compile Update="View\Doc\DocItem.xaml.cs">
       <DependentUpon>%(Filename)</DependentUpon>
     </Compile>
     <Compile Update="View\ExpirationDate.xaml.cs">
       <DependentUpon>ExpirationDate.xaml</DependentUpon>
     </Compile>
-    <Compile Update="View\Docs.xaml.cs">
+    <Compile Update="View\Doc\Docs.xaml.cs">
       <DependentUpon>%(Filename)</DependentUpon>
     </Compile>
-    <Compile Update="View\DocScan.xaml.cs">
+    <Compile Update="View\Doc\DocScan.xaml.cs">
       <DependentUpon>%(Filename)</DependentUpon>
     </Compile>
     <Compile Update="View\MainPage.xaml.cs">
       <DependentUpon>%(Filename)</DependentUpon>
     </Compile>
-    <Compile Update="View\ManualInput.xaml.cs">
+    <Compile Update="View\Doc\ManualInput.xaml.cs">
       <DependentUpon>%(Filename)</DependentUpon>
     </Compile>
     <Compile Update="View\PlanCheckerPrice.xaml.cs">
@@ -159,37 +159,37 @@
     <Compile Update="View\PlanCheckPrice.xaml.cs">
       <DependentUpon>%(Filename)</DependentUpon>
     </Compile>
-    <Compile Update="View\PriceCheckSim23.xaml.cs">
+    <Compile Update="View\PriceCheck\PriceCheckSim23.xaml.cs">
       <DependentUpon>PriceCheckSim23.xaml</DependentUpon>
     </Compile>
-    <Compile Update="View\PriceCheck.xaml.cs">
+    <Compile Update="View\PriceCheck\PriceCheck.xaml.cs">
       <DependentUpon>%(Filename)</DependentUpon>
     </Compile>
-    <Compile Update="View\RaitingDoc.xaml.cs">
+    <Compile Update="View\Raiting\RaitingDoc.xaml.cs">
       <DependentUpon>%(Filename)</DependentUpon>
     </Compile>
-    <Compile Update="View\RaitingDocEdit.xaml.cs">
+    <Compile Update="View\Raiting\RaitingDocEdit.xaml.cs">
       <DependentUpon>%(Filename)</DependentUpon>
     </Compile>
-    <Compile Update="View\RaitingDocItem.xaml.cs">
+    <Compile Update="View\Raiting\RaitingDocItem.xaml.cs">
       <DependentUpon>%(Filename)</DependentUpon>
     </Compile>
-    <Compile Update="View\RaitingDocItemEditPhoto.xaml.cs">
+    <Compile Update="View\Raiting\RaitingDocItemEditPhoto.xaml.cs">
       <DependentUpon>%(Filename)</DependentUpon>
     </Compile>
-    <Compile Update="View\RaitingDocsEdit.xaml.cs">
+    <Compile Update="View\Raiting\RaitingDocsEdit.xaml.cs">
       <DependentUpon>%(Filename)</DependentUpon>
     </Compile>
-    <Compile Update="View\RaitingTemplateCreate.xaml.cs">
+    <Compile Update="View\Raiting\RaitingTemplateCreate.xaml.cs">
       <DependentUpon>%(Filename)</DependentUpon>
     </Compile>
-    <Compile Update="View\RaitingTemplateEditQuestion.xaml.cs">
+    <Compile Update="View\Raiting\RaitingTemplateEditQuestion.xaml.cs">
       <DependentUpon>%(Filename)</DependentUpon>
     </Compile>
-    <Compile Update="View\RaitingTemplateItemCreate.xaml.cs">
+    <Compile Update="View\Raiting\RaitingTemplateItemCreate.xaml.cs">
       <DependentUpon>%(Filename)</DependentUpon>
     </Compile>
-    <Compile Update="View\RaitingTemplatesEdit.xaml.cs">
+    <Compile Update="View\Raiting\RaitingTemplatesEdit.xaml.cs">
       <DependentUpon>%(Filename)</DependentUpon>
     </Compile>
     <Compile Update="View\Settings.xaml.cs">
@@ -226,41 +226,41 @@
     <MauiXaml Update="Template\WareItemTemplate.xaml">
       <Generator>MSBuild:Compile</Generator>
     </MauiXaml>
-    <MauiXaml Update="View\Act.xaml">
+    <MauiXaml Update="View\Doc\Act.xaml">
       <Generator>MSBuild:Compile</Generator>
     </MauiXaml>
-    <MauiXaml Update="View\CreateDoc.xaml">
+    <MauiXaml Update="View\Doc\CreateDoc.xaml">
       <Generator>MSBuild:Compile</Generator>
     </MauiXaml>
-    <MauiXaml Update="View\DocItemCheck.xaml">
+    <MauiXaml Update="View\Doc\DocItemCheck.xaml">
       <Generator>MSBuild:Compile</Generator>
     </MauiXaml>
     <MauiXaml Update="View\ExpirationDateItem.xaml">
       <Generator>MSBuild:Compile</Generator>
     </MauiXaml>
-    <MauiXaml Update="View\DocItem.xaml">
+    <MauiXaml Update="View\Doc\DocItem.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </MauiXaml>
     <MauiXaml Update="View\ExpirationDate.xaml">
       <Generator>MSBuild:Compile</Generator>
     </MauiXaml>
-    <MauiXaml Update="View\Docs.xaml">
+    <MauiXaml Update="View\Doc\Docs.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </MauiXaml>
-    <MauiXaml Update="View\DocScan.xaml">
+    <MauiXaml Update="View\Doc\DocScan.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </MauiXaml>
-    <MauiXaml Update="View\LotsCheck.xaml">
+    <MauiXaml Update="View\Doc\LotsCheck.xaml">
       <Generator>MSBuild:Compile</Generator>
     </MauiXaml>
     <MauiXaml Update="View\MainPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </MauiXaml>
-    <MauiXaml Update="View\ManualInput.xaml">
+    <MauiXaml Update="View\Doc\ManualInput.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </MauiXaml>
@@ -272,52 +272,52 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </MauiXaml>
-    <MauiXaml Update="View\PriceCheckSim23.xaml">
+    <MauiXaml Update="View\PriceCheck\PriceCheckSim23.xaml">
       <Generator>MSBuild:Compile</Generator>
     </MauiXaml>
-    <MauiXaml Update="View\PriceCheck.xaml">
+    <MauiXaml Update="View\PriceCheck\PriceCheck.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </MauiXaml>
-    <MauiXaml Update="View\PriceCheckUniversal.xaml">
+    <MauiXaml Update="View\PriceCheck\PriceCheckUniversal.xaml">
       <Generator>MSBuild:Compile</Generator>
     </MauiXaml>
-    <MauiXaml Update="View\RaitingDoc.xaml">
+    <MauiXaml Update="View\Raiting\RaitingDoc.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </MauiXaml>
-    <MauiXaml Update="View\RaitingDocEdit.xaml">
+    <MauiXaml Update="View\Raiting\RaitingDocEdit.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </MauiXaml>
-    <MauiXaml Update="View\RaitingDocGroup.xaml">
+    <MauiXaml Update="View\Raiting\RaitingDocGroup.xaml">
       <Generator>MSBuild:Compile</Generator>
     </MauiXaml>
-    <MauiXaml Update="View\RaitingDocItem.xaml">
+    <MauiXaml Update="View\Raiting\RaitingDocItem.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </MauiXaml>
-    <MauiXaml Update="View\RaitingDocItemEditPhoto.xaml">
+    <MauiXaml Update="View\Raiting\RaitingDocItemEditPhoto.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </MauiXaml>
-    <MauiXaml Update="View\RaitingDocsEdit.xaml">
+    <MauiXaml Update="View\Raiting\RaitingDocsEdit.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </MauiXaml>
-    <MauiXaml Update="View\RaitingTemplateCreate.xaml">
+    <MauiXaml Update="View\Raiting\RaitingTemplateCreate.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </MauiXaml>
-    <MauiXaml Update="View\RaitingTemplateEditQuestion.xaml">
+    <MauiXaml Update="View\Raiting\RaitingTemplateEditQuestion.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </MauiXaml>
-    <MauiXaml Update="View\RaitingTemplateItemCreate.xaml">
+    <MauiXaml Update="View\Raiting\RaitingTemplateItemCreate.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </MauiXaml>
-    <MauiXaml Update="View\RaitingTemplatesEdit.xaml">
+    <MauiXaml Update="View\Raiting\RaitingTemplatesEdit.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </MauiXaml>
