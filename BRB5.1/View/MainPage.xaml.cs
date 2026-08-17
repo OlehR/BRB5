@@ -258,7 +258,15 @@ namespace BRB6
             base.OnDisappearing();
             if (IsVisScan) BarcodeScaner.CameraEnabled = false;
         }
-
+        protected override bool OnBackButtonPressed()
+        {
+            if (IsVisibleBack)
+            {
+                BackToMainList(this, EventArgs.Empty);
+                return true;
+            }
+            return base.OnBackButtonPressed();
+        }
         private async void OnSettingsClicked(object sender, EventArgs e) { await Navigation.PushAsync(new Settings()); CurrentTypeDoc = null;  }
 
         private void OnAuthorizationClicked(object sender, EventArgs e)
@@ -269,6 +277,7 @@ namespace BRB6
         }
         private void BackToMainList(object sender, EventArgs e)
         {
+            CurrentTypeDoc = null;
             Dispatcher.Dispatch(() =>
             {
                 IsVisibleBack = false;

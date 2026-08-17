@@ -38,19 +38,27 @@
         </StackLayout>
 
         <StackLayout x:Name="ListDocs" IsVisible="false">
-            <Button Text="Назад" ImageSource="back_small.png" IsVisible="{Binding IsVisibleBack}" FontSize="Large" 
-                    BackgroundColor="White" BorderColor="White" Clicked="BackToMainList" Style="{StaticResource ButtonStyle}" />
+            <Grid Margin="5" IsVisible="{Binding IsVisibleBack}" HorizontalOptions="Fill">
+                <Grid.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="BackToMainList" />
+                </Grid.GestureRecognizers>
+
+                <StackLayout Orientation="Horizontal" HorizontalOptions="Center" Spacing="10" InputTransparent="True">
+                    <Image Source="back.png" HeightRequest="28" VerticalOptions="Center" />
+                    <Label Text="Назад" TextColor="{AppThemeBinding Light='#000000', Dark='#FFFFFF'}" FontSize="Large" VerticalOptions="Center" />
+                </StackLayout>
+            </Grid>
             <ListView  ItemTapped="OnItemTapped" x:Name="ListDocsButton" HasUnevenRows="True" SeparatorVisibility="None" ItemsSource="{Binding OCTypeDoc}">                
                 <!-- ItemTapped="OnItemTapped"-->
                 <ListView.ItemTemplate>
                     <DataTemplate xmlns:brb5="clr-namespace:BRB6">
                         <ViewCell>
                             <ViewCell.View>
-                                <ContentView Padding="5">
-                                    <Grid Padding="5" BackgroundColor="#E0E0E0">
+                                <ContentView Padding="5,5,5,0">
+                                    <Border BackgroundColor="#E0E0E0" StrokeShape="RoundRectangle 8" StrokeThickness="0" Padding="5">                                        
                                         <Label Text="{Binding NameDoc}" TextColor="{AppThemeBinding Light='#000000', Dark='#FFFFFF'}" 
                                                FontSize="Large"  HorizontalOptions="Center"/>
-                                    </Grid>
+                                    </Border>
                                 </ContentView>
                             </ViewCell.View>
                         </ViewCell>
@@ -59,13 +67,16 @@
             </ListView>
         </StackLayout>
 
-        <Grid Margin="5" Padding="5" x:Name="ExitLabel" BackgroundColor="#E2B2A7" VerticalOptions="EndAndExpand">
+        <Grid Margin="5" Padding="0" x:Name="ExitLabel" VerticalOptions="EndAndExpand">
             <Grid.GestureRecognizers>
                 <TapGestureRecognizer Tapped="Exit" />
             </Grid.GestureRecognizers>
-            <Label Text="Вихід"  TextColor="{AppThemeBinding Light='#000000', Dark='#FFFFFF'}" FontSize="Large" HorizontalOptions="Center"/>
+
+            <Border BackgroundColor="#E2B2A7" StrokeShape="RoundRectangle 8" StrokeThickness="0" Padding="5" InputTransparent="True">
+                <Label Text="Вихід" TextColor="{AppThemeBinding Light='#000000', Dark='#FFFFFF'}" FontSize="Large" HorizontalOptions="Center"/>
+            </Border>
         </Grid>
-        
+
         <ProgressBar x:Name="MyProgress" ScaleY="2" Progress="{Binding PB}" ProgressColor="Black" IsVisible="False"/>
 
     </StackLayout>
