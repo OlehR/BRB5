@@ -7,61 +7,40 @@
                           NavigationPage.HasNavigationBar="True">
     <NavigationPage.TitleView>
         <StackLayout Spacing="10" Orientation="Horizontal">
-            <Label Text="{Binding Ver}"
-                   VerticalOptions="Center" />
-            <Label VerticalOptions="Center"
-                   Text="{Binding Company}"/>
-            <Label Text="{Binding Login}" 
-                   VerticalOptions="Center" FontSize="24" />
+            <Label Text="{Binding Ver}" VerticalOptions="Center" />
+            <Label VerticalOptions="Center" Text="{Binding Company}"/>
+            <Label Text="{Binding Login}" VerticalOptions="Center" FontSize="24" />
         </StackLayout>
     </NavigationPage.TitleView>
     <ContentPage.ToolbarItems>
-        <ToolbarItem Text="Налаштування"
-                     Order="Secondary"
-                     Priority="0"
-                     Clicked="OnSettingsClicked" />
-        <ToolbarItem Text="Автризація"
-                     Order="Secondary"
-                     Priority="1"
-                     Clicked="OnAuthorizationClicked" />
+        <ToolbarItem Text="Налаштування" Order="Secondary" Priority="0" Clicked="OnSettingsClicked" />
+        <ToolbarItem Text="Автризація" Order="Secondary" Priority="1" Clicked="OnAuthorizationClicked" />
     </ContentPage.ToolbarItems>
     <StackLayout>        
         <StackLayout x:Name="SLLogin">
 
             <Grid IsVisible="{Binding IsVisBarCode}" HeightRequest="150" x:Name="GridZxing"/>
             
-            <Picker Title="сервер"
-                    ItemsSource="{Binding LS}"
-                    IsVisible="{Binding IsVisLS}"
-                    ItemDisplayBinding="{Binding Name}"
-                    SelectedIndex="{Binding SelectedLS}"
-                    HorizontalOptions="Fill" />
+            <Picker Title="сервер" ItemsSource="{Binding LS}" IsVisible="{Binding IsVisLS}" ItemDisplayBinding="{Binding Name}"
+                    SelectedIndex="{Binding SelectedLS}" HorizontalOptions="Fill" />
             <Frame Style="{StaticResource FrameStyle}">
-                <controls:CustomEntry Style="{StaticResource EntryStyle}"
-                                      x:Name="loginEntry" Text="{Binding Login}" />
+                <controls:CustomEntry Style="{StaticResource EntryStyle}" x:Name="loginEntry" Text="{Binding Login}" />
             </Frame>
             <!--TextChanged="loginEntry_TextChanged"-->
             <Frame Style="{StaticResource FrameStyle}">
-                <controls:CustomEntry Style="{StaticResource EntryStyle}"
-                                      x:Name="passwordEntry"
-                                      Text="{Binding Password}"
-                                      Placeholder="Password"
-                                      IsPassword="True" />
+                <controls:CustomEntry Style="{StaticResource EntryStyle}" x:Name="passwordEntry" 
+                                      Text="{Binding Password}" Placeholder="Password" IsPassword="True" />
             </Frame>
-            <Button Text="Залогінитись" FontSize="Large" BorderWidth="1"
-                    HorizontalOptions="Center" VerticalOptions="CenterAndExpand"
-                    Clicked="OnButtonLogin" />
+            <Button Text="Залогінитись" FontSize="Large" BorderWidth="1" HorizontalOptions="Center" 
+                    VerticalOptions="CenterAndExpand" Clicked="OnButtonLogin" />
 
             <ImageButton Source="barcode_scanning.png" HeightRequest="150" IsVisible="{Binding IsVisScan}" Clicked="BarcodeClick" />
         </StackLayout>
 
         <StackLayout x:Name="ListDocs" IsVisible="false">
-            <Button Text="Назад" ImageSource="back_small.png" IsVisible="{Binding IsVisibleBack}"
-                    FontSize="Large" BackgroundColor="White" BorderColor="White"
-                    Clicked="BackToMainList" Style="{StaticResource ButtonStyle}" />
-            <ListView  ItemTapped="OnItemTapped" x:Name="ListDocsButton"
-                  HasUnevenRows="True" SeparatorVisibility="None"
-                  ItemsSource="{Binding OCTypeDoc}">                
+            <Button Text="Назад" ImageSource="back_small.png" IsVisible="{Binding IsVisibleBack}" FontSize="Large" 
+                    BackgroundColor="White" BorderColor="White" Clicked="BackToMainList" Style="{StaticResource ButtonStyle}" />
+            <ListView  ItemTapped="OnItemTapped" x:Name="ListDocsButton" HasUnevenRows="True" SeparatorVisibility="None" ItemsSource="{Binding OCTypeDoc}">                
                 <!-- ItemTapped="OnItemTapped"-->
                 <ListView.ItemTemplate>
                     <DataTemplate xmlns:brb5="clr-namespace:BRB6">
@@ -69,10 +48,8 @@
                             <ViewCell.View>
                                 <ContentView Padding="5">
                                     <Grid Padding="5" BackgroundColor="#E0E0E0">
-                                        <Label Text="{Binding NameDoc}"
-                               TextColor="{AppThemeBinding Light='#000000', Dark='#FFFFFF'}"
-                               FontSize="Large"
-                               HorizontalOptions="Center"/>
+                                        <Label Text="{Binding NameDoc}" TextColor="{AppThemeBinding Light='#000000', Dark='#FFFFFF'}" 
+                                               FontSize="Large"  HorizontalOptions="Center"/>
                                     </Grid>
                                 </ContentView>
                             </ViewCell.View>
@@ -89,8 +66,7 @@
             <Label Text="Вихід"  TextColor="{AppThemeBinding Light='#000000', Dark='#FFFFFF'}" FontSize="Large" HorizontalOptions="Center"/>
         </Grid>
         
-        <ProgressBar x:Name="MyProgress" ScaleY="2" Progress="{Binding PB}" ProgressColor="Black"
-                     IsVisible="False"/>
+        <ProgressBar x:Name="MyProgress" ScaleY="2" Progress="{Binding PB}" ProgressColor="Black" IsVisible="False"/>
 
     </StackLayout>
 
