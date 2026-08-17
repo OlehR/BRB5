@@ -114,10 +114,7 @@ namespace BRB5.Model
         public string ExtInfo { get; set; }
 
         public int CountWares { get; set; } // Кількість товарних позицій
-        /// <summary>
-        /// Чи потрібно зберігати документ, 
-        /// </summary>
-        public bool IsNeedSave { get; set; } 
+  
     }
 
     public class DocVM : Doc
@@ -214,6 +211,12 @@ namespace BRB5.Model
         //public Color GetColor { get { return Color == 0?new Color(0xdcdcdc) : new Color(Color); } }
 
         //public int isClose; //0- не закривати, 1 - закривати.
+
+        bool _IsNeedSave;
+        /// <summary>
+        /// Чи потрібно зберігати документ, 
+        /// </summary>
+        public bool IsNeedSave { get { return _IsNeedSave; } set { _IsNeedSave = value; OnPropertyChanged(nameof(GetColor)); OnPropertyChanged(nameof(IsNeedSave)); } }
         public DocVM() { }
         
         public DocVM(DocId pDocId):base(pDocId) { }        

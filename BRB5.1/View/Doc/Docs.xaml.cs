@@ -219,6 +219,8 @@ namespace BRB6.View
                 if (r?.State != 0) _ = DisplayAlert("Помилка", r.TextError, "OK");
                 else
                 {
+                    db.SetStateDoc(VM);
+                    VM.IsNeedSave = false;
                     var toast = Toast.Make($"Документ успішно збережений=>{r.TextError} {r.Data}");
                     _ = toast.Show();                    
                 }
