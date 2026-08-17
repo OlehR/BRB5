@@ -559,6 +559,10 @@ namespace BRB6.View
         private void OnCleanLog(object sender, EventArgs e)
         {
             FileLogger.Str.Clear();
+
+            string filePath = FileLogger.GetFileName;
+            if (File.Exists(filePath))  File.Delete(filePath);            
+
             OnPropertyChanged(nameof(ShowLogText));
         }
         private void LoadLog(object sender, EventArgs e)

@@ -60,19 +60,21 @@
                     FontSize="Large" BackgroundColor="White" BorderColor="White"
                     Clicked="BackToMainList" Style="{StaticResource ButtonStyle}" />
             <ListView  ItemTapped="OnItemTapped" x:Name="ListDocsButton"
-                  HasUnevenRows="True"
+                  HasUnevenRows="True" SeparatorVisibility="None"
                   ItemsSource="{Binding OCTypeDoc}">                
                 <!-- ItemTapped="OnItemTapped"-->
                 <ListView.ItemTemplate>
                     <DataTemplate xmlns:brb5="clr-namespace:BRB6">
                         <ViewCell>
                             <ViewCell.View>
-                                <Grid Margin="5" Padding="5"  BackgroundColor="#E0E0E0">
-                                    <Label Text="{Binding NameDoc}"
-                                           TextColor="{AppThemeBinding Light='#000000', Dark='#FFFFFF'}"
-                                                FontSize="Large"
-                                                HorizontalOptions="Center"/>
-                                </Grid>
+                                <ContentView Padding="5">
+                                    <Grid Padding="5" BackgroundColor="#E0E0E0">
+                                        <Label Text="{Binding NameDoc}"
+                               TextColor="{AppThemeBinding Light='#000000', Dark='#FFFFFF'}"
+                               FontSize="Large"
+                               HorizontalOptions="Center"/>
+                                    </Grid>
+                                </ContentView>
                             </ViewCell.View>
                         </ViewCell>
                     </DataTemplate>
