@@ -2,6 +2,7 @@
 using BL.Connector;
 using BRB5.Model;
 using System.Collections.ObjectModel;
+using UtilNetwork;
 
 namespace BRB6.View
 {
@@ -18,23 +19,28 @@ namespace BRB6.View
         {
             InitializeComponent();
             c = ConnectorBase.GetInstance();
-
-            var temp = c.GetPromotion(Config.CodeWarehouse).Result;
-            if (temp.Data == null)
+            PromotionList = new ObservableCollection<DocVM>();
+            //Result<IEnumerable<DocVM>> temp = new();
+            Task.Run(async () => { 
+            var temp = await c.GetPromotion(Config.CodeWarehouse);
+            if (temp?.Data == null)
             {
                 PromotionList = new ObservableCollection<DocVM>();
-                _ = DisplayAlert("Помилка", temp.TextError, "OK");
+                _ = DisplayAlert("Помилка", temp?.TextError, "OK");
             }
             else
             {
-                PromotionList = new ObservableCollection<DocVM>(temp.Data);
-                foreach (var doc in temp.Data)
-                {
-                    doc.TypeDoc = 13;
-                }
-                db.ReplaceDoc(temp.Data.Select(el=> (Doc) el.Clone() ));
+                    foreach (var doc in temp.Data)
+                    {
+                        doc.TypeDoc = 13;
+                        MainThread.BeginInvokeOnMainThread(() =>
+                        {
+                            PromotionList.Add(doc);    
+                        });
+                    }
+                    db.ReplaceDoc(temp.Data.Select(el=> (Doc) el.Clone() ));
             }
-
+            });
             this.BindingContext = this;
         }
 
