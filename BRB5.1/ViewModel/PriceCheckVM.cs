@@ -204,8 +204,17 @@ namespace BRB6.ViewModel
         public DateTime SelectedDate
         {
             get => _selectedDate;
-            set => SetProperty(ref _selectedDate, value);
+            set
+            {
+                if (SetProperty(ref _selectedDate, value))
+                {
+                    UpdateReasonByExpirationDate();
+                }
+            }
         }
+        private bool _isAutoDiscountReason = false;
+        // Властивість для блокування/розблокування випадаючого списку
+        public bool IsReasonSelectionEnabled => HasWare && !_isAutoDiscountReason;
 
         private BRB5.Model.DB.Reason _selectedReason;
         public BRB5.Model.DB.Reason SelectedReason
@@ -547,7 +556,9 @@ namespace BRB6.ViewModel
             SelectedReason = null;
             SelectedDate = DateTime.Today;
             NumberOfReplenishment = "0";
-            ProposedPrice = string.Empty;
+            ProposedPrice = string.Empty; 
+            _isAutoDiscountReason = false;
+            OnPropertyChanged(nameof(IsReasonSelectionEnabled));
 
             ForMVVM.Focused("BarCodeInput");
         }
@@ -563,6 +574,38 @@ namespace BRB6.ViewModel
                 ForMVVM.ShowToast("Вилучено");
             }
         }
+        private void UpdateReasonByExpirationDate()
+        {
+            if (WP == null)
+            {
+                _isAutoDiscountReason = false;
+                SelectedReason = null;
+                OnPropertyChanged(nameof(IsReasonSelectionEnabled));
+                return;
+            }
 
+            WP.ExpirationDateInput = SelectedDate;
+            var percentColor = WP.GetPercentColor;
+
+            if (percentColor != null && (percentColor.Percent == 30 || percentColor.Percent == 50))
+            {
+                _isAutoDiscountReason = true;
+                SelectedReason = new BRB5.Model.DB.Reason
+                {
+                    CodeReason = -percentColor.Percent,
+                    NameReason = $"-{percentColor.Percent}%"
+                };
+            }
+            else
+            {
+                _isAutoDiscountReason = false;
+                if (SelectedReason?.CodeReason == -30 || SelectedReason?.CodeReason == -50)
+                {
+                    SelectedReason = null;
+                }
+            }
+
+            OnPropertyChanged(nameof(IsReasonSelectionEnabled));
+        }
     }
 }
