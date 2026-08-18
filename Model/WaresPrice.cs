@@ -140,19 +140,19 @@ namespace BRB5.Model
         public DateTime ExpirationDateInput { get; set; }
         public string DaysLeft { get; set; } = "20;5";/// TMP
         public int[] DaysRight { get { return DaysLeft?.Split(';')?.Select(e => (int)e.ToDecimal()).ToArray() ?? new int[0]; } }
-        //int GetColourIndex()
-        //{
-        //    int Days = ((ExpirationDateInput == default ? ExpirationDate : ExpirationDateInput) - DateTime.Today).Days + 1;
-        //    if (Days <= 0) return Connector.PercentColor.Length - 1; //Якщо протерміновано
-        //    int i = 0;
-        //    while (i < DaysRight.Length && i < Connector.PercentColor.Length - 2)
-        //    {
-        //        if (DaysRight[i] == -1) return i > 0 ? i : 0; //Connector.PercentColor.Length - 1
-        //        if (Days > DaysRight[i]) break;
-        //        i++;
-        //    }
-        //    return i;
-        //}
+        int GetColourIndex()
+        {
+            int Days = ((ExpirationDateInput == default ? ExpirationDate : ExpirationDateInput) - DateTime.Today).Days + 1;
+            if (Days <= 0) return Connector.PercentColor.Length - 1; //Якщо протерміновано
+            int i = 0;
+            while (i < DaysRight.Length && i < Connector.PercentColor.Length - 2)
+            {
+                if (DaysRight[i] == -1) return i > 0 ? i : 0; //Connector.PercentColor.Length - 1
+                if (Days > DaysRight[i]) break;
+                i++;
+            }
+            return i;
+        }
     }
     public class RestWarehouse
     {
