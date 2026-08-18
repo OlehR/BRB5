@@ -115,14 +115,14 @@
                                 <ColumnDefinition Width="3*"/>
                                 <ColumnDefinition Width="3*"/>
                             </Grid.ColumnDefinitions>
-                            <Label FontAttributes="Bold" TextColor="Gray" Text="Склад" Grid.Column="0"/>
-                            <Label FontAttributes="Bold" TextColor="Gray" Text="Кількість" Grid.Column="1"/>
-                            <Label FontAttributes="Bold" TextColor="Gray" Text="Дата" Grid.Column="2"/>
+                            <Label FontAttributes="Bold" Text="Склад" Grid.Column="0"/>
+                            <Label FontAttributes="Bold" Text="Кількість" Grid.Column="1"/>
+                            <Label FontAttributes="Bold" Text="Дата" Grid.Column="2"/>
                         </Grid>
 
                         <VerticalStackLayout x:Name="RestWarehouseList" />
                         <Label Text="{Binding WP.Parent}"/>
-                        <Label Text="Умови роботи:"/>
+                        <Label Text="Умови роботи:" FontAttributes="Bold"/>
                         <VerticalStackLayout x:Name="ConditionList" />
                         
                     </StackLayout>

@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 using System.Text;
 using UtilNetwork;
+using Utils;
 
 namespace BRB5.Model
 {
@@ -134,6 +136,23 @@ namespace BRB5.Model
         }
         public int ExpirationDay { get; set; }
 
+        public DateTime ExpirationDate { get; set; }
+        public DateTime ExpirationDateInput { get; set; }
+        public string DaysLeft { get; set; } = "20;5";/// TMP
+        public int[] DaysRight { get { return DaysLeft?.Split(';')?.Select(e => (int)e.ToDecimal()).ToArray() ?? new int[0]; } }
+        //int GetColourIndex()
+        //{
+        //    int Days = ((ExpirationDateInput == default ? ExpirationDate : ExpirationDateInput) - DateTime.Today).Days + 1;
+        //    if (Days <= 0) return Connector.PercentColor.Length - 1; //Якщо протерміновано
+        //    int i = 0;
+        //    while (i < DaysRight.Length && i < Connector.PercentColor.Length - 2)
+        //    {
+        //        if (DaysRight[i] == -1) return i > 0 ? i : 0; //Connector.PercentColor.Length - 1
+        //        if (Days > DaysRight[i]) break;
+        //        i++;
+        //    }
+        //    return i;
+        //}
     }
     public class RestWarehouse
     {
