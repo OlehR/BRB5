@@ -106,7 +106,7 @@
                     </Label>
                 </Grid>
                 <!-- ПАНЕЛЬ 2: Без фізичної клавіатури (Padding зменшено) -->
-                <Grid  Grid.Row="3" ColumnDefinitions="*,*,*" ColumnSpacing="5" Padding="5" IsVisible="{Binding IsSoftKeyboard}">
+                <Grid  Grid.Row="3" ColumnDefinitions="*,*,*" ColumnSpacing="5" Padding="5" >
                     <Button Grid.Column="0" Text="Обнулити" Clicked="Reset" BackgroundColor="#ff5c5c" TextColor="White" CornerRadius="5" />
                     <Button Grid.Column="1" Text="Замінити" Clicked="ResetAndAdd" BackgroundColor="#816f20" TextColor="White" CornerRadius="5" />
                     <Button Grid.Column="2" Text="ОК" Clicked="CompletedInputQ" BackgroundColor="#4CAF50" TextColor="White" CornerRadius="5" />
@@ -156,7 +156,7 @@
 
             </Grid>
 
-            <!-- ПАНЕЛЬ 1: З фізичною клавіатурою (Padding зменшено) -->
+            <!-- ПАНЕЛЬ 1: З фізичною клавіатурою -->
             <StackLayout VerticalOptions="End" Orientation="Horizontal" Padding="5" IsVisible="{Binding IsNotSoftKeyboard}">
                 <Label Text="F1-" FontSize="16" TextColor="#ff5c5c" />
                 <Label Text="обнул" FontSize="18" TextColor="#816f20">

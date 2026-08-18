@@ -121,7 +121,7 @@
             </StackLayout>
 
             <!-- ПАНЕЛЬ 2: Нова панель з картинками (Тільки для Sim23 без фізичної клавіатури) -->
-            <Grid VerticalOptions="End" ColumnDefinitions="*, Auto" Padding="0" ColumnSpacing="25" IsVisible="{Binding IsImagePanelVisible}">
+            <Grid VerticalOptions="End" ColumnDefinitions="*, Auto" Padding="0" ColumnSpacing="25">
 
                 <!-- Кнопка 1: Збереження (Показується, коли IsVisF2 == True) -->
                 <Button Grid.Column="0" Clicked="F2Save" IsVisible="{Binding IsVisF2}" CornerRadius="8" FontAttributes="Bold" HeightRequest="60">
