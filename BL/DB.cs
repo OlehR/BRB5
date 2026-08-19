@@ -1499,7 +1499,7 @@ where whd.Code={pCodeWarehouse}";
                 lp.ExpirationDate,
                 w.NameWares AS WareName, 
                 w.Article,
-                r.NameReason AS Reason
+                coalesce(r.NameReason, cast((-lp.CodeReason) as text) || '%') AS Reason
             FROM LogPrice lp
             LEFT JOIN Wares w ON lp.CodeWares = w.CodeWares
             LEFT JOIN Reason r ON lp.CodeReason = r.CodeReason
