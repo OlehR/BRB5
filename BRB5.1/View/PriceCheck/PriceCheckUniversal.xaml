@@ -116,8 +116,15 @@
 
                     <Entry Grid.Column="0" Grid.Row="1" Text="{Binding ProposedPrice}" Margin="10,0" Keyboard="Numeric"
                            HorizontalTextAlignment="End" Placeholder="Пропоз. ціни" IsEnabled="{Binding HasWare}" />
-                    <Picker Grid.Column="1" Grid.Row="1" ItemsSource="{Binding ReasonList}" ItemDisplayBinding="{Binding NameReason}"
-                            SelectedItem="{Binding SelectedReason}" Title="Причина подання" IsEnabled="{Binding IsReasonSelectionEnabled}" /> 
+                    <Grid Grid.Column="1" Grid.Row="1">
+                        <!-- Звичайний Picker для вибору з бази (видимий, якщо немає авто-знижки) -->
+                        <Picker ItemsSource="{Binding ReasonList}" ItemDisplayBinding="{Binding NameReason}" SelectedItem="{Binding SelectedReason}" 
+                                Title="Причина подання" IsEnabled="{Binding HasWare}" IsVisible="{Binding IsNotAutoDiscountReason}" />
+
+                        <!-- Заблоковане поле з текстом "-30%" або "-50%" (видиме, коли дата підпадає під знижку) -->
+                        <Entry Text="{Binding AutoDiscountReasonText}" IsReadOnly="True" HorizontalTextAlignment="Center" TextColor="Black" 
+                               FontAttributes="Bold" IsVisible="{Binding IsAutoDiscountReason}" />
+                    </Grid>
                     <Button Grid.Column="2" Grid.Row="1" Text="Переглянути" HorizontalOptions="End" Command="{Binding ShowPromoListCommand}" />
 
                 </Grid>

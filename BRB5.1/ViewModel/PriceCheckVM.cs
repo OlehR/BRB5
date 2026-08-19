@@ -17,7 +17,7 @@ namespace BRB6.ViewModel
 {
     interface ForMVVM {
         void Focused(string pName);
-        void DisplayAlert(string title, string message, string cancel); 
+        void DisplayAlert(string title, string message, string cancel);
         void ShowToast(string message, bool isLong = false);
     }
     internal class PriceCheckVM : ObservableObject, IDisposable
@@ -212,9 +212,29 @@ namespace BRB6.ViewModel
                 }
             }
         }
+
         private bool _isAutoDiscountReason = false;
-        // Властивість для блокування/розблокування випадаючого списку
-        public bool IsReasonSelectionEnabled => HasWare && !_isAutoDiscountReason;
+        public bool IsAutoDiscountReason
+        {
+            get => _isAutoDiscountReason;
+            set
+            {
+                if (SetProperty(ref _isAutoDiscountReason, value))
+                {
+                    OnPropertyChanged(nameof(IsNotAutoDiscountReason));
+                    OnPropertyChanged(nameof(IsReasonSelectionEnabled));
+                }
+            }
+        }
+        public bool IsNotAutoDiscountReason => !IsAutoDiscountReason;
+        public bool IsReasonSelectionEnabled => HasWare && !IsAutoDiscountReason;
+
+        private string _autoDiscountReasonText = string.Empty;
+        public string AutoDiscountReasonText
+        {
+            get => _autoDiscountReasonText;
+            set => SetProperty(ref _autoDiscountReasonText, value);
+        }
 
         private BRB5.Model.DB.Reason _selectedReason;
         public BRB5.Model.DB.Reason SelectedReason
@@ -309,7 +329,6 @@ namespace BRB6.ViewModel
                 IsVisRepl = !IsVisRepl;
                 if (IsVisRepl) ForMVVM.Focused("NumberOfReplenishment");
             });
-
 
             F4Command = new RelayCommand(() => IsOnline = !IsOnline);
 
@@ -485,22 +504,16 @@ namespace BRB6.ViewModel
 
         private void DoubleScanReact()
         {
-
             if (IsWareScaned == eCheckWareScaned.PriceTagScaned || IsWareScaned == eCheckWareScaned.WareNotFit)//Відсутній товар
             {
                 bl.SaveDoubleScan(102, WP, PackageNumber, LineNumber);
                 WP = null;
-                //IsWareScaned = eCheckWareScaned.Nothing;
-                //MessageDoubleScan = "Скануйте цінник чи товар";
             }
             else if (IsWareScaned == eCheckWareScaned.WareScaned || IsWareScaned == eCheckWareScaned.PriceTagNotFit)//Відсутній ціник
             {
                 bl.SaveDoubleScan(101, WP, PackageNumber, LineNumber);
                 WP = null;
-                //IsWareScaned = eCheckWareScaned.Nothing;
-                //MessageDoubleScan = "Скануйте цінник чи товар";
             }
-
         }
 
         private void ModifyValue(int delta)
@@ -516,7 +529,7 @@ namespace BRB6.ViewModel
                 {
                     NumberOfReplenishment = delta > 0 ? delta.ToString() : "0";
                 }
-                if (IsAutoSave&&IsNotPromoProposalMode)
+                if (IsAutoSave && IsNotPromoProposalMode)
                     OnUpdateReplenishment();
             }
         }
@@ -556,9 +569,9 @@ namespace BRB6.ViewModel
             SelectedReason = null;
             SelectedDate = DateTime.Today;
             NumberOfReplenishment = "0";
-            ProposedPrice = string.Empty; 
-            _isAutoDiscountReason = false;
-            OnPropertyChanged(nameof(IsReasonSelectionEnabled));
+            ProposedPrice = string.Empty;
+            IsAutoDiscountReason = false;
+            AutoDiscountReasonText = string.Empty;
 
             ForMVVM.Focused("BarCodeInput");
         }
@@ -574,13 +587,14 @@ namespace BRB6.ViewModel
                 ForMVVM.ShowToast("Вилучено");
             }
         }
+
         private void UpdateReasonByExpirationDate()
         {
             if (WP == null)
             {
-                _isAutoDiscountReason = false;
+                IsAutoDiscountReason = false;
+                AutoDiscountReasonText = string.Empty;
                 SelectedReason = null;
-                OnPropertyChanged(nameof(IsReasonSelectionEnabled));
                 return;
             }
 
@@ -589,23 +603,23 @@ namespace BRB6.ViewModel
 
             if (percentColor != null && (percentColor.Percent == 30 || percentColor.Percent == 50))
             {
-                _isAutoDiscountReason = true;
+                IsAutoDiscountReason = true;
+                AutoDiscountReasonText = $"-{percentColor.Percent}%";
                 SelectedReason = new BRB5.Model.DB.Reason
                 {
                     CodeReason = -percentColor.Percent,
-                    NameReason = $"-{percentColor.Percent}%"
+                    NameReason = AutoDiscountReasonText
                 };
             }
             else
             {
-                _isAutoDiscountReason = false;
+                IsAutoDiscountReason = false;
+                AutoDiscountReasonText = string.Empty;
                 if (SelectedReason?.CodeReason == -30 || SelectedReason?.CodeReason == -50)
                 {
                     SelectedReason = null;
                 }
             }
-
-            OnPropertyChanged(nameof(IsReasonSelectionEnabled));
         }
     }
 }
