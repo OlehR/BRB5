@@ -6,6 +6,8 @@ using System.Collections.ObjectModel;
 using CommunityToolkit.Maui.Core;
 using CommunityToolkit.Maui.Alerts;
 using Utils;
+using CommunityToolkit.Maui.Views;
+
 
 
 #if ANDROID
@@ -111,6 +113,7 @@ public partial class LotsCheck : ContentPage
         {
             StackLayoutDocs.Children.Clear();
         });
+
         // Завантажуємо всі документи
         var allDocs = db.GetDoc(TypeDoc);
 
@@ -167,7 +170,7 @@ public partial class LotsCheck : ContentPage
             grid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
             grid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
 
-            var dateLabel = new Label { Text = doc.DateDoc.ToString("dd.MM.yyyy"), };
+            var dateLabel = new Label { Text = doc.DateDoc.ToString("dd.MM.yyyy") };
             dateLabel.SetBinding(Label.BackgroundColorProperty, new Binding("GetColor", source: doc));
 
             var numberLabel = new Label { Text = doc.NumberDoc };
@@ -188,18 +191,7 @@ public partial class LotsCheck : ContentPage
                 }
             }
 
-            // ==================== МОДИФІКОВАНИЙ БЛОК PICKER З ПОДВІЙНИМ ТАПОМ ====================
-
-            var pickerContainer = new Grid
-            {
-                HorizontalOptions = LayoutOptions.Fill,
-                VerticalOptions = LayoutOptions.Fill,
-                RowDefinitions = { new RowDefinition { Height = GridLength.Star } },
-                ColumnDefinitions = { new ColumnDefinition { Width = GridLength.Star } }
-            };
-            Grid.SetRow(pickerContainer, 1);
-            Grid.SetColumn(pickerContainer, 0);
-
+            // ==================== БЛОК REASON LABEL ====================
             var reasonLabel = new Label
             {
                 LineBreakMode = LineBreakMode.WordWrap,
@@ -210,90 +202,33 @@ public partial class LotsCheck : ContentPage
                 FontSize = 14
             };
             reasonLabel.SetBinding(Label.BackgroundColorProperty, new Binding("GetColor", source: doc));
+            Grid.SetRow(reasonLabel, 1);
+            Grid.SetColumn(reasonLabel, 0);
 
-            var reasonSource = doc.CodeReason != 1 ? AllReasons.Where(x => x.CodeReason != 1) : AllReasons;
-            var reasonPicker = new Picker
-            {
-                Title = "Причина",
-                ItemsSource = reasonSource.ToList(),
-                ItemDisplayBinding = new Binding("NameReason"),
-                IsEnabled = false, // ЗА ЗАМОВЧУВАННЯМ ЗАБЛОКОВАНО ДЛЯ ВСІХ
-                Opacity = 0,
-                HorizontalOptions = LayoutOptions.Fill,
-                VerticalOptions = LayoutOptions.Fill
-            };
-
-            // Логіка початкового завантаження
+            // Початковий стан тексту
             if (doc.CodeReason != 0)
             {
                 var current = AllReasons.FirstOrDefault(r => r.CodeReason == doc.CodeReason);
                 if (current != null)
                 {
-                    reasonPicker.SelectedItem = current;
                     reasonLabel.Text = current.NameReason;
-
-                    // Якщо причина вже була, і це не товари, вона доступна ОДРАЗУ з одного кліку
-                    if (!IsWares)
-                    {
-                        reasonPicker.IsEnabled = true;
-                        reasonPicker.InputTransparent = false; // Дозволяємо звичайні тапи, бо причина вже є
-                    }
+                    reasonLabel.TextColor = Colors.Black;
                 }
             }
             else
             {
-                // ПРИЧИНИ НЕМАЄ
                 reasonLabel.Text = " ";
                 reasonLabel.TextColor = Colors.Gray;
-
-                // Наказуємо пікеру ігнорувати кліки, щоб вони летіли в Label під ним
-                reasonPicker.IsEnabled = false;
-                reasonPicker.InputTransparent = true;
-
-                if (!IsWares)
-                {
-                    var doubleTapGesture = new TapGestureRecognizer { NumberOfTapsRequired = 2 };
-                    doubleTapGesture.Tapped += (s, e) =>
-                    {
-                        // Рятувальний круг: повертаємо пікер до життя
-                        reasonPicker.InputTransparent = false;
-                        reasonPicker.IsEnabled = true;
-
-                        // Програмно відкриваємо вікно вибору
-                        reasonPicker.Focus();
-                    };
-
-                    // Вішаємо жест НАПРЯМУ на текст (тепер ніщо його не блокує)
-                    reasonLabel.GestureRecognizers.Add(doubleTapGesture);
-                }
             }
 
-            // Подія зміни значення
-            reasonPicker.SelectedIndexChanged += (s, e) =>
-            {
-                if (reasonPicker.SelectedItem is BRB5.Model.DB.Reason r)
-                {
-                    doc.CodeReason = r.CodeReason;
-                    reasonLabel.Text = r.NameReason;
-                    reasonLabel.TextColor = Colors.Black;
-                    var t = db.SetDocReason(doc);
-
-                    // Після того, як причина з'явилася, вона стає доступною в один клік
-                    reasonPicker.IsEnabled = true;
-                    reasonPicker.InputTransparent = false;
-                }
-            };
-
-            // Черговість додавання важлива: спочатку текст, поверх нього — пікер
-            pickerContainer.Children.Add(reasonLabel);
-            pickerContainer.Children.Add(reasonPicker);
-
-            // ===================================================================
+            // Налаштовуємо логіку доступу: 2 кліки якщо немає причини, 1 клік якщо причина вже є
+            SetupLabelGestures(reasonLabel, doc);
+            // ===========================================================
 
             grid.Children.Add(dateLabel);
             grid.Children.Add(numberLabel);
             grid.Children.Add(extInfoStackLayout);
-            grid.Children.Add(pickerContainer);
+            grid.Children.Add(reasonLabel);
 
             tempStackLayout.Children.Add(grid);
         }
@@ -302,6 +237,150 @@ public partial class LotsCheck : ContentPage
         {
             StackLayoutDocs.Children.Add(tempStackLayout);
         });
+    }
+    // Прапорець для запобігання подвійного відкриття вікна при швидких кліках
+    private bool _isDialogOpen = false;
+
+    private void SetupLabelGestures(Label label, DocVM doc)
+    {
+        label.GestureRecognizers.Clear();
+
+        if (IsWares) return;
+
+        if (doc.CodeReason != 0)
+        {
+            // Причина встановлена -> відкриваємо за 1 тап
+            var singleTap = new TapGestureRecognizer { NumberOfTapsRequired = 1 };
+            singleTap.Tapped += async (s, e) =>
+            {
+                if (_isDialogOpen) return;
+                await ShowReasonDialogAsync(doc, label);
+            };
+            label.GestureRecognizers.Add(singleTap);
+        }
+        else
+        {
+            // Причини немає -> відкриваємо за 2 тапи
+            var doubleTap = new TapGestureRecognizer { NumberOfTapsRequired = 2 };
+            doubleTap.Tapped += async (s, e) =>
+            {
+                if (_isDialogOpen) return;
+                await ShowReasonDialogAsync(doc, label);
+            };
+            label.GestureRecognizers.Add(doubleTap);
+        }
+    }
+
+    private async Task ShowReasonDialogAsync(DocVM doc, Label reasonLabel)
+    {
+        if (_isDialogOpen) return;
+        _isDialogOpen = true;
+
+        try
+        {
+            var reasonSource = (doc.CodeReason != 1
+                ? AllReasons.Where(x => x.CodeReason != 1)
+                : AllReasons).ToList();
+
+            string[] reasonNames = reasonSource.Select(x => x.NameReason).ToArray();
+
+#if ANDROID
+            var tcs = new TaskCompletionSource<string>();
+            var activity = Platform.CurrentActivity;
+
+            if (activity != null)
+            {
+                var builder = new Android.App.AlertDialog.Builder(activity);
+                builder.SetTitle("Причина");
+
+                // Список елементів у нативному стилі Picker/Dialog
+                builder.SetItems(reasonNames, (s, args) =>
+                {
+                    tcs.TrySetResult(reasonNames[args.Which]);
+                });
+
+                // Ліва кнопка (NeutralButton в Android AlertDialog завжди розташовується зліва)
+                builder.SetNeutralButton("Скасувати причину", (s, args) =>
+                {
+                    tcs.TrySetResult("__CLEAR__");
+                });
+
+                // Права кнопка (NegativeButton розташовується справа)
+                builder.SetNegativeButton("Скасувати", (s, args) =>
+                {
+                    tcs.TrySetResult("__CANCEL__");
+                });
+
+                builder.SetOnCancelListener(new DialogCancelListener(() =>
+                {
+                    tcs.TrySetResult("__CANCEL__");
+                }));
+
+                var dialog = builder.Create();
+                dialog.Show();
+
+                string selected = await tcs.Task;
+
+                if (string.IsNullOrEmpty(selected) || selected == "__CANCEL__")
+                {
+                    return; // Закрито без змін
+                }
+
+                if (selected == "__CLEAR__")
+                {
+                    doc.CodeReason = 0;
+                    reasonLabel.Text = " ";
+                    reasonLabel.TextColor = Colors.Gray;
+                    db.SetDocReason(doc);
+                    SetupLabelGestures(reasonLabel, doc);
+                }
+                else
+                {
+                    var pickedReason = reasonSource.FirstOrDefault(x => x.NameReason == selected);
+                    if (pickedReason != null)
+                    {
+                        doc.CodeReason = pickedReason.CodeReason;
+                        reasonLabel.Text = pickedReason.NameReason;
+                        reasonLabel.TextColor = Colors.Black;
+                        db.SetDocReason(doc);
+                        SetupLabelGestures(reasonLabel, doc);
+                    }
+                }
+            }
+#else
+            // Fallback для інших платформ (якщо тестується на Windows/iOS)
+            string selected = await DisplayActionSheet("Причина", "Скасувати", "Скасувати причину", reasonNames);
+            if (!string.IsNullOrEmpty(selected) && selected != "Скасувати")
+            {
+                if (selected == "Скасувати причину")
+                {
+                    doc.CodeReason = 0;
+                    reasonLabel.Text = " ";
+                    reasonLabel.TextColor = Colors.Gray;
+                    db.SetDocReason(doc);
+                    SetupLabelGestures(reasonLabel, doc);
+                }
+                else
+                {
+                    var pickedReason = reasonSource.FirstOrDefault(x => x.NameReason == selected);
+                    if (pickedReason != null)
+                    {
+                        doc.CodeReason = pickedReason.CodeReason;
+                        reasonLabel.Text = pickedReason.NameReason;
+                        reasonLabel.TextColor = Colors.Black;
+                        db.SetDocReason(doc);
+                        SetupLabelGestures(reasonLabel, doc);
+                    }
+                }
+            }
+#endif
+        }
+        finally
+        {
+            // Невелика затримка перед скиданням, щоб випадковий повторний клік не відкрив вікно знову
+            await Task.Delay(250);
+            _isDialogOpen = false;
+        }
     }
     private async void OpenDoc(object sender, TappedEventArgs e)
     {
@@ -511,6 +590,13 @@ public partial class LotsCheck : ContentPage
             default:
                 return;
         }
+    }
+
+    public class DialogCancelListener : Java.Lang.Object, Android.Content.IDialogInterfaceOnCancelListener
+    {
+        private readonly Action _onCancel;
+        public DialogCancelListener(Action onCancel) => _onCancel = onCancel;
+        public void OnCancel(Android.Content.IDialogInterface dialog) => _onCancel?.Invoke();
     }
 
 #endif
