@@ -361,6 +361,7 @@ namespace BRB6.ViewModel
                 db.UpdateMR(LineNumber, MrQuantity);
 
                 IsMrDialogVisible = false;
+                ForMVVM.ShowToast($"Оновлено");
             });
             CloseMRDialogCommand = new RelayCommand(() =>
             {
