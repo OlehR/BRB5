@@ -18,7 +18,7 @@ namespace BRB6.ViewModel
         Connector c = ConnectorBase.GetInstance();
         private ObservableCollection<DocWaresEx> _wares = [];
         private bool _isLoading;
-        private string _title = "Лист викладки";
+        private string _title = "Лист поповнень";
         public ICommand CloseMRDialogCommand { get; }
         public ObservableCollection<DocWaresEx> Wares
         {

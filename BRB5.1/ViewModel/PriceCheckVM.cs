@@ -486,20 +486,25 @@ namespace BRB6.ViewModel
 
         private void OnUpdateReplenishment()
         {
-            if (WP != null)
+            if (WP == null) return;
+
+            if (!decimal.TryParse(NumberOfReplenishment, out decimal d) || d <= 0)
             {
-                if (decimal.TryParse(NumberOfReplenishment, out decimal d))
-                    db.UpdateReplenishment(LineNumber, d);
+                ForMVVM.ShowToast("Кількість має бути більшою за 0");
+                return;
+            }
+
+            db.UpdateReplenishment(LineNumber, d);
 
                 int TypeDoc = Config.TypeDoc.Where(el => el.KindDoc == eKindDoc.DocCheck).FirstOrDefault()?.CodeDoc ?? 0;
                 var DWId = new DocWaresId() { CodeWares = WP.CodeWares, NumberDoc = DateTime.Now.ToString("yyyyMMdd"), TypeDoc = TypeDoc };
 
-                db.ReplaceDoc([new(DWId)]);
-                var xx = db.GetDocWaresSample(DWId);
-                decimal r = (xx?.Quantity ?? 0) + d;
-                db.ReplaceDocWaresSample([new(DWId) { Quantity = r, QuantityMax=WP.Rest , ExtInfo=WP.PromotionName}]);
-                ForMVVM.ShowToast("Додано");
-            }
+            db.ReplaceDoc([new(DWId)]);
+            var xx = db.GetDocWaresSample(DWId);
+            decimal r = (xx?.Quantity ?? 0) + d;
+            db.ReplaceDocWaresSample([new(DWId) { Quantity = r, QuantityMax = WP.Rest, ExtInfo = WP.PromotionName }]);
+
+            ForMVVM.ShowToast("Додано");
         }
 
         private void DoubleScanReact()
