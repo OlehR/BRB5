@@ -109,8 +109,6 @@ namespace BRB6.View
 
         public string ApiUrl1 { get { return Config.ApiUrl1; } set { Config.ApiUrl1 = value; OnPropertyChanged(nameof(ApiUrl1)); } }
         public string ApiUrl2 { get { return Config.ApiUrl2; } set { Config.ApiUrl2 = value; OnPropertyChanged(nameof(ApiUrl2)); } }
-        public string ApiUrl3 => Config.ApiUrl3;
-        public string ApiUrl4 => Config.ApiUrl4;
         public int Compress => Config.Compress;
         public ObservableCollection<Warehouse> Warehouses { get; set; }
         public ObservableCollection<Warehouse> FilteredWarehouses { get; set; } = new ObservableCollection<Warehouse>();
@@ -146,12 +144,35 @@ namespace BRB6.View
                 }
             }
         }
+
+        private bool _isWarehousesTabLoaded = false;
+        private bool _isLogTabLoaded = false;
+
+        // Для логів
+        private List<string> _allLogLines = new List<string>();
+        private int _loadedLogLinesCount = 0;
+        private const int LogPageSize = 50;
+
+        private string _displayLogText = string.Empty;
+        public string DisplayLogText
+        {
+            get => _displayLogText;
+            set
+            {
+                _displayLogText = value;
+                OnPropertyChanged(nameof(DisplayLogText));
+            }
+        }
         public Settings()
         {
             InitializeComponent();
             this.BindingContext = this;
             NavigationPage.SetHasNavigationBar(this, DeviceInfo.Platform == DevicePlatform.iOS);
 
+            if (Config.LocalCompany == eCompany.Sim23)
+            {
+                Children.Remove(TabWarehouses);
+            }
             c = ConnectorBase.GetInstance();
 
             Warehouses = new ObservableCollection<Warehouse>(ListWarehouse);
@@ -173,16 +194,8 @@ namespace BRB6.View
             }
 
             FilteredWarehouses = new ObservableCollection<Warehouse>(Warehouses);
-            FillFilterWarehouseList();
-            //LWH.ItemTapped += (object sender, ItemTappedEventArgs e) => {
-            //    if (e.Item == null) return;
-            //    var temp = e.Item as Warehouse;
-            //    temp.IsChecked = !temp.IsChecked;
-            //    ((ListView)sender).SelectedItem = null;
-            //};
-            //FillFilterWarehouseList();
 
-            if (Config.Company == eCompany.NotDefined) CurrentPage = Children[1];
+            if (Config.Company == eCompany.NotDefined) CurrentPage = TabAdmin;
             Config.BarCode = BarCode;
         }
 
@@ -318,7 +331,6 @@ namespace BRB6.View
             Bl.GenApiUrl();
             OnPropertyChanged(nameof(ApiUrl1));
             OnPropertyChanged(nameof(ApiUrl2));
-            OnPropertyChanged(nameof(ApiUrl3));
         }
 
         private async void OnClickIP(object sender, EventArgs e)
@@ -556,15 +568,7 @@ namespace BRB6.View
             if (temp) db.CreateDB();
         }
 
-        private void OnCleanLog(object sender, EventArgs e)
-        {
-            FileLogger.Str.Clear();
-
-            string filePath = FileLogger.GetFileName;
-            if (File.Exists(filePath))  File.Delete(filePath);            
-
-            OnPropertyChanged(nameof(ShowLogText));
-        }
+       
         private void LoadLog(object sender, EventArgs e)
         {
             string[] lines = File.ReadAllLines(FileLogger.GetFileName);
@@ -583,5 +587,101 @@ namespace BRB6.View
             }
             ToastInfo($"Успішно відновлено {i}");
         }
+        // 2. Обробник перемикання вкладок
+        private void OnCurrentPageChanged(object sender, EventArgs e)
+        {
+            if (CurrentPage == TabWarehouses && !_isWarehousesTabLoaded)
+            {
+                _isWarehousesTabLoaded = true;
+                // Будуємо список лише 1 раз при першому вході на вкладку
+                FillFilterWarehouseList();
+            }
+            else if (CurrentPage == TabLog && !_isLogTabLoaded)
+            {
+                _isLogTabLoaded = true;
+                InitAndLoadLogs();
+            }
+        }
+
+        // 3. Логіка посторінкового читання логу (reverse: нові зверху)
+        private void InitAndLoadLogs()
+        {
+            try
+            {
+                _allLogLines.Clear();
+                _loadedLogLinesCount = 0;
+
+                if (FileLogger.TypeLog == eTypeLog.Memory)
+                {
+                    var raw = FileLogger.Str.ToString();
+                    _allLogLines = raw.Split(new[] { "\r\n", "\r", "\n" }, StringSplitOptions.None).ToList();
+                }
+                else
+                {
+                    string filePath = FileLogger.GetFileName;
+                    if (File.Exists(filePath))
+                    {
+                        // Зчитуємо всі рядки у пам'ять
+                        _allLogLines = File.ReadAllLines(filePath).ToList();
+                    }
+                }
+
+                LoadNextLogPage();
+            }
+            catch (Exception ex)
+            {
+                DisplayLogText = $"Помилка читання логу: {ex.Message}";
+            }
+        }
+
+        private void LoadNextLogPage()
+        {
+            if (_allLogLines == null || _allLogLines.Count == 0)
+            {
+                DisplayLogText = "Лог порожній";
+                return;
+            }
+
+            // Збільшуємо кількість рядків на 50
+            _loadedLogLinesCount += LogPageSize;
+            if (_loadedLogLinesCount > _allLogLines.Count)
+            {
+                _loadedLogLinesCount = _allLogLines.Count;
+            }
+
+            // Беремо останні _loadedLogLinesCount рядків, перевертаємо (останній стає першим)
+            var chunk = _allLogLines
+                .TakeLast(_loadedLogLinesCount)
+                .Reverse();
+
+            DisplayLogText = string.Join(Environment.NewLine, chunk);
+        }
+
+        private void OnLoadMoreLogsClicked(object sender, EventArgs e)
+        {
+            if (_loadedLogLinesCount >= _allLogLines.Count)
+            {
+                ToastInfo("Усі логи вже завантажено");
+                return;
+            }
+            LoadNextLogPage();
+        }
+
+        // 4. Очищення логів з оновленням
+        private void OnCleanLog(object sender, EventArgs e)
+        {
+            FileLogger.Str.Clear();
+
+            string filePath = FileLogger.GetFileName;
+            if (File.Exists(filePath))
+                File.Delete(filePath);
+
+            _allLogLines.Clear();
+            _loadedLogLinesCount = 0;
+            DisplayLogText = string.Empty;
+
+            ToastInfo("Лог очищено");
+        }
+
     }
 }
