@@ -51,9 +51,7 @@ namespace BRB6.View
             }
         }
         // Стара панель
-        public bool IsOldPanelVisible => !IsImagePanelVisible;
-        // Нову панель з картинками показуємо тільки для Sim23 БЕЗ фізичної клавіатури
-        public bool IsImagePanelVisible => Config.IsSoftKeyboard && Config.LocalCompany == eCompany.Sim23 && !IsViewInputDateDoc ;
+        public bool IsOldPanelVisible => Config.IsVisF_Keys;
         public bool IsViewInputDateDoc { get { return TypeDoc.IsViewInputDateDoc; } }
         //// Колекція варіантів для Picker
         //public ObservableCollection<BRB5.Model.DB.Reason> Reasons { get; set; }

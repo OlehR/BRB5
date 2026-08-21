@@ -58,7 +58,7 @@
                         HeightRequest="50" WidthRequest="250" Margin="0,0,0,5" />
             </Grid>
 
-            <StackLayout Grid.Row="1" Orientation="Horizontal" Spacing="1" BackgroundColor="White" Padding="0,5">
+            <StackLayout Grid.Row="1" IsVisible="{Binding IsOldPanelVisible}" Orientation="Horizontal" Spacing="1" BackgroundColor="White" Padding="0,5">
                 <Label Text="F1-" IsVisible="{Binding IsViewOut}" FontSize="16" TextColor="#ff5c5c" VerticalOptions="Center" />
                 <Label Text="{Binding F1Text}" IsVisible="{Binding IsViewOut}" FontSize="18" TextColor="#816f20">
                     <Label.GestureRecognizers>

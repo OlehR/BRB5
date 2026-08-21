@@ -87,5 +87,6 @@ namespace BRB5.Model
         public static eShopTM CodeTM { get; set; }
         public static bool IsVisOrderF3 { get; set; }=false;
         public static bool IsUseArticle { get; set; } = true;
+        public static bool IsVisF_Keys => LocalCompany != eCompany.Sim23;
     }
 }

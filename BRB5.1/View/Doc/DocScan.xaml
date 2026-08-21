@@ -157,7 +157,7 @@
             </Grid>
 
             <!-- ПАНЕЛЬ 1: З фізичною клавіатурою -->
-            <StackLayout VerticalOptions="End" Orientation="Horizontal" Padding="5" IsVisible="{Binding IsNotSoftKeyboard}">
+            <StackLayout VerticalOptions="End" Orientation="Horizontal" Padding="5" IsVisible="{Binding IsOldPanelVisible}">
                 <Label Text="F1-" FontSize="16" TextColor="#ff5c5c" />
                 <Label Text="обнул" FontSize="18" TextColor="#816f20">
                     <Label.GestureRecognizers>

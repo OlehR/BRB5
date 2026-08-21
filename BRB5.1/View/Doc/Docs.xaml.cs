@@ -37,7 +37,8 @@ namespace BRB6.View
         public bool IsVisCreateDoc { get { return TypeDoc.TypeCreateDoc != eTypeCreateDoc.NotDefined; } }
         public bool IsVisButtonCreateDoc { get { return IsVisCreateDoc && Config.LocalCompany==eCompany.Sim23; } }
         //public bool IsVisCreateDoc { get { return true; } }
-
+        // Стара панель
+        public bool IsOldPanelVisible => Config.IsVisF_Keys;
         private DocVM CreatedDoc = null;
         public Docs(TypeDoc pTypeDoc )
         {

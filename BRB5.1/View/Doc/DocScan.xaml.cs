@@ -66,8 +66,7 @@ namespace BRB6.View
         public BRB5.Model.DB.Reason SelectedReason { get => _selectedReason; set { if (_selectedReason != value) { _selectedReason = value;  OnPropertyChanged(nameof(SelectedReason)); } } }
         // Додаємо властивості для керування видимістю елементів
         public bool IsNotSim23 => Config.LocalCompany != eCompany.Sim23;
-        public bool IsNotSoftKeyboard => !Config.IsSoftKeyboard;
-      
+        public bool IsOldPanelVisible => Config.IsVisF_Keys;
         CameraView BarcodeScaner;
         //ZXingScannerView zxing;
         private ObservableCollection<DocWaresEx> _originalListWares;
