@@ -72,7 +72,8 @@ namespace BRB6
                 return eTypeScaner.NLS_MT67;
             if (Config.Model.Equals("NLS-MT93") || Config.Manufacturer.Contains("Newland"))
                 return eTypeScaner.NLS_MT93;
-
+            if (Config.Model.Equals("ME61") || Config.Manufacturer.Contains("MEFERI"))
+                return eTypeScaner.MEFERI_ME61;
             return eTypeScaner.Camera;
         }
         public static Color ToColor(this System.Drawing.Color color)=>Color.FromRgb(color.R, color.G, color.B);
