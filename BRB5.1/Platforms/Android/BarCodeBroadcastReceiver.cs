@@ -30,7 +30,7 @@ namespace BRB6
                 {
                     eTypeScaner.PM351 or eTypeScaner.PM550 or eTypeScaner.PM84 or eTypeScaner.PM68 => "device.scanner.EVENT",
                     eTypeScaner.Zebra or eTypeScaner.ZebraWithOutKeyBoard => "ua.UniCS.TM.BRB",//"ua.uz.vopak.brb4";
-                    eTypeScaner.BitaHC61 or eTypeScaner.ChainwayC61 or eTypeScaner.ChainwayC66 or eTypeScaner.MetapaceM_K4 or eTypeScaner.NLS_MT67 or eTypeScaner.NLS_MT93 => "com.scanner.broadcast",
+                    eTypeScaner.BitaHC61 or eTypeScaner.ChainwayC61 or eTypeScaner.ChainwayC66 or eTypeScaner.MetapaceM_K4 or eTypeScaner.NLS_MT67 or eTypeScaner.NLS_MT93 or eTypeScaner.MEFERI_ME61  => "com.scanner.broadcast",
                     _ => "ua.UniCS.TM.BRB",
                 };
                 return Res;
@@ -41,7 +41,7 @@ namespace BRB6
                 {
                     eTypeScaner.PM351 or eTypeScaner.PM550 or eTypeScaner.PM84 or eTypeScaner.PM68 => "EXTRA_EVENT_DECODE_VALUE",
                     eTypeScaner.Zebra or eTypeScaner.ZebraWithOutKeyBoard => "com.symbol.datawedge.data_string",             
-                    eTypeScaner.BitaHC61 or eTypeScaner.ChainwayC61 or eTypeScaner.ChainwayC66 or eTypeScaner.MetapaceM_K4 or eTypeScaner.NLS_MT67 or eTypeScaner.NLS_MT93 => "data",
+                    eTypeScaner.BitaHC61 or eTypeScaner.ChainwayC61 or eTypeScaner.ChainwayC66 or eTypeScaner.MetapaceM_K4 or eTypeScaner.NLS_MT67 or eTypeScaner.NLS_MT93 or eTypeScaner.MEFERI_ME61=> "data",
                     _=> "data"
                 };
                 return Res;

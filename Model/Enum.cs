@@ -131,6 +131,7 @@ namespace BRB5
         MetapaceM_K4,
         NLS_MT67,
         NLS_MT93,
+        MEFERI_ME61,
         KeyBoard,
         iOS
     }
