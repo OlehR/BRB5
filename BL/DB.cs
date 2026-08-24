@@ -483,7 +483,7 @@ alter TABLE DocWaresExpiration add DTInsert         TIMESTAMP;";
         {
             var DS = Config.GetDocSetting(pDocId.TypeDoc);
             string Sql = "";
-            string OrderQuery = pTypeOrder == eTypeOrder.Name ? "5" : "14 desc,1";
+            string OrderQuery = pTypeOrder == eTypeOrder.Name ? "15,5" : "14 desc,1";
             string Reason = pCodeReason > 0 ? $" and CodeReason={pCodeReason}" : "";
             string Color = " ,0 as Ord";
             if (DS.TypeColor == 1)
@@ -510,6 +510,7 @@ alter TABLE DocWaresExpiration add DTInsert         TIMESTAMP;";
                         coalesce(dws.quantitymax,0) as QuantityMax ,coalesce(d.IsControl,0) as IsControl, coalesce(dw1.quantityold,0) as QuantityOld
                       ,dw1.quantityreason as QuantityReason, Max(dw1.CodeReason,dws.CodeReason ) as CodeReason
                         {Color}
+                        ,gw.NameGroup
                         ,w.codeunit as CodeUnit, dws.CodeReason as CodeReason
                         ,w.Article,dws.ExtInfo
                         ,1 as IsInputQuantityInDB
@@ -519,6 +520,7 @@ alter TABLE DocWaresExpiration add DTInsert         TIMESTAMP;";
                                         from docwares dw where 1=1 {Reason} group by dw.typedoc ,dw.numberdoc,codewares ) dw1 
                             on (dw1.numberdoc = d.numberdoc and d.typedoc=dw1.typedoc)
                           Left join Wares w on dw1.codewares = w.codewares 
+                          Left join GroupWares gw on w.codeGroup=gw.CodeGroup
                           left join (
                             select  dws.typedoc ,dws.numberdoc, dws.codewares,dws.name, sum(dws.quantity) as quantity,  min(dws.quantitymin) as quantitymin, max(dws.quantitymax) as quantitymax, max(dws.CodeReason) as CodeReason, max(dws.ExtInfo) as ExtInfo
                                     from   DocWaresSample dws   group by dws.typedoc ,dws.numberdoc,dws.codewares,dws.name
@@ -528,12 +530,14 @@ alter TABLE DocWaresExpiration add DTInsert         TIMESTAMP;";
                        select d.TypeDoc as TypeDoc, d.numberdoc as NumberDoc, dws.orderdoc+100000, dws.CODEWARES,coalesce(dws.name,w.NAMEWARES) as NAMEWARES,coalesce(dws.quantity,0) as quantityorder,coalesce(dw1.quantityinput,0) as quantityinput, coalesce(dws.quantitymin,0) as quantitymin, coalesce(dws.quantitymax,0) as quantitymax ,coalesce(d.IsControl,0) as IsControl, coalesce(dw1.quantityold,0) as quantityold
                            ,0 as  quantityreason, Max(dw1.CodeReason,dws.CodeReason ) as CodeReason
                       , 3 as Ord
+                      ,gw.NameGroup
                       ,w.codeunit, dws.CodeReason
                       ,w.Article, dws.ExtInfo
                             ,case when dw1.numberdoc is null then 0 else 1 end  as IsInputQuantityInDB
                           from Doc d  
                           join DocWaresSample dws on d.numberdoc = dws.numberdoc and d.typedoc=dws.typedoc --and dws.codewares = w.codewares
                           left join Wares w on dws.codewares = w.codewares 
+                          Left join GroupWares gw on w.codeGroup=gw.CodeGroup
                           left join (select dw.typedoc ,dw.numberdoc, dw.codewares, sum(dw.quantity) as quantityinput,sum(dw.quantityold) as quantityold,
                                             Max(CodeReason) as CodeReason
                                         from DocWares dw where 1=1  {Reason} group by dw.typedoc ,dw.numberdoc,codewares) dw1 
@@ -542,6 +546,7 @@ alter TABLE DocWaresExpiration add DTInsert         TIMESTAMP;";
                        order by {OrderQuery}";
                     var r = db.Query<DocWaresEx>(Sql);
                     return r;
+
                 }
                 if (pTypeResult == eTypeResult.OnlyInput)
                 {
