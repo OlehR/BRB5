@@ -143,6 +143,17 @@ namespace BRB6
                 //    BarCodeInput.Focus();
             });
         }
+
+        private void OnOpenPopupTapped(object sender, TappedEventArgs e)
+        {
+            PopupOverlay.IsVisible = true;
+        }
+
+        // Закрити спливаюче вікно
+        private void OnClosePopupTapped(object sender, TappedEventArgs e)
+        {
+            PopupOverlay.IsVisible = false;
+        }
 #if ANDROID
         public void OnPageKeyDown(Keycode keyCode, KeyEvent e)
         {

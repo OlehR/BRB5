@@ -64,11 +64,15 @@
 
                 <BoxView HeightRequest="1" Color="#EEEEEE" />
 
-                <Grid ColumnDefinitions="80, *" ColumnSpacing="15">
-                    <ffimageloading:CachedImage x:Name="WareImage" Grid.Column="0" ErrorPlaceholder="photo.png" Source="{Binding UriPicture}" 
-                                                WidthRequest="80" MaximumHeightRequest="100" Aspect="AspectFit" VerticalOptions="Start" />
-                    <Label Grid.Column="1" Text="{Binding WP.Name}" FontAttributes="Bold" LineBreakMode="TailTruncation" LineHeight="1.1"
-                           FontSize="{Binding WP.Name, Converter={StaticResource LengthToFontConv}}" MaxLines="3" VerticalOptions="Center" />
+                <Grid ColumnDefinitions="Auto, *" ColumnSpacing="15">
+                    <!--<ffimageloading:CachedImage x:Name="WareImage" Grid.Column="0" ErrorPlaceholder="photo.png" Source="{Binding UriPicture}" 
+                                                WidthRequest="80" MaximumHeightRequest="100" Aspect="AspectFit" VerticalOptions="Start" />-->
+                    <Label Grid.Column="1" Text="{Binding WP.Name}" FontAttributes="Bold" LineBreakMode="TailTruncation" LineHeight="1.1" HorizontalTextAlignment="Center"
+                           FontSize="{Binding WP.Name, Converter={StaticResource LengthToFontConv}}" MaxLines="3" VerticalOptions="Center" >
+                            <Label.GestureRecognizers>
+                                <TapGestureRecognizer Tapped="OnOpenPopupTapped" />
+                            </Label.GestureRecognizers>
+                    </Label>
                 </Grid>
 
                 <Frame BackgroundColor="{Binding BackgroundColorPrice}" CornerRadius="20" HasShadow="False" Padding="10,5" BorderColor="#E0E0E0">
@@ -155,6 +159,47 @@
                 </VerticalStackLayout>
         </VerticalStackLayout>
             <templates:MRDialog x:Name="MRDialogView" BindingContext="{Binding}"  ZIndex="10" DialogTitle="Вкажіть актуальну кількість товару" />
+            <Grid x:Name="PopupOverlay" BackgroundColor="#80000000" IsVisible="False">
+
+                <Grid.GestureRecognizers>
+                    <TapGestureRecognizer />
+                </Grid.GestureRecognizers>
+
+                <!-- Віконце з відступами 20 по всьому периметру -->
+                <Border BackgroundColor="White"
+                        Margin="20"
+                        Padding="15"
+                        StrokeShape="RoundRectangle 12">
+
+                    <Grid RowDefinitions="Auto, *, Auto">
+
+                        <!-- ШАПКА: Хрестик та Заголовок на одній лінії -->
+                        <Grid Grid.Row="0" Margin="0,0,0,15">
+
+                            <!-- Хрестик зліва (додано Padding для зручнішого натискання) -->
+                            <Label Text="✕" FontSize="20" FontAttributes="Bold" TextColor="Gray"
+                                   HorizontalOptions="Start" VerticalOptions="Center" Padding="0,0,20,0">
+                                <Label.GestureRecognizers>
+                                    <TapGestureRecognizer Tapped="OnClosePopupTapped" />
+                                </Label.GestureRecognizers>
+                            </Label>
+
+                            <!-- Заголовок ідеально по центру -->
+                            <Label Text="Інформація про товар" FontSize="20" FontAttributes="Bold" 
+                                   HorizontalOptions="Center" VerticalOptions="Center" />
+                        </Grid>
+
+                        <!-- Зображення товару -->
+                        <ffimageloading:CachedImage x:Name="WareImage" Grid.Row="1" 
+                                                    ErrorPlaceholder="photo.png" Source="{Binding UriPicture}" 
+                                                     HorizontalOptions="Center" VerticalOptions="Center" />
+
+                        <!-- Назва товару знизу -->
+                        <Label Grid.Row="2" Text="{Binding WP.Name}" FontAttributes="Bold" FontSize="Large"
+                               HorizontalTextAlignment="Center" VerticalOptions="Center" Margin="0,15,0,0" />
+                    </Grid>
+                </Border>
+            </Grid>
         </Grid>
     </ContentPage.Content>
 </controls:BaseContentPage>
