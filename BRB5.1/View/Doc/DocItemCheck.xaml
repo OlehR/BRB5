@@ -89,12 +89,20 @@
                                             VerticalOptions="Center" HorizontalOptions="Center" />
 
                                         <!-- Назва -->
-                                        <Grid  Grid.Column="1">
+                                        <Grid  Grid.Column="1" RowDefinitions="*, Auto">
                                             <Image IsVisible="{Binding IsPromo}" Source="promo.png" WidthRequest="18" HeightRequest="18" HorizontalOptions="Start" VerticalOptions="Start" />
                                             <Label                                           
                                             Text="{Binding NameWareView}" FontSize="14"
                                             TextColor="#1A1A1A" LineBreakMode="WordWrap"
                                             HorizontalOptions="Center" VerticalOptions="Center" />
+                                            
+                                            <Border Grid.Row="1" IsVisible="{Binding IsSelected}" BackgroundColor="White" 
+                                                    StrokeShape="RoundRectangle 8" StrokeThickness="0" Padding="8,4">
+                                                <HorizontalStackLayout Spacing="6" VerticalOptions="Center">
+                                                    <Image Source="barcode.png" HeightRequest="15" />
+                                                    <Label Text="{Binding BarCode}" LineBreakMode="NoWrap" TextColor="Black" VerticalOptions="Center"/>
+                                                </HorizontalStackLayout>
+                                            </Border>
                                         </Grid>
 
                                         <!-- Вертикальний розмежовувач -->

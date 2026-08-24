@@ -83,7 +83,7 @@ namespace BRB5.Model
         }
 
         private bool _isSelected;
-        public bool IsSelected { get => _isSelected;  set  { _isSelected = value;  OnPropertyChanged(nameof(RowColor));    }
+        public bool IsSelected { get => _isSelected;  set  { _isSelected = value;  OnPropertyChanged(nameof(RowColor)); OnPropertyChanged(nameof(IsSelected)); }
         }
         public string RowColor
         {
