@@ -116,7 +116,7 @@ namespace BRB6.ViewModel
             var xx = db.GetDocWares(DId, eTypeResult.All, eTypeOrder.Scan);
             foreach (var el in xx)
             {
-                el.Quantity = el.InputQuantity > 0 ? el.InputQuantity : el.QuantityOrder;
+                el.Quantity = el.IsInputQuantityInDB ? el.InputQuantity : el.QuantityOrder;
                 el.OnAutoSave = Save;
                 el.InputQuantity = -1;
             }

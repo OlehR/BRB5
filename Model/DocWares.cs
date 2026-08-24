@@ -57,6 +57,12 @@ namespace BRB5.Model
         public decimal InputQuantity { get { return _InputQuantity; } set { _InputQuantity = value; if(InputQuantity>=0) OnAutoSave?.Invoke(this); OnPropertyChanged(nameof(InputQuantity)); /*OnPropertyChanged(nameof(IsInputQuantity));*/ OnPropertyChanged(nameof(Scaned)); OnPropertyChanged(nameof(GetBackgroundColorDocWares)); } }
         //public string InputQuantityStr { private get { return _InputQuantity.ToString(); } set { 
         //        _InputQuantity = Convert.ToDecimal(value); } }
+
+        /// <summary>
+        /// якщо кількість отримали з DocWares  (потрібно для випадку 0)
+        /// </summary>
+        [JsonIgnore]
+        public bool IsInputQuantityInDB { get; set; }
         [JsonIgnore]
         public bool IsInputQuantity { get { return InputQuantity >= 0; } set {
                 if (InputQuantity == Quantity && value) return;

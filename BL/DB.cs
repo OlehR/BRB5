@@ -512,6 +512,7 @@ alter TABLE DocWaresExpiration add DTInsert         TIMESTAMP;";
                         {Color}
                         ,w.codeunit as CodeUnit, dws.CodeReason as CodeReason
                         ,w.Article,dws.ExtInfo
+                        ,1 as IsInputQuantityInDB
                             from Doc d  
                           join (select dw.typedoc ,dw.numberdoc, dw.codewares, sum(dw.quantity) as quantityinput,max(dw.orderdoc) as orderdoc,sum(quantityold) as quantityold,  sum(case when dw.CODEReason>0 then  dw.quantity else 0 end) as quantityreason,
                                        Max(CodeReason) as CodeReason  
@@ -529,6 +530,7 @@ alter TABLE DocWaresExpiration add DTInsert         TIMESTAMP;";
                       , 3 as Ord
                       ,w.codeunit, dws.CodeReason
                       ,w.Article, dws.ExtInfo
+                            ,case when dw1.numberdoc is null then 0 else 1 end  as IsInputQuantityInDB
                           from Doc d  
                           join DocWaresSample dws on d.numberdoc = dws.numberdoc and d.typedoc=dws.typedoc --and dws.codewares = w.codewares
                           left join Wares w on dws.codewares = w.codewares 
