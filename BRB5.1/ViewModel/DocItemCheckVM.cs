@@ -93,7 +93,7 @@ namespace BRB6.ViewModel
         {
             if (item is null) return;
             _selectedWare = item;
-            MrQuantity = item.InputQuantity;
+            MrQuantity = item.InputQuantity >= 0 ? item.InputQuantity : 0;
             IsMrDialogVisible = true;
         }
 
@@ -105,7 +105,7 @@ namespace BRB6.ViewModel
             if (_selectedWare.InputQuantity >= 0) _selectedWare.Quantity = _selectedWare.InputQuantity;
             _selectedWare.OnPropertyChanged("IsInputQuantity");
             //db.ReplaceDocWares(new DocWares(new DocWaresId(DId, _selectedWare.CodeWares)) { Quantity= _selectedWare .Quantity},true);
-            Save(_selectedWare);
+            //Save(_selectedWare);
             SelectedWare = null;
             IsMrDialogVisible = false;
         }
@@ -118,6 +118,7 @@ namespace BRB6.ViewModel
             {
                 el.Quantity = el.InputQuantity > 0 ? el.InputQuantity : el.QuantityOrder;
                 el.OnAutoSave = Save;
+                el.InputQuantity = -1;
             }
             Wares = new ObservableCollection<DocWaresEx>(xx);
         }

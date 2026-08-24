@@ -54,18 +54,18 @@ namespace BRB5.Model
         //public string QuantityOldStr { set { _QuantityOld = Convert.ToDecimal(value); } }
 
         private decimal _InputQuantity;       
-        public decimal InputQuantity { get { return _InputQuantity; } set { _InputQuantity = value; OnAutoSave?.Invoke(this); OnPropertyChanged(nameof(InputQuantity)); /*OnPropertyChanged(nameof(IsInputQuantity));*/ OnPropertyChanged(nameof(Scaned)); OnPropertyChanged(nameof(GetBackgroundColorDocWares)); } }
+        public decimal InputQuantity { get { return _InputQuantity; } set { _InputQuantity = value; if(InputQuantity>=0) OnAutoSave?.Invoke(this); OnPropertyChanged(nameof(InputQuantity)); /*OnPropertyChanged(nameof(IsInputQuantity));*/ OnPropertyChanged(nameof(Scaned)); OnPropertyChanged(nameof(GetBackgroundColorDocWares)); } }
         //public string InputQuantityStr { private get { return _InputQuantity.ToString(); } set { 
         //        _InputQuantity = Convert.ToDecimal(value); } }
         [JsonIgnore]
-        public bool IsInputQuantity { get { return InputQuantity > 0; } set {
+        public bool IsInputQuantity { get { return InputQuantity >= 0; } set {
                 if (InputQuantity == Quantity && value) return;
-                if (value) InputQuantity = Quantity; else InputQuantity = 0; 
+                if (value) InputQuantity = Quantity; else InputQuantity = -1; 
                 OnPropertyChanged(nameof(RowColor)); } }
         public int CodeReason { get; set; }
         public DateTime ExpirationDate { get; set; }
         public DateTime DTInsert { get; set; }
-        public int Scaned { get { return InputQuantity > 0 ? 2 : 0; } set { OnPropertyChanged(nameof(GetBackgroundColorDocWares)); } }
+        public int Scaned { get { return InputQuantity >= 0 ? 2 : 0; } set { OnPropertyChanged(nameof(GetBackgroundColorDocWares)); } }
         public string GetBackgroundColorDocWares
         {
             get

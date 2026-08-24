@@ -1467,7 +1467,7 @@ where whd.Code={pCodeWarehouse}";
             try
             {
                 db.Execute($@"delete from DocWaresSample where TypeDoc={pD.TypeDoc} and NumberDoc='{pD.NumberDoc}'
-                       and CodeWares in (select CodeWares from DocWares where TypeDoc={pD.TypeDoc} and NumberDoc='{pD.NumberDoc}' and Quantity>0 )");
+                       and CodeWares in (select CodeWares from DocWares where TypeDoc={pD.TypeDoc} and NumberDoc='{pD.NumberDoc}' and Quantity>=0 )");
                 return db.Execute($@"delete from DocWares where TypeDoc={pD.TypeDoc} and NumberDoc='{pD.NumberDoc}'") >= 0;
             }
             catch (Exception e)
