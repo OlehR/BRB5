@@ -169,9 +169,8 @@ namespace BRB5.Model
             {
                 var docSetting = Config.GetDocSetting(this.TypeDoc);
                 var kindDoc = docSetting?.KindDoc ?? eKindDoc.NotDefined;
-                if (Config.LocalCompany == eCompany.Sim23 &&
-                    kindDoc != eKindDoc.LotsCheck &&
-                    kindDoc != eKindDoc.Lot)
+                if (Config.LocalCompany == eCompany.Sim23 && kindDoc != eKindDoc.LotsCheck && kindDoc != eKindDoc.Lot 
+                    && kindDoc != eKindDoc.RaitingDoc && kindDoc != eKindDoc.RaitingTempate && kindDoc != eKindDoc.RaitingTemplateCreate)
                 {
                     if (IsNeedSave) return "#dcdcdc";
                     else return "#87c98a";
