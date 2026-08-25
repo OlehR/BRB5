@@ -560,6 +560,8 @@ alter TABLE DocWaresExpiration add DTInsert         TIMESTAMP;";
                         coalesce(d.IsControl,0) as IsControl, coalesce(dw1.quantityold,0) as QuantityOld,dw1.CODEReason as  CodeReason
                         ,0 as Ord,w.codeunit
                         ,r.NameReason,w.Article, dws.ExtInfo
+                        ,1 as IsInputQuantityInDB
+                        ,(select  BarCode from BarCode bc where bc.CodeWares=w.codewares limit 1) as BarCode
                             from Doc d 
                             join DocWares dw1 on (dw1.numberdoc = d.numberdoc and d.typedoc=dw1.typedoc)
                             left join  Reason r on dw1.CodeReason=r.CodeReason and r.Level={-(int)DS.KindDoc}
