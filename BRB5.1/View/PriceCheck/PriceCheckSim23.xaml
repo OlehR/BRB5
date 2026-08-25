@@ -160,41 +160,24 @@
         </VerticalStackLayout>
             <templates:MRDialog x:Name="MRDialogView" BindingContext="{Binding}"  ZIndex="10" DialogTitle="Вкажіть актуальну кількість товару" />
             <Grid x:Name="PopupOverlay" BackgroundColor="#80000000" IsVisible="False">
-
                 <Grid.GestureRecognizers>
                     <TapGestureRecognizer />
                 </Grid.GestureRecognizers>
 
-                <!-- Віконце з відступами 20 по всьому периметру -->
-                <Border BackgroundColor="White"
-                        Margin="20"
-                        Padding="15"
-                        StrokeShape="RoundRectangle 12">
-
+                <Border BackgroundColor="White" Margin="20" Padding="15" StrokeShape="RoundRectangle 12">
                     <Grid RowDefinitions="Auto, *, Auto">
-
-                        <!-- ШАПКА: Хрестик та Заголовок на одній лінії -->
                         <Grid Grid.Row="0" Margin="0,0,0,15">
-
-                            <!-- Хрестик зліва (додано Padding для зручнішого натискання) -->
                             <Label Text="✕" FontSize="20" FontAttributes="Bold" TextColor="Gray"
                                    HorizontalOptions="Start" VerticalOptions="Center" Padding="0,0,20,0">
                                 <Label.GestureRecognizers>
                                     <TapGestureRecognizer Tapped="OnClosePopupTapped" />
                                 </Label.GestureRecognizers>
                             </Label>
-
-                            <!-- Заголовок ідеально по центру -->
                             <Label Text="Інформація про товар" FontSize="20" FontAttributes="Bold" 
                                    HorizontalOptions="Center" VerticalOptions="Center" />
                         </Grid>
-
-                        <!-- Зображення товару -->
-                        <ffimageloading:CachedImage x:Name="WareImage" Grid.Row="1" 
-                                                    ErrorPlaceholder="photo.png" Source="{Binding UriPicture}" 
-                                                     HorizontalOptions="Center" VerticalOptions="Center" />
-
-                        <!-- Назва товару знизу -->
+                        <ffimageloading:CachedImage x:Name="WareImage" Grid.Row="1" ErrorPlaceholder="photo.png" Source="{Binding UriPicture}" 
+                                                     HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" />
                         <Label Grid.Row="2" Text="{Binding WP.Name}" FontAttributes="Bold" FontSize="Large"
                                HorizontalTextAlignment="Center" VerticalOptions="Center" Margin="0,15,0,0" />
                     </Grid>
