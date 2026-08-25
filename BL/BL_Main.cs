@@ -19,7 +19,10 @@ namespace BL
         Timer TimerLoadGuid;
         public void OnButtonLogin(string Login, string Password, bool DeviceAndroid)
         {
-
+            bool IsFull = false;
+            string LoginOld = db.GetConfig<string>("Login");
+            if ( !Login.ToUpper().Equals(LoginOld.ToUpper()))
+                IsFull = true;
             db.SetConfig<string>("Login", Login);
             db.SetConfig<string>("Password", Password);
             db.SetConfig<eLoginServer>("LoginServer", Config.LoginServer);
@@ -43,14 +46,16 @@ namespace BL
             LoadGuid();
         }
 
-        void LoadGuid(Object source=null, ElapsedEventArgs e=null)
+        void LoadGuid(Object source, ElapsedEventArgs e)=> LoadGuid();
+
+        void LoadGuid(bool pIsFull = false)
         {
             FileLogger.WriteLogMessage($"LoadGuid: Config.DateLastLoadGuid=>{Config.DateLastLoadGuid.Date} now=>{DateTime.Today.Date}");
-            if (Config.DateLastLoadGuid.Date != DateTime.Today.Date && Config.CodeWarehouse != 0)
+            if (pIsFull || (Config.DateLastLoadGuid.Date != DateTime.Today.Date && Config.CodeWarehouse != 0))
             {
                 _ = Task.Run(async () =>
-                {                   
-                    var r = await c.LoadGuidDataAsync(false);
+                {
+                    var r = await c.LoadGuidDataAsync(pIsFull);
                     if (r.State == 0)
                     {
                         Config.DateLastLoadGuid = DateTime.Now;

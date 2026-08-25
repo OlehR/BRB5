@@ -31,7 +31,8 @@ namespace BRB5
         User = 2,
         Auditor = 3,
         Client = 4,
-        Manager = 5
+        Manager = 5,
+        Freelanc =6
     }
 
     public enum eTypeControlDoc
