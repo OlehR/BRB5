@@ -910,6 +910,8 @@ namespace BL.Connector
             }
             return null;
         }
+
+        public override async Task<Result> SaveEditDoc(EditDoc pDoc) => new Result();
         #endregion
     }
 
