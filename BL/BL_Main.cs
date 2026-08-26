@@ -21,7 +21,7 @@ namespace BL
         {
             bool IsFull = false;
             string LoginOld = db.GetConfig<string>("Login");
-            if ( !Login.ToUpper().Equals(LoginOld.ToUpper()))
+            if ( !Login.ToUpper().Equals(LoginOld?.ToUpper()))
                 IsFull = true;
             db.SetConfig<string>("Login", Login);
             db.SetConfig<string>("Password", Password);
