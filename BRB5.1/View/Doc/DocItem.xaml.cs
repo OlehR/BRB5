@@ -129,13 +129,12 @@ namespace BRB6.View
         protected override void OnDisappearing()
         {
             base.OnDisappearing();
-
-            if (!IsSoftKeyboard)
-            {
 #if ANDROID
-                MainActivity.Key -= OnPageKeyDown;
+            if (!IsSoftKeyboard)
+               MainActivity.Key -= OnPageKeyDown;            
 #endif
-            }
+            if (MyDocWares.Any(x => x.InputQuantity>0 ))
+                Task.Run(async () => await c.SaveEditDoc(new(Doc) {Date=DateTime.Now }));  
         }
         private void PopulateDocWaresStackLayout()
         {

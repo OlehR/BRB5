@@ -19,7 +19,7 @@ namespace BRB5.Model
         protected static string TAG = "BRB6.Model/Connector";
         protected static Connector Instance = null;
         public Action<string> OnSave { get; set; }
-        public volatile bool IsStopSave  = false;
+        public volatile bool IsStopSave = false;
         public volatile bool IsSaving = false;
         static protected IEnumerable<CustomerBarCode> CustomerBarCode { get; set; }
 
@@ -64,13 +64,13 @@ namespace BRB5.Model
         /// </summary>
         /// <param name="pR"></param>
         /// <returns></returns>
-        public virtual async Task<Result> SendRatingAsync(IEnumerable<RaitingDocItem> pR, DocVM pDoc,bool pIsArchive=false)  { throw new NotImplementedException(); }
+        public virtual async Task<Result> SendRatingAsync(IEnumerable<RaitingDocItem> pR, DocVM pDoc, bool pIsArchive = false) { throw new NotImplementedException(); }
 
         /// <summary>
         /// Вивантажеємо на сервер файли Рейтингів
         /// </summary>
         /// <returns></returns>
-        public virtual async Task<Result> SendRatingFilesAsync(string pNumberDoc, int pTry =2, int pMaxSecondSend = 0, int pSecondSkip = 0) { throw new NotImplementedException(); }
+        public virtual async Task<Result> SendRatingFilesAsync(string pNumberDoc, int pTry = 2, int pMaxSecondSend = 0, int pSecondSkip = 0) { throw new NotImplementedException(); }
 
 
         /// <summary>
@@ -86,11 +86,11 @@ namespace BRB5.Model
         /// <param name="pBarCode"></param>
         /// <param name="pIsOnlyBarCode"></param>
         /// <returns></returns>
-        
+
         public virtual ParseBarCode ParsedBarCode(string pBarCode, bool pIsHandInput)
         {
-            ParseBarCode Res = new() { BarCode = pBarCode,StartString=pBarCode };
-            if (pBarCode.Length>25 && pBarCode.StartsWith("010")) //MatrixCode Упаковочний штрихкод.
+            ParseBarCode Res = new() { BarCode = pBarCode, StartString = pBarCode };
+            if (pBarCode.Length > 25 && pBarCode.StartsWith("010")) //MatrixCode Упаковочний штрихкод.
             {
                 Res.BarCode = pBarCode.Substring(3, 13);
             }
@@ -99,21 +99,21 @@ namespace BRB5.Model
                return new ParseBarCode() { BarCode = pBarCode, IsHandInput = true, Article = pBarCode.ToInt(), TypeCode = eTypeCode.Article };
             }*/
 
-           
-            if(CustomerBarCode == null || CustomerBarCode.Count() == 0)
+
+            if (CustomerBarCode == null || CustomerBarCode.Count() == 0)
                 return Res;
             long Code, Data, Data2;
             int Operator;
             bool IsFound;
-            foreach (var el in CustomerBarCode.Where( el => el.TypeBarCode==eTypeBarCode.ManualInput || el.KindBarCode == eKindBarCode.EAN13 || el.KindBarCode == eKindBarCode.Code128 || el.KindBarCode == eKindBarCode.QR /*&& (el.TypeBarCode == eTypeBarCode.WaresWeight || el.TypeBarCode == eTypeBarCode.WaresUnit )*/))
+            foreach (var el in CustomerBarCode.Where(el => el.TypeBarCode == eTypeBarCode.ManualInput || el.KindBarCode == eKindBarCode.EAN13 || el.KindBarCode == eKindBarCode.Code128 || el.KindBarCode == eKindBarCode.QR /*&& (el.TypeBarCode == eTypeBarCode.WaresWeight || el.TypeBarCode == eTypeBarCode.WaresUnit )*/))
             {
                 try
                 {
-                    Code = 0; Data = 0; Data2 = 0; Operator = 0; 
+                    Code = 0; Data = 0; Data2 = 0; Operator = 0;
                     IsFound = false;
                     if (el.TypeBarCode != eTypeBarCode.ManualInput && (string.IsNullOrEmpty(el.Separator) && el.TotalLenght != pBarCode.Length))
                         continue;
-                   
+
                     if (!string.IsNullOrEmpty(el.Separator))
                     {
                         var D = pBarCode.Split(el.Separator);
@@ -121,10 +121,10 @@ namespace BRB5.Model
                         {
                             Code = D[0].ToLong();
                             Data = D.Length > 1 ? D[1].ToLong() : 0;
-                            if( D.Length > 2) 
+                            if (D.Length > 2)
                                 Data2 = D[2].ToLong();
                             IsFound = true;
-                        }                        
+                        }
                     }
                     if (pIsHandInput && el.TypeBarCode == eTypeBarCode.ManualInput && pBarCode.Trim().Length <= el.LenghtCode)
                     {
@@ -138,19 +138,19 @@ namespace BRB5.Model
                             continue;
 
                         Code = Convert.ToInt32(pBarCode.Substring(el.Prefix.Length, el.LenghtCode));
-                        if( el.LenghtOperator > 0 && el.TypeBarCode != eTypeBarCode.PriceTag )
+                        if (el.LenghtOperator > 0 && el.TypeBarCode != eTypeBarCode.PriceTag)
                             Operator = Convert.ToInt32(pBarCode.Substring(el.Prefix.Length + el.LenghtCode, el.LenghtOperator));
                         if (el.TypeBarCode == eTypeBarCode.PriceTag)
-                            Data = Convert.ToInt32(pBarCode.Substring(el.Prefix.Length + el.LenghtCode, el.LenghtOperator+el.LenghtPrice)); ///TMP!!! el.LenghtOperator
+                            Data = Convert.ToInt32(pBarCode.Substring(el.Prefix.Length + el.LenghtCode, el.LenghtOperator + el.LenghtPrice)); ///TMP!!! el.LenghtOperator
                         if (el.LenghtQuantity > 0)
                             Data = Convert.ToInt32(pBarCode.Substring(el.Prefix.Length + el.LenghtCode + el.LenghtOperator, el.LenghtQuantity));
                         IsFound = true;
                     }
-                    if(!IsFound) continue;
+                    if (!IsFound) continue;
                     if (Operator > 0 && el.LenghtOperator > 0) Res.CodeOperator = Operator;
-                    if (Data > 0 && el.LenghtQuantity > 0) Res.Quantity = el.TypeBarCode== eTypeBarCode.WaresWeight? Data/1000m : Data;
-                    if (Data > 0 && el.TypeBarCode == eTypeBarCode.PriceTag) Res.Price = (decimal)Data /100m;
-                    if (Data2 > 0 && el.TypeBarCode == eTypeBarCode.PriceTag) Res.PriceOpt = (decimal)Data2/100m;
+                    if (Data > 0 && el.LenghtQuantity > 0) Res.Quantity = el.TypeBarCode == eTypeBarCode.WaresWeight ? Data / 1000m : Data;
+                    if (Data > 0 && el.TypeBarCode == eTypeBarCode.PriceTag) Res.Price = (decimal)Data / 100m;
+                    if (Data2 > 0 && el.TypeBarCode == eTypeBarCode.PriceTag) Res.PriceOpt = (decimal)Data2 / 100m;
 
                     Res.TypeCode = el.TypeCode;
                     switch (el.TypeCode)
@@ -207,7 +207,7 @@ namespace BRB5.Model
 
         public virtual async Task<Result> GetNumberDocRaiting() { throw new NotImplementedException(); }
 
-        public virtual async Task<Result> SaveTemplate(RaitingTemplate pRT) { throw new NotImplementedException(); }        
+        public virtual async Task<Result> SaveTemplate(RaitingTemplate pRT) { throw new NotImplementedException(); }
 
         public virtual async Task<Result> SaveDocRaiting(DocVM pDoc) { throw new NotImplementedException(); }
         public virtual async Task<Result<IEnumerable<RaitingTemplate>>> GetRaitingTemplateAsync() { throw new NotImplementedException(); }
@@ -226,18 +226,26 @@ namespace BRB5.Model
 
         public virtual async Task<Result> UploadFile(string pFile, string pFileName = null) { throw new NotImplementedException(); }
 
-        public virtual async Task<Result<IEnumerable<Client>>> GetClient(string  pBarCode) { throw new NotImplementedException(); }
+        public virtual async Task<Result<IEnumerable<Client>>> GetClient(string pBarCode) { throw new NotImplementedException(); }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="pDoc"></param>
+        /// <returns></returns>
+        /// <exception cref="NotImplementedException"></exception>
+        public virtual async Task<Result> SaveEditDoc(EditDoc pDoc) { throw new NotImplementedException(); }
     }
 
     public class LoginServer
     {
-        public eLoginServer Code { get;set;}   
-        public string Name { get;set;}
+        public eLoginServer Code { get; set; }
+        public string Name { get; set; }
     }
     public class Guid
     {
         public string NameCompany { get; set; }
-        public IEnumerable<UnitDimension> UnitDimension { get; set;}
+        public IEnumerable<UnitDimension> UnitDimension { get; set; }
         public IEnumerable<AdditionUnit> AdditionUnit { get; set; }
         public IEnumerable<Wares> Wares { get; set; }
         public IEnumerable<BARCode> BarCode { get; set; }
@@ -258,7 +266,7 @@ namespace BRB5.Model
 
     public class Docs
     {
-        public IEnumerable<Doc> Doc {  get; set; }
+        public IEnumerable<Doc> Doc { get; set; }
         public IEnumerable<DocWaresSample> Wares { get; set; }
     }
     public class SaveDoc
@@ -269,11 +277,17 @@ namespace BRB5.Model
         public int CodeUser { get; set; }
     }
 
-    public class GetGuid 
+    public class GetGuid
     {
         public IEnumerable<long> CodeWares { get; set; }
-        public string StrCodeWares => CodeWares?.Any()==true?string.Join(",", CodeWares):"null";
+        public string StrCodeWares => CodeWares?.Any() == true ? string.Join(",", CodeWares) : "null";
         public IEnumerable<string> BarCode { get; set; }
-        public string StrBarCode => BarCode?.Any()==true?string.Join(",", BarCode.Select(el=>$"'{el}'")):"null";
+        public string StrBarCode => BarCode?.Any() == true ? string.Join(",", BarCode.Select(el => $"'{el}'")) : "null";
+    }
+
+    public class EditDoc : DocId
+    {
+        public EditDoc(DocId pDId) : base(pDId) {}
+        public DateTime Date { get; set; }
     }
 }

@@ -16,6 +16,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using UtilNetwork;
 using Utils;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 namespace BL.Connector
 {
     public class ConnectorSE : ConnectorBase
@@ -552,7 +553,7 @@ public string Info { get; set; }
             {
                 if (pDoc.TypeDoc.In(1,2,3,5,6,15))
                 {
-                    var d = (new[] { new OutputDoc(pDoc,pWares) }).ToJson();
+                    var d = (new[] { new OutputDoc(pDoc, pWares) { Profile= Config.Role } }).ToJson();
                     FileLogger.WriteLogMessage(this, "SaveDocAsync documentin=>", d);                    
                     var res = await GetDataHTTP.HTTPRequestAsync(1, "documentin", d, "application/json", Config.Login, Config.Password);
 
@@ -907,6 +908,23 @@ public string Info { get; set; }
                 return new Result(e);
             }
         }
+
+        public override async Task<Result> SaveEditDoc(EditDoc pDoc) 
+        {
+            var res = await GetDataHTTP.HTTPRequestAsync(1, "newmovedoc", pDoc.ToJson(), "application/json", Config.Login, Config.Password);
+
+            if (res.HttpState != eStateHTTP.HTTP_OK)
+            {
+                FileLogger.WriteLogMessage(this, "SaveDocAsync Res=>", res.ToJSON(), eTypeLog.Error);
+                return new(res);
+            }
+            else
+            {
+                var r = JsonConvert.DeserializeObject<Result>(res.Result);
+                FileLogger.WriteLogMessage(this, "SaveDocAsync Res=>", res.Result);
+                return r;
+            }
+        }
     }
 
     #region Class
@@ -1226,6 +1244,8 @@ public string Info { get; set; }
         public int IsClose { get; set; }
         public IEnumerable<OutputDocWares> DocWares { get; set; }
         public int CodeReason { get; set; } 
+
+        public eRole Profile { get; set; }
 
         public OutputDoc() { }
 
