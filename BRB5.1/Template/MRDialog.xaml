@@ -40,7 +40,7 @@
                         <!--<Label Grid.Column="1" Text="{Binding MrQuantity}"
                                FontSize="24" FontAttributes="Bold"
                                HorizontalTextAlignment="Center" VerticalOptions="Center" />-->
-                        <Entry Grid.Column="1"  Text="{Binding MrQuantity, Mode=TwoWay, UpdateSourceEventName=TextChanged, Converter={StaticResource ZeroToNullConverter}}"
+                        <controls:CustomEntry Grid.Column="1"  Text="{Binding MrQuantity, Mode=TwoWay, UpdateSourceEventName=TextChanged, Converter={StaticResource ZeroToNullConverter}}"
                                Placeholder="0" Keyboard="Numeric" HorizontalTextAlignment="Center"  VerticalOptions="Center" FontSize="24" 
                                x:Name="MRQuantityEntry" FontAttributes="Bold" TextColor="Black" BackgroundColor="Transparent" />
                         <Button Grid.Column="2" Text="+" FontSize="30" FontAttributes="Bold" Padding="15,0"
