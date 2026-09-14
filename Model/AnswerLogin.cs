@@ -11,8 +11,19 @@ namespace BRB5.Model
         public int CodeUser { get; set; }
         public string BarCode { get; set; }
         public string Login { get; set; }
-        public string PassWord { get; set; }         
+        public string PassWord { get; set; }
     }
+
+    public class RequestLogin : User
+    {
+        public string IP { get; set; }
+        public int CodeWarehouse { get; set; } = Config.CodeWarehouse;
+        public string SerialNumber { get; set; } = Config.SN;
+        public string Version { get; set; } = Config.Version;
+        public bool IsTest { get; set; } = Config.IsTest;
+    }
+
+    
     /// <summary>
     /// Через Swagger
     /// </summary>

@@ -42,6 +42,7 @@ namespace BRB5.Model
         public static string ApiUrl4 { get; set; }
 
         public static string SN;
+        public static string Version;
         public static string ComPortScaner { get; set; } 
         public static DateTime DateLastLoadGuid { get; set; }
         public static int Ver { get; set; }

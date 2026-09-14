@@ -62,7 +62,7 @@ namespace BL.Connector
                 if (pLoginServer == eLoginServer.Central || pLoginServer == eLoginServer.Bitrix)
                 {
                     string Data;
-                    Data = new User() { Login = pLogin, PassWord = pPassWord, LoginServer = pLoginServer, BarCode = pBarCode }.ToJson();
+                    Data = new BRB5.Model.RequestLogin() { Login = pLogin, PassWord = pPassWord, LoginServer = pLoginServer, BarCode = pBarCode, IP = Config.NativeBase.GetIP() }.ToJson();
 
                     HttpResult result = await GetDataHTTP.HTTPRequestAsync(0, "DCT/Login", Data, "application/json", null);
                     if (result.HttpState == eStateHTTP.HTTP_OK)
