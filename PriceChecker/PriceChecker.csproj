@@ -81,6 +81,8 @@
 	<ItemGroup>
 	  <ProjectReference Include="..\BL\BL.csproj" />
 	  <ProjectReference Include="..\Model\BRB5.Model.csproj" />
+	  <ProjectReference Include="..\..\UniCS.TM\Model\Model.csproj" />
+	  <ProjectReference Include="..\..\UniCS.TM\UtilNetwork\UtilNetwork.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>

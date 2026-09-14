@@ -68,11 +68,16 @@ public partial class UPriceChecker : BaseContentPage
                 ColorBG = "#e31e24";
                 OnPropertyChanged(nameof(ColorBG));
                 break;
-
-        }
+            case eShopTM.Koshik:
+                BackgroundImage.Source = "background2spar.png";
+                LogoImage.Source = "logo2koshik.png";
+                ColorBG = "#5b5b5b";
+                OnPropertyChanged(nameof(ColorBG));
+                break;
+        } 
 
 #if ANDROID
-        this.Loaded += (s, e) => {
+            this.Loaded += (s, e) => {
             InputBCU.Focus();
         };
         InputBCU.Completed += (s, e) =>

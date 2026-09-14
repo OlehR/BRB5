@@ -81,6 +81,11 @@ public partial class SplashPage : BaseContentPage
                     BackgroundImage.Source = "background2spar.png";
                     LogoImage.Source = "logo1spar.png";
                     break;
+
+                case eShopTM.Koshik:
+                    BackgroundImage.Source = "background2spar.png";
+                    LogoImage.Source = "logo1koshik.png";
+                    break;
             }
         });
 

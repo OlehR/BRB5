@@ -55,6 +55,10 @@ public partial class CustomerInfo : ContentPage, INotifyPropertyChanged
                 BackgroundImage.Source = "background2spar.png";
                 LogoImage.Source = "logo2spar.png";
                 break;
+            case eShopTM.Koshik:
+                BackgroundImage.Source = "background2spar.png";
+                LogoImage.Source = "logo2koshik.png";
+                break;
         }
     }
     protected override void OnAppearing()
