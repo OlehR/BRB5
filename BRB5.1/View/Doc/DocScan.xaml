@@ -59,13 +59,12 @@
                             <!-- Додано конвертер до InputQuantity -->
                             <controls:CustomEntry Style="{StaticResource EntryStyle}" 
                                                   IsEnabled="{Binding IsNotAddAuto}"
-                                                  Text="{Binding InputQuantity, Converter={StaticResource ZeroToNullConverter}}"
+                                                  Text="{Binding InputQuantity}"
                                                   x:Name="inputQ"
                                                   Unfocused="UnfocusedInputQ"
                                                   TextChanged="CalcQuantity"
                                                   Completed="CompletedInputQ"
-                                                  Placeholder="К-сть"
-                                                  Keyboard="{OnPlatform Numeric, iOS=Default}" />
+                                                  Placeholder="К-сть" Keyboard="{Binding CodeUnit, Converter={StaticResource CodeUnitToKeyboardConverter}}" />
                         </Frame>
 
                         <Label Text="{Binding ScanData.NameUnit}" Grid.Column="1" VerticalOptions="Center" HorizontalOptions="Center" Margin="3,0" />

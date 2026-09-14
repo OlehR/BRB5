@@ -118,7 +118,7 @@ namespace BL.Connector
                 Config.OnProgress?.Invoke(0.05);
                 AppContext.SetSwitch("System.Reflection.NullabilityInfoContext.IsSupported", true);
                 string Data = Config.CodeWarehouse.ToString();
-                HttpResult result = await GetDataHTTP.HTTPRequestAsync(0, "DCT/GetGuid", Data, "application/json", null,null,30);
+                HttpResult result = await GetDataHTTP.HTTPRequestAsync(0, "DCT/GetGuid", Data, "application/json", null,null,60);
                 Config.OnProgress?.Invoke(0.4);
                 if (result.HttpState == eStateHTTP.HTTP_OK)
                 {
