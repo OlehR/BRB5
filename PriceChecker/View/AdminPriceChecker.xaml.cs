@@ -118,14 +118,13 @@ public partial class AdminPriceChecker : ContentPage
                 ColorBG = "#e31e24";
                 OnPropertyChanged(nameof(ColorBG));
                 break;
-
-        }
-        if (Config.CodeWarehouse == 363)
-        {
-            BackgroundImage.Source = "background2spar.png";
-            LogoImage.Source = "logo2koshik.png";
-            ColorBG = "#5b5b5b";
-            OnPropertyChanged(nameof(ColorBG));
+                
+            case eShopTM.Koshik:
+                BackgroundImage.Source = "background2spar.png";
+                LogoImage.Source = "logo2koshik.png";
+                ColorBG = "#5b5b5b";
+                OnPropertyChanged(nameof(ColorBG));
+                break;
         }
 
         if (Config.TypeUsePrinter == eTypeUsePrinter.StationaryWithCutAuto) PrintType = -1;
