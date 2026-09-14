@@ -22,7 +22,8 @@ namespace BRB6
             base.OnCreate(savedInstanceState);
             //string path1 = Path.Combine(Android.OS.Environment.ExternalStorageDirectory.AbsolutePath, Android.OS.Environment.DirectoryDownloads);
             ProtoBRB.SetPath(Path.Combine(Android.App.Application.Context.GetExternalFilesDir("").AbsolutePath, Android.OS.Environment.DirectoryDownloads));            
-            Config.SN = GetDeviceId();         
+            Config.SN = GetDeviceId();
+            Config.Version = AppInfo.VersionString;
             Config.NativeBase = new Native();
             //FileLogger.PathLog = Path.Combine(Config.PathDownloads, "Log");
             FileLogger.WriteLogMessage("Start", eTypeLog.Expanded);

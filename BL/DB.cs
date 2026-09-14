@@ -747,75 +747,89 @@ and bc.BarCode=?
 
         public ParseBarCode GetCodeWares(ParseBarCode pParseBarCode, bool pIsFirstRun = true)
         {
-            string sql;
-            if (pParseBarCode?.CodeWares > 0 && pParseBarCode?.BarCode?.Length == 13 && pParseBarCode?.Price > 0)
+            try
             {
-                sql = $"select count(*) from wares w where w.CodeWares={pParseBarCode.CodeWares}";
-                int n = db.ExecuteScalar<int>(sql);
-                if (n == 0)                
-                    pParseBarCode.CodeWares = 0;                
-            }
+                string sql;
+                if (pParseBarCode?.CodeWares > 0 && pParseBarCode?.BarCode?.Length == 13 && pParseBarCode?.Price > 0)
+                {
+                    sql = $"select count(*) from wares w where w.CodeWares={pParseBarCode.CodeWares}";
+                    int n = db.ExecuteScalar<int>(sql);
+                    if (n == 0)
+                        pParseBarCode.CodeWares = 0;
+                }
 
-            if(pParseBarCode.SKU!=0 && pParseBarCode.CodeWares == 0)
-            {
-                sql = @"select sku.CODEWARES,au.CodeUnit,au.Coefficient from SKU sku 
+                if (pParseBarCode.SKU != 0 && pParseBarCode.CodeWares == 0)
+                {
+                    sql = @"select sku.CODEWARES,au.CodeUnit,au.Coefficient from SKU sku 
                                 left join ADDITIONUNIT au on sku.CODEWARES=au.CODEWARES and au.DefaultUnit=1
                                 where  sku.CodeSKU=?";
-                var rr = db.Query<AdditionUnit>(sql, pParseBarCode.SKU);
-                if ( rr?.Count == 1)
+                    var rr = db.Query<AdditionUnit>(sql, pParseBarCode.SKU);
+                    if (rr?.Count == 1)
+                    {
+                        var r = rr.FirstOrDefault();
+                        if (r?.CodeWares > 0)
+                        {
+                            pParseBarCode.CodeWares = r.CodeWares;
+                            pParseBarCode.Coefficient = r.Coefficient;
+                            pParseBarCode.CodeUnit = r.CodeUnit;
+                            return pParseBarCode;
+                        }
+                    }
+                }
+
+                sql = $@"select w.CODEWARES as CodeWares,w.NAMEWARES as NameWares,COALESCE(  au.COEFFICIENT,1) as Coefficient,bc.CODEUNIT as CodeUnit, ud.ABRUNIT as NameUnit,
+                                 bc.BARCODE as BarCode ,w.CODEUNIT as BaseCodeUnit 
+                                from BARCODE bc 
+                                left join ADDITIONUNIT au on bc.CODEWARES=au.CODEWARES and au.CODEUNIT=bc.CODEUNIT
+                                join wares w on w.CODEWARES=bc.CODEWARES 
+                                join UNITDIMENSION ud on bc.CODEUNIT=ud.CODEUNIT 
+                                where bc.BARCODE=?";
+
+                var rr1 = db.Query<AdditionUnit>(sql, pParseBarCode.BarCode);
+                if (rr1 != null && rr1.Count == 1)
                 {
-                    var r = rr.FirstOrDefault();
+                    var r = rr1.FirstOrDefault();
                     if (r?.CodeWares > 0)
                     {
                         pParseBarCode.CodeWares = r.CodeWares;
                         pParseBarCode.Coefficient = r.Coefficient;
                         pParseBarCode.CodeUnit = r.CodeUnit;
-                        return pParseBarCode;
                     }
                 }
-            }
-            
-            sql = $@"select w.CODEWARES as CodeWares,w.NAMEWARES as NameWares,au.COEFFICIENT as Coefficient,bc.CODEUNIT as CodeUnit, ud.ABRUNIT as NameUnit,
-                                 bc.BARCODE as BarCode ,w.CODEUNIT as BaseCodeUnit 
-                                from BARCODE bc 
-                                join ADDITIONUNIT au on bc.CODEWARES=au.CODEWARES and au.CODEUNIT=bc.CODEUNIT 
-                                join wares w on w.CODEWARES=bc.CODEWARES 
-                                join UNITDIMENSION ud on bc.CODEUNIT=ud.CODEUNIT 
-                                where bc.BARCODE=?";
-
-            var rr1 = db.Query<AdditionUnit>(sql, pParseBarCode.BarCode);
-            if (rr1 != null && rr1.Count == 1)
-            {
-                var r = rr1.FirstOrDefault();
-                if (r?.CodeWares > 0)
+                else
+                if (pParseBarCode.BarCode.Length == 13 && pParseBarCode.CodeWares == 0)
                 {
-                    pParseBarCode.CodeWares = r.CodeWares;
-                    pParseBarCode.Coefficient = r.Coefficient;
-                    pParseBarCode.CodeUnit = r.CodeUnit;
-                }
-            }
-            else
-            if (pParseBarCode.BarCode.Length == 13 && pParseBarCode.CodeWares == 0)
-            {
-                sql = $@"select bc.codewares as CodeWares,bc.BARCODE as BarCode from BARCODE bc 
+                    sql = $@"select bc.codewares as CodeWares,bc.BARCODE as BarCode from BARCODE bc 
                                      join wares w on bc.codewares=w.codewares and w.codeunit={Config.GetCodeUnitWeight}
                                      where substr(bc.BARCODE,1,6)=?";
-                var rr = db.Query<DocWaresEx>(sql, pParseBarCode.BarCode[..6]);
-                foreach (var el in rr)
-                {
-                    if (pParseBarCode.BarCode[..el.BarCode.Length].Equals(el.BarCode))
+                    var rr = db.Query<DocWaresEx>(sql, pParseBarCode.BarCode[..6]);
+                    foreach (var el in rr)
                     {
-                        pParseBarCode.CodeWares = el.CodeWares;
-                        pParseBarCode.Quantity = pParseBarCode.BarCode[8..12].ToDecimal() / 1000M;
-                        break;
+                        if (pParseBarCode.BarCode[..el.BarCode.Length].Equals(el.BarCode))
+                        {
+                            pParseBarCode.CodeWares = el.CodeWares;
+                            pParseBarCode.Quantity = pParseBarCode.BarCode[8..12].ToDecimal() / 1000M;
+                            break;
+                        }
+                    }
+                }
+                if (pParseBarCode.CodeWares == 0 && pIsFirstRun)
+                {
+                    try
+                    {
+                        BRB5.Model.Connector c = ConnectorBase.GetInstance();
+                        AsyncHelper.RunSync(async () => await c.LoadGuidDataFromCodeAsync(new() { BarCode = [pParseBarCode.BarCode] }));
+                        return GetCodeWares(pParseBarCode, false);
+                    }
+                    catch (Exception e)
+                    {
+                        FileLogger.WriteLogMessage(this, $"{System.Reflection.MethodBase.GetCurrentMethod().Name} LoadGuidDataFromCodeAsync", e);
                     }
                 }
             }
-            if(pParseBarCode.CodeWares==0 && pIsFirstRun)
+            catch (Exception e)
             {
-                BRB5.Model.Connector c = ConnectorBase.GetInstance();
-                AsyncHelper.RunSync(() =>c.LoadGuidDataFromCodeAsync(new() { BarCode = [pParseBarCode.BarCode] }));  
-                return GetCodeWares(pParseBarCode, false);
+                FileLogger.WriteLogMessage(this, $"{System.Reflection.MethodBase.GetCurrentMethod().Name}", e);
             }
             return pParseBarCode;
         }
@@ -856,10 +870,10 @@ and bc.BarCode=?
                     if (pParseBarCode.CodeWares > 0 || pParseBarCode.Article > 0 )
                     {
                         String Find = pParseBarCode.CodeWares > 0 ? $"w.CodeWares={pParseBarCode.CodeWares}" : $"w.ARTICLE={pParseBarCode.Article}";
-                        sql = @"select w.CODEWARES,w.NAMEWARES as NameWares, au.COEFFICIENT as Coefficient,w.CODEUNIT as CodeUnit, ud.ABRUNIT as NameUnit,
+                        sql = @"select w.CODEWARES,w.NAMEWARES as NameWares,COALESCE(au.COEFFICIENT,1) as Coefficient,w.CODEUNIT as CodeUnit, ud.ABRUNIT as NameUnit,
                             '' as BARCODE  ,w.CODEUNIT as BaseCodeUnit 
                                 from WARES w 
-                                join ADDITIONUNIT au on w.CODEWARES=au.CODEWARES and au.CODEUNIT=w.CODEUNIT 
+                                left join ADDITIONUNIT au on w.CODEWARES=au.CODEWARES and au.CODEUNIT=w.CODEUNIT 
                                 join UNITDIMENSION ud on w.CODEUNIT=ud.CODEUNIT 
                                 where " + Find;
                         var r = db.Query<DocWaresEx>(sql);

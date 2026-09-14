@@ -94,7 +94,7 @@ namespace BL
             var wh = db.GetWarehouse().FirstOrDefault(el => el.CodeWarehouse == Config.CodeWarehouse);
             Config.CodeTM = wh?.CodeTM ?? default;
             if (!string.IsNullOrEmpty(tempstr)) Config.CodesWarehouses = JsonConvert.DeserializeObject<List<int>>(tempstr);
-            FileLogger.TypeLog = db.GetConfig<eTypeLog>("TypeLog",eTypeLog.Memory);
+            FileLogger.TypeLog = db.GetConfig<eTypeLog>("TypeLog",eTypeLog.Full);
             c=Connector.ConnectorBase.GetInstance();
 
             TimerLoadGuid = new System.Timers.Timer(TimeSpan.FromMinutes(30).TotalMilliseconds);

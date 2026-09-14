@@ -18,7 +18,7 @@ namespace BRB6.View
         DB db = DB.GetDB();
         BL.BL Bl = BL.BL.GetBL();
         //public string Ver { get { return "Ver:"+ Assembly.GetExecutingAssembly().GetName().Version; } }
-        public string Ver => "Ver:" + AppInfo.VersionString;
+        public string Ver => "Ver:" + Config.Version;
         public string SN => "SN:" + Config.SN;
         public string TypeScaner => Config.TypeScaner.ToString();
         public string Model => "Model:" + Config.Model;

@@ -55,7 +55,7 @@
                         <Frame Grid.Column="0" Style="{StaticResource FrameStyle}">
                             <controls:CustomEntry Style="{StaticResource EntryStyle}" 
                                                   IsEnabled="{Binding IsNotAddAuto}"
-                                                  Text="{Binding InputQuantity, Converter={StaticResource ZeroToNullConverter}}"
+                                                  Text="{Binding InputQuantity}"
                                                   x:Name="inputQ"
                                                   Unfocused="UnfocusedInputQ"
                                                   TextChanged="CalcQuantity"

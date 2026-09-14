@@ -52,7 +52,7 @@ namespace BRB6
                 return Config.Model.StartsWith("TC56")? eTypeScaner.ZebraWithOutKeyBoard : eTypeScaner.Zebra;
             if (Config.Model.Equals("PM550") && (Config.Manufacturer.Contains("POINTMOBILE") || Config.Manufacturer.Contains("Point Mobile Co., Ltd.")))
                 return eTypeScaner.PM550;
-            if (Config.Model.Equals("PM351") && (Config.Manufacturer.Contains("POINTMOBILE") || Config.Manufacturer.Contains("Point Mobile Co., Ltd.")))
+            if ((Config.Model.Equals("PM351") || Config.Model.Equals("PM352")) && (Config.Manufacturer.Contains("POINTMOBILE") || Config.Manufacturer.Contains("Point Mobile Co., Ltd.")))
                 return eTypeScaner.PM351;
             if (Config.Model.Equals("PM451") && (Config.Manufacturer.Contains("POINTMOBILE") || Config.Manufacturer.Contains("Point Mobile Co., Ltd.")))
                 return eTypeScaner.PM351;
