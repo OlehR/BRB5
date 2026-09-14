@@ -82,6 +82,11 @@ public partial class SplashPage : BaseContentPage
                     LogoImage.Source = "logo1spar.png";
                     break;
             }
+            if (Config.CodeWarehouse == 363)
+            {
+                BackgroundImage.Source = "background2spar.png";
+                LogoImage.Source = "logo1koshik.png";
+            }
         });
 
     }

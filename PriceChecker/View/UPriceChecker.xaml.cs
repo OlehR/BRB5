@@ -70,6 +70,13 @@ public partial class UPriceChecker : BaseContentPage
                 break;
 
         }
+        if (Config.CodeWarehouse == 363)
+        {
+            BackgroundImage.Source = "background2spar.png";
+            LogoImage.Source = "logo2koshik.png";
+            ColorBG = "#5b5b5b";
+            OnPropertyChanged(nameof(ColorBG));
+        }
 
 #if ANDROID
         this.Loaded += (s, e) => {
