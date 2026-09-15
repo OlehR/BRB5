@@ -14,15 +14,12 @@
         <StackLayout>
             <Grid x:Name="GridZxing" IsVisible="{Binding IsVisScan}" HeightRequest="200" />
 
-            <!-- Зменшено відступи: RowSpacing=5, Padding=5 -->
             <Grid VerticalOptions="StartAndExpand" RowDefinitions="Auto,Auto,Auto,Auto,5*" RowSpacing="5" Padding="5">
 
-                <!-- Рамка навколо назви зі зменшеним Padding -->
                 <Frame Style="{StaticResource FrameStyle}" Padding="7">
                     <Label Text="{Binding ScanData.NameWares}" FontSize="24" HorizontalTextAlignment="Center" VerticalOptions="Center" />
                 </Frame>
 
-                <!-- Зменшено відступи між рядками та колонками до 5 -->
                 <Grid Grid.Row="1" ColumnDefinitions="*,*" RowDefinitions="Auto,Auto" RowSpacing="5" ColumnSpacing="5">
 
                     <Frame Style="{StaticResource FrameStyle}">
@@ -56,15 +53,15 @@
                     <Grid Grid.Row="1" Grid.ColumnSpan="2" ColumnDefinitions="2*, Auto, Auto, 1.5*, 2*" ColumnSpacing="3" VerticalOptions="Center">
 
                         <Frame Grid.Column="0" Style="{StaticResource FrameStyle}">
-                            <!-- Додано конвертер до InputQuantity -->
                             <controls:CustomEntry Style="{StaticResource EntryStyle}" 
                                                   IsEnabled="{Binding IsNotAddAuto}"
-                                                  Text="{Binding InputQuantity}"
+                                                  Text="{Binding InputQuantity, Converter={StaticResource ZeroToNullConverter}}"
                                                   x:Name="inputQ"
                                                   Unfocused="UnfocusedInputQ"
                                                   TextChanged="CalcQuantity"
                                                   Completed="CompletedInputQ"
-                                                  Placeholder="К-сть" Keyboard="{Binding CodeUnit, Converter={StaticResource CodeUnitToKeyboardConverter}}" />
+                                                  Placeholder="К-сть"
+                                                  Keyboard="{Binding CodeUnit, Converter={StaticResource CodeUnitToKeyboardConverter}}" />
                         </Frame>
 
                         <Label Text="{Binding ScanData.NameUnit}" Grid.Column="1" VerticalOptions="Center" HorizontalOptions="Center" Margin="3,0" />
@@ -113,18 +110,11 @@
                 <CollectionView Grid.Row="4" ItemsSource="{Binding ListWares}" x:Name="CollectionViewWares" SelectionMode="Single">
 
                     <CollectionView.Header>
-                        <!-- Ідеально симетричні колонки: №(Auto), Назва(*), К-сть(Auto), Причина(Auto) -->
                         <Grid RowSpacing="1" ColumnSpacing="1" Padding="1" BackgroundColor="#adaea7" ColumnDefinitions="Auto, *, Auto, Auto">
 
-                            <!-- Порожній блок для вирівнювання колонки № (якщо вона увімкнена) -->
                             <Label Grid.Column="0" WidthRequest="25" BackgroundColor="White" IsVisible="{Binding Config.IsVisOrderF3}" />
-
                             <Label Grid.Column="1" Text="Назва" BackgroundColor="White" Padding="3,0"/>
-
-                            <!-- Фіксована ширина під розмір слова "к-сть" (~55 пікселів) -->
                             <Label Grid.Column="2" Text="к-сть" WidthRequest="55" HorizontalTextAlignment="Center" BackgroundColor="White" Padding="3,0"/>
-
-                            <!-- Фіксована ширина під розмір слова "прич" (~60 пікселів) -->
                             <Label Grid.Column="3" Text="прич" WidthRequest="60" HorizontalTextAlignment="Center" BackgroundColor="White" Padding="3,0" IsVisible="{Binding IsNotSim23}" />
 
                         </Grid>
@@ -141,10 +131,8 @@
 
                                 <Label Grid.Column="1" Text="{Binding NameWares}" LineBreakMode="NoWrap" BackgroundColor="{Binding GetBackgroundColor}" Padding="3,0" />
 
-                                <!-- Та сама фіксована ширина (55), щоб ідеально стати під заголовок -->
                                 <Label Grid.Column="2" Text="{Binding InputQuantity}" WidthRequest="55" HorizontalTextAlignment="Center" LineBreakMode="NoWrap" BackgroundColor="{Binding GetBackgroundColor}" Padding="3,0" />
 
-                                <!-- Та сама фіксована ширина (60) -->
                                 <Label Grid.Column="3" Text="{Binding NameReason}" WidthRequest="60" HorizontalTextAlignment="Center" LineBreakMode="NoWrap" BackgroundColor="{Binding GetBackgroundColor}" Padding="3,0"
                        IsVisible="{Binding BindingContext.IsNotSim23, Source={x:Reference CollectionViewWares}}" />
                             </Grid>

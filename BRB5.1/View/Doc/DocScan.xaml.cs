@@ -502,14 +502,32 @@ namespace BRB6.View
         public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
             if (value == null) return null;
-            if (decimal.TryParse(value.ToString(), out decimal d) && d == 0) return null;
+
+            if (decimal.TryParse(value.ToString(), out decimal d))
+            {
+                // Якщо значення 0, повертаємо null, щоб показати Placeholder ("К-сть")
+                if (d == 0) return null;
+
+                return d.ToString(System.Globalization.CultureInfo.CurrentCulture);
+            }
             return value;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
-            if (string.IsNullOrWhiteSpace(value as string)) return 0m;
-            if (decimal.TryParse(value.ToString(), out decimal result)) return result;
+            string text = value as string;
+            if (string.IsNullOrWhiteSpace(text)) return 0m;
+            if (text == "0" || text.EndsWith(".") || text.EndsWith(","))
+            {
+                return Binding.DoNothing;
+            }
+            string normalized = text.Replace(',', '.');
+
+            if (decimal.TryParse(normalized, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out decimal result))
+            {
+                return result; 
+            }
+
             return 0m;
         }
     }
