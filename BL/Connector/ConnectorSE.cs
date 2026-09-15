@@ -915,13 +915,13 @@ public string Info { get; set; }
 
             if (res.HttpState != eStateHTTP.HTTP_OK)
             {
-                FileLogger.WriteLogMessage(this, "SaveDocAsync Res=>", res.ToJSON(), eTypeLog.Error);
+                FileLogger.WriteLogMessage(this, "SaveEditDoc Res=>", res.ToJSON(), eTypeLog.Error);
                 return new(res);
             }
             else
             {
                 var r = JsonConvert.DeserializeObject<Result>(res.Result);
-                FileLogger.WriteLogMessage(this, "SaveDocAsync Res=>", res.Result);
+                FileLogger.WriteLogMessage(this, "SaveEditDoc Res=>", res.Result);
                 return r;
             }
         }
