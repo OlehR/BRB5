@@ -121,6 +121,7 @@ namespace BRB5
         /// Для прайсчекера - чи дозволяти сканувати товар з OffLine
         /// </summary>
         public bool IsOffLine { get; set; } = false;
+        public bool IsControlRest { get; set; } = false;
 
     }
 }

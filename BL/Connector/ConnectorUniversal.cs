@@ -912,6 +912,17 @@ namespace BL.Connector
         }
 
         public override async Task<Result> SaveEditDoc(EditDoc pDoc) => new Result();
+
+        public override async Task<Result<decimal>> GetRest(TypeDoc pTypeDoc, int pCodeWarehouse, long pCodeWares) 
+        {
+            if(pTypeDoc?.CodeApi==1)
+            {
+                if (СonnectorLocal != null)
+                    return await СonnectorLocal.GetRest(pTypeDoc, pCodeWarehouse, pCodeWares);
+                return new Result<decimal>(-1, "Локальний конектор не визначено");
+            }   
+            return new(9999m); //Треба доробити на сервері.
+        }
         #endregion
     }
 
