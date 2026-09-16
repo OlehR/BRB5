@@ -128,6 +128,7 @@ namespace BRB5
         Camera,
         BitaHC61,
         ChainwayC61,
+        ChainwayC61P,
         ChainwayC66,
         MetapaceM_K4,
         NLS_MT67,
