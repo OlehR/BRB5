@@ -222,6 +222,7 @@ namespace BRB6.View
                 {
                     db.SetStateDoc(VM);
                     VM.IsNeedSave = false;
+                    VM.IsSaved = true;
                     var toast = Toast.Make($"Документ успішно збережений=>{r.TextError} {r.Data}");
                     _ = toast.Show();                    
                 }

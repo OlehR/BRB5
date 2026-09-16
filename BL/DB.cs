@@ -695,7 +695,8 @@ and CodeWares in (select CodeWares from DocWares where TypeDoc={pDocId.TypeDoc} 
             };
             try
             {
-                string Sql = $@"select d.*, Wh.Address as Address,d.State as Color, case when dwu.DTUpdate>coalesce( d.DTUpdate, '0001-01-01') then 1 else 0 end as IsNeedSave 
+                string Sql = $@"select d.*, Wh.Address as Address,d.State as Color, case when dwu.DTUpdate>coalesce( d.DTUpdate, '0001-01-01')  then 1 else 0 end as IsNeedSave
+, case when dwu.DTUpdate<coalesce( d.DTUpdate, '0001-01-01') || dwu.DTUpdate then 1 else 0 end as IsSaved
 from Doc d 
  left join Warehouse  Wh on d.CodeWarehouse = wh.number 
  left join (select NumberDoc,max(DTUpdate) as DTUpdate from DocWares dw where TypeDoc = {pTypeDoc.CodeDoc} group by NumberDoc) dwu on  dwu.numberdoc=d.numberdoc

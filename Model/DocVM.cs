@@ -172,8 +172,8 @@ namespace BRB5.Model
                 if (Config.LocalCompany == eCompany.Sim23 && kindDoc != eKindDoc.LotsCheck && kindDoc != eKindDoc.Lot 
                     && kindDoc != eKindDoc.RaitingDoc && kindDoc != eKindDoc.RaitingTempate && kindDoc != eKindDoc.RaitingTemplateCreate)
                 {
-                    if (IsNeedSave) return "#dcdcdc";
-                    else return "#87c98a";
+                    if (IsSaved) return "#87c98a";
+                    else return "#dcdcdc";
                 }
 
                 if (SelectedColor) return "#a0c4ff";
@@ -216,6 +216,11 @@ namespace BRB5.Model
         /// Чи потрібно зберігати документ, 
         /// </summary>
         public bool IsNeedSave { get { return _IsNeedSave; } set { _IsNeedSave = value; OnPropertyChanged(nameof(GetColor)); OnPropertyChanged(nameof(IsNeedSave)); } }
+        bool _IsSaved;
+        /// <summary>
+        /// Чи збережено документ(не новий), 
+        /// </summary>
+        public bool IsSaved { get { return _IsSaved; } set { _IsSaved = value; OnPropertyChanged(nameof(GetColor)); OnPropertyChanged(nameof(IsSaved)); } }
         public DocVM() { }
         
         public DocVM(DocId pDocId):base(pDocId) { }        
