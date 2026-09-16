@@ -18,8 +18,7 @@ namespace BRB6
         public static Action<Keycode, KeyEvent> Key;
         protected override void OnCreate(Bundle savedInstanceState)
         {
-            AppCompatDelegate.DefaultNightMode = AppCompatDelegate.ModeNightNo;
-            base.OnCreate(savedInstanceState);
+            AppCompatDelegate.DefaultNightMode = AppCompatDelegate.ModeNightNo;   
             //string path1 = Path.Combine(Android.OS.Environment.ExternalStorageDirectory.AbsolutePath, Android.OS.Environment.DirectoryDownloads);
             ProtoBRB.SetPath(Path.Combine(Android.App.Application.Context.GetExternalFilesDir("").AbsolutePath, Android.OS.Environment.DirectoryDownloads));            
             Config.SN = GetDeviceId();
@@ -28,7 +27,8 @@ namespace BRB6
             //FileLogger.PathLog = Path.Combine(Config.PathDownloads, "Log");
             FileLogger.WriteLogMessage("Start", eTypeLog.Expanded);
             if (Config.IsCreateBroadcastReceiver) //|| Config.TypeScaner == eTypeScaner.BitaHC61
-                BR = new MyBroadcastReceiver();
+                BR = new MyBroadcastReceiver(); 
+            base.OnCreate(savedInstanceState);
         }
         public string GetDeviceId()
         {
