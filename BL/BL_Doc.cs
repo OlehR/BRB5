@@ -42,7 +42,7 @@ namespace BL
                         db.ReplaceDocWares(ware);
                     }
                 }
-
+                ScanData.BeforeQuantity = 0;
             }
         }
         public ObservableCollection<DocVM> SetColorType(IEnumerable<DocVM> pDocs)

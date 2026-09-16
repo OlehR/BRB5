@@ -71,6 +71,7 @@ namespace BRB6.View
         //ZXingScannerView zxing;
         private ObservableCollection<DocWaresEx> _originalListWares;
 
+        private decimal RestQuantity { get; set; } = 0;
         public DocScan(DocVM pDocId, TypeDoc pTypeDoc = null)
         {
             IsShowAddAuto = pTypeDoc.IsAddAuto;
@@ -139,6 +140,27 @@ namespace BRB6.View
                     await DisplayAlert("Перевищено ліміт по позиції", $"{ScanData.NameWares}\nМаксимальна кількість: {ScanData.QuantityMax}\nВже додано: {ScanData.BeforeQuantity}\nСпроба додати: {ScanData.InputQuantity * ScanData.Coefficient}", "Ok");
                     return;
                 }
+
+                // Контроль залишків при додаванні
+                if (TypeDoc.IsControlRest)
+                {
+                    var restResult = await c.GetRest(TypeDoc, Config.CodeWarehouse, ScanData.CodeWares);
+                    decimal totalRest = restResult?.Data ?? 0;
+                    decimal availableRest = totalRest - ScanData.BeforeQuantity;
+
+                    if (ScanData.InputQuantity > availableRest)
+                    {
+                        await DisplayAlert("Недостатньо залишку",
+                            $"{ScanData.NameWares}\n" +
+                            $"Залишок на складі: {totalRest}\n" +
+                            $"Вже в документі: {ScanData.BeforeQuantity}\n" +
+                            $"Доступно до додавання: {(ScanData?.InputQuantity > 0 ? availableRest : 0)}\n" +
+                            $"Спроба додати: {ScanData.InputQuantity}",
+                            "Продовжити редагування");
+                        return;
+                    }
+                }
+
                 ScanData.Quantity = ScanData.InputQuantity * ScanData.Coefficient;
                 ScanData.OrderDoc = ++OrderDoc;
                 ScanData.Ord = -1;
@@ -160,6 +182,8 @@ namespace BRB6.View
                 }
                 inputQ.Unfocus();
                 inputBarCode.IsReadOnly = false;
+
+                RestQuantity = 0;
             }
         }    
 
@@ -236,6 +260,21 @@ namespace BRB6.View
                     {
                         await DisplayAlert("Товар відсутній в документі", ScanData.NameWares, "Ok");
                         ScanData = null;
+                        return;
+                    }
+                }
+                
+                // Контроль залишків при пошуку/скануванні
+                if (TypeDoc.IsControlRest)
+                {
+                    var restResult = await c.GetRest(TypeDoc, Config.CodeWarehouse, ScanData.CodeWares);
+                    RestQuantity = restResult?.Data ?? 0;
+
+                    if (RestQuantity <= 0)
+                    {
+                        await DisplayAlert("Відсутні залишки", $"Товар: {ScanData.NameWares}\nЗалишок на складі відсутній.", "Ok");
+                        ScanData = null;
+                        RestQuantity = 0;
                         return;
                     }
                 }
