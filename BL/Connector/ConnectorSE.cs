@@ -59,7 +59,7 @@ namespace BL.Connector
         public override ParseBarCode ParsedBarCode(string pBarCode, bool pIsOnlyBarCode)
         {
             pBarCode = pBarCode.Trim();
-            ParseBarCode Res = new ParseBarCode() { BarCode = pBarCode, StartString= pBarCode };
+            ParseBarCode Res = new ParseBarCode() { BarCode = pBarCode, StartString = pBarCode };
             if (pBarCode.Length == 13 && pBarCode[..2].Equals("29"))
             {
                 Res.CodeWares = Convert.ToInt32(pBarCode.Substring(2, 6));
@@ -160,7 +160,7 @@ namespace BL.Connector
             if (pLoginServer == eLoginServer.Central)
             {
                 User Data = new User() { Login = pLogin, PassWord = pPassWord };
-                HttpResult result = await GetDataHTTP.HTTPRequestAsync(0, "DCT/Login", Data.ToJson(), "application/json", null,null,5);
+                HttpResult result = await GetDataHTTP.HTTPRequestAsync(0, "DCT/Login", Data.ToJson(), "application/json", null, null, 5);
                 if (result.HttpState == eStateHTTP.HTTP_OK)
                 {
                     Result<BRB5.Model.AnswerLogin> res = JsonConvert.DeserializeObject<Result<BRB5.Model.AnswerLogin>>(result.Result);
@@ -171,9 +171,9 @@ namespace BL.Connector
                     return res.GetResult;
                 }
                 else
-                    return new Result(result);                
+                    return new Result(result);
             }
-            return new Result(-1,"Невідомий сервер");
+            return new Result(-1, "Невідомий сервер");
         }
 
         public override async Task<Result> LoadGuidDataAsync(bool pIsFull)
@@ -189,10 +189,10 @@ namespace BL.Connector
                 {
                     var res = JsonConvert.DeserializeObject<Result<BRB5.Model.Guid>>(result.Result);
                     Config.OnProgress?.Invoke(0.50);
-                    SaveGuide(res.Data, pIsFull);                    
-                }                
+                    SaveGuide(res.Data, pIsFull);
+                }
                 //await GetDaysLeft();
-                Config.OnProgress?.Invoke(1);               
+                Config.OnProgress?.Invoke(1);
                 return new Result(result);
             }
             catch (Exception e)
@@ -263,18 +263,19 @@ namespace BL.Connector
             try
             {
                 string vCode;
-                if (pBC?.CodeWares > 0) 
+                if (pBC?.CodeWares > 0)
                     vCode = $"code={pBC.CodeWares}";
-                else 
+                else
                     vCode = $"BarCode={pBC?.BarCode}";
-                HttpResult result = GetDataHTTP.HTTPRequest(1, $"PriceTagInfo?{vCode}","", "application/json", Config.Login, Config.Password );
+                HttpResult result = GetDataHTTP.HTTPRequest(1, $"PriceTagInfo?{vCode}", "", "application/json", Config.Login, Config.Password);
                 if (result.HttpState == eStateHTTP.HTTP_OK)
                 {
                     var res = JsonConvert.DeserializeObject<WaresPriceSE>(result.Result);
                     return new() { Data = res.GetWaresPrice(pBC) };
                 }
                 return new(result);
-            }catch(Exception e)
+            }
+            catch (Exception e)
             {
                 FileLogger.WriteLogMessage("SE.GetPrice", e);
                 return null;
@@ -295,7 +296,7 @@ namespace BL.Connector
             int temp = 0;
             var Res = new Result();
             //Опитування
-            if (pTypeDoc == 11) 
+            if (pTypeDoc == 11)
             {
                 string data = JsonConvert.SerializeObject(new Request() { userId = Config.CodeUser, action = "templates" });
                 HttpResult result = await GetDataHTTP.HTTPRequestAsync(2, "", data, "application/json");//
@@ -388,12 +389,12 @@ namespace BL.Connector
             }
             else
             //Список лотів
-            if (pTypeDoc == 14) 
+            if (pTypeDoc == 14)
             {
                 try
                 {
                     AppContext.SetSwitch("System.Reflection.NullabilityInfoContext.IsSupported", true);
-                    GetDocs Data = new GetDocs() { CodeWarehouse=Config.CodeWarehouse,TypeDoc = pTypeDoc, NumberDoc = pNumberDoc};
+                    GetDocs Data = new GetDocs() { CodeWarehouse = Config.CodeWarehouse, TypeDoc = pTypeDoc, NumberDoc = pNumberDoc };
                     HttpResult result = await GetDataHTTP.HTTPRequestAsync(0, "DCT/LoadDocs", Data.ToJson(), "application/json", null);
                     if (result.HttpState == eStateHTTP.HTTP_OK)
                     {
@@ -411,7 +412,7 @@ namespace BL.Connector
                 {
                     FileLogger.WriteLogMessage(this, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
                     return new Result(e);
-                }               
+                }
             }
             else
             {
@@ -460,7 +461,7 @@ namespace BL.Connector
 
 
                         if (pIsClear) db.ClearDoc();
-                        
+
 
                         foreach (Doc v in data.Doc)
                         {
@@ -511,17 +512,17 @@ namespace BL.Connector
 
         public override async Task<Result<IEnumerable<RaitingTemplate>>> GetRaitingTemplateAsync() { return null; }
 
-        
+
         class ResultCreateDoc
         {
-            
-public int State { get; set; }
-public string TextError { get; set; }
-//"Profile": null,
-public string Info { get; set; }
+
+            public int State { get; set; }
+            public string TextError { get; set; }
+            //"Profile": null,
+            public string Info { get; set; }
         }
-        
-        public override async Task<Result<DocVM>> CreateDoc(CreateDocData pDoc) 
+
+        public override async Task<Result<DocVM>> CreateDoc(CreateDocData pDoc)
         {
             //CreateDocData Data = new() { CodeWarehouseFrom = pDoc.CodeWarehouseFrom, CodeWarehouseTo = pDoc.CodeWarehouseTo, Description = pDoc.Description, TypeDoc = pDoc.TypeDoc };
             var res = await GetDataHTTP.HTTPRequestAsync(1, "newmovedoc", pDoc.ToJson(), "application/json", Config.Login, Config.Password);
@@ -529,14 +530,14 @@ public string Info { get; set; }
             if (res.HttpState != eStateHTTP.HTTP_OK)
             {
                 FileLogger.WriteLogMessage(this, "SaveDocAsync Res=>", res.ToJSON(), eTypeLog.Error);
-                return new (res);
+                return new(res);
             }
             else
             {
                 var r = JsonConvert.DeserializeObject<ResultCreateDoc>(res.Result);
                 FileLogger.WriteLogMessage(this, "SaveDocAsync Res=>", res.ToJSON());
-                DocVM Res= new() {TypeDoc=pDoc.TypeDoc, CodeWarehouse = pDoc.CodeWarehouse, DateDoc = DateTime.Now, Description = pDoc.Description, NumberDoc = r.Info, ExtInfo= pDoc.ExtInfo };
-                return new(r.State, r.TextError) { Data=Res};
+                DocVM Res = new() { TypeDoc = pDoc.TypeDoc, CodeWarehouse = pDoc.CodeWarehouse, DateDoc = DateTime.Now, Description = pDoc.Description, NumberDoc = r.Info, ExtInfo = pDoc.ExtInfo };
+                return new(r.State, r.TextError) { Data = Res };
             }
         }
         //Збереження ПРосканованих товарів в 1С
@@ -551,44 +552,44 @@ public string Info { get; set; }
             Result Res = null;
             try
             {
-                if (pDoc.TypeDoc.In(1,2,3,5,6,15))
+                if (pDoc.TypeDoc.In(1, 2, 3, 5, 6, 15))
                 {
-                    var d = (new[] { new OutputDoc(pDoc, pWares) { Profile= Config.Role } }).ToJson();
-                    FileLogger.WriteLogMessage(this, "SaveDocAsync documentin=>", d);                    
+                    var d = (new[] { new OutputDoc(pDoc, pWares) { Profile = Config.Role } }).ToJson();
+                    FileLogger.WriteLogMessage(this, "SaveDocAsync documentin=>", d);
                     var res = await GetDataHTTP.HTTPRequestAsync(1, "documentin", d, "application/json", Config.Login, Config.Password);
 
                     if (res.HttpState != eStateHTTP.HTTP_OK)
                     {
                         FileLogger.WriteLogMessage(this, "SaveDocAsync Res=>", res.ToJSON(), eTypeLog.Error);
-                        Res= new(res);
+                        Res = new(res);
                     }
                     else
                     {
                         FileLogger.WriteLogMessage(this, "SaveDocAsync Res=>", res.ToJSON());
-                        Res= new();
+                        Res = new();
                     }
                 }
                 if (pDoc.TypeDoc == 14)
                 {
                     //msSQL.SetDocReason(pD.Doc);
-                    var res = GetDataHTTP.HTTPRequest(1, $"confirmdocuments/{pDoc.NumberDoc}", null, "application/json", Config.Login, Config.Password);             
+                    var res = GetDataHTTP.HTTPRequest(1, $"confirmdocuments/{pDoc.NumberDoc}", null, "application/json", Config.Login, Config.Password);
                     FileLogger.WriteLogMessage(this, "SaveDocAsync Res=>", res.ToJSON());
                     if (res.HttpState != eStateHTTP.HTTP_OK)
                         Res = new(res);
                     else
-                        Res = JsonConvert.DeserializeObject<Result>(res.Result);                    
+                        Res = JsonConvert.DeserializeObject<Result>(res.Result);
                 }
-                if(Res.Success)
+                if (Res.Success)
                 {
-                    var r=Config.GetDocSetting(pDoc.TypeDoc);
-                    if (r?.IsDelAfterSend==true)
+                    var r = Config.GetDocSetting(pDoc.TypeDoc);
+                    if (r?.IsDelAfterSend == true)
                         db.DelDocWaresSend(pDoc);
                 }
             }
             catch (Exception e)
             {
                 FileLogger.WriteLogMessage(this, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return new (e);
+                return new(e);
             }
             return Res;
         }
@@ -667,7 +668,7 @@ public string Info { get; set; }
             return Res;
         }
         CultureInfo provider = CultureInfo.InvariantCulture;
-        
+
         /// <summary>
         /// Вивантажеємо на сервер файли Рейтингів
         /// pMaxSecondSend - скільки часу відправляти, 0 - без обмежень.
@@ -825,16 +826,16 @@ public string Info { get; set; }
                     var res = JsonConvert.DeserializeObject<IEnumerable<InputWarehouse>>(result.Result);
                     var R = res.Select(el => el.GetWarehouse()).ToList();
                     db.ReplaceWarehouse(R);
-                    return new Result<IEnumerable<Warehouse>>(result,R);
+                    return new Result<IEnumerable<Warehouse>>(result, R);
                 }
-                else 
-                    return new Result<IEnumerable<Warehouse>>(result,null);
+                else
+                    return new Result<IEnumerable<Warehouse>>(result, null);
             }
             catch (Exception e)
             {
                 FileLogger.WriteLogMessage(this, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
                 return new Result<IEnumerable<Warehouse>>(e);
-            }            
+            }
         }
         public override async Task<Result<IEnumerable<DocWaresExpirationSample>>> GetExpirationDateAsync(int pCodeWarehouse)
         {
@@ -865,31 +866,31 @@ public string Info { get; set; }
                 FileLogger.WriteLogMessage(this, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
                 return new Result<IEnumerable<DocWaresExpirationSample>>(e);
             }
-                
+
         }
 
-       /* public override async Task<Result<IEnumerable<ExpirationWares>>> GetDaysLeft()
-        {
-            try
-            {
-                HttpResult result = await GetDataHTTP.HTTPRequestAsync(3, "DCT/GetExpirationWares", "", "application/json", null);
-                if (result.HttpState == eStateHTTP.HTTP_OK)
-                {
-                    var res = JsonConvert.DeserializeObject<Result<IEnumerable<ExpirationWares>>>(result.Result);
-                    db.ReplaceExpirationWares(res.Info);
-                    return res;
-                }
-                return new Result<IEnumerable<ExpirationWares>>(result, null);
-            }
-            catch (Exception e)
-            {
-                FileLogger.WriteLogMessage(this, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return new Result<IEnumerable<ExpirationWares>>(e);
-            }
-        }*/
+        /* public override async Task<Result<IEnumerable<ExpirationWares>>> GetDaysLeft()
+         {
+             try
+             {
+                 HttpResult result = await GetDataHTTP.HTTPRequestAsync(3, "DCT/GetExpirationWares", "", "application/json", null);
+                 if (result.HttpState == eStateHTTP.HTTP_OK)
+                 {
+                     var res = JsonConvert.DeserializeObject<Result<IEnumerable<ExpirationWares>>>(result.Result);
+                     db.ReplaceExpirationWares(res.Info);
+                     return res;
+                 }
+                 return new Result<IEnumerable<ExpirationWares>>(result, null);
+             }
+             catch (Exception e)
+             {
+                 FileLogger.WriteLogMessage(this, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+                 return new Result<IEnumerable<ExpirationWares>>(e);
+             }
+         }*/
 
         public override async Task<Result> SaveExpirationDate(DocWaresExpirationSave pED)
-        {         
+        {
             try
             {
                 AppContext.SetSwitch("System.Reflection.NullabilityInfoContext.IsSupported", true);
@@ -909,7 +910,7 @@ public string Info { get; set; }
             }
         }
 
-        public override async Task<Result> SaveEditDoc(EditDoc pDoc) 
+        public override async Task<Result> SaveEditDoc(EditDoc pDoc)
         {
             var res = await GetDataHTTP.HTTPRequestAsync(1, "newmovedoc", pDoc.ToJson(), "application/json", Config.Login, Config.Password);
 
@@ -924,6 +925,12 @@ public string Info { get; set; }
                 FileLogger.WriteLogMessage(this, "SaveEditDoc Res=>", res.Result);
                 return r;
             }
+        }
+
+        public override async Task<Result<decimal>> GetRest(TypeDoc pTypeDoc, int pCodeWarehouse, long pCodeWares)
+        {
+            var r=GetPrice(new() { CodeWares = pCodeWares });
+            return new(r.Data.Rest);
         }
     }
 

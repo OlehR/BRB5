@@ -235,6 +235,7 @@ namespace BRB5.Model
         /// <returns></returns>
         /// <exception cref="NotImplementedException"></exception>
         public virtual async Task<Result> SaveEditDoc(EditDoc pDoc) { throw new NotImplementedException(); }
+        public virtual async Task<Result<decimal>> GetRest(TypeDoc pTypeDoc, int pCodeWarehouse, long pCodeWares) { throw new NotImplementedException(); }
     }
 
     public class LoginServer
