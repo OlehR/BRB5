@@ -144,15 +144,13 @@ namespace BRB6.View
                 // Контроль залишків при додаванні
                 if (TypeDoc.IsControlRest)
                 {
-                    var restResult = await c.GetRest(TypeDoc, Config.CodeWarehouse, ScanData.CodeWares);
-                    decimal totalRest = restResult?.Data ?? 0;
-                    decimal availableRest = totalRest - ScanData.BeforeQuantity;
+                    decimal availableRest = RestQuantity - ScanData.BeforeQuantity;
 
                     if (ScanData.InputQuantity > availableRest)
                     {
                         await DisplayAlert("Недостатньо залишку",
                             $"{ScanData.NameWares}\n" +
-                            $"Залишок на складі: {totalRest}\n" +
+                            $"Залишок на складі: {RestQuantity}\n" +
                             $"Вже в документі: {ScanData.BeforeQuantity}\n" +
                             $"Доступно до додавання: {(ScanData?.InputQuantity > 0 ? availableRest : 0)}\n" +
                             $"Спроба додати: {ScanData.InputQuantity}",
