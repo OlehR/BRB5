@@ -209,22 +209,67 @@ namespace BRB6
                         Config.LoginServer = LS.First().Code;
                     }
                 }
-                if (Config.IsAutoLogin)
-                {
-                    Password = db.GetConfig<string>("Password");
-                    if (!string.IsNullOrEmpty(Password))
-                        OnButtonLogin(null, null);
-                }
+                
             }catch (Exception ex)
             {
                 _ = DisplayAlert("Помилка Init", "Не вдалось ініціалізувати програму. " + ex.Message, "OK");
                 System.Diagnostics.Debug.WriteLine(ex);
             }
             }
+        bool IsFirstTime = true;
         protected override async void OnAppearing()
         {
             base.OnAppearing();
+            if (IsVisScan)
+            {
+                BarcodeScaner = Helper.GetCameraView();
+                BarcodeScaner.OnDetectionFinished += CameraView_OnDetectionFinished;
+                GridZxing.Children.Add(BarcodeScaner);
+            }
+#if ANDROID
+            if (Config.NativeBase != null && await Config.NativeBase.CheckNewVerAsync())
+            {
+                SLLogin.IsVisible = false;
+                ListDocs.IsVisible = false;
+                ExitLabel.IsVisible = false;
+                UpdateLayout.IsVisible = true;
 
+                CurrentVersionLabel.Text = $"У вас версія: {AppInfo.Current.VersionString}";
+                TargetVersionLabel.Text = $"Завантажується нова версія...";
+
+                _ = Task.Run(async () =>
+                {
+                    try
+                    {
+                        await Config.NativeBase.InstallAsync(Progress);
+                        MainThread.BeginInvokeOnMainThread(() =>
+                        {
+                            StatusLabel.Text = "Завантаження завершено";
+                            BtnExitApp.IsVisible = true; 
+                        });
+                    }
+                    catch (Exception ex)
+                    {
+                        MainThread.BeginInvokeOnMainThread(() =>
+                        {
+                            StatusLabel.Text = "Помилка завантаження файлу";
+                            BtnExitApp.IsVisible = true;
+                        });
+                    }
+                });                
+                return;
+            }
+#endif
+            if(IsFirstTime)
+            {
+                if (Config.IsAutoLogin)
+                {
+                    Password = db.GetConfig<string>("Password");
+                    if (!string.IsNullOrEmpty(Password))
+                        OnButtonLogin(null, null);
+                }
+                IsFirstTime = false;
+            }
             if (CurrentTypeDoc != null)
             {
                 OCTypeDoc?.Clear();
@@ -234,23 +279,21 @@ namespace BRB6
 
                 IsVisibleBack = true;
                 ExitLabel.IsVisible = false;
-            }
-            if (IsVisScan)
-            {
-                BarcodeScaner = Helper.GetCameraView();
-                BarcodeScaner.OnDetectionFinished += CameraView_OnDetectionFinished;
-                GridZxing.Children.Add(BarcodeScaner);
-            }
+            }           
 
-#if ANDROID
-            if (Config.NativeBase != null && await Config.NativeBase.CheckNewVerAsync())
-            {
-                var res = await DisplayAlert("Оновлення доступне", "Доступна нова версія. Бажаєте встановити?", "Yes", "No");
-                MyProgress.IsVisible = true;
-                if (res)
-                    _ = Task.Run(async () => Config.NativeBase.InstallAsync(Progress));
-            }
-#endif
+//#if ANDROID
+//            if (Config.NativeBase != null && await Config.NativeBase.CheckNewVerAsync())
+//            {
+//                var res = await DisplayAlert("Оновлення доступне", "Доступна нова версія. Бажаєте встановити?", "Yes", "No");
+//                MyProgress.IsVisible = true;
+//                if (res)
+//                    _ = Task.Run(async () => Config.NativeBase.InstallAsync(Progress));
+//            }
+//#endif
+        }
+        private void OnExitAppClicked(object sender, EventArgs e)
+        {
+            Application.Current?.Quit();
         }
         void Progress(double pProgress) => MainThread.BeginInvokeOnMainThread(() => PB = pProgress);
         protected override void OnDisappearing()  
