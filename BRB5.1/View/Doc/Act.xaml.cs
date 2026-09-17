@@ -4,9 +4,6 @@ using System.Collections.ObjectModel;
 using BL;
 using CommunityToolkit.Maui.Alerts;
 using BL.Connector;
-
-
-
 #if ANDROID
 using Android.Views;
 #endif
@@ -74,19 +71,27 @@ public partial class Act
         if (pDocWare == null || !pDocWare.Any())
             return;
 
-        StackLayoutDocs.Children.Clear(); 
+        StackLayoutDocs.Children.Clear();
         StackLayoutDocs.Spacing = 0;
+
+        int index = 0; // Лічильник для чергування рядків
 
         foreach (var docWare in pDocWare)
         {
+            // Чергування кольорів: парні - білий, непарні - світло-сірий
+            var rowBgColor = (index % 2 == 0)
+                ? Color.FromArgb("#ffffff")
+                : Color.FromArgb("#f2f2f2"); // м'який світло-сірий відтінок
+
+            index++;
+
             // Create the main container StackLayout
             var mainStackLayout = new StackLayout
             {
-                Spacing = 0, 
-                Padding = new Thickness(0), 
+                Spacing = 0,
+                Padding = new Thickness(0),
             };
 
-            // Create the first Grid
             var grid = new Grid
             {
                 RowSpacing = 1,
@@ -104,11 +109,10 @@ public partial class Act
             grid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Star });
             grid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Star });
 
-            // Add Labels to the Grid
             var nameLabel = new Label
             {
                 Text = docWare.NameWares,
-                BackgroundColor = Color.FromArgb("#ffffff"),
+                BackgroundColor = rowBgColor, 
             };
 
             var tapGesture = new TapGestureRecognizer();
@@ -118,13 +122,13 @@ public partial class Act
             };
             nameLabel.GestureRecognizers.Add(tapGesture);
 
-            Grid.SetColumnSpan(nameLabel, 4); // Set column span using Grid.SetColumnSpan
+            Grid.SetColumnSpan(nameLabel, 4);
             grid.Children.Add(nameLabel);
 
             var codeLabel = new Label
             {
                 Text = docWare.ViewCode,
-                BackgroundColor = Color.FromArgb("#ffffff"),
+                BackgroundColor = rowBgColor,
             };
             Grid.SetRow(codeLabel, 1);
             Grid.SetColumn(codeLabel, 0);
@@ -133,7 +137,7 @@ public partial class Act
             var quantityOrderLabel = new Label
             {
                 Text = docWare.Plan.ToString(),
-                BackgroundColor = Color.FromArgb("#ffffff"),
+                BackgroundColor = rowBgColor, 
             };
             Grid.SetRow(quantityOrderLabel, 1);
             Grid.SetColumn(quantityOrderLabel, 1);
@@ -142,7 +146,7 @@ public partial class Act
             var inputQuantityLabel = new Label
             {
                 Text = docWare.Fact.ToString(),
-                BackgroundColor = Color.FromArgb("#ffffff"),
+                BackgroundColor = rowBgColor, 
             };
             Grid.SetRow(inputQuantityLabel, 1);
             Grid.SetColumn(inputQuantityLabel, 2);
@@ -158,11 +162,9 @@ public partial class Act
             grid.Children.Add(quantityReasonLabel);
 
             mainStackLayout.Children.Add(grid);
-
             StackLayoutDocs.Children.Add(mainStackLayout);
         }
     }
-
     private async void F1Create(object sender, TappedEventArgs e)
     {
         var r = await c.SendDocsDataAsync(Doc, db.GetDocWares(Doc, eTypeResult.OnlyInput, eTypeOrder.Scan));
