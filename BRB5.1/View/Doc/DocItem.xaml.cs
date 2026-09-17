@@ -141,10 +141,9 @@ namespace BRB6.View
             if (MyDocWares == null || !MyDocWares.Any())
                 return;
 
-            DocWaresStackLayout.Children.Clear(); // Очищуємо існуючі елементи
-            DocWaresStackLayout.Spacing = 0;      // Прибираємо відступи між рядками
+            DocWaresStackLayout.Children.Clear(); 
+            DocWaresStackLayout.Spacing = 0;      
 
-            // Додаємо заголовок на початок списку
             DocWaresStackLayout.Children.Add(CreateHeaderGrid());
 
             List<DocWaresEx> docWares = new();

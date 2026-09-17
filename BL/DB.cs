@@ -488,7 +488,13 @@ alter TABLE DocWaresExpiration add DTInsert         TIMESTAMP;";
             string Color = " ,0 as Ord";
             if (DS.TypeColor == 1)
             {
-                Color = ", case when dws.codewares is null then 2 else 0 end as Ord\n";
+                //Color = ", case when dws.codewares is null then 2 else 0 end as Ord\n";
+
+                Color = @", case 
+                            when (coalesce(dws.quantity, 0) - coalesce(dw1.quantityinput, 0)) > 0.010 then 3 
+                            when (coalesce(dws.quantity, 0) - coalesce(dw1.quantityinput, 0)) < -0.010 then 1 
+                            else 0 
+                        end as Ord ";
             }
             else
             if (DS.TypeColor == 2)

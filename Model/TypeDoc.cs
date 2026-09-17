@@ -45,7 +45,7 @@ namespace BRB5
         /// </summary>
         public bool IsShowUser { get; set; } = true;
         /// <summary>
-        /// -1 - стандартна, 1 - 7-23 Ревізія? 2 -7-23 Лоти.
+        /// 1 - стандартна, 2 - 7-23 Лоти.
         /// </summary>
         public int TypeColor { get; set; } = 1;
         /// <summary>
