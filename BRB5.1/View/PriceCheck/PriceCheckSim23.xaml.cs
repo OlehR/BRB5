@@ -109,13 +109,9 @@ namespace BRB6
             if (pName == "BarCodeInput")
                 BarCodeFocused(null, null);
             else if (pName == "MRQuantityEntry")
-            {
-                // Оскільки вікно стає видимим, ми викликаємо метод Focus 
-                // у нашого діалогу mrDialog
                 MRDialogView.FocusEntry();
-            }
-            //else
-            //    NumberOfReplenishment.Focus();
+            else if (pName == "NumberOfReplenishment") 
+                Dispatcher.Dispatch(() => { NumberOfReplenishment.Focus(); });
         }
 
         public void DisplayAlert(string title, string message, string cancel)
