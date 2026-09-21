@@ -73,10 +73,12 @@ public partial class CreateDoc : ContentPage
         this.BindingContext = this;
 
         // Первинне заповнення
-        //foreach (var w in ListWarehouse)
-        //    FilteredWarehousePicker.Add(w);
-
-       InitData();
+        if (Config.LocalCompany != eCompany.Sim23)
+        {
+            foreach (var w in ListWarehouse)
+                FilteredWarehousePicker.Add(w);
+        }
+        InitData();
     }
 
     void Select(Warehouse clickedBtn)

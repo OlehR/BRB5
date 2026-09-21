@@ -12,13 +12,14 @@
                 <template:QuestionHeadTemplate />
             </DataTemplate>
 
-            <DataTemplate x:Key="ItemTemplate" x:DataType="Model:RaitingDocItem">
-                <template:QuestionItemTemplate />
+            <DataTemplate x:Key="ChecklistTemplate" x:DataType="Model:RaitingDocItem">
+                <template:QuestionChecklistTemplate />
             </DataTemplate>
 
             <brb5:QuestionTemplateSelector x:Key="QuestionTemplateSelector"
-                                        HeadTemplate="{StaticResource HeadTemplate}"
-                                        ItemTemplate="{StaticResource ItemTemplate}" />
+                            HeadTemplate="{StaticResource HeadTemplate}"
+                            ItemTemplate="{StaticResource ItemTemplate}"
+                            ChecklistTemplate="{StaticResource ChecklistTemplate}" />
         </ResourceDictionary>
     </ContentPage.Resources>
 
