@@ -937,7 +937,7 @@ and bc.BarCode=?
         public IEnumerable<RaitingDocItem> GetRaitingDocItem(DocId pDoc)
         {
             string sql = $@"select d.TypeDoc,d.NumberDoc,Rs.Id, Rs.Parent as Parent, Rs.Text, Rs.Explanation, Rs.RatingTemplate, R.Rating, R.QuantityPhoto, R.Note,
-                            Rs.OrderRS, Rs.DTDelete, Rs.ValueRating as ValueRating
+                            Rs.OrderRS, Rs.DTDelete, Rs.ValueRating as ValueRating,R.DTInsert
         from Doc d 
          join RaitingTemplateItem as Rs on (d.IdTemplate=RS.IdTemplate ) 
          left join RaitingDocItem R on (d.TypeDoc=R.TypeDoc and d.NumberDoc=R.NumberDoc and Rs.Id=R.id)
@@ -952,9 +952,8 @@ and bc.BarCode=?
             //string Sql = @"replace into RaitingDocItem ( TypeDoc, NumberDoc, Id, Rating, QuantityPhoto, Note) values (?, ?, ?, ?, ?, ?)";
             //var res = db.Execute(Sql, pR.TypeDoc, pR.NumberDoc, pR.Id, pR.Rating, pR.QuantityPhoto, pR.Note) >= 0;
             string Sql = @"replace into RaitingDocItem (TypeDoc, NumberDoc, Id, Rating, QuantityPhoto, Note, DTInsert) values (?, ?, ?, ?, ?, ?, ?)";
-            string dt = pR.IsTimed
-                ? (pR.Rating == 1 && pR.DTInsert != default ? pR.DTInsert.ToString("yyyy-MM-dd HH:mm:ss") : null)
-                : DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm:ss");  
+            DateTime dt = pR.IsTimed
+                ? (pR.Rating == 1 ? pR.DTInsert : default)  : DateTime.Now;  
             var res = db.Execute(Sql, pR.TypeDoc, pR.NumberDoc, pR.Id, pR.Rating, pR.QuantityPhoto, pR.Note, dt) >= 0;
             UpdateDocDTStartDTEnd(pR);
             return res;
