@@ -911,7 +911,6 @@ namespace BL.Connector
             return null;
         }
 
-        public override async Task<Result> SaveEditDoc(EditDoc pDoc) => new Result();
 
         public override async Task<Result<decimal>> GetRest(TypeDoc pTypeDoc, int pCodeWarehouse, long pCodeWares) 
         {
@@ -922,6 +921,35 @@ namespace BL.Connector
                 return new Result<decimal>(-1, "Локальний конектор не визначено");
             }   
             return new(9999m); //Треба доробити на сервері.
+        }
+
+        public override async Task<Result> SaveEditDoc(EditDoc pDoc)
+        {
+            try
+            {
+                string Data = pDoc.ToJson();
+                var TD = Config.GetDocSetting(pDoc.TypeDoc);
+                int CodeApi = (TD?.CodeApiSave > 0 ? TD?.CodeApiSave : TD?.CodeApi) ?? 0;
+
+                if (CodeApi == 1)
+                {
+                    if (СonnectorLocal != null)
+                    {
+                        var Res = await СonnectorLocal.SaveEditDoc(pDoc);
+                        return Res;
+                    }
+                    else
+                        return new(-1, "Локальний конектор не визначено");
+                }
+                return new();
+               
+            }
+            catch (Exception e)
+            {
+                FileLogger.WriteLogMessage(this, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+                return new(e);
+            }
+
         }
         #endregion
     }

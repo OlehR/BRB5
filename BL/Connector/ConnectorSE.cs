@@ -912,7 +912,11 @@ namespace BL.Connector
 
         public override async Task<Result> SaveEditDoc(EditDoc pDoc)
         {
-            var res = await GetDataHTTP.HTTPRequestAsync(1, "newmovedoc", pDoc.ToJson(), "application/json", Config.Login, Config.Password);
+            if (pDoc.TypeDoc != 5) return new();
+
+            var d = new { pDoc.TypeDoc, pDoc.NumberDoc, pDoc.Date };
+
+            var res = await GetDataHTTP.HTTPRequestAsync(1, "newmovedoc", d.ToJson(), "application/json", Config.Login, Config.Password);
 
             if (res.HttpState != eStateHTTP.HTTP_OK)
             {
