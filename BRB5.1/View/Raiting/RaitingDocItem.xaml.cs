@@ -203,6 +203,10 @@ namespace BRB6
         void GetData(IEnumerable<BRB5.Model.RaitingDocItem> pDocItem)
         {
             All = pDocItem.ToList();
+#if DEBUG
+            foreach (var q in All.Where(x => x.IsItem))
+                q.Period = "08:00-10:00";   // тільки для перегляду шаблону
+#endif
             CountAll = All.Count(el => !el.IsHead);
             IsVisibleBarcodeScanning = All.Any(el => el.Id == -1);
             OnPropertyChanged(nameof(IsVisibleBarcodeScanning));
@@ -214,6 +218,7 @@ namespace BRB6
             });
             IsLoad = true;
         }
+        public void OnChecklistChanged(BRB5.Model.RaitingDocItem item) => RefreshHead();
 
         private void OnButtonClicked(object sender, System.EventArgs e)
         {

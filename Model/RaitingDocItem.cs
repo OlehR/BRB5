@@ -71,6 +71,8 @@ namespace BRB5.Model
                 OnPropertyChanged("OpacityBad");
                 OnPropertyChanged("OpacityNotKnow");
                 OnPropertyChanged(nameof(SumValueRating));
+                OnPropertyChanged(nameof(IsDone));
+                OnPropertyChanged(nameof(FactTimeText));
                 //OnPropertyChanged(nameof(Rating));
             } } 
         public string Note { get; set; }        
@@ -107,8 +109,21 @@ namespace BRB5.Model
             [JsonIgnore]
         public bool IsEnableBad { get { return (RatingTemplate & 4) == 4; } set { RatingTemplate = value ? RatingTemplate | 4 : RatingTemplate & (8 + 2 + 1); OnPropertyChanged(nameof(OpacityBad)); } }
         [JsonIgnore]
-        public bool IsEnableNotKnow { get { return (RatingTemplate & 8) ==8; } set { RatingTemplate = value ? RatingTemplate | 8: RatingTemplate & ( 4 + 2+ 1); OnPropertyChanged(nameof(OpacityNotKnow)); } }    
+        public bool IsEnableNotKnow { get { return (RatingTemplate & 8) ==8; } set { RatingTemplate = value ? RatingTemplate | 8: RatingTemplate & ( 4 + 2+ 1); OnPropertyChanged(nameof(OpacityNotKnow)); } }
 
+        public string Period { get; set; }            // "08:00-10:00", із шаблону
+
+        DateTime _DTInsert;
+        public DateTime DTInsert { get => _DTInsert; set { _DTInsert = value; OnPropertyChanged(nameof(FactTimeText)); } }
+
+        [JsonIgnore] public bool IsTimed => !string.IsNullOrEmpty(Period);
+        [JsonIgnore]
+        public bool IsDone
+        {
+            get => Rating == 1;
+            set { Rating = value ? 1 : 0; DTInsert = value ? DateTime.Now : default; }
+        }
+        [JsonIgnore] public string FactTimeText => IsDone && DTInsert != default ? DTInsert.ToString("HH:mm") : "--:--";
     }
 
     public class RaitingDocItemSave
@@ -119,10 +134,12 @@ namespace BRB5.Model
             Id = pRDI.Id;
             Rating = pRDI.Rating;
             Note = pRDI.Note;
+            DTInsert = pRDI.DTInsert;
         }
         public int Id { get; set; }
         public int Rating { get; set; }
         public string Note { get; set; }
+        public DateTime DTInsert { get; set; }
 
     }
     /// <summary>

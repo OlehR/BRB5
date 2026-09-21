@@ -949,8 +949,13 @@ and bc.BarCode=?
         public bool ReplaceRaitingDocItem(RaitingDocItem pR)
         {
             FileLogger.WriteLogMessage(this, "ReplaceRaitingDocItem", $"RaitingDocItem=>{pR.ToJSON()}");
-            string Sql = @"replace into RaitingDocItem ( TypeDoc, NumberDoc, Id, Rating, QuantityPhoto, Note) values (?, ?, ?, ?, ?, ?)";
-            var res = db.Execute(Sql, pR.TypeDoc, pR.NumberDoc, pR.Id, pR.Rating, pR.QuantityPhoto, pR.Note) >= 0;
+            //string Sql = @"replace into RaitingDocItem ( TypeDoc, NumberDoc, Id, Rating, QuantityPhoto, Note) values (?, ?, ?, ?, ?, ?)";
+            //var res = db.Execute(Sql, pR.TypeDoc, pR.NumberDoc, pR.Id, pR.Rating, pR.QuantityPhoto, pR.Note) >= 0;
+            string Sql = @"replace into RaitingDocItem (TypeDoc, NumberDoc, Id, Rating, QuantityPhoto, Note, DTInsert) values (?, ?, ?, ?, ?, ?, ?)";
+            string dt = pR.IsTimed
+                ? (pR.Rating == 1 && pR.DTInsert != default ? pR.DTInsert.ToString("yyyy-MM-dd HH:mm:ss") : null)
+                : DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm:ss");  
+            var res = db.Execute(Sql, pR.TypeDoc, pR.NumberDoc, pR.Id, pR.Rating, pR.QuantityPhoto, pR.Note, dt) >= 0;
             UpdateDocDTStartDTEnd(pR);
             return res;
         }
