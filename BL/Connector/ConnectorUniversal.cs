@@ -863,7 +863,7 @@ namespace BL.Connector
  
         public override async Task<Result<IEnumerable<Doc>>> GetRaitingDocsAsync()
         {
-            HttpResult result = await GetDataHTTP.HTTPRequestAsync(0, "DCT/Rating/GetRatingDocs", null, "application/json", "brb", "brb");//
+            HttpResult result = await GetDataHTTP.HTTPRequestAsync(0, "DCT/Rating/GetRatingDoc", null, "application/json", "brb", "brb");//
 
             if (result.HttpState == eStateHTTP.HTTP_OK)
             {
