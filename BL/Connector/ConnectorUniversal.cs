@@ -838,7 +838,7 @@ namespace BL.Connector
         {
             try
             {
-                var result = await GetDataHTTP.HTTPRequestAsync(0, "DCT/Rating/GetRatingTemplate", $"{Config.CodeUser}", "application/json", null, null, 120);
+                var result = await GetDataHTTP.HTTPRequestAsync(0, "DCT/Rating/GetRatingTemplate", $"{Config.CodeUser}", "application/json", "brb", "brb", 120);
                 if (result.HttpState == eStateHTTP.HTTP_OK)
                 {
                     var res = JsonConvert.DeserializeObject<Result<IEnumerable<RaitingTemplate>>>(result.Result);
