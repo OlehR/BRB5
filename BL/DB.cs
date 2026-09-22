@@ -237,6 +237,7 @@ CREATE TABLE RaitingTemplateItem(
     Text TEXT,
     Explanation TEXT,
     RatingTemplate INTEGER         NOT NULL DEFAULT (0),
+    ExtInfo           TEXT,
     OrderRS INTEGER,
     ValueRating         NUMBER   NOT NULL DEFAULT (0),
     DTInsert    TIMESTAMP  DEFAULT (current_timestamp),
@@ -289,7 +290,7 @@ CREATE TABLE SKU (
     CodeUnit           INTEGER  NOT NULL);
 CREATE UNIQUE INDEX SKUId ON SKU (CodeSKU);
 ";
-        readonly int Ver = 24;
+        readonly int Ver = 26;
         
         string SqlTo11 = @"CREATE TABLE SKU (
     CodeSKU          INTEGER  NOT NULL,
@@ -320,6 +321,8 @@ alter TABLE DocWaresExpiration add DTInsert         TIMESTAMP;";
     alter TABLE LogPrice add ExpirationDate DATE;";
 
         string SqlTo24 = @"alter TABLE DocWaresSample add ExtInfo TEXT;";
+
+        string SqlTo26 = @"alter TABLE RaitingTemplateItem add ExtInfo TEXT;";
 
         public static string PathNameDB { get { return Path.Combine(BaseDir, NameDB); } }
 
@@ -360,6 +363,8 @@ alter TABLE DocWaresExpiration add DTInsert         TIMESTAMP;";
                     SetSQL(SqlTo23, 23);
                 if (GetVersion < 24)
                     SetSQL(SqlTo24, 24);
+                if (GetVersion < 26)
+                    SetSQL(SqlTo26, 26);
 
             }
         }
@@ -942,7 +947,7 @@ and bc.BarCode=?
         public IEnumerable<RaitingDocItem> GetRaitingDocItem(DocId pDoc)
         {
             string sql = $@"select d.TypeDoc,d.NumberDoc,Rs.Id, Rs.Parent as Parent, Rs.Text, Rs.Explanation, Rs.RatingTemplate, R.Rating, R.QuantityPhoto, R.Note,
-                            Rs.OrderRS, Rs.DTDelete, Rs.ValueRating as ValueRating,R.DTInsert,R.ExtInfo
+                            Rs.OrderRS, Rs.DTDelete, Rs.ValueRating as ValueRating,R.DTInsert,Rs.ExtInfo
         from Doc d 
          join RaitingTemplateItem as Rs on (d.IdTemplate=RS.IdTemplate ) 
          left join RaitingDocItem R on (d.TypeDoc=R.TypeDoc and d.NumberDoc=R.NumberDoc and Rs.Id=R.id)
@@ -956,10 +961,10 @@ and bc.BarCode=?
             FileLogger.WriteLogMessage(this, "ReplaceRaitingDocItem", $"RaitingDocItem=>{pR.ToJSON()}");
             //string Sql = @"replace into RaitingDocItem ( TypeDoc, NumberDoc, Id, Rating, QuantityPhoto, Note) values (?, ?, ?, ?, ?, ?)";
             //var res = db.Execute(Sql, pR.TypeDoc, pR.NumberDoc, pR.Id, pR.Rating, pR.QuantityPhoto, pR.Note) >= 0;
-            string Sql = @"replace into RaitingDocItem (TypeDoc, NumberDoc, Id, Rating, QuantityPhoto, Note, DTInsert,ExtInfo) values (?, ?, ?, ?, ?, ?, ?,?)";
+            string Sql = @"replace into RaitingDocItem (TypeDoc, NumberDoc, Id, Rating, QuantityPhoto, Note, DTInsert) values (?, ?, ?, ?, ?, ?, ?)";
             DateTime dt = pR.IsTimed
                 ? (pR.Rating == 1 ? pR.DTInsert : default)  : DateTime.Now;  
-            var res = db.Execute(Sql, pR.TypeDoc, pR.NumberDoc, pR.Id, pR.Rating, pR.QuantityPhoto, pR.Note, dt,pR.ExtInfo) >= 0;
+            var res = db.Execute(Sql, pR.TypeDoc, pR.NumberDoc, pR.Id, pR.Rating, pR.QuantityPhoto, pR.Note, dt) >= 0;
             UpdateDocDTStartDTEnd(pR);
             return res;
         }

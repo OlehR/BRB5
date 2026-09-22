@@ -916,7 +916,7 @@ namespace BL.Connector
 
             var d = new { pDoc.TypeDoc, pDoc.NumberDoc, pDoc.Date };
 
-            var res = await GetDataHTTP.HTTPRequestAsync(1, "newmovedoc", d.ToJson(), "application/json", Config.Login, Config.Password);
+            var res = await GetDataHTTP.HTTPRequestAsync(1, "newmovedoc", d.ToJSON(), "application/json", Config.Login, Config.Password);
 
             if (res.HttpState != eStateHTTP.HTTP_OK)
             {

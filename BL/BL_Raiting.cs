@@ -82,24 +82,31 @@ namespace BL
             Debug.WriteLine("LoadDataRDI Task Спроба ");
             Task.Run(() =>
             {
-               
-                var Q = db.GetRaitingDocItem(pDoc);
-                var R = new List<RaitingDocItem>();
-                Debug.WriteLine($"LoadDataRDI Task Ура зайшло=> {Q.Count()}");
-
-                foreach (var e in Q.Where(d => d.IsHead).OrderBy(d => d.OrderRS))
+                try
                 {
-                    R.Add(e);
-                    foreach (var el in Q.Where(d => d.Parent == e.Id).OrderBy(d => d.OrderRS))
+
+                    var Q = db.GetRaitingDocItem(pDoc);
+                    var R = new List<RaitingDocItem>();
+                    Debug.WriteLine($"LoadDataRDI Task Ура зайшло=> {Q.Count()}");
+
+                    foreach (var e in Q.Where(d => d.IsHead).OrderBy(d => d.OrderRS))
                     {
-                        //if (e.Rating == 4)  el.IsVisible = false;
-                        el.ParrentRDI = e;
-                        R.Add(el);
+                        R.Add(e);
+                        foreach (var el in Q.Where(d => d.Parent == e.Id).OrderBy(d => d.OrderRS))
+                        {
+                            //if (e.Rating == 4)  el.IsVisible = false;
+                            el.ParrentRDI = e;
+                            R.Add(el);
+                        }
                     }
+                    var Tottal = Q.Where(d => d.Id == -1).FirstOrDefault();
+                    if (Tottal != null) R.Add(Tottal);
+                    pA?.Invoke(R);
                 }
-                var Tottal = Q.Where(d => d.Id == -1).FirstOrDefault();
-                if (Tottal != null) R.Add(Tottal);
-                pA?.Invoke(R);
+                catch(Exception e)
+                {
+                    var s = e.Message;
+                }
             });
 
         }
