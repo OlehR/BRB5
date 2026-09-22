@@ -111,12 +111,12 @@ namespace BRB5.Model
         [JsonIgnore]
         public bool IsEnableNotKnow { get { return (RatingTemplate & 8) ==8; } set { RatingTemplate = value ? RatingTemplate | 8: RatingTemplate & ( 4 + 2+ 1); OnPropertyChanged(nameof(OpacityNotKnow)); } }
 
-        public string Period { get; set; }            // "08:00-10:00", із шаблону
+        public string ExtInfo { get; set; }            // "08:00-10:00", із шаблону
 
         DateTime _DTInsert;
         public DateTime DTInsert { get => _DTInsert; set { _DTInsert = value; OnPropertyChanged(nameof(FactTimeText)); } }
 
-        [JsonIgnore] public bool IsTimed => !string.IsNullOrEmpty(Period);
+        [JsonIgnore] public bool IsTimed => !string.IsNullOrEmpty(ExtInfo);
         [JsonIgnore]
         public bool IsDone
         {

@@ -39,7 +39,7 @@
                     <VerticalStackLayout Grid.Column="1"
                                          Spacing="2"
                                          VerticalOptions="Center">
-                        <Label Text="{Binding Period}"
+                        <Label Text="{Binding ExtInfo}"
                                FontSize="20"
                                HorizontalOptions="Center" />
                         <BoxView HeightRequest="1"
