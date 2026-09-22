@@ -297,11 +297,11 @@ namespace BRB6.View
 
                 db.ExecSQL("PRAGMA journal_mode = OFF;");
                 await Task.Delay(200);
-                await c.UploadFile(DB.PathNameDB, $"brb6_{DateTime.Now.ToString("yyyyMMdd_HHmmss")}.db");
+                await c.UploadFile(DB.PathNameDB, $"brb6_{DateTime.Now:yyyyMMdd_HHmmss}.db");
                 await Task.Delay(100);
                 db.ExecSQL("PRAGMA journal_mode = WAL;");
                 if (File.Exists(FileLogger.GetFileName))
-                    await c.UploadFile(FileLogger.GetFileName, $"Log_{DateTime.Now.ToString("yyyyMMdd_HHmmss")}.log");
+                    await c.UploadFile(FileLogger.GetFileName, $"Log_{DateTime.Now:yyyyMMdd_HHmmss}.log");
                 ToastInfo("Дані успішно відправлено на сервер");
             }
             catch (Exception ex)
