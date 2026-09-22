@@ -294,7 +294,12 @@ namespace BRB6.View
                 if (File.Exists(FileDestination)) File.Delete(FileDestination);
                 byte[] buffer = File.ReadAllBytes(DB.PathNameDB);
                 File.WriteAllBytes(FileDestination, buffer);*/
+
+                db.ExecSQL("PRAGMA journal_mode = OFF;");
+                await Task.Delay(200);
                 await c.UploadFile(DB.PathNameDB, $"brb6_{DateTime.Now.ToString("yyyyMMdd_HHmmss")}.db");
+                await Task.Delay(100);
+                db.ExecSQL("PRAGMA journal_mode = WAL;");
                 if (File.Exists(FileLogger.GetFileName))
                     await c.UploadFile(FileLogger.GetFileName, $"Log_{DateTime.Now.ToString("yyyyMMdd_HHmmss")}.log");
                 ToastInfo("Дані успішно відправлено на сервер");
