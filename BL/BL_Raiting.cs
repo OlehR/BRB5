@@ -1,8 +1,13 @@
 ﻿using BL.Connector;
 using BRB5.Model;
+using CsvHelper;
+using CsvHelper.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
+using System.Formats.Asn1;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -11,7 +16,6 @@ using System.Threading.Tasks;
 using System.Timers;
 using UtilNetwork;
 using Utils;
-using System.Diagnostics;
 
 namespace BL
 {
@@ -166,32 +170,47 @@ namespace BL
 
         public void ImportExcelRT(RaitingTemplate vRaitingTemplate, string resultFullPath)
         {
-
             var B = File.ReadAllBytes(resultFullPath);
-
             var cp1251 = Encoding.GetEncoding(1251);
             var textBytes = Encoding.Convert(cp1251, Encoding.UTF8, B);
             var text = Encoding.UTF8.GetString(textBytes);
 
-            var t = text.Split(new string[] { "\r\n" }, StringSplitOptions.None);
+            var config = new CsvConfiguration(CultureInfo.InvariantCulture)
+            {
+                Delimiter = ";",
+                HasHeaderRecord = false,
+                MissingFieldFound = null,
+                BadDataFound = null
+            };
+
             List<RaitingTemplateItem> RS = new List<RaitingTemplateItem>();
 
-            foreach (var v in t)
+            using var reader = new StringReader(text);
+            using var csv = new CsvReader(reader, config);
+
+            while (csv.Read())
             {
-                var p = v.Split(';');
-                if (p.Count() < 4)
-                    break;
+                var f0 = csv.GetField(0);
+                var f1 = csv.GetField(1);
+                if (string.IsNullOrWhiteSpace(f0) && string.IsNullOrWhiteSpace(f1))
+                    continue; // порожній рядок у кінці файлу
+
                 var el = new RaitingTemplateItem();
                 int temp = 0;
 
-                Int32.TryParse(p[0], out temp);
+                Int32.TryParse(f0, out temp);
                 el.Id = temp;
 
-                Int32.TryParse(p[1], out temp);
+                Int32.TryParse(f1, out temp);
                 el.Parent = temp;
 
-                el.Text = p[3];
-                if (!String.IsNullOrEmpty(p[2])) el.ValueRating = Convert.ToDecimal(p[2]);
+                el.Text = csv.GetField(3);
+
+                var vr = csv.GetField(2);
+                if (!string.IsNullOrEmpty(vr)) el.ValueRating = Convert.ToDecimal(vr);
+
+                el.ExtInfo = csv.GetField(4)?.Trim();
+                if (string.IsNullOrEmpty(el.ExtInfo)) el.ExtInfo = null;
 
                 el.IdTemplate = vRaitingTemplate.IdTemplate;
 

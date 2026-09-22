@@ -37,6 +37,7 @@ namespace BRB6.View
                 }
                 else
                 {
+                    //db.ReplaceDoc(temp.Data);
                     var Docs = db.GetDoc(new TypeDoc { CodeDoc = 11 });
                     RD = new ObservableCollection<DocVM>(Docs);
                 }

@@ -34,6 +34,7 @@ namespace BRB5.Model
         public DateTime DTDelete { get; set; }
 
         public bool IsItem { get { return !IsHead; } }
+        public string ExtInfo { get; set; }
         [Ignore]
         public bool IsTemplate { get; set; } = false;
 
