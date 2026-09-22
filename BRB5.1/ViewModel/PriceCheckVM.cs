@@ -442,9 +442,9 @@ namespace BRB6.ViewModel
                 Config.OnProgress?.Invoke(0.9d);
                 if (DeviceInfo.Platform != DevicePlatform.iOS)
                 {
-                    if (Config.LocalCompany == eCompany.Sim23)
-                        ForMVVM.Focused("NumberOfReplenishment");
-                    else
+                    //if (Config.LocalCompany == eCompany.Sim23)
+                    //    ForMVVM.Focused("NumberOfReplenishment");
+                    //else
                         ForMVVM.Focused("BarCodeInput");
                 }
             }
