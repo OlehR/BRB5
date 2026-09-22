@@ -788,7 +788,7 @@ namespace BL.Connector
         #region Raiting
         public override async Task<Result<int>> GetIdRaitingTemplate()
         {
-            HttpResult result = await GetDataHTTP.HTTPRequestAsync(0, "DCT/Raitting/GetIdRaitingTemplate", null, "application/json", "brb", "brb");//
+            HttpResult result = await GetDataHTTP.HTTPRequestAsync(0, "DCT/Rating/GetIdRatingTemplate", null, "application/json", "brb", "brb");//
 
             if (result.HttpState == eStateHTTP.HTTP_OK)
             {
@@ -800,7 +800,7 @@ namespace BL.Connector
 
         public override async Task<Result> GetNumberDocRaiting()
         {
-            HttpResult result = await GetDataHTTP.HTTPRequestAsync(0, "DCT/Raitting/GetNumberDocRaiting", null, "application/json", "brb", "brb");//
+            HttpResult result = await GetDataHTTP.HTTPRequestAsync(0, "DCT/Rating/GetNumberDocRating", null, "application/json", "brb", "brb");//
 
             if (result.HttpState == eStateHTTP.HTTP_OK)
             {
@@ -812,7 +812,7 @@ namespace BL.Connector
 
         public override async Task<Result> SaveTemplate(RaitingTemplate pRT)
         {
-            HttpResult result = await GetDataHTTP.HTTPRequestAsync(0, "DCT/Raitting/SaveTemplate", pRT.ToJSON("yyyy-MM-ddTHH:mm:ss"), "application/json", "brb", "brb");//
+            HttpResult result = await GetDataHTTP.HTTPRequestAsync(0, "DCT/Rating/SaveTemplate", pRT.ToJSON("yyyy-MM-ddTHH:mm:ss"), "application/json", "brb", "brb");//
 
             if (result.HttpState == eStateHTTP.HTTP_OK)
             {
@@ -824,7 +824,7 @@ namespace BL.Connector
 
         public override async Task<Result> SaveDocRaiting(DocVM pDoc)
         {
-            HttpResult result = await GetDataHTTP.HTTPRequestAsync(0, "DCT/Raitting/SaveDocRaiting", pDoc.ToJSON("yyyy-MM-ddTHH:mm:ss"), "application/json", "brb", "brb");//
+            HttpResult result = await GetDataHTTP.HTTPRequestAsync(0, "DCT/Rating/SaveDocRating", pDoc.ToJSON("yyyy-MM-ddTHH:mm:ss"), "application/json", "brb", "brb");//
 
             if (result.HttpState == eStateHTTP.HTTP_OK)
             {
@@ -863,7 +863,7 @@ namespace BL.Connector
  
         public override async Task<Result<IEnumerable<Doc>>> GetRaitingDocsAsync()
         {
-            HttpResult result = await GetDataHTTP.HTTPRequestAsync(0, "DCT/Raitting/GetRaitingDocs", null, "application/json", "brb", "brb");//
+            HttpResult result = await GetDataHTTP.HTTPRequestAsync(0, "DCT/Rating/GetRatingDocs", null, "application/json", "brb", "brb");//
 
             if (result.HttpState == eStateHTTP.HTTP_OK)
             {
