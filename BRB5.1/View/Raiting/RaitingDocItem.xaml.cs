@@ -205,7 +205,7 @@ namespace BRB6
             All = pDocItem.ToList();
 #if DEBUG
             foreach (var q in All.Where(x => x.IsItem))
-                q.Period = "08:00-10:00";   // тільки для перегляду шаблону
+                q.ExtInfo = "08:00-10:00";   // тільки для перегляду шаблону
 #endif
             CountAll = All.Count(el => !el.IsHead);
             IsVisibleBarcodeScanning = All.Any(el => el.Id == -1);

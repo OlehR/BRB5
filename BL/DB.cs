@@ -387,16 +387,21 @@ alter TABLE DocWaresExpiration add DTInsert         TIMESTAMP;";
             }
         }
 
+        public void CloseDB()
+        { 
+        db?.Close();
+        Task.Delay(100);
+            db = null;
+        }
+
         public bool DeleteDB()
         {
             try
             {
                 if (File.Exists(PathNameDB))
                 {
-                    db?.Close();
-                    Task.Delay(100);
-                    File.Delete(PathNameDB);
-                    db = null;
+                    CloseDB();
+                    File.Delete(PathNameDB);                    
                     return true;
                 }
             }
@@ -407,7 +412,7 @@ alter TABLE DocWaresExpiration add DTInsert         TIMESTAMP;";
             return false;
         }
 
-        public bool OpenDB()
+        public bool OpenDB(string pJournalMode = "WAL")
         {
             try
             {
@@ -415,7 +420,7 @@ alter TABLE DocWaresExpiration add DTInsert         TIMESTAMP;";
                 {
                     db = new SQLiteConnection(PathNameDB, false);
                     db.Execute("PRAGMA synchronous = EXTRA;");
-                    db.Execute("PRAGMA journal_mode = WAL;");
+                    db.Execute($"PRAGMA journal_mode = {pJournalMode};");
                     db.Execute("PRAGMA wal_autocheckpoint = 5;");
                 }
                 return true;
