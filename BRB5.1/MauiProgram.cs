@@ -22,7 +22,7 @@ namespace BRB6
                     fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
                     fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
                 });
-
+            System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);
             FormHandler.RemoveBorders();
 #if DEBUG
             builder.Logging.AddDebug();
