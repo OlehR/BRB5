@@ -12,7 +12,8 @@ namespace BRB6
         {
             var q = item as BRB5.Model.RaitingDocItem;
             if (q?.IsHead == true) return HeadTemplate;
-            return q?.IsTimed == true ? ChecklistTemplate : ItemTemplate;
+            return q?.IsTimed == true ? ChecklistTemplate : 
+                ItemTemplate;
         }
     }
     public interface IHeadTapHandler

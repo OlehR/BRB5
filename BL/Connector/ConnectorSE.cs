@@ -512,7 +512,6 @@ namespace BL.Connector
 
         public override async Task<Result<IEnumerable<RaitingTemplate>>> GetRaitingTemplateAsync() { return null; }
 
-
         class ResultCreateDoc
         {
 
@@ -914,7 +913,7 @@ namespace BL.Connector
         {
             if (pDoc.TypeDoc != 5) return new();
 
-            var d = new { pDoc.TypeDoc, pDoc.NumberDoc, pDoc.Date };
+            var d = new { pDoc.TypeDoc, pDoc.NumberDoc, pDoc.Date, pDoc.CodeReason};
 
             var res = await GetDataHTTP.HTTPRequestAsync(1, "newmovedoc", d.ToJSON(), "application/json", Config.Login, Config.Password);
 

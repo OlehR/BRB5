@@ -290,5 +290,6 @@ namespace BRB5.Model
     {
         public EditDoc(DocId pDId) : base(pDId) {}
         public DateTime Date { get; set; }
+        public int CodeReason { get; set; } // Код причини
     }
 }

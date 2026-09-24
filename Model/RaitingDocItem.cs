@@ -16,12 +16,12 @@ namespace BRB5.Model
         public RaitingDocItem ParrentRDI { get; set; }
         public decimal ValueRating { get; set; }
 
-        decimal _SumValueRating=0;
+        decimal _SumValueRating = 0;
         public decimal SumValueRating {
             get {
                 decimal res;
-                if (Parent == 0 || Id==-1)
-                   return  _SumValueRating;
+                if (Parent == 0 || Id == -1)
+                    return _SumValueRating;
                 else
                 {
                     switch (Rating)
@@ -36,11 +36,11 @@ namespace BRB5.Model
                         default:
                             res = 0;
                             break;
-                    }                    
+                    }
                 }
                 return res;
-            } 
-            set { _SumValueRating= value; } 
+            }
+            set { _SumValueRating = value; }
         }
         // заголовок групи
         [JsonIgnore]
@@ -62,7 +62,7 @@ namespace BRB5.Model
 
 
         int _Rating;
-        public int Rating { get { return _Rating; } set 
+        public int Rating { get { return _Rating; } set
             {
                 _Rating = value;
                 OnPropertyChanged("Rating");
@@ -74,16 +74,16 @@ namespace BRB5.Model
                 OnPropertyChanged(nameof(IsDone));
                 OnPropertyChanged(nameof(FactTimeText));
                 //OnPropertyChanged(nameof(Rating));
-            } } 
-        public string Note { get; set; }        
+            } }
+        public string Note { get; set; }
         public DateTime DTDelete { get; set; }
         int _QuantityPhoto;
-       
+
         public int QuantityPhoto { get { return _QuantityPhoto; } set { _QuantityPhoto = value; OnPropertyChanged("QuantityPhoto"); } }
 
         [JsonIgnore]
         public bool IsVisPSU { get { return Config.Company != eCompany.Sim23; } }
-        public bool IsVisTotal { get { return Id == -1 ; } }
+        public bool IsVisTotal { get { return Id == -1; } }
 
         bool _IsVisible = false;
         [JsonIgnore]
@@ -91,7 +91,7 @@ namespace BRB5.Model
         [JsonIgnore]
         public double HeightRequest { get { return _IsVisible ? -1d : 0d; } }
         [JsonIgnore]
-        public bool IsDelete { get { return DTDelete != default; } set {  OnPropertyChanged(nameof(OpacityDelete)); } }
+        public bool IsDelete { get { return DTDelete != default; } set { OnPropertyChanged(nameof(OpacityDelete)); } }
         public double OpacityDelete { get { return IsDelete ? 0.3d : 1d; } }
         [JsonIgnore]
         public double OpacityOk { get { return Rating == 1 ? 1d : 0.4d; } }
@@ -106,17 +106,19 @@ namespace BRB5.Model
         public bool IsEnableOk { get { return (RatingTemplate & 1) == 1; } set { RatingTemplate = value ? RatingTemplate | 1 : RatingTemplate & (8 + 4 + 2); OnPropertyChanged(nameof(OpacityOk)); } }
         [JsonIgnore]
         public bool IsEnableSoSo { get { return (RatingTemplate & 2) == 2; } set { RatingTemplate = value ? RatingTemplate | 2 : RatingTemplate & (8 + 4 + 1); OnPropertyChanged(nameof(OpacitySoSo)); } }
-            [JsonIgnore]
+        [JsonIgnore]
         public bool IsEnableBad { get { return (RatingTemplate & 4) == 4; } set { RatingTemplate = value ? RatingTemplate | 4 : RatingTemplate & (8 + 2 + 1); OnPropertyChanged(nameof(OpacityBad)); } }
         [JsonIgnore]
-        public bool IsEnableNotKnow { get { return (RatingTemplate & 8) ==8; } set { RatingTemplate = value ? RatingTemplate | 8: RatingTemplate & ( 4 + 2+ 1); OnPropertyChanged(nameof(OpacityNotKnow)); } }
+        public bool IsEnableNotKnow { get { return (RatingTemplate & 8) == 8; } set { RatingTemplate = value ? RatingTemplate | 8 : RatingTemplate & (4 + 2 + 1); OnPropertyChanged(nameof(OpacityNotKnow)); } }
 
-        public string ExtInfo { get; set; }            // "08:00-10:00", із шаблону
+        //string _ExtInfo = "";
+        public string ExtInfo { get; set; }// { get{return "ЧЧ"; } set{_ExtInfo=value;} }            // "08:00-10:00", із шаблону
 
         DateTime _DTInsert;
         public DateTime DTInsert { get => _DTInsert; set { _DTInsert = value; OnPropertyChanged(nameof(FactTimeText)); } }
 
-        [JsonIgnore] public bool IsTimed => !string.IsNullOrEmpty(ExtInfo);
+        [JsonIgnore] 
+        public bool IsTimed => !string.IsNullOrEmpty(ExtInfo);
         [JsonIgnore]
         public bool IsDone
         {

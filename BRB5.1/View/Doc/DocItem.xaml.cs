@@ -134,7 +134,7 @@ namespace BRB6.View
                MainActivity.Key -= OnPageKeyDown;            
 #endif
             if (MyDocWares.Any(x => x.InputQuantity>0 ))
-                Task.Run(async () => await c.SaveEditDoc(new(Doc) {Date=DateTime.Now }));  
+                Task.Run(async () => await c.SaveEditDoc(new(Doc) {Date=DateTime.Now,CodeReason = Doc.CodeReason }));  
         }
         private void PopulateDocWaresStackLayout()
         {

@@ -131,7 +131,7 @@
 
                 <Grid VerticalOptions="EndAndExpand"  ColumnDefinitions="*,*">
                 <Picker ItemsSource="{Binding ListPrintBlockItems}" ItemDisplayBinding="{Binding stringPrintBlockItem}"
-                        SelectedIndex="{Binding SelectedPrintBlockItems}" SelectedItem="{Binding SelectedPrintItem, Mode=TwoWay}" />
+                         SelectedItem="{Binding SelectedPrintItem}" />
                 <Button Text="f1-Друк" IsEnabled="{Binding IsEnabledPrint}" Command="{Binding PrintBlockCommand}" Grid.Column="1"/>        
             </Grid>
 

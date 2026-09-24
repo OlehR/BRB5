@@ -59,9 +59,13 @@ namespace BRB6.ViewModel
         public ICommand DoubleScanReactCommand { get; }
         public ICommand PrintOneCommand { get; }
         public ICommand DeletePromoItemCommand { get; }
-        public List<PrintBlockItems> ListPrintBlockItems { get { return db.GetPrintBlockItemsCount().ToList(); } }
 
-        public int SelectedPrintBlockItems { get { return ListPrintBlockItems.Count > 0 ? ListPrintBlockItems.Last().PackageNumber : -1; } }
+
+        public ObservableCollection<PrintBlockItems> ListPrintBlockItems { get; set; } = [];
+        
+       
+
+        public int SelectedPrintBlockItems { get { return 3;/*ListPrintBlockItems.Count > 0 ? ListPrintBlockItems.Last().PackageNumber : -1;*/ } }
         private PrintBlockItems _selectedPrintItem;
         public PrintBlockItems SelectedPrintItem
         {
@@ -278,6 +282,9 @@ namespace BRB6.ViewModel
         }
         public PriceCheckVM(TypeDoc pTypeDoc, ForMVVM pForMVVM, bool autoSave = true)
         {
+
+            ListPrintBlockItems= new( db.GetPrintBlockItemsCount());
+            SelectedPrintItem = ListPrintBlockItems.LastOrDefault();
             ForMVVM = pForMVVM;
             IsAutoSave = autoSave;
             bl.ClearWPH();
@@ -312,8 +319,7 @@ namespace BRB6.ViewModel
 
             AddPrintBlockCommand = new RelayCommand(() =>
             {
-                PackageNumber++;
-                ListPrintBlockItems.Add(new PrintBlockItems() { PackageNumber = PackageNumber });
+                OnClickAddPrintBlock();
             });
 
             F2Command = new RelayCommand(() =>
@@ -471,8 +477,20 @@ namespace BRB6.ViewModel
 
         private void OnClickAddPrintBlock()
         {
-            PackageNumber++;
-            ListPrintBlockItems.Add(new PrintBlockItems() { PackageNumber = PackageNumber });
+            var xx=ListPrintBlockItems.Where(el => el.PackageNumber == PackageNumber).FirstOrDefault();
+            if (xx != null)
+            {
+                ListPrintBlockItems.Remove(xx);
+               var zz= db.GetPrintBlockItemsCount().Where(el => el.PackageNumber == PackageNumber).FirstOrDefault();
+                if (zz != null)
+                {
+                    ListPrintBlockItems.Remove(xx);
+                    ListPrintBlockItems.Add(zz);
+                }                
+            }
+            var d = new PrintBlockItems() { PackageNumber = ++PackageNumber };
+            ListPrintBlockItems.Add(d);
+            SelectedPrintItem = d;
         }
 
         public async Task PrintBlock()
