@@ -15,10 +15,10 @@ namespace BRB6.View
     public partial class DocScan
     {
         private ObservableCollection<DocWaresEx> _ListWares;
-        public ObservableCollection<DocWaresEx> ListWares { get { return _ListWares; } set { _ListWares = value; OnPropertyChanged("ListWares"); } }
+        public ObservableCollection<DocWaresEx> ListWares { get { return _ListWares; } set { _ListWares = value; OnPropertyChanged(nameof(ListWares)); } }
         
         DocWaresEx _ScanData;
-        public DocWaresEx ScanData { get { return _ScanData; } set { _ScanData = value; OnPropertyChanged("ScanData"); } }
+        public DocWaresEx ScanData { get { return _ScanData; } set { _ScanData = value; OnPropertyChanged(nameof(ScanData)); } }
         protected DB db = DB.GetDB();
         private Connector c;
         BL.BL Bl = BL.BL.GetBL();

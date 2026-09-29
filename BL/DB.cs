@@ -887,7 +887,7 @@ and bc.BarCode=?
                     if (pParseBarCode.CodeWares > 0 || pParseBarCode.Article > 0 )
                     {
                         String Find = pParseBarCode.CodeWares > 0 ? $"w.CodeWares={pParseBarCode.CodeWares}" : $"w.ARTICLE={pParseBarCode.Article}";
-                        sql = @"select w.CODEWARES,w.NAMEWARES as NameWares,COALESCE(au.COEFFICIENT,1) as Coefficient,w.CODEUNIT as CodeUnit, ud.ABRUNIT as NameUnit,
+                        sql = @"select w.CODEWARES,w.NAMEWARES as NameWares,COALESCE(au.COEFFICIENT,1.000) as Coefficient,w.CODEUNIT as CodeUnit, ud.ABRUNIT as NameUnit,
                             '' as BARCODE  ,w.CODEUNIT as BaseCodeUnit 
                                 from WARES w 
                                 left join ADDITIONUNIT au on w.CODEWARES=au.CODEWARES and au.CODEUNIT=w.CODEUNIT 
@@ -931,7 +931,7 @@ and bc.BarCode=?
             }
             if (res != null && pParseBarCode.Coefficient > 1 && pParseBarCode.CodeUnit > 0)
             {
-                res.Coefficient = (int)pParseBarCode.Coefficient;
+                res.Coefficient = pParseBarCode.Coefficient;
                 res.CodeUnit = pParseBarCode.CodeUnit;
             }
             return res;

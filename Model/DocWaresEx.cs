@@ -13,7 +13,7 @@ namespace BRB5.Model
         public string ViewCode => Config.IsUseArticle ? Article :CodeWares.ToString();
         public string NameWares{ get; set; }
         public string NameWareView => string.IsNullOrEmpty(ExtInfo) ? NameWares : "      "+ NameWares;
-        public int Coefficient{ get; set; }
+        public decimal Coefficient{ get; set; }
         public string Article { get; set; }
         public int CodeUnit{ get; set; }
         public string NameUnit{ get; set; }
