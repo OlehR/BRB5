@@ -113,7 +113,7 @@ namespace BRB6.ViewModel
         
         private void LoadSampleData()
         {
-            var xx = db.GetDocWares(DId, eTypeResult.All, eTypeOrder.Scan);
+            var xx = db.GetDocWares(DId, eTypeResult.All, eTypeOrder.Name);
             foreach (var el in xx)
             {
                 el.Quantity = el.IsInputQuantityInDB ? el.InputQuantity : el.QuantityOrder;

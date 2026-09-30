@@ -150,7 +150,7 @@ namespace BRB6.View
 
             if (Doc.CodeReason == 1)
             {
-                docWares = MyDocWares.Where(x => x.CodeReason == -1).ToList();
+                docWares = MyDocWares.Where(x => x.CodeReason == -1 || x.InputQuantity>0 ).ToList();
             }
             else
             {
