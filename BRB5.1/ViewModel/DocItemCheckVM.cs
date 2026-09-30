@@ -75,6 +75,30 @@ namespace BRB6.ViewModel
         public ICommand IncrementCommand { get; }
         public ICommand DecrementCommand { get; }
         public ICommand ConfirmMrCommand { get; }
+
+        private bool _isImagePopupVisible;
+        public bool IsImagePopupVisible
+        {
+            get => _isImagePopupVisible;
+            set => SetProperty(ref _isImagePopupVisible, value);
+        }
+
+        private DocWaresEx? _popupWare;
+        public DocWaresEx? PopupWare
+        {
+            get => _popupWare;
+            set => SetProperty(ref _popupWare, value);
+        }
+
+        private string _popupImageUrl = string.Empty;
+        public string PopupImageUrl
+        {
+            get => _popupImageUrl;
+            set => SetProperty(ref _popupImageUrl, value);
+        }
+
+        public ICommand OpenImagePopupCommand { get; }
+        public ICommand CloseImagePopupCommand { get; }
         public DocItemCheckVM( ForMVVM pForMVVM)
         {
             ForMVVM = pForMVVM;
@@ -83,6 +107,8 @@ namespace BRB6.ViewModel
             IncrementCommand = new Command(() => MrQuantity++);
             DecrementCommand = new Command(() => { if (MrQuantity > 0) MrQuantity--; });
             ConfirmMrCommand = new Command(ConfirmDialog);
+            OpenImagePopupCommand = new Command<DocWaresEx>(OpenImagePopup);
+            CloseImagePopupCommand = new Command(() => IsImagePopupVisible = false);
             LoadSampleData();
             CloseMRDialogCommand = new RelayCommand(() =>
             {
@@ -145,7 +171,13 @@ namespace BRB6.ViewModel
                 ForMVVM.DisplayAlert("", "Даний штрихкод відсутній в базі", "OK");
             }
         }
-
+        private void OpenImagePopup(DocWaresEx? item)
+        {
+            if (item is null) return;
+            PopupWare = item;
+            PopupImageUrl = Config.ApiUrl1 + $"Wares/{item.CodeWares}.png";
+            IsImagePopupVisible = true;
+        }
         private async Task LoadCartAsync()
         {
             DocVM D = new() { TypeDoc = 6, NumberDoc = DateTime.Now.ToString("yyyyMMdd") };

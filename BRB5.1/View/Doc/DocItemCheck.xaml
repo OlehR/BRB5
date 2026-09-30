@@ -4,6 +4,7 @@
              xmlns:vm="clr-namespace:BRB6.ViewModel"
              xmlns:models="clr-namespace:BRB5.Model;assembly=BRB5.Model"
              x:DataType="vm:DocItemCheckVM"
+             xmlns:ffimageloading="clr-namespace:FFImageLoading.Maui;assembly=FFImageLoading.Maui"                          
              xmlns:tmpl="clr-namespace:BRB6.Template"
              BackgroundColor="White"
              x:Class="BRB6.View.DocItemCheck">
@@ -90,12 +91,13 @@
 
                                         <!-- Назва -->
                                         <Grid  Grid.Column="1" RowDefinitions="*, Auto">
+                                            <Grid.GestureRecognizers>
+                                                <TapGestureRecognizer  Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.OpenImagePopupCommand}" 
+                                                                       CommandParameter="{Binding}" />
+                                            </Grid.GestureRecognizers>
                                             <Image IsVisible="{Binding IsPromo}" Source="promo.png" WidthRequest="18" HeightRequest="18" HorizontalOptions="Start" VerticalOptions="Start" />
-                                            <Label                                           
-                                            Text="{Binding NameWareView}" FontSize="14"
-                                            TextColor="#1A1A1A" LineBreakMode="WordWrap"
-                                            HorizontalOptions="Center" VerticalOptions="Center" />
-                                            
+                                            <Label Text="{Binding NameWareView}" FontSize="14" TextColor="#1A1A1A" LineBreakMode="WordWrap"
+                                                   HorizontalOptions="Center" VerticalOptions="Center" />                                            
                                             <Border Grid.Row="1" IsVisible="{Binding IsSelected}" BackgroundColor="White" 
                                                     StrokeShape="RoundRectangle 8" StrokeThickness="0" Padding="8,4">
                                                 <HorizontalStackLayout Spacing="6" VerticalOptions="Center">
@@ -173,5 +175,40 @@
         </Grid>
         <tmpl:MRDialog Grid.RowSpan="2" DialogTitle="Оновіть кількість для винесення товару" 
                        BindingContext="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext}" />
+
+        <Grid Grid.RowSpan="2" BackgroundColor="#80000000" IsVisible="{Binding IsImagePopupVisible}" ZIndex="100">
+            <!-- Закриття при кліку на фон -->
+            <Grid.GestureRecognizers>
+                <TapGestureRecognizer Command="{Binding CloseImagePopupCommand}" />
+            </Grid.GestureRecognizers>
+
+            <Border BackgroundColor="White" Margin="20" Padding="15" StrokeShape="RoundRectangle 12"
+                    HorizontalOptions="Center" VerticalOptions="Center" WidthRequest="320" HeightRequest="400">
+                <!-- Блокуємо закриття при кліку на саму білу картку -->
+                <Border.GestureRecognizers>
+                    <TapGestureRecognizer />
+                </Border.GestureRecognizers>
+
+                <Grid RowDefinitions="Auto, *, Auto">
+                    <Grid Grid.Row="0" Margin="0,0,0,15">
+                        <Label Text="✕" FontSize="20" FontAttributes="Bold" TextColor="Gray"
+                               HorizontalOptions="Start" VerticalOptions="Center" Padding="0,0,20,0">
+                            <Label.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding CloseImagePopupCommand}" />
+                            </Label.GestureRecognizers>
+                        </Label>
+                        <Label Text="Інформація про товар" FontSize="18" FontAttributes="Bold" 
+                               HorizontalOptions="Center" VerticalOptions="Center" />
+                    </Grid>
+
+                    <ffimageloading:CachedImage Grid.Row="1" ErrorPlaceholder="photo.png" 
+                                                Source="{Binding PopupImageUrl}" 
+                                                HorizontalOptions="Fill" VerticalOptions="Fill" Aspect="AspectFit" />
+
+                    <Label Grid.Row="2" Text="{Binding PopupWare.NameWareView}" FontAttributes="Bold" FontSize="16"
+                           HorizontalTextAlignment="Center" VerticalOptions="Center" Margin="0,15,0,0" />
+                </Grid>
+            </Border>
+        </Grid>
     </Grid>
 </ContentPage>
