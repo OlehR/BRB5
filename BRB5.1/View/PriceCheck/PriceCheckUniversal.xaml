@@ -102,7 +102,7 @@
                         Command="{Binding ModifyValueCommand}" CommandParameter="{Binding QuantityToAdd}" CornerRadius="15" />
             </Grid>
 
-            <StackLayout IsVisible="{Binding IsVisDoubleScan}">
+            <StackLayout IsVisible="{Binding IsVisDoubleScan2}">
                 <Frame HasShadow="False"  BackgroundColor="{Binding ColorDoubleScan}">
                     <Label FontSize="Large" Text="{Binding MessageDoubleScan}"/>
                 </Frame>

@@ -9,6 +9,7 @@ using BarcodeScanning;
 using Utils;
 using CommunityToolkit.Maui.Alerts;
 
+
 #if ANDROID
 using Android.Views;
 #endif
@@ -17,6 +18,8 @@ namespace BRB6.View
 {
     public partial class Docs
     {
+        double _PB = 0.0;
+        public double PB { get { return _PB; } set { _PB = value; OnPropertyChanged(nameof(PB)); } }
         private Connector c = ConnectorBase.GetInstance();
         private TypeDoc TypeDoc;
         DB db = DB.GetDB();
@@ -47,6 +50,12 @@ namespace BRB6.View
             Config.BarCode = BarCode;
             BindingContext = this;
             InitializeComponent();
+            Config.OnProgress = Progress;
+            Task.Run(async () => {
+                if (!TypeDoc.IsOnlyHttp) Refresh();
+                await c.LoadDocsDataAsync(TypeDoc.CodeDoc, null, false);
+                Refresh();             
+            });
         }
 
         protected override void OnAppearing()
@@ -63,17 +72,23 @@ namespace BRB6.View
 #if ANDROID
             MainActivity.Key+= OnPageKeyDown;
 #endif
-            }
-            if(TypeDoc.IsOnlyHttp) AsyncHelper.RunSync(()=>c.LoadDocsDataAsync(TypeDoc.CodeDoc, null, false));
-            else _= c.LoadDocsDataAsync(TypeDoc.CodeDoc, null, false);
-            MyDocsR = Config.IsFilterSave && ZKPOstr.Length > 2? Bl.SetColorType(db.GetDoc(TypeDoc, null, ZKPOstr)) : Bl.SetColorType(db.GetDoc(TypeDoc));
+            }           
+            Refresh();
+        }
 
-            if (MyDocsR.Count > 0)
+        void Refresh()
+        {
+            MyDocsR = Config.IsFilterSave && ZKPOstr.Length > 2 ? Bl.SetColorType(db.GetDoc(TypeDoc, null, ZKPOstr)) : Bl.SetColorType(db.GetDoc(TypeDoc));
+            MainThread.BeginInvokeOnMainThread(() =>
             {
-                MyDocsR[0].SelectedColor = true;
-                ListDocs.SelectedItem = MyDocsR[0];
-            }       
-            OnPropertyChanged(nameof(MyDocsR));
+                if (MyDocsR.Count > 0)
+                {
+                    MyDocsR[0].SelectedColor = true;
+                    ListDocs.SelectedItem = MyDocsR[0];
+                }
+                OnPropertyChanged(nameof(MyDocsR));
+                Config.OnProgress?.Invoke(1);
+            });
         }
         protected override void OnDisappearing()
         {
@@ -91,11 +106,32 @@ namespace BRB6.View
                 ZKPOEntry.Text = string.Empty;
             }
         }
+
+        void Progress(double pProgress) => MainThread.BeginInvokeOnMainThread(() => PB = pProgress);
         private async void OpenDoc(object sender, EventArgs e)
         {
             var s = sender as Grid;
-            var vDoc = s.BindingContext as DocVM;            
-            await Navigation.PushAsync(new DocItem(vDoc,TypeDoc));
+            var vDoc = s.BindingContext as DocVM;
+            if (vDoc != null)
+            {
+                if (vDoc.IsWithoutAcceptance)
+                {
+                    bool IsWithoutAcceptance = await DisplayAlert("Безакцептний прийом", "Додати товар безакцептно", "Безакцептно", "Попозиційно");
+                    if(IsWithoutAcceptance) 
+                    {
+                        var r = await c.WithoutAcceptance(vDoc);
+                        if (r?.State != 0) 
+                            await DisplayAlert("Помилка", r?.TextError, "OK");
+                        else
+                        {
+                            vDoc.State = 1;
+                            db.SetStateDoc(vDoc);                                                    
+                        }
+                        return;
+                    }
+                }
+                await Navigation.PushAsync(new DocItem(vDoc, TypeDoc));
+            }
         }
 
         private void ZKPO(object sender, EventArgs e)

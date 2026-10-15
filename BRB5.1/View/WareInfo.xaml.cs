@@ -75,7 +75,8 @@ namespace BRB6.View
                     {
                         new ColumnDefinition { Width = new GridLength(7, GridUnitType.Star) },
                         new ColumnDefinition { Width = new GridLength(2, GridUnitType.Star) },
-                        new ColumnDefinition { Width = new GridLength(3, GridUnitType.Star) }
+                        new ColumnDefinition { Width = new GridLength(2, GridUnitType.Star) },
+                        new ColumnDefinition { Width = new GridLength(2, GridUnitType.Star) }
                     },
                     BackgroundColor = Color.FromArgb("#adaea7")
                 };
@@ -88,6 +89,7 @@ namespace BRB6.View
                     BackgroundColor = Colors.White
 
                 };
+                Grid.SetColumn(NameWarehouseLabel, 0);
 
                 var QuantityLabel = new Label
                 {
@@ -99,25 +101,47 @@ namespace BRB6.View
                 };
                 Grid.SetColumn(QuantityLabel, 1);
 
-                var DateLabel = new Label
+                var AMLabel = new Label
+                {
+                    Text = warehouse.MinQuantity.ToString(),
+                    TextColor = Colors.Black,
+                    FontAttributes = FontAttributes.Bold,
+                    LineBreakMode = LineBreakMode.NoWrap,
+                    BackgroundColor = Colors.White
+                };
+                Grid.SetColumn(AMLabel, 2);
+
+                var PriceLabel = new Label
+                {
+                    Text = warehouse.Price.ToString(),
+                    TextColor = Colors.Black,
+                    FontAttributes = FontAttributes.Bold,
+                    LineBreakMode = LineBreakMode.NoWrap,
+                    BackgroundColor = Colors.White
+                };
+                Grid.SetColumn(PriceLabel, 3);
+
+                /*var DateLabel = new Label
                 {
                     Text = warehouse.Date.ToString("dd.MM.yyyy"),
                     TextColor = Colors.Black,
                     LineBreakMode = LineBreakMode.NoWrap,
                     BackgroundColor = Colors.White
                 };
-                Grid.SetColumn(DateLabel, 2);
+                Grid.SetColumn(DateLabel, 2);*/
 
                 if (w != null && w.Name==warehouse.NameWarehouse)
                 {
                     NameWarehouseLabel.BackgroundColor = Colors.SandyBrown;
                     QuantityLabel.BackgroundColor = Colors.SandyBrown;
-                    DateLabel.BackgroundColor = Colors.SandyBrown;
+                    AMLabel.BackgroundColor = Colors.SandyBrown;
+                    PriceLabel.BackgroundColor = Colors.SandyBrown;
                 }
 
                 grid.Children.Add(NameWarehouseLabel);
                 grid.Children.Add(QuantityLabel);
-                grid.Children.Add(DateLabel);
+                grid.Children.Add(AMLabel);
+                grid.Children.Add(PriceLabel);
                 RestWarehouseList.Children.Add(grid);
             }
         }

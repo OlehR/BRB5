@@ -79,8 +79,10 @@ namespace BL
                     if (R == eCheck.Bad)
                     {
                         SaveDoubleScan(WPH.IsBarCode ? 101 : 102, WPH, pPackageNumber, pLineNumber);
-                        WPH = pCheckWP;
-                        pCheckWP.StateDoubleScan = (pCheckWP.IsBarCode ? eCheckWareScaned.WareScaned : eCheckWareScaned.PriceTagScaned);
+                        if(pCheckWP?.IsBarCode==true)
+                            SaveDoubleScan(101, pCheckWP, pPackageNumber, pLineNumber);
+                        WPH = null; // pCheckWP;
+                        pCheckWP.StateDoubleScan = eCheckWareScaned.Bad;// (pCheckWP.IsBarCode ? eCheckWareScaned.WareScaned : eCheckWareScaned.PriceTagScaned);
                     }
                     //Res = "Скануйте цінник чи товар";
                 }

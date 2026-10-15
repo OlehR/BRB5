@@ -86,8 +86,8 @@
                             <Button Text="{Binding WP.PromotionName}"  BackgroundColor="#FF7A00" TextColor="White"
                                     CornerRadius="8" HeightRequest="34" Padding="10,0" FontSize="14" />
                             <HorizontalStackLayout>
-                                <Label Text="Діє до: " FontSize="12" HorizontalOptions="End"  />
-                                <Label Text="{Binding WP.PromotionEnd, StringFormat='{}{0:dd.MM.yy}'}"  FontAttributes="Bold" FontSize="12" HorizontalOptions="End" />
+                                <Label IsVisible="{Binding IsVisDatePromotion}" Text="Діє до: " FontSize="12" HorizontalOptions="End"  />
+                                <Label IsVisible="{Binding IsVisDatePromotion}" Text="{Binding WP.PromotionEnd, StringFormat='{}{0:dd.MM.yy}'}"  FontAttributes="Bold" FontSize="12" HorizontalOptions="End" />
                             </HorizontalStackLayout>
                         </VerticalStackLayout>
 

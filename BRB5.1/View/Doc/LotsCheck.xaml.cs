@@ -18,6 +18,8 @@ namespace BRB6.View;
 
 public partial class LotsCheck : ContentPage
 {
+    double _PB = 0.0;
+    public double PB { get { return _PB; } set { _PB = value; OnPropertyChanged(nameof(PB)); } }
     private Connector c = ConnectorBase.GetInstance();
     private TypeDoc TypeDoc;
     DB db = DB.GetDB();
@@ -42,7 +44,7 @@ public partial class LotsCheck : ContentPage
 
         var reasonsFromDb = db.GetReason(TypeDoc.LevelReason);
         AllReasons = new ObservableCollection<BRB5.Model.DB.Reason>(reasonsFromDb);
-        PopulateStackLayout();
+        //PopulateStackLayout();
         Task.Run(async () =>
         {
             await c.LoadDocsDataAsync(TypeDoc.CodeDoc, null, false);
@@ -50,7 +52,10 @@ public partial class LotsCheck : ContentPage
         });
 
         BindingContext = this;
+        Config.OnProgress = Progress;
     }
+
+    void Progress(double pProgress) => MainThread.BeginInvokeOnMainThread(() => PB = pProgress);
     protected override void OnAppearing()
     {
         base.OnAppearing();
@@ -237,6 +242,7 @@ public partial class LotsCheck : ContentPage
         {
             StackLayoutDocs.Children.Add(tempStackLayout);
         });
+        Config.OnProgress?.Invoke(1);
     }
     // Прапорець для запобігання подвійного відкриття вікна при швидких кліках
     private bool _isDialogOpen = false;

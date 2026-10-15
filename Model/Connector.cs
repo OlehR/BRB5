@@ -54,6 +54,7 @@ namespace BRB5.Model
         /// <returns></returns>
         public virtual async Task<Result> SendDocsDataAsync(DocVM pDoc, IEnumerable<DocWares> pWares) { throw new NotImplementedException(); }
 
+        public virtual async Task<Result> WithoutAcceptance(DocId pDoc) { throw new NotImplementedException(); }
 
         public virtual async Task<Result<DocVM>> CreateDoc(CreateDocData pDoc) { throw new NotImplementedException(); }
         //Збереження ПРосканованих товарів в 1С

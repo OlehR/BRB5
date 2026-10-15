@@ -91,7 +91,9 @@ namespace BRB6.ViewModel
         bool _IsVisRepl = false;
         public bool IsVisRepl { get => _IsVisRepl || IsPromoProposalMode; set { _IsVisRepl = value; OnPropertyChanged(nameof(IsVisRepl)); } }
         public bool IsSoftKeyboard { get { return Config.IsSoftKeyboard; } }
-        public bool IsVisPromotion => !string.IsNullOrEmpty(WP?.PromotionName) && WP?.PromotionEnd != default(DateTime);
+        public bool IsVisPromotion => !string.IsNullOrEmpty(WP?.PromotionName);// && WP?.PromotionEnd != default(DateTime);
+        public bool IsVisDatePromotion => !string.IsNullOrEmpty(WP?.PromotionName) && WP?.PromotionEnd != default(DateTime);
+
 
         WaresPrice _WP;
         public WaresPrice WP
@@ -106,6 +108,9 @@ namespace BRB6.ViewModel
                 OnPropertyChanged(nameof(IsVisPriceOpt)); OnPropertyChanged(nameof(IsVisPriceNormal)); OnPropertyChanged(nameof(TextColorHttp));
                 OnPropertyChanged(nameof(ColorPrintColorType)); OnPropertyChanged(nameof(IsVisPriceOptQ));
                 OnPropertyChanged(nameof(IsVisPromotion));
+                OnPropertyChanged(nameof(IsVisDatePromotion));
+                OnPropertyChanged(nameof(IsVisDoubleScan2));
+
 
             }
         }
@@ -129,6 +134,16 @@ namespace BRB6.ViewModel
         //public int ColorPrintColorType() { return Color.parseColor(HttpState != eStateHTTP.HTTP_OK ? "#ffb3b3" : (PrintType == 0 ? "#ffffff" : "#3fffff00")); }
 
         public string ColorPrintColorType { get { return WP == null ? "#ffffff" : WP.MinQuantity == 0 ? "#ffd8d8" : WP.ActionType > 0 ? "#F0DC82" : "#ffffff"; } }
+        
+        public bool IsBadPrice
+        {
+            get
+            {
+                return WP != null && ((WP.Price != 0 && WP.PriceOld != 0 && WP.Price != WP.PriceOld)
+                    || (WP.PriceOpt != 0 && WP.PriceOptOld != 0 && WP.PriceOpt != WP.PriceOptOld));
+            }
+        }
+
         public string TextColorPrice { get { return (WP != null && WP.Price != 0 && WP.Price == WP.PriceOld && (WP.PriceOpt == WP.PriceOptOld || WP.PriceOpt == WP.Price)) ? "#009800" : "#ff5c5c"; } set { OnPropertyChanged(nameof(TextColorPrice)); } }
         public string BackgroundColorPrice { get { return (WP == null || (WP.Price != 0 && WP.Price == WP.PriceOld && (WP.PriceOpt == WP.PriceOptOld || WP.PriceOpt == WP.Price))) ? "#F8F9FA" : "#fff0f0"; } }
 
@@ -144,6 +159,7 @@ namespace BRB6.ViewModel
         private eCheckWareScaned _IsWareScaned = eCheckWareScaned.Nothing;
         public eCheckWareScaned IsWareScaned { get { return _IsWareScaned; } set { _IsWareScaned = value; OnPropertyChanged(nameof(ColorDoubleScan)); OnPropertyChanged(nameof(IsWareScaned)); /*OnPropertyChanged(nameof(ButtonDoubleScan));*/ OnPropertyChanged(nameof(MessageDoubleScan)); } }
         public bool IsVisDoubleScan { get; set; }
+        public bool IsVisDoubleScan2 { get { return IsVisDoubleScan || IsBadPrice; } }
         public bool IsVisBarcode { get { return !IsVisDoubleScan; } }
         // private string _MessageDoubleScan;
         public string MessageDoubleScan { get { return EnumMethods.GetDescription(WP?.StateDoubleScan ?? eCheckWareScaned.Success); } } //set {  OnPropertyChanged(nameof(MessageDoubleScan)); } }
@@ -152,7 +168,8 @@ namespace BRB6.ViewModel
         {
             get
             {
-                return IsWareScaned == eCheckWareScaned.Success ? "#C5FFC4" : IsWareScaned == eCheckWareScaned.Bad || IsWareScaned == eCheckWareScaned.BadPrice ? "#FFC4C4" :
+                return IsWareScaned == eCheckWareScaned.Success ? "#C5FFC4" : IsWareScaned == eCheckWareScaned.Bad || IsWareScaned == eCheckWareScaned.BadPrice ? "#FF7D7D" //"#FFC4C4" 
+                    :
                                                      IsWareScaned == eCheckWareScaned.PriceTagScaned || IsWareScaned == eCheckWareScaned.WareScaned ? "#FEFFC4" : "#FFFFFF";
             }
         }
@@ -471,8 +488,8 @@ namespace BRB6.ViewModel
 
         public void UnloadedEvent()
         {
-            if (IsVisDoubleScan && bl.WPH != null) // При виході фіксувати останне не збережене в подвійному скануванні.
-                bl.SaveDoubleScan(bl.WPH.IsBarCode ? 101 : 102, bl.WPH, PackageNumber, LineNumber);
+            if (IsVisDoubleScan && WP != null) // При виході фіксувати останне не збережене в подвійному скануванні.
+                bl.SaveDoubleScan(WP.IsBarCode ? 101 : 102, WP, PackageNumber, LineNumber);
         }
 
         private void OnClickAddPrintBlock()
@@ -498,6 +515,7 @@ namespace BRB6.ViewModel
             // Тепер ми беремо дані з властивості SelectedPrintItem, а не з Xaml по імені
             if (SelectedPrintItem != null && IsEnabledPrint)
             {
+                UnloadedEvent();
                 var message = bl.PrintPackage(PrintType, SelectedPrintItem.PackageNumber, IsMultyLabel);
                 ForMVVM.DisplayAlert("Друк", message, "OK");
             }

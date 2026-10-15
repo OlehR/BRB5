@@ -88,6 +88,7 @@
                             <Label Text="ШК:"/>
                             <Label Text="{Binding WP.BarCodes}" TextColor="DarkBlue"/>
                         </FlexLayout>
+                        <Label Text="{Binding WP.Parent}"/>
 
                         <StackLayout Orientation="Horizontal">
                             <Label Text="Останій прихід:"/>
@@ -104,24 +105,26 @@
                             <Label Text="{Binding WP.MinQuantity}" TextColor="DarkBlue" FontAttributes="Bold"/>
                         </StackLayout>
 
-                        <StackLayout Orientation="Horizontal">
+                        <!--<StackLayout Orientation="Horizontal">
                             <Label Text="Умови роботи:"/>
                             <Label Text="{Binding WP.TermsForIlliquidWare}" TextColor="DarkBlue" FontAttributes="Bold"/>
-                        </StackLayout>
+                        </StackLayout>-->
 
                         <Grid>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="7*"/>
-                                <ColumnDefinition Width="3*"/>
-                                <ColumnDefinition Width="3*"/>
+                                <ColumnDefinition Width="2*"/>
+                                <ColumnDefinition Width="2*"/>
+                                <ColumnDefinition Width="2*"/>
                             </Grid.ColumnDefinitions>
                             <Label FontAttributes="Bold" Text="Склад" Grid.Column="0"/>
                             <Label FontAttributes="Bold" Text="Кількість" Grid.Column="1"/>
-                            <Label FontAttributes="Bold" Text="Дата" Grid.Column="2"/>
+                            <Label FontAttributes="Bold" Text="АМ" Grid.Column="2"/>
+                            <Label FontAttributes="Bold" Text="Ціна" Grid.Column="3"/>
                         </Grid>
 
                         <VerticalStackLayout x:Name="RestWarehouseList" />
-                        <Label Text="{Binding WP.Parent}"/>
+                        
                         <Label Text="Умови роботи:" FontAttributes="Bold"/>
                         <VerticalStackLayout x:Name="ConditionList" />
                         

@@ -268,6 +268,7 @@ namespace BL.Connector
 
         public override async Task<Result> LoadDocsDataAsync(int pTypeDoc, string pNumberDoc, bool pIsClear)
         {
+            Config.OnProgress?.Invoke(0.05);
             TypeDoc TD = null;
             try
             {
@@ -279,15 +280,18 @@ namespace BL.Connector
                 if (TD?.KindDoc == eKindDoc.RaitingDoc)
                 {
                     HttpResult result = await GetDataHTTP.HTTPRequestAsync(0, "DCT/Rating/GetRatingDoc", $"{Config.CodeUser}", "application/json", null);
+                    Config.OnProgress?.Invoke(0.70);
                     if (result.HttpState == eStateHTTP.HTTP_OK)
                     {
                         var res = JsonConvert.DeserializeObject<Result<IEnumerable<Doc>>>(result.Result);
+                        Config.OnProgress?.Invoke(0.8);
                         if (res.State == 0)                        
-                            db.ReplaceDoc(res.Data);                        
+                            db.ReplaceDoc(res.Data);
+                        Config.OnProgress?.Invoke(0.9);
+                        return new Result();
                     }
                     else
                         return new Result(result); 
-                    return new Result();
                 }
                 else
                 {
@@ -301,16 +305,20 @@ namespace BL.Connector
                     AppContext.SetSwitch("System.Reflection.NullabilityInfoContext.IsSupported", true);
                     GetDocs Data = new() { CodeWarehouse = Config.CodeWarehouse, TypeDoc = pTypeDoc, NumberDoc = pNumberDoc,CodeUser=Config.CodeUser };
                     HttpResult result = await GetDataHTTP.HTTPRequestAsync(0, "DCT/LoadDoc", Data.ToJson(), "application/json", null);
+                    Config.OnProgress?.Invoke(0.70);
                     if (result.HttpState == eStateHTTP.HTTP_OK)
                     {
                         var res = JsonConvert.DeserializeObject<Result<Docs>>(result.Result);
+                        Config.OnProgress?.Invoke(0.75);
                         if (res.State == 0)
                         {
                             db.ReplaceDoc(res.Data.Doc,TD?.IsOnlyHttp==true ?pTypeDoc : 0 );
                             db.ReplaceDocWaresSample(res.Data.Wares,true);
                         }
+                        Config.OnProgress?.Invoke(0.9);
                         return new Result();
                     }
+                    Config.OnProgress?.Invoke(0.9);
                     return new Result(result);
                 }
             }
@@ -363,8 +371,21 @@ namespace BL.Connector
                 FileLogger.WriteLogMessage(this, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
                 return new Result(e);
             }
-        }        
-       
+        }
+
+        public override async Task<Result> WithoutAcceptance(DocId pDoc) 
+        {
+            HttpResult result = await GetDataHTTP.HTTPRequestAsync(0, "DCT/WithoutAcceptance", pDoc.ToJSON(), "application/json", "brb", "brb");
+            if (result.HttpState == eStateHTTP.HTTP_OK)
+            {
+                var r = JsonConvert.DeserializeObject<Result>(result.Result);
+                return r;
+            }
+            else   
+                return new Result(result);
+           
+        }
+
         public override async Task<Result<DocVM>> CreateDoc(CreateDocData pDoc) 
         { 
            try

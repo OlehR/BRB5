@@ -36,5 +36,9 @@
                 <StackLayout x:Name="StackLayoutDocs" />
             </ScrollView>
         </Grid>
+        <ProgressBar ScaleY="2"
+ Progress="{Binding PB}"
+ VerticalOptions="End"
+ ProgressColor="Black" />
     </StackLayout>
 </ContentPage>

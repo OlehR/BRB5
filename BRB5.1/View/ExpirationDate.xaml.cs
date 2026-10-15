@@ -249,13 +249,13 @@ namespace BRB6.View
                 Dispatcher.Dispatch(async () =>
                 {
                     //bool save = await DisplayAlert("Незбережені дані", "Зберегти зміни перед виходом?", "Зберегти", "Не зберігати");
-                    var popup = new SaveChangesPopup();
+                    /*var popup = new SaveChangesPopup();
                     bool save = (bool)await this.ShowPopupAsync(popup);
                     if (save)
-                    {
+                    {*/
                         // Викликаємо збереження (Toast покажеться вже на попередній сторінці)
                         F2Save(null, null);
-                    }
+                    //}
 
                     await Navigation.PopAsync(); // Повертаємось назад (Navigation stack)
                 });

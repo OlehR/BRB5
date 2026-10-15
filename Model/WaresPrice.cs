@@ -160,6 +160,8 @@ namespace BRB5.Model
     {
         public string NameWarehouse  { get; set; }
         public decimal Quantity { get; set; }
+        public decimal Price { get; set; }
+        public decimal MinQuantity { get; set; }
         public DateTime Date { get; set; }        
     }
 

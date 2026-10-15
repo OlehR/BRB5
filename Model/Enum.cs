@@ -186,7 +186,7 @@ namespace BRB5
         PriceTagNotFit = 4,
         [Description("Скануйте цінник чи товар")]
         Success = 5,
-        [Description("Невірне сканування")]
+        [Description("Товар ≠ Цінник")]
         Bad = 6,
         [Description("Невірна ціна")]
         BadPrice = 7,

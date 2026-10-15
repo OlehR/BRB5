@@ -113,23 +113,24 @@ CREATE TABLE Doc (
     TypeDoc           INTEGER   NOT NULL DEFAULT (0),
     NumberDoc         TEXT      NOT NULL,
     CodeWarehouse     INTEGER   NOT NULL DEFAULT (0),
-    CodeReason INTEGER         DEFAULT (0),
-    IdTemplate INTEGER         NOT NULL DEFAULT (0),
+    CodeReason        INTEGER   DEFAULT (0),
+    IdTemplate        INTEGER   NOT NULL DEFAULT (0),
     ExtInfo           TEXT,
     NameUser          TEXT,
     BarCode           TEXT,
-    Description        TEXT,
-    State              INTEGER   DEFAULT (0),
+    Description       TEXT,
+    State             INTEGER   DEFAULT (0),
     IsControl         INTEGER   DEFAULT (0),
-    NumberDoc1C      TEXT,
-    DateOutInvoice   DATE,
-    NumberOutInvoice TEXT,
-    Color            INTEGER,
-    DTStart          TIMESTAMP DEFAULT null,
-    DTEnd            TIMESTAMP DEFAULT null,
-    DTUpdate         TIMESTAMP DEFAULT null,
-    DTInsert         TIMESTAMP DEFAULT (current_timestamp),
-    CountWares      INTEGER   DEFAULT (0)
+    NumberDoc1C       TEXT,
+    DateOutInvoice    DATE,
+    NumberOutInvoice  TEXT,
+    Color             INTEGER,
+    DTStart           TIMESTAMP DEFAULT null,
+    DTEnd             TIMESTAMP DEFAULT null,
+    DTUpdate          TIMESTAMP DEFAULT null,
+    DTInsert          TIMESTAMP DEFAULT (current_timestamp),
+    CountWares        INTEGER   DEFAULT (0),
+    IsWithoutAcceptance INTEGER   DEFAULT (0)
 );
 CREATE UNIQUE INDEX DocId ON DOC (TypeDoc,NumberDoc);
 
@@ -290,7 +291,7 @@ CREATE TABLE SKU (
     CodeUnit           INTEGER  NOT NULL);
 CREATE UNIQUE INDEX SKUId ON SKU (CodeSKU);
 ";
-        readonly int Ver = 26;
+        readonly int Ver = 27;
         
         string SqlTo11 = @"CREATE TABLE SKU (
     CodeSKU          INTEGER  NOT NULL,
@@ -323,6 +324,8 @@ alter TABLE DocWaresExpiration add DTInsert         TIMESTAMP;";
         string SqlTo24 = @"alter TABLE DocWaresSample add ExtInfo TEXT;";
 
         string SqlTo26 = @"alter TABLE RaitingTemplateItem add ExtInfo TEXT;";
+
+        string SqlTo27 = @"alter TABLE Doc add IsWithoutAcceptance INTEGER DEFAULT (0);";
 
         public static string PathNameDB { get { return Path.Combine(BaseDir, NameDB); } }
 
@@ -365,6 +368,8 @@ alter TABLE DocWaresExpiration add DTInsert         TIMESTAMP;";
                     SetSQL(SqlTo24, 24);
                 if (GetVersion < 26)
                     SetSQL(SqlTo26, 26);
+                if (GetVersion < 27)
+                    SetSQL(SqlTo27, 27);
 
             }
         }
@@ -653,14 +658,14 @@ and CodeWares in (select CodeWares from DocWares where TypeDoc={pDocId.TypeDoc} 
         {
             if (pDoc == null || !pDoc.Any()) return false;
             if (pTypeDoc != 0)
-                db.Execute($"delete from Doc where TypeDoc={pTypeDoc} and State=0");
+                db.Execute($"delete from Doc where TypeDoc={pTypeDoc} and (State=0 or  State is null)");
 
             int c = 0;
             string Sql = $@"replace into Doc ( DateDoc, TypeDoc, NumberDoc, CodeWarehouse,
                                               CodeReason, 
                                               IdTemplate, ExtInfo, NameUser, BarCode, Description, 
                                               State,
-                                              IsControl, NumberDoc1C, DateOutInvoice, NumberOutInvoice, Color,DTStart,DTEnd,CountWares,DTUpdate) values 
+                                              IsControl, NumberDoc1C, DateOutInvoice, NumberOutInvoice, Color,DTStart,DTEnd,CountWares,DTUpdate,IsWithoutAcceptance) values 
                                             (?,?,?,?,
                                              case when ?>0 then ? else (select max(d.CodeReason) from Doc d where d.Typedoc=? and d.numberdoc=? ) end,
                                              ?,?,?,?,?,
@@ -668,7 +673,7 @@ and CodeWares in (select CodeWares from DocWares where TypeDoc={pDocId.TypeDoc} 
                                              ?,?,?,?,?,
 (select max(d.DTStart) from Doc d where d.Typedoc=? and d.numberdoc=? ),
 (select max(d.DTEnd) from Doc d where d.Typedoc=? and d.numberdoc=? ),?,
-(select max(d.DTUpdate) from Doc d where d.Typedoc=? and d.numberdoc=?)
+(select max(d.DTUpdate) from Doc d where d.Typedoc=? and d.numberdoc=?),?
 )";
 
             try
@@ -681,7 +686,7 @@ and CodeWares in (select CodeWares from DocWares where TypeDoc={pDocId.TypeDoc} 
                                              d.IdTemplate, d.ExtInfo, d.NameUser, d.BarCode, d.Description,
                                              d.State, d.State, d.TypeDoc, d.NumberDoc,
                                              d.IsControl, d.NumberDoc1C, d.DateOutInvoice, d.NumberOutInvoice, d.Color + 7777,
-                                             d.TypeDoc, d.NumberDoc, d.TypeDoc, d.NumberDoc, d.CountWares, d.TypeDoc, d.NumberDoc);
+                                             d.TypeDoc, d.NumberDoc, d.TypeDoc, d.NumberDoc, d.CountWares, d.TypeDoc, d.NumberDoc,d.IsWithoutAcceptance);
                     }
                 });
             }

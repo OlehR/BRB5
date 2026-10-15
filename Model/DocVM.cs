@@ -114,7 +114,10 @@ namespace BRB5.Model
         public string ExtInfo { get; set; }
 
         public int CountWares { get; set; } // Кількість товарних позицій
-  
+        /// <summary>
+        /// Безакцептне приймання, для приходу, якщо не потрібно приймати товар.
+        /// </summary>
+        public bool IsWithoutAcceptance { get; set; }
     }
 
     public class DocVM : Doc
