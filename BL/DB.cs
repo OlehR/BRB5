@@ -656,10 +656,11 @@ and CodeWares in (select CodeWares from DocWares where TypeDoc={pDocId.TypeDoc} 
 
         public bool ReplaceDoc(IEnumerable<Doc> pDoc, int pTypeDoc = 0)
         {
-            if (pDoc == null || !pDoc.Any()) return false;
+            if (pDoc == null) return false;
             if (pTypeDoc != 0)
                 db.Execute($"delete from Doc where TypeDoc={pTypeDoc} and (State=0 or  State is null)");
 
+            if (!pDoc.Any()) return false;
             int c = 0;
             string Sql = $@"replace into Doc ( DateDoc, TypeDoc, NumberDoc, CodeWarehouse,
                                               CodeReason, 

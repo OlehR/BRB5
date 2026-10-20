@@ -312,8 +312,8 @@ namespace BL.Connector
                         Config.OnProgress?.Invoke(0.75);
                         if (res.State == 0)
                         {
-                            db.ReplaceDoc(res.Data.Doc,TD?.IsOnlyHttp==true ?pTypeDoc : 0 );
-                            db.ReplaceDocWaresSample(res.Data.Wares,true);
+                            db.ReplaceDoc(res.Data?.Doc,TD?.IsOnlyHttp==true ?pTypeDoc : 0 );
+                            db.ReplaceDocWaresSample(res.Data?.Wares,true);
                         }
                         Config.OnProgress?.Invoke(0.9);
                         return new Result();
