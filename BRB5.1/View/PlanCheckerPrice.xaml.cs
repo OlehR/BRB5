@@ -13,7 +13,7 @@ namespace BRB6.View
     public partial class PlanCheckerPrice
     {
         Connector c;
-        protected DB db = DB.GetDB();
+        DB db => DB.Db;
         BL.BL Bl = BL.BL.GetBL();
         //ZXingScannerView zxing;
         private DocVM Doc;

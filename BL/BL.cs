@@ -10,7 +10,7 @@ namespace BL
 {
     public partial class BL
     {
-        static BL Bl = null;
+        public static BL Bl = null;
         public static BL GetBL()
         {
             if (Bl == null)
@@ -18,7 +18,7 @@ namespace BL
             return Bl;
         }
 
-        public DB db = DB.GetDB();
+        public DB db => DB.Db;
         public BRB5.Model.Connector c = ConnectorBase.GetInstance();
         public Result SendLogPrice()
         {

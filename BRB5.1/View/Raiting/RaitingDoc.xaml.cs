@@ -16,7 +16,7 @@ namespace BRB6
     public partial class RaitingDoc: ContentPage
     {
         Connector c;
-        DB db = DB.GetDB();
+        DB db => DB.Db;
         private readonly TypeDoc TypeDoc;
         public ObservableCollection<DocVM> MyDoc { get; set; } = new ObservableCollection<DocVM>();
 

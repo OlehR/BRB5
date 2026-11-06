@@ -12,7 +12,7 @@ namespace BRB6.View
         private BRB5.Model.RaitingTemplateItem _RQ;
         public RaitingTemplateItem RQ { get { return _RQ; } set { _RQ = value; OnPropertyChanged(nameof(RQ)); } }
 
-        DB db = DB.GetDB();
+        DB db => DB.Db;
         private RaitingTemplateItem RT;
 
         public RaitingTemplateEditQuestion(RaitingTemplateItem rq)

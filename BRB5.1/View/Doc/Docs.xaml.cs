@@ -8,6 +8,8 @@ using Grid = Microsoft.Maui.Controls.Grid;
 using BarcodeScanning;
 using Utils;
 using CommunityToolkit.Maui.Alerts;
+using System.Diagnostics;
+
 
 
 #if ANDROID
@@ -22,8 +24,8 @@ namespace BRB6.View
         public double PB { get { return _PB; } set { _PB = value; OnPropertyChanged(nameof(PB)); } }
         private Connector c = ConnectorBase.GetInstance();
         private TypeDoc TypeDoc;
-        DB db = DB.GetDB();
-        BL.BL Bl = BL.BL.GetBL();
+        DB db => DB.Db;
+        BL.BL Bl => BL.BL.Bl;
         private ObservableCollection<DocVM> _MyDocsR;
         public ObservableCollection<DocVM> MyDocsR { get { return _MyDocsR; } set { _MyDocsR = value; OnPropertyChanged(nameof(MyDocsR)); } }
         bool _IsVisZKPO = false;
@@ -45,6 +47,7 @@ namespace BRB6.View
         private DocVM CreatedDoc = null;
         public Docs(TypeDoc pTypeDoc )
         {
+            Debug.WriteLine($"Error Docs({pTypeDoc.CodeDoc})");
             NokeyBoard();
             TypeDoc = pTypeDoc;
             Config.BarCode = BarCode;
@@ -73,7 +76,7 @@ namespace BRB6.View
             MainActivity.Key+= OnPageKeyDown;
 #endif
             }           
-            Refresh();
+            //Refresh();
         }
 
         void Refresh()
@@ -125,7 +128,9 @@ namespace BRB6.View
                         else
                         {
                             vDoc.State = 1;
-                            db.SetStateDoc(vDoc);                                                    
+                            db.SetStateDoc(vDoc);
+                            var toast = Toast.Make($"Документ {vDoc.NumberDoc} успішно збережений");
+                            _ = toast.Show();
                         }
                         return;
                     }

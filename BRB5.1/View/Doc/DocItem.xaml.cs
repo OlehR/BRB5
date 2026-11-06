@@ -15,7 +15,7 @@ namespace BRB6.View
         private readonly TypeDoc TypeDoc;
         private DocVM Doc;
         private Connector c = ConnectorBase.GetInstance();
-        protected DB db = DB.GetDB();
+        protected DB db => DB.Db;
         string _NumberOutInvoice = "";
         public string NumberOutInvoice { get { return _NumberOutInvoice; } set { _NumberOutInvoice = value; OnPropertyChanged("NumberOutInvoice"); } }
         public List<DataStr> ListDataStr {

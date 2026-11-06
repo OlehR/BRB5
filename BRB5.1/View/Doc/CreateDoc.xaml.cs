@@ -9,7 +9,7 @@ using System.Windows.Input;
 namespace BRB6.View;
 public partial class CreateDoc : ContentPage
 {
-    DB db = DB.GetDB();
+    DB db => DB.Db;
     BL.BL Bl = BL.BL.GetBL();
     TypeDoc TD;
     Action<DocVM> CreatedDoc;

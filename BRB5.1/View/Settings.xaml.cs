@@ -15,7 +15,7 @@ namespace BRB6.View
     public partial class Settings : TabbedPage
     {
         private Connector c;
-        DB db = DB.GetDB();
+        DB db => DB.Db;
         BL.BL Bl = BL.BL.GetBL();
         //public string Ver { get { return "Ver:"+ Assembly.GetExecutingAssembly().GetName().Version; } }
         public string Ver => "Ver:" + Config.Version;

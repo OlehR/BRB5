@@ -34,7 +34,7 @@ namespace BRB6.View
         public double PB { get { return _PB; } set { _PB = value; OnPropertyChanged(nameof(PB)); } }
         private Connector c = ConnectorBase.GetInstance();
         //private TypeDoc TypeDoc;
-        DB db = DB.GetDB();
+        DB db => DB.Db;
         BL.BL Bl = BL.BL.GetBL();
         private ObservableCollection<DocExpiration> _MyDocsR;
         public ObservableCollection<DocExpiration> MyDocsR { get { return _MyDocsR; } set { _MyDocsR = value; OnPropertyChanged(nameof(MyDocsR)); } }

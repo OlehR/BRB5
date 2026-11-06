@@ -14,7 +14,7 @@ namespace BRB6.ViewModel
     class DocItemCheckVM : ObservableObject
     {
         ForMVVM ForMVVM;
-        DB db = DB.GetDB();
+        DB db => DB.Db;
         Connector c = ConnectorBase.GetInstance();
         private ObservableCollection<DocWaresEx> _wares = [];
         private bool _isLoading;

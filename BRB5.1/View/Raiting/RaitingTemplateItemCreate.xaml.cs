@@ -16,7 +16,7 @@ namespace BRB6.View
         //private DocId DocId;
 
         RaitingTemplate RT;
-        DB db = DB.GetDB();
+        DB db => DB.Db;
         BL.BL Bl = BL.BL.GetBL();
 
         public RaitingTemplateItemCreate(int pId)

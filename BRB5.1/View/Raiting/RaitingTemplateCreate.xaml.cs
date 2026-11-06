@@ -12,7 +12,7 @@ namespace BRB6.View
         public bool AddTotal { get; set; }
         public bool IsSoftKeyboard { get { return Config.IsSoftKeyboard; } }
 
-        DB db = DB.GetDB();
+        DB db => DB.Db;
         BL.BL Bl = BL.BL.GetBL();
         public RaitingTemplateCreate (int id)
 		{

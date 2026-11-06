@@ -7,7 +7,7 @@ namespace BRB6.View
 {
     public partial class RaitingDocEdit 
     {
-        DB db = DB.GetDB();
+        DB db => DB.Db;
         Connector c;
         private readonly TypeDoc TypeDoc;
         public List<RaitingTemplate> RT { get { return db.GetRaitingTemplate().Where(t => t.Text != null).ToList(); } }

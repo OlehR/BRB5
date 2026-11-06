@@ -11,7 +11,7 @@ namespace BRB6.View
     {
         private readonly TypeDoc TypeDoc;
         Connector c;
-        DB db = DB.GetDB();
+        DB db => DB.Db;
         private ObservableCollection<DocVM> _RD;
         public ObservableCollection<DocVM> RD { get { return _RD; } set { _RD = value; OnPropertyChanged(nameof(RD)); } }
 

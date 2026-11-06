@@ -5,6 +5,7 @@ using BRB5;
 using BRB5.Model;
 using BRB6.View;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using Docs = BRB6.View.Docs;
 
 //[assembly: Xamarin.Forms.Dependency(typeof(AndroidStorageManager))]
@@ -42,10 +43,11 @@ namespace BRB6
             try
             {
                 ProtoBRB.Init();
+                Debug.WriteLine($"MainPage => {ProtoBRB.GetPathDB}");
                 db = DB.GetDB(ProtoBRB.GetPathDB);
                 Bl = BL.BL.GetBL();
                 Config.Company = db.GetConfig<eCompany>("Company");
-                OCTypeDoc = new ObservableCollection<TypeDoc>();
+                OCTypeDoc = [];
                 InitializeComponent();
                 Init();
                 Config.BarCode = BarCode;
@@ -140,7 +142,7 @@ namespace BRB6
                 //await DisplayAlert("Помилка", "Потрібен дозвіл StorageWrite", "OK", FlowDirection.MatchParent);
                 //return;
             }
-
+            //Debug.WriteLine($"{DateTime.Now} Error vTypeDoc={vTypeDoc.CodeDoc}");
             switch (vTypeDoc.KindDoc)
             {
                 case eKindDoc.PriceCheck:

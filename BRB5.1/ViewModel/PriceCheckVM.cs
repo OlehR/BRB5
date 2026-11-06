@@ -23,7 +23,7 @@ namespace BRB6.ViewModel
     internal class PriceCheckVM : ObservableObject, IDisposable
     {
         ForMVVM ForMVVM;
-        DB db = DB.GetDB();
+        DB db => DB.Db;
         public BL.BL bl = BL.BL.GetBL();
 
         // Кількість для МР

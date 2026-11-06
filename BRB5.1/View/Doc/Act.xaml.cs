@@ -14,7 +14,7 @@ public partial class Act
 {
     private readonly TypeDoc TypeDoc;
     private DocVM Doc;
-    protected DB db = DB.GetDB();
+    protected DB db => DB.Db;
     private Connector c = ConnectorBase.GetInstance();
     public bool IsSoftKeyboard { get { return Config.IsSoftKeyboard; } }
     public ObservableCollection<WaresAct> MyDocWares { get; set; } = new ObservableCollection<WaresAct>();

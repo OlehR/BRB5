@@ -22,7 +22,7 @@ public partial class LotsCheck : ContentPage
     public double PB { get { return _PB; } set { _PB = value; OnPropertyChanged(nameof(PB)); } }
     private Connector c = ConnectorBase.GetInstance();
     private TypeDoc TypeDoc;
-    DB db = DB.GetDB();
+    DB db => DB.Db;
     private ObservableCollection<DocVM> MyDocs = new ObservableCollection<DocVM>(); 
     public bool IsSoftKeyboard { get { return Config.IsSoftKeyboard; } }
 

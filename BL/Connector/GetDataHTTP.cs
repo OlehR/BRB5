@@ -26,7 +26,7 @@ namespace BL.Connector
             string ApiUrl1, ApiUrl2, ApiUrl3, ApiUrl4 ;
             if (string.IsNullOrEmpty(Config.ApiUrl1))
             {
-                var db = DB.GetDB();
+                var db = DB.Db;
                  ApiUrl1 = db.GetConfig<string>("ApiUrl1");
                  ApiUrl2 = db.GetConfig<string>("ApiUrl2");
                  ApiUrl3 = db.GetConfig<string>("ApiUrl3");

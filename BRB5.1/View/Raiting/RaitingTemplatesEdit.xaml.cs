@@ -14,7 +14,7 @@ namespace BRB6.View
 
 
         BL.BL Bl = BL.BL.GetBL();
-        DB db = DB.GetDB();
+        DB db => DB.Db;
         Connector c;
         private bool ShowHidden = false;
 

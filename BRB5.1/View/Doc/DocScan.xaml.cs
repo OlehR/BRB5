@@ -19,7 +19,7 @@ namespace BRB6.View
         
         DocWaresEx _ScanData;
         public DocWaresEx ScanData { get { return _ScanData; } set { _ScanData = value; OnPropertyChanged(nameof(ScanData)); } }
-        protected DB db = DB.GetDB();
+        protected DB db => DB.Db;
         private Connector c;
         BL.BL Bl = BL.BL.GetBL();
         public TypeDoc TypeDoc { get; set; }

@@ -11,7 +11,7 @@ namespace BRB6.View
         private readonly TypeDoc TypeDoc;
         private DocVM Doc;
         private Connector c = ConnectorBase.GetInstance();
-        protected DB db = DB.GetDB();
+        DB db => DB.Db;
         public int OrderDoc { get; set; }
         public bool IsSoftKeyboard { get { return Config.IsSoftKeyboard; } }
         public ObservableCollection<DocWaresEx> DocWares { get; set; } = new ObservableCollection<DocWaresEx>();

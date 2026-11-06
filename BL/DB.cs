@@ -35,13 +35,15 @@ namespace BL
 {
     public class DB
     {
-        static DB Db = null;
+        public static DB Db = null;
         public static DB GetDB(string pPathDB = null)
         {
             if (!string.IsNullOrEmpty(pPathDB))
             { BaseDir = pPathDB; }
             if (!string.IsNullOrEmpty(BaseDir) && Db == null)
                 Db = new DB();
+            //if(Db == null)
+                Debug.WriteLine($"Error {pPathDB} Db=={Db}");
             return Db;
         }
 
@@ -437,7 +439,7 @@ alter TABLE DocWaresExpiration add DTInsert         TIMESTAMP;";
             }
             catch (Exception ex)
             {
-                FileLogger.WriteLogMessage(this, "DB.OpenDB", ex);
+                FileLogger.WriteLogMessage(this, $"OpenDB {pJournalMode}", ex);
                 return false;
             }
         }
@@ -715,9 +717,10 @@ and CodeWares in (select CodeWares from DocWares where TypeDoc={pDocId.TypeDoc} 
                eSortDoc.EditDoc => " order by max(dwu.DTUpdate, d.DTUpdate) DESC",
                _ => ""
             };
+            string Sql = null ;
             try
             {
-                string Sql = $@"select d.*, Wh.Address as Address,d.State as Color, case when dwu.DTUpdate>coalesce( d.DTUpdate, '0001-01-01')  then 1 else 0 end as IsNeedSave
+                 Sql = $@"select d.*, Wh.Address as Address,d.State as Color, case when dwu.DTUpdate>coalesce( d.DTUpdate, '0001-01-01')  then 1 else 0 end as IsNeedSave
 , case when dwu.DTUpdate<coalesce( d.DTUpdate, '0001-01-01') || dwu.DTUpdate then 1 else 0 end as IsSaved
 from Doc d 
  left join Warehouse  Wh on d.CodeWarehouse = wh.number 
@@ -746,7 +749,7 @@ and bc.BarCode=?
             }
             catch (Exception e)
             {
-                FileLogger.WriteLogMessage(this, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+                FileLogger.WriteLogMessage(this, System.Reflection.MethodBase.GetCurrentMethod().Name +"SQL=>" + Sql, e);
             }
             return [];
         }

@@ -4,6 +4,7 @@ using BRB5.Model.DB;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
@@ -16,11 +17,25 @@ namespace BL.Connector
     {
         protected static string TAG = "BRB5/ConnectorBase";
 
-        protected DB db;      
+        protected DB db => DB.Db;      
 
         public ConnectorBase()
-        {
-            db = DB.GetDB();
+        {            
+            Debug.WriteLine($"Error ConnectorBase {db} ");
+
+            StackTrace st = new StackTrace(true);
+            for (int i = 0; i < st.FrameCount; i++)
+            {
+                // Note that high up the call stack, there is only
+                // one stack frame.
+                StackFrame sf = st.GetFrame(i);
+                Debug.WriteLine("");
+                Debug.WriteLine("High up the call stack, Method: {0}",
+                    sf.GetMethod());
+
+                Debug.WriteLine("High up the call stack, Line Number: {0}",
+                    sf.GetFileLineNumber());
+            }
         }
 
         public static BRB5.Model.Connector GetInstance()

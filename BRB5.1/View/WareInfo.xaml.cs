@@ -8,7 +8,7 @@ namespace BRB6.View
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class WareInfo : ContentPage
     {
-        DB db = DB.GetDB(); 
+        DB db => DB.Db; 
         Connector c;
         public WaresPrice WP { get; set; }
         public bool IsVisPromotion {  get; set; }  = false;

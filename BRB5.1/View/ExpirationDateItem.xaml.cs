@@ -26,7 +26,7 @@ namespace BRB6.View
         ExpirationDateElementVM _VM;
         ExpirationDateElementVM VM { get { return _VM; } set { _VM = value; OnPropertyChanged(nameof(VM)); } }
         IEnumerable<ExpirationDateElementVM> All;
-        protected DB db = DB.GetDB();
+        protected DB db => DB.Db;
         string _NumberOutInvoice = "";
         public string NumberOutInvoice { get { return _NumberOutInvoice; } set { _NumberOutInvoice = value; OnPropertyChanged(nameof(NumberOutInvoice)); } }
         public List<DataStr> ListDataStr

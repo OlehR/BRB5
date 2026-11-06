@@ -9,7 +9,7 @@ namespace BRB6.Template;
 public partial class ExpirationDateElementTemplate : ContentView
 {
     string NumberDoc;
-    DB db = DB.GetDB();
+    DB db => DB.Db;
     public event Action<ExpirationDateElementVM> RequestReturnToMainContent;
     public ExpirationDateElementVM DM { get; set; } = new();
     private ExpirationDateElementVM _DM;

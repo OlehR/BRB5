@@ -29,7 +29,7 @@ namespace BRB6.View
 
     public partial class RaitingDocItemEditPhoto : ContentPage
     {
-        DB db = DB.GetDB();
+        DB db => DB.Db;
         public ObservableCollection<Pictures> MyFiles { get; set; }
         string Mask;
         BRB5.Model.RaitingDocItem Raiting;

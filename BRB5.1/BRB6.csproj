@@ -31,11 +31,12 @@
     <ApplicationId>ua.UniCS.TM.BRB6</ApplicationId>
 
     <!-- Versions -->
-    <ApplicationDisplayVersion>6.1.117</ApplicationDisplayVersion>
-    <ApplicationVersion>61117</ApplicationVersion>
+    <ApplicationDisplayVersion>6.1.118</ApplicationDisplayVersion>
+    <ApplicationVersion>61118</ApplicationVersion>
 
     <SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">13.0</SupportedOSPlatformVersion>
     <SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">21.0</SupportedOSPlatformVersion>
+  <SkipStaticLibraryValidation>true</SkipStaticLibraryValidation>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net9.0-android|AnyCPU'">
@@ -57,15 +58,23 @@
 
 
 
-  <PropertyGroup Condition="'$(TargetFramework)'=='net9.0-ios' and '$(Configuration)' == 'Debug'">
+  <!--<PropertyGroup Condition="'$(TargetFramework)'=='net8.0-ios' and '$(Configuration)' == 'Debug'">
     <CodesignKey>Apple Development: Created via API (U6H6UU6YGM)</CodesignKey>
     <CodesignProvision>VS: ua.UniCS.TM.BRB6 Development</CodesignProvision>
-  </PropertyGroup>
+  </PropertyGroup>-->
 
-  <PropertyGroup Condition="'$(TargetFramework)'=='net9.0-ios' and '$(Configuration)' == 'Release'">
+  <PropertyGroup Condition="'$(TargetFramework)'=='net8.0-ios' and '$(Configuration)' == 'Release'">
     <CodesignKey>Apple Distribution: Alina Rutkovska (485ZWQ5A76)</CodesignKey>
     <ProvisioningType>automatic</ProvisioningType>
     <UseInterpreter>True</UseInterpreter>
+  </PropertyGroup>
+
+  
+
+  <PropertyGroup Condition="'$(TargetFramework)'=='net9.0-ios'">
+    <CodesignKey>Apple Development: Created via API (U6H6UU6YGM)</CodesignKey>
+    <CodesignProvision>VS: ua.UniCS.TM.BRB6 Development</CodesignProvision>
+  <UseInterpreter>True</UseInterpreter>
   </PropertyGroup>
 
  

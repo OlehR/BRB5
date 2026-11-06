@@ -10,7 +10,7 @@ namespace BRB6.View
     public partial class PlanCheckPrice 
     {
 
-        DB db = DB.GetDB();
+        DB db => DB.Db;
         Connector c;
 
         public ObservableCollection<DocVM> PromotionList { get; set; }
