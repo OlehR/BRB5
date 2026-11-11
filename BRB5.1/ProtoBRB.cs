@@ -62,6 +62,8 @@ namespace BRB6
                 return eTypeScaner.PM68;
             if (Config.Model.Equals("HC61") || Config.Manufacturer.Contains("Bita"))
                 return eTypeScaner.BitaHC61;
+            if (Config.Model.Equals("MC95") && Config.Manufacturer.Contains("CHAINWAY"))
+                return eTypeScaner.ChainwayMC95;
             if (Config.Model.Equals("C66") && Config.Manufacturer.Contains("CHAINWAY"))
                 return eTypeScaner.ChainwayC66;
             if (Config.Model.Equals("C61P") && Config.Manufacturer.Contains("CHAINWAY"))

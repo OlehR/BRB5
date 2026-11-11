@@ -130,6 +130,7 @@ namespace BRB5
         ChainwayC61,
         ChainwayC61P,
         ChainwayC66,
+        ChainwayMC95,
         MetapaceM_K4,
         NLS_MT67,
         NLS_MT93,

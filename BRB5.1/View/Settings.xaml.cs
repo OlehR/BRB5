@@ -302,6 +302,13 @@ namespace BRB6.View
                 db.OpenDB();
                 if (File.Exists(FileLogger.GetFileName))
                     await c.UploadFile(FileLogger.GetFileName, $"Log_{DateTime.Now:yyyyMMdd_HHmmss}.log");
+                string Log= FileLogger.GetFileNameDate(DateTime.Now.AddDays(-1));
+                if(File.Exists(Log))
+                    await c.UploadFile(Log, Path.GetFileName(Log));
+                Log = FileLogger.GetFileNameDate(DateTime.Now.AddDays(-2));
+                if (File.Exists(Log))
+                    await c.UploadFile(Log, Path.GetFileName(Log));
+
                 ToastInfo("Дані успішно відправлено на сервер");
             }
             catch (Exception ex)
