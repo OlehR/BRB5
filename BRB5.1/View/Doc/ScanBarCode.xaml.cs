@@ -47,7 +47,8 @@ namespace BRB6.View
 
         }
 
-        private void OnSave(object sender, TappedEventArgs e)
+
+        private async Task OnSaveAsync(object sender, TappedEventArgs e)
         {        
             foreach(var el in Doc)
             {
