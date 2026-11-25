@@ -1064,7 +1064,7 @@ and bc.BarCode=?
 
         public bool ReplaceDocWares(DocWares pDW, bool pIsDelete = false)
         {
-            FileLogger.WriteLogMessage(this, "ReplaceDocWares", $"DocWares=>{pDW.ToJSON()}");
+            FileLogger.WriteLogMessage(this, "ReplaceDocWares", $"DocWares=>{pDW?.ToJson()}");
             try
             {
                 if (pIsDelete)

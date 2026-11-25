@@ -157,6 +157,9 @@
     <Compile Update="App.xaml.cs">
       <DependentUpon>%(Filename)</DependentUpon>
     </Compile>
+    <Compile Update="View\Doc\ScanBarCode.xaml.cs">
+      <DependentUpon>ScanBarCode.xaml</DependentUpon>
+    </Compile>
     <Compile Update="View\ExpirationDateItem.xaml.cs">
       <DependentUpon>ExpirationDateItem.xaml</DependentUpon>
     </Compile>
@@ -258,6 +261,9 @@
       <Generator>MSBuild:Compile</Generator>
     </MauiXaml>
     <MauiXaml Update="View\Doc\DocItemCheck.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </MauiXaml>
+    <MauiXaml Update="View\Doc\ScanBarCode.xaml">
       <Generator>MSBuild:Compile</Generator>
     </MauiXaml>
     <MauiXaml Update="View\ExpirationDateItem.xaml">

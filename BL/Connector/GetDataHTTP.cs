@@ -130,7 +130,7 @@ namespace BL.Connector
                     pLogin = "TSD";
                     pPassWord = "321123Sd";
                 }
-                if (pLogin != null && (pLogin.Equals("Admin") || ( pLogin.ToLower().Equals("revizor") && Config.LocalCompany == eCompany.Sim23)))
+                if (pLogin != null && (pLogin.Equals("Admin") || (( pLogin.ToLower().Equals("revizor") || pLogin.ToLower().Equals("freelanc")) && Config.LocalCompany == eCompany.Sim23)))
                 {
                     pLogin = (Config.LocalCompany == eCompany.Sim23 ? "brb" : "c");
                     pPassWord = (Config.LocalCompany == eCompany.Sim23 ? "brb" : "c");
@@ -164,6 +164,5 @@ namespace BL.Connector
                 return new HttpResult() { Result = $"{e.Message}{Environment.NewLine} {e.StackTrace}" };
             }        
         }
-        
     }
 }

@@ -224,6 +224,8 @@ namespace BRB5.Model
         /// Чи збережено документ(не новий), 
         /// </summary>
         public bool IsSaved { get { return _IsSaved; } set { _IsSaved = value; OnPropertyChanged(nameof(GetColor)); OnPropertyChanged(nameof(IsSaved)); } }
+
+        public bool IsSavedState => State == 0;
         public DocVM() { }
         
         public DocVM(DocId pDocId):base(pDocId) { }        

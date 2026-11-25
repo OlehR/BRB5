@@ -143,6 +143,8 @@ namespace BRB6
                 //return;
             }
             //Debug.WriteLine($"{DateTime.Now} Error vTypeDoc={vTypeDoc.CodeDoc}");
+            
+                        
             switch (vTypeDoc.KindDoc)
             {
                 case eKindDoc.PriceCheck:
@@ -176,12 +178,16 @@ namespace BRB6
                 case eKindDoc.DocCheck:
                     await Navigation.PushAsync(new DocItemCheck());
                     break;
+                case eKindDoc.ScanBarCode:
+                    await Navigation.PushAsync(new ScanBarCode(vTypeDoc));
+                    break;
                 case eKindDoc.NotDefined:
                     Dispatcher.Dispatch(() =>
                     {
                         OCTypeDoc?.Clear();
                         var r = c.GetTypeDoc(Config.Role, Config.LoginServer, vTypeDoc.Group).Where(x => x.KindDoc != eKindDoc.NotDefined);                        
                         foreach (var i in r) OCTypeDoc.Add(i);
+
                         IsVisibleBack = true;
                         ExitLabel.IsVisible = false;
                     });
