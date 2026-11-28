@@ -74,11 +74,7 @@ namespace BL.Connector
                             Config.Role = res.Data.Role;
                             Config.CodeUser = res.Data.CodeUser;
                             Config.NameUser = res.Data.NameUser;
-                            Config.TypeDoc = res.Data.TypeDoc;
-                            ///!!!!TMP
-                            var xx = Config.TypeDoc.ToList();
-                            xx.Add(new TypeDoc() { Group = eGroup.Doc, CodeDoc = 1234, NameDoc = "Сканування", KindDoc = eKindDoc.ScanBarCode });
-                            Config.TypeDoc = xx;
+                            Config.TypeDoc = res.Data.TypeDoc;                         
                             Config.UserGuid = res.Data.UserGuid;
                             Config.GetCodeUnitWeight = res.Data.CodeUnitWeight;
                             Config.GetCodeUnitPiece = res.Data.CodeUnitPiece;

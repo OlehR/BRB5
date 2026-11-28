@@ -18,8 +18,7 @@ namespace BRB6.View
         {
             NokeyBoard();
             TypeDoc = pTypeDoc;
-            
-            var r = db.GetDoc(TypeDoc);            
+            Doc = new(db.GetDoc(TypeDoc).Where(el => el.State == 0));            
             BindingContext = this;
             InitializeComponent();
         }
@@ -31,7 +30,9 @@ namespace BRB6.View
 
         void BarCode(string pBarCode)
         {
-            DocVM D = new() { TypeDoc = TypeDoc.CodeDoc, NumberDoc = pBarCode, BarCode = pBarCode, DateDoc = DateTime.Now };
+            if (Doc.Where(el => el.BarCode.Equals(pBarCode)).Any())
+                return;
+            DocVM D = new() { TypeDoc = TypeDoc.CodeDoc, NumberDoc = pBarCode, BarCode = pBarCode, DateDoc = DateTime.Now, CodeWarehouse= Config.CodeWarehouse};
             db.ReplaceDoc([D]);
             Task.Run(async () => 
             { 
@@ -44,30 +45,31 @@ namespace BRB6.View
                 D.IsNeedSave = !r.Success;
                 Doc.Add(D);
             });
-
         }
 
 
-        private async Task OnSaveAsync(object sender, TappedEventArgs e)
-        {        
+        private async void OnSaveAsync(object sender, TappedEventArgs e)
+        {
+            int i = 0;
             foreach(var el in Doc)
             {
-                if (!el.IsSavedState)
+                if (el.State==0)
                 {
                     var r = await c.SendDocsDataAsync(el, null);
                     if (r.Success)
                     {
                         el.State = 1;
                         db.ReplaceDoc([el]);
+                        i++;
                     }
                     el.IsNeedSave = !r.Success;
                 }
 
             }
-                // Your click logic here
-                DisplayAlert("Tapped", $"You clicked", "OK");            
+                DisplayAlert("Збереженя", $"Зберегло {i}{Doc.Select(el=>el.State==0).Count()}","OK");            
         }
         public void Dispose() { Config.BarCode -= BarCode; }
+
         
     }
 }

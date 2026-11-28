@@ -8,7 +8,7 @@
         <StackLayout Spacing="15" Orientation="Horizontal" Padding="0,0,10,0">
             <Label Text="Зберегти" VerticalOptions="Center" FontSize="Title">
                 <Label.GestureRecognizers>
-                    <TapGestureRecognizer Command="{Binding OnSaveAsync}" />
+                    <TapGestureRecognizer Tapped="OnSaveAsync" />
                 </Label.GestureRecognizers>
             </Label>
         </StackLayout>
